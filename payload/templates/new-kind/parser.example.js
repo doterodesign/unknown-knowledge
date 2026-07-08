@@ -24,7 +24,8 @@
  * NEVER wired into the validator in that session. It enters through GATE —
  * a PR carrying this parser, its fixture (fixture/sample.list →
  * fixture/EXPECTED.yaml), and a demo run against the live anchor the miss
- * recorded. See payload/protocol/new-kind-pipeline.md.
+ * recorded. See protocol/new-kind-pipeline.md (client-relative; under
+ * payload/ in the kit repo).
  */
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
@@ -34,9 +35,14 @@ import process from 'node:process';
 export const KIND = 'line-list';
 
 // The envelope, stated as data so the fixture and the review can see it:
-// blank lines and `#` comments are ignored; `- value` lines emit a value;
-// ANY other line is an out-of-envelope sentinel and hard-errors.
-const VALUE_LINE = /^- (\S.*)$/;
+// lines are split on \n or \r\n (CRLF anchors are the same document); blank
+// lines and `#` comments are ignored; `- value` lines emit a value, where the
+// value starts AND ends with non-whitespace — a value line carrying trailing
+// whitespace is an out-of-envelope sentinel (it would capture a value that
+// can never byte-match its visually identical claim); ANY other line is an
+// out-of-envelope sentinel and hard-errors.
+const VALUE_LINE = /^- (\S(?:.*\S)?)$/;
+const TRAILING_WHITESPACE_VALUE_LINE = /^- \S.*\s$/;
 const IGNORED_LINE = /^(\s*|#.*)$/;
 
 /**
@@ -48,12 +54,16 @@ const IGNORED_LINE = /^(\s*|#.*)$/;
  */
 export function extractValues(text, file = '<anchor>') {
   const values = [];
-  const lines = text.split('\n');
+  const lines = text.split(/\r?\n/);
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     const match = VALUE_LINE.exec(line);
     if (match) {
       values.push(match[1]);
+    } else if (TRAILING_WHITESPACE_VALUE_LINE.test(line)) {
+      // Trailing whitespace would emit a value that can never byte-match the
+      // visually identical claim (§3.5) — name the invisible byte, never guess.
+      throw new Error(`${file}:${i + 1}: value line carries trailing whitespace — the captured value could never byte-match its visually identical claim (§3.5), so the line is outside the ${KIND} envelope: ${JSON.stringify(line)}`);
     } else if (!IGNORED_LINE.test(line)) {
       // Out-of-envelope sentinel: hard-error loudly, never skip (PRD §5).
       throw new Error(`${file}:${i + 1}: line is outside the ${KIND} envelope (expected blank, "#" comment, or "- value"): ${JSON.stringify(line)}`);
@@ -67,8 +77,9 @@ export function extractValues(text, file = '<anchor>') {
   return values;
 }
 
-// Demo-run CLI (the third DRAFT artifact): run the draft against the live
-// anchor the miss recorded and attach the output to the GATE PR.
+// Demo-run CLI (it produces the third DRAFT artifact, the demo run): run the
+// draft against the live anchor the miss recorded and attach the output to
+// the GATE PR.
 //   node parser.example.js <anchor-path>
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const file = process.argv[2];

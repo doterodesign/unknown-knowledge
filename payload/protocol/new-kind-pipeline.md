@@ -1,5 +1,9 @@
 # The new-kind pipeline (PRD §5.2) — the trust boundary
 
+> Paths in this document are client-relative — relative to the vendored kit
+> root after init (`schemas/…`, `templates/…`, `engine/…`, `protocol/…`). In
+> the kit repo itself these live under `payload/`.
+
 An extractor **kind** is a small deterministic recipe (~30-line parser) that
 reads a value set out of a reified anchor. The shipped kind library covers the
 common shapes (PRD §5.1); everything else surfaces as a **miss** — an anchor no
@@ -27,7 +31,7 @@ A miss entry is **one file per entry** (`logs/misses/<date>-<hex8>.yaml`,
 D-010) so concurrent sessions never merge-conflict, written via the
 append/transition helper (`engine/log-entry.js`), never by hand-editing YAML.
 
-Fields, per `payload/schemas/miss.schema.json`:
+Fields, per `schemas/miss.schema.json`:
 
 | Field | Req. | Meaning |
 |---|---|---|
@@ -41,11 +45,16 @@ Fields, per `payload/schemas/miss.schema.json`:
 | `reason` | — | required on rejection; travels only with `rejected` |
 | `occurrences` | — | re-open dates: recurrences re-open the same entry, never duplicate |
 
-Lifecycle invariants (enforced by the transition helper on its write path and
-by the schema gate on hand-edited fragments — the two cannot disagree):
+Lifecycle invariants. The schema gate (`engine/lib/validate-record.js`)
+enforces exactly two of them on any fragment, hand-edited or not, matching
+what the transition helper enforces on its write path — on these two the
+gates cannot disagree:
 `verified` ⇔ status `resolved`, both directions; `rejected` ⇒ non-empty
-`reason`, and `reason` travels only with `rejected`; re-opening drops both
-`verified` and `reason` and appends the date to `occurrences`.
+`reason`, and `reason` travels only with `rejected`.
+The rest is **helper-only**: only the transition helper's write path drops
+`verified`/`reason` on re-open and appends the re-open date to `occurrences`
+— a hand-edited fragment missing an occurrence entry still validates clean,
+which is one more reason fragments are written via the helper, never by hand.
 
 **Capture content policy (§3.4):** miss entries carry concept IDs and file
 paths only — never verbatim user text, quoted session content, or secrets.
@@ -72,10 +81,24 @@ The bootstrap/reflect agent triages the survey-map artifact (never
 raw-traverses the repo) and inventories the anchor shapes concepts point at.
 Anchors with a shipped kind proceed to MATCH. Anchors with **kind-shaped
 evidence but no kind** — a real registry the library can't read — become miss
-entries: `log-entry.js create --log misses` with `path` + `shape`. SURVEY
-consumes the *open* misses already in the backlog too: a recurrence of a known
-miss **re-opens the same entry** (appending to `occurrences`), never mints a
-sibling.
+entries, written via the helper (verified working invocation; `--date` is
+mandatory and injected, never wall-clock):
+
+```
+node engine/log-entry.js create --log misses --date 2026-07-08 \
+  --entry '{"path":"config/regions.txt","shape":"plain-text list, one region code per line, # comments"}'
+```
+
+SURVEY consumes the misses already in the backlog too — never minting a
+sibling for a known anchor:
+
+- a recurrence of a **still-open** miss needs no transition and gets none:
+  `open → open` is illegal (the helper hard-errors), because the open entry
+  *is* the standing demand signal. The helper offers no occurrences-append
+  for open entries; the agent simply leaves the entry as-is and moves on.
+- a recurrence of a **resolved or rejected** miss **re-opens the same entry**
+  (`transition --to open`), which appends the date to `occurrences` and drops
+  the stale `verified`/`reason`.
 
 ### 2. MATCH — configure from the shipped library first
 
@@ -87,7 +110,7 @@ and even then, weigh reification (principle 6) before a bespoke parser.
 ### 3. DRAFT — parser + fixture + demo run
 
 For each miss that survives MATCH, the agent drafts, from the shipped template
-(`payload/templates/new-kind/`, see its README):
+(`templates/new-kind/`, see its README):
 
 1. **the parser** — a pure, deterministic function: source text in, value set
    out; hard-errors loudly on anything it can't parse, and declares a
@@ -143,10 +166,14 @@ a hard error that leaves the fragment untouched.
 
 ## Drafting template
 
-`payload/templates/new-kind/` ships the drafting skeleton: a
-framework-agnostic parser module, a descriptor example, a fixture
-(`fixture/sample.list` → `fixture/EXPECTED.yaml`), and a README that walks the
-demo run. The template README also records one manual walkthrough of the
+`templates/new-kind/` ships the drafting skeleton — six files: a
+framework-agnostic parser module (whose CLI is the demo-run tool), a
+descriptor example, a fixture pair (`fixture/sample.list` →
+`fixture/EXPECTED.yaml`), a stand-in demo anchor
+(`fixture/demo-anchor.list`), and a README that walks the demo run. Together
+these cover the three DRAFT artifacts above (parser, fixture, demo run).
+The template README also records one manual walkthrough of the
 template against its own fixture (an honest seam: a documented manual
-exercise, not CI — the kit's CI only pins the template artifacts against each
-other so they can't rot apart).
+exercise, not CI — the kit's CI pins the template artifacts against each
+other and replays the walkthrough's CLI runs so the transcripts can't rot
+apart, but exercising a draft against a *live* anchor is always manual).
