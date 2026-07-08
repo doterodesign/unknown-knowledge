@@ -15,6 +15,10 @@
  *    80 exact-alias     query == an alias
  *    60 term-match      term starts with the query, or every query word is a
  *                       whole word of the term
+ *    50 alias-match     an alias starts with the query, or every query word is
+ *                       a whole word of an alias — aliases are the synonyms
+ *                       recorded to cure retrieval-struggle findings, so they
+ *                       get the same rung treatment as terms (slightly lower)
  *    40 summary-match   every query word is a whole word of the summary
  *
  *   -30 draft/proposed concepts are downranked (floor 1) — §3.5: the resolver
@@ -29,7 +33,11 @@
  *
  * --paths mode — reverse lookup over the loader's pointer index: "which
  * concepts point at these files". A path matches a pointer when equal to it or
- * nested under a folder pointer (§3.1 folder pointers). A lookup, not subset
+ * nested under a FOLDER pointer (§3.1 folder pointers — a pointer with an
+ * extension is a file pointer; nothing nests under a file). Paths are
+ * normalized with path.posix semantics (dots resolved, separators collapsed,
+ * backslashes converted, absolute paths relativized against the store root) so
+ * attribution survives the forms real tooling emits. A lookup, not subset
  * validation (no D-012 conflict). Paths are deduped and sorted ascending.
  *
  * Zero resolution is a NORMAL outcome (PRD §7 — common in month one): exit 0
@@ -45,8 +53,10 @@
  * id asc; paths/pointers/entry points lexicographic — with no timestamps.
  */
 import process from 'node:process';
+import { posix } from 'node:path';
 import { loadStores } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { compare } from './lib/validate-record.js';
 
 const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
        node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>]`;
@@ -55,11 +65,11 @@ const MATCH_SCORES = Object.freeze({
   'exact-term': 100,
   'exact-alias': 80,
   'term-match': 60,
+  'alias-match': 50,
   'summary-match': 40,
 });
 const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still surfaces
 
-const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
 const words = (s) => norm(s).split(/[^a-z0-9]+/).filter(Boolean);
 const strings = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
@@ -68,15 +78,18 @@ class UsageError extends Error {}
 
 // ---------------------------------------------------------------- query mode
 
+/** Prefix or whole-word rung shared by terms and aliases. */
+const rungMatch = (query, queryWords, name) =>
+  norm(name).startsWith(query) || queryWords.every((w) => words(name).includes(w));
+
 /** Highest scoring rung the concept reaches for this query, or null. */
 function matchConcept(query, queryWords, record) {
   const term = typeof record.term === 'string' ? record.term : '';
+  const aliases = strings(record.aliases);
   if (norm(term) === query) return 'exact-term';
-  if (strings(record.aliases).some((alias) => norm(alias) === query)) return 'exact-alias';
-  const termWords = words(term);
-  if (norm(term).startsWith(query) || queryWords.every((w) => termWords.includes(w))) {
-    return 'term-match';
-  }
+  if (aliases.some((alias) => norm(alias) === query)) return 'exact-alias';
+  if (rungMatch(query, queryWords, term)) return 'term-match';
+  if (aliases.some((alias) => rungMatch(query, queryWords, alias))) return 'alias-match';
   const summaryWords = words(typeof record.summary === 'string' ? record.summary : '');
   if (queryWords.every((w) => summaryWords.includes(w))) return 'summary-match';
   return null;
@@ -139,20 +152,45 @@ function resolveQuery(model, terms) {
 
 // ---------------------------------------------------------------- paths mode
 
-const normPath = (p) => p.trim().replace(/^(\.\/)+/, '').replace(/\/+$/, '');
+/**
+ * Normalize a path to the store-root-relative posix form pointers use:
+ * backslashes become '/', `..`/`.`/`//` resolve away (path.posix semantics),
+ * trailing slashes drop, and absolute paths relativize against `root`.
+ * Wrong normalization is wrong ATTRIBUTION — `a/b/../c.ts` must hit the file
+ * pointer `a/c.ts`, not the folder pointer `a/b`.
+ */
+function normPath(root, p) {
+  let path = posix.normalize(p.trim().replace(/\\/g, '/'));
+  if (posix.isAbsolute(path)) path = posix.relative(root.replace(/\\/g, '/'), path);
+  path = path.replace(/\/+$/, '');
+  return path === '.' ? '' : path;
+}
+
+/** §3.1: a pointer naming a directory (no extension) — only these nest. */
+const isFolderPointer = (pointer) => posix.extname(pointer) === '';
 
 function resolvePaths(model, rawPaths) {
-  const paths = [...new Set(rawPaths.map(normPath).filter(Boolean))].sort(compare);
+  const paths = [...new Set(rawPaths.map((p) => normPath(model.root, p)).filter(Boolean))]
+    .sort(compare);
+  if (!paths.length) {
+    throw new UsageError('--paths must name at least one path — a lookup that never ran is a failure, never a silent empty result');
+  }
   return paths.map((path) => {
     const seen = new Set();
     const concepts = [];
     for (const [pointer, ids] of model.pointers) {
-      const p = normPath(pointer);
-      if (path !== p && !path.startsWith(`${p}/`)) continue;
+      const p = normPath(model.root, pointer);
+      if (path !== p && !(isFolderPointer(p) && path.startsWith(`${p}/`))) continue;
       for (const id of ids) {
         if (seen.has(id)) continue; // keep the lexicographically first pointer
         seen.add(id);
-        concepts.push({ id, term: model.concepts.get(id)?.record.term ?? null, pointer });
+        const record = model.concepts.get(id)?.record;
+        concepts.push({
+          id,
+          term: record?.term ?? null,
+          status: record?.status ?? null,
+          pointer,
+        });
       }
     }
     concepts.sort((a, b) => compare(a.id, b.id));
@@ -166,16 +204,25 @@ function parseArgs(argv) {
   const opts = { json: false, root: process.cwd(), paths: null, terms: [] };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === '--json') {
+    // Both conventional flag spellings: `--flag value` and `--flag=value`.
+    const eq = arg.startsWith('--') ? arg.indexOf('=') : -1;
+    const flag = eq === -1 ? arg : arg.slice(0, eq);
+    if (flag === '--json') {
+      if (eq !== -1) throw new UsageError('--json takes no value');
       opts.json = true;
-    } else if (arg === '--root' || arg === '--paths') {
-      const value = argv[i + 1];
-      if (value === undefined || value.startsWith('--')) {
-        throw new UsageError(`${arg} requires a value`);
+    } else if (flag === '--root' || flag === '--paths') {
+      let value;
+      if (eq !== -1) {
+        value = arg.slice(eq + 1);
+      } else {
+        value = argv[i + 1];
+        if (value === undefined || value.startsWith('--')) {
+          throw new UsageError(`${flag} requires a value`);
+        }
+        i += 1;
       }
-      if (arg === '--root') opts.root = value;
+      if (flag === '--root') opts.root = value;
       else opts.paths = [...(opts.paths ?? []), ...value.split(',')];
-      i += 1;
     } else if (arg.startsWith('--')) {
       throw new UsageError(`unknown flag ${arg}`);
     } else {
@@ -198,7 +245,7 @@ function storeHealth(model) {
 }
 
 function renderHealth(health, lines) {
-  if (health.ok) return;
+  if (health.ok && !health.warnings) return; // warnings surface even when ok
   lines.push(
     `store health: ${health.errors} error(s), ${health.warnings} warning(s) — resolution ran on what loaded; run preflight for verdicts`,
     '',
@@ -248,7 +295,7 @@ function renderPaths(payload) {
       lines.push('  no concepts point at this path');
     }
     for (const c of concepts) {
-      lines.push(`  ${c.id}  ${c.term ?? '?'}  (pointer: ${c.pointer})`);
+      lines.push(`  ${c.id}  ${c.term ?? '?'}  [${c.status}]  (pointer: ${c.pointer})`);
     }
     lines.push('');
   }
@@ -257,40 +304,36 @@ function renderPaths(payload) {
 }
 
 function main(argv) {
-  let opts;
   try {
-    opts = parseArgs(argv);
-  } catch (error) {
-    if (!(error instanceof UsageError)) throw error;
-    process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
-    return EXIT_CODES.FAILURE;
-  }
+    const opts = parseArgs(argv);
 
-  let model;
-  try {
-    model = loadStores(opts.root);
-  } catch (error) {
-    process.stderr.write(`resolve: ${error.message}\n`);
-    return EXIT_CODES.FAILURE;
-  }
+    let model;
+    try {
+      model = loadStores(opts.root);
+    } catch (error) {
+      process.stderr.write(`resolve: ${error.message}\n`);
+      return EXIT_CODES.FAILURE;
+    }
 
-  const health = storeHealth(model);
-  let payload;
-  try {
-    payload = opts.paths
+    const health = storeHealth(model);
+    const payload = opts.paths
       ? { mode: 'paths', 'store-health': health, paths: resolvePaths(model, opts.paths) }
       : { mode: 'query', 'store-health': health, ...resolveQuery(model, opts.terms) };
+
+    const lines = opts.json
+      ? [JSON.stringify(payload, null, 2)]
+      : (payload.mode === 'query' ? renderQuery(payload) : renderPaths(payload));
+    process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
+    return EXIT_CODES.CLEAN;
   } catch (error) {
+    // One handler for every phase's usage errors, so the paths never drift.
     if (!(error instanceof UsageError)) throw error;
     process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
     return EXIT_CODES.FAILURE;
   }
-
-  const lines = opts.json
-    ? [JSON.stringify(payload, null, 2)]
-    : (payload.mode === 'query' ? renderQuery(payload) : renderPaths(payload));
-  process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
-  return EXIT_CODES.CLEAN;
 }
 
-process.exit(main(process.argv.slice(2)));
+// exitCode, never process.exit(): exit() drops queued async stdout writes, so
+// piped --json output would truncate at the ~64KB pipe buffer (corrupt JSON
+// with exit 0). Node exits on its own once stdout drains.
+process.exitCode = main(process.argv.slice(2));

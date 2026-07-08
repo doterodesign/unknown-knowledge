@@ -33,4 +33,5 @@ entries:
     term: Ledger
     class: 100-payments
     summary: Legacy double-entry ledger retained for settlement audits.
+    source-of-truth: [src/ledger]
     status: deprecated

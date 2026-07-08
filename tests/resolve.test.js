@@ -50,6 +50,16 @@ test('prefix/word match in term scores 60; score ties break by id asc', () => {
   );
 });
 
+test('alias prefix/word match scores 50 — aliases get the same rung treatment as terms', () => {
+  // K-100 has alias "payment instrument"; a partial alias query must resolve
+  // (aliases are the synonyms recorded to cure retrieval-struggle findings).
+  const out = runJson('instrument');
+  assert.deepEqual(
+    out.results.map((r) => [r.id, r.score, r.match]),
+    [['K-100', 50, 'alias-match']],
+  );
+});
+
 test('summary word match scores 40', () => {
   const out = runJson('banks');
   assert.deepEqual(
@@ -154,7 +164,9 @@ test('--paths: exact file pointer maps back to its concept', () => {
   assert.deepEqual(out.paths, [
     {
       path: 'src/payments/settlement.ts',
-      concepts: [{ id: 'K-120', term: 'Settlement', pointer: 'src/payments/settlement.ts' }],
+      concepts: [
+        { id: 'K-120', term: 'Settlement', status: 'active', pointer: 'src/payments/settlement.ts' },
+      ],
     },
   ]);
 });
@@ -162,8 +174,45 @@ test('--paths: exact file pointer maps back to its concept', () => {
 test('--paths: a file under a folder pointer matches that concept', () => {
   const out = runJson('--paths', 'src/payments/payouts/stripe.ts');
   assert.deepEqual(out.paths[0].concepts, [
-    { id: 'K-110', term: 'Payout method', pointer: 'src/payments/payouts' },
+    { id: 'K-110', term: 'Payout method', status: 'active', pointer: 'src/payments/payouts' },
   ]);
+});
+
+test('--paths: concepts carry status — a deprecated concept surfaces flagged', () => {
+  const out = runJson('--paths', 'src/ledger/entries.ts');
+  assert.deepEqual(out.paths[0].concepts, [
+    { id: 'K-140', term: 'Ledger', status: 'deprecated', pointer: 'src/ledger' },
+  ]);
+  const human = run('--paths', 'src/ledger/entries.ts', '--root', store);
+  assert.equal(human.status, 0);
+  assert.match(human.stdout, /K-140.*\[deprecated\]/);
+});
+
+test('--paths: nesting applies only to folder pointers, never file pointers', () => {
+  // src/payments/settlement.ts is a FILE pointer; a path "under" it cannot exist.
+  const out = runJson('--paths', 'src/payments/settlement.ts/anything.ts');
+  assert.deepEqual(out.paths, [
+    { path: 'src/payments/settlement.ts/anything.ts', concepts: [] },
+  ]);
+});
+
+test('--paths: paths are normalized — .., //, internal ./, backslashes, absolute', () => {
+  // `..` must attribute to the file pointer (K-120), not the folder it detoured through.
+  const dotdot = runJson('--paths', 'src/payments/payouts/../settlement.ts');
+  assert.equal(dotdot.paths[0].path, 'src/payments/settlement.ts');
+  assert.deepEqual(dotdot.paths[0].concepts.map((c) => c.id), ['K-120']);
+
+  const doubled = runJson('--paths', 'src//payments/./settlement.ts');
+  assert.equal(doubled.paths[0].path, 'src/payments/settlement.ts');
+  assert.deepEqual(doubled.paths[0].concepts.map((c) => c.id), ['K-120']);
+
+  const backslashed = runJson('--paths', 'src\\payments\\settlement.ts');
+  assert.equal(backslashed.paths[0].path, 'src/payments/settlement.ts');
+  assert.deepEqual(backslashed.paths[0].concepts.map((c) => c.id), ['K-120']);
+
+  const absolute = runJson('--paths', `${store}/src/payments/settlement.ts`);
+  assert.equal(absolute.paths[0].path, 'src/payments/settlement.ts');
+  assert.deepEqual(absolute.paths[0].concepts.map((c) => c.id), ['K-120']);
 });
 
 test('--paths: unmatched path is a normal outcome — empty concepts, exit 0', () => {
@@ -195,6 +244,15 @@ test('JSON output is deterministic: two runs are byte-identical, no timestamps',
   assert.doesNotMatch(a.stdout, /\d{4}-\d{2}-\d{2}T/);
 });
 
+test('warning-only health is surfaced in human mode too', () => {
+  // The partial fixture loads ok (no errors) but with missing-store warnings;
+  // zero resolution over a half-present store must not read as a clean miss.
+  const partialStore = fileURLToPath(new URL('fixtures/loader/partial', import.meta.url));
+  const human = run('anything', '--root', partialStore);
+  assert.equal(human.status, 0);
+  assert.match(human.stdout, /store health: 0 error\(s\), 2 warning\(s\)/);
+});
+
 test('unhealthy store still resolves; health surfaced, not fatal (one health model)', () => {
   const r = run('sport', '--root', brokenStore, '--json');
   assert.equal(r.status, 0);
@@ -221,6 +279,30 @@ test('usage errors exit 2: no query, unknown flag, missing value, mixed modes', 
     assert.equal(r.status, 2, `expected exit 2 for: ${args.join(' ') || '(no args)'}`);
     assert.match(r.stderr, /usage:/i);
   }
+});
+
+test('empty/comma-only --paths exits 2 — a lookup that never ran is a failure', () => {
+  for (const args of [
+    ['--paths', '', '--root', store],
+    ['--paths', ',', '--root', store],
+    ['--paths', ' , ', '--root', store],
+  ]) {
+    const r = run(...args);
+    assert.equal(r.status, 2, `expected exit 2 for --paths ${JSON.stringify(args[1])}`);
+    assert.match(r.stderr, /usage:/i);
+  }
+});
+
+test('--flag=value equals-forms are accepted for --root and --paths', () => {
+  const query = run('settlement', `--root=${store}`, '--json');
+  assert.equal(query.status, 0, query.stderr);
+  assert.equal(JSON.parse(query.stdout).results[0].id, 'K-120');
+  const paths = run('--paths=src/payments/settlement.ts,src/unmapped/x.ts', `--root=${store}`, '--json');
+  assert.equal(paths.status, 0, paths.stderr);
+  assert.deepEqual(JSON.parse(paths.stdout).paths.map((p) => p.path), [
+    'src/payments/settlement.ts',
+    'src/unmapped/x.ts',
+  ]);
 });
 
 test('unreadable root exits 2 — a lookup that never ran is a failure, not a miss', () => {
