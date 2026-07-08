@@ -19,9 +19,10 @@
  *     additional entries are secondary references; every enumerates
  *     descriptor's source must name a listed entry
  *     (`enumerates-source-not-listed`).
- *   - every store file carries an integer schema-version >= 1; any defect
- *     there is normalized to `invalid-schema-version`. Evolution is
- *     additive-only (D-013 generalized).
+ *   - every store file carries an integer schema-version >= 1; value defects
+ *     there are normalized to `invalid-schema-version` (a stray record-level
+ *     key stays `unknown-property` — the fix is to remove it, not retype it).
+ *     Evolution is additive-only (D-013 generalized).
  *
  * Diagnostics carry a closed set of typed codes (PRD §5: protocol conduct
  * keys on codes, not prose) and are stable-sorted by path then code so
@@ -51,7 +52,20 @@ export const ERROR_CODES = Object.freeze([
   'out-of-range',
   'invalid-schema-version',
   'non-string-enumerates-value',
+  'duplicate-enumerates-value',
   'enumerates-source-not-listed',
+]);
+
+/**
+ * The JSON Schema subset this module interprets. Schemas must not use
+ * keywords outside this set — an unenforced keyword is silent contract
+ * drift (tests/store-schemas.test.js walks every schema against it).
+ */
+export const SUPPORTED_KEYWORDS = Object.freeze([
+  '$schema', '$id', '$defs', '$ref',
+  'title', 'description',
+  'type', 'required', 'properties', 'additionalProperties',
+  'items', 'enum', 'pattern', 'minItems', 'minimum',
 ]);
 
 const schemaCache = new Map();
@@ -80,6 +94,7 @@ function describe(value) {
 }
 
 function typeMatches(type, value) {
+  if (Array.isArray(type)) return type.some((t) => typeMatches(t, value));
   switch (type) {
     case 'string': return typeof value === 'string';
     case 'integer': return Number.isInteger(value);
@@ -96,10 +111,32 @@ function joinPath(base, key) {
   return base ? `${base}.${key}` : key;
 }
 
+const regexCache = new Map();
+
+function regexFor(pattern) {
+  let re = regexCache.get(pattern);
+  if (!re) {
+    re = new RegExp(pattern);
+    regexCache.set(pattern, re);
+  }
+  return re;
+}
+
+const refCache = new WeakMap();
+
 function resolveRef(root, ref) {
   if (ref === '#') return root;
-  const match = /^#\/\$defs\/([^/]+)$/.exec(ref);
-  const target = match && root.$defs?.[match[1]];
+  let refs = refCache.get(root);
+  if (!refs) {
+    refs = new Map();
+    refCache.set(root, refs);
+  }
+  let target = refs.get(ref);
+  if (target === undefined) {
+    const match = /^#\/\$defs\/([^/]+)$/.exec(ref);
+    target = (match && root.$defs?.[match[1]]) ?? null;
+    refs.set(ref, target);
+  }
   if (!target) throw new Error(`schema $ref "${ref}" does not resolve`);
   return target;
 }
@@ -125,7 +162,7 @@ function check(root, schema, value, path, errors) {
       message: `${JSON.stringify(value)} is not one of: ${schema.enum.join(' | ')}`,
     });
   }
-  if (schema.pattern && typeof value === 'string' && !new RegExp(schema.pattern).test(value)) {
+  if (schema.pattern && typeof value === 'string' && !regexFor(schema.pattern).test(value)) {
     errors.push({
       path,
       code: 'pattern-mismatch',
@@ -153,7 +190,7 @@ function check(root, schema, value, path, errors) {
   }
   if (isPlainObject(value)) {
     for (const required of schema.required ?? []) {
-      if (!(required in value)) {
+      if (!Object.hasOwn(value, required)) {
         errors.push({
           path: joinPath(path, required),
           code: 'missing-required',
@@ -163,7 +200,7 @@ function check(root, schema, value, path, errors) {
     }
     const properties = schema.properties ?? {};
     for (const [key, propertyValue] of Object.entries(value)) {
-      if (key in properties) {
+      if (Object.hasOwn(properties, key)) {
         check(root, properties[key], propertyValue, joinPath(path, key), errors);
       } else if (schema.additionalProperties === false) {
         errors.push({
@@ -182,13 +219,14 @@ function check(root, schema, value, path, errors) {
  */
 function conceptConventions(record, basePath, errors) {
   if (!isPlainObject(record) || !Array.isArray(record.enumerates)) return;
-  const sourceOfTruth = Array.isArray(record['source-of-truth'])
+  const sourceOfTruth = new Set(Array.isArray(record['source-of-truth'])
     ? record['source-of-truth'].filter((entry) => typeof entry === 'string')
-    : [];
+    : []);
   record.enumerates.forEach((descriptor, i) => {
     if (!isPlainObject(descriptor)) return;
     const descriptorPath = joinPath(basePath, `enumerates[${i}]`);
     if (Array.isArray(descriptor.values)) {
+      const seen = new Set();
       descriptor.values.forEach((value, j) => {
         if (typeof value !== 'string') {
           errors.push({
@@ -196,10 +234,18 @@ function conceptConventions(record, basePath, errors) {
             code: 'non-string-enumerates-value',
             message: `enumerates values are strings compared byte-exact and case-sensitive (§3.5); got ${describe(value)} (${JSON.stringify(value)}) — YAML coerces bare scalars like true/1.0/null, so quote the value in the store file`,
           });
+        } else if (seen.has(value)) {
+          errors.push({
+            path: `${descriptorPath}.values[${j}]`,
+            code: 'duplicate-enumerates-value',
+            message: `duplicate enumerates value ${JSON.stringify(value)} — values are compared as sets (§3.5), so a duplicate is a malformed descriptor, never a bigger set`,
+          });
+        } else {
+          seen.add(value);
         }
       });
     }
-    if (typeof descriptor.source === 'string' && !sourceOfTruth.includes(descriptor.source)) {
+    if (typeof descriptor.source === 'string' && !sourceOfTruth.has(descriptor.source)) {
       errors.push({
         path: `${descriptorPath}.source`,
         code: 'enumerates-source-not-listed',
@@ -209,11 +255,24 @@ function conceptConventions(record, basePath, errors) {
   });
 }
 
+/** Record-local §3.5 convention checks, keyed by kind (one lookup, both entry points). */
+const CONVENTIONS = Object.freeze({
+  'ontology-concept': conceptConventions,
+});
+
+/**
+ * schema-version defects where the envelope legitimately carries the key are
+ * normalized to `invalid-schema-version`. Only value defects qualify — an
+ * `unknown-property` at that path means the key is misplaced (it belongs on
+ * the store-file envelope), which is the opposite remediation.
+ */
+const SCHEMA_VERSION_VALUE_DEFECTS = new Set(['wrong-type', 'missing-required', 'out-of-range']);
+
 /**
  * Dedupe (convention codes own their paths over generic schema codes),
- * normalize schema-version defects to one code, and stable-sort.
+ * normalize schema-version value defects to one code, and stable-sort.
  */
-function finish(errors) {
+function finish(errors, { fileEnvelope }) {
   const conventionPaths = new Set(
     errors
       .filter((e) => e.code === 'non-string-enumerates-value')
@@ -221,12 +280,16 @@ function finish(errors) {
   );
   const cleaned = errors
     .filter((e) => e.code === 'non-string-enumerates-value' || !conventionPaths.has(e.path))
-    .map((e) => (e.path === 'schema-version'
+    .map((e) => (fileEnvelope && e.path === 'schema-version' && SCHEMA_VERSION_VALUE_DEFECTS.has(e.code)
       ? { ...e, code: 'invalid-schema-version', message: `${e.message} — every store file carries an integer schema-version >= 1 (§3.5)` }
       : e));
   cleaned.sort((a, b) =>
     a.path < b.path ? -1 : a.path > b.path ? 1 : a.code < b.code ? -1 : a.code > b.code ? 1 : 0);
   return { ok: cleaned.length === 0, errors: cleaned };
+}
+
+function runConventions(kind, record, basePath, errors) {
+  CONVENTIONS[kind]?.(record, basePath, errors);
 }
 
 /**
@@ -242,8 +305,10 @@ export function validateRecord(kind, record) {
   const schema = schemaFor(kind);
   const errors = [];
   check(schema, schema, record, '', errors);
-  if (kind === 'ontology-concept') conceptConventions(record, '', errors);
-  return finish(errors);
+  runConventions(kind, record, '', errors);
+  // One-record-per-file kinds ARE the store file (schema-version at the root);
+  // multi-entry kinds carry it on the envelope, not the record.
+  return finish(errors, { fileEnvelope: !schema.$defs?.storeFile });
 }
 
 /**
@@ -262,8 +327,8 @@ export function validateStoreFile(kind, doc) {
   if (!fileSchema) return validateRecord(kind, doc);
   const errors = [];
   check(schema, fileSchema, doc, '', errors);
-  if (kind === 'ontology-concept' && isPlainObject(doc) && Array.isArray(doc.entries)) {
-    doc.entries.forEach((entry, i) => conceptConventions(entry, `entries[${i}]`, errors));
+  if (isPlainObject(doc) && Array.isArray(doc.entries)) {
+    doc.entries.forEach((entry, i) => runConventions(kind, entry, `entries[${i}]`, errors));
   }
-  return finish(errors);
+  return finish(errors, { fileEnvelope: true });
 }

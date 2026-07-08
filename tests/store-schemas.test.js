@@ -6,18 +6,15 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { KINDS, SUPPORTED_KEYWORDS } from '../payload/engine/lib/validate-record.js';
 
 const schemaDir = fileURLToPath(new URL('../payload/schemas/', import.meta.url));
 
-// The four record shapes of PRD §3.1–3.4.
-const RECORD_SCHEMAS = [
-  'ontology-concept',
-  'knowledge-leaf',
-  'decision-entry',
-  'finding',
-];
-// The shared navigational grammar files (_catalog.yaml → _rules.yaml, PRD §3).
+// The shared navigational grammar files (_catalog.yaml → _rules.yaml, PRD §3);
+// everything else the validator knows is a §3.1–3.4 record shape. Deriving both
+// from KINDS keeps these sweeps covering every schema the engine loads.
 const NAV_SCHEMAS = ['catalog', 'rules'];
+const RECORD_SCHEMAS = KINDS.filter((kind) => !NAV_SCHEMAS.includes(kind));
 
 function loadSchema(name) {
   return JSON.parse(readFileSync(join(schemaDir, `${name}.schema.json`), 'utf8'));
@@ -103,4 +100,58 @@ test('§3.2: an unsourced claim is not promotable — citations required', () =>
   const schema = loadSchema('knowledge-leaf');
   assert.ok(schema.required.includes('citations'));
   assert.equal(schema.properties.citations.minItems, 1);
+});
+
+test('schemas stay inside the keyword subset the engine interprets', () => {
+  // The engine interprets these documents directly; a keyword it silently
+  // ignores is contract drift between the published schema and runtime.
+  const walk = (node, where, name) => {
+    if (Array.isArray(node)) {
+      node.forEach((item, i) => walk(item, `${where}[${i}]`, name));
+      return;
+    }
+    if (typeof node !== 'object' || node === null) return;
+    for (const [key, value] of Object.entries(node)) {
+      assert.ok(
+        SUPPORTED_KEYWORDS.includes(key),
+        `${name}: ${where}.${key} is not interpreted by validate-record.js`,
+      );
+      // enum/required values and pattern strings aren't schema nodes.
+      if (key === 'enum' || key === 'required' || typeof value !== 'object') continue;
+      if (key === 'properties' || key === '$defs') {
+        for (const [child, childSchema] of Object.entries(value)) {
+          walk(childSchema, `${where}.${key}.${child}`, name);
+        }
+      } else {
+        walk(value, `${where}.${key}`, name);
+      }
+    }
+  };
+  for (const name of KINDS) {
+    walk(loadSchema(name), '$', name);
+  }
+});
+
+test('shared $defs are byte-identical across schema files (no ref-grammar drift)', () => {
+  // conceptRef/decisionRef/isoDate/notation are copy-pasted so each schema
+  // stays self-contained for external consumers; this keeps the copies equal.
+  // Descriptions are per-store prose, not grammar — compare everything else.
+  const normative = (node) =>
+    JSON.stringify(node, (key, value) => (key === 'description' ? undefined : value));
+  const canonical = new Map();
+  for (const name of KINDS) {
+    for (const [def, node] of Object.entries(loadSchema(name).$defs ?? {})) {
+      const found = normative(node);
+      if (!canonical.has(def)) {
+        canonical.set(def, { name, found });
+      } else {
+        const first = canonical.get(def);
+        assert.equal(
+          found,
+          first.found,
+          `$defs/${def} in ${name} diverges from the copy in ${first.name}`,
+        );
+      }
+    }
+  }
 });

@@ -131,6 +131,32 @@ test('§3.5: an enumerates source not named in source-of-truth hard-errors', () 
   );
 });
 
+test('§3.5: duplicate enumerates values are a malformed descriptor', () => {
+  const record = load(CONCEPT_YAML.replace(
+    'values: [nfl, nba, mlb, nhl, soccer, tennis]',
+    'values: [nfl, nfl, nba]',
+  ));
+  const result = validateRecord('ontology-concept', record);
+  assert.equal(result.ok, false);
+  assert.deepEqual(
+    codesAt(result, 'enumerates[0].values[1]'),
+    ['duplicate-enumerates-value'],
+  );
+  assert.deepEqual(codesAt(result, 'enumerates[0].values[0]'), [], 'first occurrence is fine');
+});
+
+test('keys shadowing Object.prototype are still unknown properties', () => {
+  // `key in properties` would walk the prototype chain and "validate" the
+  // record key against an inherited function; own-property checks must not.
+  const record = load(CONCEPT_YAML);
+  record.toString = 'sneaky';
+  record.constructor = 'x';
+  const result = validateRecord('ontology-concept', record);
+  assert.equal(result.ok, false);
+  assert.deepEqual(codesAt(result, 'toString'), ['unknown-property']);
+  assert.deepEqual(codesAt(result, 'constructor'), ['unknown-property']);
+});
+
 test('a descriptor without values is malformed — hard error, never skipped', () => {
   const record = load(CONCEPT_YAML);
   delete record.enumerates[0].values;
@@ -291,6 +317,13 @@ test('schema-version must be an integer ≥ 1 — "1" and 0 are both rejected', 
       `schema-version: ${JSON.stringify(bad)}`,
     );
   }
+});
+
+test('a stray record-level schema-version stays unknown-property (remove it, not retype it)', () => {
+  const record = load(DECISION_YAML);
+  record['schema-version'] = 1;
+  const result = validateRecord('decision-entry', record);
+  assert.deepEqual(codesAt(result, 'schema-version'), ['unknown-property']);
 });
 
 test('entry defects surface with entries[i] paths and §3.5 checks applied', () => {
