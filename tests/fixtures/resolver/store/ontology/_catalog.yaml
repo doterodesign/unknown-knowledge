@@ -1,0 +1,19 @@
+# Synthetic resolver fixture (KK-06 / A4) — healthy stub store until M4 fixtures land.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-100
+    title: Payment method
+    file: classes/100-payments.yaml
+  - id: K-110
+    title: Payout method
+    file: classes/100-payments.yaml
+  - id: K-120
+    title: Settlement
+    file: classes/100-payments.yaml
+  - id: K-130
+    title: Settlement window
+    file: classes/100-payments.yaml
+  - id: K-140
+    title: Ledger
+    file: classes/100-payments.yaml

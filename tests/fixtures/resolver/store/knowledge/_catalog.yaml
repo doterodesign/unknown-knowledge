@@ -1,0 +1,9 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: "410.1"
+    title: Card settlement windows
+    file: payments/410.1-card-settlement-windows.md
+  - id: "410.2"
+    title: Accepted payment instruments
+    file: payments/410.2-accepted-payment-instruments.md
