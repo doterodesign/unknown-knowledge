@@ -1,0 +1,67 @@
+# unknown-knowledge CI — path-filtered jobs sharing one always-reporting
+# aggregate check (`ci-ok`, the branch-protection candidate). Later issues
+# add sibling jobs next to `engine-tests` and wire them into `ci-ok.needs`:
+#   extractor-matrix    (extractor kinds vs fixtures)
+#   init-e2e            (CLI init against acceptance fixtures)
+#   fixture-acceptance  (A1-A6 capability runs)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      engine: ${{ steps.filter.outputs.engine }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            engine:
+              - 'cli/**'
+              - 'payload/**'
+              - 'tests/**'
+              - 'scripts/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - '.github/workflows/ci.yml'
+
+  engine-tests:
+    needs: changes
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+
+  # Fallback aggregator: reports success even when path filters skip every
+  # job, so a required check always resolves; fails if any needed job
+  # failed or was cancelled.
+  ci-ok:
+    needs: [engine-tests]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify no needed job failed
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "job results: $RESULTS"
+          for result in $RESULTS; do
+            if [ "$result" = "failure" ] || [ "$result" = "cancelled" ]; then
+              exit 1
+            fi
+          done
