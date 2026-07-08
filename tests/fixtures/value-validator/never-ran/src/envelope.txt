@@ -1,0 +1,3 @@
+usd
+@if CONDITIONAL_BLOCK
+eur

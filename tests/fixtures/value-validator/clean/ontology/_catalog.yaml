@@ -1,0 +1,10 @@
+# Synthetic value-validator fixture (KK-07): every enumerates claim agrees.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-100
+    title: Sport
+    file: classes/100-registries.yaml
+  - id: K-130
+    title: Draft vertical
+    file: classes/100-registries.yaml
