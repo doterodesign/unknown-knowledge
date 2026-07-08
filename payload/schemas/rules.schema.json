@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:rules",
+  "title": "Store rules (_rules.yaml)",
+  "description": "Second hop of the navigational grammar (PRD §3): per-store governance rules — id ranges per class, write gates, staleness policy. The rule item shape is bootstrap-generated per project and formalized additively by the taxonomy issues; v1 pins only the envelope so seeded files carry schema-version from day one (§3.5, seeded-once means conventions cannot be retrofitted).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema-version", "store", "rules"],
+  "properties": {
+    "schema-version": { "type": "integer", "minimum": 1 },
+    "store": { "enum": ["ontology", "knowledge", "decisions"] },
+    "rules": { "type": "array" }
+  }
+}
