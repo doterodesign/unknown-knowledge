@@ -24,7 +24,7 @@
  * timestamps, no network, and — D-014 — no import/eval/spawn of repo content;
  * candidate scanning is lexical only.
  */
-import { readFileSync, readlinkSync } from 'node:fs';
+import { readFileSync, readlinkSync, realpathSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { basename, dirname, extname, isAbsolute, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -53,7 +53,7 @@ const BINARY_EXTENSIONS = new Set([
   '.mp3', '.mp4', '.mov', '.wav', '.so', '.dylib', '.a', '.o', '.bin',
   '.exe', '.dll', '.sqlite', '.realm', '.car', '.dat',
 ]);
-/** Sibling files sharing one extension before a dir reads as dir-modules. */
+/** Siblings (files sharing one extension, or module subfolders) before a dir reads as dir-modules. */
 const DIR_MODULES_MIN = 3;
 
 function denied(path) {
@@ -64,7 +64,11 @@ function denied(path) {
   return dirs.some((d) => d.startsWith('.') || DENY_DIRS.has(d));
 }
 
-/** `git ls-files --stage` rows: { mode, path }. Throws on any git failure. */
+/**
+ * `git ls-files --stage` rows: { mode, path }. Throws on any git failure.
+ * Deduped by path: a merge-conflicted path emits one row per stage (1/2/3),
+ * which would otherwise inflate tracked counts and triplicate candidates.
+ */
 function gitLsFiles(root) {
   const result = spawnSync('git', ['-C', root, 'ls-files', '-z', '--stage'], {
     encoding: 'utf8', maxBuffer: 64 * 1024 * 1024,
@@ -72,18 +76,35 @@ function gitLsFiles(root) {
   if (result.error || result.status !== 0) {
     throw new Error(`git ls-files failed in ${root}: ${result.error?.message ?? result.stderr.trim()}`);
   }
-  return result.stdout.split('\0').filter(Boolean).map((row) => {
+  const rows = [];
+  const seen = new Set();
+  for (const row of result.stdout.split('\0').filter(Boolean)) {
     const tab = row.indexOf('\t');
-    return { mode: row.slice(0, 6), path: row.slice(tab + 1) };
-  });
+    const path = row.slice(tab + 1);
+    if (seen.has(path)) continue;
+    seen.add(path);
+    rows.push({ mode: row.slice(0, 6), path });
+  }
+  return rows;
 }
 
-/** True when a tracked symlink resolves outside the repo root (a blind spot). */
-function escapesRoot(root, path) {
+/**
+ * True when a tracked symlink resolves outside the repo root (a blind spot).
+ * `realRoot` must be canonical (realpathSync'd once by the caller): comparing
+ * against a non-canonical root (/tmp/x when /tmp -> /private/tmp) would flag
+ * every absolute in-repo symlink as escaping. The landing point is
+ * canonicalized too, so an in-repo absolute target never false-positives.
+ */
+function escapesRoot(realRoot, path) {
   try {
-    const target = readlinkSync(resolve(root, path));
-    const landed = resolve(dirname(resolve(root, path)), target);
-    return landed !== resolve(root) && !landed.startsWith(resolve(root) + sep);
+    const target = readlinkSync(resolve(realRoot, path));
+    let landed = resolve(dirname(resolve(realRoot, path)), target);
+    try {
+      landed = realpathSync(landed);
+    } catch {
+      // dangling target: judge by the resolved path as-is
+    }
+    return landed !== realRoot && !landed.startsWith(realRoot + sep);
   } catch {
     return false; // unreadable link: surveyed as an ordinary tracked file
   }
@@ -115,10 +136,22 @@ export function loadSurveyScope(root) {
     const detail = errors.map((e) => `${e.path}: ${e.message}`).join('; ');
     throw new Error(`${SCOPE_FILE}: invalid scope file — ${detail}`);
   }
-  return { present: true, include: [...doc.include].sort(compare), exclude: [...(doc.exclude ?? [])].sort(compare) };
+  return {
+    present: true,
+    include: doc.include.map(normalizePrefix).sort(compare),
+    exclude: (doc.exclude ?? []).map(normalizePrefix).sort(compare),
+  };
 }
 
-const underPrefix = (path, prefix) => path === prefix || path.startsWith(`${prefix}/`);
+/** `src/` means `src` — a trailing slash must never make an include silently match nothing. */
+const normalizePrefix = (prefix) => {
+  const stripped = prefix.replace(/\/+$/, '');
+  return stripped === '' ? '.' : stripped;
+};
+
+/** `.` covers root-level files only; any other prefix covers itself and its subtree. */
+const underPrefix = (path, prefix) =>
+  prefix === '.' ? !path.includes('/') : path === prefix || path.startsWith(`${prefix}/`);
 
 /** The honor-it contract: include prefixes bound the sweep; exclude wins. */
 export function inScope(path, scope) {
@@ -132,12 +165,20 @@ function sniffKinds(root, path) {
   const ext = extname(path).toLowerCase();
   const sigs = ANCHOR_SIGNATURES.filter((s) => s.extensions?.includes(ext));
   if (sigs.length === 0) return [];
-  let text;
+  let bytes;
   try {
-    text = readFileSync(resolve(root, path), 'utf8');
+    bytes = readFileSync(resolve(root, path));
   } catch {
     return []; // tracked but absent from the worktree: nothing to sniff
   }
+  // UTF-16 BOM (legacy Xcode .strings exports): the UTF-8 sniff cannot read
+  // the content, so treat the file as candidate-by-extension rather than
+  // skipping it silently — the extractor decides, the map never hides.
+  if (bytes.length >= 2
+    && ((bytes[0] === 0xFF && bytes[1] === 0xFE) || (bytes[0] === 0xFE && bytes[1] === 0xFF))) {
+    return [...new Set(sigs.map((s) => s.kind))];
+  }
+  const text = bytes.toString('utf8');
   return sigs.filter((s) => new RegExp(s.pattern, s.flags).test(text)).map((s) => s.kind);
 }
 
@@ -148,6 +189,16 @@ function sniffKinds(root, path) {
 export function buildSurveyMap(root) {
   const rows = gitLsFiles(root);
   const scope = loadSurveyScope(root);
+  // Canonicalize ONCE: a root reached through a symlink (/tmp -> /private/tmp
+  // on macOS) must not flag every absolute in-repo symlink as out-of-root.
+  const realRoot = realpathSync(resolve(root));
+
+  // A scope that matches nothing would emit a plausible-looking empty survey —
+  // an engine failure (exit 2), never a silent surveyed:0 pass.
+  if (scope.present
+    && !rows.some(({ mode, path }) => mode !== '160000' && inScope(path, scope))) {
+    throw new Error(`${SCOPE_FILE}: include [${scope.include.join(', ')}] matches zero tracked files — refusing to emit a silent empty survey`);
+  }
 
   const unsurveyed = [];
   const surveyed = [];
@@ -155,7 +206,7 @@ export function buildSurveyMap(root) {
   for (const { mode, path } of rows) {
     if (mode === '160000') {
       unsurveyed.push({ path, reason: 'submodule-gitlink' });
-    } else if (mode === '120000' && escapesRoot(root, path)) {
+    } else if (mode === '120000' && escapesRoot(realRoot, path)) {
       unsurveyed.push({ path, reason: 'out-of-root-symlink' });
     } else if (denied(path)) {
       deniedCount += 1;
@@ -181,16 +232,32 @@ export function buildSurveyMap(root) {
     return { path: dir, files: [...hist.values()].reduce((a, b) => a + b, 0), extensions };
   });
 
-  // Anchor candidates: content sniffs plus the structural dir-modules shape.
+  // Anchor candidates: content sniffs plus the structural dir-modules shapes —
+  // sibling FILES sharing one extension, or per-module SUBFOLDERS (the PRD's
+  // canonical modules/nfl/, modules/nba/, modules/mlb/ layout).
   const candidates = [];
   for (const path of surveyed) {
     for (const kind of sniffKinds(root, path)) candidates.push({ kind, path });
   }
-  for (const { path, extensions } of directories) {
-    if (Object.values(extensions).some((n) => n >= DIR_MODULES_MIN)) {
-      candidates.push({ kind: 'dir-modules', path });
+  const childDirs = new Map(); // dir -> Set of direct child dirs holding tracked files
+  for (const path of surveyed) {
+    const segs = path.split('/');
+    let parent = '.';
+    for (let i = 0; i < segs.length - 1; i += 1) {
+      const dir = parent === '.' ? segs[i] : `${parent}/${segs[i]}`;
+      if (!childDirs.has(parent)) childDirs.set(parent, new Set());
+      childDirs.get(parent).add(dir);
+      parent = dir;
     }
   }
+  const dirModules = new Set();
+  for (const { path, extensions } of directories) {
+    if (Object.values(extensions).some((n) => n >= DIR_MODULES_MIN)) dirModules.add(path);
+  }
+  for (const [dir, kids] of childDirs) {
+    if (kids.size >= DIR_MODULES_MIN) dirModules.add(dir);
+  }
+  for (const path of dirModules) candidates.push({ kind: 'dir-modules', path });
   candidates.sort((a, b) => compare(a.path, b.path) || compare(a.kind, b.kind));
 
   // Scope: honor the confirmed file, else propose from top-level directories —
@@ -202,8 +269,11 @@ export function buildSurveyMap(root) {
     const topSurveyed = new Set();
     const topDenied = new Set();
     for (const { mode, path } of rows) {
-      if (mode === '160000' || !path.includes('/')) continue;
-      (denied(path) ? topDenied : topSurveyed).add(path.slice(0, path.indexOf('/')));
+      if (mode === '160000') continue;
+      // Root-level files are proposed as '.' (root files only, no subtree) —
+      // accepting the proposal must never silently drop package.json et al.
+      const top = path.includes('/') ? path.slice(0, path.indexOf('/')) : '.';
+      (denied(path) ? topDenied : topSurveyed).add(top);
     }
     scopeOut = {
       source: 'proposed',

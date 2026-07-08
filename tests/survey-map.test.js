@@ -8,11 +8,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, symlinkSync, rmSync } from 'node:fs';
+import { Buffer } from 'node:buffer';
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { load } from 'js-yaml';
-import { buildSurveyMap, loadSurveyScope, inScope, main } from '../payload/engine/survey-map.js';
+import { load, dump } from 'js-yaml';
+import { buildSurveyMap, loadSurveyScope, inScope, main, SCOPE_FILE } from '../payload/engine/survey-map.js';
 import { ANCHOR_SIGNATURES } from '../payload/engine/lib/anchor-signatures.js';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
 
@@ -47,7 +48,10 @@ const PLANTED = [
   ['json-keys', 'config/app.json'],
   ['yaml-keys', 'config/flags.yaml'],
   ['strings-keys', 'Locales/en.strings'],
+  ['strings-keys', 'Locales/App.xcstrings'],
+  ['strings-keys', 'Locales/legacy-utf16.strings'],
   ['dir-modules', 'modules'],
+  ['dir-modules', 'modules2'],
 ];
 
 mkdirSync(repo);
@@ -61,7 +65,14 @@ plant('App/Models/Markets.swift', 'static let supportedMarkets = ["spread", "tot
 plant('config/app.json', '{\n  "features": { "parlay": true }\n}\n');
 plant('config/flags.yaml', 'flags:\n  parlay: true\n');
 plant('Locales/en.strings', '"bet.place" = "Place bet";\n');
+// .xcstrings is JSON — PRD §5.1 defines strings-keys over BOTH formats.
+plant('Locales/App.xcstrings',
+  '{\n  "sourceLanguage" : "en",\n  "strings" : {\n    "bet.place" : {}\n  },\n  "version" : "1.0"\n}\n');
+// Legacy UTF-16 .strings (BOM-marked): unsniffable as UTF-8 — candidate by extension.
+plant('Locales/legacy-utf16.strings', Buffer.from('\ufeff"bet.cancel" = "Cancel bet";\n', 'utf16le'));
 for (const m of ['nfl', 'nba', 'mlb']) plant(`modules/${m}.ts`, `export const id = '${m}';\n`);
+// PRD's canonical dir-modules layout: one SUBFOLDER per module (modules/nfl/, …).
+for (const m of ['nfl', 'nba', 'mlb']) plant(`modules2/${m}/index.ts`, `export const id = '${m}';\n`);
 // Denylisted-but-tracked: none of these may surface anywhere in the map.
 plant('node_modules/pkg/index.js', "export const SPORTS = { x: 1 };\n");
 plant('vendor/lib.js', "export const SPORTS = { x: 1 };\n");
@@ -71,7 +82,7 @@ plant('assets/logo.png', 'not really a png');
 plant('.github/workflows/ci.yml', 'jobs:\n  test: {}\n');
 // Untracked file: git-tracked-only means it never appears at all.
 plant('scratch.js', "export const SPORTS = { x: 1 };\n");
-git('add', '--force', 'src', 'App', 'config', 'Locales', 'modules',
+git('add', '--force', 'src', 'App', 'config', 'Locales', 'modules', 'modules2',
   'node_modules', 'vendor', 'package-lock.json', 'assets', '.github');
 // Submodule gitlink (mode 160000) via plumbing — no real submodule needed.
 git('update-index', '--add', '--cacheinfo',
@@ -80,6 +91,10 @@ git('update-index', '--add', '--cacheinfo',
 writeFileSync(join(outer, 'outside.txt'), 'outside\n');
 symlinkSync(join(outer, 'outside.txt'), join(repo, 'linked.txt'));
 git('add', 'linked.txt');
+// In-repo ABSOLUTE symlink: must never be flagged as a blind spot, even when
+// the survey root is itself reached through a symlink (/tmp -> /private/tmp).
+symlinkSync(join(repo, 'src/sports.ts'), join(repo, 'linked-in.txt'));
+git('add', 'linked-in.txt');
 
 test.after(() => rmSync(outer, { recursive: true, force: true }));
 
@@ -89,14 +104,25 @@ const map = buildSurveyMap(repo);
 
 test('signature table covers every §5.1 kind and every pattern compiles', () => {
   const kinds = ANCHOR_SIGNATURES.map((s) => s.kind);
+  // strings-keys appears twice: one signature per format (.strings / .xcstrings).
   assert.deepEqual(kinds, [
-    'dir-modules', 'json-keys', 'json-map-keys', 'strings-keys',
+    'dir-modules', 'json-keys', 'json-map-keys', 'strings-keys', 'strings-keys',
     'swift-const-array', 'swift-enum', 'ts-const-array', 'ts-enum',
     'ts-object-keys', 'ts-union', 'yaml-keys', 'yaml-map-keys',
   ]);
   assert.ok(Object.isFrozen(ANCHOR_SIGNATURES));
   for (const sig of ANCHOR_SIGNATURES) {
     if (sig.pattern !== null) assert.doesNotThrow(() => new RegExp(sig.pattern, sig.flags));
+  }
+});
+
+test('signature table is DEEP-frozen: extensions arrays cannot be mutated', () => {
+  for (const sig of ANCHOR_SIGNATURES) {
+    assert.ok(Object.isFrozen(sig), `${sig.kind} entry is mutable`);
+    if (sig.extensions !== null) {
+      assert.ok(Object.isFrozen(sig.extensions), `${sig.kind} extensions array is mutable`);
+      assert.throws(() => sig.extensions.push('.evil'), TypeError);
+    }
   }
 });
 
@@ -130,8 +156,26 @@ test('per-directory extension/count histograms', () => {
 
 test('proposed include/exclude scope splits surface from vendored dirs', () => {
   assert.equal(map.scope.source, 'proposed');
-  assert.deepEqual(map.scope.include, ['App', 'Locales', 'config', 'modules', 'src']);
+  // '.' covers root-level files (linked-in.txt) — the proposal must not drop them.
+  assert.deepEqual(map.scope.include,
+    ['.', 'App', 'Locales', 'config', 'modules', 'modules2', 'src']);
   assert.deepEqual(map.scope.exclude, ['.github', 'assets', 'node_modules', 'vendor']);
+});
+
+test('proposal round-trip: propose → persist → re-survey loses no files', () => {
+  writeFileSync(join(repo, SCOPE_FILE), dump({
+    'schema-version': 1, include: [...map.scope.include], exclude: [...map.scope.exclude],
+  }));
+  try {
+    const again = buildSurveyMap(repo);
+    assert.equal(again.scope.source, SCOPE_FILE);
+    assert.equal(again.counts.surveyed, map.counts.surveyed, 'accepting the proposal dropped files');
+    assert.deepEqual(again.directories, map.directories);
+    assert.deepEqual(again.candidates, map.candidates);
+    assert.ok(again.directories.some((d) => d.path === '.'), 'root-level files were lost');
+  } finally {
+    rmSync(join(repo, SCOPE_FILE));
+  }
 });
 
 test('unsurveyed: discloses the gitlink and the out-of-root symlink', () => {
@@ -145,6 +189,45 @@ test('deterministic: two builds are byte-identical, no wall-clock inside', () =>
   const twice = buildSurveyMap(repo);
   assert.equal(JSON.stringify(map, null, 2), JSON.stringify(twice, null, 2));
   assert.ok(!/\d{4}-\d{2}-\d{2}[T ]\d{2}:/.test(JSON.stringify(map)), 'timestamp leaked into output');
+});
+
+test('in-repo absolute symlinks are in-root even via a symlinked survey root', () => {
+  // Reproduces /tmp -> /private/tmp: the root itself is reached via a symlink,
+  // so naive prefix comparison flags every absolute in-repo link as escaping.
+  const alias = join(outer, 'repo-alias');
+  symlinkSync(repo, alias);
+  try {
+    const viaAlias = buildSurveyMap(alias);
+    assert.deepEqual(viaAlias.unsurveyed, [
+      { path: 'libs/billing-sub', reason: 'submodule-gitlink' },
+      { path: 'linked.txt', reason: 'out-of-root-symlink' },
+    ], 'in-repo symlink linked-in.txt falsely flagged as out-of-root');
+  } finally {
+    rmSync(alias);
+  }
+});
+
+test('merge-stage duplicates collapse: one row per conflicted path', () => {
+  // `git ls-files --stage` emits stages 1/2/3 for a conflicted path.
+  plant('conflict.ts', "export const conflictMarkets = ['spread'];\n");
+  const sha = git('hash-object', '-w', 'conflict.ts').trim();
+  const info = [1, 2, 3].map((s) => `100644 ${sha} ${s}\tconflict.ts`).join('\n');
+  const staged = spawnSync('git', ['-C', repo, 'update-index', '--index-info'], {
+    input: `${info}\n`, encoding: 'utf8',
+  });
+  assert.equal(staged.status, 0, staged.stderr);
+  try {
+    const merged = buildSurveyMap(repo);
+    assert.equal(merged.counts.tracked, map.counts.tracked + 1, 'tracked count inflated by stages');
+    assert.equal(merged.counts.surveyed, map.counts.surveyed + 1);
+    assert.equal(merged.candidates.filter((c) => c.path === 'conflict.ts').length, 1,
+      'candidate rows triplicated for a conflicted path');
+    const rootDir = merged.directories.find((d) => d.path === '.');
+    assert.equal(rootDir.extensions['.ts'], 1, '3 stages of one file inflated the histogram');
+  } finally {
+    git('update-index', '--force-remove', 'conflict.ts');
+    rmSync(join(repo, 'conflict.ts'));
+  }
 });
 
 // ------------------------------------------------ survey-scope.yaml
@@ -177,6 +260,31 @@ test('honor-it contract: a present scope file bounds the whole map', () => {
     assert.ok(!inScope('vendor/lib.js', { ...scope, include: ['vendor'] }), 'exclude wins');
   } finally {
     rmSync(join(repo, 'survey-scope.yaml'));
+  }
+});
+
+test('trailing-slash prefixes are normalized; "." matches root-level files only', () => {
+  writeFileSync(join(repo, SCOPE_FILE), 'schema-version: 1\ninclude:\n  - src/\n');
+  try {
+    const scoped = buildSurveyMap(repo);
+    assert.deepEqual(scoped.scope.include, ['src'], 'trailing slash not normalized');
+    assert.ok(scoped.counts.surveyed > 0, 'include: [src/] silently surveyed nothing');
+    assert.ok(scoped.candidates.some((c) => c.path === 'src/sports.ts'));
+  } finally {
+    rmSync(join(repo, SCOPE_FILE));
+  }
+  const dotScope = { present: true, include: ['.'], exclude: [] };
+  assert.ok(inScope('package.json', dotScope), "'.' covers root-level files");
+  assert.ok(!inScope('src/sports.ts', dotScope), "'.' does not swallow subdirectories");
+});
+
+test('a scope whose include matches zero tracked files is an engine failure', () => {
+  writeFileSync(join(repo, SCOPE_FILE), 'schema-version: 1\ninclude:\n  - no-such-dir\n');
+  try {
+    assert.throws(() => buildSurveyMap(repo), /zero tracked files/);
+    assert.equal(main([repo, '--json']), 2, 'silent empty survey must exit 2');
+  } finally {
+    rmSync(join(repo, SCOPE_FILE));
   }
 });
 

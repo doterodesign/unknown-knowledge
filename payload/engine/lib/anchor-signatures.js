@@ -12,11 +12,19 @@
  * consumers. `pattern: null` marks a directory-shape kind (dir-modules) that
  * is detected structurally, not by content.
  *
- * Sorted by kind; frozen — extending the kind set is a KK-08/09-style change
- * with fixtures, never an in-session edit (D-005).
+ * Sorted by kind; a kind may carry several signatures when one anchor shape
+ * lives in more than one file format (strings-keys: legacy `.strings` and the
+ * JSON `.xcstrings` catalog). DEEP-frozen — the entries AND their extensions
+ * arrays — so extending the kind set stays a KK-08/09-style change with
+ * fixtures, never an in-session mutation (D-005).
+ *
+ * Known limitation: legacy UTF-16 .strings files (BOM-marked, common in older
+ * Xcode exports) do not decode as UTF-8, so a content sniff cannot see their
+ * `"key" = "value"` lines. The survey map treats a UTF-16 BOM as "candidate by
+ * extension" instead of skipping silently — see sniffKinds() in survey-map.js.
  */
-const TS_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs'];
-const YAML_EXTENSIONS = ['.yaml', '.yml'];
+const TS_EXTENSIONS = Object.freeze(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs']);
+const YAML_EXTENSIONS = Object.freeze(['.yaml', '.yml']);
 
 export const ANCHOR_SIGNATURES = Object.freeze([
   {
@@ -42,10 +50,17 @@ export const ANCHOR_SIGNATURES = Object.freeze([
   },
   {
     kind: 'strings-keys',
-    extensions: ['.strings', '.xcstrings'],
+    extensions: ['.strings'],
     pattern: '^\\s*"[^"\\n]+"\\s*=\\s*"',
     flags: 'm',
-    reads: 'localization keys of a .strings/.xcstrings table',
+    reads: 'localization keys of a legacy `"key" = "value"` .strings table',
+  },
+  {
+    kind: 'strings-keys',
+    extensions: ['.xcstrings'],
+    pattern: '"strings"\\s*:\\s*\\{',
+    flags: 'm',
+    reads: 'localization keys of an .xcstrings JSON catalog ("strings" map)',
   },
   {
     kind: 'swift-const-array',
@@ -103,4 +118,9 @@ export const ANCHOR_SIGNATURES = Object.freeze([
     flags: 'm',
     reads: 'keys under a dotted path in a YAML document',
   },
-].map(Object.freeze));
+].map((sig) => {
+  // Deep freeze: a mutable (or aliased) extensions array would let a push
+  // onto one kind silently rewire every kind sharing the same array.
+  if (sig.extensions !== null) Object.freeze(sig.extensions);
+  return Object.freeze(sig);
+}));
