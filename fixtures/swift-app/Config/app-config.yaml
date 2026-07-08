@@ -1,0 +1,23 @@
+# App configuration — `yaml-keys` anchor (top-level keys, PRD §5.1).
+#
+# ADVERSARIAL-BUT-EXTRACTABLE: comments between keys, a YAML anchor/alias,
+# nested maps whose child keys must NOT bleed into the top-level set, and a
+# quoted "on" key — the §3.5 YAML-1.1 coercion trap made flesh (a 1.1 parser
+# would read it as boolean true; the concept quotes it as a string).
+environment: production
+
+# Nested block: `base-url` / `timeout-seconds` are NOT top-level keys.
+api: &api-defaults
+  base-url: https://api.fixturebook.example
+  timeout-seconds: 30
+
+regions:
+  - us-nj
+  - us-pa
+
+telemetry:
+  <<: *api-defaults
+  sample-rate: 0.1
+
+"on":
+  launch: warm-cache

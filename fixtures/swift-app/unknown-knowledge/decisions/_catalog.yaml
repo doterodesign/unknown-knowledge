@@ -1,0 +1,7 @@
+# Decisions catalog — Swift acceptance fixture (KK-14).
+schema-version: 1
+store: decisions
+entries:
+  - id: D-001
+    title: Sports are registered as a raw-value Swift enum
+    file: entries/D-001-sport-enum-registry.yaml

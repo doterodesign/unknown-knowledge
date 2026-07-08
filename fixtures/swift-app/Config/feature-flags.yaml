@@ -1,0 +1,17 @@
+# Feature flags — `yaml-map-keys` anchor (keys under a dotted path, PRD §5.1).
+# The concept reads keys under `flags.betting`.
+#
+# ADVERSARIAL-BUT-EXTRACTABLE: a sibling map (`flags.account`) whose keys must
+# NOT bleed into the extracted set, a quoted digit-leading key, and flag
+# values (booleans) that must never be mistaken for the value set — this kind
+# emits KEYS.
+schema: 2
+flags:
+  betting:
+    parlay-builder: true
+    cash-out: false # rollout paused 2026-06
+    same-game-parlay: true
+    "2027-preview": false
+  account:
+    biometric-login: true
+    self-exclusion: true

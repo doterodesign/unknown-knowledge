@@ -1,0 +1,156 @@
+# Swift fixture concepts (KK-14). Sources are relative to fixtures/swift-app/.
+# Drift is PLANTED on purpose — FIXTURE.md tabulates every case and the
+# finding it must produce; KK-16's A2/A3 assertions are written against it.
+schema-version: 1
+entries:
+  - id: K-110
+    term: Sport
+    class: 100-app
+    summary: A bettable sport offered by the app (Swift case-name facet).
+    aliases: [sport type]
+    source-of-truth: [Sources/Sportsbook/Sport.swift]
+    owned-by: sportsbook
+    used-by: [K-120]
+    confusable-with: [K-130]
+    rationale: [D-001]
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # PLANTED BIDIRECTIONAL DRIFT (A3): "cricket" is claimed but absent
+      # from the enum (value-not-in-source); source case "tennis" is not
+      # claimed here (source-value-missing).
+      - kind: swift-enum
+        source: Sources/Sportsbook/Sport.swift
+        symbol: Sport
+        emit: case-name
+        values: [football, basketball, baseball, iceHockey, soccer, cricket]
+
+  - id: K-120
+    term: Sport wire code
+    class: 100-app
+    summary: The upstream odds-feed code for a sport (Swift raw-value facet).
+    source-of-truth: [Sources/Sportsbook/Sport.swift]
+    owned-by: sportsbook
+    confusable-with: [K-110]
+    rationale: [D-001]
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # CLEAN (A2): raw-value facet of the same anchor as K-110 — proves the
+      # two swift-enum facets are independent value sets (§3.5 emit).
+      - kind: swift-enum
+        source: Sources/Sportsbook/Sport.swift
+        symbol: Sport
+        emit: raw-value
+        values: [NFL, NBA, MLB, NHL, EPL, ATP]
+
+  - id: K-130
+    term: Betting market
+    class: 100-app
+    summary: A market type users can bet on (moneyline, spread, ...).
+    source-of-truth: [Sources/Sportsbook/Markets.swift]
+    owned-by: sportsbook
+    confusable-with: [K-110]
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # CLEAN (A2): matches the adversarial-but-extractable literal exactly —
+      # commented-out entry excluded, decoy symbol untouched.
+      - kind: swift-const-array
+        source: Sources/Sportsbook/Markets.swift
+        symbol: supportedMarkets
+        values: [moneyline, spread, totals, parlay, same_game_parlay, props]
+
+  - id: K-140
+    term: App configuration section
+    class: 100-app
+    summary: A top-level section of the app configuration file.
+    source-of-truth: [Config/app-config.yaml]
+    owned-by: platform
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # CLEAN (A2): top-level keys only — nested keys must not bleed in.
+      # "on" is quoted per §3.5 (YAML 1.1 would coerce it to true).
+      - kind: yaml-keys
+        source: Config/app-config.yaml
+        values: [environment, api, regions, telemetry, "on"]
+
+  - id: K-150
+    term: Betting feature flag
+    class: 100-app
+    summary: A rollout flag under the betting flag block.
+    source-of-truth: [Config/feature-flags.yaml]
+    owned-by: platform
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # PLANTED DRIFT (A3, source-value-missing): source also has
+      # "2027-preview" under flags.betting, unclaimed here.
+      - kind: yaml-map-keys
+        source: Config/feature-flags.yaml
+        symbol: flags.betting
+        values: [parlay-builder, cash-out, same-game-parlay]
+
+  - id: K-160
+    term: Localization key
+    class: 100-app
+    summary: User-facing copy keys across both localization formats.
+    source-of-truth:
+      - Resources/en.lproj/Localizable.strings
+      - Resources/Localizable.xcstrings
+    owned-by: platform
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # CLEAN (A2): .strings — commented-out pair excluded.
+      - kind: strings-keys
+        source: Resources/en.lproj/Localizable.strings
+        values: [welcome.title, welcome.subtitle, betslip.add, betslip.confirm]
+      # PLANTED DRIFT (A3, value-not-in-source): "cta.transfer" is claimed
+      # but absent from the .xcstrings catalog.
+      - kind: strings-keys
+        source: Resources/Localizable.xcstrings
+        values:
+          - cta.deposit
+          - cta.withdraw
+          - cta.transfer
+          - legal.disclaimer
+          - promo.100-bonus
+
+  - id: K-170
+    term: Layout density
+    class: 100-app
+    summary: Claimed display-density modes of the settings screen.
+    source-of-truth: [Sources/Settings/Theme.swift]
+    owned-by: platform
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # WRONG-POINTER (A3): the file exists and themeNames extracts cleanly
+      # as [light, dark, system] — but EVERY claimed value is missing.
+      # All-values-missing is the wrong-pointer signature, distinct from
+      # ordinary drift.
+      - kind: swift-const-array
+        source: Sources/Settings/Theme.swift
+        symbol: themeNames
+        values: [compact, comfortable, spacious]
+
+  - id: K-180
+    term: Analytics event
+    class: 100-app
+    summary: Telemetry event names emitted by the app.
+    source-of-truth: [Sources/Analytics/Events.swift]
+    owned-by: platform
+    status: active
+    last-verified: "2026-07-01"
+    enumerates:
+      # UNEXTRACTABLE (§5.1 envelope): the enum body contains `#if DEBUG`
+      # conditional compilation — the declared out-of-envelope sentinel for
+      # swift-enum. Extraction must HARD-ERROR (never a confident wrong
+      # parse); the shape belongs in logs/misses/.
+      - kind: swift-enum
+        source: Sources/Analytics/Events.swift
+        symbol: AnalyticsEvent
+        emit: raw-value
+        values: [app_open, bet_placed, session_end]

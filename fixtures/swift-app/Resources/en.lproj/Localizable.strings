@@ -1,0 +1,14 @@
+/* Localizable.strings — `strings-keys` anchor (PRD §5.1).
+   ADVERSARIAL-BUT-EXTRACTABLE: block + line comments, an '=' inside a value,
+   an escaped quote inside a value, and a commented-out pair that must NOT be
+   extracted. */
+
+/* Onboarding */
+"welcome.title" = "Welcome to FixtureBook";
+"welcome.subtitle" = "Odds = opportunity"; /* '=' inside the value */
+
+// "welcome.legacy" = "Old copy"; — commented-out pair, not a key
+
+/* Bet slip */
+"betslip.add" = "Add to bet slip";
+"betslip.confirm" = "Tap \"Place bet\" to confirm"; // escaped quotes in value
