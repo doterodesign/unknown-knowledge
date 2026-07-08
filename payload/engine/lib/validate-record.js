@@ -56,6 +56,7 @@ export const ERROR_CODES = Object.freeze([
   'non-string-enumerates-value',
   'duplicate-enumerates-value',
   'enumerates-source-not-listed',
+  'lifecycle-field-mismatch',
 ]);
 
 /**
@@ -263,9 +264,44 @@ function conceptConventions(record, basePath, errors) {
   });
 }
 
-/** Record-local §3.5 convention checks, keyed by kind (one lookup, both entry points). */
+/**
+ * §3.4 lifecycle invariants on one log fragment (finding/miss/gap) — the
+ * checks JSON Schema cannot express record-locally. The schema gate matches
+ * what the transition helper (log-entry.js) enforces on its write path, so a
+ * hand-edited fragment can't carry an inconsistent lifecycle:
+ *   - verified ⇔ status resolved (both directions)
+ *   - rejected ⇒ non-empty reason; reason travels only with rejected
+ */
+function lifecycleConventions(record, basePath, errors) {
+  if (!isPlainObject(record) || typeof record.status !== 'string') return;
+  const { status } = record;
+  if (Object.hasOwn(record, 'verified') !== (status === 'resolved')) {
+    errors.push({
+      path: joinPath(basePath, 'verified'),
+      code: 'lifecycle-field-mismatch',
+      message: status === 'resolved'
+        ? 'a resolved entry carries the verified date the validator re-run stamped (§8)'
+        : `verified travels only with status "resolved", not ${JSON.stringify(status)} — re-opening drops it (§8)`,
+    });
+  }
+  const hasReason = typeof record.reason === 'string' && record.reason !== '';
+  if (status === 'rejected' ? !hasReason : Object.hasOwn(record, 'reason')) {
+    errors.push({
+      path: joinPath(basePath, 'reason'),
+      code: 'lifecycle-field-mismatch',
+      message: status === 'rejected'
+        ? 'rejecting requires a non-empty reason — rejections record the reason (§8)'
+        : `reason travels only with status "rejected", not ${JSON.stringify(status)} — re-opening drops it (§8)`,
+    });
+  }
+}
+
+/** Record-local convention checks, keyed by kind (one lookup, both entry points). */
 const CONVENTIONS = Object.freeze({
   'ontology-concept': conceptConventions,
+  finding: lifecycleConventions,
+  miss: lifecycleConventions,
+  gap: lifecycleConventions,
 });
 
 /**

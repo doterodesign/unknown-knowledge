@@ -6,16 +6,18 @@
  *   logs/misses/    miss.schema.json      unextractable anchors → extractor backlog
  *   logs/gaps/      gap.schema.json       requests no protocol/skill could route
  *
- * ONE FILE PER ENTRY: `createEntry` mints `logs/<log>/<date>-<hex4>.yaml`,
+ * ONE FILE PER ENTRY: `createEntry` mints `logs/<log>/<date>-<hex8>.yaml`,
  * so hundreds of concurrent sessions on hundreds of branches append without
- * a single merge conflict — the file name is the entry id.
+ * a single merge conflict — the file name is the entry id. Eight hex chars
+ * (2^32 ids per date per log): 'wx' only guards one checkout, so the suffix
+ * space itself must keep cross-branch same-day collisions negligible (D-010).
  *
  * Status lifecycle (§3.4/§8): open → proposed → resolved | rejected, and
  * re-open-not-duplicate — a recurrence transitions the SAME entry back to
  * open (appending the date to `occurrences`), never mints a sibling.
  * `transitionStatus` enforces the legal table and THROWS on an illegal move;
  * resolving stamps `verified`, rejecting requires a `reason`, re-opening
- * drops `verified`.
+ * drops both — the old outcome no longer holds.
  *
  * Dates are injectable — callers pass the ISO date; nothing in here reads the
  * wall clock, so diffable output never depends on when a test ran (PRD §5).
@@ -34,7 +36,7 @@
  */
 import { randomBytes } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve, sep } from 'node:path';
 import { load, dump } from 'js-yaml';
 import { validateRecord } from './validate-record.js';
 
@@ -56,7 +58,7 @@ export const LEGAL_TRANSITIONS = Object.freeze({
 const SCHEMA_VERSION = 1;
 const ISO_DATE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 /** Keys the helper stamps itself; hand-supplying one is a caller bug. */
-const HELPER_OWNED = ['schema-version', 'date', 'status', 'verified', 'occurrences'];
+const HELPER_OWNED = ['schema-version', 'date', 'status', 'verified', 'reason', 'occurrences'];
 
 function assertDate(date, what = 'date') {
   if (typeof date !== 'string' || !ISO_DATE.test(date)) {
@@ -92,7 +94,7 @@ function serialize(entry) {
  * @param {string} options.date injected ISO date — never wall-clock
  * @param {object} options.fields kind-specific fields (trigger/summary/…);
  *   concept IDs and paths only — never verbatim user text or secrets
- * @param {string} [options.suffix] 4-hex filename suffix (default: random)
+ * @param {string} [options.suffix] 8-hex filename suffix (default: random)
  * @returns {{ file: string, entry: object }} root-relative fragment path + entry
  */
 export function createEntry({ root, log, date, fields = {}, suffix } = {}) {
@@ -103,10 +105,10 @@ export function createEntry({ root, log, date, fields = {}, suffix } = {}) {
       throw new Error(`field "${key}" is helper-owned — createEntry stamps it; entries are born open with schema-version ${SCHEMA_VERSION}`);
     }
   }
-  const id = suffix ?? randomBytes(2).toString('hex');
-  if (!/^[0-9a-f]{4}$/.test(id)) {
-    throw new Error(`suffix must be 4 hex chars, got ${JSON.stringify(suffix)}`);
+  if (suffix !== undefined && !/^[0-9a-f]{8}$/.test(suffix)) {
+    throw new Error(`suffix must be 8 lowercase hex chars, got ${JSON.stringify(suffix)}`);
   }
+  const id = suffix ?? randomBytes(4).toString('hex');
   const file = `logs/${log}/${date}-${id}.yaml`;
   const entry = { 'schema-version': SCHEMA_VERSION, date, status: 'open', ...fields };
   assertValid(kind, entry, file);
@@ -129,34 +131,62 @@ export function createEntry({ root, log, date, fields = {}, suffix } = {}) {
  * @param {string} [options.reason] required when rejecting
  * @returns {{ file: string, entry: object }} the rewritten entry
  */
+/** Derived from LOGS so a fourth log can't be creatable-but-untransitionable. */
+const FRAGMENT_PATH = new RegExp(`^logs/(${Object.keys(LOGS).join('|')})/[^/]+\\.yaml$`);
+
+/**
+ * What each target status does to the lifecycle fields (§3.4/§8) — one table
+ * so field ownership lives in one place, not scattered through an if/else
+ * chain. `stamp` writes fields; `drop` removes the ones the new status must
+ * not carry (the validation layer enforces the same invariants).
+ */
+const STATUS_EFFECTS = Object.freeze({
+  proposed: {},
+  resolved: {
+    // the validator re-run passed (§8)
+    stamp: ({ date }) => ({ verified: date }),
+  },
+  rejected: {
+    stamp: ({ file, reason }) => {
+      if (typeof reason !== 'string' || reason === '') {
+        throw new Error(`${file}: rejecting requires a reason — rejections record the reason (§8)`);
+      }
+      return { reason };
+    },
+  },
+  open: {
+    // Re-open, not duplicate: same entry, occurrence date appended; the old
+    // resolution/rejection outcome (verified, reason) no longer holds.
+    drop: ['verified', 'reason'],
+    stamp: ({ date, entry }) => ({ occurrences: [...(entry.occurrences ?? []), date] }),
+  },
+});
+
 export function transitionStatus({ root, file, to, date, reason } = {}) {
-  const match = /(?:^|\/)logs\/(findings|misses|gaps)\/[^/]+\.yaml$/.exec(file ?? '');
-  if (!match) throw new Error(`not a log fragment path: ${JSON.stringify(file)} (expected logs/<findings|misses|gaps>/<entry>.yaml)`);
+  const match = FRAGMENT_PATH.exec(file ?? '');
+  if (!match) throw new Error(`not a log fragment path: ${JSON.stringify(file)} (expected logs/<${Object.keys(LOGS).join('|')}>/<entry>.yaml, relative to root)`);
   const kind = kindFor(match[1]);
   if (!Object.hasOwn(LEGAL_TRANSITIONS, to ?? '')) {
     throw new Error(`unknown target status ${JSON.stringify(to)} (expected one of: ${Object.keys(LEGAL_TRANSITIONS).join(', ')})`);
   }
   assertDate(date);
-  const absolute = join(root, file);
+  // Confine the read/write inside root's logs/ dir: a crafted relative path
+  // ('../logs/…', 'foo/../../logs/…') must never reach a sibling tree.
+  const logsDir = resolve(root, 'logs');
+  const absolute = resolve(root, file);
+  if (!absolute.startsWith(logsDir + sep)) {
+    throw new Error(`fragment path ${JSON.stringify(file)} escapes the kit root — transitions only touch files under ${logsDir}`);
+  }
   const entry = load(readFileSync(absolute, 'utf8'));
   assertValid(kind, entry, file);
   const from = entry.status;
   if (!LEGAL_TRANSITIONS[from].includes(to)) {
     throw new Error(`${file}: illegal transition ${from} → ${to} (legal from ${from}: ${LEGAL_TRANSITIONS[from].join(', ') || 'none'}) — the lifecycle is open → proposed → resolved/rejected; re-open-not-duplicate (§3.4)`);
   }
+  const effects = STATUS_EFFECTS[to];
   entry.status = to;
-  if (to === 'resolved') {
-    entry.verified = date; // the validator re-run passed (§8)
-  } else if (to === 'rejected') {
-    if (typeof reason !== 'string' || reason === '') {
-      throw new Error(`${file}: rejecting requires a reason — rejections record the reason (§8)`);
-    }
-    entry.reason = reason;
-  } else if (to === 'open') {
-    // Re-open, not duplicate: same entry, occurrence date appended.
-    delete entry.verified;
-    entry.occurrences = [...(entry.occurrences ?? []), date];
-  }
+  for (const key of effects.drop ?? []) delete entry[key];
+  Object.assign(entry, effects.stamp?.({ file, date, reason, entry }));
   assertValid(kind, entry, file);
   writeFileSync(absolute, serialize(entry));
   return { file, entry };

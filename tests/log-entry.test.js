@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -50,24 +50,74 @@ test('bad gap entry: unknown keys are typos, never silent extensions', () => {
   assert.deepEqual(errors.map((e) => [e.path, e.code]), [['transcript', 'unknown-property']]);
 });
 
-test('lifecycle fields (verified, reason, occurrences) exist on all three schemas', () => {
-  for (const kind of Object.values(LOGS)) {
-    const schema = JSON.parse(readFileSync(
-      join(repoRoot, 'payload', 'schemas', `${kind}.schema.json`), 'utf8'));
+test('lifecycle grammar is deep-equal across all three schemas (no cross-schema drift)', () => {
+  // The lifecycle is ONE contract; finding/miss/gap each carry a copy so each
+  // schema stays self-contained. Deep-equality (not key-presence) keeps the
+  // copies from drifting: status enum, lifecycle property definitions, and
+  // the isoDate grammar they reference.
+  const schemas = Object.fromEntries(Object.values(LOGS).map((kind) => [kind, JSON.parse(
+    readFileSync(join(repoRoot, 'payload', 'schemas', `${kind}.schema.json`), 'utf8'))]));
+  const canonical = schemas.finding;
+  for (const [kind, schema] of Object.entries(schemas)) {
+    assert.deepEqual(schema.properties.status.enum, canonical.properties.status.enum,
+      `${kind}: status enum diverges from finding`);
     for (const field of ['verified', 'reason', 'occurrences']) {
-      assert.ok(schema.properties[field], `${kind}: missing lifecycle field ${field}`);
+      assert.deepEqual(schema.properties[field], canonical.properties[field],
+        `${kind}: lifecycle field ${field} diverges from finding`);
     }
+    assert.deepEqual(schema.$defs.isoDate, canonical.$defs.isoDate,
+      `${kind}: isoDate $def diverges from finding`);
     assert.match(schema.description, /never verbatim user text or secrets/,
       `${kind}: capture content policy must be documented`);
   }
 });
 
+// --- lifecycle invariants at the validation layer -----------------------------
+// The schema gate must match what transitionStatus enforces on its write path,
+// so a hand-edited fragment can't sneak an inconsistent lifecycle past it.
+
+test('validation: verified travels only with status resolved, both directions', () => {
+  for (const [log, kind] of Object.entries(LOGS)) {
+    const open = {
+      'schema-version': 1, date: '2026-07-08', status: 'open', verified: '2026-07-08', ...FIELDS[log],
+    };
+    assert.deepEqual(validateRecord(kind, open).errors.map((e) => [e.path, e.code]),
+      [['verified', 'lifecycle-field-mismatch']], `${kind}: open+verified must fail`);
+    const bare = { 'schema-version': 1, date: '2026-07-08', status: 'resolved', ...FIELDS[log] };
+    assert.deepEqual(validateRecord(kind, bare).errors.map((e) => [e.path, e.code]),
+      [['verified', 'lifecycle-field-mismatch']], `${kind}: resolved without verified must fail`);
+    assert.deepEqual(validateRecord(kind, { ...bare, verified: '2026-07-09' }).errors, [],
+      `${kind}: resolved+verified is valid`);
+  }
+});
+
+test('validation: rejected requires a non-empty reason; reason only on rejected', () => {
+  for (const [log, kind] of Object.entries(LOGS)) {
+    const rejected = { 'schema-version': 1, date: '2026-07-08', status: 'rejected', ...FIELDS[log] };
+    assert.deepEqual(validateRecord(kind, rejected).errors.map((e) => [e.path, e.code]),
+      [['reason', 'lifecycle-field-mismatch']], `${kind}: rejected without reason must fail`);
+    assert.deepEqual(
+      validateRecord(kind, { ...rejected, reason: '' }).errors.map((e) => [e.path, e.code]),
+      [['reason', 'lifecycle-field-mismatch']], `${kind}: rejected with empty reason must fail`);
+    assert.deepEqual(
+      validateRecord(kind, { ...rejected, reason: 'out of scope' }).errors, [],
+      `${kind}: rejected+reason is valid`);
+    const stray = {
+      'schema-version': 1, date: '2026-07-08', status: 'open', reason: 'stale', ...FIELDS[log],
+    };
+    assert.deepEqual(validateRecord(kind, stray).errors.map((e) => [e.path, e.code]),
+      [['reason', 'lifecycle-field-mismatch']], `${kind}: reason on a non-rejected entry must fail`);
+  }
+});
+
 // --- create-entry: mint filename, stamp schema-version, one file per entry ---
 
-test('createEntry mints <date>-<hex4>.yaml, stamps schema-version and open status', () => {
+test('createEntry mints <date>-<hex8>.yaml, stamps schema-version and open status', () => {
   const root = tmpRoot();
   const { file, entry } = createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING });
-  assert.match(file, /^logs\/findings\/2026-07-08-[0-9a-f]{4}\.yaml$/);
+  // hex8, not hex4: 2^32 ids per date per log keeps cross-branch same-day
+  // collisions negligible at realistic scale (D-010's no-conflict claim).
+  assert.match(file, /^logs\/findings\/2026-07-08-[0-9a-f]{8}\.yaml$/);
   const onDisk = load(readFileSync(join(root, file), 'utf8'));
   assert.deepEqual(onDisk, { 'schema-version': 1, date: '2026-07-08', status: 'open', ...FINDING });
   assert.deepEqual(onDisk, entry);
@@ -101,17 +151,34 @@ test('createEntry hard-errors on invalid fields and helper-owned keys; writes no
     () => createEntry({ root, log: 'findings', date: '2026-07-08', fields: { ...FINDING, status: 'resolved' } }),
     /helper-owned/,
   );
+  assert.throws(
+    () => createEntry({ root, log: 'findings', date: '2026-07-08', fields: { ...FINDING, reason: 'no' } }),
+    /helper-owned/,
+    'a born-open entry cannot carry a hand-supplied rejection reason',
+  );
   assert.throws(() => createEntry({ root, log: 'nope', date: '2026-07-08', fields: {} }), /log/);
   assert.ok(!existsSync(join(root, 'logs')));
 });
 
 test('an injected suffix collision is a hard error, never an overwrite', () => {
   const root = tmpRoot();
-  createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'a3f2' });
+  createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'a3f2b9c4' });
   assert.throws(
-    () => createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'a3f2' }),
+    () => createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'a3f2b9c4' }),
     /exists/,
   );
+});
+
+test('a malformed injected suffix is rejected by name, before anything is written', () => {
+  const root = tmpRoot();
+  for (const suffix of ['a3f2', 'A3F2B9C4', 'xyzt0000', 'a3f2b9c4d']) {
+    assert.throws(
+      () => createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix }),
+      /suffix/,
+      JSON.stringify(suffix),
+    );
+  }
+  assert.ok(!existsSync(join(root, 'logs')));
 });
 
 // --- transition-status: legal lifecycle only ---------------------------------
@@ -153,6 +220,44 @@ test('re-open, not duplicate: recurrence re-opens the same entry with an occurre
   assert.deepEqual(validateRecord('finding', reopened.entry).errors, []);
 });
 
+test('re-opening a rejected entry drops the stale rejection reason', () => {
+  const root = tmpRoot();
+  const { file } = createEntry({ root, log: 'gaps', date: '2026-07-01', fields: GAP });
+  transitionStatus({ root, file, to: 'proposed', date: '2026-07-02' });
+  transitionStatus({ root, file, to: 'rejected', date: '2026-07-03', reason: 'out of scope' });
+  const reopened = transitionStatus({ root, file, to: 'open', date: '2026-07-05' });
+  assert.ok(!('reason' in reopened.entry),
+    'a re-opened entry no longer carries the old rejection reason');
+  // ...and a later resolution must not resurrect it either.
+  transitionStatus({ root, file, to: 'proposed', date: '2026-07-06' });
+  const resolved = transitionStatus({ root, file, to: 'resolved', date: '2026-07-07' });
+  assert.equal(resolved.entry.verified, '2026-07-07');
+  assert.ok(!('reason' in resolved.entry));
+});
+
+test('transitionStatus rejects fragment paths that escape the root (no sibling-tree writes)', () => {
+  const root = join(tmpRoot(), 'kit');
+  const { file } = createEntry({ root, log: 'findings', date: '2026-07-01', fields: FINDING });
+  // A sibling tree outside root that the traversal forms would reach.
+  const outside = join(root, '..', 'logs', 'findings');
+  mkdirSync(outside, { recursive: true });
+  const escapees = [
+    '../logs/findings/2026-07-01-aaaaaaaa.yaml',
+    `foo/../../logs/findings/2026-07-01-aaaaaaaa.yaml`,
+    join(root, '..', 'logs', 'findings', '2026-07-01-aaaaaaaa.yaml'), // absolute
+  ];
+  for (const escapee of escapees) {
+    assert.throws(
+      () => transitionStatus({ root, file: escapee, to: 'proposed', date: '2026-07-02' }),
+      /fragment path|escapes/,
+      JSON.stringify(escapee),
+    );
+  }
+  assert.deepEqual(readdirSync(outside), [], 'nothing may be read or written outside root');
+  // The legitimate root-relative path still works.
+  assert.equal(transitionStatus({ root, file, to: 'proposed', date: '2026-07-02' }).entry.status, 'proposed');
+});
+
 test('illegal transitions hard-error and leave the file untouched', () => {
   const root = tmpRoot();
   const { file } = createEntry({ root, log: 'misses', date: '2026-07-01', fields: MISS });
@@ -191,7 +296,7 @@ test('CLI: create then transition an entry; illegal transition exits 2', () => {
   ], root);
   assert.equal(created.status, 0, created.stderr);
   const { file } = JSON.parse(created.stdout);
-  assert.match(file, /^logs\/findings\/2026-07-08-[0-9a-f]{4}\.yaml$/);
+  assert.match(file, /^logs\/findings\/2026-07-08-[0-9a-f]{8}\.yaml$/);
 
   const moved = runCli(['transition', '--file', file, '--to', 'proposed', '--date', '2026-07-09'], root);
   assert.equal(moved.status, 0, moved.stderr);
@@ -200,6 +305,31 @@ test('CLI: create then transition an entry; illegal transition exits 2', () => {
   const illegal = runCli(['transition', '--file', file, '--to', 'open', '--date', '2026-07-09'], root);
   assert.equal(illegal.status, 2);
   assert.match(illegal.stderr, /illegal transition/);
+});
+
+test('CLI: accepts --flag=value spelling and hard-errors on unknown flags', () => {
+  const root = tmpRoot();
+  const created = runCli([
+    'create', '--log=findings', '--date=2026-07-08', `--entry=${JSON.stringify(FINDING)}`,
+  ], root);
+  assert.equal(created.status, 0, created.stderr);
+  assert.match(JSON.parse(created.stdout).file, /^logs\/findings\/2026-07-08-[0-9a-f]{8}\.yaml$/);
+
+  const typo = runCli([
+    'create', '--log', 'findings', '--date', '2026-07-08',
+    '--entry', JSON.stringify(FINDING), '--sufix', 'aaaaaaaa',
+  ], root);
+  assert.equal(typo.status, 2, 'a typoed flag is an error, never silently swallowed');
+  assert.match(typo.stderr, /--sufix/);
+});
+
+test('CLI: --entry must be a JSON object — null/string/array get the usage error', () => {
+  const root = tmpRoot();
+  for (const bad of ['null', '"abc"', '[1]', '3']) {
+    const result = runCli(['create', '--log', 'findings', '--date', '2026-07-08', '--entry', bad], root);
+    assert.equal(result.status, 2, bad);
+    assert.match(result.stderr, /--entry must be a JSON object/, bad);
+  }
 });
 
 // --- D-010 done-criterion: two branches appending concurrently merge clean ---
@@ -223,19 +353,19 @@ test('two simulated branches appending concurrently merge without conflict', () 
   git('commit', '--allow-empty', '-m', 'base');
 
   git('checkout', '-b', 'session-a');
-  createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'aaaa' });
+  createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'aaaaaaaa' });
   git('add', '.');
   git('commit', '-m', 'session a appends');
 
   git('checkout', 'main');
   git('checkout', '-b', 'session-b');
-  createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'bbbb' });
+  createEntry({ root, log: 'findings', date: '2026-07-08', fields: FINDING, suffix: 'bbbbbbbb' });
   git('add', '.');
   git('commit', '-m', 'session b appends');
 
   git('merge', 'session-a'); // one file per entry: textually disjoint, no conflict
   const files = readdirSync(join(root, 'logs', 'findings')).sort();
-  assert.deepEqual(files, ['2026-07-08-aaaa.yaml', '2026-07-08-bbbb.yaml']);
+  assert.deepEqual(files, ['2026-07-08-aaaaaaaa.yaml', '2026-07-08-bbbbbbbb.yaml']);
 });
 
 // --- dogfood: the kit's own logs/ fragments stay green ------------------------
@@ -247,7 +377,7 @@ test("the kit's own logs/ directories exist and every fragment validates", () =>
     assert.ok(statSync(dir, { throwIfNoEntry: false })?.isDirectory(), `missing logs/${log}/`);
     for (const name of readdirSync(dir)) {
       if (name.startsWith('.')) continue;
-      assert.match(name, /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9a-f]{4}\.yaml$/, `logs/${log}/${name}`);
+      assert.match(name, /^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9a-f]{8}\.yaml$/, `logs/${log}/${name}`);
       const doc = load(readFileSync(join(dir, name), 'utf8'));
       assert.deepEqual(validateRecord(kind, doc).errors, [], `logs/${log}/${name}`);
       fragments += 1;
