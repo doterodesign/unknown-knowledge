@@ -1,0 +1,7 @@
+# Structural-validator fixture (KK-05) — warning-only store: exit 0.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-800
+    title: Legacy ledger
+    file: classes/800-legacy.yaml

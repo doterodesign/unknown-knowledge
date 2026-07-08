@@ -1,0 +1,8 @@
+schema-version: 1
+entries:
+  - id: K-410
+    term: Gadget
+    class: 400-gadgets
+    summary: A gadget offered by the fixture app.
+    source-of-truth: [src/gadgets/registry.ts]
+    status: active

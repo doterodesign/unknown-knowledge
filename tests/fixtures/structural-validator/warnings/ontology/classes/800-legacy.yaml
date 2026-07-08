@@ -1,0 +1,10 @@
+# Deprecated concept with a deleted SSOT path — §3.5 demotes the blocking
+# path-existence check to a warning (the source-deletion escape hatch).
+schema-version: 1
+entries:
+  - id: K-800
+    term: Legacy ledger
+    class: 800-legacy
+    summary: Deprecated concept whose source file was legitimately deleted.
+    source-of-truth: [src/legacy/ledger.ts]
+    status: deprecated

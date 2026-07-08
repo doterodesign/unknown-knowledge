@@ -1,0 +1,11 @@
+# 500.2 names a real file that does not contain it (index-drift);
+# 500.3 is deliberately NOT declared (orphan lives in the tree).
+schema-version: 1
+store: knowledge
+entries:
+  - id: "500.1"
+    title: Widget care
+    file: widgets/500.1-widget-care.md
+  - id: "500.2"
+    title: Drifted row
+    file: widgets/500.1-widget-care.md

@@ -1,0 +1,18 @@
+# Structural-validator fixture (KK-05) — one specimen per finding class.
+# BAD violates the id grammar; K-330 names a file that does not exist;
+# K-320 is deliberately NOT declared (orphan lives in the class file).
+schema-version: 1
+store: ontology
+entries:
+  - id: BAD
+    title: Malformed id
+    file: classes/300-widgets.yaml
+  - id: K-310
+    title: Widget
+    file: classes/300-widgets.yaml
+  - id: K-999
+    title: Out-of-range widget
+    file: classes/300-widgets.yaml
+  - id: K-330
+    title: Points at a missing file
+    file: classes/330-missing.yaml

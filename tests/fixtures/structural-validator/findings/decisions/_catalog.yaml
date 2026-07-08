@@ -1,0 +1,9 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-101
+    title: First half of a supersedes loop
+    file: entries/D-101-loop-a.yaml
+  - id: D-102
+    title: Second half of a supersedes loop
+    file: entries/D-102-loop-b.yaml
