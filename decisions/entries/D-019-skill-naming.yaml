@@ -1,0 +1,31 @@
+# One entry per file; schema per PRD.html §3.3.
+schema-version: 1
+entries:
+  - id: D-019
+    title: Skill names use the `knowledge-` prefix, not `kit-`
+    category: scope
+    status: accepted
+    date: "2026-07-08"
+    deciders: [dimitri]
+    context: >
+      The PRD drafted the agent skills as /kit-bootstrap, /kit-reflect and
+      /kit-audit. "Kit" is internal vocabulary for the product's architecture
+      (CONTEXT.md glossary); the skills are client-facing commands and should
+      carry the product's user-facing vocabulary instead (D-016 named the
+      product unknown-knowledge). Directed by Dimitri 2026-07-08.
+    decision: >
+      Client-facing skills are /knowledge-bootstrap, /knowledge-reflect and
+      /knowledge-audit. Applied throughout PRD.html, CONTEXT.md and the Linear
+      issues (KK-19, KK-21, KK-22, KK-23, M6). /kb-build keeps its name — it
+      contains no "kit" and was not covered by the directive; rename it via a
+      superseding entry if desired. Internal artifacts that are not skills
+      (kit.manifest.yaml, the "Kit" glossary term, "kit repo" phrasing) are
+      unchanged.
+    consequences: >
+      KK-19's exit message, KK-20's AGENTS.md skill references, KK-21/22/23
+      deliverables and the §9.2 protocol/skills/ filenames all use the
+      knowledge-* names. No code exists yet, so the rename costs nothing now;
+      after seeding it would have been frozen by D-001.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-016] }

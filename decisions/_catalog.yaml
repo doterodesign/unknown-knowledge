@@ -15,3 +15,6 @@ entries:
   - id: D-018
     title: Registry form — bare `unknown-knowledge` is canonical; scope reserved
     file: entries/D-018-registry-form.yaml
+  - id: D-019
+    title: Skill names use the `knowledge-` prefix, not `kit-`
+    file: entries/D-019-skill-naming.yaml

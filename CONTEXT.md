@@ -52,10 +52,10 @@ and re-derivation, checked both directions.
 kind can read. The demand-driven backlog for new kinds; compounds in the Kit
 repo across deployments (via new pilots, not client updates).
 
-**Init** — Two-phase standup. Phase 1 (deterministic, the CLI): `npx knowledge-kit
+**Init** — Two-phase standup. Phase 1 (deterministic, the CLI): `npx unknown-knowledge
 init` vendors stores, engine, protocol, wrappers from an explicit payload
-allowlist into a visible, user-named root dir (default `knowledge-kit/`).
-Phase 2 (agent bootstrap, `/kit-bootstrap`): survey → taxonomy proposal (human
+allowlist into a visible, user-named root dir (default `unknown-knowledge/`).
+Phase 2 (agent bootstrap, `/knowledge-bootstrap`): survey → taxonomy proposal (human
 gate) → concept emission → miss-log → KB interview + skeleton → validators green.
 
 **Protocol files** — Platform-agnostic markdown (AGENTS.md + skills) holding all

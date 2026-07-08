@@ -123,7 +123,7 @@
 </ul>
 <p class="muted">
   One command (<code>npx unknown-knowledge init</code>) scaffolds everything; one agent-run skill
-  (<code>/kit-bootstrap</code>) crawls the codebase and populates the initial ontology under human gates.
+  (<code>/knowledge-bootstrap</code>) crawls the codebase and populates the initial ontology under human gates.
   After that, the user owns it all.
 </p>
 <p>
@@ -368,10 +368,10 @@ status: open                     # open | proposed | resolved | rejected
     your selected stacks are included. If you adopt another stack later,
     you author your own from the included template — there is no update
     channel." (D-001, D-009)
-  → exits printing: "now run /kit-bootstrap in your agent"
+  → exits printing: "now run /knowledge-bootstrap in your agent"
 </code></pre>
 
-<h3>Phase 2 — agent bootstrap (<code>/kit-bootstrap</code>, the client's agent)</h3>
+<h3>Phase 2 — agent bootstrap (<code>/knowledge-bootstrap</code>, the client's agent)</h3>
 <ol>
   <li><b>Survey</b> (read-only): run <code>engine/survey-map.js</code> first — the agent starts from its ranked anchor-candidate list and directory map, triaging candidates rather than traversing the repo. Raw traversal is a protocol violation; grep is free, reading is expensive, judgment is what the agent is for.</li>
   <li><b>Scope + taxonomy proposal</b> <span class="tag gate">human gate</span>: one combined review — "here's how I read your codebase": the proposed include/exclude scope (which top-level areas are product surface vs. vendored/generated/infra) <i>and</i> the per-project ontology class spine. Reviewing this checklist in the agent conversation is easy; typing it in a terminal would be hell — which is why scoping is Phase-2 work, not an init prompt. Confirmed scope persists as <code>survey-scope.yaml</code> (client zone), reused by every future audit and reflect sweep; a <code>retrieval-miss</code> finding may later propose widening it.</li>
@@ -386,8 +386,8 @@ status: open                     # open | proposed | resolved | rejected
 <h2 id="agents">7. Agent integration &amp; runtime loop</h2>
 <p>
   All intelligence lives in platform-agnostic <code>protocol/</code> markdown: <code>AGENTS.md</code>
-  (navigation contract, runtime loop, gate rules) and the skills (<code>kit-bootstrap</code>,
-  <code>kit-reflect</code>, <code>kb-build</code>, <code>kit-audit</code>). Per-platform wrappers are thin
+  (navigation contract, runtime loop, gate rules) and the skills (<code>knowledge-bootstrap</code>,
+  <code>knowledge-reflect</code>, <code>kb-build</code>, <code>knowledge-audit</code>). Per-platform wrappers are thin
   pointers generated at init for every selected platform. Adding a platform later = adding a wrapper.
 </p>
 <h3>The runtime loop (every request)</h3>
@@ -439,7 +439,7 @@ status: open                     # open | proposed | resolved | rejected
 <p class="muted">Structured YAML appends; cheap; no judgment at capture time.</p>
 <p><b>Capture content policy (KK-20):</b> summaries reference concept IDs and file paths — never verbatim user text, quoted session content, or secrets; the session hint is an opaque ID. Committed fragments are permanent git history in the client's repo and are reviewable content like any other PR change.</p>
 
-<h3>Consolidate — <code>/kit-reflect</code> <span class="tag gate">human-run, daily/weekly</span></h3>
+<h3>Consolidate — <code>/knowledge-reflect</code> <span class="tag gate">human-run, daily/weekly</span></h3>
 <p>
   Reads the findings log, clusters recurring signals, emits a <b>recommendation list</b>: each item a
   concrete diff (fix a concept, add an alias, repoint an SSOT, promote a finding to knowledge, draft an
@@ -479,7 +479,7 @@ status: open                     # open | proposed | resolved | rejected
       agent resolves/preflights/gathers during normal work (they just notice it's faster and righter),
       updates touched concepts in the same commit (the store change rides their normal PR), and appends
       findings silently when triggers fire. The daily UX is invisibility with receipts.</li>
-  <li><b>The steward role.</b> A small group or rotation owns the loop: runs <code>/kit-reflect</code>
+  <li><b>The steward role.</b> A small group or rotation owns the loop: runs <code>/knowledge-reflect</code>
       on cadence (weekly; daily at high finding volume), triages reverse-audit proposals, gates
       <code>kb-build</code> promotions. Recommended mechanism: a <code>CODEOWNERS</code> rule scoped to
       <code>ontology/ knowledge/ decisions/ protocol/ engine/</code> — <b>logs/ explicitly excluded</b>:
@@ -489,7 +489,7 @@ status: open                     # open | proposed | resolved | rejected
       improvement loop's own changes pass normal review and CI. Honest caveat, stated in the steward
       guide: findings travel only with merged PRs — abandoned branches lose theirs; corroboration
       tolerates a lossy denominator.</li>
-  <li><b>The loop has a heartbeat.</b> kit-audit reports days-since-last-reflect (from the
+  <li><b>The loop has a heartbeat.</b> knowledge-audit reports days-since-last-reflect (from the
       <code>last-reflect</code> stamp), open-fragment counts, and top-N quarantined concepts — a lapsed
       steward rotation is visible instead of silent. The deferred dashboards trigger (§11.1) can only
       fire if someone can see the queue; this is the minimal instrument that makes it observable.</li>
@@ -524,7 +524,7 @@ status: open                     # open | proposed | resolved | rejected
       run-extractors.js            # client-runnable extractor gate + authoring template
   protocol/
     AGENTS.md
-    skills/{kit-bootstrap,kit-reflect,kb-build,kit-audit}.md
+    skills/{knowledge-bootstrap,knowledge-reflect,kb-build,knowledge-audit}.md
   logs/
     findings/*.yaml  misses/*.yaml  gaps/*.yaml    # fragment-based: one file
                                                    # per entry, merge-conflict-free (D-010)
@@ -562,7 +562,7 @@ status: open                     # open | proposed | resolved | rejected
   <tr><td>A2</td><td>Extraction works</td><td>every MVP kind vs. fixture anchors → expected value sets; malformed descriptors hard-error; <code>dir-modules</code> options exercised</td></tr>
   <tr><td>A3</td><td>Drift is caught</td><td>planted drift in fixtures: registry value with no concept and the reverse; CI asserts the correct finding kind fires in each direction; wrong-pointer (all-values-missing) signature detected</td></tr>
   <tr><td>A4</td><td>Resolution works</td><td>fixture queries → expected ranked concepts; confusable-with surfaced; CLI exit codes correct</td></tr>
-  <tr><td>A5</td><td>Protocols are executable</td><td>scripted walkthrough per skill against a fixture: checklist of expected artifacts (taxonomy proposal, emitted concepts with rungs, miss-log entries, findings, recommendation list, a kb-build cited leaf, a kit-audit report, preflight-conduct evidence per KK-26). Walkthroughs are wall-clock timed — the "afternoon, not an engagement" claim gets its first datum here. Documented acceptance runs — the honest seam: skills are prompts, so their test is a checklist, not CI</td></tr>
+  <tr><td>A5</td><td>Protocols are executable</td><td>scripted walkthrough per skill against a fixture: checklist of expected artifacts (taxonomy proposal, emitted concepts with rungs, miss-log entries, findings, recommendation list, a kb-build cited leaf, a knowledge-audit report, preflight-conduct evidence per KK-26). Walkthroughs are wall-clock timed — the "afternoon, not an engagement" claim gets its first datum here. Documented acceptance runs — the honest seam: skills are prompts, so their test is a checklist, not CI</td></tr>
   <tr><td>A6</td><td>Engine additions are proven</td><td>kit CI: survey-map candidate list contains every planted anchor and discloses unsurveyed paths (KK-25); preflight exit-code contract incl. store-wide failure → all-unknown (KK-26); suppression filtering, fail-open malformed entries, governance grep (KK-27); no-code-execution grep (D-014)</td></tr>
 </table></div>
 <p class="muted">Both fixtures (Swift + TS) are MVP: the TS fixture is nearly free (engine's own language) and proves cross-stack extraction.</p>
@@ -695,21 +695,21 @@ status: open                     # open | proposed | resolved | rejected
   <p>Multi-select at init: Claude Code, Cursor, Copilot, Codex, Gemini CLI (extensible registry); thin pointer wrappers at each platform's conventional path. Collision policy per §6: shared instruction files that already exist (root <code>AGENTS.md</code>, <code>.github/copilot-instructions.md</code>) are appended between sentinel markers, never overwritten; other collisions skip-and-report.</p>
   <p class="ac"><b>Done:</b> generated files present + well-formed per platform (deep e2e per platform deferred per ledger); fixture variant with a pre-existing root AGENTS.md shows sentinel-append, not clobber.</p></div>
 <div class="issue"><span class="iid">KK-19</span> <span class="ititle">npx packaging + cold-run UX</span>
-  <p><code>npx unknown-knowledge init</code> end-to-end: prompts (root dir, agent platforms, stacks — stacks pre-selected by repo auto-detection), scaffold, <code>git check-ignore</code> sweep over seeded paths (warn + offer negation rule; <code>.gitkeep</code> in empty log dirs), the D-009 later-stacks warning (printed and written into the seeded README), exit message pointing at <code>/kit-bootstrap</code>. No CI mutation, ever (D-006).</p>
+  <p><code>npx unknown-knowledge init</code> end-to-end: prompts (root dir, agent platforms, stacks — stacks pre-selected by repo auto-detection), scaffold, <code>git check-ignore</code> sweep over seeded paths (warn + offer negation rule; <code>.gitkeep</code> in empty log dirs), the D-009 later-stacks warning (printed and written into the seeded README), exit message pointing at <code>/knowledge-bootstrap</code>. No CI mutation, ever (D-006).</p>
   <p class="ac"><b>Done:</b> cold run on both fixtures completes in minutes with no hand-fixing; auto-detection picks the right stacks on each fixture; warning present in output and README; fixture variant with <code>logs/</code> gitignored produces the warning.</p></div>
 
 <h3>M6 — Protocol &amp; skills</h3>
 <div class="issue"><span class="iid">KK-20</span> <span class="ititle">AGENTS.md — navigation contract + runtime loop</span>
   <p>Platform-agnostic: store navigation (catalog→rules→leaves, cross-ref semantics), the five-step runtime loop (§7) including the zero-resolution branch and the <code>--paths</code> pre-commit lookup, gate rules, capture obligations (five triggers + the capture content policy: concept IDs and paths only, never verbatim user text or secrets), decisions-authoring path (§3.5), SSOT contract ("the map is never the fact").</p>
   <p class="ac"><b>Done:</b> A5 walkthrough: an agent following only this file executes the loop on a fixture correctly.</p></div>
-<div class="issue"><span class="iid">KK-21</span> <span class="ititle">/kit-bootstrap skill</span>
+<div class="issue"><span class="iid">KK-21</span> <span class="ititle">/knowledge-bootstrap skill</span>
   <p>Phase-2 procedure (§6): survey (triage of <code>survey-map.js</code> output — raw traversal is a protocol violation) → combined scope + taxonomy gate (writes <code>survey-scope.yaml</code>) → rung-aware concept emission → miss-log → KB interview + skeleton → green finish. Includes the folder-vs-file pointer rule and the not-exhaustive discipline. Depends: KK-25.</p>
   <p class="ac"><b>Done:</b> A5 walkthrough on the Swift fixture produces the checklist artifacts.</p></div>
-<div class="issue"><span class="iid">KK-22</span> <span class="ititle">/kit-reflect skill</span>
+<div class="issue"><span class="iid">KK-22</span> <span class="ititle">/knowledge-reflect skill</span>
   <p>Consolidation per §8: cluster findings, evidence standard (multi-corroboration for gated items), per-item recommendation list with justifying findings, apply-approved + validator re-run close-the-loop, re-open-not-duplicate.</p>
   <p class="ac"><b>Done:</b> A5 walkthrough: seeded findings → recommendation list → simulated approval → green re-validation.</p></div>
-<div class="issue"><span class="iid">KK-23</span> <span class="ititle">/kb-build + /kit-audit skills</span>
-  <p><code>kb-build</code>: the sole knowledge write path — classify, governance frontmatter, citations required, index updates. <code>kit-audit</code>: on-demand run of validators + reverse audit + knowledge structural audit + decisions lifecycle check (aging <code>proposed</code>/<code>accepted</code> entries, orphaned relates-to) with a human-readable report — including the <b>loop heartbeat</b>: days-since-last-reflect, open-fragment counts, top-N quarantined concepts (§8).</p>
+<div class="issue"><span class="iid">KK-23</span> <span class="ititle">/kb-build + /knowledge-audit skills</span>
+  <p><code>kb-build</code>: the sole knowledge write path — classify, governance frontmatter, citations required, index updates. <code>knowledge-audit</code>: on-demand run of validators + reverse audit + knowledge structural audit + decisions lifecycle check (aging <code>proposed</code>/<code>accepted</code> entries, orphaned relates-to) with a human-readable report — including the <b>loop heartbeat</b>: days-since-last-reflect, open-fragment counts, top-N quarantined concepts (§8).</p>
   <p class="ac"><b>Done:</b> A5 walkthroughs for both; heartbeat section present with seeded state.</p></div>
 <div class="issue"><span class="iid">KK-24</span> <span class="ititle">Client-facing docs</span>
   <p>README for the seeded repo (what you own, how to run gates, how the loop works), CI wiring guide (examples for GH Actions/GitLab/Xcode Cloud — docs only; states plainly that CI is expected at team scale; includes the <b>PR attribution recipe</b> per D-012: run the whole-store validator on base and on HEAD, diff the two stable JSON finding sets — findings present at HEAD but not base are this PR's drift), <b>steward guide</b> (the role, reflect cadence, the <i>scoped</i> CODEOWNERS example — stores/protocol/engine gated, logs/ excluded — reflect-as-PR flow, suppressions hygiene, ID-collision recipe, decisions-authoring path, findings-are-lossy caveat), <b>preflight policy note</b> (quarantine conduct is protocol markdown the client may edit to fail-stop, D-011), <b>uninstall paragraph</b> (derived from the manifest zone map: what to delete), findings privacy note (capture content policy), the D-014 no-code-execution guarantee stated client-facing, LICENSE + version-stamp semantics (from KK-28), trust-graduation explainer, honest-boundary note (conceptual vs. behavioral drift).</p>
