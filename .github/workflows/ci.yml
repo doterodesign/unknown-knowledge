@@ -29,6 +29,8 @@ jobs:
               - 'payload/**'
               - 'tests/**'
               - 'scripts/**'
+              - 'fixtures/**'
+              - 'logs/**'
               - 'package.json'
               - 'package-lock.json'
               - '.github/workflows/ci.yml'

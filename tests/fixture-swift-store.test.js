@@ -49,9 +49,27 @@ test('every enumerates descriptor names a listed source-of-truth entry (§3.5)',
   }
 });
 
-test('nothing under fixtures/ is referenced by the payload (D-007)', () => {
+test('K-170 wrong-pointer: no claimed value appears anywhere in the pointed file', () => {
+  // The wrong-pointer signature is that ALL claimed values are missing from
+  // the pointed file — lexically too: grep-level detectors (and the KK-25
+  // pre-scan) work lexically, so even a doc comment naming a claimed value
+  // would contaminate the signature.
+  const { record } = model.concepts.get('K-170');
+  for (const desc of record.enumerates) {
+    const body = readFileSync(join(fixtureRoot, desc.source), 'utf8').toLowerCase();
+    for (const value of desc.values) {
+      assert.ok(
+        !body.includes(String(value).toLowerCase()),
+        `K-170 claimed value "${value}" must not appear lexically in ${desc.source}`,
+      );
+    }
+  }
+});
+
+test('nothing shipped by init (payload/, cli/) references fixtures/ (D-007)', () => {
   // No kit.manifest.yaml exists yet (KK-17); until it does, pin the invariant
-  // lexically: the payload tree never mentions the acceptance fixtures.
+  // lexically: the shippable trees never mention the acceptance fixtures —
+  // any fixture (swift-app, ts-app, ...), by any reference form.
   const walk = (dir, out = []) => {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
@@ -60,10 +78,12 @@ test('nothing under fixtures/ is referenced by the payload (D-007)', () => {
     }
     return out;
   };
-  for (const file of walk(join(root, 'payload'))) {
-    assert.ok(
-      !readFileSync(file, 'utf8').includes('fixtures/swift-app'),
-      `${file} must not reference the acceptance fixture (D-007)`,
-    );
+  for (const tree of ['payload', 'cli']) {
+    for (const file of walk(join(root, tree))) {
+      assert.ok(
+        !/\bfixtures\//.test(readFileSync(file, 'utf8')),
+        `${file} must not reference the acceptance fixtures (D-007)`,
+      );
+    }
   }
 });
