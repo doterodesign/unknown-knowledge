@@ -11,53 +11,53 @@ entries:
     title: Engine is TypeScript/Node, zero build step, minimal deps
     file: entries/D-002-engine-typescript-node.yaml
   - id: D-003
-    title: Three stores split by truth anchor, uniform YAML rigor
+    title: Three stores split by truth anchor (artifact/world/team), uniform YAML rigor
     file: entries/D-003-three-stores-truth-anchor.yaml
   - id: D-004
     title: Two-phase init — deterministic CLI scaffold, then agent-run bootstrap
     file: entries/D-004-two-phase-init.yaml
   - id: D-005
-    title: Validators run only vendored, versioned, tested code
+    title: Validators run only vendored, versioned, tested code — never same-session agent-authored code
     file: entries/D-005-validators-vendored-code.yaml
   - id: D-006
     title: CI-agnostic; init never touches CI config
     file: entries/D-006-ci-agnostic.yaml
   - id: D-007
-    title: Init copies from an explicit payload allowlist
+    title: Init copies from an explicit payload allowlist; acceptance fixtures and kit tests can never ship
     file: entries/D-007-payload-allowlist.yaml
   - id: D-008
     title: Behavioral drift detection is out of scope, stated openly
     file: entries/D-008-behavioral-drift-out-of-scope.yaml
   - id: D-009
-    title: Extractor fixtures ship per stack selected at init
+    title: Extractor fixtures ship per stack selected at init; later stacks are client-authored, warned at init
     file: entries/D-009-extractor-fixtures-per-stack.yaml
   - id: D-010
-    title: Git-native concurrency — no runtime/server/locks
+    title: Git-native concurrency — no runtime/server/locks; stores reviewed as code; fragment-based logs
     file: entries/D-010-git-native-concurrency.yaml
   - id: D-011
-    title: Preflight verdicts are engine code; conduct-on-verdict is protocol policy
+    title: Preflight verdicts are deterministic engine code; conduct-on-verdict is protocol-layer policy
     file: entries/D-011-verdicts-engine-conduct-protocol.yaml
   - id: D-012
-    title: PR drift attribution via whole-store baseline finding-set diff
+    title: PR drift attribution via whole-store baseline finding-set diff; git-diff subset scoping rejected for v1
     file: entries/D-012-whole-store-baseline-diff.yaml
   - id: D-013
-    title: Suppressions ship as a minimal exact-match client-zone file
+    title: Suppressions ship as a minimal exact-match client-zone file; patterns/expiry/reflect-proposals deferred
     file: entries/D-013-exact-match-suppressions.yaml
   - id: D-014
-    title: The engine never executes client code
+    title: The engine never executes client code — lexical parsing only, no network
     file: entries/D-014-engine-never-executes-client-code.yaml
   - id: D-015
-    title: Free and open source; revenue attaches to services, never the code
+    title: Free and open source — permissive license, public npm; revenue attaches to services, never the code
     file: entries/D-015-free-open-source.yaml
   - id: D-016
-    title: The product is named `unknown-knowledge`
+    title: "The product is named `unknown-knowledge`"
     file: entries/D-016-product-name.yaml
   - id: D-017
-    title: npm name availability & typosquat check — unknown-knowledge is clean
+    title: "npm availability & typosquat check for `unknown-knowledge` — name is clean"
     file: entries/D-017-npm-name-availability.yaml
   - id: D-018
-    title: Registry form — bare `unknown-knowledge` is canonical; scope reserved
+    title: "Registry form — bare `unknown-knowledge` is canonical; `@unknown-creatives` scope reserved"
     file: entries/D-018-registry-form.yaml
   - id: D-019
-    title: Skill names use the `knowledge-` prefix, not `kit-`
+    title: "Skill names use the `knowledge-` prefix, not `kit-`"
     file: entries/D-019-skill-naming.yaml
