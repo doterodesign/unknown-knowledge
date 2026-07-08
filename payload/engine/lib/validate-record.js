@@ -36,6 +36,8 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'knowledge-leaf': 'knowledge-leaf.schema.json',
   'decision-entry': 'decision-entry.schema.json',
   'finding': 'finding.schema.json',
+  'miss': 'miss.schema.json',
+  'gap': 'gap.schema.json',
   'catalog': 'catalog.schema.json',
   'rules': 'rules.schema.json',
 });

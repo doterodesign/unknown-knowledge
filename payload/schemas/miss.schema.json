@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:miss",
+  "title": "Miss-log fragment (PRD §3.4, §5.2)",
+  "description": "One unextractable anchor recorded in logs/misses/ — ONE FILE PER ENTRY (D-010), so concurrent sessions never merge-conflict; the fragment is the store file and carries schema-version (§3.5). The demand-driven extractor backlog: a shape description, no parser yet. Capture content policy: concept IDs and file paths only — never verbatim user text or secrets; committed fragments are permanent git history. Lifecycle open → proposed → resolved/rejected; recurrences re-open the same entry (never duplicate), appending to occurrences. The reflect skill (KK-22) consolidates fragments and prunes resolved ones; uncorroborated entries age out to archived with a rollup note. Schema evolution is additive-only (§3.5, D-013).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema-version", "date", "path", "shape", "status"],
+  "properties": {
+    "schema-version": { "type": "integer", "minimum": 1 },
+    "date": { "$ref": "#/$defs/isoDate" },
+    "path": {
+      "type": "string",
+      "description": "Root-relative path of the anchor no extractor kind can read."
+    },
+    "shape": {
+      "type": "string",
+      "description": "Shape description of the unextractable anchor — enough for the 6-step new-kind pipeline (§5.2) to draft a parser; paths and structure only, never file contents verbatim."
+    },
+    "session": {
+      "type": "string",
+      "description": "Opaque platform/session hint — an ID, never quoted session content."
+    },
+    "status": {
+      "enum": ["open", "proposed", "resolved", "rejected"],
+      "description": "Lifecycle: open → proposed → resolved/rejected; re-open-not-duplicate."
+    },
+    "verified": {
+      "$ref": "#/$defs/isoDate",
+      "description": "Stamped by the transition helper when the entry resolves (validator re-run passed); removed on re-open."
+    },
+    "reason": {
+      "type": "string",
+      "description": "Required on rejection — rejections record the reason (§8)."
+    },
+    "occurrences": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/isoDate" },
+      "description": "Re-open dates: recurrences re-open the same entry, never duplicate (§8)."
+    }
+  },
+  "$defs": {
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
+  }
+}

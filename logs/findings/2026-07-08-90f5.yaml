@@ -1,0 +1,8 @@
+schema-version: 1
+date: '2026-07-08'
+status: open
+trigger: retrieval-struggle
+summary: >-
+  PRD §3.4 lifecycle rules located only via full-text sweep of PRD.html; no concept maps the
+  findings lifecycle yet (kit bootstrap pending)
+session: kk-13-build
