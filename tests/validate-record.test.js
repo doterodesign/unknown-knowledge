@@ -16,12 +16,12 @@ function codesAt(result, path) {
 
 // ---------------------------------------------------------------- kinds
 
-test('the kinds cover §3.1–3.4 records plus the navigational grammar', () => {
-  // KK-02 shipped the first six; KK-13 added the sibling logs (miss, gap) —
-  // additive-only evolution (§3.5, D-013).
+test('the kinds cover §3.1–3.4 records, the navigational grammar, and the §4 scope file', () => {
+  // KK-02 shipped the first six; KK-13 added the sibling logs (miss, gap),
+  // KK-25 the survey scope — additive-only evolution (§3.5, D-013).
   assert.deepEqual([...KINDS].sort(), [
     'catalog', 'decision-entry', 'finding', 'gap',
-    'knowledge-leaf', 'miss', 'ontology-concept', 'rules',
+    'knowledge-leaf', 'miss', 'ontology-concept', 'rules', 'survey-scope',
   ]);
 });
 

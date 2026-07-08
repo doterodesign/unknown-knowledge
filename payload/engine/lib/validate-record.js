@@ -38,6 +38,7 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'finding': 'finding.schema.json',
   'miss': 'miss.schema.json',
   'gap': 'gap.schema.json',
+  'survey-scope': 'survey-scope.schema.json',
   'catalog': 'catalog.schema.json',
   'rules': 'rules.schema.json',
 });
