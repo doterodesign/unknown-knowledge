@@ -1,0 +1,6 @@
+# knowledge/_catalog.yaml — navigational entry point (catalog -> rules -> tree leaves).
+# Empty seed: init copies it; the kb-build skill fills entries as cited leaves land.
+# Shape: payload/schemas/catalog.schema.json. schema-version evolves additively (§3.5).
+schema-version: 1
+store: knowledge
+entries: []

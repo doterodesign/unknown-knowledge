@@ -1,0 +1,7 @@
+# decisions/_catalog.yaml — navigational entry point for the decisions store
+# (catalog -> entries/D-NNN files; decisions has no _rules.yaml, PRD §9.1).
+# Empty seed: entries are appended through the gated decisions write path (§3.5).
+# Shape: payload/schemas/catalog.schema.json. schema-version evolves additively.
+schema-version: 1
+store: decisions
+entries: []

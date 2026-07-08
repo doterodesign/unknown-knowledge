@@ -1,0 +1,6 @@
+# knowledge/_rules.yaml — per-store governance rules (human-only gated writes,
+# citation requirements, notation immutability). Empty seed: rule items are
+# bootstrap-generated per project. Shape: payload/schemas/rules.schema.json.
+schema-version: 1
+store: knowledge
+rules: []

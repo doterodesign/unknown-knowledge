@@ -1,0 +1,6 @@
+# ontology/_rules.yaml — per-store governance rules (id ranges per class, write gates).
+# Empty seed: rule items are bootstrap-generated per project; the shape is formalized
+# additively by the taxonomy issues. Shape: payload/schemas/rules.schema.json.
+schema-version: 1
+store: ontology
+rules: []

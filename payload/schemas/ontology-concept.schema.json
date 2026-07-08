@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:ontology-concept",
+  "title": "Ontology concept (PRD §3.1)",
+  "description": "One concept record inside an ontology class file. Truth anchor: the artifact — source-of-truth pointers reference the repo inward. Prose fields (summary, definition) are navigation, never the fact. IDs are minted at PR time within the class's declared range and are immutable once published (§3.5); range membership, duplicate detection, and ref resolution are loader/structural-validator checks (KK-04/KK-05), not record-local. Class files carry the store-file envelope in $defs/storeFile. Schema evolution is additive-only (§3.5, D-013).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "term", "class", "summary", "status"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^K-[0-9]+$",
+      "description": "K-NNN, within the class's declared range; immutable once published."
+    },
+    "term": { "type": "string" },
+    "class": {
+      "type": "string",
+      "description": "Class file this concept belongs to; class files define id ranges. Taxonomy is per-project."
+    },
+    "summary": { "type": "string" },
+    "definition": {
+      "type": "string",
+      "description": "Prose = navigation, never the fact."
+    },
+    "aliases": { "type": "array", "items": { "type": "string" } },
+    "source-of-truth": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "File OR folder paths into the repo. Multi-entry semantics (§3.5): the first entry is the primary owner; additional entries are secondary references only. Every enumerates descriptor's source must name a listed entry. Point at a folder for identity, at a file for facts."
+    },
+    "owned-by": { "type": "string" },
+    "used-by": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conceptRef" },
+      "description": "Typed refs; must resolve (checked by the structural validator)."
+    },
+    "confusable-with": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conceptRef" },
+      "description": "Explicit disambiguation; must resolve."
+    },
+    "rationale": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/decisionRef" },
+      "description": "Optional refs into decisions/."
+    },
+    "status": {
+      "enum": ["active", "draft", "deprecated", "proposed"],
+      "description": "§3.5 semantics: draft/proposed = structural checks only; active = all checks blocking-grade; deprecated = pointer/value checks demote to warnings."
+    },
+    "last-verified": { "$ref": "#/$defs/isoDate" },
+    "enumerates": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/enumeratesDescriptor" },
+      "description": "OPTIONAL — presence makes the concept rung-2 (value agreement, diffed both ways)."
+    }
+  },
+  "$defs": {
+    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
+    "decisionRef": {
+      "type": "string",
+      "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$"
+    },
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "enumeratesDescriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "source", "values"],
+      "description": "The claim of an enumerable value set plus the extractor recipe to re-derive it. A malformed descriptor is a hard error, never skipped (PRD §4).",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "Extractor kind name (e.g. ts-const-array, swift-enum, dir-modules). Open set: clients author later kinds."
+        },
+        "source": {
+          "type": "string",
+          "description": "Must name a listed source-of-truth entry (§3.5)."
+        },
+        "symbol": {
+          "type": "string",
+          "description": "Declaration symbol inside the source, where the kind needs one."
+        },
+        "emit": {
+          "type": "string",
+          "description": "Which facet the kind emits where both are legitimate (e.g. Swift case names vs raw values, §3.5)."
+        },
+        "values": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Strings only, compared byte-exact and case-sensitive, as sets (§3.5). YAML 1.1 coercion is a real trap (no → false, on → true): quote such values. The loader hard-errors on non-string scalars."
+        }
+      }
+    },
+    "storeFile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema-version", "entries"],
+      "description": "Ontology class-file envelope. Every store file carries schema-version (§3.5); evolution is additive-only.",
+      "properties": {
+        "schema-version": { "type": "integer", "minimum": 1 },
+        "entries": { "type": "array", "items": { "$ref": "#" } }
+      }
+    }
+  }
+}
