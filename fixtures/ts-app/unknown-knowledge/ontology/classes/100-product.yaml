@@ -1,5 +1,5 @@
 # Acceptance-fixture ontology (KK-15) — planted cases are deliberate; the
-# expected finding per concept is tabulated in ../../FIXTURE.md. Descriptors
+# expected finding per concept is tabulated in ../../../FIXTURE.md. Descriptors
 # are always SCHEMA-VALID: drift lives in the values, never in the shape.
 schema-version: 1
 entries:
@@ -105,19 +105,9 @@ entries:
       - kind: dir-modules
         source: src/verticals
         values: [sportsbook, casino, poker]
-  - id: K-111
-    term: Route
-    class: 100-product
-    summary: File-based routes (dir-modules pattern/strip options, KK-10).
-    source-of-truth: [src/routes]
-    status: active
-    last-verified: "2026-07-08"
-    enumerates:
-      - kind: dir-modules
-        source: src/routes
-        symbol: "*.route.ts"
-        emit: strip-suffix
-        values: [home, account, bets]
+  # (K-111 is reserved: a routes concept exercising dir-modules pattern/strip
+  # options lands with KK-10, once those descriptor options exist in the
+  # schema — see FIXTURE.md. The src/routes/ files stay as its material.)
   - id: K-114
     term: Loyalty tier
     class: 100-product

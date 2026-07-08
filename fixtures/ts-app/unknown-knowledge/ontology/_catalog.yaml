@@ -32,9 +32,6 @@ entries:
   - id: K-110
     title: Vertical
     file: classes/100-product.yaml
-  - id: K-111
-    title: Route
-    file: classes/100-product.yaml
   - id: K-112
     title: App dependency
     file: classes/100-product.yaml
