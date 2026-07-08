@@ -1,0 +1,7 @@
+# Acceptance-fixture store (KK-15).
+schema-version: 1
+store: decisions
+entries:
+  - id: D-101
+    title: Sports registry is a const array
+    file: entries/D-101-sports-registry-const-array.yaml
