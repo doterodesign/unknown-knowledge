@@ -51,7 +51,7 @@ jobs:
   # job, so a required check always resolves; fails if any needed job
   # failed or was cancelled.
   ci-ok:
-    needs: [engine-tests]
+    needs: [changes, engine-tests]
     if: always()
     runs-on: ubuntu-latest
     steps:
