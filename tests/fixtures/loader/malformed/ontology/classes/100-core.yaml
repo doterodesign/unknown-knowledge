@@ -1,0 +1,7 @@
+# Schema-invalid entry: term missing, status outside the §3.5 lifecycle enum.
+schema-version: 1
+entries:
+  - id: K-100
+    class: 100-core
+    summary: A concept missing its term.
+    status: live

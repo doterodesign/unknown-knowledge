@@ -1,0 +1,11 @@
+schema-version: 1
+entries:
+  - id: D-004
+    title: Refs one missing concept, one catalog-declared decision
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: c
+    decision: d
+    relates-to: { concepts: [K-888], leaves: [], decisions: [D-005] }

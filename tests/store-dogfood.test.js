@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
+import { loadStores } from '../payload/engine/lib/load-stores.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const entriesDir = join(root, 'decisions', 'entries');
@@ -88,4 +89,29 @@ test('each entry file declares exactly the D-NNN id its filename carries', () =>
       `${file} must hold the single entry ${id} (one entry per file, D-010)`,
     );
   }
+});
+
+// KK-04: the loader must load the kit repo itself with ZERO errors — the
+// ontology and knowledge stores don't exist here yet, which is exactly the
+// well-defined missing-store warning case.
+test('the kit repo loads through the store loader with zero errors', () => {
+  const model = loadStores(root);
+  assert.deepEqual(model.diagnostics.filter((d) => d.severity === 'error'), []);
+  assert.equal(model.ok, true);
+  assert.deepEqual(
+    model.diagnostics.map(({ severity, code, file }) => ({ severity, code, file })),
+    [
+      { severity: 'warning', code: 'missing-store', file: 'knowledge' },
+      { severity: 'warning', code: 'missing-store', file: 'ontology' },
+    ],
+  );
+});
+
+test("the kit's own decision entries are indexed and their refs resolve", () => {
+  const model = loadStores(root);
+  const ids = [...model.decisions.keys()];
+  assert.ok(ids.includes('D-017'), JSON.stringify(ids));
+  assert.ok(ids.includes('D-018'), JSON.stringify(ids));
+  assert.ok(model.refs.length > 0);
+  assert.ok(model.refs.every((r) => r.resolved), 'catalog-declared pending ids resolve');
 });

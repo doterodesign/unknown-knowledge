@@ -1,0 +1,11 @@
+# D-005 is declared here with a pending file (mid-import) — refs to it resolve;
+# file-pointer resolution is the structural validator's check (KK-05).
+schema-version: 1
+store: decisions
+entries:
+  - id: D-004
+    title: Present entry
+    file: entries/D-004-present.yaml
+  - id: D-005
+    title: Declared but pending import
+    file: pending-import

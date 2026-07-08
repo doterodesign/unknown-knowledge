@@ -1,0 +1,15 @@
+# One entry per file; schema per PRD §3.3.
+schema-version: 1
+entries:
+  - id: D-004
+    title: Three stores split by truth anchor
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: Merging the stores would merge their write gates.
+    decision: Split ontology, knowledge, decisions by who owns the fact.
+    consequences: Three catalogs, one navigational grammar.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [K-210], leaves: ["362.1"], decisions: [] }

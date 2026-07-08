@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-004
+    title: Three stores split by truth anchor
+    file: entries/D-004-three-stores.yaml

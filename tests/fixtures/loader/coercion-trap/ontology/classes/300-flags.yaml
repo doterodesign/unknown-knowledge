@@ -1,0 +1,14 @@
+# §3.5 YAML coercion trap: unquoted true/1.0 parse as boolean/number and must
+# hard-error; under YAML 1.2 core schema `no` stays a string and is fine.
+schema-version: 1
+entries:
+  - id: K-300
+    term: Feature flag
+    class: 300-config
+    summary: Enumerates values planted with unquoted coercing scalars.
+    source-of-truth: [config/flags.yaml]
+    status: active
+    enumerates:
+      - kind: yaml-keys
+        source: config/flags.yaml
+        values: [dark-mode, true, 1.0, no]

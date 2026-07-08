@@ -1,0 +1,10 @@
+# K-999 was never minted; D-777 does not exist in decisions/.
+schema-version: 1
+entries:
+  - id: K-210
+    term: Sport
+    class: 200-sportsbook
+    summary: References things that do not exist.
+    used-by: [K-999]
+    rationale: [D-777]
+    status: active

@@ -1,0 +1,8 @@
+# The store dir exists but its _catalog.yaml is missing — a broken store.
+schema-version: 1
+entries:
+  - id: K-100
+    term: Vertical
+    class: 100-core
+    summary: A product vertical.
+    status: active

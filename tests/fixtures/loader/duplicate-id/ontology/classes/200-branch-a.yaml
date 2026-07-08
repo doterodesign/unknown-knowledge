@@ -1,0 +1,8 @@
+# §3.5 concurrent-mint collision: this file and 200-branch-b.yaml both mint K-210.
+schema-version: 1
+entries:
+  - id: K-210
+    term: Sport
+    class: 200-sportsbook
+    summary: Minted on branch A.
+    status: active

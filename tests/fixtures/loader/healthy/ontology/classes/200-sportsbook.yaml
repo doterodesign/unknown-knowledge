@@ -1,0 +1,27 @@
+# Class file per PRD §3.1 — two concepts exercising refs, pointers, enumerates.
+schema-version: 1
+entries:
+  - id: K-210
+    term: Sport
+    class: 200-sportsbook
+    summary: A bettable sport offered by the sportsbook vertical.
+    aliases: [sport type]
+    source-of-truth: [src/verticals/sportsbook/sports/registry.ts]
+    owned-by: sportsbook
+    used-by: [K-220]
+    confusable-with: []
+    rationale: [D-004]
+    status: active
+    last-verified: "2026-07-07"
+    enumerates:
+      - kind: ts-const-array
+        source: src/verticals/sportsbook/sports/registry.ts
+        symbol: SUPPORTED_SPORTS
+        values: [nfl, nba, mlb]
+  - id: K-220
+    term: Bet slip
+    class: 200-sportsbook
+    summary: The staged selections a user is about to wager on.
+    source-of-truth: [src/verticals/sportsbook/bet-slip]
+    confusable-with: [K-210]
+    status: active
