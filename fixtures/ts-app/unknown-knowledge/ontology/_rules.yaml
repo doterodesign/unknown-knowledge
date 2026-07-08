@@ -1,0 +1,4 @@
+# Acceptance-fixture store (KK-15).
+schema-version: 1
+store: ontology
+rules: []

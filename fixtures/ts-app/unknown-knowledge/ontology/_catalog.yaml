@@ -1,0 +1,49 @@
+# Acceptance-fixture store (KK-15) — NEVER shipped by init (D-007).
+schema-version: 1
+store: ontology
+entries:
+  - id: K-101
+    title: Sport
+    file: classes/100-product.yaml
+  - id: K-102
+    title: Market type
+    file: classes/100-product.yaml
+  - id: K-103
+    title: Bet status
+    file: classes/100-product.yaml
+  - id: K-104
+    title: Withdrawal method
+    file: classes/100-product.yaml
+  - id: K-105
+    title: Currency
+    file: classes/100-product.yaml
+  - id: K-106
+    title: Promotion kind
+    file: classes/100-product.yaml
+  - id: K-107
+    title: Status color
+    file: classes/100-product.yaml
+  - id: K-108
+    title: Locale
+    file: classes/100-product.yaml
+  - id: K-109
+    title: Feature flag
+    file: classes/100-product.yaml
+  - id: K-110
+    title: Vertical
+    file: classes/100-product.yaml
+  - id: K-112
+    title: App dependency
+    file: classes/100-product.yaml
+  - id: K-113
+    title: League
+    file: classes/100-product.yaml
+  - id: K-114
+    title: Loyalty tier
+    file: classes/100-product.yaml
+  - id: K-115
+    title: Experiment
+    file: classes/100-product.yaml
+  - id: K-116
+    title: Bet status barrel
+    file: classes/100-product.yaml

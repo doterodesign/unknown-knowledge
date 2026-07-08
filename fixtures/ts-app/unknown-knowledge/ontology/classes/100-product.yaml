@@ -1,0 +1,201 @@
+# Acceptance-fixture ontology (KK-15) — planted cases are deliberate; the
+# expected finding per concept is tabulated in ../../../FIXTURE.md. Descriptors
+# are always SCHEMA-VALID: drift lives in the values, never in the shape.
+schema-version: 1
+entries:
+  # -- clean extractions (A2), adversarial-but-extractable formatting --------
+  - id: K-101
+    term: Sport
+    class: 100-product
+    summary: A bettable sport offered by the sportsbook vertical.
+    aliases: [sport type]
+    source-of-truth: [src/registry/sports.ts]
+    owned-by: sportsbook
+    used-by: [K-102]
+    confusable-with: [K-113]
+    rationale: [D-101]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-const-array
+        source: src/registry/sports.ts
+        symbol: SUPPORTED_SPORTS
+        values: [nfl, nba, mlb, nhl, soccer]
+  - id: K-103
+    term: Bet status
+    class: 100-product
+    summary: Lifecycle state of a placed bet.
+    source-of-truth: [src/types/bet-status.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-union
+        source: src/types/bet-status.ts
+        symbol: BetStatus
+        values: [open, settled, voided, cashed-out]
+  - id: K-105
+    term: Currency
+    class: 100-product
+    summary: Wallet currencies the app can denominate in.
+    source-of-truth: [src/types/currency.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-enum
+        source: src/types/currency.ts
+        symbol: Currency
+        emit: names
+        values: [USD, EUR, GBP, CAD]
+  - id: K-106
+    term: Promotion kind
+    class: 100-product
+    summary: Promotion types the marketing engine can run.
+    source-of-truth: [src/registry/promotions.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-object-keys
+        source: src/registry/promotions.ts
+        symbol: PROMOTIONS
+        values: [welcome-bonus, reload, odds-boost, referral]
+  - id: K-107
+    term: Status color
+    class: 100-product
+    summary: Badge color assigned to each bet status (.tsx anchor).
+    source-of-truth: [src/components/StatusBadge.tsx]
+    used-by: [K-103]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-object-keys
+        source: src/components/StatusBadge.tsx
+        symbol: STATUS_COLORS
+        values: [open, settled, voided, cashed-out]
+  - id: K-109
+    term: Feature flag
+    class: 100-product
+    summary: Runtime feature switches read from app config.
+    source-of-truth: [config/features.json]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: json-keys
+        source: config/features.json
+        values: [live-betting, cash-out, same-game-parlay]
+  - id: K-112
+    term: App dependency
+    class: 100-product
+    summary: Runtime npm dependencies of the app.
+    source-of-truth: [package.json]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: json-map-keys
+        source: package.json
+        symbol: dependencies
+        values: [react, react-dom, zod]
+  - id: K-110
+    term: Vertical
+    class: 100-product
+    summary: Product verticals, one module folder each (folder identity).
+    source-of-truth: [src/verticals, src/verticals/sportsbook/index.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: dir-modules
+        source: src/verticals
+        values: [sportsbook, casino, poker]
+  # (K-111 is reserved: a routes concept exercising dir-modules pattern/strip
+  # options lands with KK-10, once those descriptor options exist in the
+  # schema — see FIXTURE.md. The src/routes/ files stay as its material.)
+  - id: K-114
+    term: Loyalty tier
+    class: 100-product
+    summary: Loyalty program tiers (plain .js anchor — TS kinds read JS too).
+    source-of-truth: [src/registry/loyalty-tiers.js]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-const-array
+        source: src/registry/loyalty-tiers.js
+        symbol: LOYALTY_TIERS
+        values: [bronze, silver, gold, platinum]
+  # -- planted bidirectional drift (A3) ---------------------------------------
+  - id: K-102
+    term: Market type
+    class: 100-product
+    summary: Bet market types. DRIFT — claims 'futures', absent from source.
+    source-of-truth: [src/registry/markets.ts]
+    used-by: [K-101]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-const-array
+        source: src/registry/markets.ts
+        symbol: MARKET_TYPES
+        values: [moneyline, spread, totals, parlay, futures]
+  - id: K-104
+    term: Withdrawal method
+    class: 100-product
+    summary: Payout rails. DRIFT — source also has 'crypto', unclaimed here.
+    source-of-truth: [src/types/withdrawal.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-union
+        source: src/types/withdrawal.ts
+        symbol: WithdrawalMethod
+        values: [ach, wire, paypal]
+  # -- wrong-pointer signature (A3): every claimed value missing from a real
+  #    parseable file; the true home is src/registry/locales.ts ---------------
+  - id: K-108
+    term: Locale
+    class: 100-product
+    summary: Supported locales. WRONG POINTER — descriptor names sports.ts.
+    source-of-truth: [src/registry/sports.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-const-array
+        source: src/registry/sports.ts
+        symbol: SUPPORTED_SPORTS
+        values: [en-US, es-MX, pt-BR]
+  # -- out-of-envelope anchors (§5.1): extractor must HARD-ERROR --------------
+  - id: K-113
+    term: League
+    class: 100-product
+    summary: Leagues across sports. UNEXTRACTABLE — spread in the array.
+    source-of-truth: [src/registry/leagues.ts]
+    confusable-with: [K-101]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-const-array
+        source: src/registry/leagues.ts
+        symbol: ALL_LEAGUES
+        values: [epl, laliga]
+  - id: K-115
+    term: Experiment
+    class: 100-product
+    summary: A/B experiments. UNEXTRACTABLE — computed object key.
+    source-of-truth: [src/registry/experiments.ts]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-object-keys
+        source: src/registry/experiments.ts
+        symbol: EXPERIMENTS
+        values: [quick-bet]
+  - id: K-116
+    term: Bet status barrel
+    class: 100-product
+    summary: Barrel re-export of BetStatus. UNEXTRACTABLE — re-export.
+    source-of-truth: [src/types/index.ts]
+    confusable-with: [K-103]
+    status: active
+    last-verified: "2026-07-08"
+    enumerates:
+      - kind: ts-union
+        source: src/types/index.ts
+        symbol: BetStatus
+        values: [open, settled, voided, cashed-out]

@@ -1,0 +1,7 @@
+# Acceptance-fixture store (KK-15).
+schema-version: 1
+store: knowledge
+entries:
+  - id: "100.1"
+    title: Adding a new sport
+    file: product/100.1-adding-a-new-sport.md

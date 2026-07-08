@@ -1,0 +1,21 @@
+# One entry per file (D-010); schema per PRD §3.3.
+schema-version: 1
+entries:
+  - id: D-101
+    title: Sports registry is a const array
+    category: architecture
+    status: accepted
+    date: "2026-07-08"
+    deciders: [fixture-team]
+    context: >
+      The sport list is read by the bet slip, the odds feed, and marketing.
+      It needs one reified home an extractor can read lexically.
+    decision: >
+      Keep SUPPORTED_SPORTS as an exported const string array in
+      src/registry/sports.ts; derive the Sport type from it.
+    consequences: >
+      The list is ts-const-array extractable; adding a sport is a one-line
+      diff that the value validator can cross-check against the ontology.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [K-101], leaves: ["100.1"], decisions: [] }
