@@ -7,7 +7,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { mkdtempSync, mkdirSync, copyFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, cpSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import {
   loadStores,
@@ -18,6 +18,13 @@ import {
 const fixtures = fileURLToPath(new URL('fixtures/loader/', import.meta.url));
 const fixture = (name) => join(fixtures, name);
 
+// Fixtures are immutable; load each once and let every test read the model.
+const models = new Map();
+const fixtureModel = (name) => {
+  if (!models.has(name)) models.set(name, loadStores(fixture(name)));
+  return models.get(name);
+};
+
 function byCode(model, code) {
   return model.diagnostics.filter((d) => d.code === code);
 }
@@ -25,13 +32,13 @@ function byCode(model, code) {
 // -------------------------------------------------------- healthy store
 
 test('healthy store: ok, zero diagnostics', () => {
-  const model = loadStores(fixture('healthy'));
+  const model = fixtureModel('healthy');
   assert.deepEqual(model.diagnostics, []);
   assert.equal(model.ok, true);
 });
 
 test('healthy store: entries indexed by id in each id space', () => {
-  const model = loadStores(fixture('healthy'));
+  const model = fixtureModel('healthy');
   assert.deepEqual([...model.concepts.keys()], ['K-210', 'K-220']);
   assert.deepEqual([...model.leaves.keys()], ['362.1', '362.2']);
   assert.deepEqual([...model.decisions.keys()], ['D-004']);
@@ -45,7 +52,7 @@ test('healthy store: entries indexed by id in each id space', () => {
 });
 
 test('healthy store: pointer index maps source-of-truth paths to concepts (KK-06 --paths)', () => {
-  const model = loadStores(fixture('healthy'));
+  const model = fixtureModel('healthy');
   assert.deepEqual(
     model.pointers.get('src/verticals/sportsbook/sports/registry.ts'),
     ['K-210'],
@@ -54,7 +61,7 @@ test('healthy store: pointer index maps source-of-truth paths to concepts (KK-06
 });
 
 test('healthy store: cross-ref graph edges are typed and resolved', () => {
-  const model = loadStores(fixture('healthy'));
+  const model = fixtureModel('healthy');
   assert.deepEqual(model.refs, [
     { from: '362.1', type: 'cross-references.see-also', to: '362.2', file: 'knowledge/regulation/362.1-ach-settlement-windows.md', path: 'cross-references.see-also[0]', resolved: true },
     { from: 'D-004', type: 'relates-to.concepts', to: 'K-210', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.concepts[0]', resolved: true },
@@ -66,7 +73,7 @@ test('healthy store: cross-ref graph edges are typed and resolved', () => {
 });
 
 test('healthy store: all three stores present, record files listed', () => {
-  const model = loadStores(fixture('healthy'));
+  const model = fixtureModel('healthy');
   assert.equal(model.stores.ontology.present, true);
   assert.equal(model.stores.knowledge.present, true);
   assert.equal(model.stores.decisions.present, true);
@@ -88,7 +95,7 @@ test('a nonexistent root is an engine failure, not a diagnostic', () => {
 // ---------------------------------------------- malformed entries (§4, §5)
 
 test('malformed: unparseable YAML is a parse-error attributed to its file', () => {
-  const model = loadStores(fixture('malformed'));
+  const model = fixtureModel('malformed');
   assert.equal(model.ok, false, 'the loader refuses to call a broken store healthy');
   assert.deepEqual(byCode(model, 'parse-error').map(({ file, severity }) => ({ file, severity })), [
     { file: 'decisions/entries/broken.yaml', severity: 'error' },
@@ -97,7 +104,7 @@ test('malformed: unparseable YAML is a parse-error attributed to its file', () =
 });
 
 test('malformed: schema defects carry the KK-02 codes on the same scale', () => {
-  const model = loadStores(fixture('malformed'));
+  const model = fixtureModel('malformed');
   const classFile = model.diagnostics.filter((d) => d.file === 'ontology/classes/100-core.yaml');
   assert.deepEqual(
     classFile.map(({ path, code, severity }) => ({ path, code, severity })),
@@ -109,12 +116,12 @@ test('malformed: schema defects carry the KK-02 codes on the same scale', () => 
 });
 
 test('malformed: a schema-invalid record with a usable id is still indexed (preflight needs it)', () => {
-  const model = loadStores(fixture('malformed'));
+  const model = fixtureModel('malformed');
   assert.deepEqual([...model.concepts.keys()], ['K-100']);
 });
 
 test('every diagnostic sits on the one scale: severity/code/file/path/message', () => {
-  const model = loadStores(fixture('malformed'));
+  const model = fixtureModel('malformed');
   assert.ok(model.diagnostics.length > 0);
   for (const d of model.diagnostics) {
     assert.deepEqual(Object.keys(d).sort(), ['code', 'file', 'message', 'path', 'severity']);
@@ -127,7 +134,7 @@ test('every diagnostic sits on the one scale: severity/code/file/path/message', 
 // ------------------------------------------------------ duplicate id (§3.5)
 
 test('duplicate-id: the same id minted in two files errors on the later file', () => {
-  const model = loadStores(fixture('duplicate-id'));
+  const model = fixtureModel('duplicate-id');
   assert.equal(model.ok, false);
   const dupes = byCode(model, 'duplicate-id');
   const conceptDupe = dupes.find((d) => d.file === 'ontology/classes/200-branch-b.yaml');
@@ -138,7 +145,7 @@ test('duplicate-id: the same id minted in two files errors on the later file', (
 });
 
 test('duplicate-id: the same id minted twice within one file is the same defect', () => {
-  const model = loadStores(fixture('duplicate-id'));
+  const model = fixtureModel('duplicate-id');
   const dupe = byCode(model, 'duplicate-id')
     .find((d) => d.file === 'decisions/entries/D-001-twice.yaml');
   assert.ok(dupe);
@@ -147,7 +154,7 @@ test('duplicate-id: the same id minted twice within one file is the same defect'
 });
 
 test('duplicate-id: the first mint wins the index; the model is still queryable', () => {
-  const model = loadStores(fixture('duplicate-id'));
+  const model = fixtureModel('duplicate-id');
   assert.equal(model.concepts.get('K-210').record.term, 'Sport');
   assert.equal(model.decisions.get('D-001').record.title, 'First mint');
 });
@@ -155,7 +162,7 @@ test('duplicate-id: the first mint wins the index; the model is still queryable'
 // ------------------------------------------------- unresolved refs (§3, §4)
 
 test('unresolved-ref: dangling typed refs error in every store, with paths', () => {
-  const model = loadStores(fixture('unresolved-ref'));
+  const model = fixtureModel('unresolved-ref');
   assert.equal(model.ok, false);
   assert.deepEqual(
     byCode(model, 'unresolved-ref').map(({ file, path }) => ({ file, path })),
@@ -169,7 +176,7 @@ test('unresolved-ref: dangling typed refs error in every store, with paths', () 
 });
 
 test('unresolved-ref: messages name the missing id and its store', () => {
-  const model = loadStores(fixture('unresolved-ref'));
+  const model = fixtureModel('unresolved-ref');
   const messages = byCode(model, 'unresolved-ref').map((d) => d.message).join('\n');
   assert.match(messages, /"K-999".*ontology/);
   assert.match(messages, /"D-777".*decisions/);
@@ -178,7 +185,7 @@ test('unresolved-ref: messages name the missing id and its store', () => {
 });
 
 test('unresolved-ref: catalog-declared pending ids resolve (file check is KK-05)', () => {
-  const model = loadStores(fixture('unresolved-ref'));
+  const model = fixtureModel('unresolved-ref');
   const d005 = model.refs.find((r) => r.to === 'D-005');
   assert.equal(d005.resolved, true, 'the catalog never implies a declared id is absent');
   assert.equal(
@@ -188,7 +195,7 @@ test('unresolved-ref: catalog-declared pending ids resolve (file check is KK-05)
 });
 
 test('unresolved-ref: the graph still records dangling edges as resolved: false', () => {
-  const model = loadStores(fixture('unresolved-ref'));
+  const model = fixtureModel('unresolved-ref');
   const dangling = model.refs.filter((r) => !r.resolved).map((r) => r.to).sort();
   assert.deepEqual(dangling, ['999.9', 'D-777', 'K-888', 'K-999']);
 });
@@ -196,7 +203,7 @@ test('unresolved-ref: the graph still records dangling edges as resolved: false'
 // ------------------------------------ §3.5 YAML coercion trap, end to end
 
 test('coercion trap: unquoted true/1.0 in a store FILE hard-error; the model is not healthy', () => {
-  const model = loadStores(fixture('coercion-trap'));
+  const model = fixtureModel('coercion-trap');
   assert.equal(model.ok, false, 'the loader refuses a healthy verdict on coerced scalars');
   const traps = byCode(model, 'non-string-enumerates-value');
   assert.deepEqual(
@@ -211,7 +218,7 @@ test('coercion trap: unquoted true/1.0 in a store FILE hard-error; the model is 
 });
 
 test('coercion trap: scalar types survive parsing — never silently stringified', () => {
-  const model = loadStores(fixture('coercion-trap'));
+  const model = fixtureModel('coercion-trap');
   const values = model.concepts.get('K-300').record.enumerates[0].values;
   assert.deepEqual(values, ['dark-mode', true, 1.0, 'no']);
 });
@@ -219,7 +226,7 @@ test('coercion trap: scalar types survive parsing — never silently stringified
 // -------------------------------------------- missing / empty stores (§6)
 
 test('missing-store: absent store dirs warn, never error — loading is well-defined', () => {
-  const model = loadStores(fixture('partial'));
+  const model = fixtureModel('partial');
   assert.equal(model.ok, true, 'warnings do not break health');
   assert.deepEqual(
     model.diagnostics.map(({ severity, code, file }) => ({ severity, code, file })),
@@ -233,7 +240,7 @@ test('missing-store: absent store dirs warn, never error — loading is well-def
 });
 
 test('missing-catalog: a store dir without its _catalog.yaml is an error', () => {
-  const model = loadStores(fixture('no-catalog'));
+  const model = fixtureModel('no-catalog');
   assert.equal(model.ok, false);
   assert.deepEqual(
     byCode(model, 'missing-catalog').map(({ severity, file }) => ({ severity, file })),
@@ -246,12 +253,9 @@ test('the empty payload templates load healthy with zero diagnostics (post-init 
   const templates = fileURLToPath(new URL('../payload/templates/', import.meta.url));
   const root = mkdtempSync(join(tmpdir(), 'kk04-templates-'));
   try {
-    for (const dir of ['ontology', 'knowledge', 'decisions']) mkdirSync(join(root, dir));
-    for (const file of [
-      'ontology/_catalog.yaml', 'ontology/_rules.yaml',
-      'knowledge/_catalog.yaml', 'knowledge/_rules.yaml',
-      'decisions/_catalog.yaml',
-    ]) copyFileSync(join(templates, file), join(root, file));
+    // Copy the whole template tree so this test tracks the payload itself —
+    // tests/payload-templates.test.js owns the per-file schema assertions.
+    cpSync(templates, root, { recursive: true });
     const model = loadStores(root);
     assert.deepEqual(model.diagnostics, []);
     assert.equal(model.ok, true);
@@ -263,7 +267,7 @@ test('the empty payload templates load healthy with zero diagnostics (post-init 
 });
 
 test('diagnostics are stable-sorted by file, then path, then code (PRD §5)', () => {
-  const model = loadStores(fixture('malformed'));
+  const model = fixtureModel('malformed');
   const keys = model.diagnostics.map((d) => `${d.file} ${d.path} ${d.code}`);
   assert.deepEqual(keys, [...keys].sort());
 });

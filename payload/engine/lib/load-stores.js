@@ -58,17 +58,20 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { load, YAMLException } from 'js-yaml';
-import { validateStoreFile, ERROR_CODES } from './validate-record.js';
+import { validateStoreFile, ERROR_CODES, compare } from './validate-record.js';
 
 export const SEVERITIES = Object.freeze(['error', 'warning']);
 
 export const DIAGNOSTIC_CODES = Object.freeze([
   ...ERROR_CODES,
   'parse-error',
+  'read-error',
   'duplicate-id',
   'unresolved-ref',
+  'skipped-file',
   'missing-store',
   'missing-catalog',
+  'missing-rules',
 ]);
 
 /** Typed cross-references per store record shape (§3.1–3.3): field → id space. */
@@ -92,7 +95,6 @@ const REF_FIELDS = {
 };
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
-const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 
 function sortedMap(map) {
   return new Map([...map.entries()].sort((a, b) => compare(a[0], b[0])));
@@ -150,48 +152,72 @@ function collectRefs(ctx, kind, from, file, basePath, record) {
   }
 }
 
-function readText(root, file) {
+/**
+ * Read one store file. Only a genuinely absent file returns null; any other
+ * failure (permissions, I/O) is an engine-visible read-error — an unread
+ * file must never masquerade as a missing or malformed one (PRD §5).
+ */
+function readText(ctx, file) {
   try {
-    return readFileSync(join(root, file), 'utf8');
-  } catch {
+    return readFileSync(join(ctx.root, file), 'utf8');
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'read-error', file, path: '',
+        message: `cannot read file: ${error.message}`,
+      });
+    }
     return null;
   }
 }
 
+/** One pipeline for every store meta file: read → parse → validate → assign. */
+function loadMetaFile(ctx, file, kind, { onMissing, onParsed } = {}) {
+  const text = readText(ctx, file);
+  if (text === null) {
+    onMissing?.();
+    return null;
+  }
+  const parsed = parseYaml(ctx, file, text);
+  if (!parsed) return null;
+  const valid = validateInto(ctx, kind, file, parsed.doc);
+  onParsed?.(parsed.doc, valid);
+  return valid ? parsed.doc : null;
+}
+
 function loadCatalogAndRules(ctx, store, hasRules) {
   const meta = ctx.stores[store];
-  const catalogFile = `${store}/_catalog.yaml`;
-  const catalogText = readText(ctx.root, catalogFile);
-  if (catalogText === null) {
-    ctx.diagnostics.push({
-      severity: 'error', code: 'missing-catalog', file: catalogFile, path: '',
+  meta.catalog = loadMetaFile(ctx, `${store}/_catalog.yaml`, 'catalog', {
+    onMissing: () => ctx.diagnostics.push({
+      severity: 'error', code: 'missing-catalog', file: `${store}/_catalog.yaml`, path: '',
       message: `store "${store}" has no _catalog.yaml — the navigational entry point every store shares (PRD §3)`,
-    });
-  } else {
-    const parsed = parseYaml(ctx, catalogFile, catalogText);
-    if (parsed && validateInto(ctx, 'catalog', catalogFile, parsed.doc)) {
-      meta.catalog = parsed.doc;
-      for (const entry of parsed.doc.entries) ctx.declared[store].add(entry.id);
-    }
-  }
-  if (hasRules) {
-    const rulesFile = `${store}/_rules.yaml`;
-    const rulesText = readText(ctx.root, rulesFile);
-    if (rulesText !== null) {
-      const parsed = parseYaml(ctx, rulesFile, rulesText);
-      if (parsed && validateInto(ctx, 'rules', rulesFile, parsed.doc)) {
-        meta.rules = parsed.doc;
+    }),
+    // Harvest declared ids from every id-bearing row even when the catalog
+    // has schema defects elsewhere: one bad row must not turn every ref to a
+    // validly declared pending id into a spurious unresolved-ref cascade.
+    onParsed: (doc) => {
+      if (!isObject(doc) || !Array.isArray(doc.entries)) return;
+      for (const entry of doc.entries) {
+        if (isObject(entry) && typeof entry.id === 'string') ctx.declared[store].add(entry.id);
       }
-    }
+    },
+  });
+  if (hasRules) {
+    meta.rules = loadMetaFile(ctx, `${store}/_rules.yaml`, 'rules', {
+      onMissing: () => ctx.diagnostics.push({
+        severity: 'warning', code: 'missing-rules', file: `${store}/_rules.yaml`, path: '',
+        message: `store "${store}" has no _rules.yaml (§9.1) — rules-dependent surfaces have no input`,
+      }),
+    });
   }
 }
 
-function listFiles(root, dir, extension, recursive) {
+function listFiles(ctx, dir, extension, recursive) {
   const out = [];
   const walk = (rel) => {
     let entries;
     try {
-      entries = readdirSync(join(root, rel), { withFileTypes: true });
+      entries = readdirSync(join(ctx.root, rel), { withFileTypes: true });
     } catch {
       return;
     }
@@ -200,8 +226,17 @@ function listFiles(root, dir, extension, recursive) {
       const relPath = `${rel}/${entry.name}`;
       if (entry.isDirectory()) {
         if (recursive) walk(relPath);
-      } else if (entry.isFile() && entry.name.endsWith(extension)) {
+      } else if (entry.name.endsWith(extension)) {
+        // Symlinked record files load like regular ones (isFile() is false
+        // for symlinks; the readFileSync that follows resolves them).
         out.push(relPath);
+      } else {
+        // A file the loader will not read must never be a silent pass
+        // (PRD §5): its ids simply wouldn't exist, with nothing recorded.
+        ctx.diagnostics.push({
+          severity: 'warning', code: 'skipped-file', file: relPath, path: '',
+          message: `not a ${extension} file — the loader only reads ${extension} records here; rename it or move it out of the store`,
+        });
       }
     }
   };
@@ -211,9 +246,11 @@ function listFiles(root, dir, extension, recursive) {
 
 /** Ontology class files / decision entries files: the storeFile envelope. */
 function loadEntriesFiles(ctx, store, subdir, kind, space) {
-  for (const file of listFiles(ctx.root, `${store}/${subdir}`, '.yaml', false)) {
+  for (const file of listFiles(ctx, `${store}/${subdir}`, '.yaml', false)) {
     ctx.stores[store].files.push(file);
-    const parsed = parseYaml(ctx, file, readText(ctx.root, file));
+    const text = readText(ctx, file);
+    if (text === null) continue; // read-error already diagnosed
+    const parsed = parseYaml(ctx, file, text);
     if (!parsed) continue;
     validateInto(ctx, kind, file, parsed.doc);
     if (!isObject(parsed.doc) || !Array.isArray(parsed.doc.entries)) continue;
@@ -228,9 +265,13 @@ function loadEntriesFiles(ctx, store, subdir, kind, space) {
 
 /** Knowledge leaves: YAML front matter + markdown body, one leaf per file. */
 function loadLeafFiles(ctx) {
-  for (const file of listFiles(ctx.root, 'knowledge', '.md', true)) {
+  for (const file of listFiles(ctx, 'knowledge', '.md', true)) {
     ctx.stores.knowledge.files.push(file);
-    const match = /^---\n([^]*?)\n---(?:\n|$)([^]*)$/.exec(readText(ctx.root, file));
+    const raw = readText(ctx, file);
+    if (raw === null) continue; // read-error already diagnosed
+    // Editors and autocrlf produce BOMs and CRLF; both are well-formed input.
+    const text = raw.replace(/^﻿/, '').replace(/\r\n/g, '\n');
+    const match = /^---\n([^]*?\n)?---(?:\n|$)([^]*)$/.exec(text);
     if (!match) {
       ctx.diagnostics.push({
         severity: 'error', code: 'parse-error', file, path: '',
@@ -238,7 +279,7 @@ function loadLeafFiles(ctx) {
       });
       continue;
     }
-    const parsed = parseYaml(ctx, file, match[1]);
+    const parsed = parseYaml(ctx, file, match[1] ?? '');
     if (!parsed) continue;
     validateInto(ctx, 'knowledge-leaf', file, parsed.doc);
     const record = parsed.doc;
