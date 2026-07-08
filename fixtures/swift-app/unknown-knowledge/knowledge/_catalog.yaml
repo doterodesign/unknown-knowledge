@@ -1,0 +1,6 @@
+# Knowledge catalog — Swift acceptance fixture (KK-14). Empty by design: the
+# fixture proves A2/A3 (extraction + drift), which are ontology-side; the
+# store is present so the fixture root loads as a complete §9.1 layout.
+schema-version: 1
+store: knowledge
+entries: []

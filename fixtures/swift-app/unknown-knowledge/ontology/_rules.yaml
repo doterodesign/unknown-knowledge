@@ -1,0 +1,6 @@
+# Ontology rules — Swift acceptance fixture (KK-14). One class, one range.
+schema-version: 1
+store: ontology
+rules:
+  - class: 100-app
+    id-range: [K-100, K-199]

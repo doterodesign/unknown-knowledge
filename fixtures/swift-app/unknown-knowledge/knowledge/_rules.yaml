@@ -1,0 +1,4 @@
+# Knowledge rules — Swift acceptance fixture (KK-14).
+schema-version: 1
+store: knowledge
+rules: []

@@ -1,0 +1,29 @@
+# Ontology catalog — Swift acceptance fixture (KK-14). Navigational entry
+# point per PRD §3; every planted concept is cataloged individually.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-110
+    title: Sport
+    file: classes/100-app.yaml
+  - id: K-120
+    title: Sport wire code
+    file: classes/100-app.yaml
+  - id: K-130
+    title: Betting market
+    file: classes/100-app.yaml
+  - id: K-140
+    title: App configuration section
+    file: classes/100-app.yaml
+  - id: K-150
+    title: Betting feature flag
+    file: classes/100-app.yaml
+  - id: K-160
+    title: Localization key
+    file: classes/100-app.yaml
+  - id: K-170
+    title: Layout density
+    file: classes/100-app.yaml
+  - id: K-180
+    title: Analytics event
+    file: classes/100-app.yaml

@@ -1,0 +1,27 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "cta.deposit" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deposit" } }
+      }
+    },
+    "cta.withdraw" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Withdraw" } }
+      }
+    },
+    "legal.disclaimer" : {
+      "comment" : "Value below contains the token \"strings\" : a decoy for regex-level parsers.",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "See \"strings\" : terms apply." } }
+      }
+    },
+    "promo.100-bonus" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "100% deposit match" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}
