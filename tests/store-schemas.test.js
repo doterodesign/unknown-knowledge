@@ -45,7 +45,7 @@ test('record schemas are strict: unknown keys are typos, not extensions', () => 
 test('§3.5: every store file shape requires schema-version', () => {
   // knowledge-leaf and finding are one-record-per-file shapes: the record IS
   // the store file, so schema-version is required at the record root.
-  for (const name of ['knowledge-leaf', 'finding', 'catalog', 'rules']) {
+  for (const name of ['knowledge-leaf', 'finding', 'survey-scope', 'catalog', 'rules']) {
     assert.ok(
       loadSchema(name).required.includes('schema-version'),
       `${name}: schema-version must be required`,

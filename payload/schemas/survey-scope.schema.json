@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:survey-scope",
+  "title": "Survey scope (PRD §4/§6)",
+  "description": "survey-scope.yaml — the human-confirmed include/exclude traversal boundary from the bootstrap scope+taxonomy gate, persisted at the client repo root. The honor-it contract: once this file exists, survey-map bounds its map to it, and audit/reflect sweeps never rescan excluded areas (widening happens via retrieval-miss findings, never re-litigation). Paths are repo-root-relative directory or file prefixes; exclude wins over include. Evolution is additive-only (§3.5, D-013).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema-version", "include"],
+  "properties": {
+    "schema-version": { "type": "integer", "minimum": 1 },
+    "include": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Root-relative path prefixes that ARE product surface. An empty include would silently survey nothing — hence minItems 1."
+    },
+    "exclude": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Root-relative path prefixes carved OUT of the includes (vendored/generated/infra). Exclude wins over include."
+    }
+  }
+}
