@@ -45,5 +45,9 @@ test('package.json follows D-002 / D-016 conventions', () => {
   assert.equal(pkg.version, '0.0.0', 'version policy lands with KK-28');
   assert.ok(pkg.scripts?.test, 'missing test script');
   assert.ok(pkg.scripts?.lint, 'missing lint script');
-  assert.equal(pkg.dependencies, undefined, 'scaffold ships zero runtime deps (D-002)');
+  assert.deepEqual(
+    Object.keys(pkg.dependencies ?? {}),
+    ['js-yaml'],
+    'PRD §4: js-yaml and little else',
+  );
 });
