@@ -1,0 +1,21 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-001
+    title: Seeded-once-then-owned; no update channel, ever
+    category: governance
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      The kit is a scaffolding tool, not a platform. User independence is the
+      positioning promise — now license-backed (D-015).
+    decision: >
+      The kit is seeded once into a target repo and then owned outright by the
+      client. There is no update channel, ever.
+    consequences: >
+      Improvements reach future inits via the vendor's engagements and
+      community contributions.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-015] }

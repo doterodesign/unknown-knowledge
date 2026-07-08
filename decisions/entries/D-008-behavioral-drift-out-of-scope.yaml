@@ -1,0 +1,20 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-008
+    title: Behavioral drift detection is out of scope, stated openly
+    category: scope
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      The kit catches conceptual/vocabulary drift; behavior is the test
+      suite's job.
+    decision: >
+      Behavioral drift detection is out of scope, and the limitation is stated
+      openly.
+    consequences: >
+      Saying so prevents over-selling and misplaced trust.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

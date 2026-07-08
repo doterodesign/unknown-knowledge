@@ -76,6 +76,15 @@ verbatim user text or secrets. Logs are fragment-based (one file per entry)
 so concurrent sessions never merge-conflict; uncorroborated entries age out
 after N reflect cycles.
 
+**Verdict** — Preflight's per-concept output: `trusted / quarantined /
+unknown`. Computed deterministically by the engine; what an agent does about
+a verdict is protocol-layer policy the client owns (D-011).
+
+**Suppression** — A client-zone record (term, sourcePath, reason, date)
+telling the reverse audit "this is deliberately not a concept." Exact-match
+only in v1 — can only under-suppress, never falsely silence (D-013).
+Rejection memory for the steward.
+
 **Steward** — The person or rotation owning the improvement loop in a client
 repo: runs reflect on cadence, triages audit proposals, gates knowledge
 promotions. Wired in via CODEOWNERS on the kit root; reflect output lands as

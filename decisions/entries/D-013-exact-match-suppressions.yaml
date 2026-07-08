@@ -1,0 +1,23 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-013
+    title: Suppressions ship as a minimal exact-match client-zone file; patterns/expiry/reflect-proposals deferred
+    category: scope
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Rejection without memory makes steward work non-persistent and kills the
+      audit by week three; deferral forces clients to hack vendored audit code
+      (the reference implementation's own documented flaw). Exact match fails
+      safe — it can only under-suppress — and the schema grows additively once
+      a real noise profile exists. Designing pattern granularity from fixtures
+      would be schema-under-ignorance frozen by seeded-once (D-001).
+    decision: >
+      Suppressions ship as a minimal exact-match client-zone file (term,
+      sourcePath, reason, date); patterns, expiry, and reflect-proposals are
+      deferred; engine-internal noise heuristics stay engine-side.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001] }

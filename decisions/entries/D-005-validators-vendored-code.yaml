@@ -1,0 +1,18 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-005
+    title: Validators run only vendored, versioned, tested code — never same-session agent-authored code
+    category: trust
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      A subtly wrong parser yields a false all-clear; determinism is the
+      product. Agents draft; humans gate; code validates.
+    decision: >
+      Validators run only vendored, versioned, tested code — never code an
+      agent authored in the same session.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

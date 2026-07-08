@@ -1,0 +1,22 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-016
+    title: The product is named `unknown-knowledge`
+    category: scope
+    status: accepted
+    date: "2026-07-08"
+    deciders: [dimitri]
+    context: >
+      Aligns with the Unknown Creatives studio family. The name freezes into
+      every seeded repo (CLI command, default root dir, manifest, README —
+      D-001), so it is decided before packaging (KK-17/KK-19). Internal plan
+      IDs stay KK-NN — they are stable identifiers, not brand surface.
+    decision: >
+      The product is named `unknown-knowledge`.
+    consequences: >
+      npm availability/typosquat check and bare-vs-scoped form are KK-28
+      packaging work.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-017, D-018] }

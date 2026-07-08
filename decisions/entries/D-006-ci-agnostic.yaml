@@ -1,0 +1,17 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-006
+    title: CI-agnostic; init never touches CI config
+    category: scope
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Removes an adoption blocker; PREFLIGHT makes every agent session a gate
+      meanwhile; docs cover wiring when the client is ready.
+    decision: >
+      The kit is CI-agnostic: init never touches CI configuration.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

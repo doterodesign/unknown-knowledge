@@ -1,0 +1,25 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-011
+    title: Preflight verdicts are deterministic engine code; conduct-on-verdict is protocol-layer policy
+    category: trust
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Diagnostic interpretation is validation and belongs in the trust
+      boundary, not in per-platform LLM judgment. But fail-open vs. fail-stop
+      is a per-client governance choice that must not be frozen into vendored
+      code under seeded-once (D-001) — the engine reports facts; policy stays
+      in markdown the client owns. A cached "trusted" is a false all-clear.
+      (Adversarial review 2026-07-07: advocate and skeptic converged on this
+      split.)
+    decision: >
+      Preflight verdicts are computed by deterministic engine code;
+      conduct-on-verdict is protocol-layer policy (client-editable), with
+      quarantine-and-continue as the recommended default. No verdict caching
+      in v1.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001] }
