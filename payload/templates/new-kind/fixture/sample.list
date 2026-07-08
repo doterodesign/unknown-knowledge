@@ -1,0 +1,7 @@
+# Extractor fixture for the line-list demo kind (D-009): a sample anchor the
+# parser must read, paired with fixture/EXPECTED.yaml. Blank lines and
+# comments are inside the envelope; any other non-value line hard-errors.
+
+- nfl
+- nba
+- mlb

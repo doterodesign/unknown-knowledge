@@ -1,0 +1,18 @@
+# new-kind drafting template — the enumerates descriptor the RE-RUN step
+# will validate once the kind has passed GATE and INTEGRATE (PRD §5.2).
+#
+# This is NOT a store file — it is the fragment you paste into the owning
+# concept's `enumerates:` list. Field set per ontology-concept.schema.json
+# ($defs/enumeratesDescriptor): kind + source + values required; symbol and
+# emit only where the kind needs them (this demo kind needs neither).
+#
+# - `kind` names the parser that re-derives the claim (lowercase/digits/
+#   hyphens — the set is open: clients author later kinds through this
+#   template).
+# - `source` must name a listed source-of-truth entry of the concept (§3.5).
+# - `values` is the claim, diffed BOTH WAYS against what the parser extracts
+#   (value-not-in-source / source-value-missing). Strings, byte-exact,
+#   case-sensitive, as sets — quote YAML-1.1 traps like "no"/"on" (§3.5).
+- kind: line-list
+  source: docs/supported-sports.list
+  values: [nfl, nba, mlb]

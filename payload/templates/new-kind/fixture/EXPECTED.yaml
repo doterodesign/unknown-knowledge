@@ -1,0 +1,6 @@
+# Expected extraction for fixture/sample.list — the other half of the D-009
+# sample-file → expected-values pair. Values are strings compared byte-exact,
+# case-sensitive, as a set (§3.5): order here is presentation only.
+kind: line-list
+file: sample.list
+values: [nfl, nba, mlb]
