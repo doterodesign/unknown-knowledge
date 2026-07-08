@@ -1,29 +1,26 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:unknown-knowledge:schema:finding",
-  "title": "Finding log fragment (PRD §3.4)",
-  "description": "One agent-appended finding in logs/findings/ — ONE FILE PER ENTRY (D-010), so concurrent sessions never merge-conflict; the fragment is the store file and carries schema-version (§3.5). Raw signal, no judgment at capture time. Capture content policy: concept IDs and file paths only — never verbatim user text or secrets; committed fragments are permanent git history. Lifecycle open → proposed → resolved/rejected; recurrences re-open the same entry (never duplicate), appending to occurrences. The reflect skill (KK-22) consolidates fragments and prunes resolved ones; uncorroborated entries age out to archived with a rollup note. Sibling logs live in logs/misses/ (miss.schema.json) and logs/gaps/ (gap.schema.json). Schema evolution is additive-only (§3.5, D-013).",
+  "$id": "urn:unknown-knowledge:schema:gap",
+  "title": "Gap-log fragment (PRD §3.4)",
+  "description": "One request no protocol/skill could route, recorded in logs/gaps/ — ONE FILE PER ENTRY (D-010), so concurrent sessions never merge-conflict; the fragment is the store file and carries schema-version (§3.5). Capture content policy: concept IDs and file paths only — never verbatim user text or secrets; committed fragments are permanent git history. Lifecycle open → proposed → resolved/rejected; recurrences re-open the same entry (never duplicate), appending to occurrences. The reflect skill (KK-22) consolidates fragments and prunes resolved ones; uncorroborated entries age out to archived with a rollup note. Schema evolution is additive-only (§3.5, D-013).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema-version", "date", "trigger", "summary", "status"],
+  "required": ["schema-version", "date", "summary", "status"],
   "properties": {
     "schema-version": { "type": "integer", "minimum": 1 },
     "date": { "$ref": "#/$defs/isoDate" },
-    "trigger": {
-      "enum": ["correction", "recurrence", "retrieval-struggle", "retrieval-miss", "quarantine"],
-      "description": "The five capture triggers; quarantine is engine-attributed."
+    "summary": {
+      "type": "string",
+      "description": "What could not be routed, by concept IDs and file paths only — never verbatim user text or secrets."
     },
     "session": {
       "type": "string",
-      "description": "Platform/session hint."
-    },
-    "summary": {
-      "type": "string",
-      "description": "Concept IDs and file paths only — never verbatim user text or secrets."
+      "description": "Opaque platform/session hint — an ID, never quoted session content."
     },
     "consulted": {
       "type": "object",
       "additionalProperties": false,
+      "description": "Nearest concepts/leaves consulted before declaring the gap.",
       "properties": {
         "concepts": { "type": "array", "items": { "$ref": "#/$defs/conceptRef" } },
         "leaves": { "type": "array", "items": { "$ref": "#/$defs/notation" } }
