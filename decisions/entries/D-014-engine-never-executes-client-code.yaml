@@ -1,0 +1,23 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-014
+    title: The engine never executes client code — lexical parsing only, no network
+    category: trust
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Both a security answer ("does this tool run our code in CI?" — "no,
+      guaranteed and grep-tested," A6) and a design constraint that stops the
+      tempting "just import the module and read the array" extractor from
+      silently crossing the line. Costs a paragraph and a test; sells and
+      protects disproportionately.
+    decision: >
+      The engine never executes client code: no import/eval/spawn of repo
+      content, lexical parsing only, no network. Any future adapter that
+      breaks this (e.g. remote-config fetch-at-validate) must be explicitly
+      opt-in.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

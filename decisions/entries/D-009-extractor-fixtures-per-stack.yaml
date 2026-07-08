@@ -1,0 +1,21 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-009
+    title: Extractor fixtures ship per stack selected at init; later stacks are client-authored, warned at init
+    category: scope
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Clients own and extend the extractor library, so they need the runnable
+      gate and the authoring template for the stacks they'll touch.
+      Seeded-once (D-001) means there is no vendor to return to — the warning
+      makes self-service explicit rather than discovered.
+    decision: >
+      Extractor fixtures ship per stack selected at init (auto-detected,
+      confirmable); later stacks are client-authored from the shipped
+      template, warned at init.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001] }

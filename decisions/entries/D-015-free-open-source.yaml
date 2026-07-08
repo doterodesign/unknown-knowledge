@@ -1,0 +1,26 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-015
+    title: Free and open source — permissive license, public npm; revenue attaches to services, never the code
+    category: governance
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      The kit vendors code into private repos, so permissive is
+      architecturally forced (copyleft would contaminate every seeded repo and
+      fail enterprise procurement). Apache-2.0's patent grant eases the
+      security reviews this tool will face, and its trademark clause protects
+      the product name.
+    decision: >
+      The kit is free and open source: permissive license (Apache-2.0
+      recommended; MIT acceptable), public npm, released to the general
+      community. Revenue attaches to services, never the code.
+    consequences: >
+      OSS converts D-001's ownership promise into a legal fact, opens a
+      community channel for extractor compounding, and makes the kit the
+      credibility engine for paid engagements on top.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001] }

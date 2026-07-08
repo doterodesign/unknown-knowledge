@@ -1,0 +1,18 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-004
+    title: Two-phase init — deterministic CLI scaffold, then agent-run bootstrap
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      The CLI stays dumb; all judgment lives in skills run by the client's own
+      agent. Validated pattern (mattpocock/skills).
+    decision: >
+      Init runs in two phases: a deterministic CLI scaffold, then an agent-run
+      bootstrap.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

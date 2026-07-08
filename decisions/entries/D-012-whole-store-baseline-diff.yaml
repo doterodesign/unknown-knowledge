@@ -1,0 +1,24 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-012
+    title: PR drift attribution via whole-store baseline finding-set diff; git-diff subset scoping rejected for v1
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Subset validation can return green over a drifted store whenever the
+      reverse index has a gap (folder pointers, dir-modules adds/deletes,
+      renames) — the false all-clear D-005 ranks worse than no check, shipped
+      permanently under D-001. Diffing two honest whole-store runs attributes
+      strictly better and costs near zero.
+    decision: >
+      PR drift attribution diffs whole-store baseline finding-sets (stable
+      sorted JSON) with --concepts filters. Git-diff reverse-index subset
+      scoping is REJECTED for v1.
+    consequences: >
+      Deferred, not banned: an optimization trigger is recorded in §11.1.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-005] }

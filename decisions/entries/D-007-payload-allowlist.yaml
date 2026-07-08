@@ -1,0 +1,17 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-007
+    title: Init copies from an explicit payload allowlist; acceptance fixtures and kit tests can never ship
+    category: trust
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Nothing leaks by omission; the manifest is the boundary.
+    decision: >
+      Init copies only what an explicit payload allowlist names; acceptance
+      fixtures and kit tests can never ship to a target repo.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

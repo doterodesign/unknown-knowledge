@@ -1,0 +1,21 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-010
+    title: Git-native concurrency — no runtime/server/locks; stores reviewed as code; fragment-based logs
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Hundreds of concurrent agent sessions must not contend: branches
+      isolate, PRs merge, validators gate, and one-file-per-entry logs make
+      concurrent appends conflict-free. The human gates run on review
+      infrastructure the org already trusts instead of new approval tooling.
+    decision: >
+      Concurrency is git-native: no runtime, server, or locks. Stores are code
+      reviewed as code (CODEOWNERS → steward); reflect output lands as a PR;
+      logs are fragment-based (one file per entry).
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

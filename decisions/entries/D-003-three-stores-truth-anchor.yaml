@@ -1,0 +1,20 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-003
+    title: Three stores split by truth anchor (artifact/world/team), uniform YAML rigor
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Anchor dictates governance; merging stores makes the seam implicit and
+      ungovernable.
+    decision: >
+      Facts split into three stores by truth anchor — Ontology (artifact),
+      Knowledge (world), Decisions (team) — governed with uniform YAML rigor.
+      The decisions store carries schema + lifecycle so agents can reference
+      and version rationale.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

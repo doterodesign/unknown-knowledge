@@ -1,0 +1,18 @@
+# One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
+schema-version: 1
+entries:
+  - id: D-002
+    title: Engine is TypeScript/Node, zero build step, minimal deps
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Most target shops are web/platform-agnostic TS; Node is ubiquitous in CI;
+      clients must be able to read and extend what they own — no binaries.
+    decision: >
+      The engine is TypeScript/Node with zero build step and minimal
+      dependencies.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }
