@@ -68,6 +68,12 @@ export const SUPPORTED_KEYWORDS = Object.freeze([
   'items', 'enum', 'pattern', 'minItems', 'minimum',
 ]);
 
+/**
+ * Lexicographic comparator shared by every engine surface that emits
+ * stable-sorted, diffable output (PRD §5) — one ordering, one copy.
+ */
+export const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
+
 const schemaCache = new Map();
 
 function schemaFor(kind) {
@@ -283,8 +289,7 @@ function finish(errors, { fileEnvelope }) {
     .map((e) => (fileEnvelope && e.path === 'schema-version' && SCHEMA_VERSION_VALUE_DEFECTS.has(e.code)
       ? { ...e, code: 'invalid-schema-version', message: `${e.message} — every store file carries an integer schema-version >= 1 (§3.5)` }
       : e));
-  cleaned.sort((a, b) =>
-    a.path < b.path ? -1 : a.path > b.path ? 1 : a.code < b.code ? -1 : a.code > b.code ? 1 : 0);
+  cleaned.sort((a, b) => compare(a.path, b.path) || compare(a.code, b.code));
   return { ok: cleaned.length === 0, errors: cleaned };
 }
 

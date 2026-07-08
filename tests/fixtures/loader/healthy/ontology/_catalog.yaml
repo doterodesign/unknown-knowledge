@@ -1,0 +1,10 @@
+# Synthetic loader fixture — healthy store (KK-04 tests).
+schema-version: 1
+store: ontology
+entries:
+  - id: K-210
+    title: Sport
+    file: classes/200-sportsbook.yaml
+  - id: K-220
+    title: Bet slip
+    file: classes/200-sportsbook.yaml

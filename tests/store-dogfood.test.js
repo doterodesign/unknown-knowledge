@@ -7,6 +7,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
+import { loadStores } from '../payload/engine/lib/load-stores.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const entriesDir = join(root, 'decisions', 'entries');
@@ -50,10 +51,13 @@ test('catalog ids are unique and every row resolves to its own entry file', () =
   for (const row of catalog.entries) {
     assert.ok(!seen.has(row.id), `${row.id} must be cataloged exactly once`);
     seen.add(row.id);
-    const path = join(root, 'decisions', row.file);
-    assert.ok(existsSync(path), `${row.id}: catalog file ${row.file} must exist`);
+    assert.ok(
+      existsSync(join(root, 'decisions', row.file)),
+      `${row.id}: catalog file ${row.file} must exist`,
+    );
     // The map is never the fact — but it must point at the fact it names.
-    const doc = load(readFileSync(path, 'utf8'));
+    const doc = entryDocs.get(row.file.replace(/^entries\//, ''));
+    assert.ok(doc, `${row.id}: ${row.file} must live in decisions/entries/`);
     assert.deepEqual(
       doc.entries.map((e) => e.id),
       [row.id],
@@ -88,4 +92,29 @@ test('each entry file declares exactly the D-NNN id its filename carries', () =>
       `${file} must hold the single entry ${id} (one entry per file, D-010)`,
     );
   }
+});
+
+// KK-04: the loader must load the kit repo itself with ZERO errors — the
+// ontology and knowledge stores don't exist here yet, which is exactly the
+// well-defined missing-store warning case.
+const model = loadStores(root);
+
+test('the kit repo loads through the store loader with zero errors', () => {
+  assert.deepEqual(model.diagnostics.filter((d) => d.severity === 'error'), []);
+  assert.equal(model.ok, true);
+  assert.deepEqual(
+    model.diagnostics.map(({ severity, code, file }) => ({ severity, code, file })),
+    [
+      { severity: 'warning', code: 'missing-store', file: 'knowledge' },
+      { severity: 'warning', code: 'missing-store', file: 'ontology' },
+    ],
+  );
+});
+
+test("the kit's own decision entries are indexed and their refs resolve", () => {
+  const ids = [...model.decisions.keys()];
+  assert.ok(ids.includes('D-017'), JSON.stringify(ids));
+  assert.ok(ids.includes('D-018'), JSON.stringify(ids));
+  assert.ok(model.refs.length > 0);
+  assert.ok(model.refs.every((r) => r.resolved), 'catalog-declared pending ids resolve');
 });

@@ -1,0 +1,10 @@
+schema-version: 1
+entries:
+  - id: D-001
+    title: Lone decision
+    category: process
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: c
+    decision: d

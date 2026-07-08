@@ -1,0 +1,4 @@
+schema-version: 1
+entries:
+  - id: D-001
+   title: bad indentation makes this unparseable

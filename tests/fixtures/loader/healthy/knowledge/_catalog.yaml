@@ -1,0 +1,9 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: "362.1"
+    title: ACH settlement windows
+    file: regulation/362.1-ach-settlement-windows.md
+  - id: "362.2"
+    title: Wire settlement windows
+    file: regulation/362.2-wire-settlement-windows.md
