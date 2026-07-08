@@ -1,0 +1,35 @@
+# One entry per file; schema per PRD.html §3.3.
+schema-version: 1
+entries:
+  - id: D-018
+    title: Registry form — bare `unknown-knowledge` is canonical; `@unknown-creatives` scope reserved
+    category: governance
+    status: accepted
+    date: "2026-07-08"
+    deciders: [dimitri]
+    context: >
+      KK-28 leaves the bare-vs-scoped call open. The PRD's supply-chain posture
+      note (KK-28 item 3) suggests a scoped package, but every documented command
+      in the PRD and in every seeded README is `npx unknown-knowledge init` —
+      frozen permanently by D-001/D-016. An unclaimed bare name is therefore the
+      single worst typosquat vector this product could have: a squatter's package
+      would execute verbatim from our own shipped documentation.
+    decision: >
+      Publish the bare package `unknown-knowledge` as the one canonical package.
+      Register the `unknown-creatives` npm organization to reserve the scope for
+      brand protection and future packages, but do not dual-publish a scoped
+      alias (split downloads, doubled attack/maintenance surface). The
+      supply-chain posture scoped packaging stood in for is delivered directly:
+      publish 2FA required, npm provenance attestation from CI (works for
+      unscoped packages via GitHub Actions OIDC), publish access restricted to
+      the org.
+    consequences: >
+      `npx unknown-knowledge init` resolves to the real product with zero
+      ambiguity. KK-28 packaging work inherits three obligations: enable 2FA,
+      wire provenance attestation into the release workflow, and create the
+      `unknown-creatives` npm org before first publish. The scoped name remains
+      unpublished by design; if npm search confusion ever materializes, a scoped
+      pointer package can be added additively.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-016, D-017] }

@@ -1,0 +1,17 @@
+# decisions/_catalog.yaml — the kit's own decisions store (it eats its own cooking, §9.2)
+# schema-version: 1 (additive-only evolution, D-013 rule generalized — §3.5)
+schema-version: 1
+store: decisions
+entries:
+  # D-001..D-016 are recorded in PRD.html §13 and are imported as individual
+  # entry files by KK-03 (M0). Listed here as pending so the catalog never
+  # implies they are absent from the record.
+  - id: D-001..D-016
+    title: Seed decision set (see PRD.html §13)
+    file: pending-KK-03
+  - id: D-017
+    title: npm name availability & typosquat check — unknown-knowledge is clean
+    file: entries/D-017-npm-name-availability.yaml
+  - id: D-018
+    title: Registry form — bare `unknown-knowledge` is canonical; scope reserved
+    file: entries/D-018-registry-form.yaml
