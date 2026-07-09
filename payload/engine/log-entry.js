@@ -21,7 +21,7 @@
 import process from 'node:process';
 import { createEntry, transitionStatus, LOGS } from './lib/log-entry.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
-import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
+import { isEntrypoint, parseArgs as parseFlags, rethrowIfBug, runCli, UsageError } from './lib/cli.js';
 
 const USAGE = `usage:
   log-entry.js create --log <${Object.keys(LOGS).join('|')}> --date YYYY-MM-DD --entry '<json fields>' [--suffix hhhhhhhh] [--root dir]
@@ -70,6 +70,7 @@ export function main(argv) {
       ? createEntry({ root, log: options.log, date: options.date, fields, suffix: options.suffix })
       : transitionStatus({ root, file: options.file, to: options.to, date: options.date, reason: options.reason });
   } catch (error) {
+    rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
     // An EXPECTED refusal (an illegal transition, an invalid entry, an unknown
     // log): a hard error, never a silent pass (PRD §5). Exit 2 — the entry was
     // not written, so nothing was found and nothing was logged.

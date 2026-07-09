@@ -30,6 +30,7 @@ import { EXIT_CODES } from './exit-codes.js';
 import { UsageError } from './usage-error.js';
 
 export { UsageError } from './usage-error.js';
+export { EngineRefusal, rethrowIfBug } from './engine-refusal.js';
 
 /**
  * Parse the flag grammar every engine CLI shares.

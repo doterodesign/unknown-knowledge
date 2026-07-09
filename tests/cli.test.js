@@ -13,7 +13,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
-import { parseArgs, runCli, UsageError } from '../payload/engine/lib/cli.js';
+import { EngineRefusal, parseArgs, rethrowIfBug, runCli, UsageError } from '../payload/engine/lib/cli.js';
 
 /** Collects what a command would have written to stderr. */
 const capture = () => {
@@ -258,17 +258,98 @@ test('every migrated surface refuses an empty --root rather than reading the cwd
 test('the two surfaces that can return exit 1 return it only when they ran', () => {
   // survey-map reports blind spots with exit 1; audit reports findings with
   // exit 1 under --fail-on-findings. Both must reach exit 2 — never 1 — when
-  // the run itself could not complete. Here: a root that is not a git repo,
-  // and a root that does not exist.
+  // the run itself could not complete.
   const cli = (n) => fileURLToPath(new URL(`../payload/engine/${n}`, import.meta.url));
-  const missing = fileURLToPath(new URL('fixtures/does-not-exist', import.meta.url));
-  for (const args of [['survey-map.js', '--root', missing], ['audit.js', '--fail-on-findings', '--root', missing]]) {
-    const [name, ...rest] = args;
-    const r = spawnSync(process.execPath, [cli(name), ...rest], { encoding: 'utf8', timeout: 10_000 });
-    assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out`);
-    assert.notEqual(r.status, EXIT_CODES.FINDINGS,
-      `${name} exited 1 on a run that never completed — an agent would read that as a real answer`);
-    assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: a run that could not complete exits 2`);
+  const scenarios = [
+    ['a root that does not exist', fileURLToPath(new URL('fixtures/does-not-exist', import.meta.url))],
+    ['a root that is a file, not a directory', fileURLToPath(new URL('cli.test.js', import.meta.url))],
+  ];
+  for (const [label, root] of scenarios) {
+    for (const [name, ...rest] of [['survey-map.js'], ['audit.js', '--fail-on-findings']]) {
+      const r = spawnSync(process.execPath, [cli(name), ...rest, '--root', root], { encoding: 'utf8', timeout: 10_000 });
+      assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out on ${label}`);
+      assert.notEqual(r.status, EXIT_CODES.FINDINGS,
+        `${name} exited 1 on ${label} — a run that never completed. An agent would read that as a real answer`);
+      assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: a run that could not complete exits 2 (${label})`);
+    }
+  }
+});
+
+// ------------------------------- refusal vs bug (UCS-949, CodeRabbit #38)
+//
+// A surface may report an ANTICIPATED refusal itself, without a stack. It must
+// not report a BUG that way: a TypeError rendered as `audit: cannot read
+// properties of undefined` reads exactly like a considered refusal, and nobody
+// can debug it. Both exit 2 — this is diagnosability, not the exit contract.
+
+test('rethrowIfBug lets an anticipated refusal through and rethrows everything else', () => {
+  // A refusal: what every engine refusal already throws.
+  assert.doesNotThrow(() => rethrowIfBug(new Error('no git in this root')));
+  assert.doesNotThrow(() => rethrowIfBug(new EngineRefusal('two candidate kit roots')));
+
+  // Bugs. Each must travel on to the harness.
+  for (const bug of [new TypeError('x'), new ReferenceError('x'), new RangeError('x'), new SyntaxError('x')]) {
+    assert.throws(() => rethrowIfBug(bug), bug.constructor, `${bug.name} is a bug, not a refusal`);
+  }
+  // A usage error raised deep in the engine belongs to the harness too — only
+  // it knows to print the usage line.
+  assert.throws(() => rethrowIfBug(new UsageError('bad flag')), UsageError);
+  // A non-Error throw is never a considered refusal.
+  assert.throws(() => rethrowIfBug('a string'));
+});
+
+test('a bug inside a surface reaches the harness, stack and all', async () => {
+  // The surfaces' engine-failure catches sit between `main` and `runCli`. This
+  // composes them exactly as the CLIs do: the catch calls rethrowIfBug, so the
+  // TypeError travels on and runCli prints a stack.
+  const stderr = capture();
+  const surfaceMain = () => {
+    try {
+      throw new TypeError('simulated engine bug');
+    } catch (error) {
+      rethrowIfBug(error);
+      stderr.write('surface: swallowed\n'); // unreachable: rethrowIfBug threw
+      return EXIT_CODES.FAILURE;
+    }
+  };
+  const code = await runCli('audit', surfaceMain, { usage: 'u', argv: [], stderr });
+  assert.equal(code, EXIT_CODES.FAILURE);
+  assert.doesNotMatch(stderr.text, /swallowed/, 'the surface must not speak for a bug');
+  assert.match(stderr.text, /internal failure/);
+  assert.match(stderr.text, /simulated engine bug/);
+  assert.match(stderr.text, /at /, 'a bug reports its stack');
+});
+
+test('an anticipated refusal is still reported by the surface, without a stack', async () => {
+  // The surface writes its own message and returns; the harness adds nothing.
+  const stderr = capture();
+  const surfaceMain = () => {
+    try {
+      throw new Error('no git in this root');
+    } catch (error) {
+      rethrowIfBug(error);
+      stderr.write(`survey-map: ${error.message}\n`);
+      return EXIT_CODES.FAILURE;
+    }
+  };
+  const code = await runCli('survey-map', surfaceMain, { usage: 'u', argv: [], stderr });
+  assert.equal(code, EXIT_CODES.FAILURE);
+  assert.equal(stderr.text, 'survey-map: no git in this root\n', 'a refusal carries no stack and no usage line');
+});
+
+test('every surface that catches an engine failure rethrows bugs first', async () => {
+  // Structural. A catch that reports `${error.message}` without first asking
+  // rethrowIfBug is a catch that will one day report a TypeError as a refusal.
+  for (const name of ['audit.js', 'survey-map.js', 'log-entry.js']) {
+    const source = await readFile(fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url)), 'utf8');
+    for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
+      // Only the catches that DECIDE THE COMMAND'S FATE. A catch that degrades
+      // an unreadable suppressions file to a warning and carries on is not
+      // speaking for the run, so it owes nothing to the harness.
+      if (!/EXIT_CODES\.FAILURE/.test(block)) continue;
+      assert.match(block, /rethrowIfBug\(error\)/,
+        `${name} has a catch that reports an error message without first rethrowing bugs:\n${block}`);
+    }
   }
 });
 

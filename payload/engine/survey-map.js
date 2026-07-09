@@ -32,7 +32,7 @@ import { ANCHOR_SIGNATURES } from './lib/anchor-signatures.js';
 import { SCOPE_FILE } from './lib/kit-root.js';
 import { validateStoreFile, compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
-import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
+import { isEntrypoint, parseArgs as parseFlags, rethrowIfBug, runCli, UsageError } from './lib/cli.js';
 
 export { SCOPE_FILE } from './lib/kit-root.js';
 
@@ -338,6 +338,7 @@ export function main(argv) {
   try {
     map = buildSurveyMap(opts.root);
   } catch (error) {
+    rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
     // An EXPECTED environment failure (no git, unparseable scope, a scope whose
     // include matches nothing): the survey never ran, so it cannot report blind
     // spots. Exit 2 — never 1, which would claim it ran and found them.

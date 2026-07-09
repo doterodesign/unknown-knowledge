@@ -83,7 +83,7 @@ import { locateKit, SCOPE_FILE, SUPPRESSIONS_FILE } from './lib/kit-root.js';
 import { loadStores, storeHealth } from './lib/load-stores.js';
 import { compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
-import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
+import { isEntrypoint, parseArgs as parseFlags, rethrowIfBug, runCli, UsageError } from './lib/cli.js';
 
 const USAGE = 'usage: node payload/engine/audit.js [--root <dir>] [--json] [--fail-on-findings] [--today <YYYY-MM-DD>] [--stale-days <n>]';
 const STALE_DAYS_DEFAULT = 90;
@@ -350,6 +350,7 @@ export function main(argv) {
   try {
     payload = runAudit(opts.root, { today: opts.today, staleDays: opts.staleDays });
   } catch (error) {
+    rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
     // An EXPECTED engine failure (malformed scope, unhealthy store, no git):
     // the audit never ran to completion — exit 2, never a plausible report.
     // These are anticipated conditions with actionable messages, so they say
