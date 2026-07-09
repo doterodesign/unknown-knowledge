@@ -70,7 +70,8 @@ expected-artifact boxes, and records the wall-clock time.
 | Checklist | Skill / protocol under test | Fixture | Status |
 |---|---|---|---|
 | [`A5-agents-md-walkthrough.md`](A5-agents-md-walkthrough.md) | `payload/protocol/AGENTS.md` runtime loop (resolve → preflight → act → log) | ts-app | landed (KK-20) |
-| A5-kb-build walkthrough | kb-build skill | TBD | to come with KK-21 |
+| [`A5-knowledge-bootstrap-walkthrough.md`](A5-knowledge-bootstrap-walkthrough.md) | `payload/protocol/skills/knowledge-bootstrap.md` phase-2 bootstrap (survey → gate → emit → miss → interview → green finish) | swift-app | landed (KK-21) |
+| A5-kb-build walkthrough | kb-build skill | TBD | to come |
 | A5-knowledge-audit walkthrough | knowledge-audit skill | TBD | to come with KK-22 |
 | A5-reflect walkthrough | reflect skill (seeded findings → recommendation list → simulated approval → green re-validation) | TBD | to come with KK-23 |
 
