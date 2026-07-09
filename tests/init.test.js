@@ -208,6 +208,27 @@ test('clean git repo: sweep runs silently; non-git target: sweep skipped with on
 
 // ------------------------------------------- refusals + usage errors (exit 2)
 
+// Every other test pre-creates its target, so the nonexistent-target path
+// needs its own pin: auto-detection walks the target long before the copy
+// engine's guard fires, and an ENOENT stack trace exits 1 — the FINDINGS
+// code — making a crashed init read as "seeded, with findings".
+test('a target that does not exist refuses cleanly (exit 2), never an ENOENT stack trace', () => {
+  const missing = join(scratch, 'no-such-dir-here');
+  const r = runInit(['init', '--yes', '--target', missing]);
+  assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
+  assert.match(r.stderr, /is not an existing directory/);
+  assert.ok(!/ENOENT|readdirSync|at Object\./.test(r.stderr), `no stack trace: ${r.stderr}`);
+});
+
+test('a target that is a file, not a directory, refuses cleanly (exit 2)', () => {
+  const filePath = join(freshDir(), 'a-file');
+  writeFileSync(filePath, 'not a dir\n');
+  const r = runInit(['init', '--yes', '--target', filePath]);
+  assert.equal(r.status, 2, r.stderr);
+  assert.match(r.stderr, /is not an existing directory/);
+});
+
+
 test('engine refusals pass through: an existing root refuses (exit 2); unknown platform/stack flags refuse BEFORE seeding', () => {
   const target = freshDir();
   assert.equal(runInit(['init', '--yes', '--target', target]).status, 0);

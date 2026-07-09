@@ -28,13 +28,16 @@
  * Exit codes (same contract as cli/init-copy.js):
  *   0 — seeded clean. Wrapper skips and gitignore WARNs are reported
  *       results, not failures — the seed happened.
- *   2 — refusal (existing/partial seed, dotted root), usage error, or any
- *       engine failure. A seed that did not happen is never a silent pass.
+ *   2 — refusal (existing/partial seed, dotted root), usage error, a target
+ *       that is not an existing directory, or any engine failure — including
+ *       an unexpected throw, which the entry point maps here rather than
+ *       letting it exit 1. A seed that did not happen is never a silent pass,
+ *       and never wears the FINDINGS code.
  */
 import { createInterface } from 'node:readline';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { readdirSync } from 'node:fs';
+import { readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
@@ -250,6 +253,16 @@ export async function main(argv, { stdin = process.stdin, stdout = process.stdou
   }
   const knownStacks = Object.keys(manifest.sections.stacks).sort();
   const knownPlatforms = Object.keys(manifest.platforms).sort();
+
+  // The target must exist before anything reads it: auto-detection walks it
+  // (below) long before the copy engine's own guard would fire, and a typo'd
+  // --target should say so, not surface an ENOENT stack trace.
+  const target = resolve(opts.target);
+  if (!statSync(target, { throwIfNoEntry: false })?.isDirectory()) {
+    stderr.write(`unknown-knowledge init: target ${JSON.stringify(target)} is not an existing directory — `
+      + 'create it (or fix --target) and re-run; a seed that did not happen is never a silent pass\n');
+    return EXIT_CODES.FAILURE;
+  }
   const detected = detectStacks(opts.target).filter((s) => knownStacks.includes(s));
 
   // Resolve the three answers: flags win; --yes accepts every default
@@ -371,5 +384,14 @@ export async function main(argv, { stdin = process.stdin, stdout = process.stdou
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  main(process.argv.slice(2)).then((code) => { process.exitCode = code; });
+  main(process.argv.slice(2)).then(
+    (code) => { process.exitCode = code; },
+    (error) => {
+      // An unhandled rejection would die on an unhandled-rejection trace with
+      // exit 1 — the FINDINGS code — so a crashed init would read as "seeded
+      // with findings" instead of "the seed never happened" (PRD §5).
+      process.stderr.write(`unknown-knowledge init: internal failure — nothing was seeded\n${error.stack || error.message}\n`);
+      process.exitCode = EXIT_CODES.FAILURE;
+    },
+  );
 }
