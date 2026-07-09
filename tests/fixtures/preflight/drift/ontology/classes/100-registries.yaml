@@ -1,0 +1,35 @@
+# KK-26 drift fixture: K-100's enumerates claim drifted from its source (the
+# acceptance case — quarantined), K-110 is untouched (must stay trusted), and
+# K-130 is draft (unknown, §3.5).
+schema-version: 1
+entries:
+  - id: K-100
+    term: Sport
+    class: 100-registries
+    summary: A sport vertical the product serves.
+    source-of-truth: [src/sports.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/sports.txt
+        values: [nfl, nba, xfl]
+  - id: K-110
+    term: Currency
+    class: 100-registries
+    summary: A settlement currency.
+    source-of-truth: [src/currencies.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/currencies.txt
+        values: [usd, eur]
+  - id: K-130
+    term: Draft vertical
+    class: 100-registries
+    summary: A concept still being drafted.
+    source-of-truth: [src/sports.txt]
+    status: draft
+    enumerates:
+      - kind: test-lines
+        source: src/sports.txt
+        values: [not-in-the-source]

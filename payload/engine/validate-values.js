@@ -61,7 +61,8 @@
  */
 import process from 'node:process';
 import { readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadStores } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -190,7 +191,16 @@ function selectConcepts(model, ids) {
   return ids.map((id) => model.concepts.get(id));
 }
 
-function validateValues(model, conceptIds, repoRoot) {
+/**
+ * Run every enumerates check over a loaded model — the reusable seam
+ * preflight (KK-26) consumes, so verdicts and this validator can never
+ * disagree. `conceptIds` null = all concepts; an unknown id throws (a check
+ * that never ran is a blocking defect). `repoRoot` is where descriptor
+ * sources resolve (§9.1 repo-relative); it defaults to the store root, the
+ * flat layout where both coincide. Returns { findings, hardErrors,
+ * checked }, stable-sorted.
+ */
+export function validateValues(model, conceptIds, repoRoot = model.root) {
   // Sources are repo-relative (§9.1), not store-relative: in a seeded repo
   // the stores sit at <repo>/unknown-knowledge/ but point at <repo>/src/....
   const ctx = { root: repoRoot, findings: [], hardErrors: [], checked: [] };
@@ -334,7 +344,9 @@ function main(argv) {
   }
 }
 
-// exitCode, never process.exit(): exit() drops queued async stdout writes, so
-// piped --json output would truncate at the ~64KB pipe buffer (corrupt JSON
-// with exit 0). Node exits on its own once stdout drains.
-process.exitCode = main(process.argv.slice(2));
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // exitCode, never process.exit(): exit() drops queued async stdout writes,
+  // so piped --json output would truncate at the ~64KB pipe buffer (corrupt
+  // JSON with exit 0). Node exits on its own once stdout drains.
+  process.exitCode = main(process.argv.slice(2));
+}
