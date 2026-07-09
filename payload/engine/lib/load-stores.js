@@ -394,11 +394,10 @@ export function loadStores(root) {
  * this single shape, so they can never disagree about it (PRD §4).
  */
 export function storeHealth(model) {
-  return {
-    ok: model.ok,
-    errors: model.diagnostics.filter((d) => d.severity === 'error').length,
-    warnings: model.diagnostics.filter((d) => d.severity === 'warning').length,
-  };
+  // Derived from the widened form, never filtered a second time: while both
+  // shapes exist they cannot disagree. UCS-951 deletes this one.
+  const { ok, errorCount, warningCount } = storeDiagnostics(model);
+  return { ok, errors: errorCount, warnings: warningCount };
 }
 
 /**

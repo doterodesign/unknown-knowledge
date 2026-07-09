@@ -52,7 +52,7 @@ import { statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { loadStores, normalizeConceptIds, storeHealth } from './lib/load-stores.js';
+import { loadStores, normalizeConceptIds, storeDiagnostics, storeHealth } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -352,7 +352,7 @@ function main(argv) {
     // ran, and a check that never ran is a blocking defect (exit 2), never a
     // silent pass or a partial findings list.
     if (!model.ok) {
-      const errors = model.diagnostics.filter((d) => d.severity === 'error');
+      const { errors } = storeDiagnostics(model);
       process.stderr.write(`validate: the store loader reported ${errors.length} error(s) — structural checks never ran (a check that never ran is a blocking defect, PRD §5)\n`);
       for (const d of errors) {
         process.stderr.write(`  ${d.code}  ${d.file}${d.path ? `  ${d.path}` : ''}  ${d.message}\n`);

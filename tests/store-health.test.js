@@ -11,6 +11,8 @@
 // despite being the invariant itself.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readdir, readFile } from 'node:fs/promises';
+import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { loadStores, storeDiagnostics, storeHealth } from '../payload/engine/lib/load-stores.js';
 
@@ -98,4 +100,36 @@ test('the widened form is what the six hand-filters were computing by hand', () 
     assert.deepEqual(wide.errors, model.diagnostics.filter((d) => d.severity === 'error'));
     assert.deepEqual(wide.warnings, model.diagnostics.filter((d) => d.severity === 'warning'));
   }
+});
+
+// -------------------------------------- the seam is used, not walked around
+//
+// UCS-945. The single-health-model guarantee must hold because one function
+// decides what "healthy" means — not because every call site happens to filter
+// the same way. This is a structural pin: it fails the moment a surface starts
+// deriving store health for itself again.
+
+test('no engine surface derives store health by hand — only the loader does', async () => {
+  const engineDir = fileURLToPath(new URL('../payload/engine', import.meta.url));
+  const offenders = [];
+  const walk = async (dir) => {
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) { await walk(path); continue; }
+      if (!entry.name.endsWith('.js')) continue;
+      // The loader is the one authority; it alone may filter by severity.
+      if (path.endsWith(join('lib', 'load-stores.js'))) continue;
+      const source = await readFile(path, 'utf8');
+      if (/diagnostics\s*\.\s*filter/.test(source)) offenders.push(relative(engineDir, path));
+    }
+  };
+  await walk(engineDir);
+  assert.deepEqual(offenders, [],
+    `these surfaces re-derive store health instead of asking the loader: ${offenders.join(', ')}`);
+});
+
+test('the resolver has no forked health helper of its own', async () => {
+  const source = await readFile(fileURLToPath(new URL('../payload/engine/resolve.js', import.meta.url)), 'utf8');
+  assert.ok(!/^function storeHealth/m.test(source), 'the resolver must import the loader\'s helper, not redeclare it');
+  assert.match(source, /import \{[^}]*storeHealth[^}]*\} from '\.\/lib\/load-stores\.js'/);
 });
