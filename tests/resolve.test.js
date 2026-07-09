@@ -6,6 +6,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { chmodSync, cpSync, mkdtempSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const cli = fileURLToPath(new URL('../payload/engine/resolve.js', import.meta.url));
@@ -366,4 +369,37 @@ test('--paths: an entry naming the repo root is a usage error, never silently dr
   assert.match(r.stderr, /name the repo root/);
   // `src/..` normalizes to the root the same way.
   assert.equal(run('--paths', 'src/..', '--root', store).status, 2);
+});
+
+// -------------------------------------- unreadable pointers & the exit-1 trap
+
+test('--paths: an unreadable pointer falls back to the name, never crashes the lookup', () => {
+  // `throwIfNoEntry: false` silences ENOENT only — an EACCES parent still
+  // throws. The lookup must still answer for every other pointer.
+  const dir = mkdtempSync(join(tmpdir(), 'resolve-eacces-'));
+  cpSync(onDiskStore, dir, { recursive: true });
+  const guarded = join(dir, 'src');
+  try {
+    chmodSync(guarded, 0o000);
+    // If the sandbox does not enforce the mode (root, or a permissive fs),
+    // the stat succeeds and there is no unreadable pointer to test.
+    let enforced = false;
+    try { statSync(join(guarded, 'api.v2'), { throwIfNoEntry: false }); } catch { enforced = true; }
+    if (!enforced) return;
+    const r = run('--paths', 'src/api.v2/handler.ts', '--root', dir, '--json');
+    assert.equal(r.status, 0, `an unreadable pointer must not crash: ${r.stderr}`);
+    assert.ok(!/EACCES|at Object\./.test(r.stderr), `no stack trace: ${r.stderr}`);
+  } catch (error) {
+    if (error?.code !== 'EPERM') throw error; // some CI sandboxes forbid chmod
+  } finally {
+    chmodSync(guarded, 0o755);
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('an internal failure exits 2, never 1 — the resolver emits no findings', () => {
+  // The resolver has no FINDINGS outcome, so exit 1 must be unreachable: a
+  // crash reading as "resolved, with findings" is the PRD §5 failure class.
+  const r = run('--paths', 'src/x.ts', '--root', brokenStore);
+  assert.notEqual(r.status, 1, `resolve must never exit 1: ${r.stdout}${r.stderr}`);
 });

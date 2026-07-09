@@ -187,13 +187,25 @@ function normPath(root, p) {
  * under-reports. Over-reporting would put a concept the change never touched
  * in front of a human, and false attribution is the costlier error here.
  *
+ * An unreadable pointer (EACCES on its parent) is epistemically the same as an
+ * absent one — the filesystem declines to say — so it takes the same name
+ * fallback rather than crashing a lookup that can still answer for every other
+ * pointer. `throwIfNoEntry: false` silences ENOENT only.
+ *
  * Stat once per pointer: `--paths` crosses every pointer with every path.
  */
 function folderPointerTest(repoRoot) {
   const cache = new Map();
+  const statOrNull = (path) => {
+    try {
+      return statSync(path, { throwIfNoEntry: false }) ?? null;
+    } catch {
+      return null; // unreadable: the filesystem cannot decide, so the name does
+    }
+  };
   return (pointer) => {
     if (!cache.has(pointer)) {
-      const stat = statSync(join(repoRoot, pointer), { throwIfNoEntry: false });
+      const stat = statOrNull(join(repoRoot, pointer));
       cache.set(pointer, stat ? stat.isDirectory() : posix.extname(pointer) === '');
     }
     return cache.get(pointer);
@@ -374,8 +386,14 @@ function main(argv) {
     return EXIT_CODES.CLEAN;
   } catch (error) {
     // One handler for every phase's usage errors, so the paths never drift.
-    if (!(error instanceof UsageError)) throw error;
-    process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
+    if (error instanceof UsageError) {
+      process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
+      return EXIT_CODES.FAILURE;
+    }
+    // An uncaught throw would exit 1 — the FINDINGS code — so a crashed lookup
+    // would read as "resolved, with findings" instead of "the lookup never
+    // ran" (PRD §5). The resolver emits no findings; it must never exit 1.
+    process.stderr.write(`resolve: internal failure — the lookup did not run\n${error.stack || error.message}\n`);
     return EXIT_CODES.FAILURE;
   }
 }
