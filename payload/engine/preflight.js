@@ -49,7 +49,7 @@
 import process from 'node:process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeDiagnostics, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { healthSummary, loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -129,7 +129,7 @@ function computeVerdicts(model, ids, repoRoot) {
 
 /** Store-wide failure: no check ran — every requested verdict is unknown. */
 function degradeAll(model, ids) {
-  const errors = storeDiagnostics(model).errorCount;
+  const errors = storeHealth(model).errorCount;
   return ids.map((id) => ({
     concept: id, status: model.concepts.get(id)?.record.status ?? null, verdict: 'unknown',
     reason: `store-wide failure: the loader reported ${errors} error(s) — no check ran for any concept (single health model, PRD §4)`,
@@ -267,10 +267,12 @@ function main(argv) {
       return EXIT_CODES.FAILURE;
     }
 
-    const health = storeHealth(model);
+    // One read of the one authority; the wire shape is a projection of it.
+    const fullHealth = storeHealth(model);
+    const health = healthSummary(fullHealth);
     const storeVerdict = model.ok ? 'trusted' : 'unknown';
-    const storeErrors = storeDiagnostics(model)
-      .errors.map(({ code, file, path, message }) => ({ code, file, path, message }));
+    const storeErrors = fullHealth.errors
+      .map(({ code, file, path, message }) => ({ code, file, path, message }));
 
     // Empty/omitted --concepts: store-health-only — exit on the store verdict
     // alone (§7); no per-concept check runs, so no per-concept verdict exists.
