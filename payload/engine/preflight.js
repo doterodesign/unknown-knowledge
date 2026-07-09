@@ -49,7 +49,7 @@
 import process from 'node:process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { loadStores, locateKitRoot, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { createEntry } from './lib/log-entry.js';
@@ -79,9 +79,9 @@ const NEXT_ACTIONS = Object.freeze({
  * concept. Only called on a healthy store (the store-wide degradation path
  * never reaches the validators: their checks would not have run).
  */
-function computeVerdicts(model, ids) {
+function computeVerdicts(model, ids, repoRoot) {
   const structural = runChecks(model);
-  const values = validateValues(model, null); // full run; attribution below
+  const values = validateValues(model, null, repoRoot); // full run; attribution below
 
   return selectConcepts(model, ids).map(({ id, record }) => {
     const status = record.status ?? null;
@@ -253,7 +253,8 @@ function main(argv) {
 
     let model;
     try {
-      model = loadStores(opts.root);
+      // --root is the repo root (§9.1), same as validate-values.js.
+      model = loadStores(locateKitRoot(opts.root));
     } catch (error) {
       process.stderr.write(`preflight: ${error.message}\n`);
       return EXIT_CODES.FAILURE;
@@ -274,7 +275,7 @@ function main(argv) {
       // Store-wide failures degrade ALL requested verdicts to unknown: the
       // validators' checks never ran over a store that failed to load, and a
       // check that never ran is a blocking defect, never a silent pass.
-      verdicts = model.ok ? computeVerdicts(model, opts.concepts) : degradeAll(model, opts.concepts);
+      verdicts = model.ok ? computeVerdicts(model, opts.concepts, opts.root) : degradeAll(model, opts.concepts);
     }
 
     const counts = {

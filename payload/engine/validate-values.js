@@ -60,10 +60,10 @@
  * 2 engine failure / check-never-ran.
  */
 import process from 'node:process';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { loadStores, locateKitRoot, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
@@ -71,15 +71,6 @@ import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
 const USAGE = 'usage: node payload/engine/validate-values.js [--concepts <ids>] [--json] [--root <dir>]';
 
 class UsageError extends Error {}
-
-/** The §9.1 seeded kit directory name; stores live there in a client repo. */
-const KIT_DIR_DEFAULT = 'unknown-knowledge';
-
-/** Store root for a repo root: <root>/unknown-knowledge/ if present, else root. */
-function locateKitRoot(root) {
-  const nested = join(root, KIT_DIR_DEFAULT);
-  return statSync(nested, { throwIfNoEntry: false })?.isDirectory() ? nested : root;
-}
 
 // ------------------------------------------------------------ the check body
 
