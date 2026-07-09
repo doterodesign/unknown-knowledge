@@ -1,0 +1,5 @@
+{
+  "live-betting": true,
+  "cash-out": false,
+  "same-game-parlay": { "max-legs": 10 }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "sample-app",
+  "config": {
+    "flags": {
+      "live-betting": true,
+      "cash-out": true,
+      "same-game-parlay": false
+    }
+  },
+  "scripts": {
+    "dev": "vite"
+  }
+}
