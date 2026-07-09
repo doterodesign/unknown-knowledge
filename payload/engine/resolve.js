@@ -61,6 +61,7 @@ import { join, posix } from 'node:path';
 import { healthSummary, loadStores, storeHealth } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
 import { compare } from './lib/validate-record.js';
 
 const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
@@ -78,8 +79,6 @@ const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still
 const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
 const words = (s) => norm(s).split(/[^a-z0-9]+/).filter(Boolean);
 const strings = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
-
-class UsageError extends Error {}
 
 // ---------------------------------------------------------------- query mode
 
@@ -255,37 +254,19 @@ function resolvePaths(model, rawPaths, repoRoot) {
 // ------------------------------------------------------------- CLI plumbing
 
 function parseArgs(argv) {
-  const opts = { json: false, root: process.cwd(), paths: null, terms: [] };
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    // Both conventional flag spellings: `--flag value` and `--flag=value`.
-    const eq = arg.startsWith('--') ? arg.indexOf('=') : -1;
-    const flag = eq === -1 ? arg : arg.slice(0, eq);
-    if (flag === '--json') {
-      if (eq !== -1) throw new UsageError('--json takes no value');
-      opts.json = true;
-    } else if (flag === '--root' || flag === '--paths') {
-      let value;
-      if (eq !== -1) {
-        value = arg.slice(eq + 1);
-        // `--root=` is as valueless as a bare `--root`: an empty root would
-        // silently resolve to cwd, answering about a repo nobody named.
-        if (value === '') throw new UsageError(`${flag} requires a value`);
-      } else {
-        value = argv[i + 1];
-        if (value === undefined || value.startsWith('--')) {
-          throw new UsageError(`${flag} requires a value`);
-        }
-        i += 1;
-      }
-      if (flag === '--root') opts.root = value;
-      else opts.paths = [...(opts.paths ?? []), ...value.split(',')];
-    } else if (arg.startsWith('--')) {
-      throw new UsageError(`unknown flag ${arg}`);
-    } else {
-      opts.terms.push(arg);
-    }
-  }
+  const { options, positionals } = parseFlags(argv, {
+    boolean: ['json'],
+    value: ['root'],
+    repeatable: ['paths'],
+    // Query terms arrive as bare arguments; --paths is the reverse lookup.
+    positionals: true,
+  });
+  const opts = {
+    json: !!options.json,
+    root: options.root ?? process.cwd(),
+    paths: options.paths ? options.paths.flatMap((v) => v.split(',')) : null,
+    terms: positionals,
+  };
   if (opts.paths && opts.terms.length) {
     throw new UsageError('give either query terms or --paths, not both');
   }
@@ -355,7 +336,7 @@ function renderPaths(payload) {
 }
 
 function main(argv) {
-  try {
+  {
     const opts = parseArgs(argv);
 
     let model;
@@ -379,21 +360,15 @@ function main(argv) {
       : (payload.mode === 'query' ? renderQuery(payload) : renderPaths(payload));
     process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
     return EXIT_CODES.CLEAN;
-  } catch (error) {
-    // One handler for every phase's usage errors, so the paths never drift.
-    if (error instanceof UsageError) {
-      process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
-      return EXIT_CODES.FAILURE;
-    }
-    // An uncaught throw would exit 1 — the FINDINGS code — so a crashed lookup
-    // would read as "resolved, with findings" instead of "the lookup never
-    // ran" (PRD §5). The resolver emits no findings; it must never exit 1.
-    process.stderr.write(`resolve: internal failure — the lookup did not run\n${error.stack || error.message}\n`);
-    return EXIT_CODES.FAILURE;
   }
 }
 
-// exitCode, never process.exit(): exit() drops queued async stdout writes, so
-// piped --json output would truncate at the ~64KB pipe buffer (corrupt JSON
-// with exit 0). Node exits on its own once stdout drains.
-process.exitCode = main(process.argv.slice(2));
+if (isEntrypoint(import.meta.url)) {
+  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
+  // The resolver emits no findings, so exit 1 must be unreachable for it.
+  //
+  // exitCode, never process.exit(): exit() drops queued async stdout writes, so
+  // piped --json output would truncate at the ~64KB pipe buffer (corrupt JSON
+  // with exit 0). Node exits on its own once stdout drains.
+  runCli('resolve', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
+}

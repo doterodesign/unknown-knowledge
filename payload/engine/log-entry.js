@@ -21,6 +21,7 @@
 import process from 'node:process';
 import { createEntry, transitionStatus, LOGS } from './lib/log-entry.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { isEntrypoint, parseArgs as parseFlags, rethrowIfBug, runCli, UsageError } from './lib/cli.js';
 
 const USAGE = `usage:
   log-entry.js create --log <${Object.keys(LOGS).join('|')}> --date YYYY-MM-DD --entry '<json fields>' [--suffix hhhhhhhh] [--root dir]
@@ -34,38 +35,23 @@ const KNOWN_FLAGS = Object.freeze({
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
-  const known = KNOWN_FLAGS[command] ?? [];
-  const options = {};
-  for (let i = 0; i < rest.length; i += 1) {
-    const arg = rest[i];
-    // Both conventional flag spellings: `--flag value` and `--flag=value`
-    // (mirrors resolve.js's parser).
-    const eq = arg.startsWith('--') ? arg.indexOf('=') : -1;
-    const flag = eq === -1 ? arg : arg.slice(0, eq);
-    if (!flag.startsWith('--') || !known.includes(flag.slice(2))) {
-      throw new Error(`unknown argument ${JSON.stringify(flag)}\n${USAGE}`);
-    }
-    let value;
-    if (eq === -1) {
-      value = rest[i + 1];
-      if (value === undefined) throw new Error(`${flag} requires a value\n${USAGE}`);
-      i += 1;
-    } else {
-      value = arg.slice(eq + 1);
-    }
-    options[flag.slice(2)] = value;
+  if (!Object.hasOwn(KNOWN_FLAGS, command ?? '')) {
+    throw new UsageError(`unknown command ${JSON.stringify(command)}`);
   }
+  // The grammar is per-subcommand: `--file` is meaningful to transition and a
+  // typo to create. A flag the subcommand does not know is an error, never
+  // silence.
+  const { options } = parseFlags(rest, { value: KNOWN_FLAGS[command] });
   return { command, options };
 }
 
-function main() {
-  const { command, options } = parseArgs(process.argv.slice(2));
-  if (!Object.hasOwn(KNOWN_FLAGS, command ?? '')) {
-    throw new Error(`unknown command ${JSON.stringify(command)}\n${USAGE}`);
-  }
+/** @returns {number} an exit code */
+export function main(argv) {
+  const { command, options } = parseArgs(argv); // a UsageError reaches the harness
   const root = options.root ?? process.cwd();
+
+  let fields = null;
   if (command === 'create') {
-    let fields = null;
     try {
       fields = JSON.parse(options.entry ?? '');
     } catch {
@@ -74,23 +60,32 @@ function main() {
     // JSON.parse also accepts null/scalars/arrays — only a plain object is
     // a set of kind-specific fields.
     if (typeof fields !== 'object' || fields === null || Array.isArray(fields)) {
-      throw new Error(`--entry must be a JSON object of kind-specific fields\n${USAGE}`);
+      throw new UsageError('--entry must be a JSON object of kind-specific fields');
     }
-    return createEntry({ root, log: options.log, date: options.date, fields, suffix: options.suffix });
   }
-  return transitionStatus({
-    root, file: options.file, to: options.to, date: options.date, reason: options.reason,
-  });
+
+  let result;
+  try {
+    result = command === 'create'
+      ? createEntry({ root, log: options.log, date: options.date, fields, suffix: options.suffix })
+      : transitionStatus({ root, file: options.file, to: options.to, date: options.date, reason: options.reason });
+  } catch (error) {
+    rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
+    // An EXPECTED refusal (an illegal transition, an invalid entry, an unknown
+    // log): a hard error, never a silent pass (PRD §5). Exit 2 — the entry was
+    // not written, so nothing was found and nothing was logged.
+    process.stderr.write(`log-entry: ${error.message}\n`);
+    return EXIT_CODES.FAILURE;
+  }
+
+  const { file, entry } = result;
+  // exitCode, never process.exit(): exit() drops queued async stdout writes, so
+  // piped JSON output could truncate (corrupt output with exit 0).
+  console.log(JSON.stringify({ file, status: entry.status, entry }, null, 2));
+  return EXIT_CODES.CLEAN;
 }
 
-// exitCode, never process.exit(): exit() drops queued async stdout writes, so
-// piped JSON output could truncate (corrupt output with exit 0) — same
-// rationale as resolve.js. Node exits on its own once stdout drains.
-try {
-  const { file, entry } = main();
-  console.log(JSON.stringify({ file, status: entry.status, entry }, null, 2));
-  process.exitCode = EXIT_CODES.CLEAN;
-} catch (error) {
-  process.stderr.write(`log-entry: ${error.message}\n`);
-  process.exitCode = EXIT_CODES.FAILURE;
+if (isEntrypoint(import.meta.url)) {
+  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
+  runCli('log-entry', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
 }

@@ -77,13 +77,13 @@
 import process from 'node:process';
 import { readFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { dump, load } from 'js-yaml';
 import { buildSurveyMap } from './survey-map.js';
 import { locateKit, SCOPE_FILE, SUPPRESSIONS_FILE } from './lib/kit-root.js';
 import { loadStores, storeHealth } from './lib/load-stores.js';
 import { compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { isEntrypoint, parseArgs as parseFlags, rethrowIfBug, runCli, UsageError } from './lib/cli.js';
 
 const USAGE = 'usage: node payload/engine/audit.js [--root <dir>] [--json] [--fail-on-findings] [--today <YYYY-MM-DD>] [--stale-days <n>]';
 const STALE_DAYS_DEFAULT = 90;
@@ -92,8 +92,6 @@ const STALE_DAYS_DEFAULT = 90;
 // with the opposite tie-break, and so read a different Store than every other
 // surface whenever a repo carried both layouts.
 export { SUPPRESSIONS_FILE } from './lib/kit-root.js';
-
-class UsageError extends Error {}
 
 
 const underPrefix = (path, prefix) => path === prefix || path.startsWith(`${prefix}/`);
@@ -298,50 +296,29 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
 // ------------------------------------------------------------- CLI plumbing
 
 function parseArgs(argv) {
+  const { options } = parseFlags(argv, {
+    boolean: ['json', 'fail-on-findings'],
+    value: ['root', 'today', 'stale-days'],
+  });
   const opts = {
-    root: process.cwd(), json: false, failOnFindings: false,
-    today: null, staleDays: STALE_DAYS_DEFAULT,
+    root: resolve(options.root ?? process.cwd()),
+    json: !!options.json,
+    // Advisory by design (D-013): findings never gate. Only a HUMAN opting in
+    // with --fail-on-findings turns them into a non-zero exit, and it is never
+    // a shipped CI default.
+    failOnFindings: !!options['fail-on-findings'],
+    today: options.today ?? null,
+    staleDays: STALE_DAYS_DEFAULT,
   };
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    const eq = arg.startsWith('--') ? arg.indexOf('=') : -1;
-    const flag = eq === -1 ? arg : arg.slice(0, eq);
-    const takesValue = ['--root', '--today', '--stale-days'].includes(flag);
-    if (flag === '--json' || flag === '--fail-on-findings') {
-      if (eq !== -1) throw new UsageError(`${flag} takes no value`);
-      if (flag === '--json') opts.json = true;
-      else opts.failOnFindings = true;
-    } else if (takesValue) {
-      let value;
-      if (eq !== -1) {
-        value = arg.slice(eq + 1);
-      } else {
-        value = argv[i + 1];
-        if (value === undefined || value.startsWith('--')) {
-          throw new UsageError(`${flag} requires a value`);
-        }
-        i += 1;
-      }
-      if (flag === '--root') {
-        opts.root = value;
-      } else if (flag === '--today') {
-        if (!ISO_DATE.test(value) || Number.isNaN(Date.parse(`${value}T00:00:00Z`))) {
-          throw new UsageError(`--today must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(value)}`);
-        }
-        opts.today = value;
-      } else {
-        opts.staleDays = Number(value);
-        if (!Number.isInteger(opts.staleDays) || opts.staleDays < 0) {
-          throw new UsageError(`--stale-days must be a non-negative integer, got ${JSON.stringify(value)}`);
-        }
-      }
-    } else if (arg.startsWith('--')) {
-      throw new UsageError(`unknown flag ${arg}`);
-    } else {
-      throw new UsageError(`unexpected argument ${JSON.stringify(arg)} — this CLI takes flags only`);
+  if (opts.today !== null && (!ISO_DATE.test(opts.today) || Number.isNaN(Date.parse(`${opts.today}T00:00:00Z`)))) {
+    throw new UsageError(`--today must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
+  }
+  if (options['stale-days'] !== undefined) {
+    opts.staleDays = Number(options['stale-days']);
+    if (!Number.isInteger(opts.staleDays) || opts.staleDays < 0) {
+      throw new UsageError(`--stale-days must be a non-negative integer, got ${JSON.stringify(options['stale-days'])}`);
     }
   }
-  opts.root = resolve(opts.root);
   return opts;
 }
 
@@ -367,25 +344,30 @@ function renderHuman(payload) {
 }
 
 export function main(argv) {
+  const opts = parseArgs(argv); // a UsageError reaches the harness
+
+  let payload;
   try {
-    const opts = parseArgs(argv);
-    const payload = runAudit(opts.root, { today: opts.today, staleDays: opts.staleDays });
-    const lines = opts.json ? [JSON.stringify(payload, null, 2)] : renderHuman(payload);
-    process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
-    return opts.failOnFindings && payload.counts.findings > 0 ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
+    payload = runAudit(opts.root, { today: opts.today, staleDays: opts.staleDays });
   } catch (error) {
-    if (error instanceof UsageError) {
-      process.stderr.write(`audit: ${error.message}\n${USAGE}\n`);
-    } else {
-      // Engine failure (malformed scope, unhealthy store, no git, a crash):
-      // the audit never ran to completion — exit 2, never a plausible report.
-      process.stderr.write(`audit: ${error.message}\n`);
-    }
+    rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
+    // An EXPECTED engine failure (malformed scope, unhealthy store, no git):
+    // the audit never ran to completion — exit 2, never a plausible report.
+    // These are anticipated conditions with actionable messages, so they say
+    // what happened rather than dumping a stack; an UNEXPECTED throw anywhere
+    // else reaches the harness, which does dump one.
+    process.stderr.write(`audit: ${error.message}\n`);
     return EXIT_CODES.FAILURE;
   }
+
+  const lines = opts.json ? [JSON.stringify(payload, null, 2)] : renderHuman(payload);
+  process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
+  // Advisory (D-013): findings alone never gate. Only the human opt-in does.
+  return opts.failOnFindings && payload.counts.findings > 0 ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isEntrypoint(import.meta.url)) {
+  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
   // Never process.exit(): it truncates piped stdout mid-flush (PRD §5).
-  process.exitCode = main(process.argv.slice(2));
+  runCli('audit', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
 }

@@ -35,6 +35,7 @@
  */
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
+import { EngineRefusal } from './engine-refusal.js';
 
 /** The §9.1/D-016 seeded kit directory name. Renames are a later seam. */
 export const KIT_DIR_DEFAULT = 'unknown-knowledge';
@@ -66,7 +67,7 @@ const isDir = (path) => !!statSync(path, { throwIfNoEntry: false })?.isDirectory
 const looksLikeStoreRoot = (root) => isDir(join(root, 'ontology')) || isDir(join(root, 'knowledge'));
 
 /** A repo whose Kit cannot be identified — never resolved by guessing. */
-export class AmbiguousKitLayout extends Error {
+export class AmbiguousKitLayout extends EngineRefusal {
   // Without this, `err.name` reads "Error" and a logged refusal hides which
   // failure it was — the exit-2 message should identify itself.
   name = 'AmbiguousKitLayout';

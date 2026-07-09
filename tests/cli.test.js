@@ -13,7 +13,7 @@ import { spawnSync } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
-import { parseArgs, runCli, UsageError } from '../payload/engine/lib/cli.js';
+import { EngineRefusal, parseArgs, rethrowIfBug, runCli, UsageError } from '../payload/engine/lib/cli.js';
 
 /** Collects what a command would have written to stderr. */
 const capture = () => {
@@ -188,14 +188,29 @@ test('a value that looks like a negative number is still a value, not a flag', (
   assert.equal(options['stale-days'], '-1', 'only `--` prefixes are flags');
 });
 
-// ------------------------------- the migrated surfaces (UCS-948, batch 1)
+// -------------------------- the migrated surfaces (UCS-948, UCS-949)
 //
-// The harness's own tests above prove a throw exits 2. These prove the three
-// migrated surfaces actually route through it — a structural pin, because a
-// CLI that re-grew its own catch block would pass every behavioural test right
-// up until the day it crashed and reported findings.
+// The harness's own tests above prove a throw exits 2. These prove the migrated
+// surfaces actually route through it — a structural pin, because a CLI that
+// re-grew its own catch block would pass every behavioural test right up until
+// the day it crashed and reported findings.
+//
+// `survey-map` and `audit` are the ones that make this urgent: they are the two
+// surfaces that legitimately RETURN exit 1 (blind spots; findings under the
+// human opt-in). For them, a crash wearing the FINDINGS code is not a cosmetic
+// bug — it is indistinguishable from a real answer.
 
-const MIGRATED = ['validate.js', 'validate-values.js', 'preflight.js'];
+/** Each migrated surface, and the argv prefix it needs before `--root`. */
+const MIGRATED_SURFACES = Object.freeze([
+  { name: 'validate.js', before: [] },
+  { name: 'validate-values.js', before: [] },
+  { name: 'preflight.js', before: [] },
+  { name: 'resolve.js', before: ['some-term'] },
+  { name: 'audit.js', before: [] },
+  { name: 'survey-map.js', before: [] },
+  { name: 'log-entry.js', before: ['create'] },
+]);
+const MIGRATED = MIGRATED_SURFACES.map((s) => s.name);
 
 test('the migrated surfaces run through the harness and own no catch-to-exit mapping', async () => {
   for (const name of MIGRATED) {
@@ -228,14 +243,130 @@ test('a crash in a migrated surface exits 2, never 1 — the guard is the harnes
 });
 
 test('every migrated surface refuses an empty --root rather than reading the cwd', () => {
-  for (const name of MIGRATED) {
+  for (const { name, before } of MIGRATED_SURFACES) {
     const cli = fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url));
     // A bounded spawn: if a surface ever regressed into blocking (waiting on
     // stdin, say) before reaching the usage-error path, an unbounded spawn
     // would hang CI rather than fail it.
-    const r = spawnSync(process.execPath, [cli, '--root', ''], { encoding: 'utf8', timeout: 10_000 });
+    const r = spawnSync(process.execPath, [cli, ...before, '--root', ''], { encoding: 'utf8', timeout: 10_000 });
     assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out instead of refusing an empty --root`);
     assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: --root "" must not silently mean the cwd`);
     assert.match(r.stderr, /--root requires a value/);
   }
+});
+
+test('the two surfaces that can return exit 1 return it only when they ran', () => {
+  // survey-map reports blind spots with exit 1; audit reports findings with
+  // exit 1 under --fail-on-findings. Both must reach exit 2 — never 1 — when
+  // the run itself could not complete.
+  const cli = (n) => fileURLToPath(new URL(`../payload/engine/${n}`, import.meta.url));
+  const scenarios = [
+    ['a root that does not exist', fileURLToPath(new URL('fixtures/does-not-exist', import.meta.url))],
+    ['a root that is a file, not a directory', fileURLToPath(new URL('cli.test.js', import.meta.url))],
+  ];
+  for (const [label, root] of scenarios) {
+    for (const [name, ...rest] of [['survey-map.js'], ['audit.js', '--fail-on-findings']]) {
+      const r = spawnSync(process.execPath, [cli(name), ...rest, '--root', root], { encoding: 'utf8', timeout: 10_000 });
+      assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out on ${label}`);
+      assert.notEqual(r.status, EXIT_CODES.FINDINGS,
+        `${name} exited 1 on ${label} — a run that never completed. An agent would read that as a real answer`);
+      assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: a run that could not complete exits 2 (${label})`);
+    }
+  }
+});
+
+// ------------------------------- refusal vs bug (UCS-949, CodeRabbit #38)
+//
+// A surface may report an ANTICIPATED refusal itself, without a stack. It must
+// not report a BUG that way: a TypeError rendered as `audit: cannot read
+// properties of undefined` reads exactly like a considered refusal, and nobody
+// can debug it. Both exit 2 — this is diagnosability, not the exit contract.
+
+test('rethrowIfBug lets an anticipated refusal through and rethrows everything else', () => {
+  // A refusal: what every engine refusal already throws.
+  assert.doesNotThrow(() => rethrowIfBug(new Error('no git in this root')));
+  assert.doesNotThrow(() => rethrowIfBug(new EngineRefusal('two candidate kit roots')));
+
+  // Bugs. Each must travel on to the harness.
+  for (const bug of [new TypeError('x'), new ReferenceError('x'), new RangeError('x'), new SyntaxError('x')]) {
+    assert.throws(() => rethrowIfBug(bug), bug.constructor, `${bug.name} is a bug, not a refusal`);
+  }
+  // A usage error raised deep in the engine belongs to the harness too — only
+  // it knows to print the usage line.
+  assert.throws(() => rethrowIfBug(new UsageError('bad flag')), UsageError);
+  // A non-Error throw is never a considered refusal.
+  assert.throws(() => rethrowIfBug('a string'));
+});
+
+test('a bug inside a surface reaches the harness, stack and all', async () => {
+  // The surfaces' engine-failure catches sit between `main` and `runCli`. This
+  // composes them exactly as the CLIs do: the catch calls rethrowIfBug, so the
+  // TypeError travels on and runCli prints a stack.
+  const stderr = capture();
+  const surfaceMain = () => {
+    try {
+      throw new TypeError('simulated engine bug');
+    } catch (error) {
+      rethrowIfBug(error);
+      stderr.write('surface: swallowed\n'); // unreachable: rethrowIfBug threw
+      return EXIT_CODES.FAILURE;
+    }
+  };
+  const code = await runCli('audit', surfaceMain, { usage: 'u', argv: [], stderr });
+  assert.equal(code, EXIT_CODES.FAILURE);
+  assert.doesNotMatch(stderr.text, /swallowed/, 'the surface must not speak for a bug');
+  assert.match(stderr.text, /internal failure/);
+  assert.match(stderr.text, /simulated engine bug/);
+  assert.match(stderr.text, /at /, 'a bug reports its stack');
+});
+
+test('an anticipated refusal is still reported by the surface, without a stack', async () => {
+  // The surface writes its own message and returns; the harness adds nothing.
+  const stderr = capture();
+  const surfaceMain = () => {
+    try {
+      throw new Error('no git in this root');
+    } catch (error) {
+      rethrowIfBug(error);
+      stderr.write(`survey-map: ${error.message}\n`);
+      return EXIT_CODES.FAILURE;
+    }
+  };
+  const code = await runCli('survey-map', surfaceMain, { usage: 'u', argv: [], stderr });
+  assert.equal(code, EXIT_CODES.FAILURE);
+  assert.equal(stderr.text, 'survey-map: no git in this root\n', 'a refusal carries no stack and no usage line');
+});
+
+test('every surface that catches an engine failure rethrows bugs first', async () => {
+  // Structural. A catch that reports `${error.message}` without first asking
+  // rethrowIfBug is a catch that will one day report a TypeError as a refusal.
+  for (const name of ['audit.js', 'survey-map.js', 'log-entry.js']) {
+    const source = await readFile(fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url)), 'utf8');
+    for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
+      // Only the catches that DECIDE THE COMMAND'S FATE. A catch that degrades
+      // an unreadable suppressions file to a warning and carries on is not
+      // speaking for the run, so it owes nothing to the harness.
+      if (!/EXIT_CODES\.FAILURE/.test(block)) continue;
+      assert.match(block, /rethrowIfBug\(error\)/,
+        `${name} has a catch that reports an error message without first rethrowing bugs:\n${block}`);
+    }
+  }
+});
+
+test('survey-map refuses a root named twice rather than picking one', () => {
+  const cli = fileURLToPath(new URL('../payload/engine/survey-map.js', import.meta.url));
+  const a = fileURLToPath(new URL('../fixtures/ts-app', import.meta.url));
+  const r = spawnSync(process.execPath, [cli, a, '--root', a], { encoding: 'utf8', timeout: 10_000 });
+  assert.equal(r.status, EXIT_CODES.FAILURE, 'two names for the root is an ambiguity, not a preference');
+  assert.match(r.stderr, /named twice/);
+});
+
+test('audit refuses an empty --stale-days rather than reading it as zero', () => {
+  // `Number('') === 0` made `--stale-days=` mean "everything is stale" and the
+  // command exited 0 with a plausible report. The grammar closes it.
+  const cli = fileURLToPath(new URL('../payload/engine/audit.js', import.meta.url));
+  const root = fileURLToPath(new URL('../fixtures/ts-app', import.meta.url));
+  const r = spawnSync(process.execPath, [cli, '--root', root, '--stale-days='], { encoding: 'utf8', timeout: 10_000 });
+  assert.equal(r.status, EXIT_CODES.FAILURE);
+  assert.match(r.stderr, /--stale-days requires a value/);
 });
