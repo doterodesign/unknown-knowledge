@@ -86,6 +86,14 @@
           "type": "string",
           "description": "Which facet the kind emits where both are legitimate (e.g. Swift case names vs raw values, §3.5)."
         },
+        "pattern": {
+          "type": "string",
+          "description": "dir-modules option: filename filter over the directory listing (e.g. `*.route.ts`). Grammar: `*` matches any run of characters, everything else is literal, the whole name must match. Presence pins the FILE facet — without it the kind emits subdirectory names."
+        },
+        "strip": {
+          "type": "string",
+          "description": "dir-modules option: suffix removed from every emitted name (strip `.route.ts`: home.route.ts → home). A facet name that does not carry the suffix is a hard error, never emitted unstripped."
+        },
         "values": {
           "type": "array",
           "items": { "type": "string" },

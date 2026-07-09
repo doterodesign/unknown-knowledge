@@ -1,6 +1,6 @@
 /**
  * Extractor-kind registry (KK-07 frame; KK-08 TS/JS kinds; KK-09 Swift +
- * config kinds). Each kind is a
+ * config kinds; KK-10 dir-modules). Each kind is a
  * small deterministic recipe `extract(text, descriptor) -> string[]` that
  * re-derives a claimed value set from a reified anchor. The contract
  * (payload/templates/new-kind/parser.example.js teaches it):
@@ -25,8 +25,20 @@
  * only. The config kinds (json-*, yaml-*, strings-keys/.xcstrings) parse
  * DATA with a real data parser (JSON.parse / js-yaml `load`) — data, never
  * code, the same D-014 line.
+ *
+ * DISPATCH SEAM (KK-10): a registry value is either a plain FUNCTION — a
+ * file kind, `extract(text, descriptor)` over the source file's text — or a
+ * frozen OBJECT `{ reads: 'directory', extract(entries, descriptor) }` — a
+ * directory kind, whose input is a deterministic directory listing the
+ * CALLER produces (listDirectory below: readdirSync withFileTypes, entries
+ * as `{ name, isDirectory, isSymbolicLink }`, sorted by name). The recipes
+ * themselves stay pure either way: listing in, value set out — the caller
+ * (validate-values.js checkDescriptor) owns the one filesystem read, exactly
+ * as it owns readFileSync for file kinds.
  */
+import { readdirSync } from 'node:fs';
 import { load as yamlLoad } from 'js-yaml';
+import { compare } from './validate-record.js';
 
 /** The matched span contains a sentinel the kind's grammar cannot see past. */
 export class EnvelopeError extends Error {}
@@ -800,13 +812,113 @@ function stringsKeys(text, descriptor) {
   throw new ExtractError(`strings-keys reads .strings or .xcstrings files, dispatched by the source's file extension — ${JSON.stringify(source)} is neither, and guessing a grammar from content would be a confident wrong parse (PRD §5.1)`);
 }
 
+// -------------------------------------------------------- the directory kind
+
+/**
+ * The caller-side half of the directory dispatch seam: produce the
+ * deterministic listing a `reads: 'directory'` kind consumes. Sorted by name
+ * (byte-wise, the shared engine ordering) so the extraction — and every
+ * message derived from it — is independent of filesystem enumeration order.
+ * `isDirectory`/`isSymbolicLink` are readdir's lstat-level dirent answers: a
+ * symlink reports `isSymbolicLink: true` and `isDirectory: false` whatever
+ * it points at, which is exactly what dir-modules' envelope needs to see.
+ * Throws the raw fs error (ENOENT/ENOTDIR/EACCES) — the caller maps it to
+ * source-missing, same as an unreadable file.
+ */
+export function listDirectory(dirPath) {
+  return readdirSync(dirPath, { withFileTypes: true })
+    .map((e) => ({ name: e.name, isDirectory: e.isDirectory(), isSymbolicLink: e.isSymbolicLink() }))
+    .sort((a, b) => compare(a.name, b.name));
+}
+
+/**
+ * dir-modules `pattern:` grammar — a deliberately tiny glob: `*` matches any
+ * run of characters (including none) within a NAME; every other character is
+ * literal; the pattern must match the WHOLE name. No dependency, no other
+ * metacharacters: `?`, `[`, `]`, `{`, `}` are refused loudly (ExtractError),
+ * never treated as literals — a pattern the author meant as a richer glob
+ * silently matching nothing (or the wrong names) would be a confident wrong
+ * parse (PRD §5.1).
+ */
+function patternToRegExp(pattern) {
+  const meta = /[?[\]{}]/.exec(pattern);
+  if (meta) {
+    throw new ExtractError(`dir-modules pattern ${JSON.stringify(pattern)} carries ${JSON.stringify(meta[0])} — the pattern grammar is "*" as the only wildcard (any run of characters), everything else literal, whole-name match; richer glob syntax is refused rather than silently misread (PRD §5.1)`);
+  }
+  return new RegExp(`^${pattern.split('*').map(escapeRegExp).join('.*')}$`);
+}
+
+/**
+ * `dir-modules` — directory-listing extraction (PRD §5.1): the value set is
+ * NAMES IN A DIRECTORY, for anchors whose members are one file or subfolder
+ * each (asset catalogs, per-sport modules, file-based routing). A directory
+ * kind: `{ reads: 'directory', extract(entries, descriptor) }` — see the
+ * dispatch-seam note in the module header.
+ *
+ * Facet (pinned by `pattern:` presence, §3.5):
+ *   - no `pattern` — the SUBDIRECTORY names (folder-identity modules:
+ *     src/verticals → sportsbook, casino, poker). Plain files in the listing
+ *     are not part of the facet (a README beside module folders is scenery).
+ *   - with `pattern` — the FILE names matching the pattern (file-identity
+ *     modules: routes/*.route.ts → home.route.ts, …). Subdirectories are not
+ *     part of the facet; non-matching files are excluded BY DECLARATION —
+ *     the pattern is the descriptor's own envelope, not a guess.
+ * Dot-prefixed names (.git, .DS_Store, .build) are hidden-by-convention
+ * tooling residue and are never part of either facet.
+ *
+ * `strip:` (optional) removes a declared suffix from every emitted name
+ * (strip `.route.ts`: home.route.ts → home; works on either facet, e.g.
+ * stripping `.imageset` from asset-catalog subfolders). A facet name that
+ * does not end with the suffix — or that IS the suffix, leaving nothing —
+ * hard-errors: emitting it unstripped (or empty) would be a confident wrong
+ * parse, never a value.
+ *
+ * Envelope: a SYMLINK anywhere in the (non-hidden) listing is out-of-envelope
+ * — a symlinked module can point outside the surveyed tree, so the listing
+ * does not honestly describe what the anchor contains (D-005/D-012).
+ *
+ * Output is sorted by name (deterministic regardless of filesystem order);
+ * an empty facet is an ExtractError — wrong pointer or wrong pattern, never
+ * a silently empty set.
+ */
+function dirModules(entries, descriptor) {
+  const { pattern, strip } = descriptor;
+  if (pattern !== undefined && (typeof pattern !== 'string' || pattern === '')) {
+    throw new ExtractError(`dir-modules "pattern:" must be a non-empty string when present — got ${JSON.stringify(pattern)}`);
+  }
+  if (strip !== undefined && (typeof strip !== 'string' || strip === '')) {
+    throw new ExtractError(`dir-modules "strip:" must be a non-empty string when present — got ${JSON.stringify(strip)}`);
+  }
+  const listed = entries.filter((e) => !e.name.startsWith('.'));
+  for (const e of listed) {
+    if (e.isSymbolicLink) {
+      throw new EnvelopeError(`directory entry ${JSON.stringify(e.name)} is a symlink — it can point outside the surveyed tree, so the listing does not honestly describe what this anchor contains; out of the dir-modules envelope (PRD §5.1)`);
+    }
+  }
+  const facet = pattern === undefined
+    ? listed.filter((e) => e.isDirectory)
+    : listed.filter((e) => !e.isDirectory && patternToRegExp(pattern).test(e.name));
+  const values = facet.map(({ name }) => {
+    if (strip === undefined) return name;
+    if (!name.endsWith(strip) || name === strip) {
+      throw new ExtractError(`dir-modules cannot strip ${JSON.stringify(strip)} from ${JSON.stringify(name)} — ${name === strip ? 'nothing would remain' : 'the name does not carry the suffix'}; emitting it as-is would be a confident wrong parse (PRD §5.1), so pin the facet with a "pattern:" that excludes it or fix the strip suffix`);
+    }
+    return name.slice(0, -strip.length);
+  });
+  if (values.length === 0) {
+    throw new ExtractError(`the directory carries no ${pattern === undefined ? 'subdirectories' : `files matching ${JSON.stringify(pattern)}`} — nothing dir-modules can extract (wrong pointer, or the modules moved)`);
+  }
+  return values.sort(compare);
+}
+
 // ---------------------------------------------------------------- the registry
 
 /**
  * Kind name -> recipe. KK-08 registers the TS/JS + JSON kinds (PRD §5.1);
- * KK-09 the Swift + config kinds; KK-10 (dir-modules) extends this; clients
- * author later kinds through the §5.2 pipeline (D-005: only vendored,
- * versioned, test-covered kinds ever run).
+ * KK-09 the Swift + config kinds; KK-10 the dir-modules directory kind (the
+ * one `{ reads: 'directory' }` entry — see the dispatch-seam note in the
+ * module header); clients author later kinds through the §5.2 pipeline
+ * (D-005: only vendored, versioned, test-covered kinds ever run).
  */
 export const KINDS = Object.freeze({
   /**
@@ -839,4 +951,5 @@ export const KINDS = Object.freeze({
   'yaml-keys': yamlKeys,
   'yaml-map-keys': yamlMapKeys,
   'strings-keys': stringsKeys,
+  'dir-modules': Object.freeze({ reads: 'directory', extract: dirModules }),
 });
