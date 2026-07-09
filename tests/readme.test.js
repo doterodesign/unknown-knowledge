@@ -89,13 +89,28 @@ test('the README claims only one subprocess, and that is true', () => {
   walk(engineDir);
   assert.deepEqual(spawners, ['survey-map.js'], 'only the survey map spawns anything (D-014)');
 
-  // Importing child_process is not the claim. WHAT it spawns is. This test used
-  // to pass while survey-map ran anything at all.
-  const source = readFileSync(join(engineDir, 'commands', 'survey-map.js'), 'utf8');
-  const calls = [...source.matchAll(/spawnSync\(([^)]*)\)/g)].map((m) => m[1]);
-  assert.equal(calls.length, 1, `survey-map spawns ${calls.length} times; the README promises one`);
-  assert.match(calls[0], /^'git',/, 'the binary is a string literal `git`, never a computed one (D-014)');
-  assert.match(calls[0], /'ls-files'/, 'and the subcommand is ls-files');
+  // Importing child_process is not the claim. WHAT it spawns is.
+  //
+  // Comments are stripped first: `spawnSync('git', ['status' /* 'ls-files' */])`
+  // must not satisfy a test about what the engine runs. And the subcommand is
+  // matched where it actually sits — as an element of the argument array, not
+  // merely somewhere inside the call.
+  const source = readFileSync(join(engineDir, 'commands', 'survey-map.js'), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
+
+  const spawns = [...source.matchAll(/\bspawnSync\s*\(/g)];
+  assert.equal(spawns.length, 1, `survey-map spawns ${spawns.length} times; the README promises one`);
+
+  // The binary is a STRING LITERAL. A computed name is what would let the
+  // engine run client-controlled code, which D-014 forbids outright.
+  assert.match(source, /\bspawnSync\s*\(\s*'git'\s*,/,
+    'the binary must be the literal `git`, never a variable (D-014)');
+
+  // `git -C <root> ls-files …` — the subcommand is the first argument that is
+  // not the -C pair, and it is a literal.
+  assert.match(source, /\bspawnSync\s*\(\s*'git'\s*,\s*\[\s*'-C'\s*,\s*\w+\s*,\s*'ls-files'/,
+    'and the subcommand is ls-files, read-only');
 });
 
 test('the seeded README links somewhere that exists', () => {
