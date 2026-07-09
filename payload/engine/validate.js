@@ -49,9 +49,10 @@
  * (shared comparator), no timestamps — baseline-diffable (D-012).
  */
 import { statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { loadStores } from './lib/load-stores.js';
+import { loadStores, storeHealth } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 
@@ -248,7 +249,13 @@ function checkDecisionCycles(model, push) {
   }
 }
 
-function runChecks(model) {
+/**
+ * Run every structural check over a loaded model — the reusable seam
+ * preflight (KK-26) consumes, so verdicts and this validator can never
+ * disagree. Returns the stable-sorted findings list; loader health gating
+ * (exit 2 on an unhealthy store) stays with the callers.
+ */
+export function runChecks(model) {
   const findings = [];
   const push = (f) => findings.push(f);
   checkCatalogs(model, push);
@@ -299,12 +306,6 @@ function parseArgs(argv) {
     }
   }
   return opts;
-}
-
-function storeHealth(model) {
-  const errors = model.diagnostics.filter((d) => d.severity === 'error').length;
-  const warnings = model.diagnostics.filter((d) => d.severity === 'warning').length;
-  return { ok: model.ok, errors, warnings };
 }
 
 function render(payload) {
@@ -396,7 +397,9 @@ function main(argv) {
   }
 }
 
-// exitCode, never process.exit(): exit() drops queued async stdout writes, so
-// piped --json output would truncate at the ~64KB pipe buffer (corrupt JSON
-// with exit 0). Node exits on its own once stdout drains.
-process.exitCode = main(process.argv.slice(2));
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // exitCode, never process.exit(): exit() drops queued async stdout writes,
+  // so piped --json output would truncate at the ~64KB pipe buffer (corrupt
+  // JSON with exit 0). Node exits on its own once stdout drains.
+  process.exitCode = main(process.argv.slice(2));
+}

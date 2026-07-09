@@ -1,0 +1,6 @@
+# KK-26 store-wide failure fixture: unparseable YAML — a loader error-severity
+# diagnostic that degrades ALL requested verdicts to unknown (PRD §4, D-011).
+schema-version: 1
+entries:
+  - id: K-100
+    term: [unclosed

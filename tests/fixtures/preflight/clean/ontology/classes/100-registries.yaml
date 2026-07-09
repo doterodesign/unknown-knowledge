@@ -1,0 +1,35 @@
+# KK-26 clean fixture: K-100 and K-110 pass every structural and value check
+# (trusted); K-130 is draft — its would-be value drift is skipped (§3.5), so
+# preflight must verdict it unknown, never trusted and never quarantined.
+schema-version: 1
+entries:
+  - id: K-100
+    term: Sport
+    class: 100-registries
+    summary: A sport vertical the product serves.
+    source-of-truth: [src/sports.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/sports.txt
+        values: [nfl, nba, mlb]
+  - id: K-110
+    term: Currency
+    class: 100-registries
+    summary: A settlement currency.
+    source-of-truth: [src/currencies.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/currencies.txt
+        values: [usd, eur]
+  - id: K-130
+    term: Draft vertical
+    class: 100-registries
+    summary: A concept still being drafted.
+    source-of-truth: [src/sports.txt]
+    status: draft
+    enumerates:
+      - kind: test-lines
+        source: src/sports.txt
+        values: [not-in-the-source]

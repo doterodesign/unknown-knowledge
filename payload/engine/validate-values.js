@@ -60,9 +60,10 @@
  * 2 engine failure / check-never-ran.
  */
 import process from 'node:process';
-import { readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
-import { loadStores } from './lib/load-stores.js';
+import { readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { loadStores, locateKitRoot, isPrePromotionStatus, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
@@ -70,15 +71,6 @@ import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
 const USAGE = 'usage: node payload/engine/validate-values.js [--concepts <ids>] [--json] [--root <dir>]';
 
 class UsageError extends Error {}
-
-/** The §9.1 seeded kit directory name; stores live there in a client repo. */
-const KIT_DIR_DEFAULT = 'unknown-knowledge';
-
-/** Store root for a repo root: <root>/unknown-knowledge/ if present, else root. */
-function locateKitRoot(root) {
-  const nested = join(root, KIT_DIR_DEFAULT);
-  return statSync(nested, { throwIfNoEntry: false })?.isDirectory() ? nested : root;
-}
 
 // ------------------------------------------------------------ the check body
 
@@ -180,17 +172,16 @@ function checkDescriptor(ctx, concept, descriptor, i) {
   }
 }
 
-/** Select the concepts to check; an unknown id is a check that never ran. */
-function selectConcepts(model, ids) {
-  if (!ids) return [...model.concepts.values()];
-  const unknown = ids.filter((id) => !model.concepts.has(id));
-  if (unknown.length) {
-    throw new UsageError(`--concepts names id(s) not in the ontology: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
-  }
-  return ids.map((id) => model.concepts.get(id));
-}
-
-function validateValues(model, conceptIds, repoRoot) {
+/**
+ * Run every enumerates check over a loaded model — the reusable seam
+ * preflight (KK-26) consumes, so verdicts and this validator can never
+ * disagree. `conceptIds` null = all concepts; an unknown id throws (a check
+ * that never ran is a blocking defect). `repoRoot` is where descriptor
+ * sources resolve (§9.1 repo-relative); it defaults to the store root, the
+ * flat layout where both coincide. Returns { findings, hardErrors,
+ * checked }, stable-sorted.
+ */
+export function validateValues(model, conceptIds, repoRoot = model.root) {
   // Sources are repo-relative (§9.1), not store-relative: in a seeded repo
   // the stores sit at <repo>/unknown-knowledge/ but point at <repo>/src/....
   const ctx = { root: repoRoot, findings: [], hardErrors: [], checked: [] };
@@ -210,7 +201,7 @@ function validateValues(model, conceptIds, repoRoot) {
     const { id, file, record } = concept;
     const descriptors = Array.isArray(record.enumerates) ? record.enumerates : [];
     const entry = { concept: id, status: record.status ?? null, descriptors: descriptors.length };
-    if (record.status === 'draft' || record.status === 'proposed') {
+    if (isPrePromotionStatus(record.status)) {
       // §3.5: structural checks only; the resolver downranks, preflight
       // verdicts unknown — the value check does not run.
       entry.skipped = record.status;
@@ -314,11 +305,7 @@ function main(argv) {
     const blocking = ctx.findings.some((x) => x.severity === 'error');
     const payload = {
       ok: !hard && !blocking,
-      'store-health': {
-        ok: model.ok,
-        errors: model.diagnostics.filter((d) => d.severity === 'error').length,
-        warnings: model.diagnostics.filter((d) => d.severity === 'warning').length,
-      },
+      'store-health': storeHealth(model),
       checked: ctx.checked,
       findings: ctx.findings,
       'hard-errors': ctx.hardErrors,
@@ -328,13 +315,15 @@ function main(argv) {
     process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
     return hard ? EXIT_CODES.FAILURE : blocking ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
   } catch (error) {
-    if (!(error instanceof UsageError)) throw error;
+    if (!(error instanceof UsageError || error instanceof UnknownConceptsError)) throw error;
     process.stderr.write(`validate-values: ${error.message}\n${USAGE}\n`);
     return EXIT_CODES.FAILURE;
   }
 }
 
-// exitCode, never process.exit(): exit() drops queued async stdout writes, so
-// piped --json output would truncate at the ~64KB pipe buffer (corrupt JSON
-// with exit 0). Node exits on its own once stdout drains.
-process.exitCode = main(process.argv.slice(2));
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  // exitCode, never process.exit(): exit() drops queued async stdout writes,
+  // so piped --json output would truncate at the ~64KB pipe buffer (corrupt
+  // JSON with exit 0). Node exits on its own once stdout drains.
+  process.exitCode = main(process.argv.slice(2));
+}
