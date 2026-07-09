@@ -88,6 +88,14 @@ test('the README claims only one subprocess, and that is true', () => {
   };
   walk(engineDir);
   assert.deepEqual(spawners, ['survey-map.js'], 'only the survey map spawns anything (D-014)');
+
+  // Importing child_process is not the claim. WHAT it spawns is. This test used
+  // to pass while survey-map ran anything at all.
+  const source = readFileSync(join(engineDir, 'commands', 'survey-map.js'), 'utf8');
+  const calls = [...source.matchAll(/spawnSync\(([^)]*)\)/g)].map((m) => m[1]);
+  assert.equal(calls.length, 1, `survey-map spawns ${calls.length} times; the README promises one`);
+  assert.match(calls[0], /^'git',/, 'the binary is a string literal `git`, never a computed one (D-014)');
+  assert.match(calls[0], /'ls-files'/, 'and the subcommand is ls-files');
 });
 
 test('the seeded README links somewhere that exists', () => {
