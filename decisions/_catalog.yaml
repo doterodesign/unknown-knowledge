@@ -61,3 +61,9 @@ entries:
   - id: D-019
     title: "Skill names use the `knowledge-` prefix, not `kit-`"
     file: entries/D-019-skill-naming.yaml
+  - id: D-020
+    title: License finalized — Apache-2.0 over MIT; LICENSE + NOTICE at repo root
+    file: entries/D-020-license-apache-2.yaml
+  - id: D-021
+    title: Version policy — kit semver semantics, manifest stamp meaning, CHANGELOG discipline
+    file: entries/D-021-version-policy.yaml

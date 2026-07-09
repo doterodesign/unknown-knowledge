@@ -1,0 +1,40 @@
+# npm publish with provenance attestation (KK-28, supply-chain posture per
+# D-018): runs only on release tags, publishes the bare `unknown-knowledge`
+# package publicly with an npm provenance attestation minted via GitHub
+# Actions OIDC (`id-token: write`). Config only until release time — the
+# publish is additionally guarded by package.json `private: true`, which is
+# flipped as a deliberate release-time step (see docs/publishing.md).
+#
+# Manual account-side prerequisites (documented in docs/publishing.md,
+# cannot be performed from this repo): npm publish 2FA enabled, publish
+# access restricted to the `unknown-creatives` org, org reservation
+# verified, and an automation token or trusted-publisher config in place.
+name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # required for npm provenance attestation via OIDC
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run acceptance
+      # Refuses while package.json carries `private: true` — flipping that
+      # flag is the deliberate, human release-time step (docs/publishing.md).
+      - run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

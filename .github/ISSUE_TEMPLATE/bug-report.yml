@@ -1,0 +1,47 @@
+name: Bug report
+description: Something in the kit (CLI, engine, protocol docs, templates) is broken.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: >-
+        Exact commands and a minimal setup to reproduce. Engine output is
+        deterministic — a faithful repro should fail the same way every time.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: kit-version
+    attributes:
+      label: Kit version
+      description: >-
+        Kit package version — or, in a seeded repo, the manifest version
+        stamp (the kit version that seeded the repo; see README).
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      placeholder: node --version
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: >-
+        Anything else relevant. Paths and structure only — never paste
+        secrets or private file contents.
+    validations:
+      required: false
