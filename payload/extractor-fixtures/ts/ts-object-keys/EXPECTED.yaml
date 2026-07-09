@@ -1,0 +1,6 @@
+# Expected extraction for sample.tsx — top-level keys only: the nested
+# appliesTo array's members and the JSX inline literal must not leak in.
+kind: ts-object-keys
+file: sample.tsx
+symbol: PROMOTIONS
+values: [welcome-bonus, reload, odds-boost, referral]

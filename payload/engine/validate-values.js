@@ -40,13 +40,19 @@
  * blocking check from dead-ending a legitimate source deletion (§3.5).
  * A malformed descriptor or unknown kind stays hard on every status.
  *
- * Extractor kinds are registered by NAME in KINDS below — a small
+ * Extractor kinds are registered by NAME in lib/extractor-kinds.js — a small
  * deterministic recipe `extract(text, descriptor) -> string[]` that reads a
  * value set out of a reified anchor, throwing EnvelopeError / ExtractError.
- * Concrete kinds land in KK-08 (Swift), KK-09 (TS/JS), KK-10 (config/dir);
- * this frame ships `test-lines` (newline-delimited registry files) proving
- * dispatch, the envelope hard-error path, and determinism. D-014: kinds parse
- * lexically only — the engine never executes client code.
+ * KK-08 ships the TS/JS + JSON kinds; KK-09 (Swift/config) and KK-10
+ * (dir-modules) extend the registry; `test-lines` (newline-delimited registry
+ * files) proves dispatch, the envelope hard-error path, and determinism.
+ * D-014: kinds parse lexically only — the engine never executes client code.
+ *
+ * --root is the REPO root (default cwd): descriptor sources and
+ * source-of-truth pointers are repo-relative (§9.1 — a post-init repo nests
+ * the kit inside the codebase its pointers describe). The stores load from
+ * <root>/unknown-knowledge/ when that directory exists, else from <root>
+ * itself (the kit repo's own dogfood layout).
  *
  * Consumes the KK-04 loader's model — never re-parses stores. Output is
  * deterministic and stable-sorted (findings by concept/path/code/value), no
@@ -54,46 +60,25 @@
  * 2 engine failure / check-never-ran.
  */
 import process from 'node:process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadStores } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
+import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
 
 const USAGE = 'usage: node payload/engine/validate-values.js [--concepts <ids>] [--json] [--root <dir>]';
 
 class UsageError extends Error {}
-/** The matched span contains a sentinel the kind's grammar cannot see past. */
-class EnvelopeError extends Error {}
-/** The recipe could not read a value set out of the source at all. */
-class ExtractError extends Error {}
 
-// -------------------------------------------------------- extractor registry
+/** The §9.1 seeded kit directory name; stores live there in a client repo. */
+const KIT_DIR_DEFAULT = 'unknown-knowledge';
 
-/**
- * Kind name -> recipe. KK-08/09/10 register the MVP kinds here (PRD §5.1);
- * clients author later kinds through the §5.2 pipeline. A kind is
- * `extract(text, descriptor) -> string[]` — pure, lexical, deterministic.
- */
-const KINDS = Object.freeze({
-  /**
-   * Newline-delimited value list: one value per line, byte-exact (no
-   * trimming beyond the newline), `#` comment lines and blank lines skipped.
-   * Envelope: a line opening with `@if` marks conditional inclusion this
-   * grammar cannot evaluate — hard error, never a guess.
-   */
-  'test-lines': (text) => {
-    const values = [];
-    for (const line of text.replace(/\r\n/g, '\n').split('\n')) {
-      if (line === '' || line.startsWith('#')) continue;
-      if (/^@if\b/.test(line)) {
-        throw new EnvelopeError(`out-of-envelope sentinel "${line}" — conditional inclusion is outside this kind's grammar; a confident wrong parse is a false all-clear (PRD §5)`);
-      }
-      values.push(line);
-    }
-    return values;
-  },
-});
+/** Store root for a repo root: <root>/unknown-knowledge/ if present, else root. */
+function locateKitRoot(root) {
+  const nested = join(root, KIT_DIR_DEFAULT);
+  return statSync(nested, { throwIfNoEntry: false })?.isDirectory() ? nested : root;
+}
 
 // ------------------------------------------------------------ the check body
 
@@ -205,8 +190,10 @@ function selectConcepts(model, ids) {
   return ids.map((id) => model.concepts.get(id));
 }
 
-function validateValues(model, conceptIds) {
-  const ctx = { root: model.root, findings: [], hardErrors: [], checked: [] };
+function validateValues(model, conceptIds, repoRoot) {
+  // Sources are repo-relative (§9.1), not store-relative: in a seeded repo
+  // the stores sit at <repo>/unknown-knowledge/ but point at <repo>/src/....
+  const ctx = { root: repoRoot, findings: [], hardErrors: [], checked: [] };
 
   // Single health model: the loader already validated every descriptor's
   // shape (KK-02 codes). An unhealthy store means the value check cannot
@@ -316,13 +303,13 @@ function main(argv) {
 
     let model;
     try {
-      model = loadStores(opts.root);
+      model = loadStores(locateKitRoot(opts.root));
     } catch (error) {
       process.stderr.write(`validate-values: ${error.message}\n`);
       return EXIT_CODES.FAILURE;
     }
 
-    const ctx = validateValues(model, opts.concepts);
+    const ctx = validateValues(model, opts.concepts, opts.root);
     const hard = ctx.hardErrors.length > 0;
     const blocking = ctx.findings.some((x) => x.severity === 'error');
     const payload = {

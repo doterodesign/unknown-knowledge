@@ -1,0 +1,7 @@
+# Expected extraction for sample.json — json-map-keys emits the keys of the
+# object at the descriptor's dotted `symbol:` path (facet: key strings).
+# Sibling blocks (scripts) must not leak in.
+kind: json-map-keys
+file: sample.json
+symbol: config.flags
+values: [live-betting, cash-out, same-game-parlay]

@@ -1,0 +1,5 @@
+# Expected extraction for sample.ts (§3.5 set equality).
+kind: ts-union
+file: sample.ts
+symbol: BetStatus
+values: [open, settled, voided, cashed-out]

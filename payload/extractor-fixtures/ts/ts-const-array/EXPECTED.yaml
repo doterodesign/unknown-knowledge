@@ -1,0 +1,6 @@
+# Expected extraction for sample.ts (§3.5: byte-exact, case-sensitive, as a
+# set — order here is presentation only).
+kind: ts-const-array
+file: sample.ts
+symbol: SUPPORTED_SPORTS
+values: [nfl, nba, mlb, soccer]

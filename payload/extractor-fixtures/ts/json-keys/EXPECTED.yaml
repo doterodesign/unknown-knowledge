@@ -1,0 +1,7 @@
+# Expected extraction for sample.json — json-keys emits the TOP-LEVEL keys
+# (facet: key strings). Boolean/nested values never coerce into the set; the
+# nested max-legs key must not leak in. (JSON cannot carry comments, so this
+# pair's adversarial content is nesting, not formatting.)
+kind: json-keys
+file: sample.json
+values: [live-betting, cash-out, same-game-parlay]

@@ -1,0 +1,7 @@
+# Expected extraction for sample.ts — `emit: names` pins the facet (§3.5):
+# member names, not the lowercase raw values.
+kind: ts-enum
+file: sample.ts
+symbol: Currency
+emit: names
+values: [USD, EUR, GBP, CAD]
