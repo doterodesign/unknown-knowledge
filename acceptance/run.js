@@ -34,6 +34,7 @@ import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import { loadManifest, expandManifest, DEFAULT_ROOT, SEEDED_MANIFEST } from '../cli/lib/copy-payload.js';
+import { SENTINEL_BEGIN, SENTINEL_END } from '../cli/lib/generate-wrappers.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const engine = (cli) => join(root, 'payload', 'engine', cli);
@@ -202,9 +203,9 @@ criterion('A1', A1_SELECTIONS.map((stacks) => [
     }
     const agents = readFileSync(join(target, 'AGENTS.md'), 'utf8');
     assert.ok(agents.startsWith(existing), 'pre-existing AGENTS.md content must survive byte-for-byte');
-    assert.equal(agents.split('<!-- unknown-knowledge:begin -->').length - 1, 1,
+    assert.equal(agents.split(SENTINEL_BEGIN).length - 1, 1,
       'exactly one sentinel block appended');
-    assert.ok(agents.includes('<!-- unknown-knowledge:end -->'), 'sentinel block closed');
+    assert.ok(agents.includes(SENTINEL_END), 'sentinel block closed');
   }),
 ]]), { note: 'copy engine + platform wrappers, KK-17/KK-18 — npx packaging/prompt cold-run completes with KK-19' });
 

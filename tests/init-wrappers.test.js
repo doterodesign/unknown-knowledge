@@ -240,9 +240,13 @@ test('existing DEDICATED files (CLAUDE.md, cursor rule, GEMINI.md) skip-and-repo
   for (const id of ['codex', 'copilot', 'gemini']) {
     assert.equal(byId[id].action, 'created', `${id} must still generate`);
   }
-  // Skip-and-report reaches the human-readable seam too.
-  const plain = runInitCopy('--target', freshDir(), '--platforms', 'claude-code');
+  // Skip-and-report reaches the human-readable seam too — on a REAL
+  // collision, asserting the plain-text skip line, not just exit 0.
+  const plainTarget = freshDir();
+  writeFileSync(join(plainTarget, 'CLAUDE.md'), 'my own claude notes\n');
+  const plain = runInitCopy('--target', plainTarget, '--platforms', 'claude-code');
   assert.equal(plain.status, 0);
+  assert.match(plain.stdout, /wrapper claude-code: skipped CLAUDE\.md — .*never overwritten/);
 });
 
 test('symlinked targets are skipped, never written through', () => {

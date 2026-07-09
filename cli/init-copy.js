@@ -63,9 +63,18 @@ export function main(argv) {
     const result = copyPayload({
       kitRoot, targetDir: opts.target, rootName: opts.root, stacks: opts.stacks,
     });
-    const wrappers = generateWrappers({
-      kitRoot, targetDir: opts.target, rootName: opts.root, platforms: opts.platforms,
-    });
+    let wrappers;
+    try {
+      wrappers = generateWrappers({
+        kitRoot, targetDir: opts.target, rootName: opts.root, platforms: opts.platforms,
+      });
+    } catch (error) {
+      // The seed already landed; shared files may carry sentinel appends, so
+      // a silent rollback could destroy user bytes — name the partial state
+      // instead (a retry refuses on the existing root by design, §6).
+      error.message = `${error.message}\n  the store seed was already created at ${result.root} — remove it (and any wrapper sentinel blocks) before retrying; init refuses on an existing root`;
+      throw error;
+    }
     if (opts.json) {
       process.stdout.write(`${JSON.stringify({ ok: true, ...result, wrappers }, null, 2)}\n`);
     } else {
