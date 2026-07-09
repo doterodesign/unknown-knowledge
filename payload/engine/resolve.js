@@ -33,12 +33,15 @@
  *
  * --paths mode — reverse lookup over the loader's pointer index: "which
  * concepts point at these files". A path matches a pointer when equal to it or
- * nested under a FOLDER pointer (§3.1 folder pointers — a pointer with an
- * extension is a file pointer; nothing nests under a file). Paths are
- * normalized with path.posix semantics (dots resolved, separators collapsed,
- * backslashes converted, absolute paths relativized against the store root) so
- * attribution survives the forms real tooling emits. A lookup, not subset
- * validation (no D-012 conflict). Paths are deduped and sorted ascending.
+ * nested under a FOLDER pointer (§3.1). Folder-ness is read from the
+ * filesystem, not from the name — `src/api.v2` is a directory whose extname is
+ * ".v2" — and from the name only when the pointer is gone, since a diff names
+ * deleted paths; see folderPointerTest. Paths are normalized with path.posix
+ * semantics (dots resolved, separators collapsed, backslashes converted,
+ * absolute paths relativized against the store root) so attribution survives
+ * the forms real tooling emits. An entry naming the repo root is a usage
+ * error, never a silently dropped lookup. A lookup, not subset validation (no
+ * D-012 conflict). Paths are deduped and sorted ascending.
  *
  * Zero resolution is a NORMAL outcome (PRD §7 — common in month one): exit 0
  * with an explicit empty result plus the fallback conduct (search within
