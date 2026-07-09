@@ -49,7 +49,7 @@
 import process from 'node:process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, isPrePromotionStatus, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -212,7 +212,9 @@ function parseArgs(argv) {
     }
   }
   if (opts.concepts) {
-    opts.concepts = [...new Set(opts.concepts.map((s) => s.trim()).filter(Boolean))].sort(compare);
+    // An explicitly empty list is legal here (unlike the validators): PRD §7
+    // reads it as store-health-only. The grammar is shared; the policy is not.
+    opts.concepts = normalizeConceptIds(opts.concepts);
   }
   if (opts.log && !opts.today) {
     throw new UsageError('--log requires --today <YYYY-MM-DD> — the finding helper never reads the wall clock (PRD §5)');

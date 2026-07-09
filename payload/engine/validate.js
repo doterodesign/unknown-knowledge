@@ -52,7 +52,7 @@ import { statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { loadStores, storeHealth } from './lib/load-stores.js';
+import { loadStores, normalizeConceptIds, storeHealth } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -303,7 +303,7 @@ function parseArgs(argv) {
     }
   }
   if (opts.concepts) {
-    opts.concepts = [...new Set(opts.concepts.map((s) => s.trim()).filter(Boolean))].sort(compare);
+    opts.concepts = normalizeConceptIds(opts.concepts);
     if (!opts.concepts.length) {
       throw new UsageError('--concepts must name at least one concept id — a filter that never ran is a failure, never a silent pass');
     }
