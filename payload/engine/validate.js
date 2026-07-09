@@ -384,9 +384,14 @@ function main(argv) {
     process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
     return payload.counts.errors ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
   } catch (error) {
-    // One handler for every phase's usage errors, so the paths never drift.
-    if (!(error instanceof UsageError)) throw error;
-    process.stderr.write(`validate: ${error.message}\n${USAGE}\n`);
+    if (error instanceof UsageError) {
+      process.stderr.write(`validate: ${error.message}\n${USAGE}\n`);
+      return EXIT_CODES.FAILURE;
+    }
+    // A crash mid-check means the checks never finished. An uncaught throw
+    // would exit 1 — the FINDINGS code — so a broken run would read as
+    // "findings present" instead of "check never ran" (blocking defect, PRD §5).
+    process.stderr.write(`validate: internal failure — checks did not complete\n${error.stack || error.message}\n`);
     return EXIT_CODES.FAILURE;
   }
 }
