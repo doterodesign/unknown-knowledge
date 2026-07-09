@@ -1,9 +1,12 @@
 # unknown-knowledge CI — path-filtered jobs sharing one always-reporting
 # aggregate check (`ci-ok`, the branch-protection candidate). Later issues
 # add sibling jobs next to `engine-tests` and wire them into `ci-ok.needs`:
-#   extractor-matrix    (extractor kinds vs fixtures)
-#   init-e2e            (CLI init against acceptance fixtures)
-#   fixture-acceptance  (A1-A6 capability runs)
+#   init-e2e            (CLI init against acceptance fixtures — lands in M5,
+#                        and plugs A1 into fixture-acceptance's report)
+# `fixture-acceptance` (KK-16) is the A1-A6 capability run: one job, one
+# per-criterion report — A2-A4 + A6 asserted against both fixture apps,
+# A1 DEFERRED until M5 (KK-17/KK-19), A5 MANUAL (checklists in acceptance/,
+# never CI — skills are prompts). See acceptance/README.md.
 name: CI
 
 on:
@@ -25,6 +28,7 @@ jobs:
         with:
           filters: |
             engine:
+              - 'acceptance/**'
               - 'cli/**'
               - 'payload/**'
               - 'tests/**'
@@ -49,11 +53,27 @@ jobs:
       - run: npm run lint
       - run: npm test
 
+  # KK-16 acceptance harness: ONE run reporting per-criterion status for the
+  # PRD §10 capabilities against BOTH fixture apps. Asserts A2-A4 + A6;
+  # reports A1 as DEFERRED (M5) and A5 as MANUAL — never fake coverage.
+  fixture-acceptance:
+    needs: changes
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run acceptance
+
   # Fallback aggregator: reports success even when path filters skip every
   # job, so a required check always resolves; fails if any needed job
   # failed or was cancelled.
   ci-ok:
-    needs: [changes, engine-tests]
+    needs: [changes, engine-tests, fixture-acceptance]
     if: always()
     runs-on: ubuntu-latest
     steps:
