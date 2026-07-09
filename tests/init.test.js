@@ -269,7 +269,8 @@ test('D-006: init never writes CI config — no .github/workflows anywhere, and 
   assert.ok(existsSync(join(target, '.github/copilot-instructions.md')));
   assert.ok(!existsSync(join(target, '.github/workflows')), 'init must never create workflow files (D-006)');
   assert.ok(!existsSync(join(target, 'unknown-knowledge', '.github')), 'no .github/ inside the seeded root');
-  const header = readFileSync(initJs, 'utf8');
+  // The header lives with the code, which is now behind the entry shim (UCS-950).
+  const header = readFileSync(new URL('../cli/commands/init.js', import.meta.url), 'utf8');
   assert.match(header, /NO CI MUTATION, EVER \(D-006\)/);
 });
 
@@ -292,13 +293,22 @@ test('package.json: bin maps unknown-knowledge → cli/init.js; files allowlist 
 // unresolved case must warn loudly (an unresolved import exits 1, which the
 // exit-code contract reads as "findings", not "engine failure"), and a
 // resolvable dependency must stay silent.
-test('dependency preflight: unresolvable js-yaml WARNs with the install command and the exit-code trap', () => {
+test('dependency preflight: unresolvable js-yaml WARNs with the install command, and tells the truth about the exit code', () => {
   const target = freshDir();
   const r = runInit(['init', '--yes', '--target', target, '--stacks', 'none', '--platforms', 'none']);
   assert.equal(r.status, 0, 'an unresolved dependency warns; it never refuses a correct seed');
   assert.match(r.stderr, /WARN: the seeded engine's one runtime dependency, js-yaml, does not resolve/);
   assert.match(r.stderr, /npm install --save-dev js-yaml/);
-  assert.match(r.stderr, /exits 1, which the exit-code contract reads as "findings present"/);
+  // The warning used to say the engine would exit 1. Since UCS-956 it exits 2,
+  // and a seeded kit that misreports its own exit codes is worse than one that
+  // says nothing. Assert the CLAIM against the seeded engine's real behaviour.
+  assert.match(r.stderr, /every engine command exits 2 — engine failure, never a silent pass/);
+  assert.doesNotMatch(r.stderr, /exits 1/, 'the warning must not claim an exit code the engine no longer uses');
+
+  const seeded = join(target, 'unknown-knowledge', 'engine', 'validate.js');
+  const engine = spawnSync(process.execPath, [seeded, '--root', join(target, 'unknown-knowledge')],
+    { encoding: 'utf8', timeout: 20_000 });
+  assert.equal(engine.status, 2, 'the seeded engine, without js-yaml, exits exactly what the warning promised');
 });
 
 test('dependency preflight: a resolvable js-yaml stays silent', () => {

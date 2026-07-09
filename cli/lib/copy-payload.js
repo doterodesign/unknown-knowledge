@@ -34,6 +34,7 @@
 import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import { load, YAMLException } from 'js-yaml';
+import { EngineRefusal } from '../../payload/engine/lib/engine-refusal.js';
 
 export const DEFAULT_ROOT = 'unknown-knowledge';
 export const MANIFEST_FILE = join('cli', 'kit.manifest.yaml');
@@ -42,7 +43,7 @@ export const SEEDED_MANIFEST = 'kit.manifest.yaml';
 export const ROOT_FILE_ALLOWLIST = Object.freeze(['LICENSE', 'NOTICE']);
 
 /** Refusals (existing seed, bad root name) — expected conditions, not bugs. */
-export class SeedRefusal extends Error {
+export class SeedRefusal extends EngineRefusal {
   constructor(message) {
     super(message);
     this.name = 'SeedRefusal';

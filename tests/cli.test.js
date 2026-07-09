@@ -14,6 +14,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
 import { EngineRefusal, parseArgs, rethrowIfBug, runCli, UsageError } from '../payload/engine/lib/cli.js';
+import { catchBlocks } from './lib/catch-blocks.js';
 
 /** Collects what a command would have written to stderr. */
 const capture = () => {
@@ -345,7 +346,7 @@ test('every surface that catches an engine failure rethrows bugs first', async (
   // rethrowIfBug is a catch that will one day report a TypeError as a refusal.
   for (const name of ['audit.js', 'survey-map.js', 'log-entry.js']) {
     const source = await readFile(fileURLToPath(new URL(`../payload/engine/commands/${name}`, import.meta.url)), 'utf8');
-    for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
+    for (const block of catchBlocks(source)) {
       // Only the catches that DECIDE THE COMMAND'S FATE. A catch that degrades
       // an unreadable suppressions file to a warning and carries on is not
       // speaking for the run, so it owes nothing to the harness.
@@ -372,4 +373,37 @@ test('audit refuses an empty --stale-days rather than reading it as zero', () =>
   const r = spawnSync(process.execPath, [cli, '--root', root, '--stale-days='], { encoding: 'utf8', timeout: 10_000 });
   assert.equal(r.status, EXIT_CODES.FAILURE);
   assert.match(r.stderr, /--stale-days requires a value/);
+});
+
+// ---------------------------------------------- the init CLIs (UCS-950)
+
+test('a SeedRefusal is an anticipated refusal, not a bug', async () => {
+  // Init refuses an existing root by design (§6). That refusal must survive
+  // rethrowIfBug, or the harness would bury the reason under a stack trace.
+  const { SeedRefusal } = await import('../cli/lib/copy-payload.js');
+  const refusal = new SeedRefusal('already exists — refusing to seed over it');
+  assert.doesNotThrow(() => rethrowIfBug(refusal));
+  assert.ok(refusal instanceof EngineRefusal, 'a seed refusal is an engine refusal');
+});
+
+test('the init CLIs rethrow bugs after naming the partial state', async () => {
+  // The post-seed catch must report first — a rollback could destroy user
+  // bytes, so the partial state has to be named — and only then let a bug
+  // through to the harness, which prints the stack.
+  for (const name of ['init.js', 'init-copy.js']) {
+    const source = await readFile(fileURLToPath(new URL(`../cli/commands/${name}`, import.meta.url)), 'utf8');
+    // Per CATCH, not per file. A file-wide `assert.match(source, /rethrowIfBug/)`
+    // passes as soon as ONE catch does the right thing, and init had a second
+    // one — around loadManifest — that swallowed bugs for exactly that reason.
+    const fatal = catchBlocks(source).filter((b) => /EXIT_CODES\.FAILURE/.test(b));
+    assert.ok(fatal.length > 0, `cli/commands/${name}: found no catch that decides the exit code — is the scanner blind?`);
+    for (const block of fatal) {
+      assert.match(block, /rethrowIfBug\(error\)/,
+        `cli/commands/${name} has a catch that decides the exit code without first rethrowing bugs:\n${block}`);
+    }
+    assert.ok(!/instanceof UsageError/.test(source), `cli/commands/${name} must leave usage errors to the harness`);
+    assert.ok(!/internal failure/.test(source), `cli/commands/${name} must not hand-roll the crash epilogue`);
+    assert.ok(!/function parseArgs\(argv\) \{[\s\S]{0,200}?for \(let i = 0/.test(source),
+      `cli/commands/${name} still hand-rolls the flag loop`);
+  }
 });
