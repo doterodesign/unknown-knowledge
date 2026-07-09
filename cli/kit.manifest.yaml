@@ -26,6 +26,14 @@ defaults:
 # ------------------------------------------------------------- unconditional
 # Seeded for every stack selection, including config-only (no stacks).
 unconditional:
+  # ESM marker for the seeded engine. The engine is ESM (D-002, zero-build);
+  # without this Node re-parses every engine file to guess its module type and
+  # prints MODULE_TYPELESS_PACKAGE_JSON on stderr — the same stream the
+  # protocol tells agents to read for engine failures, so the noise is worse
+  # than cosmetic. It declares a module type and nothing else: dependency
+  # resolution still walks up to the client's own node_modules (js-yaml, §9.1).
+  module-type:
+    - { from: package.json, to: package.json }
   schemas:
     - { from: schemas, to: schemas }
   engine:
