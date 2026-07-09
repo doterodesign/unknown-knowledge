@@ -1,0 +1,17 @@
+# UCS-933: a DOTTED directory pointer (src/api.v2 — extname ".v2") and a real
+# file pointer, both present on disk. Nesting must follow the filesystem, not
+# the name: a name-based guess drops every path under src/api.v2.
+schema-version: 1
+entries:
+  - id: K-100
+    term: Api surface
+    class: 100-api
+    summary: The versioned API handler directory (a dotted folder pointer).
+    source-of-truth: [src/api.v2]
+    status: active
+  - id: K-110
+    term: Model
+    class: 100-api
+    summary: The shared model type declarations (a file pointer).
+    source-of-truth: [src/types/model.ts]
+    status: active

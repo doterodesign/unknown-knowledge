@@ -33,12 +33,15 @@
  *
  * --paths mode — reverse lookup over the loader's pointer index: "which
  * concepts point at these files". A path matches a pointer when equal to it or
- * nested under a FOLDER pointer (§3.1 folder pointers — a pointer with an
- * extension is a file pointer; nothing nests under a file). Paths are
- * normalized with path.posix semantics (dots resolved, separators collapsed,
- * backslashes converted, absolute paths relativized against the store root) so
- * attribution survives the forms real tooling emits. A lookup, not subset
- * validation (no D-012 conflict). Paths are deduped and sorted ascending.
+ * nested under a FOLDER pointer (§3.1). Folder-ness is read from the
+ * filesystem, not from the name — `src/api.v2` is a directory whose extname is
+ * ".v2" — and from the name only when the pointer is gone, since a diff names
+ * deleted paths; see folderPointerTest. Paths are normalized with path.posix
+ * semantics (dots resolved, separators collapsed, backslashes converted,
+ * absolute paths relativized against the store root) so attribution survives
+ * the forms real tooling emits. An entry naming the repo root is a usage
+ * error, never a silently dropped lookup. A lookup, not subset validation (no
+ * D-012 conflict). Paths are deduped and sorted ascending.
  *
  * Zero resolution is a NORMAL outcome (PRD §7 — common in month one): exit 0
  * with an explicit empty result plus the fallback conduct (search within
@@ -53,7 +56,8 @@
  * id asc; paths/pointers/entry points lexicographic — with no timestamps.
  */
 import process from 'node:process';
-import { posix } from 'node:path';
+import { statSync } from 'node:fs';
+import { join, posix } from 'node:path';
 import { loadStores, locateKitRoot } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -166,18 +170,64 @@ function normPath(root, p) {
   return path === '.' ? '' : path;
 }
 
-/** §3.1: a pointer naming a directory (no extension) — only these nest. */
-const isFolderPointer = (pointer) => posix.extname(pointer) === '';
+/**
+ * §3.1: a folder pointer nests over its subtree. Ask the filesystem, never
+ * the name — the map is never the fact. `src/api.v2` is a directory whose
+ * `extname` is ".v2", so a name-based guess drops every path beneath it: a
+ * silent missed attribution in exactly the ACT pre-commit check a developer
+ * trusts to say which concepts their change touches.
+ *
+ * The filesystem decides whenever it can. It cannot when the pointer does not
+ * exist — `--paths` is fed from a diff, and a diff names deleted paths — so a
+ * missing pointer falls back to the name: no extension, treat as a folder.
+ * That keeps deletion attribution working (deleting a source-of-truth
+ * directory still flags its concept) while never nesting under something that
+ * looks like a file. Erring this way keeps every residual gap on the
+ * missed-attribution side: a deleted DOTTED directory stops nesting, which
+ * under-reports. Over-reporting would put a concept the change never touched
+ * in front of a human, and false attribution is the costlier error here.
+ *
+ * An unreadable pointer (EACCES on its parent) is epistemically the same as an
+ * absent one — the filesystem declines to say — so it takes the same name
+ * fallback rather than crashing a lookup that can still answer for every other
+ * pointer. `throwIfNoEntry: false` silences ENOENT only.
+ *
+ * Stat once per pointer: `--paths` crosses every pointer with every path.
+ */
+function folderPointerTest(repoRoot) {
+  const cache = new Map();
+  const statOrNull = (path) => {
+    try {
+      return statSync(path, { throwIfNoEntry: false }) ?? null;
+    } catch {
+      return null; // unreadable: the filesystem cannot decide, so the name does
+    }
+  };
+  return (pointer) => {
+    if (!cache.has(pointer)) {
+      const stat = statOrNull(join(repoRoot, pointer));
+      cache.set(pointer, stat ? stat.isDirectory() : posix.extname(pointer) === '');
+    }
+    return cache.get(pointer);
+  };
+}
 
 function resolvePaths(model, rawPaths, repoRoot) {
   // Pointers are repo-root-relative (§9.1), so both sides normalize against
   // the repo root — the KK-08 two-root convention (model.root may be the
   // nested unknown-knowledge/ store dir in a seeded repo).
-  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p)).filter(Boolean))]
-    .sort(compare);
+  // An entry that normalizes away (empty, ".", "src/..") names the repo root,
+  // not a path inside it. Dropping it silently would shrink the lookup the
+  // caller asked for — a lookup that never ran, wearing a clean exit.
+  const rootish = rawPaths.filter((p) => normPath(repoRoot, p) === '');
+  if (rootish.length) {
+    throw new UsageError(`--paths entries ${rootish.map((p) => JSON.stringify(p)).join(', ')} name the repo root, not a path inside it — name the files or directories the change touched`);
+  }
+  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p)))].sort(compare);
   if (!paths.length) {
     throw new UsageError('--paths must name at least one path — a lookup that never ran is a failure, never a silent empty result');
   }
+  const isFolderPointer = folderPointerTest(repoRoot);
   return paths.map((path) => {
     const seen = new Set();
     const concepts = [];
@@ -217,6 +267,9 @@ function parseArgs(argv) {
       let value;
       if (eq !== -1) {
         value = arg.slice(eq + 1);
+        // `--root=` is as valueless as a bare `--root`: an empty root would
+        // silently resolve to cwd, answering about a repo nobody named.
+        if (value === '') throw new UsageError(`${flag} requires a value`);
       } else {
         value = argv[i + 1];
         if (value === undefined || value.startsWith('--')) {
@@ -333,8 +386,14 @@ function main(argv) {
     return EXIT_CODES.CLEAN;
   } catch (error) {
     // One handler for every phase's usage errors, so the paths never drift.
-    if (!(error instanceof UsageError)) throw error;
-    process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
+    if (error instanceof UsageError) {
+      process.stderr.write(`resolve: ${error.message}\n${USAGE}\n`);
+      return EXIT_CODES.FAILURE;
+    }
+    // An uncaught throw would exit 1 — the FINDINGS code — so a crashed lookup
+    // would read as "resolved, with findings" instead of "the lookup never
+    // ran" (PRD §5). The resolver emits no findings; it must never exit 1.
+    process.stderr.write(`resolve: internal failure — the lookup did not run\n${error.stack || error.message}\n`);
     return EXIT_CODES.FAILURE;
   }
 }

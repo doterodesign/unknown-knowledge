@@ -6,11 +6,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { chmodSync, cpSync, mkdtempSync, rmSync, statSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const cli = fileURLToPath(new URL('../payload/engine/resolve.js', import.meta.url));
 const store = fileURLToPath(new URL('fixtures/resolver/store', import.meta.url));
 const brokenStore = fileURLToPath(new URL('fixtures/loader/duplicate-id', import.meta.url));
+// A store whose source-of-truth pointers EXIST ON DISK, so the folder-pointer
+// test can consult the filesystem instead of guessing from the name (UCS-933).
+const onDiskStore = fileURLToPath(new URL('fixtures/resolver/on-disk', import.meta.url));
 
 function run(...args) {
   return spawnSync(process.execPath, [cli, ...args], { encoding: 'utf8' });
@@ -309,4 +315,91 @@ test('unreadable root exits 2 — a lookup that never ran is a failure, not a mi
   const r = run('settlement', '--root', `${store}/does-not-exist`);
   assert.equal(r.status, 2);
   assert.match(r.stderr, /resolve: /);
+});
+
+// ------------------------------------- folder pointers follow the filesystem
+// (UCS-933) The map is never the fact: `src/api.v2` is a directory whose
+// extname is ".v2". A name-based guess silently drops every path beneath it —
+// a missed attribution in the ACT pre-commit check a developer trusts.
+
+function runJsonAt(root, ...args) {
+  const r = run(...args, '--root', root, '--json');
+  assert.equal(r.status, 0, `expected exit 0, got ${r.status}: ${r.stderr}`);
+  return JSON.parse(r.stdout);
+}
+
+test('--paths: a DOTTED directory pointer nests — the filesystem decides, not the extension', () => {
+  const out = runJsonAt(onDiskStore, '--paths', 'src/api.v2/handler.ts');
+  assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['K-100']);
+  assert.equal(out.paths[0].concepts[0].pointer, 'src/api.v2');
+});
+
+test('--paths: a real FILE pointer still never nests — no false attribution', () => {
+  const out = runJsonAt(onDiskStore, '--paths', 'src/types/model.ts/nope.ts');
+  assert.deepEqual(out.paths[0].concepts, []);
+  // ...while the exact path still attributes.
+  const exact = runJsonAt(onDiskStore, '--paths', 'src/types/model.ts');
+  assert.deepEqual(exact.paths[0].concepts.map((c) => c.id), ['K-110']);
+});
+
+test('--paths: a pointer absent from disk falls back to the name — a deleted directory still attributes', () => {
+  // The `store` fixture's pointers are notional (nothing on disk), which is
+  // exactly the diff-names-deleted-paths case: `src/payments/payouts` has no
+  // extension, so it still nests, and the deletion reaches its concept.
+  const out = runJson('--paths', 'src/payments/payouts/stripe.ts');
+  assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['K-110']);
+});
+
+// ------------------------------------------- empty-value flags (UCS-933)
+
+test('--root= and --paths= are as valueless as their space forms — never a silent cwd', () => {
+  // `--root=` used to resolve to cwd: an answer about a repo nobody named.
+  const emptyRoot = run('--paths', 'src/x.ts', '--root=');
+  assert.equal(emptyRoot.status, 2);
+  assert.match(emptyRoot.stderr, /--root requires a value/);
+  const emptyPaths = run('--paths=', '--root', store);
+  assert.equal(emptyPaths.status, 2);
+  assert.match(emptyPaths.stderr, /--paths requires a value/);
+});
+
+test('--paths: an entry naming the repo root is a usage error, never silently dropped', () => {
+  // `src/x.ts,.` used to drop the "." and answer about one path, not two.
+  const r = run('--paths', 'src/payments/payouts,.', '--root', store);
+  assert.equal(r.status, 2, r.stdout);
+  assert.match(r.stderr, /name the repo root/);
+  // `src/..` normalizes to the root the same way.
+  assert.equal(run('--paths', 'src/..', '--root', store).status, 2);
+});
+
+// -------------------------------------- unreadable pointers & the exit-1 trap
+
+test('--paths: an unreadable pointer falls back to the name, never crashes the lookup', () => {
+  // `throwIfNoEntry: false` silences ENOENT only — an EACCES parent still
+  // throws. The lookup must still answer for every other pointer.
+  const dir = mkdtempSync(join(tmpdir(), 'resolve-eacces-'));
+  cpSync(onDiskStore, dir, { recursive: true });
+  const guarded = join(dir, 'src');
+  try {
+    chmodSync(guarded, 0o000);
+    // If the sandbox does not enforce the mode (root, or a permissive fs),
+    // the stat succeeds and there is no unreadable pointer to test.
+    let enforced = false;
+    try { statSync(join(guarded, 'api.v2'), { throwIfNoEntry: false }); } catch { enforced = true; }
+    if (!enforced) return;
+    const r = run('--paths', 'src/api.v2/handler.ts', '--root', dir, '--json');
+    assert.equal(r.status, 0, `an unreadable pointer must not crash: ${r.stderr}`);
+    assert.ok(!/EACCES|at Object\./.test(r.stderr), `no stack trace: ${r.stderr}`);
+  } catch (error) {
+    if (error?.code !== 'EPERM') throw error; // some CI sandboxes forbid chmod
+  } finally {
+    chmodSync(guarded, 0o755);
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('an internal failure exits 2, never 1 — the resolver emits no findings', () => {
+  // The resolver has no FINDINGS outcome, so exit 1 must be unreachable: a
+  // crash reading as "resolved, with findings" is the PRD §5 failure class.
+  const r = run('--paths', 'src/x.ts', '--root', brokenStore);
+  assert.notEqual(r.status, 1, `resolve must never exit 1: ${r.stdout}${r.stderr}`);
 });
