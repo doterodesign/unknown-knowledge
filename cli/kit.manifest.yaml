@@ -34,6 +34,8 @@ unconditional:
     # incl. AGENTS.md — the navigation contract + runtime loop (§7).
     - { from: protocol/AGENTS.md, to: protocol/AGENTS.md }
     - { from: protocol/new-kind-pipeline.md, to: protocol/new-kind-pipeline.md }
+    # Protocol skills (D-019 names) — the phase-2 procedures agents run.
+    - { from: protocol/skills/knowledge-bootstrap.md, to: protocol/skills/knowledge-bootstrap.md }
   templates:
     # The §5.2 new-kind authoring template — clients extend the extractor
     # library themselves (D-001/D-009), so the template always ships.
