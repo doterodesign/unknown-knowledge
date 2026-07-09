@@ -1,0 +1,11 @@
+# Resolver fixture whose source-of-truth pointers EXIST ON DISK (UCS-933), so
+# the folder-pointer test can consult the filesystem rather than the name.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-100
+    title: Api surface
+    file: classes/100-api.yaml
+  - id: K-110
+    title: Model
+    file: classes/100-api.yaml
