@@ -201,20 +201,36 @@ test('a repo with no stores at all still audits — everything is a proposal', (
   assert.ok(out.findings.some((f) => f.code === 'unmatched-anchor' && f.path === 'src/sports.ts'));
 });
 
-test('a stale unknown-knowledge/ dir alongside root-level stores is still kit zone, never findings', () => {
+// UCS-934. This test used to assert that the root store wins and the nested
+// dir is kit zone. That was one of TWO defensible answers — the audit picked
+// the root, every other surface picked the nested dir, and the repo silently
+// read two different Stores. Neither guess is right for every repo: a client
+// with a product `ontology/` wants the nested kit; a client who migrated their
+// stores to the root wants the root. The engine cannot tell them apart, so it
+// refuses rather than choose — every surface fails the same way.
+test('a seeded kit dir alongside root-level stores is ambiguous: the audit refuses, never guesses', () => {
   const repo = plantRepo('twokits', {
     // Stores at the scan root itself (engine-fixture layout)…
     'ontology/_catalog.yaml': STORE_MIN['unknown-knowledge/ontology/_catalog.yaml'],
     'ontology/_rules.yaml': STORE_MIN['unknown-knowledge/ontology/_rules.yaml'],
     'ontology/classes/100-core.yaml': STORE_MIN['unknown-knowledge/ontology/classes/100-core.yaml'],
     'src/sports.ts': ANCHOR_TS,
-    // …plus a leftover nested kit dir: kit zone by name, never product surface.
+    // …plus a leftover nested kit dir. Which store is authoritative?
     'unknown-knowledge/ontology/classes/100-old.yaml': 'schema-version: 1\nentries: []\n',
   });
+  const r = run('--root', repo);
+  assert.equal(r.status, 2, `an ambiguous layout is an engine failure: ${r.stdout}`);
+  assert.match(r.stderr, /two candidate kit roots/);
+  // The human is told how to disambiguate, not merely that something is wrong.
+  assert.match(r.stderr, /Point --root at the intended kit root, or remove the stale one/);
+});
+
+test('a seeded kit dir alone is the Kit; the audit never proposes concepts for it', () => {
+  const repo = plantRepo('seeded-only', { ...STORE_MIN, 'src/sports.ts': ANCHOR_TS });
   const out = runJson(repo, 0);
   assert.ok(
     !out.findings.some((f) => f.path?.startsWith('unknown-knowledge')),
-    JSON.stringify(out.findings),
+    `the kit zone is never product surface: ${JSON.stringify(out.findings)}`,
   );
 });
 

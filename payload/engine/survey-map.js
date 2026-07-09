@@ -30,10 +30,11 @@ import { basename, dirname, extname, isAbsolute, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url';
 import { load, YAMLException } from 'js-yaml';
 import { ANCHOR_SIGNATURES } from './lib/anchor-signatures.js';
+import { SCOPE_FILE } from './lib/kit-root.js';
 import { validateStoreFile, compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 
-export const SCOPE_FILE = 'survey-scope.yaml';
+export { SCOPE_FILE } from './lib/kit-root.js';
 
 /** Vendored/generated directory names (any path segment). */
 const DENY_DIRS = new Set([

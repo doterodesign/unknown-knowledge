@@ -419,18 +419,6 @@ export function selectConcepts(model, ids) {
   return ids.map((id) => model.concepts.get(id));
 }
 
-/** The §9.1 seeded kit directory name; stores live there in a client repo. */
-const KIT_DIR_DEFAULT = 'unknown-knowledge';
-
-/**
- * Store root for a repo root: <root>/unknown-knowledge/ when that directory
- * exists, else the root itself (the kit repo's own dogfood layout). Every
- * repo-root-taking CLI shares this so "--root" can never mean two things.
- */
-export function locateKitRoot(root) {
-  const nested = join(root, KIT_DIR_DEFAULT);
-  return statSync(nested, { throwIfNoEntry: false })?.isDirectory() ? nested : root;
-}
 
 /**
  * §3.5: draft/proposed concepts get structural checks only — the value check
