@@ -13,16 +13,17 @@ public seams — the CLI processes — so a criterion is proven exactly the way 
 client repo would observe it. CI runs the harness as the `fixture-acceptance`
 job (`.github/workflows/ci.yml`); `ci-ok` depends on it.
 
-Status vocabulary: **PASS/FAIL** (asserted by the run), **DEFERRED** (A1 —
-`init` lands in M5; the hook is documented, never faked), **MANUAL** (A5 —
+Status vocabulary: **PASS/FAIL** (asserted by the run), **MANUAL** (A5 —
 skills are prompts; their test is a checklist, not CI). The run exits 0 only
-when every *asserted* criterion (A2–A4, A6) passes.
+when every *asserted* criterion (A1–A4, A6) passes. A1 asserts the KK-17
+copy engine; its report line names the honest remaining seam (the npx
+packaging/prompt layer is KK-19's).
 
 ## Criterion table (source of truth: PRD §10, quoted verbatim)
 
 | # | Capability | PRD §10 "proven how" (quoted) | Verified by | Where |
 |---|---|---|---|---|
-| A1 | Init completes cold | "CI runs `init` against each fixture; asserts the scaffold matches the payload manifest byte-for-byte; asserts acceptance fixtures are absent and selected-stack extractor fixtures (and only those) are present" | **DEFERRED to M5** — see §A1 below | hook in `acceptance/run.js` (A1 section) |
+| A1 | Init completes cold | "CI runs `init` against each fixture; asserts the scaffold matches the payload manifest byte-for-byte; asserts acceptance fixtures are absent and selected-stack extractor fixtures (and only those) are present" | harness: `cli/init-copy.js` cold-run per stack selection combination (none/ts/swift/both) into a fresh temp dir — scaffold vs `cli/kit.manifest.yaml` expansion byte-for-byte, fixtures/tests absence (D-007), selected-stack packs only (D-009), second run refuses (§6). Remaining seam: the npx packaging/prompt cold-run completes with KK-19 — see §A1 below | `acceptance/run.js` §A1; unit depth in `tests/init-copy.test.js` |
 | A2 | Extraction works | "every MVP kind vs. fixture anchors → expected value sets; malformed descriptors hard-error; `dir-modules` options exercised" | harness: `validate-values.js` vs both fixtures' FIXTURE.md tables (clean sets, out-of-envelope hard errors, dir-modules plain + pattern/strip) | `acceptance/run.js` §A2; unit depth in `tests/extractor-kinds-{ts,swift,dir}.test.js`, `tests/validate-values.test.js` |
 | A3 | Drift is caught | "planted drift in fixtures: registry value with no concept and the reverse; CI asserts the correct finding kind fires in each direction; wrong-pointer (all-values-missing) signature detected" | harness: `validate-values.js` — exact tabulated findings, both directions, both fixtures, wrong-pointer signature in each | `acceptance/run.js` §A3; same unit suites |
 | A4 | Resolution works | "fixture queries → expected ranked concepts; confusable-with surfaced; CLI exit codes correct" | harness: `resolve.js` queries against both fixtures' stores (exact-term rank, confusable-with, zero-hit exit 0, usage-error exit 2) | `acceptance/run.js` §A4; unit depth in `tests/resolve.test.js` |
@@ -34,25 +35,30 @@ seams* — the harness is the single per-criterion report, not a second test
 suite; planted-case inventories live in each fixture's `FIXTURE.md`, and the
 unit suites hold the exhaustive kind-level matrices.
 
-## A1 — deferred hook (lands with M5: KK-17 `init`, KK-19 wiring assertion)
+## A1 — asserted (KK-17 copy engine; npx layer completes with KK-19)
 
-`npx unknown-knowledge init` does not exist yet, so the harness reports
-`A1: DEFERRED` and asserts nothing (faking coverage would be worse than
-none). When KK-17/KK-19 land, the A1 section of `acceptance/run.js` becomes a
-real `criterion('A1', …)` that, **per fixture, in a fresh temp git repo**:
+The KK-17 manifest + copy engine (`cli/kit.manifest.yaml`,
+`cli/lib/copy-payload.js`, seam `cli/init-copy.js`) landed the A1 wiring
+assertion documented here (moved from KK-16). The A1 section of
+`acceptance/run.js` is a real `criterion('A1', …)` that, **per stack
+selection combination (none / ts / swift / both), in a fresh temp dir**:
 
-1. runs `init` cold (no interactive state, stack selected per fixture:
-   `swift` / `ts`);
-2. asserts the seeded scaffold matches the payload manifest
-   **byte-for-byte** (identical store → byte-identical output);
-3. asserts nothing under `fixtures/` was vendored (acceptance-fixture leakage
-   impossible, D-007), and that the selected stack's extractor fixtures —
-   and *only* those — are present (D-009, per selection combination);
-4. asserts a second run on the seeded repo **refuses cleanly** (v1 init
-   refuses on any existing or partial seed, PRD §6).
+1. runs the copy engine cold through its public seam (`cli/init-copy.js` —
+   no interactive state, flags only);
+2. asserts the seeded scaffold matches the payload manifest expansion
+   **byte-for-byte** — every manifest file copied exactly, nothing else
+   present beyond the engine-generated `kit.manifest.yaml` stamp and the
+   manifest's `.gitkeep`'d log dirs;
+3. asserts nothing under `fixtures/` or `tests/` was vendored
+   (acceptance-fixture leakage impossible by construction, D-007), and that
+   the selected stacks' extractor fixtures — and *only* those — are present
+   (D-009, per selection combination);
+4. asserts a second run on the seeded target **refuses cleanly**, changing
+   nothing (v1 init refuses on any existing or partial seed, PRD §6).
 
-KK-19 owns the byte-for-byte assertion itself; this harness owns reporting
-it as A1 in the same single run as A2–A4/A6.
+The honest remaining seam, named on the report line itself: the interactive
+`npx unknown-knowledge init` packaging/prompt cold-run completes with KK-19,
+which wraps this engine.
 
 ## A5 — walkthrough checklist index (manual by design)
 
