@@ -80,7 +80,7 @@ const NEXT_ACTIONS = Object.freeze({
  * never reaches the validators: their checks would not have run).
  */
 function computeVerdicts(model, ids, repoRoot) {
-  const structural = runChecks(model);
+  const structural = runChecks(model, repoRoot);
   const values = validateValues(model, null, repoRoot); // full run; attribution below
 
   return selectConcepts(model, ids).map(({ id, record }) => {
