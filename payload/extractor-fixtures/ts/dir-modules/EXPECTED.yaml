@@ -1,0 +1,12 @@
+# Expected extraction for sample-modules/ (§3.5: byte-exact, case-sensitive,
+# as a set — order here is presentation only). dir-modules is a DIRECTORY
+# kind: `file` names the sample directory, not a file, and the caller feeds
+# the kind a deterministic listing (see the extractor-fixtures README).
+# `pattern` pins the FILE facet (`*.widget.ts`: widgets.test.ts is excluded,
+# the helpers/ subdirectory is not part of the facet); `strip` removes the
+# `.widget.ts` suffix from every emitted name.
+kind: dir-modules
+file: sample-modules
+pattern: "*.widget.ts"
+strip: .widget.ts
+values: [alpha, beta, gamma]

@@ -22,12 +22,11 @@ test('the TS fixture store loads with zero diagnostics', () => {
 });
 
 test('every planted concept K-101..K-116 is present and cataloged', () => {
-  // K-111 is deliberately absent: reserved for KK-10's dir-modules
-  // pattern/strip options (FIXTURE.md) — encoding them before the schema
-  // ratifies them would overload symbol/emit semantics.
+  // K-111 (dir-modules pattern/strip) landed with KK-10, which ratified the
+  // pattern/strip descriptor options in the ontology-concept schema.
   const expected = [
     'K-101', 'K-102', 'K-103', 'K-104', 'K-105', 'K-106', 'K-107', 'K-108',
-    'K-109', 'K-110', 'K-112', 'K-113', 'K-114', 'K-115', 'K-116',
+    'K-109', 'K-110', 'K-111', 'K-112', 'K-113', 'K-114', 'K-115', 'K-116',
   ];
   assert.deepEqual([...model.concepts.keys()], expected);
   const cataloged = model.stores.ontology.catalog.entries.map((e) => e.id).sort();

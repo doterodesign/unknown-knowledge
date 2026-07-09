@@ -43,9 +43,11 @@
  * Extractor kinds are registered by NAME in lib/extractor-kinds.js — a small
  * deterministic recipe `extract(text, descriptor) -> string[]` that reads a
  * value set out of a reified anchor, throwing EnvelopeError / ExtractError.
- * KK-08 ships the TS/JS + JSON kinds; KK-09 (Swift/config) and KK-10
- * (dir-modules) extend the registry; `test-lines` (newline-delimited registry
- * files) proves dispatch, the envelope hard-error path, and determinism.
+ * KK-08 ships the TS/JS + JSON kinds; KK-09 the Swift/config kinds; KK-10
+ * dir-modules — the registry's one DIRECTORY kind (`{ reads: 'directory' }`),
+ * fed a deterministic listing instead of file text (dispatch seam in
+ * checkDescriptor); `test-lines` (newline-delimited registry files) proves
+ * dispatch, the envelope hard-error path, and determinism.
  * D-014: kinds parse lexically only — the engine never executes client code.
  *
  * --root is the REPO root (default cwd): descriptor sources and
@@ -66,7 +68,7 @@ import { fileURLToPath } from 'node:url';
 import { loadStores, locateKitRoot, isPrePromotionStatus, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
-import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
+import { KINDS, EnvelopeError, ExtractError, listDirectory } from './lib/extractor-kinds.js';
 
 const USAGE = 'usage: node payload/engine/validate-values.js [--concepts <ids>] [--json] [--root <dir>]';
 
@@ -96,8 +98,8 @@ function checkDescriptor(ctx, concept, descriptor, i) {
     }
   };
 
-  const extract = KINDS[descriptor.kind];
-  if (!extract) {
+  const kind = KINDS[descriptor.kind];
+  if (!kind) {
     ctx.hardErrors.push({
       concept: id, code: 'unknown-kind', file, path, source: descriptor.source,
       message: `extractor kind "${descriptor.kind}" is not registered — nothing can re-derive this claim, and an unprovable claim must never silently pass (PRD §4); registered kinds: ${Object.keys(KINDS).sort(compare).join(', ')}`,
@@ -105,17 +107,27 @@ function checkDescriptor(ctx, concept, descriptor, i) {
     return;
   }
 
-  let text;
+  // Registry dispatch seam (KK-10): a plain function is a FILE kind fed the
+  // source text; a `{ reads: 'directory' }` entry is a DIRECTORY kind fed the
+  // deterministic listing. Either way the one filesystem read happens here,
+  // and an unreadable source (missing file, missing dir, a file where a
+  // directory kind expects a dir — ENOTDIR) is source-missing.
+  const readsDirectory = typeof kind !== 'function' && kind.reads === 'directory';
+  const extract = readsDirectory ? kind.extract : kind;
+
+  let input;
   try {
-    text = readFileSync(join(ctx.root, descriptor.source), 'utf8');
+    input = readsDirectory
+      ? listDirectory(join(ctx.root, descriptor.source))
+      : readFileSync(join(ctx.root, descriptor.source), 'utf8');
   } catch (error) {
-    never('source-missing', `cannot read source ${JSON.stringify(descriptor.source)}: ${error.message}`);
+    never('source-missing', `cannot ${readsDirectory ? 'list source directory' : 'read source'} ${JSON.stringify(descriptor.source)}: ${error.message}`);
     return;
   }
 
   let actual;
   try {
-    actual = extract(text, descriptor);
+    actual = extract(input, descriptor);
   } catch (error) {
     if (error instanceof EnvelopeError) {
       never('out-of-envelope', error.message);

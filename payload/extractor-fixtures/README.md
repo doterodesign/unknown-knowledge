@@ -13,10 +13,17 @@ formatting that stays inside the envelope. Out-of-envelope shapes (spread,
 computed keys, re-exports) are NOT here: those hard-error by design and live
 in the kit's acceptance fixtures.
 
-`EXPECTED.yaml` fields: `kind` + `file` + `values`, plus `symbol`/`emit`
-where the kind needs them — the same fields the descriptor would carry.
-Values are strings compared byte-exact, case-sensitive, as sets (§3.5):
-order in the file is presentation only.
+`EXPECTED.yaml` fields: `kind` + `file` + `values`, plus `symbol`/`emit`/
+`pattern`/`strip` where the kind needs them — the same fields the descriptor
+would carry. Values are strings compared byte-exact, case-sensitive, as sets
+(§3.5): order in the file is presentation only.
+
+Directory kinds (dir-modules) reshape the pair the obvious way: the sample
+is a DIRECTORY (`file` names it, e.g. `sample-modules/`) instead of a single
+file, and the round-trip feeds the kind the deterministic listing
+(`listDirectory` in the engine's extractor-kinds registry) rather than file
+text. Everything else — adversarial-but-extractable contents, EXPECTED.yaml
+as the descriptor's fields — is unchanged.
 
 Kit CI pins every pair against the registered kind (tests/), so a sample and
 its expectation can never rot apart.

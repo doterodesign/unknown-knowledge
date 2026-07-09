@@ -25,14 +25,17 @@ const pairsRoot = join(root, 'payload', 'extractor-fixtures', 'ts');
 const cli = join(root, 'payload', 'engine', 'validate-values.js');
 
 const TS_KINDS = ['ts-const-array', 'ts-union', 'ts-enum', 'ts-object-keys', 'json-keys', 'json-map-keys'];
+// KK-10's directory kind also lives under ts/ (its acceptance home is the TS
+// fixture app); its pair round-trip is pinned in extractor-kinds-dir.test.js.
+const TS_DIR_KINDS = ['dir-modules'];
 
 // ------------------------------------------- 1. shipped D-009 fixture pairs
 
 test('every TS kind ships a D-009 fixture pair, and every pair names a registered kind', () => {
   const dirs = readdirSync(pairsRoot, { withFileTypes: true })
     .filter((d) => d.isDirectory()).map((d) => d.name).sort();
-  assert.deepEqual(dirs, [...TS_KINDS].sort());
-  for (const kind of TS_KINDS) assert.ok(KINDS[kind], `kind ${kind} must be registered`);
+  assert.deepEqual(dirs, [...TS_KINDS, ...TS_DIR_KINDS].sort());
+  for (const kind of [...TS_KINDS, ...TS_DIR_KINDS]) assert.ok(KINDS[kind], `kind ${kind} must be registered`);
 });
 
 test('each shipped pair round-trips: the kind extracts EXACTLY the expected set from its sample', () => {
@@ -56,13 +59,15 @@ function runTsApp(...args) {
 }
 
 test('A2 clean extractions: every planted clean anchor agrees — exit 0, zero findings', () => {
-  const clean = 'K-101,K-103,K-105,K-106,K-107,K-109,K-112,K-114';
+  // K-110/K-111 (dir-modules, KK-10) joined the clean set when the directory
+  // kind registered; their option matrix lives in extractor-kinds-dir.test.js.
+  const clean = 'K-101,K-103,K-105,K-106,K-107,K-109,K-110,K-111,K-112,K-114';
   const r = runTsApp('--concepts', clean);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out.findings, []);
   assert.deepEqual(out['hard-errors'], []);
-  assert.equal(out.checked.filter((c) => !c.skipped).length, 8);
+  assert.equal(out.checked.filter((c) => !c.skipped).length, 10);
 });
 
 test('A3 planted drift: exactly the three tabulated findings, nothing else', () => {
