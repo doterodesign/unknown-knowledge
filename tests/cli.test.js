@@ -373,3 +373,28 @@ test('audit refuses an empty --stale-days rather than reading it as zero', () =>
   assert.equal(r.status, EXIT_CODES.FAILURE);
   assert.match(r.stderr, /--stale-days requires a value/);
 });
+
+// ---------------------------------------------- the init CLIs (UCS-950)
+
+test('a SeedRefusal is an anticipated refusal, not a bug', async () => {
+  // Init refuses an existing root by design (§6). That refusal must survive
+  // rethrowIfBug, or the harness would bury the reason under a stack trace.
+  const { SeedRefusal } = await import('../cli/lib/copy-payload.js');
+  const refusal = new SeedRefusal('already exists — refusing to seed over it');
+  assert.doesNotThrow(() => rethrowIfBug(refusal));
+  assert.ok(refusal instanceof EngineRefusal, 'a seed refusal is an engine refusal');
+});
+
+test('the init CLIs rethrow bugs after naming the partial state', async () => {
+  // The post-seed catch must report first — a rollback could destroy user
+  // bytes, so the partial state has to be named — and only then let a bug
+  // through to the harness, which prints the stack.
+  for (const name of ['init.js', 'init-copy.js']) {
+    const source = await readFile(fileURLToPath(new URL(`../cli/commands/${name}`, import.meta.url)), 'utf8');
+    assert.match(source, /rethrowIfBug\(error\)/, `cli/commands/${name} must not report a TypeError as a refusal`);
+    assert.ok(!/instanceof UsageError/.test(source), `cli/commands/${name} must leave usage errors to the harness`);
+    assert.ok(!/internal failure/.test(source), `cli/commands/${name} must not hand-roll the crash epilogue`);
+    assert.ok(!/function parseArgs\(argv\) \{[\s\S]{0,200}?for \(let i = 0/.test(source),
+      `cli/commands/${name} still hand-rolls the flag loop`);
+  }
+});

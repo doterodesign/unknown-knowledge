@@ -23,7 +23,7 @@ import process from 'node:process';
 import { copyPayload, loadManifest, DEFAULT_ROOT, SeedRefusal } from '../lib/copy-payload.js';
 import { assertKnownPlatforms, generateWrappers } from '../lib/generate-wrappers.js';
 import { EXIT_CODES } from '../../payload/engine/lib/exit-codes.js';
-import { parseArgs as parseFlags, UsageError } from '../../payload/engine/lib/cli.js';
+import { parseArgs as parseFlags, rethrowIfBug, UsageError } from '../../payload/engine/lib/cli.js';
 
 export const USAGE = 'usage: node cli/init-copy.js --target <dir> [--root <name>] [--stacks <s1,s2>] [--platforms <p1,p2>] [--json]';
 // The kit root, two levels up: cli/commands/<this>.js (UCS-950).
@@ -84,6 +84,7 @@ export function main(argv) {
   } catch (error) {
     const kind = error instanceof SeedRefusal ? 'refused' : 'error';
     process.stderr.write(`init-copy: ${kind}: ${error.message}\n`);
+    rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
     return EXIT_CODES.FAILURE;
   }
 }

@@ -43,7 +43,7 @@ import process from 'node:process';
 import { copyPayload, loadManifest, DEFAULT_ROOT, SeedRefusal } from '../lib/copy-payload.js';
 import { assertKnownPlatforms, generateWrappers } from '../lib/generate-wrappers.js';
 import { EXIT_CODES } from '../../payload/engine/lib/exit-codes.js';
-import { parseArgs as parseFlags, UsageError } from '../../payload/engine/lib/cli.js';
+import { parseArgs as parseFlags, rethrowIfBug, UsageError } from '../../payload/engine/lib/cli.js';
 
 export const USAGE = 'usage: npx unknown-knowledge init [--root <name>] [--platforms <ids|none>] '
   + '[--stacks <ids|none>] [--target <dir>] [--yes]';
@@ -326,8 +326,15 @@ export async function main(argv, { stdin = process.stdin, stdout = process.stdou
       throw error;
     }
   } catch (error) {
+    // Name the partial state FIRST, whatever went wrong: the seed may already
+    // have landed, and a silent rollback could destroy user bytes. The message
+    // carries that note (annotated above), and a stack trace would bury it.
     const kind = error instanceof SeedRefusal ? 'refused' : 'error';
     stderr.write(`unknown-knowledge init: ${kind}: ${error.message}\n`);
+    // Then: a SeedRefusal and the copy engine's plain Errors are anticipated,
+    // and this catch speaks for them. A TypeError is a bug — the harness gets
+    // it, and prints the stack nobody could debug without. Both exit 2.
+    rethrowIfBug(error);
     return EXIT_CODES.FAILURE;
   }
 
