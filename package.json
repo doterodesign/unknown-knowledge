@@ -13,6 +13,16 @@
   },
   "homepage": "https://github.com/doterodesign/unknown-knowledge#readme",
   "type": "module",
+  "bin": {
+    "unknown-knowledge": "cli/init.js"
+  },
+  "files": [
+    "cli/",
+    "payload/",
+    "LICENSE",
+    "NOTICE",
+    "README.md"
+  ],
   "engines": {
     "node": ">=22.0.0"
   },

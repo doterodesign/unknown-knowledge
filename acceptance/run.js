@@ -11,10 +11,13 @@
  * at its section below. Status vocabulary:
  *   PASS / FAIL  — asserted by this run (A1, A2, A3, A4, A6). A1 asserts the
  *                  KK-17 copy engine (manifest byte-for-byte, D-007/D-009,
- *                  re-seed refusal) plus KK-18 wrapper generation (registry
- *                  paths, §6 sentinel-append on a pre-existing AGENTS.md);
- *                  its report line carries the honest remaining seam — the
- *                  npx packaging/prompt layer is KK-19;
+ *                  re-seed refusal), KK-18 wrapper generation (registry
+ *                  paths, §6 sentinel-append on a pre-existing AGENTS.md),
+ *                  and the KK-19 npx init layer (headless cold-run on both
+ *                  fixture apps: stack auto-detection, D-009 warning in
+ *                  output + seeded README, git check-ignore sweep incl. the
+ *                  gitignored-logs variant, D-006 no CI files) — A1 is now
+ *                  fully asserted, no remaining seam;
  *   MANUAL       — A5: skills are prompts, so their test is a checklist,
  *                  never CI (the PRD's honest seam). The harness reports
  *                  where the checklists live without executing them.
@@ -28,7 +31,7 @@
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -100,9 +103,13 @@ function criterion(id, checks, { note } = {}) {
 // (cli/init-copy.js), diffs the scaffold against the payload manifest
 // expansion byte-for-byte, asserts fixtures/tests absence (D-007) and
 // stack-conditional pack presence (D-009), and asserts a second run refuses.
-// The honest remaining seam: the interactive `npx unknown-knowledge init`
-// packaging/prompt layer is KK-19's — the report line below says so.
+// KK-19 completes A1: the npx init layer (cli/init.js) is cold-run
+// headlessly (--yes) on scratch copies of BOTH fixture apps — completes with
+// no hand-fixing, auto-detection picks each fixture's stack, the D-009
+// warning is in the output and the seeded README, the gitignored-logs
+// variant warns with the negation rule, and no CI file is written (D-006).
 const initCopy = join(root, 'cli', 'init-copy.js');
+const initJs = join(root, 'cli', 'init.js');
 const A1_SELECTIONS = [[], ['ts'], ['swift'], ['ts', 'swift']];
 
 function walkSeed(dir, base = dir) {
@@ -207,7 +214,51 @@ criterion('A1', A1_SELECTIONS.map((stacks) => [
       'exactly one sentinel block appended');
     assert.ok(agents.includes(SENTINEL_END), 'sentinel block closed');
   }),
-]]), { note: 'copy engine + platform wrappers, KK-17/KK-18 — npx packaging/prompt cold-run completes with KK-19' });
+]]).concat(FIXTURES.map((app) => {
+  // KK-19: the npx init layer, cold-run headlessly (--yes) on a scratch
+  // copy of each fixture app — a virgin client repo (the fixture's planted
+  // store removed; a real pre-init repo has none).
+  const expected = app === 'ts-app' ? 'ts' : 'swift';
+  return [
+    `npx init cold-run on ${app} (--yes, headless): completes with no hand-fixing; auto-detection picks ${expected}; D-009 warning in output + seeded README; clean sweep silent; no CI files written (D-006) (KK-19)`,
+    () => withFixtureCopy(app, (copy) => {
+      rmSync(join(copy, 'unknown-knowledge'), { recursive: true, force: true });
+      const r = spawnSync(process.execPath, [initJs, 'init', '--yes', '--target', copy], { encoding: 'utf8' });
+      assert.equal(r.status, 0, `init failed on ${app}: ${r.stderr}`);
+      assert.match(r.stdout, new RegExp(`stack auto-detection: ${expected}\\n`),
+        `auto-detection must pick ${expected} for ${app}`);
+      assert.match(r.stdout, new RegExp(`seeded ${DEFAULT_ROOT}/ .*stacks: ${expected}`));
+      // D-009 later-stacks warning: printed AND carried by the seeded README.
+      assert.match(r.stdout, /adopt another stack later.*no update channel/s);
+      assert.match(readFileSync(join(copy, DEFAULT_ROOT, 'README.md'), 'utf8'),
+        /adopt another stack later, you author your own pack/);
+      // Phase-2 handoff (D-019 name).
+      assert.match(r.stdout, /now run \/knowledge-bootstrap in your agent/);
+      // Detected pack — and only it — shipped (D-009).
+      const packs = readdirSync(join(copy, DEFAULT_ROOT, 'engine/tests/fixtures'), { withFileTypes: true })
+        .filter((e) => e.isDirectory()).map((e) => e.name);
+      assert.deepEqual(packs, [expected]);
+      // Clean repo: the git check-ignore sweep runs and stays silent. (The
+      // dependency preflight may warn — a scratch copy resolves no js-yaml —
+      // so this pins the sweep, not every possible warning.)
+      assert.ok(!/WARN: .*gitignored/.test(r.stderr), `clean fixture repo must not warn: ${r.stderr}`);
+      assert.ok(!/WARN: not a git repo/.test(r.stderr), `fixture copy must be a git repo: ${r.stderr}`);
+      // D-006: no CI mutation, ever.
+      assert.ok(!existsSync(join(copy, '.github')), 'init must not create .github/ (no platforms selected)');
+    }, { git: true }),
+  ];
+})).concat([[
+  'npx init gitignored-logs variant: a scratch .gitignore ignoring logs → WARN + the negation rule to add (a gitignored findings log kills the improvement loop silently) (KK-19, §6)',
+  () => withFixtureCopy('ts-app', (copy) => {
+    rmSync(join(copy, 'unknown-knowledge'), { recursive: true, force: true });
+    writeFileSync(join(copy, '.gitignore'), 'logs\n');
+    const r = spawnSync(process.execPath, [initJs, 'init', '--yes', '--target', copy], { encoding: 'utf8' });
+    assert.equal(r.status, 0, `gitignore findings must warn, never fail the seed: ${r.stderr}`);
+    assert.match(r.stderr, /WARN: .*gitignored/);
+    assert.match(r.stderr, new RegExp(`${DEFAULT_ROOT}/logs/findings/\\.gitkeep`));
+    assert.match(r.stderr, new RegExp(`!${DEFAULT_ROOT}/logs/\\*\\*`), 'the negation rule to add must be printed');
+  }, { git: true }),
+]]), { note: 'copy engine + platform wrappers + npx init cold-run — KK-17/KK-18/KK-19, fully asserted' });
 
 // ==================================================================== A2
 // PRD §10 A2 — "Extraction works: every MVP kind vs. fixture anchors →
@@ -505,5 +556,5 @@ for (const entry of report.sort((a, b) => a.id.localeCompare(b.id))) {
 }
 process.stdout.write(failed
   ? '\nresult: FAIL — at least one asserted criterion (A1-A4, A6) has failing checks\n'
-  : '\nresult: OK — all asserted criteria (A1-A4, A6) pass (A1 = copy engine + platform wrappers; npx layer completes with KK-19); A5 manual by design\n');
+  : '\nresult: OK — all asserted criteria (A1-A4, A6) pass; A5 manual by design\n');
 process.exitCode = failed ? 1 : 0;
