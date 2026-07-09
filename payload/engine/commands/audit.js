@@ -80,6 +80,7 @@ import { dump, load } from 'js-yaml';
 import { buildSurveyMap } from './survey-map.js';
 import { locateKit, SCOPE_FILE } from '../lib/kit-root.js';
 import { loadSuppressions, partitionBySuppression, suppressibleBy, SUPPRESSIONS_FILE } from '../lib/suppressions.js';
+import { daysBetween, isCalendarDate, ISO_DATE } from '../lib/iso-date.js';
 import { loadStores, storeHealth } from '../lib/load-stores.js';
 import { compare } from '../lib/validate-record.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
@@ -117,11 +118,6 @@ function draftConcept(path, kinds, today) {
   return dump(record, { lineWidth: -1 });
 }
 
-/** Whole days from ISO date `from` to ISO date `to` (both validated). */
-const daysBetween = (from, to) =>
-  Math.floor((Date.parse(`${to}T00:00:00Z`) - Date.parse(`${from}T00:00:00Z`)) / 86_400_000);
-
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
  * Run the reverse audit: survey the repo at `root` (scope-honoring), load the
@@ -234,8 +230,10 @@ function parseArgs(argv) {
     today: options.today ?? null,
     staleDays: STALE_DAYS_DEFAULT,
   };
-  if (opts.today !== null && (!ISO_DATE.test(opts.today) || Number.isNaN(Date.parse(`${opts.today}T00:00:00Z`)))) {
-    throw new UsageError(`--today must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
+  if (opts.today !== null && !isCalendarDate(opts.today)) {
+    // Not just the shape: Date.parse rolls 2026-02-30 forward to March 2nd, and
+    // staleness would then be measured from a day the caller never named.
+    throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
   }
   if (options['stale-days'] !== undefined) {
     opts.staleDays = Number(options['stale-days']);

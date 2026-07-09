@@ -56,10 +56,10 @@ import { compare } from '../lib/validate-record.js';
 import { createEntry } from '../lib/log-entry.js';
 import { runChecks } from './validate.js';
 import { validateValues } from './validate-values.js';
+import { isCalendarDate } from '../lib/iso-date.js';
 
 export const USAGE = 'usage: node payload/engine/preflight.js [--concepts <ids>] [--json] [--root <dir>] [--log --today <YYYY-MM-DD>]';
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 /** finding.schema.json conceptRef — `consulted` only carries conforming ids. */
 const CONCEPT_REF = /^K-[0-9]+$/;
 
@@ -180,14 +180,10 @@ function parseArgs(argv) {
     today: options.today ?? null,
     concepts: options.concepts ? normalizeConceptIds(options.concepts.flatMap((v) => v.split(','))) : null,
   };
-  if (opts.today !== null) {
-    // Round-trip through UTC: Date.parse rolls over dates like 2026-02-30, and
-    // --log writes --today into permanent fragments.
-    const roundTrip = new Date(`${opts.today}T00:00:00Z`);
-    if (!ISO_DATE.test(opts.today) || Number.isNaN(roundTrip.getTime())
-      || roundTrip.toISOString().slice(0, 10) !== opts.today) {
-      throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
-    }
+  if (opts.today !== null && !isCalendarDate(opts.today)) {
+    // --log writes --today into permanent fragments, so a date that does not
+    // exist would be stamped into an audit trail forever.
+    throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
   }
   if (opts.log && !opts.today) {
     throw new UsageError('--log requires --today <YYYY-MM-DD> — the finding helper never reads the wall clock (PRD §5)');

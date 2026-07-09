@@ -39,6 +39,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import { load, dump } from 'js-yaml';
 import { validateRecord } from './validate-record.js';
+import { isCalendarDate } from './iso-date.js';
 
 /** Log directory name (under logs/) → record kind / schema document. */
 export const LOGS = Object.freeze({
@@ -56,12 +57,14 @@ export const LEGAL_TRANSITIONS = Object.freeze({
 });
 
 const SCHEMA_VERSION = 1;
-const ISO_DATE = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
 /** Keys the helper stamps itself; hand-supplying one is a caller bug. */
 const HELPER_OWNED = ['schema-version', 'date', 'status', 'verified', 'reason', 'occurrences'];
 
 function assertDate(date, what = 'date') {
-  if (typeof date !== 'string' || !ISO_DATE.test(date)) {
+  // A real day, not just four-two-two: the date is stamped into the fragment's
+  // filename and its status transitions, so `2026-02-30` would live forever in
+  // an audit trail as a day that never happened.
+  if (!isCalendarDate(date)) {
     throw new Error(`${what} must be an injected ISO date (YYYY-MM-DD), got ${JSON.stringify(date)} — the helper never reads the wall clock (PRD §5)`);
   }
 }

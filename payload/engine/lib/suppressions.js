@@ -33,6 +33,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { load } from 'js-yaml';
 import { SUPPRESSIONS_FILE } from './kit-root.js';
+import { isCalendarDate } from './iso-date.js';
 
 export { SUPPRESSIONS_FILE };
 
@@ -48,7 +49,6 @@ export const SUPPRESSION_FIELDS = Object.freeze(['term', 'sourcePath', 'reason',
  */
 export const SUPPRESSION_IDENTITY = Symbol('suppression identity');
 
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /**
  * Stamp a Finding with the exact-match identity that would silence it.
@@ -83,7 +83,9 @@ export function suppressionEntryProblem(entry) {
   if (unknown.length > 0) {
     return `unknown field(s) ${unknown.map((k) => `"${k}"`).join(', ')} — v1 entries are strictly { ${SUPPRESSION_FIELDS.join(', ')} } (no patterns, no expiry; §11.1)`;
   }
-  if (!ISO_DATE.test(entry.date)) {
+  if (!isCalendarDate(entry.date)) {
+    // A typo'd date drops the entry, which resurfaces its finding. That is the
+    // safe direction: suppression fails open, and only ever under-suppresses.
     return `"date" must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(entry.date)}`;
   }
   return null;
