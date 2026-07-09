@@ -66,7 +66,11 @@ const isDir = (path) => !!statSync(path, { throwIfNoEntry: false })?.isDirectory
 const looksLikeStoreRoot = (root) => isDir(join(root, 'ontology')) || isDir(join(root, 'knowledge'));
 
 /** A repo whose Kit cannot be identified — never resolved by guessing. */
-export class AmbiguousKitLayout extends Error {}
+export class AmbiguousKitLayout extends Error {
+  // Without this, `err.name` reads "Error" and a logged refusal hides which
+  // failure it was — the exit-2 message should identify itself.
+  name = 'AmbiguousKitLayout';
+}
 
 /**
  * Locate the Kit under a repo root.
