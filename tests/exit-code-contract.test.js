@@ -13,10 +13,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync, readdirSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
 import { catchBlocks } from './lib/catch-blocks.js';
 
@@ -62,17 +62,46 @@ const EMITS_FINDINGS = new Set([
 /** The command module behind a surface's entry shim. */
 const commandOf = (surface) => surface.replace(/\/([\w-]+\.js)$/, '/commands/$1');
 
-test('the enumeration finds every surface — nine, and it knows their names', () => {
+/**
+ * A throwaway git repo whose only oddity is a tracked symlink pointing outside
+ * it — a blind spot the survey map must disclose, and exit 1 for. Nothing in
+ * this repo has one, so the FINDINGS branch would otherwise never be exercised.
+ */
+function repoWithBlindSpot(t) {
+  const dir = mkdtempSync(join(tmpdir(), 'uk-blind-'));
+  const outside = mkdtempSync(join(tmpdir(), 'uk-outside-'));
+  t.after(() => { rmSync(dir, { recursive: true, force: true }); rmSync(outside, { recursive: true, force: true }); });
+
+  writeFileSync(join(outside, 'outside.txt'), 'not visible from the root\n');
+  writeFileSync(join(dir, 'a.ts'), 'export const a = 1;\n');
+  symlinkSync(join(outside, 'outside.txt'), join(dir, 'link.txt'));
+
+  const git = (...args) => spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8', timeout: 20_000 });
+  assert.equal(git('init', '-q', '.').status, 0, 'git init');
+  git('config', 'user.email', 'test@example.com');
+  git('config', 'user.name', 'test');
+  assert.equal(git('add', '-A').status, 0, 'git add');
+  return dir;
+}
+
+test('the enumeration finds every surface, and each one is a shim over a real command', () => {
   const found = surfaces();
   assert.ok(found.length >= 9, `expected at least 9 surfaces, found ${found.length}: ${found.join(', ')}`);
-  for (const s of found) assert.ok(EMITS_FINDINGS.has(s) || !EMITS_FINDINGS.has(s));
-  // Every surface this test knows how to crash must exist; a rename fails here
-  // rather than silently skipping the surface.
-  for (const named of Object.keys(ARGV)) {
-    assert.ok(found.includes(named), `${named} is in the argv table but is not a surface any more`);
+
+  // Every surface pairs with a command module that exports what the shim boots.
+  // A shim pointing at nothing would make the crash test spawn a process that
+  // dies before `main`, which is a pass for the wrong reason.
+  for (const surface of found) {
+    const command = readFileSync(join(repoRoot, commandOf(surface)), 'utf8');
+    assert.match(command, /^export (?:async )?function main/m, `${commandOf(surface)} must export main`);
+    assert.match(command, /^export const USAGE/m, `${commandOf(surface)} must export USAGE`);
   }
-  for (const named of EMITS_FINDINGS) {
-    assert.ok(found.includes(named), `${named} is in the findings table but is not a surface any more`);
+
+  // The two tables below drive every other test in this file. A surface missing
+  // from both is a surface nobody classified; a name in either that no longer
+  // exists is a rename that silently stopped testing something.
+  for (const named of [...Object.keys(ARGV), ...EMITS_FINDINGS]) {
+    assert.ok(found.includes(named), `${named} is in a table but is not a surface any more`);
   }
 });
 
@@ -91,7 +120,7 @@ test('a crash in ANY surface exits 2 — never 1', (t) => {
       encoding: 'utf8',
       timeout: 20_000,
       cwd: repoRoot,
-      env: { ...process.env, NODE_OPTIONS: `--import ${new URL(`file://${preload}`).href}` },
+      env: { ...process.env, NODE_OPTIONS: `--import ${pathToFileURL(preload).href}` },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     assert.notEqual(r.signal, 'SIGTERM', `${surface}: timed out`);
@@ -139,7 +168,7 @@ test('exit 1 is unreachable — not merely unused — for the surfaces that find
   }
 });
 
-test('exit 1 still MEANS findings for the surfaces that have them', () => {
+test('exit 1 still MEANS findings for the surfaces that have them', (t) => {
   // The other half of the contract. Making a crash unable to exit 1 is worth
   // nothing if the code stopped meaning anything.
   const run = (surface, ...args) =>
@@ -153,10 +182,20 @@ test('exit 1 still MEANS findings for the surfaces that have them', () => {
   assert.equal(run('payload/engine/audit.js', '--root', fixture, '--fail-on-findings').status, EXIT_CODES.FINDINGS,
     'the human opt-in still turns audit findings into exit 1');
 
-  // The survey map: blind spots are findings.
-  const blind = run('payload/engine/survey-map.js', '--root', repoRoot, '--json');
-  assert.equal(blind.status, JSON.parse(blind.stdout).unsurveyed.length === 0 ? EXIT_CODES.CLEAN : EXIT_CODES.FINDINGS,
-    'survey-map exits 1 exactly when it disclosed blind spots');
+  // The survey map: blind spots are findings. Deriving the expectation from the
+  // map's own output would only check a run against itself — and no root in
+  // this repo has a blind spot, so the FINDINGS branch would never run. Build
+  // one: a tracked symlink pointing out of the root is a blind spot by
+  // definition (§11.1), because the map cannot see what it points at.
+  const clean = run('payload/engine/survey-map.js', '--root', fixture, '--json');
+  assert.equal(clean.status, EXIT_CODES.CLEAN, 'a root with nothing hidden exits 0');
+  assert.equal(JSON.parse(clean.stdout).unsurveyed.length, 0);
+
+  const blindRoot = repoWithBlindSpot(t);
+  const blind = run('payload/engine/survey-map.js', '--root', blindRoot, '--json');
+  assert.equal(blind.status, EXIT_CODES.FINDINGS, 'a disclosed blind spot IS a finding, and exits 1');
+  assert.deepEqual(JSON.parse(blind.stdout).unsurveyed,
+    [{ path: 'link.txt', reason: 'out-of-root-symlink' }]);
 
   // And every findings-capable surface still names the code it returns.
   for (const surface of EMITS_FINDINGS) {
