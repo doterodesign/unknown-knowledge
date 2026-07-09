@@ -165,9 +165,9 @@ See capture obligations below. Findings, misses, and gaps are appended via
   (D-005). Unextractable anchors go to the miss-log; the governed path is
   `protocol/new-kind-pipeline.md`.
 - **Never bypass a gate to go green**: do not delete or edit findings to
-  unblock a merge, do not hand-edit log YAML, do not skip the ACT re-run, do
-  not present `audit.js` output as blocking, and do not carry a cached
-  verdict. Autonomy is graduated per change-category by recorded decision
+  unblock a merge, do not hand-edit log YAML, do not skip the ACT re-run,
+  treat `audit.js` output as advisory (never blocking), and do not carry a
+  cached verdict. Autonomy is graduated per change-category by recorded decision
   (category `trust`), never assumed.
 
 ## Capture obligations — the five triggers
