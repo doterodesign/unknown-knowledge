@@ -62,6 +62,64 @@ stacks:
   swift:
     - { from: extractor-fixtures/swift, to: engine/tests/fixtures/swift }
 
+# ---------------------------------------------------------------- platforms
+# The agent-platform wrapper REGISTRY (KK-18, PRD §6): data, extensible —
+# adding a platform later = adding an entry here (+ a template if the
+# generic pointer doesn't fit). Wrappers are GENERATED per platform
+# selection by cli/lib/generate-wrappers.js, not copied: `template` is
+# relative to payload/ (same D-007 guards as `from` paths — refused at
+# load if it escapes), `target` is relative to the CLIENT REPO ROOT (the
+# one wrapper exception to the seeded-root scope: conventional paths are
+# the platforms' own, dotted dirs included — the §6 never-dotted rule
+# governs the seeded root only).
+#
+# `mode` is the §6 collision policy:
+#   shared    — an ecosystem-shared instruction file (root AGENTS.md,
+#               .github/copilot-instructions.md): appended between
+#               sentinel markers, never overwritten; an existing sentinel
+#               block is replaced within the sentinels (idempotent);
+#               malformed sentinels skip-and-report.
+#   dedicated — a single-tool file: created if absent; an existing file
+#               is skip-and-report, never clobbered.
+#
+# Path conventions (verified against current tool conventions, 2026-07):
+#   Claude Code → root CLAUDE.md (the simplest durable convention; .claude/
+#     holds settings/skills, not the primary instructions pointer). Treated
+#     as DEDICATED: it is the user's own tool file, not an ecosystem-shared
+#     one — an existing CLAUDE.md is theirs to edit.
+#   Cursor → .cursor/rules/unknown-knowledge.mdc (modern project-rules path;
+#     legacy .cursorrules is deprecated). Own template: .mdc frontmatter.
+#   Copilot → .github/copilot-instructions.md (SHARED per §6).
+#   Codex → root AGENTS.md (SHARED per §6 — the wrapper IS a sentinel
+#     section in the ecosystem's shared file).
+#   Gemini CLI → root GEMINI.md (its default context file). Dedicated.
+platforms:
+  claude-code:
+    name: Claude Code
+    template: wrappers/pointer.md
+    target: CLAUDE.md
+    mode: dedicated
+  codex:
+    name: Codex
+    template: wrappers/pointer.md
+    target: AGENTS.md
+    mode: shared
+  copilot:
+    name: GitHub Copilot
+    template: wrappers/pointer.md
+    target: .github/copilot-instructions.md
+    mode: shared
+  cursor:
+    name: Cursor
+    template: wrappers/cursor.mdc
+    target: .cursor/rules/unknown-knowledge.mdc
+    mode: dedicated
+  gemini:
+    name: Gemini CLI
+    template: wrappers/pointer.md
+    target: GEMINI.md
+    mode: dedicated
+
 # ---------------------------------------------------------------- create
 # Empty directories the engine creates with a .gitkeep — §6: init "ships
 # .gitkeep in empty log dirs" (a gitignored/absent findings log kills the

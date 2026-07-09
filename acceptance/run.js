@@ -11,8 +11,10 @@
  * at its section below. Status vocabulary:
  *   PASS / FAIL  — asserted by this run (A1, A2, A3, A4, A6). A1 asserts the
  *                  KK-17 copy engine (manifest byte-for-byte, D-007/D-009,
- *                  re-seed refusal); its report line carries the honest
- *                  remaining seam — the npx packaging/prompt layer is KK-19;
+ *                  re-seed refusal) plus KK-18 wrapper generation (registry
+ *                  paths, §6 sentinel-append on a pre-existing AGENTS.md);
+ *                  its report line carries the honest remaining seam — the
+ *                  npx packaging/prompt layer is KK-19;
  *   MANUAL       — A5: skills are prompts, so their test is a checklist,
  *                  never CI (the PRD's honest seam). The harness reports
  *                  where the checklists live without executing them.
@@ -173,7 +175,38 @@ criterion('A1', A1_SELECTIONS.map((stacks) => [
     assert.match(again.stderr, /refused/);
     assert.deepEqual(walkSeed(seedRoot), expected, 'refused run must not touch the seed');
   }),
-]), { note: 'copy engine, KK-17 — npx packaging/prompt cold-run completes with KK-19' });
+]).concat([[
+  // KK-18: init's wrapper half. Every registry platform lands its thin
+  // pointer at the conventional path, and the §6 acceptance fixture variant
+  // — a PRE-EXISTING root AGENTS.md — is sentinel-appended, never clobbered.
+  'wrapper generation cold-run: every registry platform at its conventional path; a pre-existing root AGENTS.md is sentinel-appended, not clobbered (KK-18, §6)',
+  () => withTempDir((target) => {
+    const existing = '# Existing project contract\n\nhouse rules stay intact\n';
+    writeFileSync(join(target, 'AGENTS.md'), existing);
+    const manifest = loadManifest(root);
+    const platformIds = Object.keys(manifest.platforms).sort();
+    const r = spawnSync(process.execPath,
+      [initCopy, '--target', target, '--platforms', platformIds.join(','), '--json'],
+      { encoding: 'utf8' });
+    assert.equal(r.status, 0, `init-copy failed: ${r.stderr}`);
+    const { wrappers } = JSON.parse(r.stdout);
+    assert.deepEqual(
+      wrappers.map((w) => [w.platform, w.action]),
+      platformIds.map((id) => [id, id === 'codex' ? 'appended' : 'created']),
+      'every platform generates; the colliding shared file appends');
+
+    for (const id of platformIds) {
+      const text = readFileSync(join(target, manifest.platforms[id].target), 'utf8');
+      assert.ok(text.includes(`${DEFAULT_ROOT}/protocol/AGENTS.md`),
+        `${id} wrapper must point at the protocol contract`);
+    }
+    const agents = readFileSync(join(target, 'AGENTS.md'), 'utf8');
+    assert.ok(agents.startsWith(existing), 'pre-existing AGENTS.md content must survive byte-for-byte');
+    assert.equal(agents.split('<!-- unknown-knowledge:begin -->').length - 1, 1,
+      'exactly one sentinel block appended');
+    assert.ok(agents.includes('<!-- unknown-knowledge:end -->'), 'sentinel block closed');
+  }),
+]]), { note: 'copy engine + platform wrappers, KK-17/KK-18 — npx packaging/prompt cold-run completes with KK-19' });
 
 // ==================================================================== A2
 // PRD §10 A2 — "Extraction works: every MVP kind vs. fixture anchors →
@@ -471,5 +504,5 @@ for (const entry of report.sort((a, b) => a.id.localeCompare(b.id))) {
 }
 process.stdout.write(failed
   ? '\nresult: FAIL — at least one asserted criterion (A1-A4, A6) has failing checks\n'
-  : '\nresult: OK — all asserted criteria (A1-A4, A6) pass (A1 = copy engine; npx layer completes with KK-19); A5 manual by design\n');
+  : '\nresult: OK — all asserted criteria (A1-A4, A6) pass (A1 = copy engine + platform wrappers; npx layer completes with KK-19); A5 manual by design\n');
 process.exitCode = failed ? 1 : 0;

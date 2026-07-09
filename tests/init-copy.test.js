@@ -191,9 +191,14 @@ test('every payload/ file is covered by the manifest (union of stacks) — nothi
   const manifest = loadManifest(kitRoot);
   const shipped = new Set(expandManifest(manifest, ['ts', 'swift'])
     .map(({ from }) => relative(join(kitRoot, 'payload'), from)));
-  const exempt = (rel) => rel.endsWith('.gitkeep') // kit-repo plumbing, never seeded as-is
-    || rel.startsWith('wrappers/'); // wrappers are GENERATED per platform at init (KK-18), not copied
-  const missing = walk(join(kitRoot, 'payload')).filter((rel) => !exempt(rel) && !shipped.has(rel));
+  // Wrapper templates are GENERATED per platform at init (KK-18), not
+  // copied — their manifest visibility is the `platforms:` registry, so a
+  // payload/wrappers/ file counts as covered only when a registry entry
+  // names it (D-007: nothing ships by omission, nothing rots unlisted).
+  const wrapperTemplates = new Set(Object.values(manifest.platforms).map((p) => p.template));
+  const exempt = (rel) => rel.endsWith('.gitkeep'); // kit-repo plumbing, never seeded as-is
+  const missing = walk(join(kitRoot, 'payload'))
+    .filter((rel) => !exempt(rel) && !shipped.has(rel) && !wrapperTemplates.has(rel));
   assert.deepEqual(missing, [], 'payload files absent from the manifest expansion');
 });
 

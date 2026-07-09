@@ -1,0 +1,10 @@
+## unknown-knowledge
+
+This repository carries an unknown-knowledge store at `{{root}}/` — three
+governed YAML stores that map the system and a deterministic engine that
+checks the map.
+
+Before working in this repository, read `{{root}}/protocol/AGENTS.md` — the
+platform-agnostic navigation contract — and follow its five-step runtime loop
+on every request. That file is the single source of truth for the protocol;
+this wrapper is a thin pointer and intentionally repeats none of it.

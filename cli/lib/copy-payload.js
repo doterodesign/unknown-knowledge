@@ -149,6 +149,39 @@ export function loadManifest(kitRoot, manifestPath = join(kitRoot, MANIFEST_FILE
   if (!Array.isArray(create)) throw new Error('payload manifest: create must be a list of target dirs');
   create.forEach((dir, i) => assertSanePath(dir, 'dir', `create[${i}]`));
 
+  // Platform wrapper registry (KK-18): data-driven and extensible, but held
+  // to the same D-007 construction as copy entries — a template that escapes
+  // payload/ (or names fixtures/tests) refuses the manifest at load time.
+  // Targets are CLIENT-REPO-ROOT-relative conventional paths; they only need
+  // path sanity (relative, ..-free), not payload containment.
+  const platforms = doc.platforms ?? {};
+  if (typeof platforms !== 'object' || platforms === null || Array.isArray(platforms)) {
+    throw new Error('payload manifest: platforms must be a mapping of platform ids to wrapper specs');
+  }
+  const wrapperTargets = new Set();
+  for (const [id, spec] of Object.entries(platforms)) {
+    const desc = `platforms.${id}`;
+    if (!/^[a-z0-9][a-z0-9-]*$/.test(id)) {
+      throw new Error(`payload manifest: ${desc}: platform ids are lowercase kebab-case`);
+    }
+    if (typeof spec !== 'object' || spec === null || Array.isArray(spec)) {
+      throw new Error(`payload manifest: ${desc}: must be a { name, template, target, mode } mapping`);
+    }
+    if (typeof spec.name !== 'string' || spec.name.length === 0) {
+      throw new Error(`payload manifest: ${desc}: name must be a non-empty string`);
+    }
+    assertSanePath(spec.template, 'template', desc);
+    assertInsidePayload(resolve(payloadRoot, spec.template), kitRoot, desc);
+    assertSanePath(spec.target, 'target', desc);
+    if (spec.mode !== 'shared' && spec.mode !== 'dedicated') {
+      throw new Error(`payload manifest: ${desc}: mode must be "shared" or "dedicated" (§6 collision policy), got ${JSON.stringify(spec.mode)}`);
+    }
+    if (wrapperTargets.has(spec.target)) {
+      throw new Error(`payload manifest: ${desc}: duplicate wrapper target ${JSON.stringify(spec.target)}`);
+    }
+    wrapperTargets.add(spec.target);
+  }
+
   const rootFiles = doc['root-files'] ?? [];
   if (!Array.isArray(rootFiles)) throw new Error('payload manifest: root-files must be a list');
   for (const name of rootFiles) {
@@ -159,7 +192,7 @@ export function loadManifest(kitRoot, manifestPath = join(kitRoot, MANIFEST_FILE
 
   const zones = doc.zones ?? {};
   const defaults = doc.defaults ?? {};
-  return { manifestPath, kitRoot, payloadRoot, sections, create, rootFiles, zones, defaults };
+  return { manifestPath, kitRoot, payloadRoot, sections, platforms, create, rootFiles, zones, defaults };
 }
 
 /** Every file beneath dir (relative /-joined paths), sorted; symlinks refused. */
