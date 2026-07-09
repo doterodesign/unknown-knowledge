@@ -1,0 +1,12 @@
+schema-version: 1
+store: ontology
+entries:
+  - id: K-100
+    title: Sport
+    file: classes/100-registries.yaml
+  - id: K-110
+    title: Currency
+    file: classes/100-registries.yaml
+  - id: K-120
+    title: Legacy region
+    file: classes/100-registries.yaml

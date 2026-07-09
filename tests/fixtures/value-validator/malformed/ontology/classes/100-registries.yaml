@@ -1,0 +1,15 @@
+# KK-07 malformed-descriptor fixture: a non-string value (YAML 1.1 coercion
+# trap) AND a source that names no listed source-of-truth entry. A malformed
+# descriptor is a HARD ERROR, never skipped (PRD §4).
+schema-version: 1
+entries:
+  - id: K-100
+    term: Sport
+    class: 100-registries
+    summary: A sport vertical the product serves.
+    source-of-truth: [src/sports.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/other.txt
+        values: [ok, true]

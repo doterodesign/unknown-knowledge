@@ -1,0 +1,4 @@
+# registry fixture — order differs from the claim on purpose (set equality)
+mlb
+nfl
+nba

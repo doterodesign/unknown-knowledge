@@ -1,0 +1,15 @@
+# KK-07 wrong-pointer fixture: the file EXISTS and parses, but carries none of
+# the claimed values — the wrong-pointer signature (PRD §4), one distinct
+# finding instead of a per-value cascade.
+schema-version: 1
+entries:
+  - id: K-100
+    term: Sport
+    class: 100-registries
+    summary: A sport vertical the product serves.
+    source-of-truth: [src/registry.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/registry.txt
+        values: [nfl, nba]

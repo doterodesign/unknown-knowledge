@@ -1,0 +1,35 @@
+# KK-07 drift fixture: K-100 drifts in BOTH directions and its source holds a
+# duplicate; K-110 is clean (the --concepts filter proof); K-120 is deprecated,
+# so its value findings demote to warnings (§3.5).
+schema-version: 1
+entries:
+  - id: K-100
+    term: Sport
+    class: 100-registries
+    summary: A sport vertical the product serves.
+    source-of-truth: [src/sports.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/sports.txt
+        values: [nfl, nba, xfl]
+  - id: K-110
+    term: Currency
+    class: 100-registries
+    summary: A settlement currency.
+    source-of-truth: [src/currencies.txt]
+    status: active
+    enumerates:
+      - kind: test-lines
+        source: src/currencies.txt
+        values: [usd, eur]
+  - id: K-120
+    term: Legacy region
+    class: 100-registries
+    summary: Retired region registry kept for audits.
+    source-of-truth: [src/regions.txt]
+    status: deprecated
+    enumerates:
+      - kind: test-lines
+        source: src/regions.txt
+        values: [emea]

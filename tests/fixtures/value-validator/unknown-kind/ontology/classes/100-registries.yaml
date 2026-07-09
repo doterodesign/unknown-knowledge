@@ -1,0 +1,14 @@
+# KK-07 unknown-kind fixture: the descriptor names an extractor kind the
+# registry does not carry — the check can never run, so it hard-errors.
+schema-version: 1
+entries:
+  - id: K-100
+    term: Sport
+    class: 100-registries
+    summary: A sport vertical the product serves.
+    source-of-truth: [src/sports.txt]
+    status: active
+    enumerates:
+      - kind: no-such-kind
+        source: src/sports.txt
+        values: [nfl]
