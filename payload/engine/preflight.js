@@ -52,6 +52,7 @@ import { fileURLToPath } from 'node:url';
 import { healthSummary, loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
 import { compare } from './lib/validate-record.js';
 import { createEntry } from './lib/log-entry.js';
 import { runChecks } from './validate.js';
@@ -62,8 +63,6 @@ const USAGE = 'usage: node payload/engine/preflight.js [--concepts <ids>] [--jso
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 /** finding.schema.json conceptRef — `consulted` only carries conforming ids. */
 const CONCEPT_REF = /^K-[0-9]+$/;
-
-class UsageError extends Error {}
 
 /** The per-verdict next action (engine hint; conduct is protocol policy). */
 const NEXT_ACTIONS = Object.freeze({
@@ -168,53 +167,28 @@ function logQuarantines(root, verdicts, today) {
 // ------------------------------------------------------------- CLI plumbing
 
 function parseArgs(argv) {
-  const opts = { json: false, root: process.cwd(), concepts: null, log: false, today: null };
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    // Both conventional flag spellings: `--flag value` and `--flag=value`.
-    const eq = arg.startsWith('--') ? arg.indexOf('=') : -1;
-    const flag = eq === -1 ? arg : arg.slice(0, eq);
-    if (flag === '--json' || flag === '--log') {
-      if (eq !== -1) throw new UsageError(`${flag} takes no value`);
-      if (flag === '--json') opts.json = true;
-      else opts.log = true;
-    } else if (flag === '--root' || flag === '--concepts' || flag === '--today') {
-      let value;
-      if (eq !== -1) {
-        value = arg.slice(eq + 1);
-      } else {
-        value = argv[i + 1];
-        if (value === undefined || value.startsWith('--')) {
-          throw new UsageError(`${flag} requires a value`);
-        }
-        i += 1;
-      }
-      if (flag === '--root') {
-        opts.root = value;
-      } else if (flag === '--today') {
-        // Round-trip through UTC: Date.parse rolls over dates like
-        // 2026-02-30, and --log writes --today into permanent fragments.
-        const roundTrip = new Date(`${value}T00:00:00Z`);
-        if (!ISO_DATE.test(value) || Number.isNaN(roundTrip.getTime())
-          || roundTrip.toISOString().slice(0, 10) !== value) {
-          throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(value)}`);
-        }
-        opts.today = value;
-      } else {
-        // An explicitly empty list is legal here (unlike the validators):
-        // PRD §7 — empty --concepts validates store health only.
-        opts.concepts = [...(opts.concepts ?? []), ...value.split(',')];
-      }
-    } else if (arg.startsWith('--')) {
-      throw new UsageError(`unknown flag ${arg}`);
-    } else {
-      throw new UsageError(`unexpected argument ${JSON.stringify(arg)} — this CLI takes flags only`);
+  const { options } = parseFlags(argv, {
+    boolean: ['json', 'log'],
+    value: ['root', 'today'],
+    repeatable: ['concepts'],
+    // PRD §7: an explicitly empty --concepts selects store-health-only.
+    allowEmpty: ['concepts'],
+  });
+  const opts = {
+    json: !!options.json,
+    log: !!options.log,
+    root: options.root ?? process.cwd(),
+    today: options.today ?? null,
+    concepts: options.concepts ? normalizeConceptIds(options.concepts.flatMap((v) => v.split(','))) : null,
+  };
+  if (opts.today !== null) {
+    // Round-trip through UTC: Date.parse rolls over dates like 2026-02-30, and
+    // --log writes --today into permanent fragments.
+    const roundTrip = new Date(`${opts.today}T00:00:00Z`);
+    if (!ISO_DATE.test(opts.today) || Number.isNaN(roundTrip.getTime())
+      || roundTrip.toISOString().slice(0, 10) !== opts.today) {
+      throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
     }
-  }
-  if (opts.concepts) {
-    // An explicitly empty list is legal here (unlike the validators): PRD §7
-    // reads it as store-health-only. The grammar is shared; the policy is not.
-    opts.concepts = normalizeConceptIds(opts.concepts);
   }
   if (opts.log && !opts.today) {
     throw new UsageError('--log requires --today <YYYY-MM-DD> — the finding helper never reads the wall clock (PRD §5)');
@@ -255,7 +229,7 @@ function renderHuman(payload) {
 }
 
 function main(argv) {
-  try {
+  {
     const opts = parseArgs(argv);
 
     let model;
@@ -316,22 +290,15 @@ function main(argv) {
     if (storeHealthOnly) return storeVerdict === 'trusted' ? EXIT_CODES.CLEAN : EXIT_CODES.FAILURE;
     if (storeVerdict !== 'trusted' || counts.unknown > 0) return EXIT_CODES.FAILURE;
     return counts.quarantined > 0 ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
-  } catch (error) {
-    if (error instanceof UsageError || error instanceof UnknownConceptsError) {
-      process.stderr.write(`preflight: ${error.message}\n${USAGE}\n`);
-      return EXIT_CODES.FAILURE;
-    }
-    // A crash mid-join means the verdicts were never computed. An uncaught
-    // throw would exit 1 — the FINDINGS code — so a broken run would read as
-    // "quarantines present" instead of "check never ran" (PRD §5).
-    process.stderr.write(`preflight: internal failure — verdicts were not computed\n${error.stack || error.message}\n`);
-    return EXIT_CODES.FAILURE;
   }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isEntrypoint(import.meta.url)) {
+  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
+  // Exit 1 means findings, and a command that crashed never ran (PRD §5).
+  //
   // exitCode, never process.exit(): exit() drops queued async stdout writes,
   // so piped --json output would truncate at the ~64KB pipe buffer (corrupt
   // JSON with exit 0). Node exits on its own once stdout drains.
-  process.exitCode = main(process.argv.slice(2));
+  runCli('preflight', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
 }

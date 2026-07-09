@@ -27,11 +27,9 @@ import process from 'node:process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from './exit-codes.js';
+import { UsageError } from './usage-error.js';
 
-/** The caller spelled the command wrong. Always exit 2, never exit 1. */
-export class UsageError extends Error {
-  name = 'UsageError';
-}
+export { UsageError } from './usage-error.js';
 
 /**
  * Parse the flag grammar every engine CLI shares.
@@ -48,6 +46,8 @@ export class UsageError extends Error {
  * @param {string[]} [spec.boolean] flags that take no value
  * @param {string[]} [spec.value] flags taking one value; last wins
  * @param {string[]} [spec.repeatable] value flags that accumulate into an array
+ * @param {string[]} [spec.allowEmpty] value flags for which "" is a legal value
+ *   — preflight reads an empty `--concepts` as store-health-only (PRD §7)
  * @param {boolean} [spec.positionals] whether bare arguments are allowed
  * @returns {{ options: object, positionals: string[] }}
  */
@@ -55,6 +55,7 @@ export function parseArgs(argv, spec = {}) {
   const booleans = new Set(spec.boolean ?? []);
   const values = new Set(spec.value ?? []);
   const repeatables = new Set(spec.repeatable ?? []);
+  const allowEmpty = new Set(spec.allowEmpty ?? []);
   const known = new Set([...booleans, ...values, ...repeatables]);
   const options = {};
   const positionals = [];
@@ -63,7 +64,7 @@ export function parseArgs(argv, spec = {}) {
     const arg = argv[i];
     if (!arg.startsWith('--')) {
       if (!spec.positionals) {
-        throw new UsageError(`unexpected argument ${JSON.stringify(arg)} — this command takes flags only`);
+        throw new UsageError(`unexpected argument ${JSON.stringify(arg)} — this CLI takes flags only`);
       }
       positionals.push(arg);
       continue;
@@ -98,7 +99,9 @@ export function parseArgs(argv, spec = {}) {
     // and `--root ""` arrive when a shell expands an unset variable, and both
     // would otherwise resolve to the current directory — answering about a repo
     // nobody named.
-    if (value === '') throw new UsageError(`${flag} requires a value`);
+    // A flag may declare "" meaningful — preflight's empty `--concepts` selects
+    // store-health-only. Everything else treats it as no value at all.
+    if (value === '' && !allowEmpty.has(name)) throw new UsageError(`${flag} requires a value`);
 
     if (repeatables.has(name)) (options[name] ??= []).push(value);
     else options[name] = value;

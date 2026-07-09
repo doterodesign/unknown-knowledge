@@ -59,6 +59,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { load, YAMLException } from 'js-yaml';
 import { validateStoreFile, ERROR_CODES, compare } from './validate-record.js';
+import { UsageError } from './usage-error.js';
 
 export const SEVERITIES = Object.freeze(['error', 'warning']);
 
@@ -439,8 +440,14 @@ export function healthSummary(health) {
   return { ok: health.ok, errors: health.errorCount, warnings: health.warningCount };
 }
 
-/** A --concepts id the ontology does not carry — a check that never ran. */
-export class UnknownConceptsError extends Error {}
+/**
+ * A --concepts id the ontology does not carry — a check that never ran.
+ * A usage error: the caller named something that does not exist, so the command
+ * refused its arguments rather than failing mid-run. Exit 2, never 1.
+ */
+export class UnknownConceptsError extends UsageError {
+  name = 'UnknownConceptsError';
+}
 
 /**
  * The `--concepts` grammar, settled in one place (UCS-935).
