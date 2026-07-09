@@ -9,15 +9,15 @@
  *
  * The PRD §10 table is the source of truth; each criterion is quoted verbatim
  * at its section below. Status vocabulary:
- *   PASS / FAIL  — asserted by this run (A2, A3, A4, A6);
- *   DEFERRED     — A1: `init` does not exist until M5 (KK-17/KK-19). The A1
- *                  section below is the documented hook it plugs into — the
- *                  harness never fakes coverage for it;
+ *   PASS / FAIL  — asserted by this run (A1, A2, A3, A4, A6). A1 asserts the
+ *                  KK-17 copy engine (manifest byte-for-byte, D-007/D-009,
+ *                  re-seed refusal); its report line carries the honest
+ *                  remaining seam — the npx packaging/prompt layer is KK-19;
  *   MANUAL       — A5: skills are prompts, so their test is a checklist,
  *                  never CI (the PRD's honest seam). The harness reports
  *                  where the checklists live without executing them.
  *
- * Exit codes: 0 = every asserted criterion (A2–A4, A6) passed;
+ * Exit codes: 0 = every asserted criterion (A1–A4, A6) passed;
  *             1 = at least one asserted check failed.
  * Determinism: fixed fixture inputs, no wall-clock reads, temp copies are
  * created fresh and removed per run.
@@ -31,6 +31,7 @@ import { tmpdir } from 'node:os';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
+import { loadManifest, expandManifest, DEFAULT_ROOT, SEEDED_MANIFEST } from '../cli/lib/copy-payload.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const engine = (cli) => join(root, 'payload', 'engine', cli);
@@ -69,7 +70,7 @@ function withFixtureCopy(app, fn, { git = false } = {}) {
 // ------------------------------------------------------------ report plumbing
 
 const report = [];
-function criterion(id, checks) {
+function criterion(id, checks, { note } = {}) {
   const results = [];
   for (const [desc, fn] of checks) {
     try {
@@ -79,25 +80,100 @@ function criterion(id, checks) {
       results.push({ desc, ok: false, err: err.message });
     }
   }
-  report.push({ id, results });
+  report.push({ id, results, note });
   return results;
 }
 
-// =============================================================== A1 (DEFERRED)
+// ==================================================================== A1
 // PRD §10 A1 — "Init completes cold: CI runs `init` against each fixture;
 // asserts the scaffold matches the payload manifest byte-for-byte; asserts
 // acceptance fixtures are absent and selected-stack extractor fixtures (and
 // only those) are present."
 //
-// `npx unknown-knowledge init` lands in M5 (KK-17 CLI, KK-19 byte-for-byte
-// wiring assertion — moved out of KK-16 by the PRD's milestone-ordering fix).
-// THIS is the hook: when init exists, replace this block with a criterion()
-// call that (per fixture, in a temp git repo) runs init, diffs the scaffold
-// against the payload manifest byte-for-byte, and asserts fixtures/ absence +
-// stack-conditional extractor-fixture presence (D-007/D-009). Details in
-// acceptance/README.md §A1. Until then the harness reports DEFERRED and
-// never fakes coverage.
-report.push({ id: 'A1', deferred: 'lands with M5 (KK-17/KK-19) — hook documented in acceptance/README.md' });
+// KK-17 lands the manifest + copy engine and OWNS this wiring assertion
+// (moved from KK-16): per stack selection combination (none / ts / swift /
+// both — the fixtures' stacks and their unions), in a fresh temp dir, the
+// harness cold-runs the copy engine through its public seam
+// (cli/init-copy.js), diffs the scaffold against the payload manifest
+// expansion byte-for-byte, asserts fixtures/tests absence (D-007) and
+// stack-conditional pack presence (D-009), and asserts a second run refuses.
+// The honest remaining seam: the interactive `npx unknown-knowledge init`
+// packaging/prompt layer is KK-19's — the report line below says so.
+const initCopy = join(root, 'cli', 'init-copy.js');
+const A1_SELECTIONS = [[], ['ts'], ['swift'], ['ts', 'swift']];
+
+function walkSeed(dir, base = dir) {
+  const out = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const abs = join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walkSeed(abs, base));
+    else out.push(relative(base, abs).split('\\').join('/'));
+  }
+  return out.sort();
+}
+
+function withTempDir(fn) {
+  const dir = mkdtempSync(join(tmpdir(), 'kk17-a1-'));
+  try {
+    return fn(dir);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+criterion('A1', A1_SELECTIONS.map((stacks) => [
+  `copy engine cold-run [stacks: ${stacks.join('+') || 'none'}]: scaffold == manifest expansion byte-for-byte; fixtures/tests absent (D-007); selected packs and only those (D-009); second run refuses`,
+  () => withTempDir((target) => {
+    // Cold run through the public seam (no interactive state — flags only).
+    const args = [initCopy, '--target', target, '--json'];
+    if (stacks.length) args.push('--stacks', stacks.join(','));
+    const r = spawnSync(process.execPath, args, { encoding: 'utf8' });
+    assert.equal(r.status, 0, `init-copy failed: ${r.stderr}`);
+
+    // Byte-for-byte: the seeded tree is EXACTLY the manifest expansion plus
+    // the engine-generated files (kit.manifest.yaml stamp, create-dir
+    // .gitkeeps) — every file identical to its payload source, nothing
+    // else present.
+    const manifest = loadManifest(root);
+    const plan = expandManifest(manifest, stacks);
+    const generated = [SEEDED_MANIFEST, ...manifest.create.map((d) => `${d}/.gitkeep`)];
+    const seedRoot = join(target, DEFAULT_ROOT);
+    const expected = [...plan.map((p) => p.to), ...generated].sort();
+    assert.deepEqual(walkSeed(seedRoot), expected, 'seeded file set != manifest expansion');
+    for (const { from, to } of plan) {
+      assert.deepEqual(readFileSync(join(seedRoot, to)), readFileSync(from),
+        `seeded ${to} is not byte-identical to its payload source`);
+    }
+
+    // D-007: no manifest source may sit outside payload/ (LICENSE/NOTICE
+    // root-files excepted) or under the kit's fixtures/ or tests/.
+    for (const { from } of plan) {
+      const rel = relative(root, from);
+      assert.ok(rel.startsWith('payload/') || ['LICENSE', 'NOTICE'].includes(rel),
+        `manifest source outside payload/: ${rel}`);
+      assert.ok(!rel.startsWith('fixtures/') && !rel.startsWith('tests/'),
+        `acceptance-fixture/kit-test leakage: ${rel}`);
+    }
+    // Belt-and-suspenders on the seeded tree itself: no acceptance-fixture
+    // markers landed (FIXTURE.md, the fixture apps' names).
+    for (const rel of walkSeed(seedRoot)) {
+      assert.ok(!/(^|\/)FIXTURE\.md$/.test(rel) && !/(swift|ts)-app/.test(rel),
+        `acceptance-fixture artifact in seed: ${rel}`);
+    }
+
+    // D-009: the selected stacks' packs — and ONLY those — are present.
+    const packs = new Set(walkSeed(seedRoot)
+      .filter((f) => f.startsWith('engine/tests/fixtures/') && f !== 'engine/tests/fixtures/README.md')
+      .map((f) => f.split('/')[3]));
+    assert.deepEqual([...packs].sort(), [...stacks].sort(), 'stack packs != selection');
+
+    // §6: a second run on the seeded target refuses cleanly, changing nothing.
+    const again = spawnSync(process.execPath, args, { encoding: 'utf8' });
+    assert.equal(again.status, 2, 'second run must refuse (exit 2)');
+    assert.match(again.stderr, /refused/);
+    assert.deepEqual(walkSeed(seedRoot), expected, 'refused run must not touch the seed');
+  }),
+]), { note: 'copy engine, KK-17 — npx packaging/prompt cold-run completes with KK-19' });
 
 // ==================================================================== A2
 // PRD §10 A2 — "Extraction works: every MVP kind vs. fixture anchors →
@@ -386,13 +462,14 @@ for (const entry of report.sort((a, b) => a.id.localeCompare(b.id))) {
   const bad = entry.results.filter((r) => !r.ok);
   const status = bad.length === 0 ? 'PASS' : 'FAIL';
   if (bad.length > 0) failed = true;
-  process.stdout.write(`${id}: ${status} — ${TITLES[id]}: ${entry.results.length - bad.length}/${entry.results.length} checks\n`);
+  const note = entry.note ? ` (${entry.note})` : '';
+  process.stdout.write(`${id}: ${status}${note} — ${TITLES[id]}: ${entry.results.length - bad.length}/${entry.results.length} checks\n`);
   for (const r of entry.results) {
     process.stdout.write(`    ${r.ok ? 'ok  ' : 'FAIL'}  ${r.desc}\n`);
     if (!r.ok) process.stdout.write(`          ${r.err.split('\n').join('\n          ')}\n`);
   }
 }
 process.stdout.write(failed
-  ? '\nresult: FAIL — at least one asserted criterion (A2-A4, A6) has failing checks\n'
-  : '\nresult: OK — all asserted criteria (A2-A4, A6) pass; A1 deferred (M5), A5 manual by design\n');
+  ? '\nresult: FAIL — at least one asserted criterion (A1-A4, A6) has failing checks\n'
+  : '\nresult: OK — all asserted criteria (A1-A4, A6) pass (A1 = copy engine; npx layer completes with KK-19); A5 manual by design\n');
 process.exitCode = failed ? 1 : 0;

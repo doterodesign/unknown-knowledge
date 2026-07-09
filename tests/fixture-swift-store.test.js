@@ -66,10 +66,15 @@ test('K-170 wrong-pointer: no claimed value appears anywhere in the pointed file
   }
 });
 
-test('nothing shipped by init (payload/, cli/) references fixtures/ (D-007)', () => {
-  // No kit.manifest.yaml exists yet (KK-17); until it does, pin the invariant
-  // lexically: the shippable trees never mention the acceptance fixtures —
-  // any fixture (swift-app, ts-app, ...), by any reference form.
+test('nothing shipped by init (payload/, cli/) references the acceptance fixtures (D-007)', () => {
+  // KK-17's kit.manifest.yaml now exists and the CONSTRUCTIONAL guard lives
+  // in cli/lib/copy-payload.js (loadManifest refuses any source outside
+  // payload/ or under fixtures//tests/ — covered by tests/init-copy.test.js
+  // and the A1 acceptance criterion). cli/ legitimately names the D-007
+  // boundary and the seeded engine/tests/fixtures/<stack> targets, so the
+  // lexical pin here is the part the copy engine can't check: no shippable
+  // tree may reference the acceptance fixture APPS by any form, and
+  // payload/ (which never needs the word) keeps the stricter fixtures/ grep.
   const walk = (dir, out = []) => {
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
@@ -80,10 +85,17 @@ test('nothing shipped by init (payload/, cli/) references fixtures/ (D-007)', ()
   };
   for (const tree of ['payload', 'cli']) {
     for (const file of walk(join(root, tree))) {
+      const text = readFileSync(file, 'utf8');
       assert.ok(
-        !/\bfixtures\//.test(readFileSync(file, 'utf8')),
-        `${file} must not reference the acceptance fixtures (D-007)`,
+        !/\b(?:swift|ts)-app\b/.test(text),
+        `${file} must not reference the acceptance fixture apps (D-007)`,
       );
+      if (tree === 'payload') {
+        assert.ok(
+          !/\bfixtures\//.test(text),
+          `${file} must not reference the acceptance fixtures (D-007)`,
+        );
+      }
     }
   }
 });

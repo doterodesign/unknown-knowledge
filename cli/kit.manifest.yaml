@@ -1,0 +1,91 @@
+# cli/kit.manifest.yaml — the payload manifest (KK-17, PRD §6/§9.2, D-007).
+#
+# The EXPLICIT allowlist of everything `npx unknown-knowledge init` seeds into
+# a client repo. Copy is manifest-driven ONLY: a file this manifest does not
+# name is never copied — nothing ships by omission (D-007). The copy engine
+# (cli/lib/copy-payload.js) enforces, by construction, that every `from` path
+# resolves INSIDE payload/ (the allowlist root, §9.2) and never at the kit's
+# acceptance fixtures/ or tests/ — an entry that tries is refused, not
+# trusted.
+#
+# Paths: `from` is relative to payload/; `to` is relative to the seeded root
+# (default unknown-knowledge/, caller-named, never dotted — §6/§9.1).
+# Directory entries vendor every file beneath them, sorted — payload/ is
+# "EXACTLY what init vendors" (§9.2), so a directory inside it is still the
+# allowlist speaking (kit CI pins payload/ ⊆ manifest expansion, so nothing
+# under payload/ can rot unshipped either).
+#
+# The seeded target gets its own generated kit.manifest.yaml (§9.1): manifest
+# echo (full seeded file list), kit version stamp, zone map. Its presence is
+# the §6 seed marker — init REFUSES any existing root, even a partial seed.
+schema-version: 1
+
+defaults:
+  root: unknown-knowledge # default seeded root dir — visible, never dotted (§6)
+
+# ------------------------------------------------------------- unconditional
+# Seeded for every stack selection, including config-only (no stacks).
+unconditional:
+  schemas:
+    - { from: schemas, to: schemas }
+  engine:
+    - { from: engine, to: engine }
+  protocol:
+    # incl. AGENTS.md — the navigation contract + runtime loop (§7).
+    - { from: protocol/AGENTS.md, to: protocol/AGENTS.md }
+    - { from: protocol/new-kind-pipeline.md, to: protocol/new-kind-pipeline.md }
+  templates:
+    # The §5.2 new-kind authoring template — clients extend the extractor
+    # library themselves (D-001/D-009), so the template always ships.
+    - { from: templates/new-kind, to: templates/new-kind }
+    # Stack-agnostic fixture authoring guide: ships even with no stack
+    # selected — a config-only client authoring its first pack starts here.
+    - { from: extractor-fixtures/README.md, to: engine/tests/fixtures/README.md }
+  store-scaffolding:
+    # Empty seeds (§9.1): catalogs/rules the bootstrap skill fills. Decisions
+    # has no _rules.yaml by design (§9.1).
+    - { from: templates/ontology/_catalog.yaml, to: ontology/_catalog.yaml }
+    - { from: templates/ontology/_rules.yaml, to: ontology/_rules.yaml }
+    - { from: templates/knowledge/_catalog.yaml, to: knowledge/_catalog.yaml }
+    - { from: templates/knowledge/_rules.yaml, to: knowledge/_rules.yaml }
+    - { from: templates/decisions/_catalog.yaml, to: decisions/_catalog.yaml }
+
+# ------------------------------------------------------- stack-conditional
+# Extractor fixture packs ship ONLY for the stacks selected at init (D-009);
+# later stacks are client-authored from the shipped template, warned at init.
+# Target path per §9.1: engine/tests/fixtures/<stack>/.
+stacks:
+  ts:
+    - { from: extractor-fixtures/ts, to: engine/tests/fixtures/ts }
+  swift:
+    - { from: extractor-fixtures/swift, to: engine/tests/fixtures/swift }
+
+# ---------------------------------------------------------------- create
+# Empty directories the engine creates with a .gitkeep — §6: init "ships
+# .gitkeep in empty log dirs" (a gitignored/absent findings log kills the
+# improvement loop silently). Fragment stores: one file per entry (D-010).
+create:
+  - decisions/entries
+  - logs/findings
+  - logs/misses
+  - logs/gaps
+
+# -------------------------------------------------------------- root-files
+# Kit-repo ROOT files (the one sanctioned exception to the payload/ boundary,
+# limited to this exact basename allowlist — the engine refuses anything
+# else). Required-at-publish: KK-28 adds LICENSE/NOTICE ("LICENSE/NOTICE in
+# payload manifest"); until they exist the engine treats them as required
+# only when present, so the two PRs compose. Kit CI must gate publish on
+# their presence (KK-28).
+root-files:
+  - LICENSE
+  - NOTICE
+
+# ---------------------------------------------------------------- zone map
+# Echoed into the seeded kit.manifest.yaml (§9.1) — which seeded paths are
+# kit-vendored code vs. client data. Everything is client-OWNED after seed
+# (D-001, seeded-once); the map tells an uninstall/audit what came from the
+# kit vs. what the client's own loop produced.
+zones:
+  seeded: [engine, protocol, schemas, templates, kit.manifest.yaml]
+  client: [ontology, knowledge, decisions, logs, survey-scope.yaml]
