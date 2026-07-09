@@ -67,3 +67,6 @@ entries:
   - id: D-021
     title: Version policy — kit semver semantics, manifest stamp meaning, CHANGELOG discipline
     file: entries/D-021-version-policy.yaml
+  - id: D-022
+    title: Engine is JavaScript with JSDoc types, zero build step, minimal deps
+    file: entries/D-022-engine-is-javascript-jsdoc.yaml

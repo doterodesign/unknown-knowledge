@@ -1,0 +1,35 @@
+# One entry per file; schema per PRD.html §3.3.
+schema-version: 1
+entries:
+  - id: D-022
+    title: Engine is JavaScript with JSDoc types, zero build step, minimal deps
+    category: architecture
+    status: accepted
+    date: "2026-07-09"
+    deciders: [dimitri]
+    context: >
+      D-002's reasoning still holds and is carried forward unchanged: most
+      target shops are web/platform-agnostic TS; Node is ubiquitous in CI;
+      clients must be able to read and extend what they own — no binaries.
+      Only its language claim was wrong. Zero-build and TypeScript are
+      mutually exclusive without a loader or a type-stripping runtime, and
+      the engine was written in JavaScript from the first commit: 27 .js
+      files, zero .ts files, no build script. The code chose correctly and
+      the decision record never caught up. A kit whose purpose is catching
+      conceptual drift was carrying some, in the one store it owns.
+    decision: >
+      The engine is JavaScript (ESM) with JSDoc types, zero build step, and
+      minimal dependencies. Types are expressed as JSDoc annotations, which a
+      client can check with `tsc --checkJs` if they choose and ignore
+      entirely if they do not. What ships is what runs: a client reading
+      `unknown-knowledge/engine/validate.js` sees the source that executed,
+      with no transpiled artifact between them and it.
+    consequences: >
+      No build, no lockstep toolchain, and nothing to rebuild when a client
+      edits the engine they own (D-001). The cost is that type errors are
+      not caught at author time unless a maintainer runs `tsc --checkJs`
+      deliberately; the structural validator, the acceptance harness and the
+      exit-code contract carry that weight instead.
+    supersedes: [D-002]
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001] }

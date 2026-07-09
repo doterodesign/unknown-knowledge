@@ -3,7 +3,6 @@
 Glossary for the standalone open-source product (D-015/D-016: free, permissive
 license, public npm; named for the Unknown Creatives studio family) that stands
 up self-improving knowledge-base + ontology structures in any codebase.
-This file moves to the `unknown-knowledge` repo when it exists.
 
 ## Terms
 
@@ -13,9 +12,12 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code: store/loader, structural validator,
-value validator, extractor library, resolver. TypeScript/Node, no build step,
-minimal dependencies. Never an agent; agents feed it and read it.
+**Engine** — The vendored deterministic code. Seven command-line surfaces —
+structural validator, value validator, preflight, resolver, survey map, reverse
+audit, log-entry helper — over a store loader and an extractor library.
+JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-022).
+Never an agent; agents feed it and read it. It computes **Verdicts**; it does
+not decide what to do about them (D-011).
 
 **Store** — One of three governed YAML repositories of facts, distinguished by
 truth anchor:
