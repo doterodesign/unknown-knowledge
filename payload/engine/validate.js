@@ -52,7 +52,8 @@ import { statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { loadStores, locateKitRoot, storeHealth } from './lib/load-stores.js';
+import { loadStores, storeHealth } from './lib/load-stores.js';
+import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 

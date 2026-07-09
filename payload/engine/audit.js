@@ -75,46 +75,26 @@
  * come from --today or are omitted).
  */
 import process from 'node:process';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { dump, load } from 'js-yaml';
-import { buildSurveyMap, SCOPE_FILE } from './survey-map.js';
+import { buildSurveyMap } from './survey-map.js';
+import { locateKit, SCOPE_FILE, SUPPRESSIONS_FILE } from './lib/kit-root.js';
 import { loadStores } from './lib/load-stores.js';
 import { compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 
 const USAGE = 'usage: node payload/engine/audit.js [--root <dir>] [--json] [--fail-on-findings] [--today <YYYY-MM-DD>] [--stale-days <n>]';
 const STALE_DAYS_DEFAULT = 90;
-/** The post-init default kit dir name (D-016); renames are a later seam. */
-const KIT_DIR_DEFAULT = 'unknown-knowledge';
-/** Client-zone suppression file (KK-27) — lives in the kit zone, at kitRoot. */
-export const SUPPRESSIONS_FILE = 'suppressions.yaml';
-/**
- * Store/engine artifacts when the stores live at the scan root itself. The
- * D-016 dir name stays kit zone even here — a leftover nested kit is stale
- * kit data, never product surface to propose concepts for.
- */
-const KIT_ZONE_AT_ROOT = ['ontology', 'knowledge', 'decisions', 'logs', SCOPE_FILE, SUPPRESSIONS_FILE, KIT_DIR_DEFAULT];
+// Kit layout — where the stores live and what counts as kit zone — is
+// lib/kit-root.js's one job (UCS-934). The audit used to answer that itself,
+// with the opposite tie-break, and so read a different Store than every other
+// surface whenever a repo carried both layouts.
+export { SUPPRESSIONS_FILE } from './lib/kit-root.js';
 
 class UsageError extends Error {}
 
-const isDir = (path) => !!statSync(path, { throwIfNoEntry: false })?.isDirectory();
-
-/**
- * Where the stores live relative to the scan root: the root itself when it
- * carries ontology/ directly, else the nested D-016 default. Returns
- * { kitRoot, kitPrefixes } — prefixes are the root-relative paths the audit
- * must never treat as product surface.
- */
-export function locateKit(root) {
-  if (!isDir(join(root, 'ontology')) && isDir(join(root, KIT_DIR_DEFAULT))) {
-    return { kitRoot: join(root, KIT_DIR_DEFAULT), kitPrefixes: [KIT_DIR_DEFAULT] };
-  }
-  // Stores at the scan root itself — or absent entirely, which still audits:
-  // the loader reports missing-store WARNINGS and every anchor is a proposal.
-  return { kitRoot: root, kitPrefixes: KIT_ZONE_AT_ROOT };
-}
 
 const underPrefix = (path, prefix) => path === prefix || path.startsWith(`${prefix}/`);
 
