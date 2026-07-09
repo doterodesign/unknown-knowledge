@@ -1,0 +1,36 @@
+# One entry per file; schema per PRD.html §3.3.
+schema-version: 1
+entries:
+  - id: D-020
+    title: License finalized — Apache-2.0 over MIT; LICENSE + NOTICE at repo root
+    category: governance
+    status: accepted
+    date: "2026-07-09"
+    deciders: [dimitri]
+    context: >
+      D-015 resolved the license family (permissive, Apache-2.0 recommended,
+      MIT acceptable) but left the final pick open until packaging. KK-28
+      forces the call: the license text ships in every seeded repo, and the
+      kit's primary redistributors are agencies initing their clients' repos —
+      a redistribution pattern MIT covers thinly and Apache-2.0 covers
+      explicitly.
+    decision: >
+      Apache-2.0, finalized. Two properties over MIT decide it: (1) the
+      explicit patent grant (§3) eases the enterprise security and procurement
+      reviews this tool will face, exactly the reviews D-015 named; (2) the
+      NOTICE mechanism (§4d) gives agencies redistributing seeded repos a
+      standard, well-understood attribution vehicle — carry the NOTICE file,
+      done. The trademark carve-out (§6) additionally protects the D-016
+      product name. LICENSE (verbatim Apache-2.0 text) and NOTICE (project
+      name + copyright holder, Unknown Creatives Studio) live at the repo
+      root; package.json declares "license": "Apache-2.0".
+    consequences: >
+      Every seeded repo provably carries its license once KK-17 embeds
+      LICENSE + NOTICE in the payload manifest (embedding rides KK-17, not
+      this decision). The standard Apache warranty disclaimer comes with the
+      license text. Downstream users owe attribution via NOTICE, nothing
+      else; copyleft contamination of client repos is impossible, keeping
+      D-001's ownership promise a legal fact.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-016] }

@@ -1,0 +1,39 @@
+# One entry per file; schema per PRD.html §3.3.
+schema-version: 1
+entries:
+  - id: D-021
+    title: Version policy — kit semver semantics, manifest stamp meaning, CHANGELOG discipline
+    category: process
+    status: accepted
+    date: "2026-07-09"
+    deciders: [dimitri]
+    context: >
+      KK-28's public release policy requires defined semver semantics before
+      first publish: the kit version freezes into every seeded repo via the
+      manifest stamp (D-001), so its meaning must be decided before any repo
+      carries one. "Version" here is the kit package version, distinct from
+      the per-store schema-version integers (§3.5, additive-only).
+    decision: >
+      Kit versions follow semver with these semantics. MAJOR = a store
+      schema-version bump or a breaking change to the engine CLI contract
+      (commands, flags, exit codes, output format consumed by wrappers).
+      MINOR = new extractor kinds, new engine surfaces (new commands or
+      flags, additive), or a new fixture vintage. PATCH = fixes and
+      documentation. The manifest version stamp in a seeded repo records
+      which kit version seeded it — a birth certificate, not a dependency
+      pin: per D-001 there is no update channel, so the stamp exists for
+      provenance and support conversations, and any future re-seed/upgrade
+      path (deferred, §11.1) would read it as its starting point. CHANGELOG
+      discipline: CHANGELOG.md in Keep a Changelog form, an Unreleased
+      section accrues entries as PRs land, and each release moves Unreleased
+      under the new version heading — dates are recorded at release time,
+      never fabricated retroactively.
+    consequences: >
+      Consumers can read a seeded repo's manifest stamp and know exactly
+      what schema revision, extractor-kind set, and fixture vintage it was
+      born with. Engine CLI surface changes now carry a versioning cost,
+      which is the point: wrappers and seeded docs depend on that contract.
+      The README documents the stamp's meaning for seeded-repo owners.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-020] }

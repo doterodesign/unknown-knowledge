@@ -1,0 +1,65 @@
+# Mirrors the logs/misses schema (payload/schemas/miss.schema.json) so a
+# maintainer can triage a field miss straight into the kind backlog. Capture
+# content policy (PRD §3.4): paths and shape descriptions only — never
+# verbatim file contents, session text, or secrets.
+name: Miss-log submission
+description: >-
+  An anchor no shipped extractor kind can read — the demand signal for new
+  kinds (see payload/protocol/new-kind-pipeline.md).
+title: "[miss] "
+labels: ["miss-log"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Fields mirror the `logs/misses/` entry schema. Do NOT paste file
+        contents verbatim — paths and structural shape descriptions only
+        (capture content policy, PRD §3.4).
+  - type: input
+    id: anchor-path
+    attributes:
+      label: Anchor path
+      description: Root-relative path of the anchor no kind can read.
+      placeholder: src/config/FeatureRegistry.kt
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: Shape
+      description: >-
+        Shape description — enough to draft a parser: language, construct,
+        and structure. Paths and structure only, never file contents
+        verbatim.
+      placeholder: >-
+        Kotlin sealed class hierarchy; each subclass declares a `key: String`
+        constant; the value set is the set of keys.
+    validations:
+      required: true
+  - type: textarea
+    id: why-existing-kinds-fail
+    attributes:
+      label: Why existing kinds fail
+      description: >-
+        Which shipped kinds you tried (or considered) and why none can read
+        this anchor.
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: Date observed
+      description: ISO date the miss was recorded (YYYY-MM-DD).
+      placeholder: "2026-07-09"
+    validations:
+      required: true
+  - type: textarea
+    id: reify-alternative
+    attributes:
+      label: Could the anchor be reified instead?
+      description: >-
+        Before a bespoke parser — could the code reify this value set into a
+        standard shape (registry/enum)? If yes, a parser may be the wrong
+        fix.
+    validations:
+      required: false
