@@ -281,3 +281,31 @@ test('root-files (LICENSE/NOTICE) are seeded when present at the kit root and sk
     'a present root-file MUST ship (required-at-publish, KK-28)');
   assert.equal(readFileSync(join(present.root, 'LICENSE'), 'utf8'), 'MIT-ish\n');
 });
+
+// ------------------------------------------------- seeded ESM module marker
+
+// The seeded engine is ESM (D-002, zero-build). Without a `type` declaration
+// beside it, Node re-parses every engine file to guess its module type and
+// prints MODULE_TYPELESS_PACKAGE_JSON on stderr — the same stream the
+// protocol tells agents to read for engine failures, so the noise is worse
+// than cosmetic. The marker declares a module type and nothing else:
+// dependency resolution still walks up to the client's own node_modules.
+test('the seeded root carries an ESM marker package.json, and it declares nothing but the module type', () => {
+  const target = freshDir();
+  assert.equal(runInitCopy('--target', target).status, 0);
+  const seededPkg = join(target, DEFAULT_ROOT, 'package.json');
+  const pkg = JSON.parse(readFileSync(seededPkg, 'utf8'));
+  assert.deepEqual(pkg, { type: 'module' },
+    'the marker declares the module type only — a name/version/deps here would '
+    + 'make the seeded store look like a package to the client\'s tooling');
+});
+
+test('the ESM marker ships through the manifest, never by omission (D-007)', () => {
+  // payload/package.json is a real allowlisted payload file, not an
+  // engine-generated one: the D-007 coverage pin sees it like any other.
+  const kitPkg = JSON.parse(readFileSync(join(kitRoot, 'payload', 'package.json'), 'utf8'));
+  assert.deepEqual(kitPkg, { type: 'module' });
+  const manifest = loadManifest(kitRoot);
+  const expanded = expandManifest(manifest, []).map((e) => e.to);
+  assert.ok(expanded.includes('package.json'), 'the marker must be a manifest entry');
+});
