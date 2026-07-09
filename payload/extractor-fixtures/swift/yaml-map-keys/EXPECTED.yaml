@@ -1,0 +1,7 @@
+# Expected extraction for sample.yaml — yaml-map-keys emits the keys of the
+# mapping at the dotted path (facet: key strings). The sibling flags.betting
+# block never leaks in; the digit-leading key stays a byte-exact string.
+kind: yaml-map-keys
+file: sample.yaml
+symbol: flags.wallet
+values: [instant-withdrawal, multi-currency, 2fa-required]

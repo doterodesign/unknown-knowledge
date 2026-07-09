@@ -1,0 +1,15 @@
+# D-009 extractor fixture — yaml-map-keys (facet: the keys of the mapping at
+# the descriptor's dotted `symbol:` path — here `flags.wallet`).
+# Adversarial-but-extractable: a sibling map whose keys must NOT bleed in, a
+# quoted digit-leading key ("2fa-required" — unquoted-lookalike, provably a
+# string), and boolean VALUES that must never be mistaken for the emitted
+# key set. Pair: EXPECTED.yaml.
+schema: 2
+flags:
+  wallet:
+    instant-withdrawal: true
+    multi-currency: false # rollout paused
+    "2fa-required": true
+  betting:
+    parlay-builder: true
+    cash-out: false

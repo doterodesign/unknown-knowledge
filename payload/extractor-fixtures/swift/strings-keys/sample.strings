@@ -1,0 +1,15 @@
+/* D-009 extractor fixture — strings-keys, .strings side (facet: the keys;
+   the .xcstrings side of the kind dispatches by file extension).
+   Adversarial-but-extractable: block + line comments, an '=' inside a value,
+   escaped quotes inside a value, two entries on one line, and a
+   commented-out pair that must NOT be extracted. Pair: EXPECTED.yaml. */
+
+/* Account */
+"account.title" = "Your account";
+"account.balance" = "Balance = deposits - withdrawals"; /* '=' inside the value */
+
+// "account.legacy" = "Old copy"; — commented-out pair, not a key
+
+/* Betting */
+"bet.confirm" = "Tap \"Confirm\" to place"; // escaped quotes in the value
+"bet.cancel" = "Cancel"; "bet.retry" = "Retry"; // two entries on one line
