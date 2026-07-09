@@ -78,7 +78,8 @@ import { readFileSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
 import { dump, load } from 'js-yaml';
 import { buildSurveyMap } from './survey-map.js';
-import { locateKit, SCOPE_FILE, SUPPRESSIONS_FILE } from '../lib/kit-root.js';
+import { locateKit, SCOPE_FILE } from '../lib/kit-root.js';
+import { loadSuppressions, partitionBySuppression, suppressibleBy, SUPPRESSIONS_FILE } from '../lib/suppressions.js';
 import { loadStores, storeHealth } from '../lib/load-stores.js';
 import { compare } from '../lib/validate-record.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
@@ -90,7 +91,7 @@ const STALE_DAYS_DEFAULT = 90;
 // lib/kit-root.js's one job (UCS-934). The audit used to answer that itself,
 // with the opposite tie-break, and so read a different Store than every other
 // surface whenever a repo carried both layouts.
-export { SUPPRESSIONS_FILE } from '../lib/kit-root.js';
+export { SUPPRESSIONS_FILE };
 
 
 const underPrefix = (path, prefix) => path === prefix || path.startsWith(`${prefix}/`);
@@ -114,80 +115,6 @@ function draftConcept(path, kinds, today) {
     ...(today ? { 'last-verified': today } : {}),
   };
   return dump(record, { lineWidth: -1 });
-}
-
-// ------------------------------------------------------- suppressions (KK-27)
-
-/** The v1 entry shape, STRICTLY: exact-match identity + audit trail. */
-const SUPPRESSION_FIELDS = ['term', 'sourcePath', 'reason', 'date'];
-
-/**
- * The exact-match identity a suppression entry must equal, per finding code
- * (documented in the header): the anchor path (plus its drafted term) for
- * unmatched-anchor; the concept id in both fields for stale-last-verified.
- */
-function suppressionIdentity(finding) {
-  if (finding.code === 'unmatched-anchor') {
-    return { term: basename(finding.path, extname(finding.path)), sourcePath: finding.path };
-  }
-  return { term: finding.concept, sourcePath: finding.concept };
-}
-
-/** Warning text for one malformed entry, or null when it is well-formed. */
-function suppressionEntryProblem(entry) {
-  if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
-    return 'not a mapping';
-  }
-  for (const field of SUPPRESSION_FIELDS) {
-    if (typeof entry[field] !== 'string' || entry[field].trim() === '') {
-      return `"${field}" must be a non-empty string`;
-    }
-  }
-  const unknown = Object.keys(entry).filter((k) => !SUPPRESSION_FIELDS.includes(k));
-  if (unknown.length > 0) {
-    return `unknown field(s) ${unknown.map((k) => `"${k}"`).join(', ')} — v1 entries are strictly { ${SUPPRESSION_FIELDS.join(', ')} } (no patterns, no expiry; §11.1)`;
-  }
-  if (!ISO_DATE.test(entry.date)) {
-    return `"date" must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(entry.date)}`;
-  }
-  return null;
-}
-
-/**
- * Load `<kitRoot>/suppressions.yaml`. FAILS OPEN by design (the opposite of
- * the scope file): a missing file is a silent no-op; anything malformed — the
- * whole file or a single entry — becomes a warning and suppresses nothing,
- * never an engine failure. Suppression is advisory-side, never blocking.
- */
-function loadSuppressions(kitRoot) {
-  const warn = (msg) => ({ entries: [], warnings: [`${SUPPRESSIONS_FILE}: ${msg} — ignoring every entry (suppression fails open, findings resurface)`] });
-  let text;
-  try {
-    text = readFileSync(join(kitRoot, SUPPRESSIONS_FILE), 'utf8');
-  } catch (error) {
-    if (error.code === 'ENOENT') return { entries: [], warnings: [] }; // no file, no-op
-    return warn(`cannot read: ${error.message}`);
-  }
-  let doc;
-  try {
-    doc = load(text, { filename: SUPPRESSIONS_FILE });
-  } catch (error) {
-    return warn(`unparseable YAML: ${error.reason ?? error.message}`);
-  }
-  if (doc === null || doc === undefined) return { entries: [], warnings: [] }; // empty file, no-op
-  if (!Array.isArray(doc)) return warn('must be a YAML list of { term, sourcePath, reason, date } entries');
-
-  const entries = [];
-  const warnings = [];
-  doc.forEach((entry, i) => {
-    const problem = suppressionEntryProblem(entry);
-    if (problem === null) {
-      entries.push(entry);
-    } else {
-      warnings.push(`${SUPPRESSIONS_FILE}: entry ${i + 1} ignored (fails open, its finding resurfaces): ${problem}`);
-    }
-  });
-  return { entries, warnings };
 }
 
 /** Whole days from ISO date `from` to ISO date `to` (both validated). */
@@ -231,11 +158,13 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
   const findings = [];
   for (const [path, kinds] of byPath) {
     kinds.sort(compare);
-    findings.push({
+    findings.push(suppressibleBy({
       code: 'unmatched-anchor', severity: 'advisory', path, kinds,
       message: `no concept points at this ${kinds.join('/')} anchor — draft below is ready for human review`,
       draft: draftConcept(path, kinds, today),
-    });
+      // A steward suppresses an anchor by the term the draft would have used
+      // and the path it sits at — the two things they actually read.
+    }, { term: basename(path, extname(path)), sourcePath: path }));
   }
 
   if (today) {
@@ -245,11 +174,13 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
       if (typeof verified !== 'string' || !ISO_DATE.test(verified)) continue; // presence/shape is KK-05's check
       const days = daysBetween(verified, today);
       if (days > staleDays) {
-        findings.push({
+        findings.push(suppressibleBy({
           code: 'stale-last-verified', severity: 'advisory', concept: id,
           'last-verified': verified, days, 'stale-days': staleDays,
           message: `last verified ${days} day(s) ago — re-verify or deprecate (§3.1 rung 4)`,
-        });
+          // There is no anchor path here; the concept id names the finding in
+          // both fields, so one entry suppresses one concept's staleness.
+        }, { term: id, sourcePath: id }));
       }
     }
   }
@@ -258,17 +189,11 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
     compare(a.code, b.code) || compare(a.path ?? '', b.path ?? '') || compare(a.concept ?? '', b.concept ?? ''));
 
   // Client-zone suppressions (KK-27): exact-match filter, fails open. Only
-  // well-formed entries suppress; the sort above keeps both lists stable.
+  // well-formed entries suppress; the sort above keeps both lists stable. Each
+  // finding carries the identity it would be suppressed by, so nothing here
+  // has to know what codes exist.
   const { entries: suppressionEntries, warnings } = loadSuppressions(kitRoot);
-  const kept = [];
-  const suppressed = [];
-  for (const finding of findings) {
-    const identity = suppressionIdentity(finding);
-    const match = suppressionEntries.some(
-      (e) => e.term === identity.term && e.sourcePath === identity.sourcePath,
-    );
-    (match ? suppressed : kept).push(finding);
-  }
+  const { kept, suppressed } = partitionBySuppression(findings, suppressionEntries);
 
   return {
     checks: {
