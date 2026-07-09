@@ -139,11 +139,22 @@ test('Unreleased sits above the newest release, and is empty after a cut', () =>
   assert.ok(unreleased < firstRelease, 'Unreleased comes first — newest at the top');
 });
 
-test('the release date is not in the future', () => {
+test('every release heading names a real day, and none is in the future', () => {
   // D-021: dates are recorded at release time, never fabricated. A heading
   // dated tomorrow is a date nobody could have recorded.
-  const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
-  for (const [, date] of changelog.matchAll(/^## \[\d+\.\d+\.\d+\] - (\d{4}-\d{2}-\d{2})$/gm)) {
-    assert.ok(isCalendarDate(date), `${date} is not a real calendar date`);
+  //
+  // Reading the clock is forbidden to the ENGINE (D-012), whose answers must be
+  // reproducible from their inputs. This is a repo test asking a question only
+  // the clock can answer — "has this day happened yet" — and it is stable: it
+  // fails only when a heading is genuinely dated ahead of the machine running it.
+  const today = new Date().toISOString().slice(0, 10);
+  const headings = [...readFileSync(join(root, 'CHANGELOG.md'), 'utf8')
+    .matchAll(/^## \[(\d+\.\d+\.\d+)\] - (\d{4}-\d{2}-\d{2})$/gm)];
+
+  assert.ok(headings.length > 0, 'there is at least one released version to check');
+  for (const [, version, date] of headings) {
+    assert.ok(isCalendarDate(date), `${version} is dated ${date}, which is not a real calendar day`);
+    assert.ok(date <= today,
+      `${version} is dated ${date}, which is in the future — D-021 records dates at release time, never ahead of it`);
   }
 });
