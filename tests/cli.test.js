@@ -9,6 +9,9 @@
 // expand step); UCS-948/949/950 migrate the surfaces onto it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { readFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
 import { parseArgs, runCli, UsageError } from '../payload/engine/lib/cli.js';
 
@@ -183,4 +186,52 @@ test('a numeric flag arrives as a string — parsing its meaning is the command\
 test('a value that looks like a negative number is still a value, not a flag', () => {
   const { options } = parseArgs(['--stale-days', '-1'], { value: ['stale-days'] });
   assert.equal(options['stale-days'], '-1', 'only `--` prefixes are flags');
+});
+
+// ------------------------------- the migrated surfaces (UCS-948, batch 1)
+//
+// The harness's own tests above prove a throw exits 2. These prove the three
+// migrated surfaces actually route through it — a structural pin, because a
+// CLI that re-grew its own catch block would pass every behavioural test right
+// up until the day it crashed and reported findings.
+
+const MIGRATED = ['validate.js', 'validate-values.js', 'preflight.js'];
+
+test('the migrated surfaces run through the harness and own no catch-to-exit mapping', async () => {
+  for (const name of MIGRATED) {
+    const source = await readFile(fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url)), 'utf8');
+    assert.match(source, /runCli\(/, `${name} must route through the harness`);
+    assert.ok(!/class UsageError extends Error/.test(source), `${name} must not redeclare UsageError`);
+    // The tell-tale of a hand-rolled epilogue is not "a catch block" — a CLI may
+    // still turn a specific engine throw into a specific, actionable message
+    // (an unreadable --root). It is deciding what a USAGE ERROR or an
+    // UNEXPECTED throw means. That judgement belongs to the harness alone.
+    assert.ok(!/instanceof UsageError/.test(source),
+      `${name} decides what a usage error means — that is the harness's job`);
+    assert.ok(!/internal failure/.test(source),
+      `${name} hand-rolls the crash epilogue — that is the harness's job`);
+    assert.ok(!/function parseArgs\(argv\) \{[\s\S]{0,200}?for \(let i = 0/.test(source),
+      `${name} still hand-rolls the flag loop`);
+  }
+});
+
+test('a crash in a migrated surface exits 2, never 1 — the guard is the harness', async () => {
+  // Forced through the same seam the CLIs use. Their `main` is not exported, so
+  // this exercises the harness with a main that throws exactly as theirs would.
+  for (const name of MIGRATED) {
+    const stderr = capture();
+    const code = await runCli(name.replace('.js', ''), () => { throw new TypeError('simulated engine bug'); },
+      { usage: 'u', argv: ['--root', 'x'], stderr });
+    assert.equal(code, EXIT_CODES.FAILURE, `${name}: a crash must exit 2`);
+    assert.notEqual(code, EXIT_CODES.FINDINGS, `${name}: a crash must never wear the FINDINGS code`);
+  }
+});
+
+test('every migrated surface refuses an empty --root rather than reading the cwd', () => {
+  for (const name of MIGRATED) {
+    const cli = fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url));
+    const r = spawnSync(process.execPath, [cli, '--root', ''], { encoding: 'utf8' });
+    assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: --root "" must not silently mean the cwd`);
+    assert.match(r.stderr, /--root requires a value/);
+  }
 });

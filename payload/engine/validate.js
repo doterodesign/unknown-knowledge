@@ -55,6 +55,7 @@ import process from 'node:process';
 import { healthSummary, loadStores, normalizeConceptIds, storeHealth } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
 import { compare } from './lib/validate-record.js';
 
 const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <dir>] [--concepts <ids>]';
@@ -80,8 +81,6 @@ const PENDING_MARKER = 'pending-import';
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const strings = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
-
-class UsageError extends Error {}
 
 // -------------------------------------------------------------- the checks
 
@@ -274,36 +273,16 @@ export function runChecks(model, repoRoot = model.root) {
 // ------------------------------------------------------------- CLI plumbing
 
 function parseArgs(argv) {
-  const opts = { json: false, root: process.cwd(), concepts: null };
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    // Both conventional flag spellings: `--flag value` and `--flag=value`.
-    const eq = arg.startsWith('--') ? arg.indexOf('=') : -1;
-    const flag = eq === -1 ? arg : arg.slice(0, eq);
-    if (flag === '--json') {
-      if (eq !== -1) throw new UsageError('--json takes no value');
-      opts.json = true;
-    } else if (flag === '--root' || flag === '--concepts') {
-      let value;
-      if (eq !== -1) {
-        value = arg.slice(eq + 1);
-      } else {
-        value = argv[i + 1];
-        if (value === undefined || value.startsWith('--')) {
-          throw new UsageError(`${flag} requires a value`);
-        }
-        i += 1;
-      }
-      if (flag === '--root') opts.root = value;
-      else opts.concepts = [...(opts.concepts ?? []), ...value.split(',')];
-    } else if (arg.startsWith('--')) {
-      throw new UsageError(`unknown flag ${arg}`);
-    } else {
-      throw new UsageError(`unexpected argument "${arg}" — validate takes flags only`);
-    }
-  }
-  if (opts.concepts) {
-    opts.concepts = normalizeConceptIds(opts.concepts);
+  const { options } = parseFlags(argv, {
+    boolean: ['json'],
+    value: ['root'],
+    repeatable: ['concepts'],
+    // `--concepts=` is an empty filter, and an empty filter never ran.
+    allowEmpty: ['concepts'],
+  });
+  const opts = { json: !!options.json, root: options.root ?? process.cwd(), concepts: null };
+  if (options.concepts) {
+    opts.concepts = normalizeConceptIds(options.concepts.flatMap((v) => v.split(',')));
     if (!opts.concepts.length) {
       throw new UsageError('--concepts must name at least one concept id — a filter that never ran is a failure, never a silent pass');
     }
@@ -333,7 +312,7 @@ function render(payload) {
 }
 
 function main(argv) {
-  try {
+  {
     const opts = parseArgs(argv);
 
     let model;
@@ -390,22 +369,15 @@ function main(argv) {
     const lines = opts.json ? [JSON.stringify(payload, null, 2)] : render(payload);
     process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
     return payload.counts.errors ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
-  } catch (error) {
-    if (error instanceof UsageError) {
-      process.stderr.write(`validate: ${error.message}\n${USAGE}\n`);
-      return EXIT_CODES.FAILURE;
-    }
-    // A crash mid-check means the checks never finished. An uncaught throw
-    // would exit 1 — the FINDINGS code — so a broken run would read as
-    // "findings present" instead of "check never ran" (blocking defect, PRD §5).
-    process.stderr.write(`validate: internal failure — checks did not complete\n${error.stack || error.message}\n`);
-    return EXIT_CODES.FAILURE;
   }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isEntrypoint(import.meta.url)) {
+  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
+  // Exit 1 means findings, and a command that crashed never ran (PRD §5).
+  //
   // exitCode, never process.exit(): exit() drops queued async stdout writes,
   // so piped --json output would truncate at the ~64KB pipe buffer (corrupt
   // JSON with exit 0). Node exits on its own once stdout drains.
-  process.exitCode = main(process.argv.slice(2));
+  runCli('validate', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
 }
