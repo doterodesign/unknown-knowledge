@@ -97,9 +97,11 @@ test('nothing in the seam switches on a finding code', async () => {
 test('the audit stamps every finding it builds, and derives no identity itself', async () => {
   const source = await readFile(fileURLToPath(new URL('../payload/engine/commands/audit.js', import.meta.url)), 'utf8');
   assert.doesNotMatch(source, /function suppressionIdentity/, 'the switch is gone, not moved');
-  // Every `findings.push(` must go through the stamp.
+  // Every `findings.push(` must go through the stamp. `\s*` so that wrapping the
+  // argument onto its own line — a purely cosmetic reformat — cannot fail an
+  // architectural pin.
   const pushes = source.match(/findings\.push\(/g) ?? [];
-  const stamped = source.match(/findings\.push\(suppressibleBy\(/g) ?? [];
+  const stamped = source.match(/findings\.push\(\s*suppressibleBy\(/g) ?? [];
   assert.ok(pushes.length >= 2, 'the audit builds at least the two v1 finding codes');
   assert.equal(stamped.length, pushes.length,
     'a finding built without suppressibleBy() would crash the audit at partition time — stamp it where it is built');
