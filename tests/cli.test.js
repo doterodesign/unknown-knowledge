@@ -391,7 +391,14 @@ test('the init CLIs rethrow bugs after naming the partial state', async () => {
   // through to the harness, which prints the stack.
   for (const name of ['init.js', 'init-copy.js']) {
     const source = await readFile(fileURLToPath(new URL(`../cli/commands/${name}`, import.meta.url)), 'utf8');
-    assert.match(source, /rethrowIfBug\(error\)/, `cli/commands/${name} must not report a TypeError as a refusal`);
+    // Per CATCH, not per file. A file-wide `assert.match(source, /rethrowIfBug/)`
+    // passes as soon as ONE catch does the right thing, and init had a second
+    // one — around loadManifest — that swallowed bugs for exactly that reason.
+    for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
+      if (!/EXIT_CODES\.FAILURE/.test(block)) continue; // a catch that does not decide the command's fate
+      assert.match(block, /rethrowIfBug\(error\)/,
+        `cli/commands/${name} has a catch that decides the exit code without first rethrowing bugs:\n${block}`);
+    }
     assert.ok(!/instanceof UsageError/.test(source), `cli/commands/${name} must leave usage errors to the harness`);
     assert.ok(!/internal failure/.test(source), `cli/commands/${name} must not hand-roll the crash epilogue`);
     assert.ok(!/function parseArgs\(argv\) \{[\s\S]{0,200}?for \(let i = 0/.test(source),

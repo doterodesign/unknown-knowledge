@@ -241,7 +241,11 @@ export async function main(argv, { stdin = process.stdin, stdout = process.stdou
   try {
     manifest = loadManifest(kitRoot);
   } catch (error) {
+    // The manifest is malformed or missing — an anticipated refusal, and the
+    // message says which. A bug inside loadManifest is not, and goes to the
+    // harness with its stack. Both exit 2; nothing was seeded either way.
     stderr.write(`unknown-knowledge init: ${error.message}\n`);
+    rethrowIfBug(error);
     return EXIT_CODES.FAILURE;
   }
   const knownStacks = Object.keys(manifest.sections.stacks).sort();
