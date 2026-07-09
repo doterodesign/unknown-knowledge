@@ -30,7 +30,7 @@ each step below also carries its own "On resume" rule:
 
 | Artifact found on entry | What it means |
 |---|---|
-| `survey-scope.yaml` at the repo root | the scope+taxonomy gate was confirmed — it is **never re-litigated on resume**; skip to EMIT (survey-map now honors the scope automatically) |
+| `survey-scope.yaml` at the repo root AND class rules in `ontology/_rules.yaml` | the scope+taxonomy gate was confirmed — it is **never re-litigated on resume**; skip to EMIT (survey-map now honors the scope automatically). Scope file WITHOUT class rules means the session stopped mid-gate: complete the taxonomy half (the confirmed scope itself is not re-asked) before moving on |
 | `ontology/_rules.yaml` with class rules | the taxonomy half of the gate is done; do not re-propose it |
 | Concepts in `ontology/classes/` | emission already started — it is **idempotent by anchor identity**: probe each anchor with the reverse lookup before emitting; never a duplicate concept for the same anchor |
 | An **open** `logs/misses/` entry for a path | the standing demand signal already exists — never mint a sibling for a known anchor (`protocol/new-kind-pipeline.md`) |
@@ -135,12 +135,13 @@ prose concepts; the reverse audit (`engine/audit.js`, advisory) grows the
 map proposal-first from there. Skipping a candidate is a normal triage
 outcome, not a gap.
 
-Verify each emitted batch immediately (repo-root `--root`; filter to the
-touched ids):
+Verify each emitted batch immediately (repo-root `--root`; the
+`--concepts` list is EXACTLY the ids the batch emitted — an id left off the
+list is a check that never ran):
 
 ```
-node unknown-knowledge/engine/validate.js --concepts K-100,K-110 --root .
-node unknown-knowledge/engine/validate-values.js --concepts K-100,K-110 --root .
+node unknown-knowledge/engine/validate.js --concepts K-100,K-110,K-120 --root .
+node unknown-knowledge/engine/validate-values.js --concepts K-100,K-110,K-120 --root .
 ```
 
 Exit 1 = the draft disagrees with the source — fix the draft (re-read the
