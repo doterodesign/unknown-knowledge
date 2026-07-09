@@ -81,7 +81,7 @@ import { fileURLToPath } from 'node:url';
 import { dump, load } from 'js-yaml';
 import { buildSurveyMap } from './survey-map.js';
 import { locateKit, SCOPE_FILE, SUPPRESSIONS_FILE } from './lib/kit-root.js';
-import { loadStores, storeDiagnostics } from './lib/load-stores.js';
+import { loadStores, storeHealth } from './lib/load-stores.js';
 import { compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 
@@ -209,7 +209,7 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
   const { kitRoot, kitPrefixes } = locateKit(root);
   const model = loadStores(kitRoot);
 
-  const { errors } = storeDiagnostics(model);
+  const { errors } = storeHealth(model);
   if (errors.length > 0) {
     const detail = errors.map((d) => `  ${d.code}  ${d.file}${d.path ? `  ${d.path}` : ''}  ${d.message}`);
     throw new Error(`the store loader reported ${errors.length} error(s) — auditing against broken stores would misreport (single health model, PRD §4):\n${detail.join('\n')}`);

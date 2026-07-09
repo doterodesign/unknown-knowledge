@@ -393,36 +393,26 @@ export function loadStores(root) {
  * shares — validator, value check, and preflight report store health from
  * this single shape, so they can never disagree about it (PRD §4).
  */
-export function storeHealth(model) {
-  // Derived from the widened form, never filtered a second time: while both
-  // shapes exist they cannot disagree. UCS-951 deletes this one.
-  const { ok, errorCount, warningCount } = storeDiagnostics(model);
-  return { ok, errors: errorCount, warnings: warningCount };
-}
+
 
 /**
- * Store health, in full: the Diagnostics themselves, not merely how many
- * (UCS-939).
+ * Store health — the ONE authority (UCS-939/945/951).
  *
- * `storeHealth` above reports counts, which is all the JSON payloads need —
- * but every surface actually wants the error Diagnostics, to render them or to
- * decide that a check cannot certify anything. So six sites reach past it and
- * re-filter `model.diagnostics` by severity, and the resolver went further and
- * re-declared its own copy of the counts helper. A seam too narrow to be used
- * is a seam that gets walked around.
+ * The validator, the reverse audit and preflight can never disagree about a
+ * Store, because they all ask this function rather than each filtering
+ * `model.diagnostics` themselves. It once reported only counts, which is not
+ * what any caller needed, so seven sites reached past it and the resolver
+ * re-declared its own copy. A seam too narrow to be used is a seam that gets
+ * walked around.
  *
- * This is the widened form. It derives from `model.ok` and `model.diagnostics`
- * — the single health model — and from nothing else, so the validator, the
- * reverse audit and preflight cannot disagree about a Store because they all
- * ask one function rather than all happening to filter the same way.
- *
- * Both forms coexist for now: callers migrate in UCS-945, and UCS-951 deletes
- * the counts-only one once nothing reads it.
+ * Derived from `model.ok` and `model.diagnostics` — the single health model —
+ * and from nothing else. `ok` is the loader's verdict, never recomputed from
+ * the counts: a surface that recomputed it would BE a second health model.
  *
  * @param {object} model a loaded store model
  * @returns {{ ok: boolean, errors: object[], warnings: object[], errorCount: number, warningCount: number }}
  */
-export function storeDiagnostics(model) {
+export function storeHealth(model) {
   const errors = model.diagnostics.filter((d) => d.severity === 'error');
   const warnings = model.diagnostics.filter((d) => d.severity === 'warning');
   return {
@@ -432,6 +422,21 @@ export function storeDiagnostics(model) {
     errorCount: errors.length,
     warningCount: warnings.length,
   };
+}
+
+/**
+ * The wire shape of store health: counts, not Diagnostics. Every surface's
+ * `store-health` JSON key is this, and it has looked like this since KK-04.
+ *
+ * It takes the HEALTH, never the model — so it is a projection of the one
+ * authority and cannot become a second derivation of it. That is the whole
+ * point: `healthSummary(storeHealth(model))` reads as what it is.
+ *
+ * @param {{ ok: boolean, errorCount: number, warningCount: number }} health
+ * @returns {{ ok: boolean, errors: number, warnings: number }}
+ */
+export function healthSummary(health) {
+  return { ok: health.ok, errors: health.errorCount, warnings: health.warningCount };
 }
 
 /** A --concepts id the ontology does not carry — a check that never ran. */

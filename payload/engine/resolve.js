@@ -58,7 +58,7 @@
 import process from 'node:process';
 import { statSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { loadStores, storeHealth } from './lib/load-stores.js';
+import { healthSummary, loadStores, storeHealth } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -369,7 +369,7 @@ function main(argv) {
       return EXIT_CODES.FAILURE;
     }
 
-    const health = storeHealth(model);
+    const health = healthSummary(storeHealth(model));
     const payload = opts.paths
       ? { mode: 'paths', 'store-health': health, paths: resolvePaths(model, opts.paths, opts.root) }
       : { mode: 'query', 'store-health': health, ...resolveQuery(model, opts.terms) };
