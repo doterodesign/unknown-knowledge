@@ -1,322 +1,34 @@
 #!/usr/bin/env node
 /**
- * Value validator (KK-07) — blocking-grade rung-2 checks (PRD §4). Runs every
- * `enumerates` recipe on the loaded ontology: parses the named source with the
- * descriptor's extractor kind, extracts the actual value set, and diffs it
- * against the claim IN BOTH DIRECTIONS. §3.5 equality: values are strings,
- * compared byte-exact and case-sensitive, as sets — order irrelevant,
- * duplicates in source are a finding.
+ * engine/validate-values.js — the entry shim (UCS-956).
  *
- *   node payload/engine/validate-values.js [--concepts <ids>] [--json] [--root <dir>]
+ * This file statically imports NOTHING. That is its entire job.
  *
- * Findings (exit 1 when any is error-severity):
- *   value-not-in-source    a claimed value the source does not carry
- *   source-value-missing   a source value the claim does not carry
- *   duplicate-source-value the source declares the same value twice (§3.5:
- *                          sets — a duplicate is a defect, never a bigger set)
- *   wrong-pointer          ALL claimed values missing from a real, parseable
- *                          file — the descriptor points at the wrong place;
- *                          one distinct finding, never a per-value cascade
+ * Node exits 1 on an unhandled ES module load error, and exit 1 means FINDINGS
+ * (PRD §5). A SyntaxError in a lib/ module, or a missing `js-yaml`, must not
+ * tell an agent that the check ran and found problems. So the engine is reached
+ * only through `import()`, where a load failure is an ordinary catchable
+ * rejection rather than a process-level crash.
  *
- * Hard errors (exit 2 — a check that never ran is a blocking defect, never a
- * silent pass, PRD §5):
- *   - a store the single health model marks unhealthy: every error-severity
- *     loader diagnostic (including the KK-02 malformed-descriptor codes
- *     non-string-enumerates-value / duplicate-enumerates-value /
- *     enumerates-source-not-listed) is surfaced as a hard error and no value
- *     check runs — an unprovable claim silently passing would re-open the gap
- *     this validator closes
- *   unknown-kind     the descriptor names an extractor kind the registry does
- *                    not carry — nothing can re-derive the claim
- *   source-missing   the named source file does not exist / is unreadable
- *   out-of-envelope  an out-of-envelope sentinel appears in the matched span
- *                    (PRD §5: a confident wrong parse is a false all-clear)
- *   extract-failed   the kind's recipe could not parse the source
+ * Both specifiers are string literals naming the engine's own files. D-014
+ * forbids importing REPO CONTENT — the client's code — and nothing here can
+ * name it: there is no variable to point somewhere else.
  *
- * §3.5 status semantics: draft/proposed concepts are skipped (structural
- * checks only — preflight verdicts them unknown); active is blocking-grade;
- * deprecated demotes value findings AND the path-existence/envelope hard
- * errors to warnings — deprecation is precisely the state that stops the
- * blocking check from dead-ending a legitimate source deletion (§3.5).
- * A malformed descriptor or unknown kind stays hard on every status.
- *
- * Extractor kinds are registered by NAME in lib/extractor-kinds.js — a small
- * deterministic recipe `extract(text, descriptor) -> string[]` that reads a
- * value set out of a reified anchor, throwing EnvelopeError / ExtractError.
- * KK-08 ships the TS/JS + JSON kinds; KK-09 the Swift/config kinds; KK-10
- * dir-modules — the registry's one DIRECTORY kind (`{ reads: 'directory' }`),
- * fed a deterministic listing instead of file text (dispatch seam in
- * checkDescriptor); `test-lines` (newline-delimited registry files) proves
- * dispatch, the envelope hard-error path, and determinism.
- * D-014: kinds parse lexically only — the engine never executes client code.
- *
- * --root is the REPO root (default cwd): descriptor sources and
- * source-of-truth pointers are repo-relative (§9.1 — a post-init repo nests
- * the kit inside the codebase its pointers describe). The stores load from
- * <root>/unknown-knowledge/ when that directory exists, else from <root>
- * itself (the kit repo's own dogfood layout).
- *
- * Consumes the KK-04 loader's model — never re-parses stores. Output is
- * deterministic and stable-sorted (findings by concept/path/code/value), no
- * wall-clock timestamps. Exit codes (PRD §5, D-011): 0 clean, 1 findings,
- * 2 engine failure / check-never-ran.
+ * The command lives in commands/validate-values.js. Its invocation path is unchanged.
  */
-import process from 'node:process';
-import { readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { healthSummary, loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
-import { locateKitRoot } from './lib/kit-root.js';
-import { EXIT_CODES } from './lib/exit-codes.js';
-import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
-import { compare } from './lib/validate-record.js';
-import { KINDS, EnvelopeError, ExtractError, listDirectory } from './lib/extractor-kinds.js';
-
-const USAGE = 'usage: node payload/engine/validate-values.js [--concepts <ids>] [--json] [--root <dir>]';
-
-// ------------------------------------------------------------ the check body
-
-const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
-
-/**
- * Run one descriptor: dispatch to its kind, read the source, diff both ways.
- * Pushes findings/hard-errors into ctx; never throws for check outcomes.
- */
-function checkDescriptor(ctx, concept, descriptor, i) {
-  const { id, file } = concept;
-  const path = `enumerates[${i}]`;
-  const deprecated = concept.record.status === 'deprecated';
-  const severity = deprecated ? 'warning' : 'error';
-  // deprecated demotes path-existence/envelope to warning findings (§3.5);
-  // malformed/unknown-kind stay hard on every status.
-  const never = (code, message, extra = {}) => {
-    const entry = { concept: id, code, file, path, source: descriptor.source, message, ...extra };
-    if (deprecated && (code === 'source-missing' || code === 'out-of-envelope')) {
-      ctx.findings.push({ ...entry, severity: 'warning' });
-    } else {
-      ctx.hardErrors.push(entry);
-    }
-  };
-
-  const kind = KINDS[descriptor.kind];
-  if (!kind) {
-    ctx.hardErrors.push({
-      concept: id, code: 'unknown-kind', file, path, source: descriptor.source,
-      message: `extractor kind "${descriptor.kind}" is not registered — nothing can re-derive this claim, and an unprovable claim must never silently pass (PRD §4); registered kinds: ${Object.keys(KINDS).sort(compare).join(', ')}`,
-    });
-    return;
-  }
-
-  // Registry dispatch seam (KK-10): a plain function is a FILE kind fed the
-  // source text; a `{ reads: 'directory' }` entry is a DIRECTORY kind fed the
-  // deterministic listing. Either way the one filesystem read happens here,
-  // and an unreadable source (missing file, missing dir, a file where a
-  // directory kind expects a dir — ENOTDIR) is source-missing.
-  const readsDirectory = typeof kind !== 'function' && kind.reads === 'directory';
-  const extract = readsDirectory ? kind.extract : kind;
-
-  let input;
-  try {
-    input = readsDirectory
-      ? listDirectory(join(ctx.root, descriptor.source))
-      : readFileSync(join(ctx.root, descriptor.source), 'utf8');
-  } catch (error) {
-    never('source-missing', `cannot ${readsDirectory ? 'list source directory' : 'read source'} ${JSON.stringify(descriptor.source)}: ${error.message}`);
-    return;
-  }
-
-  let actual;
-  try {
-    actual = extract(input, descriptor);
-  } catch (error) {
-    if (error instanceof EnvelopeError) {
-      never('out-of-envelope', error.message);
-    } else if (error instanceof ExtractError) {
-      never('extract-failed', error.message);
-    } else {
-      throw error; // a kind bug is an engine failure, not a finding
-    }
-    return;
-  }
-
-  const claimed = descriptor.values;
-  const actualSet = new Set();
-  for (const value of actual) {
-    if (actualSet.has(value)) {
-      ctx.findings.push({
-        concept: id, code: 'duplicate-source-value', severity, file, path,
-        source: descriptor.source, value,
-        message: `source declares ${JSON.stringify(value)} more than once — values compare as sets (§3.5), so a duplicate is a source defect, never a bigger set`,
-      });
-    }
-    actualSet.add(value);
-  }
-
-  // Wrong-pointer signature (PRD §4): the file is real and parseable, yet
-  // carries NONE of the claimed values — one finding, not a cascade.
-  if (claimed.length && claimed.every((v) => !actualSet.has(v))) {
-    ctx.findings.push({
-      concept: id, code: 'wrong-pointer', severity, file, path,
-      source: descriptor.source,
-      message: `all ${claimed.length} claimed value(s) are missing from ${JSON.stringify(descriptor.source)} — the file exists and parses (${actualSet.size} value(s) extracted), so the descriptor points at the wrong place`,
-    });
-    return;
-  }
-
-  const claimedSet = new Set(claimed);
-  for (const value of claimed) {
-    if (!actualSet.has(value)) {
-      ctx.findings.push({
-        concept: id, code: 'value-not-in-source', severity, file, path,
-        source: descriptor.source, value,
-        message: `claimed value ${JSON.stringify(value)} is not in ${JSON.stringify(descriptor.source)} (byte-exact, case-sensitive, §3.5)`,
-      });
-    }
-  }
-  for (const value of actualSet) {
-    if (!claimedSet.has(value)) {
-      ctx.findings.push({
-        concept: id, code: 'source-value-missing', severity, file, path,
-        source: descriptor.source, value,
-        message: `source value ${JSON.stringify(value)} in ${JSON.stringify(descriptor.source)} is not claimed by the descriptor`,
-      });
-    }
-  }
-}
-
-/**
- * Run every enumerates check over a loaded model — the reusable seam
- * preflight (KK-26) consumes, so verdicts and this validator can never
- * disagree. `conceptIds` null = all concepts; an unknown id throws (a check
- * that never ran is a blocking defect). `repoRoot` is where descriptor
- * sources resolve (§9.1 repo-relative); it defaults to the store root, the
- * flat layout where both coincide. Returns { findings, hardErrors,
- * checked }, stable-sorted.
- */
-export function validateValues(model, conceptIds, repoRoot = model.root) {
-  // Sources are repo-relative (§9.1), not store-relative: in a seeded repo
-  // the stores sit at <repo>/unknown-knowledge/ but point at <repo>/src/....
-  const ctx = { root: repoRoot, findings: [], hardErrors: [], checked: [] };
-
-  // Single health model: the loader already validated every descriptor's
-  // shape (KK-02 codes). An unhealthy store means the value check cannot
-  // certify anything — surface the diagnostics as hard errors and stop.
-  const { errors: storeErrors } = storeHealth(model);
-  if (storeErrors.length) {
-    ctx.hardErrors = storeErrors.map(({ code, file, path, message }) => ({
-      concept: null, code, file, path, source: null, message,
-    }));
-    return ctx;
-  }
-
-  for (const concept of selectConcepts(model, conceptIds)) {
-    const { id, file, record } = concept;
-    const descriptors = Array.isArray(record.enumerates) ? record.enumerates : [];
-    const entry = { concept: id, status: record.status ?? null, descriptors: descriptors.length };
-    if (isPrePromotionStatus(record.status)) {
-      // §3.5: structural checks only; the resolver downranks, preflight
-      // verdicts unknown — the value check does not run.
-      entry.skipped = record.status;
-      ctx.checked.push(entry);
-      continue;
-    }
-    ctx.checked.push(entry);
-    descriptors.forEach((descriptor, i) => {
-      if (!isObject(descriptor)) return; // shape defects already hard-errored via the loader
-      checkDescriptor(ctx, { id, file, record }, descriptor, i);
-    });
-  }
-
-  ctx.checked.sort((a, b) => compare(a.concept, b.concept));
-  ctx.findings.sort((a, b) =>
-    compare(a.concept, b.concept) || compare(a.path, b.path) || compare(a.code, b.code)
-    || compare(a.value ?? '', b.value ?? ''));
-  ctx.hardErrors.sort((a, b) =>
-    compare(a.concept ?? '', b.concept ?? '') || compare(a.file ?? '', b.file ?? '')
-    || compare(a.path ?? '', b.path ?? '') || compare(a.code, b.code));
-  return ctx;
-}
-
-// ------------------------------------------------------------- CLI plumbing
-
-function parseArgs(argv) {
-  const { options } = parseFlags(argv, {
-    boolean: ['json'],
-    value: ['root'],
-    repeatable: ['concepts'],
-    allowEmpty: ['concepts'],
-  });
-  const opts = { json: !!options.json, root: options.root ?? process.cwd(), concepts: null };
-  if (options.concepts) {
-    opts.concepts = normalizeConceptIds(options.concepts.flatMap((v) => v.split(',')));
-    if (!opts.concepts.length) {
-      throw new UsageError('--concepts must name at least one concept id — a filter that never ran is a failure, never a silent pass');
-    }
-  }
-  return opts;
-}
-
-function renderHuman(payload) {
-  const lines = [];
-  const f = payload.findings.length;
-  const h = payload['hard-errors'].length;
-  const checked = payload.checked.filter((c) => !c.skipped).length;
-  const skipped = payload.checked.length - checked;
-  lines.push(
-    `validate-values: ${checked} concept(s) checked, ${skipped} skipped (draft/proposed), `
-    + `${f} finding${f === 1 ? '' : 's'}, ${h} hard error${h === 1 ? '' : 's'}`,
-    '',
-  );
-  for (const e of payload['hard-errors']) {
-    lines.push(`HARD ERROR ${e.code}  ${e.concept ?? e.file}${e.source ? `  (source: ${e.source})` : ''}`);
-    lines.push(`  ${e.message}`);
-  }
-  if (h) {
-    lines.push('', 'the check never ran on the entries above — fix the descriptors/store first (PRD §4: a malformed descriptor is a hard error, never skipped)', '');
-  }
-  for (const x of payload.findings) {
-    lines.push(`${x.severity === 'warning' ? 'warning' : 'FINDING'} ${x.code}  ${x.concept}${x.value !== undefined ? `  ${JSON.stringify(x.value)}` : ''}  (source: ${x.source})`);
-    lines.push(`  ${x.message}`);
-  }
-  if (!f && !h) lines.push('every enumerates claim agrees with its source (both directions, §3.5 set equality)');
-  return lines;
-}
-
-function main(argv) {
-  {
-    const opts = parseArgs(argv);
-
-    let model;
-    try {
-      model = loadStores(locateKitRoot(opts.root));
-    } catch (error) {
-      process.stderr.write(`validate-values: ${error.message}\n`);
-      return EXIT_CODES.FAILURE;
-    }
-
-    const ctx = validateValues(model, opts.concepts, opts.root);
-    const hard = ctx.hardErrors.length > 0;
-    const blocking = ctx.findings.some((x) => x.severity === 'error');
-    const payload = {
-      ok: !hard && !blocking,
-      'store-health': healthSummary(storeHealth(model)),
-      checked: ctx.checked,
-      findings: ctx.findings,
-      'hard-errors': ctx.hardErrors,
-    };
-
-    const lines = opts.json ? [JSON.stringify(payload, null, 2)] : renderHuman(payload);
-    process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
-    return hard ? EXIT_CODES.FAILURE : blocking ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
-  }
-}
-
-if (isEntrypoint(import.meta.url)) {
-  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
-  // Exit 1 means findings, and a command that crashed never ran (PRD §5).
-  //
-  // exitCode, never process.exit(): exit() drops queued async stdout writes,
-  // so piped --json output would truncate at the ~64KB pipe buffer (corrupt
-  // JSON with exit 0). Node exits on its own once stdout drains.
-  runCli('validate-values', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
+try {
+  const [{ boot }, command] = await Promise.all([
+    import('./lib/boot.js'),
+    import('./commands/validate-values.js'),
+  ]);
+  // exitCode, never process.exit(): exit() drops queued async stdout writes, so
+  // piped --json output would truncate at the pipe buffer — corrupt output
+  // wearing a clean exit code. Node exits on its own once stdout drains.
+  process.exitCode = await boot('validate-values', command);
+} catch (error) {
+  // The engine could not be loaded, so no check ran. Exit 2 — never 1.
+  // Hardcoded, because reading it from lib/exit-codes.js is the very thing
+  // that may have just failed.
+  process.stderr.write(`validate-values: internal failure — the engine could not be loaded\n${error?.stack ?? error}\n`);
+  process.exitCode = 2;
 }

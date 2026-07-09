@@ -13,7 +13,7 @@ import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { load, dump } from 'js-yaml';
-import { buildSurveyMap, loadSurveyScope, inScope, main, SCOPE_FILE } from '../payload/engine/survey-map.js';
+import { buildSurveyMap, loadSurveyScope, inScope, main, SCOPE_FILE } from '../payload/engine/commands/survey-map.js';
 import { ANCHOR_SIGNATURES } from '../payload/engine/lib/anchor-signatures.js';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
 

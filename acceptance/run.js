@@ -495,11 +495,26 @@ criterion('A6', [
     for (const file of payloadFiles()) {
       if (!/\.(js|mjs|cjs)$/.test(file)) continue;
       const rel = relative(root, file);
-      const text = readFileSync(file, 'utf8');
+      // Comments are prose, not code: a doc comment that NAMES `import()` to
+      // explain why the shim uses one must not read as a violation of D-014.
+      const text = readFileSync(file, 'utf8')
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/^\s*\/\/.*$/gm, '');
       assert.ok(!/\beval\s*\(|new Function\s*\(/.test(text), `${rel}: eval/new Function is forbidden (D-014)`);
-      assert.ok(!/\bimport\s*\(/.test(text), `${rel}: dynamic import() is forbidden (D-014)`);
+      // D-014 forbids importing REPO CONTENT — the client's code. The entry
+      // shims (UCS-956) must reach the engine through `import()` so a module
+      // load failure is catchable and exits 2 rather than 1 (FINDINGS). What
+      // makes that safe is that every specifier is a STRING LITERAL naming the
+      // engine's own files: there is no variable a client path could reach.
+      // A computed specifier — `import(path)`, or a template — is refused.
+      for (const [, spec] of text.matchAll(/\bimport\s*\(([^)]*)\)/g)) {
+        // `./` only, and no `..`: a literal can name the engine's own modules,
+        // never a path that climbs out of the engine toward client code.
+        assert.match(spec.trim(), /^'\.\/(?!.*\.\.)[\w/-]+(?:\.[\w-]+)*\.js'$/,
+          `${rel}: import(${spec.trim()}) — only a string-literal import of the engine's own modules is allowed (D-014)`);
+      }
       if (/node:child_process/.test(text)) {
-        assert.equal(rel, join('payload', 'engine', 'survey-map.js'),
+        assert.equal(rel, join('payload', 'engine', 'commands', 'survey-map.js'),
           `${rel}: child_process outside the allowlisted git ls-files call (D-014)`);
         assert.match(text, /spawnSync\('git',/, 'survey-map may only spawn the fixed git binary');
       }

@@ -137,9 +137,9 @@ test('no engine surface derives store health by hand — only the loader does', 
 });
 
 test('the resolver has no forked health helper of its own', async () => {
-  const source = await readFile(fileURLToPath(new URL('../payload/engine/resolve.js', import.meta.url)), 'utf8');
+  const source = await readFile(fileURLToPath(new URL('../payload/engine/commands/resolve.js', import.meta.url)), 'utf8');
   assert.ok(!/^function storeHealth/m.test(source), 'the resolver must import the loader\'s helper, not redeclare it');
-  assert.match(source, /import \{[^}]*storeHealth[^}]*\} from '\.\/lib\/load-stores\.js'/);
+  assert.match(source, /import \{[^}]*storeHealth[^}]*\} from '\.\.?\/(?:\.\.\/)*lib\/load-stores\.js'/);
 });
 
 // ---------------------------- the guarantee, across surfaces (UCS-951)

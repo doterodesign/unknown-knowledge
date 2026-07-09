@@ -214,8 +214,11 @@ const MIGRATED = MIGRATED_SURFACES.map((s) => s.name);
 
 test('the migrated surfaces run through the harness and own no catch-to-exit mapping', async () => {
   for (const name of MIGRATED) {
-    const source = await readFile(fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url)), 'utf8');
-    assert.match(source, /runCli\(/, `${name} must route through the harness`);
+    const source = await readFile(fileURLToPath(new URL(`../payload/engine/commands/${name}`, import.meta.url)), 'utf8');
+    // The harness is reached from the entry shim (UCS-956), not the command.
+    const shim = await readFile(fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url)), 'utf8');
+    assert.match(shim, /^\s*import\('\.\/lib\/boot\.js'\),$/m, `${name}'s shim must reach the engine dynamically`);
+    assert.equal(shim.match(/^import /gm), null, `${name}'s shim must statically import nothing`);
     assert.ok(!/class UsageError extends Error/.test(source), `${name} must not redeclare UsageError`);
     // The tell-tale of a hand-rolled epilogue is not "a catch block" — a CLI may
     // still turn a specific engine throw into a specific, actionable message
@@ -341,7 +344,7 @@ test('every surface that catches an engine failure rethrows bugs first', async (
   // Structural. A catch that reports `${error.message}` without first asking
   // rethrowIfBug is a catch that will one day report a TypeError as a refusal.
   for (const name of ['audit.js', 'survey-map.js', 'log-entry.js']) {
-    const source = await readFile(fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url)), 'utf8');
+    const source = await readFile(fileURLToPath(new URL(`../payload/engine/commands/${name}`, import.meta.url)), 'utf8');
     for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
       // Only the catches that DECIDE THE COMMAND'S FATE. A catch that degrades
       // an unreadable suppressions file to a warning and carries on is not
