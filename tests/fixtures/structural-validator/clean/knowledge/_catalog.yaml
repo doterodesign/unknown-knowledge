@@ -1,0 +1,6 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: "600.1"
+    title: Gadget registry rules
+    file: widgets/600.1-gadget-registry.md

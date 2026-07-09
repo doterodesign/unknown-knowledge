@@ -1,0 +1,11 @@
+schema-version: 1
+entries:
+  - id: D-101
+    title: First half of a supersedes loop
+    category: architecture
+    status: superseded
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: Fixture context.
+    decision: Loops back through D-102.
+    supersedes: [D-102]

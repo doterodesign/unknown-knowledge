@@ -1,0 +1,21 @@
+# K-310: active, SSOT path missing (missing-path, error).
+# K-999: outside the 300..399 class range (id-range).
+# K-320: loaded but never cataloged (orphan).
+schema-version: 1
+entries:
+  - id: K-310
+    term: Widget
+    class: 300-widgets
+    summary: A widget with a dangling source-of-truth pointer.
+    source-of-truth: [src/widgets/registry.ts]
+    status: active
+  - id: K-999
+    term: Out-of-range widget
+    class: 300-widgets
+    summary: Minted outside the class range.
+    status: active
+  - id: K-320
+    term: Orphan widget
+    class: 300-widgets
+    summary: Loaded but unreachable through the catalog.
+    status: active
