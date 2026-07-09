@@ -148,6 +148,12 @@ src/registry/sports.ts
 update every concept listed above in the same commit as the change (PRD §7 ACT)
 ```
 
+- [ ] Note: K-108 appearing here is CORRECT, not noise — it is the planted
+  wrong-pointer concept whose `source-of-truth` (wrongly) names
+  `src/registry/sports.ts`, and the reverse lookup reads the pointer index,
+  not the truth. Touching this file legitimately puts K-108 on your
+  check-list; its quarantine surfaces in the step-6 validator run.
+
 ## 6. ACT — validators catch the un-updated store, then go green
 
 Re-run the validators filtered to the touched concepts BEFORE the store
