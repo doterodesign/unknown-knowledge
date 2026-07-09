@@ -15,15 +15,15 @@ job (`.github/workflows/ci.yml`); `ci-ok` depends on it.
 
 Status vocabulary: **PASS/FAIL** (asserted by the run), **MANUAL** (A5 —
 skills are prompts; their test is a checklist, not CI). The run exits 0 only
-when every *asserted* criterion (A1–A4, A6) passes. A1 asserts the KK-17
-copy engine; its report line names the honest remaining seam (the npx
-packaging/prompt layer is KK-19's).
+when every *asserted* criterion (A1–A4, A6) passes. A1 is fully asserted:
+the KK-17 copy engine, the KK-18 wrapper generation, and the KK-19 npx init
+layer (headless cold-run on both fixture apps).
 
 ## Criterion table (source of truth: PRD §10, quoted verbatim)
 
 | # | Capability | PRD §10 "proven how" (quoted) | Verified by | Where |
 |---|---|---|---|---|
-| A1 | Init completes cold | "CI runs `init` against each fixture; asserts the scaffold matches the payload manifest byte-for-byte; asserts acceptance fixtures are absent and selected-stack extractor fixtures (and only those) are present" | harness: `cli/init-copy.js` cold-run per stack selection combination (none/ts/swift/both) into a fresh temp dir — scaffold vs `cli/kit.manifest.yaml` expansion byte-for-byte, fixtures/tests absence (D-007), selected-stack packs only (D-009), second run refuses (§6). Remaining seam: the npx packaging/prompt cold-run completes with KK-19 — see §A1 below | `acceptance/run.js` §A1; unit depth in `tests/init-copy.test.js` |
+| A1 | Init completes cold | "CI runs `init` against each fixture; asserts the scaffold matches the payload manifest byte-for-byte; asserts acceptance fixtures are absent and selected-stack extractor fixtures (and only those) are present" | harness: `cli/init-copy.js` cold-run per stack selection combination (none/ts/swift/both) into a fresh temp dir — scaffold vs `cli/kit.manifest.yaml` expansion byte-for-byte, fixtures/tests absence (D-007), selected-stack packs only (D-009), second run refuses (§6); plus `cli/init.js` (the npx layer, KK-19) cold-run headlessly on scratch copies of both fixture apps — see §A1 below | `acceptance/run.js` §A1; unit depth in `tests/init-copy.test.js`, `tests/init-wrappers.test.js`, `tests/init.test.js` |
 | A2 | Extraction works | "every MVP kind vs. fixture anchors → expected value sets; malformed descriptors hard-error; `dir-modules` options exercised" | harness: `validate-values.js` vs both fixtures' FIXTURE.md tables (clean sets, out-of-envelope hard errors, dir-modules plain + pattern/strip) | `acceptance/run.js` §A2; unit depth in `tests/extractor-kinds-{ts,swift,dir}.test.js`, `tests/validate-values.test.js` |
 | A3 | Drift is caught | "planted drift in fixtures: registry value with no concept and the reverse; CI asserts the correct finding kind fires in each direction; wrong-pointer (all-values-missing) signature detected" | harness: `validate-values.js` — exact tabulated findings, both directions, both fixtures, wrong-pointer signature in each | `acceptance/run.js` §A3; same unit suites |
 | A4 | Resolution works | "fixture queries → expected ranked concepts; confusable-with surfaced; CLI exit codes correct" | harness: `resolve.js` queries against both fixtures' stores (exact-term rank, confusable-with, zero-hit exit 0, usage-error exit 2) | `acceptance/run.js` §A4; unit depth in `tests/resolve.test.js` |
@@ -35,7 +35,7 @@ seams* — the harness is the single per-criterion report, not a second test
 suite; planted-case inventories live in each fixture's `FIXTURE.md`, and the
 unit suites hold the exhaustive kind-level matrices.
 
-## A1 — asserted (KK-17 copy engine; npx layer completes with KK-19)
+## A1 — fully asserted (KK-17 copy engine + KK-18 wrappers + KK-19 npx init)
 
 The KK-17 manifest + copy engine (`cli/kit.manifest.yaml`,
 `cli/lib/copy-payload.js`, seam `cli/init-copy.js`) landed the A1 wiring
@@ -56,9 +56,36 @@ selection combination (none / ts / swift / both), in a fresh temp dir**:
 4. asserts a second run on the seeded target **refuses cleanly**, changing
    nothing (v1 init refuses on any existing or partial seed, PRD §6).
 
-The honest remaining seam, named on the report line itself: the interactive
-`npx unknown-knowledge init` packaging/prompt cold-run completes with KK-19,
-which wraps this engine.
+KK-18 adds a fifth check per selection: every platform wrapper generates at
+its registry path, and a pre-existing root `AGENTS.md` is **sentinel-appended,
+never clobbered** (§6).
+
+KK-19 closes the criterion. The npx layer (`cli/init.js` — the `bin` target)
+is cold-run **headlessly (`--yes`) on scratch git copies of both fixture
+apps**, asserting the PRD's own A1 language end to end:
+
+1. **completes with no hand-fixing** — exit 0, seed present, nothing to edit;
+2. **auto-detection picks the right stack** per fixture (`ts` for `ts-app`,
+   `swift` for `swift-app`), and only that stack's extractor pack ships (D-009);
+3. the **D-009 later-stacks warning** appears in the output *and* in the
+   seeded `README.md`;
+4. the **`git check-ignore` sweep** stays silent on a clean repo, while a
+   variant whose `.gitignore` swallows `logs` **warns and prints the negation
+   rule** — a gitignored findings log kills the improvement loop silently;
+5. **no CI file is ever written** (D-006): the seeded tree carries no
+   `.github/`.
+
+Init also preflights the seeded engine's one runtime dependency (`js-yaml`,
+D-002), resolving it from the seeded engine file itself. Unresolvable is a
+loud WARN rather than a refusal — the seed is correct and the fix is one
+`npm install` away — but it is loud on purpose: an unresolved import exits 1,
+which the §5 exit-code contract reads as *findings present* rather than
+*engine failure*, so an agent riding those codes would quarantine-and-continue
+past an engine that never ran.
+
+No remaining seam: `npx unknown-knowledge init` itself works only
+post-publish (`private: true` guards the package), which is a release step,
+not an assertion gap — the same code path is what the harness cold-runs.
 
 ## A5 — walkthrough checklist index (manual by design)
 

@@ -48,3 +48,16 @@ before the first publish:
 Note: embedding LICENSE + NOTICE into the payload manifest (so every seeded
 repo provably carries them) rides KK-17, which owns `kit.manifest.yaml` and
 `cli/`.
+
+## npx packaging (KK-19)
+
+`package.json` maps `bin` `unknown-knowledge` → `cli/init.js`, and the
+`files` allowlist ships exactly `cli/`, `payload/`, `LICENSE`, `NOTICE`, and
+`README.md` — the kit's `fixtures/`, `tests/`, `acceptance/`, and docs stay
+out of the tarball (the same D-007 posture as the payload manifest, one
+layer up). Verify the tarball contents with `npm pack --dry-run` before a
+release.
+
+The real `npx unknown-knowledge init` only works **post-publish** — while
+`private: true` guards the package, test the cold-run locally via
+`node cli/init.js init` (or `npm link` and then `unknown-knowledge init`).
