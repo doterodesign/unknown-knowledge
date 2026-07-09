@@ -37,6 +37,32 @@
  * post-init default). A repo with no stores at all still audits — every
  * anchor is a proposal.
  *
+ * Suppressions (KK-27, D-013 §11.1 minimal core): a client-zone
+ * `suppressions.yaml` in the kit zone — `<kitRoot>/suppressions.yaml`, i.e.
+ * next to the stores (unknown-knowledge/suppressions.yaml in the D-016
+ * layout; at the scan root, beside survey-scope.yaml, when the stores live
+ * there). A YAML list of entries, each STRICTLY
+ * { term, sourcePath, reason, date } — exact match only, no patterns, no
+ * expiry (deferred §11.1). What the fields match, per finding code:
+ *   unmatched-anchor     the anchor path is the identity: `sourcePath` must
+ *                        equal the finding's path exactly, and `term` must
+ *                        equal the term the draft would carry (the path's
+ *                        basename without extension) — so a suppression stops
+ *                        matching the moment the file moves.
+ *   stale-last-verified  the concept is the identity and has no file path:
+ *                        BOTH `term` and `sourcePath` must equal the concept
+ *                        id (e.g. K-101) — one strict shape, no second
+ *                        entry grammar.
+ * Suppressed findings leave the finding list (and never trip
+ * --fail-on-findings); the human report shows the suppressed count, the JSON
+ * report the full stable-sorted suppressed list. Suppression is
+ * advisory-side and FAILS OPEN — the opposite of survey-scope.yaml: a
+ * malformed entry (or an unreadable/unparseable file) produces a warning and
+ * suppresses nothing, so the findings it would have hidden resurface; it is
+ * never an engine failure. A missing file is a plain no-op. Engine-internal
+ * noise heuristics (denylist, the "." root filter) stay engine-side — the
+ * client file is for client judgments only.
+ *
  * Single health model (KK-04): a store with error-severity diagnostics is an
  * engine failure (exit 2) — matching candidates against broken stores would
  * misreport, and a check that never ran is a blocking defect, never a silent
@@ -49,10 +75,10 @@
  * come from --today or are omitted).
  */
 import process from 'node:process';
-import { statSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { basename, extname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { dump } from 'js-yaml';
+import { dump, load } from 'js-yaml';
 import { buildSurveyMap, SCOPE_FILE } from './survey-map.js';
 import { loadStores } from './lib/load-stores.js';
 import { compare } from './lib/validate-record.js';
@@ -62,12 +88,14 @@ const USAGE = 'usage: node payload/engine/audit.js [--root <dir>] [--json] [--fa
 const STALE_DAYS_DEFAULT = 90;
 /** The post-init default kit dir name (D-016); renames are a later seam. */
 const KIT_DIR_DEFAULT = 'unknown-knowledge';
+/** Client-zone suppression file (KK-27) — lives in the kit zone, at kitRoot. */
+export const SUPPRESSIONS_FILE = 'suppressions.yaml';
 /**
  * Store/engine artifacts when the stores live at the scan root itself. The
  * D-016 dir name stays kit zone even here — a leftover nested kit is stale
  * kit data, never product surface to propose concepts for.
  */
-const KIT_ZONE_AT_ROOT = ['ontology', 'knowledge', 'decisions', 'logs', SCOPE_FILE, KIT_DIR_DEFAULT];
+const KIT_ZONE_AT_ROOT = ['ontology', 'knowledge', 'decisions', 'logs', SCOPE_FILE, SUPPRESSIONS_FILE, KIT_DIR_DEFAULT];
 
 class UsageError extends Error {}
 
@@ -109,6 +137,80 @@ function draftConcept(path, kinds, today) {
     ...(today ? { 'last-verified': today } : {}),
   };
   return dump(record, { lineWidth: -1 });
+}
+
+// ------------------------------------------------------- suppressions (KK-27)
+
+/** The v1 entry shape, STRICTLY: exact-match identity + audit trail. */
+const SUPPRESSION_FIELDS = ['term', 'sourcePath', 'reason', 'date'];
+
+/**
+ * The exact-match identity a suppression entry must equal, per finding code
+ * (documented in the header): the anchor path (plus its drafted term) for
+ * unmatched-anchor; the concept id in both fields for stale-last-verified.
+ */
+function suppressionIdentity(finding) {
+  if (finding.code === 'unmatched-anchor') {
+    return { term: basename(finding.path, extname(finding.path)), sourcePath: finding.path };
+  }
+  return { term: finding.concept, sourcePath: finding.concept };
+}
+
+/** Warning text for one malformed entry, or null when it is well-formed. */
+function suppressionEntryProblem(entry) {
+  if (typeof entry !== 'object' || entry === null || Array.isArray(entry)) {
+    return 'not a mapping';
+  }
+  for (const field of SUPPRESSION_FIELDS) {
+    if (typeof entry[field] !== 'string' || entry[field].trim() === '') {
+      return `"${field}" must be a non-empty string`;
+    }
+  }
+  const unknown = Object.keys(entry).filter((k) => !SUPPRESSION_FIELDS.includes(k));
+  if (unknown.length > 0) {
+    return `unknown field(s) ${unknown.map((k) => `"${k}"`).join(', ')} — v1 entries are strictly { ${SUPPRESSION_FIELDS.join(', ')} } (no patterns, no expiry; §11.1)`;
+  }
+  if (!ISO_DATE.test(entry.date)) {
+    return `"date" must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(entry.date)}`;
+  }
+  return null;
+}
+
+/**
+ * Load `<kitRoot>/suppressions.yaml`. FAILS OPEN by design (the opposite of
+ * the scope file): a missing file is a silent no-op; anything malformed — the
+ * whole file or a single entry — becomes a warning and suppresses nothing,
+ * never an engine failure. Suppression is advisory-side, never blocking.
+ */
+function loadSuppressions(kitRoot) {
+  const warn = (msg) => ({ entries: [], warnings: [`${SUPPRESSIONS_FILE}: ${msg} — ignoring every entry (suppression fails open, findings resurface)`] });
+  let text;
+  try {
+    text = readFileSync(join(kitRoot, SUPPRESSIONS_FILE), 'utf8');
+  } catch (error) {
+    if (error.code === 'ENOENT') return { entries: [], warnings: [] }; // no file, no-op
+    return warn(`cannot read: ${error.message}`);
+  }
+  let doc;
+  try {
+    doc = load(text, { filename: SUPPRESSIONS_FILE });
+  } catch (error) {
+    return warn(`unparseable YAML: ${error.reason ?? error.message}`);
+  }
+  if (doc === null || doc === undefined) return { entries: [], warnings: [] }; // empty file, no-op
+  if (!Array.isArray(doc)) return warn('must be a YAML list of { term, sourcePath, reason, date } entries');
+
+  const entries = [];
+  const warnings = [];
+  doc.forEach((entry, i) => {
+    const problem = suppressionEntryProblem(entry);
+    if (problem === null) {
+      entries.push(entry);
+    } else {
+      warnings.push(`${SUPPRESSIONS_FILE}: entry ${i + 1} ignored (fails open, its finding resurfaces): ${problem}`);
+    }
+  });
+  return { entries, warnings };
 }
 
 /** Whole days from ISO date `from` to ISO date `to` (both validated). */
@@ -178,6 +280,19 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
   findings.sort((a, b) =>
     compare(a.code, b.code) || compare(a.path ?? '', b.path ?? '') || compare(a.concept ?? '', b.concept ?? ''));
 
+  // Client-zone suppressions (KK-27): exact-match filter, fails open. Only
+  // well-formed entries suppress; the sort above keeps both lists stable.
+  const { entries: suppressionEntries, warnings } = loadSuppressions(kitRoot);
+  const kept = [];
+  const suppressed = [];
+  for (const finding of findings) {
+    const identity = suppressionIdentity(finding);
+    const match = suppressionEntries.some(
+      (e) => e.term === identity.term && e.sourcePath === identity.sourcePath,
+    );
+    (match ? suppressed : kept).push(finding);
+  }
+
   return {
     checks: {
       'unmatched-anchor': 'checked',
@@ -189,9 +304,14 @@ export function runAudit(root, { today = null, staleDays = STALE_DAYS_DEFAULT } 
     counts: {
       candidates: map.candidates.length,
       matched,
-      findings: findings.length,
+      findings: kept.length,
+      suppressed: suppressed.length,
     },
-    findings,
+    findings: kept,
+    // Full suppressed list in JSON output (stable-sorted, same order as
+    // findings); the human renderer shows only the count. Warnings surface
+    // in both — a malformed entry must never vanish silently.
+    suppressions: { warnings, suppressed },
   };
 }
 
@@ -248,13 +368,16 @@ function parseArgs(argv) {
 function renderHuman(payload) {
   const lines = [];
   const n = payload.counts.findings;
+  const s = payload.counts.suppressed;
   lines.push(
     `audit (advisory — proposals for human review, never a gate): `
     + `${payload.counts.candidates} candidate(s), ${payload.counts.matched} matched, `
-    + `${n} finding${n === 1 ? '' : 's'}`,
+    + `${n} finding${n === 1 ? '' : 's'}`
+    + (s > 0 ? `, ${s} suppressed (${SUPPRESSIONS_FILE})` : ''),
     `scope: ${payload.scope}`,
     `stale check: ${payload.checks['stale-last-verified']}`,
   );
+  for (const w of payload.suppressions.warnings) lines.push(`warning: ${w}`);
   for (const f of payload.findings) {
     lines.push('', `${f.code}  ${f.path ?? f.concept}`, `  ${f.message}`);
     if (f.draft) lines.push(...f.draft.trimEnd().split('\n').map((l) => `  | ${l}`));
