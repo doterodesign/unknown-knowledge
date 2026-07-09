@@ -52,7 +52,7 @@ import { statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { loadStores } from './lib/load-stores.js';
+import { loadStores, storeHealth } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 
@@ -306,12 +306,6 @@ function parseArgs(argv) {
     }
   }
   return opts;
-}
-
-function storeHealth(model) {
-  const errors = model.diagnostics.filter((d) => d.severity === 'error').length;
-  const warnings = model.diagnostics.filter((d) => d.severity === 'warning').length;
-  return { ok: model.ok, errors, warnings };
 }
 
 function render(payload) {

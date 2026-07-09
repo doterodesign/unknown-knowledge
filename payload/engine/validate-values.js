@@ -63,7 +63,7 @@ import process from 'node:process';
 import { readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores } from './lib/load-stores.js';
+import { loadStores, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
@@ -179,16 +179,6 @@ function checkDescriptor(ctx, concept, descriptor, i) {
       });
     }
   }
-}
-
-/** Select the concepts to check; an unknown id is a check that never ran. */
-function selectConcepts(model, ids) {
-  if (!ids) return [...model.concepts.values()];
-  const unknown = ids.filter((id) => !model.concepts.has(id));
-  if (unknown.length) {
-    throw new UsageError(`--concepts names id(s) not in the ontology: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
-  }
-  return ids.map((id) => model.concepts.get(id));
 }
 
 /**
@@ -324,11 +314,7 @@ function main(argv) {
     const blocking = ctx.findings.some((x) => x.severity === 'error');
     const payload = {
       ok: !hard && !blocking,
-      'store-health': {
-        ok: model.ok,
-        errors: model.diagnostics.filter((d) => d.severity === 'error').length,
-        warnings: model.diagnostics.filter((d) => d.severity === 'warning').length,
-      },
+      'store-health': storeHealth(model),
       checked: ctx.checked,
       findings: ctx.findings,
       'hard-errors': ctx.hardErrors,
@@ -338,7 +324,7 @@ function main(argv) {
     process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
     return hard ? EXIT_CODES.FAILURE : blocking ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
   } catch (error) {
-    if (!(error instanceof UsageError)) throw error;
+    if (!(error instanceof UsageError || error instanceof UnknownConceptsError)) throw error;
     process.stderr.write(`validate-values: ${error.message}\n${USAGE}\n`);
     return EXIT_CODES.FAILURE;
   }

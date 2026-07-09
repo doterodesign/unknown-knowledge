@@ -1,5 +1,5 @@
-# Synthetic preflight fixture (KK-26): structurally and value-clean, plus one
-# draft concept whose verdict must be unknown (§3.5).
+# Synthetic preflight fixture (KK-26): the store-wide-parse-failure scenario —
+# the class file is malformed, so every requested verdict degrades to unknown.
 schema-version: 1
 store: ontology
 entries:

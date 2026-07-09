@@ -49,7 +49,7 @@
 import process from 'node:process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores } from './lib/load-stores.js';
+import { loadStores, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { createEntry } from './lib/log-entry.js';
@@ -73,15 +73,6 @@ const NEXT_ACTIONS = Object.freeze({
 });
 
 // ---------------------------------------------------------- verdict joining
-
-/** Requested ids must be loaded concepts; a verdict on a typo is a failure. */
-function selectConcepts(model, ids) {
-  const unknown = ids.filter((id) => !model.concepts.has(id));
-  if (unknown.length) {
-    throw new UsageError(`--concepts names id(s) not in the ontology: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
-  }
-  return ids.map((id) => model.concepts.get(id));
-}
 
 /**
  * Join both validators' results to the requested concepts — one verdict per
@@ -224,14 +215,6 @@ function parseArgs(argv) {
   return opts;
 }
 
-function storeHealth(model) {
-  return {
-    ok: model.ok,
-    errors: model.diagnostics.filter((d) => d.severity === 'error').length,
-    warnings: model.diagnostics.filter((d) => d.severity === 'warning').length,
-  };
-}
-
 function renderHuman(payload) {
   const lines = [];
   const { counts } = payload;
@@ -325,7 +308,7 @@ function main(argv) {
     if (storeVerdict !== 'trusted' || counts.unknown > 0) return EXIT_CODES.FAILURE;
     return counts.quarantined > 0 ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
   } catch (error) {
-    if (error instanceof UsageError) {
+    if (error instanceof UsageError || error instanceof UnknownConceptsError) {
       process.stderr.write(`preflight: ${error.message}\n${USAGE}\n`);
       return EXIT_CODES.FAILURE;
     }

@@ -387,3 +387,34 @@ export function loadStores(root) {
     ok: ctx.diagnostics.every((d) => d.severity !== 'error'),
   };
 }
+
+/**
+ * Loader diagnostics summarized on the one scale every downstream surface
+ * shares — validator, value check, and preflight report store health from
+ * this single shape, so they can never disagree about it (PRD §4).
+ */
+export function storeHealth(model) {
+  return {
+    ok: model.ok,
+    errors: model.diagnostics.filter((d) => d.severity === 'error').length,
+    warnings: model.diagnostics.filter((d) => d.severity === 'warning').length,
+  };
+}
+
+/** A --concepts id the ontology does not carry — a check that never ran. */
+export class UnknownConceptsError extends Error {}
+
+/**
+ * Select concepts by id (null/undefined = every concept). An unknown id
+ * throws UnknownConceptsError: a verdict or finding set "filtered" to a typo
+ * would be a check that never ran reading as a silent pass (PRD §5). Every
+ * --concepts consumer shares this contract from here.
+ */
+export function selectConcepts(model, ids) {
+  if (!ids) return [...model.concepts.values()];
+  const unknown = ids.filter((id) => !model.concepts.has(id));
+  if (unknown.length) {
+    throw new UnknownConceptsError(`--concepts names id(s) not in the ontology: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
+  }
+  return ids.map((id) => model.concepts.get(id));
+}
