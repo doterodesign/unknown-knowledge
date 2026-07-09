@@ -82,16 +82,23 @@ export function parseArgs(argv, spec = {}) {
 
     let value;
     if (eq !== -1) {
+      // `--flag=value` carries its value unambiguously, so a value that looks
+      // like a flag is legal here — this spelling is the escape hatch for one.
       value = arg.slice(eq + 1);
-      // `--flag=` is as valueless as a bare `--flag`.
-      if (value === '') throw new UsageError(`${flag} requires a value`);
     } else {
-      value = argv[i + 1];
-      if (value === undefined || value.startsWith('--')) {
+      const next = argv[i + 1];
+      // In the space form a `--`-prefixed token is the next flag, not a value.
+      if (next === undefined || next.startsWith('--')) {
         throw new UsageError(`${flag} requires a value`);
       }
+      value = next;
       i += 1;
     }
+    // An empty value is as valueless as none, in EITHER spelling. Both `--root=`
+    // and `--root ""` arrive when a shell expands an unset variable, and both
+    // would otherwise resolve to the current directory — answering about a repo
+    // nobody named.
+    if (value === '') throw new UsageError(`${flag} requires a value`);
 
     if (repeatables.has(name)) (options[name] ??= []).push(value);
     else options[name] = value;

@@ -47,9 +47,21 @@ test('a boolean flag takes no value; a value flag requires one', () => {
   assert.throws(() => parseArgs(['--root', '--json'], SPEC), /--root requires a value/);
 });
 
-test('an empty value is as valueless as none — `--root=` never means the cwd', () => {
+test('an empty value is as valueless as none — in EITHER spelling', () => {
+  // `--root=` and `--root ""` both arrive when a shell expands an unset
+  // variable, and both would otherwise silently resolve to the cwd.
   assert.throws(() => parseArgs(['--root='], SPEC), /--root requires a value/);
+  assert.throws(() => parseArgs(['--root', ''], SPEC), /--root requires a value/);
   assert.throws(() => parseArgs(['--concepts='], SPEC), /--concepts requires a value/);
+  assert.throws(() => parseArgs(['--concepts', ''], SPEC), /--concepts requires a value/);
+});
+
+test('the `=` spelling is the escape hatch for a value that looks like a flag', () => {
+  // In the space form a `--`-prefixed token is the next flag. With `=` the
+  // value is unambiguous, so `--reason=--force` must survive as a value.
+  const { options } = parseArgs(['--reason=--force'], { value: ['reason'] });
+  assert.equal(options.reason, '--force');
+  assert.throws(() => parseArgs(['--reason', '--force'], { value: ['reason'] }), /--reason requires a value/);
 });
 
 test('a stray positional is refused unless the command takes them', () => {
