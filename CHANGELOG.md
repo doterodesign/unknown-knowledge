@@ -18,3 +18,9 @@ dates are recorded at release time, never retroactively.
 - Open-source launch artifacts: Apache-2.0 LICENSE and NOTICE, version
   policy (D-021), publishing/provenance workflow, CONTRIBUTING.md, and
   issue templates (KK-28).
+- Client-facing docs shipped in the payload (KK-24): the seeded-repo README
+  (`payload/docs/README.md`, seeded to the kit-dir root), the CI wiring
+  guide with the D-012 PR drift-attribution recipe, the steward guide, and
+  the guarantees-and-boundaries note (D-008 honest boundary, D-011 conduct
+  policy, D-014 no-code-execution) — all manifest-listed and pinned by
+  `tests/client-docs.test.js`.

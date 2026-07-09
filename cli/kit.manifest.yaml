@@ -54,6 +54,13 @@ unconditional:
     - { from: templates/knowledge/_catalog.yaml, to: knowledge/_catalog.yaml }
     - { from: templates/knowledge/_rules.yaml, to: knowledge/_rules.yaml }
     - { from: templates/decisions/_catalog.yaml, to: decisions/_catalog.yaml }
+  docs:
+    # Client-facing docs (KK-24). The seeded README lands at the kit-dir
+    # root; the guides land under docs/.
+    - { from: docs/README.md, to: README.md }
+    - { from: docs/ci-wiring.md, to: docs/ci-wiring.md }
+    - { from: docs/steward-guide.md, to: docs/steward-guide.md }
+    - { from: docs/boundaries.md, to: docs/boundaries.md }
 
 # ------------------------------------------------------- stack-conditional
 # Extractor fixture packs ship ONLY for the stacks selected at init (D-009);
