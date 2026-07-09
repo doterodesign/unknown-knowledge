@@ -60,7 +60,7 @@ import { join, posix } from 'node:path';
 import { healthSummary, loadStores, storeHealth } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
-import { parseArgs as parseFlags, UsageError } from '../lib/cli.js';
+import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
 import { compare } from '../lib/validate-record.js';
 
 export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
@@ -345,7 +345,11 @@ export function main(argv) {
       // (dogfood layout).
       model = loadStores(locateKitRoot(opts.root));
     } catch (error) {
+      // An EXPECTED refusal from the loader — an unreadable root, an ambiguous
+      // kit layout, a Store that will not load. The stores this command would
+      // check never loaded, so its checks never ran: exit 2, never 1.
       process.stderr.write(`resolve: ${error.message}\n`);
+      rethrowIfBug(error); // a bug, or a UsageError raised deep in the loader, is not ours to speak for
       return EXIT_CODES.FAILURE;
     }
 
