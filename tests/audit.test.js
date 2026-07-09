@@ -143,6 +143,17 @@ test('malformed --today is a usage error (exit 2)', () => {
   assert.equal(r.status, 2);
 });
 
+test('malformed --stale-days is a usage error (exit 2)', () => {
+  for (const bad of ['abc', '-5', '1.5']) {
+    assert.equal(run('--root', tsApp, '--today', '2026-10-09', '--stale-days', bad).status, 2, bad);
+  }
+});
+
+test('unknown flags and positional arguments are usage errors (exit 2)', () => {
+  assert.equal(run('--root', tsApp, '--verbose').status, 2);
+  assert.equal(run(tsApp).status, 2);
+});
+
 // ------------------------------------------------------- scope honoring
 
 test('survey-scope.yaml excluded areas produce zero findings — never rescanned', () => {
@@ -188,6 +199,23 @@ test('a repo with no stores at all still audits — everything is a proposal', (
   const repo = plantRepo('bare', { 'src/sports.ts': ANCHOR_TS });
   const out = runJson(repo, 0);
   assert.ok(out.findings.some((f) => f.code === 'unmatched-anchor' && f.path === 'src/sports.ts'));
+});
+
+test('a stale unknown-knowledge/ dir alongside root-level stores is still kit zone, never findings', () => {
+  const repo = plantRepo('twokits', {
+    // Stores at the scan root itself (engine-fixture layout)…
+    'ontology/_catalog.yaml': STORE_MIN['unknown-knowledge/ontology/_catalog.yaml'],
+    'ontology/_rules.yaml': STORE_MIN['unknown-knowledge/ontology/_rules.yaml'],
+    'ontology/classes/100-core.yaml': STORE_MIN['unknown-knowledge/ontology/classes/100-core.yaml'],
+    'src/sports.ts': ANCHOR_TS,
+    // …plus a leftover nested kit dir: kit zone by name, never product surface.
+    'unknown-knowledge/ontology/classes/100-old.yaml': 'schema-version: 1\nentries: []\n',
+  });
+  const out = runJson(repo, 0);
+  assert.ok(
+    !out.findings.some((f) => f.path?.startsWith('unknown-knowledge')),
+    JSON.stringify(out.findings),
+  );
 });
 
 test('fully mapped repo, nothing stale: exit 0 with zero findings', () => {

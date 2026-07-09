@@ -62,8 +62,12 @@ const USAGE = 'usage: node payload/engine/audit.js [--root <dir>] [--json] [--fa
 const STALE_DAYS_DEFAULT = 90;
 /** The post-init default kit dir name (D-016); renames are a later seam. */
 const KIT_DIR_DEFAULT = 'unknown-knowledge';
-/** Store/engine artifacts when the stores live at the scan root itself. */
-const KIT_ZONE_AT_ROOT = ['ontology', 'knowledge', 'decisions', 'logs', SCOPE_FILE];
+/**
+ * Store/engine artifacts when the stores live at the scan root itself. The
+ * D-016 dir name stays kit zone even here — a leftover nested kit is stale
+ * kit data, never product surface to propose concepts for.
+ */
+const KIT_ZONE_AT_ROOT = ['ontology', 'knowledge', 'decisions', 'logs', SCOPE_FILE, KIT_DIR_DEFAULT];
 
 class UsageError extends Error {}
 
