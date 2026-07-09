@@ -230,7 +230,11 @@ test('a crash in a migrated surface exits 2, never 1 — the guard is the harnes
 test('every migrated surface refuses an empty --root rather than reading the cwd', () => {
   for (const name of MIGRATED) {
     const cli = fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url));
-    const r = spawnSync(process.execPath, [cli, '--root', ''], { encoding: 'utf8' });
+    // A bounded spawn: if a surface ever regressed into blocking (waiting on
+    // stdin, say) before reaching the usage-error path, an unbounded spawn
+    // would hang CI rather than fail it.
+    const r = spawnSync(process.execPath, [cli, '--root', ''], { encoding: 'utf8', timeout: 10_000 });
+    assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out instead of refusing an empty --root`);
     assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: --root "" must not silently mean the cwd`);
     assert.match(r.stderr, /--root requires a value/);
   }
