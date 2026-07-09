@@ -19,7 +19,11 @@ export function engineCommands(md) {
     for (const cmd of block.replace(/\\\n/g, ' ').split('\n')) {
       const file = /node\s+"?\S*?engine\/([a-z-]+\.js)"?([^-\n][^\n]*?)?(?=--|$)/.exec(cmd);
       if (!file) continue;
-      const flags = [...cmd.matchAll(/(--[a-z][a-z-]*)/g)].map((m) => m[1]);
+      // Flags OUTSIDE quotes only. A `--reason 'validate-values --concepts K-120
+      // ran green'` cites a flag of another command inside its own argument;
+      // scraping it would probe log-entry for a flag nobody claimed it has.
+      const unquoted = cmd.replace(/'[^']*'|"[^"]*"/g, ' ');
+      const flags = [...unquoted.matchAll(/(--[a-z][a-z-]*)/g)].map((m) => m[1]);
       // The full positional tail (subcommands, query terms) rides along so
       // the probe replays the cited command shape, not a truncation of it —
       // log-entry.js needs its subcommand; resolve.js its query terms.
@@ -46,7 +50,8 @@ export function assertRealEngineCommands(root, name, md, { minCommands = 1 } = {
     assert.ok(statSync(enginePath, { throwIfNoEntry: false })?.isFile(), `${file} is not a real engine CLI`);
     for (const flag of flags) {
       const r = spawnSync(process.execPath, [enginePath, ...positionals, flag], { encoding: 'utf8' });
-      assert.ok(!/unknown flag|unexpected argument/.test(r.stderr), `${file} ${positionals.join(' ')} does not implement ${flag}:\n${r.stderr}`);
+      assert.ok(!/unknown flag|unknown argument|unexpected argument/.test(r.stderr),
+        `${file} ${positionals.join(' ')} does not implement ${flag}:\n${r.stderr}`);
     }
   }
 }

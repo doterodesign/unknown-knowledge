@@ -27,12 +27,12 @@
 import { readFileSync, readlinkSync, realpathSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { basename, dirname, extname, isAbsolute, resolve, sep } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { load, YAMLException } from 'js-yaml';
 import { ANCHOR_SIGNATURES } from './lib/anchor-signatures.js';
 import { SCOPE_FILE } from './lib/kit-root.js';
 import { validateStoreFile, compare } from './lib/validate-record.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
+import { isEntrypoint, parseArgs as parseFlags, runCli, UsageError } from './lib/cli.js';
 
 export { SCOPE_FILE } from './lib/kit-root.js';
 
@@ -294,26 +294,23 @@ export function buildSurveyMap(root) {
 
 // ---------------------------------------------------------------- CLI
 
+const USAGE = 'usage: node payload/engine/survey-map.js [root] [--root <dir>] [--json]';
+
 function parseArgs(argv) {
-  const opts = { root: null, json: false };
-  for (let i = 0; i < argv.length; i += 1) {
-    const arg = argv[i];
-    const [flag, inline] = arg.startsWith('--') ? arg.split(/=(.*)/s) : [null, null];
-    if (flag === '--json') {
-      opts.json = true;
-    } else if (flag === '--root') {
-      opts.root = inline ?? argv[(i += 1)];
-      if (opts.root === undefined) throw new Error('--root requires a value');
-    } else if (flag) {
-      throw new Error(`unknown flag ${flag} (usage: survey-map.js [root] [--root <dir>] [--json])`);
-    } else if (opts.root === null) {
-      opts.root = arg;
-    } else {
-      throw new Error(`unexpected argument ${arg}`);
-    }
+  const { options, positionals } = parseFlags(argv, {
+    boolean: ['json'],
+    value: ['root'],
+    positionals: true,
+  });
+  if (positionals.length > 1) {
+    throw new UsageError(`unexpected argument ${JSON.stringify(positionals[1])}`);
   }
-  opts.root = resolve(opts.root ?? '.');
-  return opts;
+  // The root may be named positionally or by flag, never both: two names for
+  // the root is exactly the ambiguity `locateKit` refuses to guess at.
+  if (options.root !== undefined && positionals.length) {
+    throw new UsageError(`the root is named twice: ${JSON.stringify(positionals[0])} and --root ${JSON.stringify(options.root)}`);
+  }
+  return { root: resolve(options.root ?? positionals[0] ?? '.'), json: !!options.json };
 }
 
 function printHuman(map) {
@@ -335,23 +332,26 @@ function printHuman(map) {
  * 1 blind spots disclosed under unsurveyed:, 2 engine/environment failure.
  */
 export function main(argv) {
+  const opts = parseArgs(argv); // a UsageError reaches the harness
+
   let map;
   try {
-    const opts = parseArgs(argv);
     map = buildSurveyMap(opts.root);
-    if (opts.json) {
-      process.stdout.write(`${JSON.stringify(map, null, 2)}\n`);
-    } else {
-      printHuman(map);
-    }
   } catch (error) {
+    // An EXPECTED environment failure (no git, unparseable scope, a scope whose
+    // include matches nothing): the survey never ran, so it cannot report blind
+    // spots. Exit 2 — never 1, which would claim it ran and found them.
     process.stderr.write(`survey-map: ${error.message}\n`);
     return EXIT_CODES.FAILURE;
   }
+
+  if (opts.json) process.stdout.write(`${JSON.stringify(map, null, 2)}\n`);
+  else printHuman(map);
   return map.unsurveyed.length === 0 ? EXIT_CODES.CLEAN : EXIT_CODES.FINDINGS;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isEntrypoint(import.meta.url)) {
+  // runCli owns the epilogue: a usage error and ANY unexpected throw exit 2.
   // Never process.exit(): it truncates piped stdout mid-flush (PRD §5).
-  process.exitCode = main(process.argv.slice(2));
+  runCli('survey-map', main, { usage: USAGE }).then((code) => { process.exitCode = code; });
 }

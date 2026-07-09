@@ -188,14 +188,29 @@ test('a value that looks like a negative number is still a value, not a flag', (
   assert.equal(options['stale-days'], '-1', 'only `--` prefixes are flags');
 });
 
-// ------------------------------- the migrated surfaces (UCS-948, batch 1)
+// -------------------------- the migrated surfaces (UCS-948, UCS-949)
 //
-// The harness's own tests above prove a throw exits 2. These prove the three
-// migrated surfaces actually route through it — a structural pin, because a
-// CLI that re-grew its own catch block would pass every behavioural test right
-// up until the day it crashed and reported findings.
+// The harness's own tests above prove a throw exits 2. These prove the migrated
+// surfaces actually route through it — a structural pin, because a CLI that
+// re-grew its own catch block would pass every behavioural test right up until
+// the day it crashed and reported findings.
+//
+// `survey-map` and `audit` are the ones that make this urgent: they are the two
+// surfaces that legitimately RETURN exit 1 (blind spots; findings under the
+// human opt-in). For them, a crash wearing the FINDINGS code is not a cosmetic
+// bug — it is indistinguishable from a real answer.
 
-const MIGRATED = ['validate.js', 'validate-values.js', 'preflight.js'];
+/** Each migrated surface, and the argv prefix it needs before `--root`. */
+const MIGRATED_SURFACES = Object.freeze([
+  { name: 'validate.js', before: [] },
+  { name: 'validate-values.js', before: [] },
+  { name: 'preflight.js', before: [] },
+  { name: 'resolve.js', before: ['some-term'] },
+  { name: 'audit.js', before: [] },
+  { name: 'survey-map.js', before: [] },
+  { name: 'log-entry.js', before: ['create'] },
+]);
+const MIGRATED = MIGRATED_SURFACES.map((s) => s.name);
 
 test('the migrated surfaces run through the harness and own no catch-to-exit mapping', async () => {
   for (const name of MIGRATED) {
@@ -228,14 +243,49 @@ test('a crash in a migrated surface exits 2, never 1 — the guard is the harnes
 });
 
 test('every migrated surface refuses an empty --root rather than reading the cwd', () => {
-  for (const name of MIGRATED) {
+  for (const { name, before } of MIGRATED_SURFACES) {
     const cli = fileURLToPath(new URL(`../payload/engine/${name}`, import.meta.url));
     // A bounded spawn: if a surface ever regressed into blocking (waiting on
     // stdin, say) before reaching the usage-error path, an unbounded spawn
     // would hang CI rather than fail it.
-    const r = spawnSync(process.execPath, [cli, '--root', ''], { encoding: 'utf8', timeout: 10_000 });
+    const r = spawnSync(process.execPath, [cli, ...before, '--root', ''], { encoding: 'utf8', timeout: 10_000 });
     assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out instead of refusing an empty --root`);
     assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: --root "" must not silently mean the cwd`);
     assert.match(r.stderr, /--root requires a value/);
   }
+});
+
+test('the two surfaces that can return exit 1 return it only when they ran', () => {
+  // survey-map reports blind spots with exit 1; audit reports findings with
+  // exit 1 under --fail-on-findings. Both must reach exit 2 — never 1 — when
+  // the run itself could not complete. Here: a root that is not a git repo,
+  // and a root that does not exist.
+  const cli = (n) => fileURLToPath(new URL(`../payload/engine/${n}`, import.meta.url));
+  const missing = fileURLToPath(new URL('fixtures/does-not-exist', import.meta.url));
+  for (const args of [['survey-map.js', '--root', missing], ['audit.js', '--fail-on-findings', '--root', missing]]) {
+    const [name, ...rest] = args;
+    const r = spawnSync(process.execPath, [cli(name), ...rest], { encoding: 'utf8', timeout: 10_000 });
+    assert.notEqual(r.signal, 'SIGTERM', `${name}: timed out`);
+    assert.notEqual(r.status, EXIT_CODES.FINDINGS,
+      `${name} exited 1 on a run that never completed — an agent would read that as a real answer`);
+    assert.equal(r.status, EXIT_CODES.FAILURE, `${name}: a run that could not complete exits 2`);
+  }
+});
+
+test('survey-map refuses a root named twice rather than picking one', () => {
+  const cli = fileURLToPath(new URL('../payload/engine/survey-map.js', import.meta.url));
+  const a = fileURLToPath(new URL('../fixtures/ts-app', import.meta.url));
+  const r = spawnSync(process.execPath, [cli, a, '--root', a], { encoding: 'utf8', timeout: 10_000 });
+  assert.equal(r.status, EXIT_CODES.FAILURE, 'two names for the root is an ambiguity, not a preference');
+  assert.match(r.stderr, /named twice/);
+});
+
+test('audit refuses an empty --stale-days rather than reading it as zero', () => {
+  // `Number('') === 0` made `--stale-days=` mean "everything is stale" and the
+  // command exited 0 with a plausible report. The grammar closes it.
+  const cli = fileURLToPath(new URL('../payload/engine/audit.js', import.meta.url));
+  const root = fileURLToPath(new URL('../fixtures/ts-app', import.meta.url));
+  const r = spawnSync(process.execPath, [cli, '--root', root, '--stale-days='], { encoding: 'utf8', timeout: 10_000 });
+  assert.equal(r.status, EXIT_CODES.FAILURE);
+  assert.match(r.stderr, /--stale-days requires a value/);
 });
