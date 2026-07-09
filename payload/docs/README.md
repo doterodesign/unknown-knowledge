@@ -1,6 +1,6 @@
 # unknown-knowledge — this repo's knowledge base
 
-This directory was seeded once by the [unknown-knowledge](https://github.com/unknown-creatives/unknown-knowledge)
+This directory was seeded once by the [unknown-knowledge](https://github.com/doterodesign/unknown-knowledge)
 kit and is now yours (D-001): three YAML stores that map the system
 (`ontology/`, `knowledge/`, `decisions/`), a deterministic engine that checks
 the map (`engine/`), and the agent protocol that runs the loop (`protocol/`).
