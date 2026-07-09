@@ -401,6 +401,40 @@ export function storeHealth(model) {
   };
 }
 
+/**
+ * Store health, in full: the Diagnostics themselves, not merely how many
+ * (UCS-939).
+ *
+ * `storeHealth` above reports counts, which is all the JSON payloads need —
+ * but every surface actually wants the error Diagnostics, to render them or to
+ * decide that a check cannot certify anything. So six sites reach past it and
+ * re-filter `model.diagnostics` by severity, and the resolver went further and
+ * re-declared its own copy of the counts helper. A seam too narrow to be used
+ * is a seam that gets walked around.
+ *
+ * This is the widened form. It derives from `model.ok` and `model.diagnostics`
+ * — the single health model — and from nothing else, so the validator, the
+ * reverse audit and preflight cannot disagree about a Store because they all
+ * ask one function rather than all happening to filter the same way.
+ *
+ * Both forms coexist for now: callers migrate in UCS-945, and UCS-951 deletes
+ * the counts-only one once nothing reads it.
+ *
+ * @param {object} model a loaded store model
+ * @returns {{ ok: boolean, errors: object[], warnings: object[], errorCount: number, warningCount: number }}
+ */
+export function storeDiagnostics(model) {
+  const errors = model.diagnostics.filter((d) => d.severity === 'error');
+  const warnings = model.diagnostics.filter((d) => d.severity === 'warning');
+  return {
+    ok: model.ok,
+    errors,
+    warnings,
+    errorCount: errors.length,
+    warningCount: warnings.length,
+  };
+}
+
 /** A --concepts id the ontology does not carry — a check that never ran. */
 export class UnknownConceptsError extends Error {}
 
