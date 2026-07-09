@@ -65,7 +65,7 @@ import process from 'node:process';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeDiagnostics, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -202,7 +202,7 @@ export function validateValues(model, conceptIds, repoRoot = model.root) {
   // Single health model: the loader already validated every descriptor's
   // shape (KK-02 codes). An unhealthy store means the value check cannot
   // certify anything — surface the diagnostics as hard errors and stop.
-  const storeErrors = model.diagnostics.filter((d) => d.severity === 'error');
+  const { errors: storeErrors } = storeDiagnostics(model);
   if (storeErrors.length) {
     ctx.hardErrors = storeErrors.map(({ code, file, path, message }) => ({
       concept: null, code, file, path, source: null, message,

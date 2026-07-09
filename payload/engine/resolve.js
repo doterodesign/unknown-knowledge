@@ -58,7 +58,7 @@
 import process from 'node:process';
 import { statSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { loadStores } from './lib/load-stores.js';
+import { loadStores, storeHealth } from './lib/load-stores.js';
 import { locateKitRoot } from './lib/kit-root.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
@@ -293,12 +293,6 @@ function parseArgs(argv) {
     throw new UsageError('nothing to resolve — give query terms or --paths');
   }
   return opts;
-}
-
-function storeHealth(model) {
-  const errors = model.diagnostics.filter((d) => d.severity === 'error').length;
-  const warnings = model.diagnostics.filter((d) => d.severity === 'warning').length;
-  return { ok: model.ok, errors, warnings };
 }
 
 function renderHealth(health, lines) {
