@@ -78,10 +78,13 @@ apps**, asserting the PRD's own A1 language end to end:
 Init also preflights the seeded engine's one runtime dependency (`js-yaml`,
 D-002), resolving it from the seeded engine file itself. Unresolvable is a
 loud WARN rather than a refusal — the seed is correct and the fix is one
-`npm install` away — but it is loud on purpose: an unresolved import exits 1,
-which the §5 exit-code contract reads as *findings present* rather than
-*engine failure*, so an agent riding those codes would quarantine-and-continue
-past an engine that never ran.
+`npm install` away — but it is loud on purpose: until the dependency is there,
+every engine command refuses to start and the whole kit is inert.
+
+It used to be louder still. An unresolved import exited 1, which the §5
+exit-code contract reads as *findings present* rather than *engine failure*, so
+an agent riding those codes would quarantine-and-continue past an engine that
+never ran. The entry shims closed that (UCS-956): a module-load failure exits 2.
 
 No remaining seam: `npx unknown-knowledge init` itself works only
 post-publish (`private: true` guards the package), which is a release step,

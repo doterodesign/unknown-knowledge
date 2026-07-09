@@ -128,3 +128,52 @@ test('a healthy engine is untouched by the shim', (t) => {
   assert.doesNotMatch(r.stderr, /internal failure/);
   assert.ok(JSON.parse(r.stdout), 'the shim forwards stdout untouched');
 });
+
+// ------------------------------------------------- the init CLIs (UCS-950)
+//
+// Init never emits findings — there is no state of the world in which seeding
+// a repo "found 3 problems". So exit 1 is not merely wrong for a crashed init,
+// it is unreachable for a healthy one. The seeded kit is npx-installed, which
+// makes a missing dependency the single most likely failure a user ever hits.
+
+const INIT_SHIMS = ['init.js', 'init-copy.js'];
+const cliDir = join(repoRoot, 'cli');
+
+test('the init CLIs are entry shims that statically import nothing', () => {
+  for (const shim of INIT_SHIMS) {
+    const source = readFileSync(join(cliDir, shim), 'utf8');
+    assert.equal(source.match(/^import /gm), null,
+      `cli/${shim} statically imports something; its own load can then fail, and Node exits 1`);
+    assert.match(source, /^\s*import\('\.\.\/payload\/engine\/lib\/boot\.js'\),$/m);
+    assert.match(source, /^\s*import\('\.\/commands\/[\w-]+\.js'\),$/m);
+  }
+});
+
+test('a broken engine module makes the init CLIs exit 2, never 1', (t) => {
+  // init imports the engine's exit-codes and cli modules. A SyntaxError there
+  // used to exit 1 — reporting findings from a seed that never happened.
+  const dir = mkdtempSync(join(tmpdir(), 'uk-init-load-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  cpSync(join(repoRoot, 'payload'), join(dir, 'payload'), { recursive: true });
+  cpSync(cliDir, join(dir, 'cli'), { recursive: true });
+  cpSync(join(repoRoot, 'package.json'), join(dir, 'package.json'));
+  symlinkSync(join(repoRoot, 'node_modules'), join(dir, 'node_modules'), 'dir');
+  appendFileSync(join(dir, 'payload', 'engine', 'lib', 'exit-codes.js'), '\nthis is not valid javascript ===\n');
+
+  for (const shim of INIT_SHIMS) {
+    const r = spawnSync(process.execPath, [join(dir, 'cli', shim), '--help'],
+      { encoding: 'utf8', timeout: 20_000, stdio: ['ignore', 'pipe', 'pipe'] });
+    assert.notEqual(r.status, 1,
+      `cli/${shim} exited 1 — FINDINGS — on a CLI that never loaded. Init has no findings to report`);
+    assert.equal(r.status, 2, `cli/${shim}: nothing was seeded, so exit 2`);
+    assert.match(r.stderr, /internal failure — nothing was seeded/);
+  }
+});
+
+test('exit 1 is unreachable for init: it never names the FINDINGS code', () => {
+  for (const command of ['init.js', 'init-copy.js']) {
+    const source = readFileSync(join(cliDir, 'commands', command), 'utf8');
+    assert.doesNotMatch(source, /EXIT_CODES\.FINDINGS/,
+      `cli/commands/${command} names the FINDINGS code; init reports clean or failure, nothing else`);
+  }
+});
