@@ -37,6 +37,8 @@ unconditional:
     # Protocol skills (D-019 names) — the phase-2 procedures agents run.
     - { from: protocol/skills/knowledge-bootstrap.md, to: protocol/skills/knowledge-bootstrap.md }
     - { from: protocol/skills/knowledge-reflect.md, to: protocol/skills/knowledge-reflect.md }
+    - { from: protocol/skills/kb-build.md, to: protocol/skills/kb-build.md }
+    - { from: protocol/skills/knowledge-audit.md, to: protocol/skills/knowledge-audit.md }
   templates:
     # The §5.2 new-kind authoring template — clients extend the extractor
     # library themselves (D-001/D-009), so the template always ships.

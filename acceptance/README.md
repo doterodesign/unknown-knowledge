@@ -72,8 +72,8 @@ expected-artifact boxes, and records the wall-clock time.
 | [`A5-agents-md-walkthrough.md`](A5-agents-md-walkthrough.md) | `payload/protocol/AGENTS.md` runtime loop (resolve → preflight → act → log) | ts-app | landed (KK-20) |
 | [`A5-knowledge-bootstrap-walkthrough.md`](A5-knowledge-bootstrap-walkthrough.md) | `payload/protocol/skills/knowledge-bootstrap.md` phase-2 bootstrap (survey → gate → emit → miss → interview → green finish) | swift-app | landed (KK-21) |
 | [`A5-knowledge-reflect-walkthrough.md`](A5-knowledge-reflect-walkthrough.md) | `payload/protocol/skills/knowledge-reflect.md` consolidation (seeded findings → clustering → recommendation list → simulated approval → apply → green re-validation → last-reflect stamp) | swift-app | landed (KK-22) |
-| A5-kb-build walkthrough | kb-build skill | TBD | to come with KK-23 |
-| A5-knowledge-audit walkthrough | knowledge-audit skill | TBD | to come with KK-23 |
+| [`A5-kb-build-walkthrough.md`](A5-kb-build-walkthrough.md) | `payload/protocol/skills/kb-build.md` sole knowledge write path (classify → cite → draft → index → validate) | ts-app | landed (KK-23) |
+| [`A5-knowledge-audit-walkthrough.md`](A5-knowledge-audit-walkthrough.md) | `payload/protocol/skills/knowledge-audit.md` health check + loop heartbeat (validators → reverse audit → sweeps → heartbeat → report) | ts-app | landed (KK-23) |
 
 Each new skill issue ships its `A5-<skill>-walkthrough.md` here; the harness
 picks up any `acceptance/A5-*.md` automatically in its A5 report line.
