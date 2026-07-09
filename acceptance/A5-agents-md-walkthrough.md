@@ -200,7 +200,7 @@ every enumerates claim agrees with its source (both directions, §3.5 set equali
 ```sh
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-08 \
   --root unknown-knowledge \
-  --entry '{"trigger":"retrieval-miss","summary":"no concept for the escrow refund window; searched within survey scope","consulted":{"concepts":[]}}'
+  --entry '{"trigger":"retrieval-miss","summary":"retrieval-miss: escrow-refund-window -> 0 concepts","consulted":{"concepts":[]}}'
 ```
 
 - [ ] Exit 0; the helper prints the minted fragment (suffix varies):
@@ -214,7 +214,7 @@ node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-08 \
     "date": "2026-07-08",
     "status": "open",
     "trigger": "retrieval-miss",
-    "summary": "no concept for the escrow refund window; searched within survey scope",
+    "summary": "retrieval-miss: escrow-refund-window -> 0 concepts",
     "consulted": {
       "concepts": []
     }
@@ -222,8 +222,8 @@ node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-08 \
 }
 ```
 
-- [ ] Content policy honored: the summary names topics and paths — no quoted
-  user text, no secrets.
+- [ ] Content policy honored: the summary carries the searched term, IDs,
+  and paths only — no quoted user text, no secrets.
 
 ## 8. Decisions-authoring path — the work surfaced a decision
 

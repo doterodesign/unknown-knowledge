@@ -189,7 +189,7 @@ Append with the helper — `--date` is mandatory and injected, never wall-clock:
 ```
 node unknown-knowledge/engine/log-entry.js create --log findings --date 2026-07-08 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"K-101 stale vs src/registry/sports.ts","consulted":{"concepts":["K-101"]}}'
+  --entry '{"trigger":"correction","summary":"correction: K-101 src/registry/sports.ts","consulted":{"concepts":["K-101"]}}'
 ```
 
 Each finding's `consulted:` refs ARE the consultation trail. Sibling logs,

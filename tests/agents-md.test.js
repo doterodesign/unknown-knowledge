@@ -7,6 +7,7 @@
 // exit-2 usage errors (a check that never ran, PRD §5).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -68,10 +69,13 @@ function engineCommands(md) {
   const out = [];
   for (const block of codeBlocks(md)) {
     for (const cmd of block.replace(/\\\n/g, ' ').split('\n')) {
-      const file = /node\s+"?\S*?engine\/([a-z-]+\.js)"?/.exec(cmd);
+      const file = /node\s+"?\S*?engine\/([a-z-]+\.js)"?\s*([a-z-]+)?/.exec(cmd);
       if (!file) continue;
       const flags = [...cmd.matchAll(/(--[a-z][a-z-]*)/g)].map((m) => m[1]);
-      out.push({ file: file[1], flags });
+      // log-entry.js commands carry a subcommand (create/transition) the
+      // parser needs before it will judge flags.
+      const sub = file[2] && !file[2].startsWith('-') ? file[2] : null;
+      out.push({ file: file[1], sub, flags });
     }
   }
   return out;
@@ -81,12 +85,15 @@ for (const [name, md] of [['AGENTS.md', doc], ['A5 walkthrough', walkthrough]]) 
   test(`${name}: every engine command names a real engine file with implemented flags`, () => {
     const commands = engineCommands(md);
     assert.ok(commands.length >= 5, `${name} must cite engine commands in code blocks`);
-    for (const { file, flags } of commands) {
+    for (const { file, sub, flags } of commands) {
       const enginePath = join(root, 'payload', 'engine', file);
       assert.ok(statSync(enginePath, { throwIfNoEntry: false })?.isFile(), `${file} is not a real engine CLI`);
-      const source = readFileSync(enginePath, 'utf8');
       for (const flag of flags) {
-        assert.ok(source.includes(flag), `${file} does not implement ${flag}`);
+        // Structural, through the public seam: hand the parser the flag and
+        // let it judge. A dropped option answers "unknown flag"; a live one
+        // answers anything else ("requires a value", a run, a store error).
+        const r = spawnSync(process.execPath, [enginePath, ...(sub ? [sub] : []), flag], { encoding: 'utf8' });
+        assert.ok(!/unknown flag/.test(r.stderr), `${file}${sub ? ` ${sub}` : ''} does not implement ${flag}:\n${r.stderr}`);
       }
     }
   });
