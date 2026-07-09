@@ -49,7 +49,7 @@
 import process from 'node:process';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, locateKitRoot, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { loadStores, locateKitRoot, isPrePromotionStatus, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { createEntry } from './lib/log-entry.js';
@@ -109,7 +109,7 @@ function computeVerdicts(model, ids, repoRoot) {
         evidence,
       };
     }
-    if (status === 'draft' || status === 'proposed') {
+    if (isPrePromotionStatus(status)) {
       return {
         concept: id, status, verdict: 'unknown',
         reason: `status "${status}" — structural checks only (§3.5); the value checks were skipped, so nothing certifies the claims`,
@@ -191,8 +191,12 @@ function parseArgs(argv) {
       if (flag === '--root') {
         opts.root = value;
       } else if (flag === '--today') {
-        if (!ISO_DATE.test(value) || Number.isNaN(Date.parse(`${value}T00:00:00Z`))) {
-          throw new UsageError(`--today must be an ISO date (YYYY-MM-DD), got ${JSON.stringify(value)}`);
+        // Round-trip through UTC: Date.parse rolls over dates like
+        // 2026-02-30, and --log writes --today into permanent fragments.
+        const roundTrip = new Date(`${value}T00:00:00Z`);
+        if (!ISO_DATE.test(value) || Number.isNaN(roundTrip.getTime())
+          || roundTrip.toISOString().slice(0, 10) !== value) {
+          throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(value)}`);
         }
         opts.today = value;
       } else {

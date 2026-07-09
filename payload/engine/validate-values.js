@@ -63,7 +63,7 @@ import process from 'node:process';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { loadStores, locateKitRoot, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
+import { loadStores, locateKitRoot, isPrePromotionStatus, selectConcepts, storeHealth, UnknownConceptsError } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 import { KINDS, EnvelopeError, ExtractError } from './lib/extractor-kinds.js';
@@ -201,7 +201,7 @@ export function validateValues(model, conceptIds, repoRoot = model.root) {
     const { id, file, record } = concept;
     const descriptors = Array.isArray(record.enumerates) ? record.enumerates : [];
     const entry = { concept: id, status: record.status ?? null, descriptors: descriptors.length };
-    if (record.status === 'draft' || record.status === 'proposed') {
+    if (isPrePromotionStatus(record.status)) {
       // §3.5: structural checks only; the resolver downranks, preflight
       // verdicts unknown — the value check does not run.
       entry.skipped = record.status;

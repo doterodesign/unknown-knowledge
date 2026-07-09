@@ -196,6 +196,8 @@ test('--json and --log take no value; --root, --concepts, and --today require on
   assert.equal(run('--root', fixture('clean'), '--concepts').status, 2);
   assert.equal(run('--root', fixture('clean'), '--today').status, 2);
   assert.equal(run('--root', fixture('clean'), '--today', 'not-a-date').status, 2);
+  // Date.parse would roll 2026-02-30 over to March — a permanent bad log date.
+  assert.equal(run('--root', fixture('clean'), '--today', '2026-02-30').status, 2);
 });
 
 test('--flag value and --flag=value are interchangeable', () => {

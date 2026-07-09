@@ -431,3 +431,10 @@ export function locateKitRoot(root) {
   const nested = join(root, KIT_DIR_DEFAULT);
   return statSync(nested, { throwIfNoEntry: false })?.isDirectory() ? nested : root;
 }
+
+/**
+ * §3.5: draft/proposed concepts get structural checks only — the value check
+ * skips them and preflight verdicts them unknown. One predicate, so the two
+ * surfaces can never diverge on which statuses that means.
+ */
+export const isPrePromotionStatus = (status) => status === 'draft' || status === 'proposed';
