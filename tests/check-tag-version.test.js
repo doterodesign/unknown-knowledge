@@ -15,6 +15,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { main, tagVersionProblem } from '../scripts/check-tag-version.js';
+import { isCalendarDate } from '../payload/engine/lib/iso-date.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 
@@ -113,4 +114,36 @@ test('the run-book documents the tag-and-version ordering', () => {
   const doc = readFileSync(join(root, 'docs', 'publishing.md'), 'utf8');
   assert.match(doc, /check-tag-version/, 'the run-book names the guard');
   assert.match(doc, /immutable/i, 'and says why the ordering matters');
+});
+
+// ------------------------------------------- the release artifacts agree (UCS-936)
+
+test('the CHANGELOG carries a heading for the version the manifest names', () => {
+  // Three artifacts must name the same release: package.json, the CHANGELOG
+  // heading, and the tag. The guard above holds the tag to the manifest; this
+  // holds the CHANGELOG to it. Publishing 1.0.0 with no 1.0.0 entry ships a
+  // release nobody can read the notes for — and the version is immutable.
+  const { version } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
+  const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
+  const heading = new RegExp(`^## \\[${version.replace(/\./g, '\\.')}\\] - \\d{4}-\\d{2}-\\d{2}$`, 'm');
+  assert.match(changelog, heading,
+    `CHANGELOG.md has no dated heading for ${version} — cut the release section before tagging`);
+});
+
+test('Unreleased sits above the newest release, and is empty after a cut', () => {
+  const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
+  const unreleased = changelog.indexOf('## [Unreleased]');
+  const firstRelease = changelog.search(/^## \[\d+\.\d+\.\d+\]/m);
+  assert.notEqual(unreleased, -1, 'the next cycle needs somewhere to accrue');
+  assert.notEqual(firstRelease, -1, 'there is at least one released version');
+  assert.ok(unreleased < firstRelease, 'Unreleased comes first — newest at the top');
+});
+
+test('the release date is not in the future', () => {
+  // D-021: dates are recorded at release time, never fabricated. A heading
+  // dated tomorrow is a date nobody could have recorded.
+  const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
+  for (const [, date] of changelog.matchAll(/^## \[\d+\.\d+\.\d+\] - (\d{4}-\d{2}-\d{2})$/gm)) {
+    assert.ok(isCalendarDate(date), `${date} is not a real calendar date`);
+  }
 });

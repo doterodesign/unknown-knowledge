@@ -37,12 +37,19 @@ test('kit eats its own cooking: root documents present', () => {
   }
 });
 
-test('package.json follows D-002 / D-016 conventions', () => {
+test('package.json follows D-022 / D-016 conventions', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.name, 'unknown-knowledge', 'D-016/D-018: bare name is canonical');
-  assert.equal(pkg.type, 'module', 'D-002: plain ES modules, zero build step');
+  assert.equal(pkg.type, 'module', 'D-022: plain ES modules, zero build step');
   assert.equal(pkg.private, true, 'publishing is KK-28');
-  assert.equal(pkg.version, '0.0.0', 'version policy lands with KK-28');
+  // Was pinned to '0.0.0' with the note "version policy lands with KK-28".
+  // It has landed (D-021), so pin the POLICY rather than a frozen literal: a
+  // released semver version, never the placeholder. The version stamp seeded
+  // into every client repo is that repo's birth certificate and must name a
+  // real release. tests/check-tag-version.test.js holds the CHANGELOG and the
+  // release tag to this same value.
+  assert.match(pkg.version, /^\d+\.\d+\.\d+$/, 'D-021: a plain semver version');
+  assert.notEqual(pkg.version, '0.0.0', 'D-021: the placeholder is not a released version');
   assert.ok(pkg.scripts?.test, 'missing test script');
   assert.ok(pkg.scripts?.lint, 'missing lint script');
   assert.deepEqual(
