@@ -23,7 +23,6 @@
  * catch reports it and exits 2.
  */
 import process from 'node:process';
-import { EXIT_CODES } from './exit-codes.js';
 import { runCli } from './cli.js';
 
 /**
@@ -38,5 +37,3 @@ import { runCli } from './cli.js';
 export async function boot(name, command) {
   return runCli(name, command.main, { usage: command.USAGE });
 }
-
-export { EXIT_CODES };

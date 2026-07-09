@@ -20,12 +20,11 @@
  * ANY unexpected throw reports and exits 2. Exit 1 is reachable only by a main
  * that deliberately returns it, having actually run and actually found things.
  *
- * Nothing consumes this yet — UCS-948/949/950 migrate the surfaces, UCS-952
- * deletes their shells.
+ * Every surface reaches this through `lib/boot.js`, from an entry shim that
+ * statically imports nothing (UCS-956). The nine hand-written shells that this
+ * replaced are gone (UCS-952).
  */
 import process from 'node:process';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from './exit-codes.js';
 import { UsageError } from './usage-error.js';
 
@@ -146,7 +145,3 @@ export async function runCli(name, main, { usage, argv = process.argv.slice(2), 
     return EXIT_CODES.FAILURE;
   }
 }
-
-/** True when this module URL is the process entry point, not an import. */
-export const isEntrypoint = (importMetaUrl) =>
-  !!process.argv[1] && resolve(process.argv[1]) === fileURLToPath(importMetaUrl);
