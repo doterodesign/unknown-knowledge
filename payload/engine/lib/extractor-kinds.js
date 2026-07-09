@@ -1,5 +1,6 @@
 /**
- * Extractor-kind registry (KK-07 frame; KK-08 TS/JS kinds). Each kind is a
+ * Extractor-kind registry (KK-07 frame; KK-08 TS/JS kinds; KK-09 Swift +
+ * config kinds). Each kind is a
  * small deterministic recipe `extract(text, descriptor) -> string[]` that
  * re-derives a claimed value set from a reified anchor. The contract
  * (payload/templates/new-kind/parser.example.js teaches it):
@@ -19,9 +20,13 @@
  * anchor legitimately carries two (ts-enum member names vs raw values), the
  * descriptor pins one with `emit:`.
  *
- * Parsing is regex-level by design (PRD §5.1): the TS kinds share a tiny
- * string/comment-aware token walk — no AST, no resolver, single file only.
+ * Parsing is regex-level by design (PRD §5.1): the TS and Swift kinds share
+ * tiny string/comment-aware token walks — no AST, no resolver, single file
+ * only. The config kinds (json-*, yaml-*, strings-keys/.xcstrings) parse
+ * DATA with a real data parser (JSON.parse / js-yaml `load`) — data, never
+ * code, the same D-014 line.
  */
+import { load as yamlLoad } from 'js-yaml';
 
 /** The matched span contains a sentinel the kind's grammar cannot see past. */
 export class EnvelopeError extends Error {}
@@ -381,13 +386,427 @@ function jsonMapKeys(text, descriptor) {
   return jsonKeysAt(text, symbol.split('.'), 'json-map-keys');
 }
 
+// -------------------------------------------------------- Swift token walking
+
+/**
+ * Swift comments differ from TS just enough to need their own skipper: block
+ * comments NEST (a "/*" inside a block comment opens another level), and "'"
+ * is not a string delimiter. Returns the index just past the comment starting
+ * at `i`, or `i` itself when nothing comment-like starts there.
+ */
+function skipSwiftComment(text, i, context) {
+  if (text[i] !== '/' || (text[i + 1] !== '/' && text[i + 1] !== '*')) return i;
+  if (text[i + 1] === '/') {
+    const nl = text.indexOf('\n', i);
+    return nl === -1 ? text.length : nl + 1;
+  }
+  let depth = 0;
+  let j = i;
+  while (j < text.length) {
+    if (text[j] === '/' && text[j + 1] === '*') { depth += 1; j += 2; continue; }
+    if (text[j] === '*' && text[j + 1] === '/') {
+      depth -= 1;
+      j += 2;
+      if (depth === 0) return j;
+      continue;
+    }
+    j += 1;
+  }
+  throw new ExtractError(`${context}: unterminated block comment`);
+}
+
+/**
+ * A `#` directive (`#if` conditional compilation and friends) anywhere in a
+ * matched Swift span is THE declared out-of-envelope sentinel (§5.1): the
+ * value set depends on build configuration no lexical parse can evaluate —
+ * a confident parse would silently include or exclude members (D-005/D-012).
+ */
+function swiftDirectiveSentinel(text, i, context) {
+  if (text[i] === '#' && /[A-Za-z]/.test(text[i + 1] ?? '')) {
+    const word = /#[A-Za-z]+/.exec(text.slice(i))[0];
+    throw new EnvelopeError(`${context}: compiler directive "${word}" inside the matched span — conditional compilation makes the value set depend on build configuration, which no lexical parse can evaluate; a confident wrong parse is a false all-clear (PRD §5.1)`);
+  }
+}
+
+/**
+ * Read the Swift string literal opening at `i` (`text[i] === '"'`) and return
+ * `{ value, end }` (end = index past the closing quote). Escape sequences and
+ * `\(...)` interpolation are out-of-envelope sentinels — the runtime bytes
+ * would differ from (or not be derivable from) their source spelling, so the
+ * claim could never byte-match honestly (§3.5). Multiline `"""` literals are
+ * sentinels for the same reason (their indentation stripping is semantics).
+ */
+function swiftStringValue(text, i, context) {
+  if (text[i + 1] === '"' && text[i + 2] === '"') {
+    throw new EnvelopeError(`${context}: multiline string literal ('"""') — its runtime bytes depend on indentation stripping, not source spelling alone; out of this kind's envelope (§3.5)`);
+  }
+  let j = i + 1;
+  while (j < text.length && text[j] !== '"') {
+    if (text[j] === '\\') {
+      if (text[j + 1] === '(') {
+        throw new EnvelopeError(`${context}: string interpolation ("\\(") — the value is not lexically knowable; a confident wrong parse is a false all-clear (PRD §5.1)`);
+      }
+      throw new EnvelopeError(`${context}: string literal carries an escape sequence (${JSON.stringify(text.slice(i, j + 2))}…) — its runtime bytes differ from their source spelling, so the value could never byte-match its claim (§3.5); out of this kind's envelope`);
+    }
+    if (text[j] === '\n') throw new ExtractError(`${context}: unterminated string literal`);
+    j += 1;
+  }
+  if (j >= text.length) throw new ExtractError(`${context}: unterminated string literal`);
+  return { value: text.slice(i + 1, j), end: j + 1 };
+}
+
+/**
+ * Walk from an opening delimiter to its balanced close in SWIFT text (nested
+ * block comments, `"` strings only), returning `{ inner, end }` where `end`
+ * indexes the closing delimiter. Escapes inside strings are skipped at walk
+ * level only — whether they sentinel is the value reader's call.
+ */
+function swiftBalancedSpan(text, start, open, close, context) {
+  let depth = 0;
+  let i = start;
+  while (i < text.length) {
+    const skipped = skipSwiftComment(text, i, context);
+    if (skipped !== i) { i = skipped; continue; }
+    const ch = text[i];
+    if (ch === '"') {
+      let j = i + 1;
+      while (j < text.length && text[j] !== '"') j += text[j] === '\\' ? 2 : 1;
+      if (j >= text.length) throw new ExtractError(`${context}: unterminated string literal`);
+      i = j + 1;
+      continue;
+    }
+    if (ch === open) depth += 1;
+    else if (ch === close) {
+      depth -= 1;
+      if (depth === 0) return { inner: text.slice(start + 1, i), end: i };
+    }
+    i += 1;
+  }
+  throw new ExtractError(`${context}: unbalanced ${JSON.stringify(open)}…${JSON.stringify(close)} — the declaration never closes`);
+}
+
+/** Index of the next non-whitespace, non-comment character at/after `i`. */
+function skipSwiftTrivia(text, i, context) {
+  while (i < text.length) {
+    if (/\s/.test(text[i])) { i += 1; continue; }
+    const skipped = skipSwiftComment(text, i, context);
+    if (skipped !== i) { i = skipped; continue; }
+    break;
+  }
+  return i;
+}
+
+// ------------------------------------------------------------ the Swift kinds
+
+/**
+ * `swift-enum` — cases of a Swift `enum` declaration. TWO legitimate facets
+ * (mirroring ts-enum): case NAMES and raw string VALUES; the descriptor pins
+ * one with `emit: case-name` (the default) or `emit: raw-value` (§3.5).
+ * Envelope: plain cases, comma-joined case lists (`case a, b, c`), optional
+ * string raw values, interior comments, nested member bodies (a `switch`'s
+ * pattern arms sit at brace depth > 0 and are never counted). Sentinels:
+ * `#if` conditional compilation anywhere in the matched span, associated
+ * values (`case foo(Int)` — the value set is a payload type, not a string
+ * set), backtick-escaped case names (their runtime spelling drops the
+ * backticks — not byte-matchable), non-string raw values, and — under
+ * `emit: raw-value` — a case with NO explicit raw value: Swift derives the
+ * implicit raw value from the inheritance clause's semantics, which this
+ * lexical, single-file grammar refuses to evaluate.
+ */
+function swiftEnum(text, descriptor) {
+  const symbol = requireSymbol(descriptor, 'swift-enum');
+  const emit = descriptor.emit ?? 'case-name';
+  if (emit !== 'case-name' && emit !== 'raw-value') {
+    throw new ExtractError(`swift-enum emits "case-name" or "raw-value" — descriptor says emit: ${JSON.stringify(descriptor.emit)}; pin one legitimate facet (§3.5)`);
+  }
+  const decl = new RegExp(`(?:^|[\\n;{])\\s*(?:(?:public|internal|private|fileprivate|open|final|indirect)\\s+)*enum\\s+${escapeRegExp(symbol)}\\b`).exec(text);
+  if (!decl) {
+    throw new ExtractError(`no swift-enum declaration of "${symbol}" found — wrong pointer, or the anchor is no longer reified`);
+  }
+  const open = text.indexOf('{', decl.index + decl[0].length);
+  if (open === -1) throw new ExtractError(`enum "${symbol}" has no body — nothing to extract`);
+  const { inner: body } = swiftBalancedSpan(text, open, '{', '}', symbol);
+
+  const cases = [];
+  let depth = 0;
+  let i = 0;
+  while (i < body.length) {
+    const skipped = skipSwiftComment(body, i, symbol);
+    if (skipped !== i) { i = skipped; continue; }
+    swiftDirectiveSentinel(body, i, symbol);
+    const ch = body[i];
+    if (ch === '"') { i = swiftStringValue(body, i, symbol).end; continue; }
+    if (ch === '{') { depth += 1; i += 1; continue; }
+    if (ch === '}') { depth -= 1; i += 1; continue; }
+    if (ch === '`') {
+      throw new EnvelopeError(`enum "${symbol}" carries a backtick-escaped identifier — its runtime spelling drops the backticks, so the name could never byte-match its claim (§3.5); out of the swift-enum envelope`);
+    }
+    if (/[A-Za-z_]/.test(ch)) {
+      const word = /^[A-Za-z_][A-Za-z0-9_]*/.exec(body.slice(i))[0];
+      i += word.length;
+      if (word !== 'case' || depth !== 0) continue; // pattern-match `case`s at depth>0 are not declarations
+      // One `case` declaration: comma-separated elements, each an identifier
+      // with an optional `= "raw"` string initializer.
+      for (;;) {
+        i = skipSwiftTrivia(body, i, symbol);
+        swiftDirectiveSentinel(body, i, symbol);
+        if (body[i] === '`') {
+          throw new EnvelopeError(`enum "${symbol}" carries a backtick-escaped case name — its runtime spelling drops the backticks (§3.5); out of the swift-enum envelope`);
+        }
+        const name = /^[A-Za-z_][A-Za-z0-9_]*/.exec(body.slice(i));
+        if (!name) {
+          throw new EnvelopeError(`enum "${symbol}": unreadable case name at ${JSON.stringify(body.slice(i, i + 12))}… — outside the swift-enum envelope`);
+        }
+        i += name[0].length;
+        i = skipSwiftTrivia(body, i, symbol);
+        if (body[i] === '(' || body[i] === '<') {
+          throw new EnvelopeError(`enum "${symbol}" case ${JSON.stringify(name[0])} carries associated values — the value set is a payload type, not a lexically knowable string set; outside the swift-enum envelope (PRD §5.1)`);
+        }
+        let raw = null;
+        if (body[i] === '=') {
+          i = skipSwiftTrivia(body, i + 1, symbol);
+          swiftDirectiveSentinel(body, i, symbol);
+          if (body[i] !== '"') {
+            throw new EnvelopeError(`enum "${symbol}" case ${JSON.stringify(name[0])} has a non-string raw value (${JSON.stringify(body.slice(i, i + 12))}…) — not a string set (§3.5); outside the swift-enum envelope`);
+          }
+          const s = swiftStringValue(body, i, `${symbol}.${name[0]}`);
+          raw = s.value;
+          i = s.end;
+          i = skipSwiftTrivia(body, i, symbol);
+        }
+        cases.push({ name: name[0], raw });
+        if (body[i] === ',') { i += 1; continue; }
+        break;
+      }
+      continue;
+    }
+    i += 1;
+  }
+  if (cases.length === 0) throw new ExtractError(`enum "${symbol}" has no cases — nothing to extract`);
+  if (emit === 'raw-value') {
+    return cases.map(({ name, raw }) => {
+      if (raw === null) {
+        throw new EnvelopeError(`enum "${symbol}" case ${JSON.stringify(name)} has no explicit raw value, but the descriptor pins emit: raw-value — Swift derives the implicit raw value from the inheritance clause's semantics, which this lexical grammar refuses to evaluate (§3.5)`);
+      }
+      return raw;
+    });
+  }
+  return cases.map(({ name }) => name);
+}
+
+/**
+ * `swift-const-array` — string elements of a `let`/`var` (usually
+ * `static let`) string-array literal (facet: the element strings). Envelope:
+ * string literals, commas, and comments inside the brackets. Sentinels:
+ * `#if` in the span, string interpolation / escape sequences, non-string
+ * members, and concatenation (`+`) either inside the brackets or immediately
+ * after the literal — a computed value set is not lexically knowable. A
+ * non-array initializer (e.g. `core + regional` with no literal at all, or
+ * `all.map { … }`) is an ExtractError: out of this kind's reach entirely.
+ */
+function swiftConstArray(text, descriptor) {
+  const symbol = requireSymbol(descriptor, 'swift-const-array');
+  const decl = new RegExp(`(?:^|[\\n;{])\\s*(?:(?:public|internal|private|fileprivate|open|static|final|lazy)\\s+)*(?:let|var)\\s+${escapeRegExp(symbol)}\\b`).exec(text);
+  if (!decl) {
+    throw new ExtractError(`no swift-const-array declaration of "${symbol}" found — wrong pointer, or the anchor is no longer reified`);
+  }
+  const eq = text.indexOf('=', decl.index + decl[0].length);
+  if (eq === -1) throw new ExtractError(`declaration of "${symbol}" carries no initializer — nothing to extract`);
+  const at = skipSwiftTrivia(text, eq + 1, symbol);
+  if (text[at] !== '[') {
+    throw new ExtractError(`"${symbol}" is not initialized with an array literal — a computed or derived value set is out of swift-const-array's reach`);
+  }
+  const { inner, end } = swiftBalancedSpan(text, at, '[', ']', symbol);
+  // `["a"] + more`: the literal is real but not the whole value set.
+  const after = skipSwiftTrivia(text, end + 1, symbol);
+  if (text[after] === '+') {
+    throw new EnvelopeError(`"${symbol}" concatenates the literal with another array ("+") — the full member set is not lexically knowable; extracting the literal members would be a confident wrong parse (PRD §5.1)`);
+  }
+  const values = [];
+  let i = 0;
+  while (i < inner.length) {
+    const skipped = skipSwiftComment(inner, i, symbol);
+    if (skipped !== i) { i = skipped; continue; }
+    swiftDirectiveSentinel(inner, i, symbol);
+    const ch = inner[i];
+    if (/\s/.test(ch)) { i += 1; continue; }
+    if (ch === '"') {
+      const s = swiftStringValue(inner, i, symbol);
+      values.push(s.value);
+      i = s.end;
+      continue;
+    }
+    if (ch === ',') { i += 1; continue; }
+    if (ch === '+') {
+      throw new EnvelopeError(`"${symbol}" concatenates arrays ("+") inside the literal — the full member set is not lexically knowable (PRD §5.1)`);
+    }
+    throw new EnvelopeError(`"${symbol}" carries a non-string-literal member (${JSON.stringify(inner.slice(i, i + 12))}…) — outside the swift-const-array envelope (string literals and commas only)`);
+  }
+  return values;
+}
+
+// ----------------------------------------------------------- the config kinds
+
+/**
+ * Coerce-refuse (§3.5): js-yaml stringifies every mapping key on load, so a
+ * key whose spelling re-resolves to a non-string scalar (`true`, `2027`,
+ * `null`, …) cannot be proven to have been a string in the source — quoted
+ * `"true"` and bare `true` are indistinguishable after load, and byte-exact
+ * equality cannot hold for a coerced key. Such keys are out-of-envelope
+ * sentinels, never silently stringified. (js-yaml's default schema follows
+ * YAML 1.2 core: `on`/`yes`/`no` load as strings and pass; the classic 1.1
+ * coercions — `true`, numerics, `null` — are exactly what this refuses.)
+ * A key that only round-trips QUOTED (re-parse throws) must have been quoted
+ * in the source, hence a string — accepted.
+ */
+function refuseCoercibleYamlKey(key, kind, where) {
+  let reparsed;
+  try {
+    reparsed = yamlLoad(key);
+  } catch {
+    return; // only representable quoted — provably a string in the source
+  }
+  if (reparsed !== key) {
+    throw new EnvelopeError(`${kind}: key ${JSON.stringify(key)} ${where} is not provably a string — its spelling resolves to a non-string YAML scalar, so quoted-string vs coerced-scalar spellings are indistinguishable after load and §3.5 byte-exact equality cannot hold; out of this kind's envelope (coerce-refuse)`);
+  }
+}
+
+/**
+ * Shared YAML body: parse with js-yaml `load` (a data parser — data, never
+ * code, the same D-014 rationale as JSON.parse; js-yaml rejects duplicate
+ * keys and multi-document streams, both surfacing here as ExtractError),
+ * navigate the optional dotted path, and return the target mapping's keys
+ * (facet: key strings), coerce-refusing any non-string key.
+ */
+function yamlKeysAt(text, path, kind) {
+  let data;
+  try {
+    data = yamlLoad(text);
+  } catch (error) {
+    throw new ExtractError(`source is not valid YAML: ${error.message}`);
+  }
+  let target = data;
+  const crumbs = [];
+  for (const step of path) {
+    crumbs.push(step);
+    if (typeof target !== 'object' || target === null || Array.isArray(target) || !Object.hasOwn(target, step)) {
+      throw new ExtractError(`path "${crumbs.join('.')}" not found in the YAML document — wrong pointer, or the block moved`);
+    }
+    target = target[step];
+  }
+  if (typeof target !== 'object' || target === null || Array.isArray(target)) {
+    throw new ExtractError(`${kind} needs a mapping at ${path.length ? `path "${path.join('.')}"` : 'the top level'}, found ${Array.isArray(target) ? 'a sequence' : JSON.stringify(target === null ? null : typeof target)}`);
+  }
+  const where = path.length ? `at path "${path.join('.')}"` : 'at the top level';
+  const keys = Object.keys(target);
+  for (const key of keys) refuseCoercibleYamlKey(key, kind, where);
+  return keys;
+}
+
+/** `yaml-keys` — top-level keys of a YAML document (facet: key strings). */
+function yamlKeys(text) {
+  return yamlKeysAt(text, [], 'yaml-keys');
+}
+
+/**
+ * `yaml-map-keys` — keys of the mapping at the descriptor's dotted `symbol:`
+ * path (e.g. `symbol: flags.betting`). Facet: key strings.
+ */
+function yamlMapKeys(text, descriptor) {
+  const symbol = requireSymbol(descriptor, 'yaml-map-keys');
+  return yamlKeysAt(text, symbol.split('.'), 'yaml-map-keys');
+}
+
+/**
+ * `.strings` grammar: block and line comments, blank space, and
+ * `"key" = "value";` entries — nothing else. Keys are the emitted facet, so
+ * an escape sequence in a KEY is a §3.5 sentinel; escapes inside VALUES are
+ * fine (values are skipped, not emitted). Anything outside that grammar —
+ * a bare token, a pair missing its `=` or `;` — is an EnvelopeError: this
+ * format has no recoverable middle ground, and skipping an unreadable line
+ * would silently shrink the key set (PRD §5).
+ */
+function dotStringsKeys(text) {
+  const context = 'strings-keys';
+  const values = [];
+  let i = 0;
+  while (i < text.length) {
+    if (/\s/.test(text[i])) { i += 1; continue; }
+    if (text[i] === '/' && text[i + 1] === '/') {
+      const nl = text.indexOf('\n', i);
+      i = nl === -1 ? text.length : nl + 1;
+      continue;
+    }
+    if (text[i] === '/' && text[i + 1] === '*') {
+      const end = text.indexOf('*/', i + 2);
+      if (end === -1) throw new ExtractError(`${context}: unterminated block comment`);
+      i = end + 2;
+      continue;
+    }
+    if (text[i] !== '"') {
+      throw new EnvelopeError(`${context}: unexpected ${JSON.stringify(text.slice(i, i + 12))}… — a .strings file carries only comments and \`"key" = "value";\` entries; anything else is outside the envelope (a skipped line would silently shrink the key set, PRD §5)`);
+    }
+    // Key string: escapes sentinel — the key is the emitted value (§3.5).
+    let j = i + 1;
+    while (j < text.length && text[j] !== '"') {
+      if (text[j] === '\\') {
+        throw new EnvelopeError(`${context}: key ${JSON.stringify(text.slice(i, j + 2))}… carries an escape sequence — its runtime bytes differ from their source spelling, so the key could never byte-match its claim (§3.5)`);
+      }
+      if (text[j] === '\n') throw new ExtractError(`${context}: unterminated key string`);
+      j += 1;
+    }
+    if (j >= text.length) throw new ExtractError(`${context}: unterminated key string`);
+    const key = text.slice(i + 1, j);
+    i = j + 1;
+    while (i < text.length && /\s/.test(text[i])) i += 1;
+    if (text[i] !== '=') {
+      throw new EnvelopeError(`${context}: entry ${JSON.stringify(key)} is not followed by "=" — malformed \`"key" = "value";\` pair, outside the envelope`);
+    }
+    i += 1;
+    while (i < text.length && /\s/.test(text[i])) i += 1;
+    if (text[i] !== '"') {
+      throw new EnvelopeError(`${context}: entry ${JSON.stringify(key)} has no string value after "=" — malformed pair, outside the envelope`);
+    }
+    // Value string: skipped, not emitted — escaped quotes inside are fine.
+    j = i + 1;
+    while (j < text.length && text[j] !== '"') j += text[j] === '\\' ? 2 : 1;
+    if (j >= text.length) throw new ExtractError(`${context}: unterminated value string for key ${JSON.stringify(key)}`);
+    i = j + 1;
+    while (i < text.length && /\s/.test(text[i])) i += 1;
+    if (text[i] !== ';') {
+      throw new EnvelopeError(`${context}: entry ${JSON.stringify(key)} is not terminated by ";" — malformed pair, outside the envelope`);
+    }
+    i += 1;
+    values.push(key);
+  }
+  if (values.length === 0) throw new ExtractError(`${context}: the file carries no \`"key" = "value";\` entries — nothing to extract`);
+  return values;
+}
+
+/**
+ * `strings-keys` — keys of an Apple localization table, in either format:
+ * classic `.strings` (`"key" = "value";` entries) or `.xcstrings` (a JSON
+ * catalog whose top-level "strings" object carries the keys). Facet: key
+ * strings. DISPATCH IS BY FILE EXTENSION of `descriptor.source` — never
+ * content sniffing: the two grammars are disjoint, and guessing one from
+ * lookalike bytes is exactly the confident-wrong-parse failure class
+ * (PRD §5.1). A source with neither extension is an ExtractError.
+ * The .xcstrings side rides jsonKeysAt (JSON.parse — data, never code).
+ */
+function stringsKeys(text, descriptor) {
+  const source = typeof descriptor.source === 'string' ? descriptor.source : '';
+  if (/\.xcstrings$/i.test(source)) return jsonKeysAt(text, ['strings'], 'strings-keys');
+  if (/\.strings$/i.test(source)) return dotStringsKeys(text);
+  throw new ExtractError(`strings-keys reads .strings or .xcstrings files, dispatched by the source's file extension — ${JSON.stringify(source)} is neither, and guessing a grammar from content would be a confident wrong parse (PRD §5.1)`);
+}
+
 // ---------------------------------------------------------------- the registry
 
 /**
  * Kind name -> recipe. KK-08 registers the TS/JS + JSON kinds (PRD §5.1);
- * KK-09 (Swift/config) and KK-10 (dir-modules) extend this; clients author
- * later kinds through the §5.2 pipeline (D-005: only vendored, versioned,
- * test-covered kinds ever run).
+ * KK-09 the Swift + config kinds; KK-10 (dir-modules) extends this; clients
+ * author later kinds through the §5.2 pipeline (D-005: only vendored,
+ * versioned, test-covered kinds ever run).
  */
 export const KINDS = Object.freeze({
   /**
@@ -415,4 +834,9 @@ export const KINDS = Object.freeze({
   'ts-object-keys': tsObjectKeys,
   'json-keys': jsonKeys,
   'json-map-keys': jsonMapKeys,
+  'swift-enum': swiftEnum,
+  'swift-const-array': swiftConstArray,
+  'yaml-keys': yamlKeys,
+  'yaml-map-keys': yamlMapKeys,
+  'strings-keys': stringsKeys,
 });

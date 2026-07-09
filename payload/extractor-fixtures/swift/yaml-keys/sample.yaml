@@ -1,0 +1,23 @@
+# D-009 extractor fixture — yaml-keys (facet: the TOP-LEVEL keys).
+# Adversarial-but-extractable: comments between keys, an anchor/alias pair
+# with a merge key, nested maps and sequences whose child keys must NOT bleed
+# into the top-level set, and a quoted "on" key — YAML 1.2 loads it as the
+# string "on" (the 1.1 boolean coercion this kind coerce-refuses never
+# fires here). Pair: EXPECTED.yaml.
+service: wallet
+
+# Nested block: `region` / `retries` are NOT top-level keys.
+defaults: &wallet-defaults
+  region: us-nj
+  retries: 3
+
+limits:
+  - daily
+  - weekly
+
+fallback:
+  <<: *wallet-defaults
+  retries: 5
+
+"on":
+  deposit: notify

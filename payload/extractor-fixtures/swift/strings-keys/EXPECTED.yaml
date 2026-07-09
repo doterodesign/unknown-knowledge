@@ -1,0 +1,8 @@
+# Expected extraction for sample.strings — strings-keys emits the KEYS of the
+# `"key" = "value";` entries (facet: key strings); values — including the one
+# carrying '=' and the one with escaped quotes — are skipped, never emitted.
+# Dispatch is by the source file's extension: .strings here (the .xcstrings
+# JSON-catalog side is exercised by the kit's acceptance fixtures).
+kind: strings-keys
+file: sample.strings
+values: [account.title, account.balance, bet.confirm, bet.cancel, bet.retry]

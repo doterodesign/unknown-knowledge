@@ -1,0 +1,7 @@
+# Expected extraction for sample.swift (§3.5: byte-exact, case-sensitive, as
+# a set — order here is presentation only). The commented-out entry and the
+# decoy sibling array never count.
+kind: swift-const-array
+file: sample.swift
+symbol: activeBonusTypes
+values: [welcome-bonus, reload, odds-boost, referral, loyalty, free-bet]

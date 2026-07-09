@@ -1,0 +1,8 @@
+# Expected extraction for sample.swift — `emit: case-name` pins the facet
+# (§3.5): case names, not the SCREAMING_SNAKE raw values. The comma-joined
+# cases count; the switch arms and the decoy sibling enum never do.
+kind: swift-enum
+file: sample.swift
+symbol: PayoutSpeed
+emit: case-name
+values: [instant, sameDay, standard, batched, deferred]

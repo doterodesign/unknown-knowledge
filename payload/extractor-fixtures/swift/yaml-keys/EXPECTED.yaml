@@ -1,0 +1,6 @@
+# Expected extraction for sample.yaml — yaml-keys emits the TOP-LEVEL keys
+# (facet: key strings). Nested keys, sequence members, and merge-key aliases
+# never leak in; "on" stays the string "on" (quoted here too, §3.5).
+kind: yaml-keys
+file: sample.yaml
+values: [service, defaults, limits, fallback, "on"]
