@@ -52,7 +52,7 @@ import { statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { loadStores, storeHealth } from './lib/load-stores.js';
+import { loadStores, locateKitRoot, storeHealth } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 
@@ -137,7 +137,7 @@ function checkCatalogs(model, push) {
 }
 
 /** Concepts: class-range membership (id-range) + SSOT existence (missing-path). */
-function checkConcepts(model, push) {
+function checkConcepts(model, push, repoRoot) {
   for (const { id, file, record } of model.concepts.values()) {
     // id-range: the class file's numeric prefix N declares [N, N+99] (§3.5).
     const prefix = /^(\d+)-/.exec(file.split('/').pop());
@@ -155,7 +155,7 @@ function checkConcepts(model, push) {
     // escape hatch that lets a source-deletion PR land without dead-ending.
     const severity = record.status === 'deprecated' ? 'warning' : 'error';
     strings(record['source-of-truth']).forEach((p, i) => {
-      if (!statSync(join(model.root, p), { throwIfNoEntry: false })) {
+      if (!statSync(join(repoRoot, p), { throwIfNoEntry: false })) {
         push({
           severity, code: 'missing-path', id, file, path: `source-of-truth[${i}]`,
           message: `source-of-truth path "${p}" does not exist in the working tree — the truth anchor is the artifact (§3.1)`,
@@ -253,13 +253,15 @@ function checkDecisionCycles(model, push) {
  * Run every structural check over a loaded model — the reusable seam
  * preflight (KK-26) consumes, so verdicts and this validator can never
  * disagree. Returns the stable-sorted findings list; loader health gating
- * (exit 2 on an unhealthy store) stays with the callers.
+ * (exit 2 on an unhealthy store) stays with the callers. `repoRoot` is where
+ * source-of-truth paths resolve (the KK-08 two-root convention: pointers are
+ * repo-root-relative, §9.1; in the flat dogfood layout it equals model.root).
  */
-export function runChecks(model) {
+export function runChecks(model, repoRoot = model.root) {
   const findings = [];
   const push = (f) => findings.push(f);
   checkCatalogs(model, push);
-  checkConcepts(model, push);
+  checkConcepts(model, push, repoRoot);
   checkOrphans(model, push);
   checkCitations(model, push);
   checkDecisionCycles(model, push);
@@ -335,7 +337,10 @@ function main(argv) {
 
     let model;
     try {
-      model = loadStores(opts.root);
+      // KK-08 two-root convention: --root is the REPO root; the stores live
+      // at <root>/unknown-knowledge/ when seeded (§9.1) or at the root itself
+      // (dogfood layout). Pointers stay repo-root-relative either way.
+      model = loadStores(locateKitRoot(opts.root));
     } catch (error) {
       process.stderr.write(`validate: ${error.message}\n`);
       return EXIT_CODES.FAILURE;
@@ -354,7 +359,7 @@ function main(argv) {
       return EXIT_CODES.FAILURE;
     }
 
-    let findings = runChecks(model);
+    let findings = runChecks(model, opts.root);
     if (opts.concepts) {
       for (const id of opts.concepts) {
         // Loaded concepts plus catalog-declared ids (a declared-but-missing

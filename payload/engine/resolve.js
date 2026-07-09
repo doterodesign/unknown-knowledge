@@ -54,7 +54,7 @@
  */
 import process from 'node:process';
 import { posix } from 'node:path';
-import { loadStores } from './lib/load-stores.js';
+import { loadStores, locateKitRoot } from './lib/load-stores.js';
 import { EXIT_CODES } from './lib/exit-codes.js';
 import { compare } from './lib/validate-record.js';
 
@@ -153,7 +153,7 @@ function resolveQuery(model, terms) {
 // ---------------------------------------------------------------- paths mode
 
 /**
- * Normalize a path to the store-root-relative posix form pointers use:
+ * Normalize a path to the repo-root-relative posix form pointers use (§9.1):
  * backslashes become '/', `..`/`.`/`//` resolve away (path.posix semantics),
  * trailing slashes drop, and absolute paths relativize against `root`.
  * Wrong normalization is wrong ATTRIBUTION — `a/b/../c.ts` must hit the file
@@ -169,8 +169,11 @@ function normPath(root, p) {
 /** §3.1: a pointer naming a directory (no extension) — only these nest. */
 const isFolderPointer = (pointer) => posix.extname(pointer) === '';
 
-function resolvePaths(model, rawPaths) {
-  const paths = [...new Set(rawPaths.map((p) => normPath(model.root, p)).filter(Boolean))]
+function resolvePaths(model, rawPaths, repoRoot) {
+  // Pointers are repo-root-relative (§9.1), so both sides normalize against
+  // the repo root — the KK-08 two-root convention (model.root may be the
+  // nested unknown-knowledge/ store dir in a seeded repo).
+  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p)).filter(Boolean))]
     .sort(compare);
   if (!paths.length) {
     throw new UsageError('--paths must name at least one path — a lookup that never ran is a failure, never a silent empty result');
@@ -179,7 +182,7 @@ function resolvePaths(model, rawPaths) {
     const seen = new Set();
     const concepts = [];
     for (const [pointer, ids] of model.pointers) {
-      const p = normPath(model.root, pointer);
+      const p = normPath(repoRoot, pointer);
       if (path !== p && !(isFolderPointer(p) && path.startsWith(`${p}/`))) continue;
       for (const id of ids) {
         if (seen.has(id)) continue; // keep the lexicographically first pointer
@@ -309,7 +312,10 @@ function main(argv) {
 
     let model;
     try {
-      model = loadStores(opts.root);
+      // KK-08 two-root convention: --root is the REPO root; the stores live
+      // at <root>/unknown-knowledge/ when seeded (§9.1) or at the root itself
+      // (dogfood layout).
+      model = loadStores(locateKitRoot(opts.root));
     } catch (error) {
       process.stderr.write(`resolve: ${error.message}\n`);
       return EXIT_CODES.FAILURE;
@@ -317,7 +323,7 @@ function main(argv) {
 
     const health = storeHealth(model);
     const payload = opts.paths
-      ? { mode: 'paths', 'store-health': health, paths: resolvePaths(model, opts.paths) }
+      ? { mode: 'paths', 'store-health': health, paths: resolvePaths(model, opts.paths, opts.root) }
       : { mode: 'query', 'store-health': health, ...resolveQuery(model, opts.terms) };
 
     const lines = opts.json
