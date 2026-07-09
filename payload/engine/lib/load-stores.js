@@ -405,6 +405,27 @@ export function storeHealth(model) {
 export class UnknownConceptsError extends Error {}
 
 /**
+ * The `--concepts` grammar, settled in one place (UCS-935).
+ *
+ * Ids are trimmed, empties dropped, duplicates collapsed, order stable. Every
+ * surface taking the flag reads it the same way, because a filter that means
+ * two different things is worse than no filter: the structural validator used
+ * to accept `" K-101 "` while the value validator rejected the same argument
+ * as a check that never ran, so a CI pipeline that padded its arguments got a
+ * clean pass from one gate and a blocking defect from the other.
+ *
+ * Returns the normalized ids. Whether an EMPTY result is an error is the
+ * caller's policy, not the grammar's: the validators refuse it (a filter that
+ * names nothing never ran), while preflight reads it as store-health-only.
+ *
+ * @param {string[]} raw ids as spelled on the command line, pre-split on commas
+ * @returns {string[]} trimmed, de-duplicated, stably sorted ids
+ */
+export function normalizeConceptIds(raw) {
+  return [...new Set(raw.map((s) => s.trim()).filter(Boolean))].sort(compare);
+}
+
+/**
  * Select concepts by id (null/undefined = every concept). An unknown id
  * throws UnknownConceptsError: a verdict or finding set "filtered" to a typo
  * would be a check that never ran reading as a silent pass (PRD §5). Every
