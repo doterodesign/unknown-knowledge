@@ -43,7 +43,25 @@ before the first publish:
 3. Move the CHANGELOG's Unreleased entries under the new version heading
    with today's date.
 4. Tag `vX.Y.Z` and push the tag; CI runs lint, tests, acceptance, then
-   publishes with provenance.
+   `scripts/check-tag-version.js`, then publishes with provenance.
+
+**The version lands in the manifest BEFORE the tag exists.** Step 2 is not
+bookkeeping you can do afterwards. The workflow fires on the tag and reads
+the manifest that the tag points at, so a `v1.0.0` tag on a commit whose
+`package.json` still reads `0.0.0` would publish `0.0.0` under a tag claiming
+otherwise. `scripts/check-tag-version.js` refuses that before `npm publish`
+runs, because a published version is **immutable** — the mistake is not
+correctable, only superseded, and every repo seeded from the wrong artifact
+in the meantime carries a birth certificate naming a release that never
+existed (D-021).
+
+If the guard fires, nothing was published. Fix the manifest (or the tag),
+delete the bad tag, and push again:
+
+```
+node scripts/check-tag-version.js v1.0.0    # run it locally first
+git tag -d v1.0.0 && git push origin :v1.0.0
+```
 
 Note: embedding LICENSE + NOTICE into the payload manifest (so every seeded
 repo provably carries them) rides KK-17, which owns `kit.manifest.yaml` and

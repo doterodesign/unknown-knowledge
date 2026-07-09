@@ -33,6 +33,13 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run acceptance
+      # The tag and the manifest must name the same version, BEFORE publish. A
+      # published version is immutable: pushing v1.0.0 against a 0.0.0 manifest
+      # would put 0.0.0 on the registry under a tag claiming otherwise, and
+      # every repo seeded from it would carry a birth certificate naming a
+      # release that does not exist (D-021). Nothing is published if this fails.
+      - name: Tag agrees with package version
+        run: node scripts/check-tag-version.js
       # Refuses while package.json carries `private: true` — flipping that
       # flag is the deliberate, human release-time step (docs/publishing.md).
       - run: npm publish --provenance --access public
