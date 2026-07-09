@@ -14,6 +14,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
 import { EngineRefusal, parseArgs, rethrowIfBug, runCli, UsageError } from '../payload/engine/lib/cli.js';
+import { catchBlocks } from './lib/catch-blocks.js';
 
 /** Collects what a command would have written to stderr. */
 const capture = () => {
@@ -345,7 +346,7 @@ test('every surface that catches an engine failure rethrows bugs first', async (
   // rethrowIfBug is a catch that will one day report a TypeError as a refusal.
   for (const name of ['audit.js', 'survey-map.js', 'log-entry.js']) {
     const source = await readFile(fileURLToPath(new URL(`../payload/engine/commands/${name}`, import.meta.url)), 'utf8');
-    for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
+    for (const block of catchBlocks(source)) {
       // Only the catches that DECIDE THE COMMAND'S FATE. A catch that degrades
       // an unreadable suppressions file to a warning and carries on is not
       // speaking for the run, so it owes nothing to the harness.
@@ -394,8 +395,9 @@ test('the init CLIs rethrow bugs after naming the partial state', async () => {
     // Per CATCH, not per file. A file-wide `assert.match(source, /rethrowIfBug/)`
     // passes as soon as ONE catch does the right thing, and init had a second
     // one — around loadManifest — that swallowed bugs for exactly that reason.
-    for (const block of source.match(/\} catch \(error\) \{[\s\S]*?\n  \}/g) ?? []) {
-      if (!/EXIT_CODES\.FAILURE/.test(block)) continue; // a catch that does not decide the command's fate
+    const fatal = catchBlocks(source).filter((b) => /EXIT_CODES\.FAILURE/.test(b));
+    assert.ok(fatal.length > 0, `cli/commands/${name}: found no catch that decides the exit code — is the scanner blind?`);
+    for (const block of fatal) {
       assert.match(block, /rethrowIfBug\(error\)/,
         `cli/commands/${name} has a catch that decides the exit code without first rethrowing bugs:\n${block}`);
     }
