@@ -38,7 +38,10 @@ function shippedFiles() {
 }
 
 const GATE_WORDS = /\b(blocking|CI gate|gate the|must pass|required check|fails? the build)\b/i;
-const NEGATED = /\b(never|not|no|non-blocking|advisory)\b/i;
+// Negation must sit ON the gate phrase (within a few words before it), not
+// merely anywhere on the line — "audit is a required check; do not skip
+// other steps" must still fail the sweep.
+const NEGATED = /\b(never|not|no|isn't|aren't|non|nor)\b(?:\W+\w+){0,3}?\W+(a\s+|the\s+)?(blocking|CI gate|gate the|must pass|required check|fails? the build)|\b(non-blocking|advisory|never)\b(?:\W+\w+){0,2}?\W*$|\b(blocking|CI gate|gate)\b.{0,30}\b(never|advisory|non-blocking)\b/i;
 
 test('shipped files mentioning --fail-on-findings always carry the never-a-CI-default framing', () => {
   let mentioned = 0;
