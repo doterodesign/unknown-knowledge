@@ -11,6 +11,8 @@ import { mkdtempSync, cpSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import {
   loadStores,
+  refEdges,
+  REF_FIELDS,
   DIAGNOSTIC_CODES,
   SEVERITIES,
 } from '../payload/engine/lib/load-stores.js';
@@ -270,4 +272,128 @@ test('diagnostics are stable-sorted by file, then path, then code (PRD §5)', ()
   const model = fixtureModel('malformed');
   const keys = model.diagnostics.map((d) => `${d.file} ${d.path} ${d.code}`);
   assert.deepEqual(keys, [...keys].sort());
+});
+
+// --------------------------------- the declarative ref graph (UCS-1143)
+//
+// The ref graph is DATA: REF_FIELDS declares each typed edge as a field path
+// plus a target id space, and one generic walker serves every row. These tests
+// pin the property the frontmatter-v2 edges depend on — that a new edge is a
+// new declaration and nothing else. They drive the real walker (`refEdges`)
+// with synthetic rows rather than adding a fake edge to the shipped table,
+// because a test fixture in REF_FIELDS would ship a phantom edge to every
+// consumer of the kit.
+
+// A synthetic record kind standing in for frontmatter v2's `relates` map: a
+// nested map of typed arrays, three levels deep — one level deeper than
+// anything the walker handled before this ticket.
+const RELATES_ROWS = [
+  { field: 'meta.relates.depends-on', space: 'leaves' },
+  { field: 'meta.relates.see-also', space: 'leaves' },
+  { field: 'meta.relates.contradicts', space: 'concepts' },
+  { field: 'meta.relates.supersedes', space: 'decisions' },
+];
+
+const relatesRecord = {
+  meta: {
+    relates: {
+      'depends-on': ['362.2'],
+      'see-also': ['362.1', '362.2'],
+      contradicts: ['K-210'],
+      supersedes: ['D-004'],
+    },
+  },
+};
+
+test('ref graph: declared field paths three levels deep are walked (UCS-1143)', () => {
+  // Depth >= 3 is the acceptance criterion. Before this ticket the walker
+  // destructured a fixed [head, tail] pair, so this record yielded nothing.
+  const file = 'knowledge/regulation/362.5-nested.md';
+  const edges = refEdges(RELATES_ROWS, relatesRecord, { from: '362.5', file });
+  assert.deepEqual(edges, [
+    { from: '362.5', type: 'meta.relates.depends-on', to: '362.2', file, path: 'meta.relates.depends-on[0]', space: 'leaves' },
+    { from: '362.5', type: 'meta.relates.see-also', to: '362.1', file, path: 'meta.relates.see-also[0]', space: 'leaves' },
+    { from: '362.5', type: 'meta.relates.see-also', to: '362.2', file, path: 'meta.relates.see-also[1]', space: 'leaves' },
+    { from: '362.5', type: 'meta.relates.contradicts', to: 'K-210', file, path: 'meta.relates.contradicts[0]', space: 'concepts' },
+    { from: '362.5', type: 'meta.relates.supersedes', to: 'D-004', file, path: 'meta.relates.supersedes[0]', space: 'decisions' },
+  ]);
+});
+
+test('ref graph: an edge path is walked at any depth, and the path IS the type', () => {
+  // One row, four depths, one walker — the generality stated as a property
+  // rather than as four hand-written cases.
+  const record = { a: ['1'], b: { c: ['2'] }, d: { e: { f: ['3'] } }, g: { h: { i: { j: ['4'] } } } };
+  for (const [field, to] of [['a', '1'], ['b.c', '2'], ['d.e.f', '3'], ['g.h.i.j', '4']]) {
+    const [edge, ...rest] = refEdges([{ field, space: 'leaves' }], record, { from: 'X', file: 'f' });
+    assert.deepEqual(rest, [], `${field}: expected exactly one edge`);
+    assert.equal(edge.to, to, `${field}: walked to the wrong array`);
+    assert.equal(edge.type, field, `${field}: the declared path is the edge type`);
+    assert.equal(edge.path, `${field}[0]`, `${field}: the finding path quotes the declared path`);
+  }
+});
+
+test('ref graph: a segment with a literal dot is declared as an array of segments', () => {
+  // Dotted strings are the ordinary spelling; the array form is the escape
+  // hatch for a key that itself contains a dot, so no field is unreachable.
+  const record = { 'v1.2': { refs: ['362.1'] } };
+  assert.deepEqual(
+    refEdges([{ field: ['v1.2', 'refs'], space: 'leaves' }], record, { from: 'X', file: 'f' }),
+    [{ from: 'X', type: 'v1.2.refs', to: '362.1', file: 'f', path: 'v1.2.refs[0]', space: 'leaves' }],
+  );
+});
+
+test('ref graph: a missing or non-object step along a deep path yields no edges', () => {
+  // A record that simply does not carry the edge is the common case, never a
+  // defect — and a scalar where the walker expected a map must not throw, or
+  // one malformed record would crash the whole load (exit 2 territory, PRD §5).
+  for (const record of [
+    {},
+    { meta: null },
+    { meta: 'a string where a map was declared' },
+    { meta: { relates: 42 } },
+    { meta: { relates: { 'depends-on': 'not an array' } } },
+    { meta: { relates: { 'depends-on': null } } },
+  ]) {
+    assert.deepEqual(refEdges(RELATES_ROWS, record, { from: 'X', file: 'f' }), [], JSON.stringify(record));
+  }
+});
+
+test('ref graph: non-string members are skipped — KK-02 already diagnosed the type', () => {
+  // A second complaint from the ref graph would double-report one defect.
+  const record = { meta: { relates: { 'see-also': ['362.1', 42, null, { id: '362.2' }, '362.2'] } } };
+  const edges = refEdges(RELATES_ROWS, record, { from: 'X', file: 'f' });
+  assert.deepEqual(edges.map((e) => e.to), ['362.1', '362.2']);
+  // The index is the position in the AUTHOR's array, so the finding path
+  // points at the member they actually wrote.
+  assert.deepEqual(edges.map((e) => e.path), ['meta.relates.see-also[0]', 'meta.relates.see-also[4]']);
+});
+
+test('ref graph: edges nested in a multi-record file carry their entry prefix', () => {
+  // The basePath prefix is how a decisions/ entries file attributes an edge to
+  // the right record; deep paths compose with it exactly like shallow ones.
+  assert.deepEqual(
+    refEdges(RELATES_ROWS, relatesRecord, { from: 'D-009', file: 'decisions/entries/D-009.yaml', basePath: 'entries[2]' })
+      .map((e) => e.path),
+    [
+      'entries[2].meta.relates.depends-on[0]',
+      'entries[2].meta.relates.see-also[0]',
+      'entries[2].meta.relates.see-also[1]',
+      'entries[2].meta.relates.contradicts[0]',
+      'entries[2].meta.relates.supersedes[0]',
+    ],
+  );
+});
+
+test('ref graph: the shipped table declares every edge as a path plus an id space', () => {
+  // REF_FIELDS is the graph. Anything that is not a well-formed row would be
+  // an edge the walker silently never collects — a check that never ran.
+  const spaces = new Set(['concepts', 'leaves', 'decisions']);
+  for (const [kind, rows] of Object.entries(REF_FIELDS)) {
+    assert.ok(Array.isArray(rows) && rows.length, `${kind}: expected declared rows`);
+    for (const { field, space } of rows) {
+      const segments = Array.isArray(field) ? field : field.split('.');
+      assert.ok(segments.length >= 1 && segments.every((s) => s), `${kind}: malformed field path ${JSON.stringify(field)}`);
+      assert.ok(spaces.has(space), `${kind}: row targets unknown id space "${space}"`);
+    }
+  }
 });

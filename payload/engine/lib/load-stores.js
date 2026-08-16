@@ -106,25 +106,53 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'missing-rules',
 ]);
 
-/** Typed cross-references per store record shape (§3.1–3.3): field → id space. */
-const REF_FIELDS = {
-  'ontology-concept': [
+/**
+ * Typed cross-references per store record shape (§3.1–3.3): field path → id space.
+ *
+ * This table IS the cross-reference graph. Every typed edge the engine knows
+ * about is a row here, and `collectRefs`/`resolveRefs` are generic over it —
+ * so a new edge is a new declaration, never a bespoke check bolted onto the
+ * walker. That property is what the rest of the frontmatter-v2 work leans on:
+ * `relates.depends-on`, `relates.contradicts` and friends arrive as rows.
+ *
+ * A `field` is a path of object keys ending at an ARRAY of id strings, spelled
+ * either as a dotted string ('relates.depends-on') or as an array of segments
+ * (['relates', 'depends-on']). Depth is arbitrary — one level, two, or the
+ * three that v2's nested `relates` map needs — because the walker descends the
+ * segments rather than destructuring a fixed `[head, tail]` pair, which is all
+ * it used to handle. Segments containing a literal dot must use the array form.
+ *
+ * The declared path doubles as the edge's `type` (a published field on
+ * `model.refs`, quoted in the unresolved-ref message), so it always reads as
+ * the dotted path an author would find in their own file.
+ *
+ * @type {Readonly<Record<string, ReadonlyArray<{ field: string|string[], space: string }>>>}
+ */
+export const REF_FIELDS = Object.freeze({
+  'ontology-concept': Object.freeze([
     { field: 'used-by', space: 'concepts' },
     { field: 'confusable-with', space: 'concepts' },
     { field: 'rationale', space: 'decisions' },
-  ],
-  'knowledge-leaf': [
-    { field: ['cross-references', 'class-elsewhere'], space: 'leaves' },
-    { field: ['cross-references', 'see-also'], space: 'leaves' },
-  ],
-  'decision-entry': [
+  ]),
+  'knowledge-leaf': Object.freeze([
+    { field: 'cross-references.class-elsewhere', space: 'leaves' },
+    { field: 'cross-references.see-also', space: 'leaves' },
+  ]),
+  'decision-entry': Object.freeze([
     { field: 'supersedes', space: 'decisions' },
     { field: 'superseded-by', space: 'decisions' },
-    { field: ['relates-to', 'concepts'], space: 'concepts' },
-    { field: ['relates-to', 'leaves'], space: 'leaves' },
-    { field: ['relates-to', 'decisions'], space: 'decisions' },
-  ],
-};
+    { field: 'relates-to.concepts', space: 'concepts' },
+    { field: 'relates-to.leaves', space: 'leaves' },
+    { field: 'relates-to.decisions', space: 'decisions' },
+  ]),
+});
+
+/** The id spaces a ref row may target, and the store each one is declared in. */
+const SPACE_TO_STORE = Object.freeze({
+  concepts: 'ontology',
+  leaves: 'knowledge',
+  decisions: 'decisions',
+});
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
@@ -169,19 +197,81 @@ function indexRecord(ctx, space, id, file, path, entry) {
   ctx[space].set(id, entry);
 }
 
-/** Collect the typed ref edges of one record (strings only; resolution later). */
-function collectRefs(ctx, kind, from, file, basePath, record) {
-  for (const { field, space } of REF_FIELDS[kind]) {
-    const [head, tail] = Array.isArray(field) ? field : [field, null];
-    const list = tail ? (isObject(record[head]) ? record[head][tail] : null) : record[head];
+/**
+ * The segments of a declared ref field path. Dotted strings are the ordinary
+ * spelling; the array form exists for a segment that contains a literal dot.
+ *
+ * @param {string|string[]} field as declared in REF_FIELDS
+ * @returns {string[]} the object keys to descend, outermost first
+ */
+const fieldSegments = (field) => (Array.isArray(field) ? field : field.split('.'));
+
+/**
+ * Follow a declared field path into one record, at any depth.
+ *
+ * Returns the value at the end of the path, or undefined if any intermediate
+ * segment is missing or is not an object — a record that simply does not carry
+ * the edge is the common case, not a defect, and shape defects at the leaf are
+ * already diagnosed by KK-02. The caller decides what a non-array end means.
+ *
+ * @param {object} record the parsed record
+ * @param {string[]} segments object keys to descend, outermost first
+ * @returns {unknown} the value at the path's end, or undefined
+ */
+function valueAtPath(record, segments) {
+  let node = record;
+  for (const segment of segments) {
+    if (!isObject(node)) return undefined;
+    node = node[segment];
+  }
+  return node;
+}
+
+/**
+ * The typed ref edges one record declares — the whole ref-graph walker.
+ *
+ * Generic over the DECLARATION at any depth: it descends the declared segments,
+ * so a nested map of typed arrays (frontmatter v2's `relates`) walks the same
+ * code path as a top-level array. Both the edge's `type` and its `path` are
+ * built from the declaration, which is why introducing an edge is adding a row
+ * to REF_FIELDS and nothing else — there is no per-edge branch to extend.
+ *
+ * Pure: it takes the rows rather than reaching for REF_FIELDS, and returns
+ * edges rather than pushing into the loader's context. That is what lets a
+ * test drive a synthetic record kind through the real walker without a fake
+ * edge being added to the shipped table (tests/load-stores.test.js).
+ *
+ * Non-string members are skipped: KK-02 already diagnoses the wrong type, and
+ * a second complaint from the ref graph would double-report one defect.
+ *
+ * @param {ReadonlyArray<{ field: string|string[], space: string }>} rows the
+ *   declared edges for this record kind
+ * @param {object} record the parsed record to read edges out of
+ * @param {{ from: string, file: string, basePath?: string }} origin what the
+ *   edges are attributed to — the record's id, its file, and the path prefix
+ *   the record sits at within that file ('' for a one-record file)
+ * @returns {Array<{ from, type, to, file, path, space }>} edges in declaration
+ *   order, then array order
+ */
+export function refEdges(rows, record, { from, file, basePath = '' }) {
+  const edges = [];
+  for (const { field, space } of rows) {
+    const segments = fieldSegments(field);
+    const list = valueAtPath(record, segments);
     if (!Array.isArray(list)) continue;
-    const type = tail ? `${head}.${tail}` : head;
+    const type = segments.join('.');
     list.forEach((to, i) => {
       if (typeof to !== 'string') return; // wrong-type already diagnosed
       const path = basePath ? `${basePath}.${type}[${i}]` : `${type}[${i}]`;
-      ctx.refs.push({ from, type, to, file, path, space });
+      edges.push({ from, type, to, file, path, space });
     });
   }
+  return edges;
+}
+
+/** Collect one record's declared edges into the loader's graph. */
+function collectRefs(ctx, kind, from, file, basePath, record) {
+  ctx.refs.push(...refEdges(REF_FIELDS[kind], record, { from, file, basePath }));
 }
 
 /**
@@ -348,9 +438,8 @@ function buildPointers(ctx) {
 
 /** Resolve every collected edge; a miss is an unresolved-ref error. */
 function resolveRefs(ctx) {
-  const spaceToStore = { concepts: 'ontology', leaves: 'knowledge', decisions: 'decisions' };
   for (const ref of ctx.refs) {
-    const store = spaceToStore[ref.space];
+    const store = SPACE_TO_STORE[ref.space];
     ref.resolved = ctx[ref.space].has(ref.to) || ctx.declared[store].has(ref.to);
     if (!ref.resolved) {
       ctx.diagnostics.push({
