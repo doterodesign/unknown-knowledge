@@ -105,6 +105,6 @@ No engine edits were made.
 
 ## Diff audit
 
-6 files, +199 / −15. Data and docs contain only identifier rewrites
+6 files, +199 / −15 (count excludes this migration record itself). Data and docs contain only identifier rewrites
 (`"100.1"` → `L-000100`) plus one clarifying sentence in `kb-build.md` about
 which spelling goes in `consulted.leaves`. No engine file was touched.
