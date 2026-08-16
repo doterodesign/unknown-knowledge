@@ -307,6 +307,52 @@ test('CLI: create then transition an entry; illegal transition exits 2', () => {
   assert.match(illegal.stderr, /illegal transition/);
 });
 
+test('CLI: a finding/gap whose consulted.leaves cite accessions is created verbatim', () => {
+  // UCS-1146 rewrote consulted.leaves to accession ids. The schema accepts the
+  // leafRef union either way (UCS-1144), so what needs pinning is that the CLI
+  // WRITES the accession through unchanged — a helper that normalized, sorted
+  // or re-spelled the ids would silently un-migrate every fragment an agent
+  // logs, and no schema check would notice.
+  const root = tmpRoot();
+  const consulted = { concepts: ['K-510'], leaves: ['L-000101', 'L-000100'] };
+
+  // findings and gaps only: a MISS records an anchor the store could not
+  // explain (`path` + `shape`), so it has no consulted list to migrate — the
+  // miss schema defines no such property and rejects it as a typo.
+  const CONSULTING = { findings: FINDING, gaps: GAP };
+
+  for (const [log, fields] of Object.entries(CONSULTING)) {
+    const created = runCli([
+      'create', '--log', log, '--date', '2026-07-08',
+      '--entry', JSON.stringify({ ...fields, consulted }),
+    ], root);
+    assert.equal(created.status, 0, `${log}: ${created.stderr}`);
+
+    const payload = JSON.parse(created.stdout);
+    assert.deepEqual(payload.entry.consulted, consulted,
+      `${log}: accessions round-trip in written order, neither reordered nor rewritten`);
+
+    // And on disk, not just in the report the CLI printed.
+    const onDisk = load(readFileSync(join(root, payload.file), 'utf8'));
+    assert.deepEqual(onDisk.consulted, consulted, `${log}: the fragment file carries them too`);
+  }
+});
+
+test('CLI: creating the same accession-citing fragment twice is byte-stable', () => {
+  // The fragment name carries a random hex suffix, so byte-stability is a
+  // property of the CONTENT: same input, same bytes on disk (D-012). Pinned
+  // because the migrated citation form must not depend on run order.
+  const bytes = (root) => {
+    const created = runCli([
+      'create', '--log', 'gaps', '--date', '2026-07-09',
+      '--entry', JSON.stringify({ ...GAP, consulted: { leaves: ['L-000100'] } }),
+    ], root);
+    assert.equal(created.status, 0, created.stderr);
+    return readFileSync(join(root, JSON.parse(created.stdout).file), 'utf8');
+  };
+  assert.equal(bytes(tmpRoot()), bytes(tmpRoot()));
+});
+
 test('CLI: accepts --flag=value spelling and hard-errors on unknown flags', () => {
   const root = tmpRoot();
   const created = runCli([

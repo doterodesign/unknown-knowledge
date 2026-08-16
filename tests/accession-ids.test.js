@@ -467,6 +467,44 @@ test('an unresolvable target of EITHER shape is an unresolved-ref finding', () =
   assert.equal(model.ok, false);
 });
 
+test('a dangling accession in relates-to.leaves surfaces at the validator seam', () => {
+  // UCS-1146 rewrote decisions' relates-to.leaves to accessions, which moves
+  // the failure mode: the ref that can now dangle is an ACCESSION. The loader
+  // test above pins that in-process; this pins the seam a client actually
+  // observes — the structural-validator CLI — because a diagnostic the loader
+  // records but the CLI swallows is a defect no user would ever see reported.
+  const r = runCli('validate.js', '--root', fixture('loader/unresolved-leaf-ref'), '--json');
+
+  // An unresolved ref is a LOADER error, so the validator refuses to run its
+  // structural checks at all and exits 2 — a check that never ran is itself a
+  // blocking defect (PRD §5). The report goes to stderr, not the JSON channel:
+  // there is no result to serialize when nothing was checked.
+  assert.equal(r.status, 2, 'a dangling ref blocks the run rather than degrading it');
+  assert.equal(r.stdout, '', 'no JSON payload is emitted when the checks never ran');
+
+  const lines = r.stderr.trimEnd().split('\n');
+  assert.match(lines[0], /the store loader reported 4 error\(s\) — structural checks never ran/);
+
+  // The dangling ACCESSION is named verbatim and addressed to the exact array
+  // element that carries it — the property that makes the finding actionable
+  // now that this field cites by accession.
+  const dangling = lines.slice(1)
+    .filter((l) => l.includes('decisions/entries/D-301-dangling.yaml'))
+    .map((l) => l.trim().split(/\s{2,}/));
+  assert.deepEqual(dangling, [
+    ['unresolved-ref', 'decisions/entries/D-301-dangling.yaml', 'entries[0].relates-to.leaves[0]',
+      'relates-to.leaves ref "L-000998" does not resolve to any knowledge entry or catalog-declared id'],
+    // The notation half still refuses identically: the union stays whole until
+    // UCS-1147, so migrating one spelling cannot mute the other.
+    ['unresolved-ref', 'decisions/entries/D-301-dangling.yaml', 'entries[0].relates-to.leaves[1]',
+      'relates-to.leaves ref "700.8" does not resolve to any knowledge entry or catalog-declared id'],
+  ]);
+
+  // Byte-stable, like every other seam (D-012).
+  const again = runCli('validate.js', '--root', fixture('loader/unresolved-leaf-ref'), '--json');
+  assert.equal(again.stderr, r.stderr, 'the report must be byte-identical run over run');
+});
+
 test('log-fragment leaf refs accept either shape', () => {
   // finding/miss/gap fragments cite leaves in `consulted.leaves`; they read the
   // same leaf-ref grammar, so a fragment written after minting is not rejected.

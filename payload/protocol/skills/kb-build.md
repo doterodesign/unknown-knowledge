@@ -92,12 +92,15 @@ state:
 ```
 node unknown-knowledge/engine/log-entry.js create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf 100.1","consulted":{"leaves":["100.1"]}}'
+  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf 100.1","consulted":{"leaves":["L-000100"]}}'
 ```
 
 `--date` is injected, never wall-clock; the summary carries notations,
 concept IDs, and file paths only — never verbatim user text or secrets
-(§3.4). **Done when** zero uncited claims remain in the draft. If citing
+(§3.4). `consulted.leaves` cites each leaf by its accession id — the
+identity that survives the leaf being renumbered — while the summary
+names the notation, which is how a reader navigates to it.
+**Done when** zero uncited claims remain in the draft. If citing
 and dropping empties the item, park what remains and end the run here — a
 parked item is a recorded demand signal, not a failure.
 

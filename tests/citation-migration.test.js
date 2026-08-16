@@ -1,9 +1,12 @@
-// UCS-1145: leaf cross-references and knowledge catalogs cite by accession.
+// UCS-1145 + UCS-1146: leaf citations across the migrated scope name accessions.
 //
-// The first migrate batch of the identity inversion. UCS-1144's expand phase
-// made BOTH citation forms legal; this batch stops using one of them, in the
-// scope named below. Nothing about the engine changed — a notation-form
-// citation still resolves, and must, until UCS-1147 contracts it away.
+// The migrate batches of the identity inversion. UCS-1144's expand phase made
+// BOTH citation forms legal; these batches stop using one of them, in the
+// scope named below. UCS-1145 covered leaf cross-references and knowledge
+// catalogs; UCS-1146 added the two record-YAML citation sites — a decision's
+// `relates-to.leaves` and a log fragment's `consulted.leaves`. Nothing about
+// the engine changed — a notation-form citation still resolves, and must,
+// until UCS-1147 contracts it away.
 //
 // So this file pins a DATA property, not a behavior: within the migrated
 // scope, no leaf-to-leaf reference and no knowledge-catalog row is spelled as
@@ -12,9 +15,10 @@
 // citation in migrated territory fails here, naming the file and the field.
 //
 // The reference check reads the typed `relates.*` kinds in addition to the
-// `cross-references` fields this batch rewrote — deliberately wider than
+// `cross-references` fields these batches rewrote — deliberately wider than
 // UCS-1145's edit list, since both target the same leaf-ref union. `leafRefs`
-// explains why that costs nothing and what it buys.
+// explains why that costs nothing and what it buys. `recordLeafRefs` does the
+// same job for the record-YAML side that UCS-1146 migrated.
 //
 // The exemptions are EXACT PATHS, never prefixes or globs. A fixture added
 // later cannot join them by sitting in the right directory: it either migrates
@@ -111,6 +115,30 @@ const EXEMPT = new Map([
     'One row names an accession, the other a notation. The catalog half of the same '
     + 'dual-shape proof — pinned as a golden id list in accession-ids.test.js.',
   ],
+  // --- UCS-1146: the record-YAML half of the same dual-shape proof ---------
+  [
+    'tests/fixtures/structural-validator/accessioned/decisions/entries/D-301-accession-ids.yaml',
+    'Its relates-to.leaves cites one leaf by accession (L-000101) and its sibling by '
+    + 'NOTATION ("700.2") from a single edge list. accession-ids.test.js asserts the '
+    + 'resulting edges are [["700.2", true], ["L-000101", true]] — migrating the '
+    + 'notation half would delete the proof that a decision reaches a leaf by either '
+    + 'spelling.',
+  ],
+  [
+    'tests/fixtures/loader/unresolved-leaf-ref/decisions/entries/D-301-dangling.yaml',
+    'Cites one dangling accession (L-000998) and one dangling notation ("700.8") from a '
+    + 'decision rather than a leaf. accession-ids.test.js pins all four dangling refs '
+    + 'together to prove both shapes refuse "from leaf cross-references and decision '
+    + 'relates-to alike"; migrating this would leave the decision-side union half-tested.',
+  ],
+  [
+    'tests/fixtures/loader/healthy/decisions/entries/D-004-three-stores.yaml',
+    'The decision half of the notation-only specimen store. Its relates-to.leaves cites '
+    + '"362.1", a leaf deliberately left UNMINTED so accession-ids.test.js can prove an '
+    + 'unaccessioned leaf still indexes by notation. Rewriting this ref to an accession '
+    + 'would require minting one on that leaf, which is exactly what the specimen '
+    + 'forbids — and load-stores.test.js pins this edge resolving to "362.1".',
+  ],
 ]);
 
 // Read from the grammar module rather than restating it, so a change to the
@@ -187,6 +215,39 @@ const leafRefs = (front) => {
   return refs;
 };
 
+/**
+ * Every leaf citation in one RECORD-YAML document, with its field path.
+ *
+ * The UCS-1146 half of the invariant. Two record kinds cite leaves outside a
+ * leaf's own frontmatter, and both read the same leafRef union:
+ *
+ *   - a decision entry's `relates-to.leaves` (decisions/entries/*.yaml)
+ *   - a log fragment's `consulted.leaves` (finding/gap/miss)
+ *
+ * Both are read from every YAML document in scope rather than from a path
+ * pattern, for the reason `leafRefs` gives: the invariant is "no notation-form
+ * leaf reference in migrated territory", not "the files this batch happened to
+ * edit". A log fragment committed under some new directory, or a decision
+ * entry that moves, stays covered without anyone remembering to widen a glob.
+ *
+ * A document may hold one record or a list under `entries`, so both are read.
+ */
+const recordLeafRefs = (doc) => {
+  const refs = [];
+  const records = Array.isArray(doc?.entries)
+    ? doc.entries.map((entry, i) => [`entries[${i}].`, entry])
+    : [['', doc]];
+  for (const [prefix, record] of records) {
+    for (const [field, holder] of [['relates-to', 'relates-to'], ['consulted', 'consulted']]) {
+      const values = record?.[holder]?.leaves;
+      if (Array.isArray(values)) {
+        values.forEach((value, i) => refs.push([`${prefix}${field}.leaves[${i}]`, value]));
+      }
+    }
+  }
+  return refs;
+};
+
 // Scope note: this covers cross-references AND typed relates.* — wider than the
 // fields UCS-1145 rewrote. See `leafRefs` for why the invariant is pinned at the
 // union rather than at this batch's edit list.
@@ -208,6 +269,34 @@ test('no notation-form leaf-to-leaf reference survives in the migrated scope '
   assert.deepEqual(offenders, [],
     'these cite a leaf by notation in migrated territory — rewrite to the target\'s '
     + 'accession, or add an exact-path entry to EXEMPT saying why the notation is the point');
+});
+
+// The record-YAML roots reach beyond SCOPE_ROOTS on purpose. A decision entry
+// and a log fragment cite leaves from OUTSIDE any knowledge store, so the kit's
+// own `decisions/` and `logs/` trees are migrated territory too — they are real
+// records, not fixtures, and nothing would otherwise stop a notation-form
+// citation from being written there.
+const RECORD_ROOTS = [...SCOPE_ROOTS, 'decisions', 'logs'];
+
+test('no notation-form leaf reference survives in a migrated decision entry '
+  + 'or log fragment (relates-to.leaves and consulted.leaves alike)', () => {
+  const offenders = [];
+  for (const root of RECORD_ROOTS) {
+    for (const file of walk(root, (name) => name.endsWith('.yaml'))) {
+      if (EXEMPT.has(file)) continue;
+      let doc;
+      // Deliberately-unparseable fixtures carry no migratable citation.
+      try { doc = load(readFileSync(join(repoRoot, file), 'utf8')); } catch { continue; }
+      for (const [path, value] of recordLeafRefs(doc)) {
+        if (isNotationForm(value)) offenders.push(`${file} ${path}: ${JSON.stringify(value)}`);
+      }
+    }
+  }
+  assert.deepEqual(offenders, [],
+    'these cite a leaf by notation from a decision entry or log fragment in migrated '
+    + 'territory — rewrite to the target leaf\'s EXISTING accession (never mint a second '
+    + 'id for an already-accessioned leaf), or add an exact-path entry to EXEMPT saying '
+    + 'why the notation is the point');
 });
 
 test('no notation-form id row survives in a migrated knowledge catalog', () => {
@@ -243,9 +332,18 @@ test('every exemption names a file that exists and really cites by notation', ()
     } catch {
       assert.fail(`exempt path no longer exists: ${file} — drop the entry or fix the path`);
     }
-    const notations = file.endsWith('_catalog.yaml')
-      ? (load(text)?.entries ?? []).map((e) => e?.id).filter(isNotationForm)
-      : leafRefs(frontmatter(file)).map(([, v]) => v).filter(isNotationForm);
+    // Three file shapes carry a citation, so the verifier reads whichever one
+    // this exemption names: a catalog's id rows, a record's leaf-ref lists, or
+    // a leaf's own frontmatter.
+    let values;
+    if (file.endsWith('_catalog.yaml')) {
+      values = (load(text)?.entries ?? []).map((e) => e?.id);
+    } else if (file.endsWith('.yaml')) {
+      values = recordLeafRefs(load(text)).map(([, v]) => v);
+    } else {
+      values = leafRefs(frontmatter(file)).map(([, v]) => v);
+    }
+    const notations = values.filter(isNotationForm);
     assert.ok(notations.length > 0,
       `${file} is exempt but carries no notation-form citation — it migrated, so remove `
       + 'its exemption and let the assertion cover it');

@@ -18,4 +18,4 @@ entries:
       diff that the value validator can cross-check against the ontology.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-101], leaves: ["100.1"], decisions: [] }
+    relates-to: { concepts: [K-101], leaves: [L-000100], decisions: [] }
