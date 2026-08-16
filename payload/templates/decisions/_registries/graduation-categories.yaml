@@ -1,0 +1,42 @@
+# Trust graduation category table (UCS-1155) — which change categories may ever
+# graduate from full inspection to sampling, and which are permanently gated.
+#
+# Seeded EMPTY, like every other registry, and for the same reason plus one of
+# its own. The shared reason: every row must cite a Decisions entry that
+# resolves, and a seeded repo's decisions store is empty by design (D-001), so
+# shipped rows would hand every client a broken ref.
+#
+# The reason particular to this table: a graduation-eligible row is a standing
+# claim that a class of change is mechanical ENOUGH IN THIS PROJECT to be
+# sampled rather than read. The kit cannot know that. Whether "alias additions"
+# are mechanical depends on what this project's aliases do — in a store where an
+# alias steers retrieval into regulated material, they are not mechanical at
+# all. Shipping that judgment pre-made would be the kit deciding how much
+# someone else's work gets read.
+#
+# So the vocabulary is yours to mint, and the shapes below are the guidance:
+#
+#   ELIGIBLE — mechanical categories. The change is checkable by looking at it,
+#   and being right about it N times running is real evidence about the N+1th.
+#   The candidates named in the design: alias additions, verified bumps, paths
+#   edges, see-also links.
+#
+#   GATED — judgment categories, permanently. New domain classes, contradicts
+#   and supersedes edges, authority assignments, and ANYTHING CITATION-BEARING.
+#   These stay gated however long the clean streak, because the streak is
+#   evidence about a different question than the one they ask: a correct
+#   authority assignment ten times over says the assigner has been careful, not
+#   that the eleventh source's trustworthiness can go unread.
+#
+# Every row needs a `warrant` — for a gated row, name the judgment the change
+# requires that no streak removes. An `eligible` row needs a `threshold` (N
+# consecutive approved-unmodified cycles); a `gated` row must not carry one.
+#
+# v1 DOES NOT COMPUTE THE COUNTS. The threshold is the bar a moderator judges
+# the recorded approved-unmodified counts against by hand; the analytics are
+# manual (docs/steward-guide.md). Citation spot-checks stay in the sampling plan
+# at every trust level, including the most graduated.
+schema-version: 1
+store: decisions
+table: graduation-categories
+categories: []

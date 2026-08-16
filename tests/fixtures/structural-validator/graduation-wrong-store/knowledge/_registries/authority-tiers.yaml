@@ -1,0 +1,18 @@
+# Structural-validator fixture (UCS-1148) — the citation authority tiers.
+#
+# Which tiers a project recognizes is the project's own to mint: a tier is a
+# governed value, never an engine-shipped enum.
+schema-version: 1
+store: knowledge
+registry: authority-tiers
+values:
+  - value: primary
+    gloss: The issuing body's own published text.
+    warrant: 600.1 cites the operating manual, which is the issuer's own text.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: secondary
+    gloss: Commentary on a primary source.
+    warrant: 600.2 cites a trade summary of the manual.
+    decision: D-201
+    minted: "2026-07-07"

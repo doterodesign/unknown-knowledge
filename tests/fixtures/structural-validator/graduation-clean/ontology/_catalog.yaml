@@ -1,0 +1,7 @@
+# UCS-1155 fixture — trust graduation, CLEAN: the table, a graduation, and two revocations all validate.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-410
+    title: Gadget
+    file: classes/400-gadgets.yaml

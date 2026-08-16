@@ -1,0 +1,31 @@
+# PLANTED: disconnected-revocation. This revocation omits `revokes` while
+# D-207 graduates the same category, so the store asserts both a graduation and
+# its withdrawal with nothing linking them — a reader cannot tell whether the
+# graduation still stands.
+#
+# Contrast with D-204 in the graduation-clean fixture, which also omits
+# `revokes` and is CLEAN: no graduation for that category exists there, so the
+# entry records a standing position and has nothing to point at. The rule is
+# about coherence with the store, not about the field being mandatory.
+schema-version: 1
+entries:
+  - id: D-208
+    title: Revoke sampling for alias additions
+    category: trust
+    status: proposed
+    date: "2026-07-14"
+    deciders: [dimitri]
+    context: >-
+      A spot-check found an alias pointing at a concept it does not name.
+    decision: >-
+      Revoke the graduation of alias-additions. The category returns to full
+      inspection and its streak restarts at zero.
+    consequences: Alias additions are read on every change again.
+    supersedes: []
+    graduation:
+      action: revoke
+      category: alias-additions
+      defect: alias pointed at a concept it does not name
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

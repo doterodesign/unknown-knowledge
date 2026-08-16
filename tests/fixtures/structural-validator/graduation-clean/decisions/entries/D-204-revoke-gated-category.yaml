@@ -1,0 +1,29 @@
+# A revocation naming a PERMANENTLY GATED category is legitimate and must stay
+# clean: revocation only ever narrows autonomy. Graduating the same category is
+# the finding (see the graduation-findings fixture) — the asymmetry is the
+# point, so both directions are exercised against one gated row.
+schema-version: 1
+entries:
+  - id: D-204
+    title: Revoke sampling for authority assignments
+    category: trust
+    status: accepted
+    date: "2026-07-10"
+    deciders: [dimitri]
+    context: >-
+      Recorded for completeness after a review raised whether this category had
+      ever been sampled. It had not; the entry states the standing position.
+    decision: >-
+      Authority assignments remain at full inspection. The category is
+      permanently gated and no graduation of it stands.
+    consequences: >-
+      No change in conduct — the entry records the position rather than moving
+      it.
+    supersedes: []
+    graduation:
+      action: revoke
+      category: authority-assignments
+      defect: none found; entry records the standing gated position
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

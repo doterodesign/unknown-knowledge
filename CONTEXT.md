@@ -99,9 +99,18 @@ into a per-item approve/reject recommendation list. Gated changes require
 multiple corroborating findings (one is a data point, three are a pattern).
 Approved items apply, then the relevant validator re-runs.
 
-**Trust graduation** — Future, per-category autonomy upgrades (e.g. alias
-additions go autonomous after N approved-unmodified cycles). Each graduation
-is recorded as a Decisions entry. Not built in v1; designed for in the schema.
+**Trust graduation** — Per-category autonomy upgrades: moderation narrows from
+100% inspection to sampling for one change category at a time, never globally
+and never per leaf. A governed category table
+(`decisions/_registries/graduation-categories.yaml`) declares each category as
+either graduation-eligible with a threshold N of approved-unmodified cycles, or
+permanently **gated** (new domain classes, contradicts/supersedes edges,
+authority assignments, anything citation-bearing). Graduations and revocations
+are Decisions entries of category `trust` carrying a typed `graduation:` block;
+any defect in a graduated category revokes it automatically, and citation
+spot-checks remain in the sampling plan at every trust level. The mechanism and
+its validation ship in v1; the **analytics stay manual** — the moderator judges
+the recorded approved-unmodified counts, and the engine never computes them.
 
 **Stack** — A language/config ecosystem the extractor library covers (Swift,
 TS/JS, config). Selected at init (auto-detected, confirmable); drives which

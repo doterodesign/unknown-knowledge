@@ -15,6 +15,52 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Trust graduation (UCS-1155): the mechanism that lets moderation narrow from
+  100% inspection to sampling. Autonomy is per change CATEGORY and never per
+  leaf — "this leaf was right ten times" is not evidence about the eleventh,
+  which is a different claim by a different author, whereas "alias additions ran
+  ten cycles approved unmodified" is evidence about a class of edit.
+- A governed category table at `decisions/_registries/graduation-categories.yaml`
+  (new `graduation-categories` record kind) declares each change category as
+  either graduation-eligible with a threshold N, or PERMANENTLY GATED — new
+  domain classes, contradicts/supersedes edges, authority assignments and
+  anything citation-bearing. A gated category never graduates however long the
+  streak: a judgment call does not become mechanical by having been made
+  correctly N times. Filed under `decisions/` because graduation governs the
+  change process, whose truth anchor is the team (D-003). A malformed table is a
+  hard error (exit 2), never a finding — graduation checks judged against a
+  table the engine could not read are checks that never ran.
+- Graduations and revocations are ordinary Decisions entries of category `trust`
+  carrying a typed `graduation:` block, extended conservatively onto the
+  existing schema rather than forked into a new record kind: a graduation IS an
+  ADR. Six new structural checks hold them against the table —
+  `gated-category-graduation`, `undeclared-category`, `missing-graduation-table`,
+  `graduation-not-trust-category` (an entry that moves the trust boundary while
+  filed under another decision category is invisible to anyone auditing that
+  boundary by category), `disconnected-revocation` (a revocation whose link to
+  the graduation it withdraws is missing or wrong — naming none while one
+  stands, or naming an entry that is not a graduation or graduates a different
+  category; resolution alone cannot tell a grant from an unrelated ADR), and
+  `graduation-field-shape` (the block's fields disagreeing with its own action:
+  a grant with no recorded `observed-cycles`, the only written record of what
+  was counted since v1 computes nothing, or carrying withdrawal fields; a
+  revocation naming no `defect`, its automatic trigger) — plus four loader
+  diagnostics for the table's own defects (`graduation-table-name-mismatch`,
+  `graduation-table-store-mismatch`, `duplicate-graduation-category`,
+  `graduation-threshold-shape`). Revoking is always allowed, including for a
+  gated category: revocation only ever narrows autonomy, and refusing to record
+  one would be refusing the safe direction.
+- Decision entries carry optional `provenance` (`author`, `skill-version`),
+  surfaced in validator JSON and human output, so a defect is traceable to both
+  — a bad skill revision becomes findable like any other defect rather than
+  something someone has to remember.
+- Documented conduct in the steward guide: revocation is AUTOMATIC on any
+  defect (not a severity judgment), citation spot-checks stay in the sampling
+  plan at EVERY trust level, and v1's analytics are explicitly MANUAL — the
+  engine never computes approved-unmodified counts, so a green validator is not
+  agreement that a graduation was earned. Templates
+  (`templates/decisions/trust-graduation.yaml`, `trust-revocation.yaml`) and the
+  empty seeded table ship via the payload allowlist.
 - Phoenix events (UCS-1154): `phoenix.js`, the ninth engine surface and the
   FIRST that mutates a store. A phoenix event re-files a drifted subtree in bulk
   from a leaf-granular mapping, bumps the `edition` of every leaf it moves — the

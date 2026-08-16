@@ -1,0 +1,25 @@
+# PLANTED: graduation-not-trust-category. The entry moves the trust boundary
+# but is filed under `process`, so anyone auditing the boundary by decision
+# category would never see it. The graduation itself is otherwise valid —
+# `alias-additions` is declared and eligible — so this fixture isolates the
+# miscategorisation rather than compounding it with a second defect.
+schema-version: 1
+entries:
+  - id: D-207
+    title: Graduate alias additions to sampling
+    category: process
+    status: proposed
+    date: "2026-07-13"
+    deciders: [dimitri]
+    context: >-
+      Alias additions have run three cycles approved without modification.
+    decision: Graduate alias-additions to sampling at one in four.
+    consequences: Alias additions are no longer read on every change.
+    supersedes: []
+    graduation:
+      action: graduate
+      category: alias-additions
+      observed-cycles: 3
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

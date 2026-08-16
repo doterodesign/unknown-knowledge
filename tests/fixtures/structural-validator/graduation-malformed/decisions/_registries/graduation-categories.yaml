@@ -1,0 +1,33 @@
+# PLANTED: a malformed graduation category table — three defects the loader
+# refuses, each gating the validator to exit 2. A table the engine cannot trust
+# means the graduation checks never ran, and a check that never ran is a
+# blocking defect, never a silent pass (PRD §5).
+#
+#   1. `alias-additions` is declared twice, the second time with a different
+#      eligibility — which row governs would be decided by file order.
+#   2. `paths-edges` is graduation-eligible but declares no threshold: eligible
+#      against no bar at all.
+#   3. `domain-classes` is permanently gated yet carries a threshold, which
+#      advertises a bar that can never be met.
+schema-version: 1
+store: decisions
+table: graduation-categories
+categories:
+  - category: alias-additions
+    eligibility: eligible
+    threshold: 3
+    warrant: Mechanical; checkable by reading the edit.
+    decision: D-201
+  - category: alias-additions
+    eligibility: gated
+    warrant: Contradicts the row above — the table answers one question twice.
+    decision: D-201
+  - category: paths-edges
+    eligibility: eligible
+    warrant: Mechanical, but no threshold is declared.
+    decision: D-201
+  - category: domain-classes
+    eligibility: gated
+    threshold: 5
+    warrant: Judgment, yet a threshold is declared alongside the gate.
+    decision: D-201

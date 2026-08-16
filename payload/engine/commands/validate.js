@@ -61,6 +61,18 @@
  *                     point a value actually needs judging — a store that
  *                     governs nothing is complete, but a value checked against
  *                     a registry that never loaded is a check that never ran
+ *   missing-graduation-table
+ *                     a graduation/revocation entry in a store carrying no
+ *                     category table (UCS-1155). Absence surfaces where it can
+ *                     mean something — at the entry that needed the table
+ *   undeclared-category
+ *                     a graduation/revocation naming a category the table does
+ *                     not declare. Autonomy is per CATEGORY, so one nobody
+ *                     scoped has no written extent
+ *   gated-category-graduation
+ *                     a graduation for a PERMANENTLY GATED category — the
+ *                     refusal the mechanism exists for. Revocation of a gated
+ *                     category is fine: it only ever narrows autonomy
  *   registry-shape-mismatch
  *                     a registry's hierarchical flag disagrees with the shape
  *                     the facet it governs requires. Reported once, against the
@@ -111,10 +123,14 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
-  'id-range', 'id-shape', 'index-drift', 'malformed-verified', 'missing-authority',
-  'missing-citation', 'missing-path', 'missing-registry', 'missing-verified',
-  'orphan', 'ref-cycle', 'registry-shape-mismatch', 'suppressed-value',
-  'unaccounted-edition', 'unminted-segment', 'unregistered-value',
+  'disconnected-revocation', 'gated-category-graduation',
+  'graduation-field-shape', 'graduation-not-trust-category',
+  'id-range', 'id-shape', 'index-drift',
+  'malformed-verified', 'missing-authority', 'missing-citation',
+  'missing-graduation-table', 'missing-path', 'missing-registry',
+  'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
+  'suppressed-value', 'unaccounted-edition', 'undeclared-category',
+  'unminted-segment', 'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -940,6 +956,254 @@ function checkEditions(model, push) {
   }
 }
 
+/**
+ * Every graduation or revocation entry is held against the category table
+ * (UCS-1155).
+ *
+ * This is the machine-checkable half of trust graduation, and it is worth being
+ * precise about which half that is. The engine does NOT compute approved-
+ * unmodified counts, does not decide whether a threshold was met, and does not
+ * grant or withdraw autonomy: v1's analytics are MANUAL, and the moderator
+ * judges the recorded counts themselves (steward-guide.md). What is checked is
+ * that the recorded artifacts are well-formed and consistent with the governed
+ * table — which is exactly the part a human reviewer cannot reliably do by eye
+ * across a growing decisions store.
+ *
+ * Three findings, because three different things are wrong:
+ *
+ *   missing-graduation-table
+ *              an entry moves the trust boundary in a store carrying no
+ *              category table at all. Absence surfaces HERE, at the point a
+ *              record actually needs the table, for the same reason
+ *              `missing-registry` does: a store that governs nothing is
+ *              complete, but a graduation judged against a table that never
+ *              loaded is a check that never ran (PRD §5).
+ *   undeclared-category
+ *              the entry names a category the table does not declare. Autonomy
+ *              is per category, so a graduation for a category nobody scoped is
+ *              autonomy with no declared extent — nothing says what class of
+ *              change it covers, and nothing could later revoke it by name.
+ *   gated-category-graduation
+ *              a graduation for a PERMANENTLY GATED category. This is the one
+ *              the whole mechanism exists to refuse: the gated list is where
+ *              judgment lives (new domain classes, contradicts/supersedes
+ *              edges, authority assignments, anything citation-bearing), and a
+ *              judgment call does not become mechanical by having been made
+ *              correctly N times. Revoking a gated category is NOT a finding —
+ *              a revocation only ever narrows autonomy, and refusing to record
+ *              one would be refusing the safe direction.
+ *   graduation-not-trust-category
+ *              an entry carrying a graduation block but filed under some other
+ *              decision category. `trust` is the category that says the third
+ *              store governs the trust boundary (PRD §3); an entry filed
+ *              elsewhere moves that boundary invisibly to anyone auditing it
+ *              by category, which is how a steward reads the store
+ *   disconnected-revocation
+ *              a revocation whose link to the graduation it withdraws is
+ *              missing or wrong: it names no `revokes` WHILE a graduation for
+ *              the same category stands, or its `revokes` names an entry that
+ *              is not a graduation, or one that graduates a DIFFERENT category.
+ *              Omission is clean when no graduation exists — the
+ *              standing-position case has nothing to point at — and an
+ *              unresolved id is the ref graph's to report
+ *   graduation-field-shape
+ *              the block's fields disagree with its own action: a graduation
+ *              with no `observed-cycles` (the only record of what was counted,
+ *              since v1 computes nothing) or carrying withdrawal fields, or a
+ *              revocation naming no `defect` (the automatic trigger)
+ */
+/**
+ * Which `graduation:` fields each action requires and which it refuses.
+ *
+ * The schema states these in prose because it cannot state them in keywords —
+ * there is no conditional in the subset this engine interprets. Enforcing them
+ * here is what keeps that prose from being decoration.
+ *
+ * Each rule earns its place:
+ *
+ *   graduate REQUIRES `observed-cycles` — the recorded count is the entire
+ *     reviewable basis of the judgment. v1 computes nothing, so a graduation
+ *     with no written count is exactly the unreviewable decision the manual-
+ *     analytics stance depends on NOT existing: a reader cannot ask whether the
+ *     bar was met, because nobody wrote down what was counted.
+ *   graduate REFUSES `revokes` and `defect` — both describe a withdrawal. On a
+ *     grant they are either copy-paste from the revocation template or a
+ *     confusion about which direction the entry moves, and each would leave a
+ *     grant carrying the vocabulary of its own reversal.
+ *   revoke REQUIRES `defect` — revocation is automatic ON A DEFECT, so the
+ *     defect is the trigger. A revocation that names none records that trust
+ *     was withdrawn for no stated reason, and the next graduation of that
+ *     category has nothing to have fixed.
+ *
+ * `observed-cycles` is deliberately NOT refused on a revoke: it is meaningless
+ * there rather than contradictory, and refusing a harmless field would cost an
+ * author an edit for nothing.
+ *
+ * @param {object} graduation the typed block
+ * @param {'graduate'|'revoke'} action the block's own action
+ * @returns {Array<{field: string, message: string}>}
+ */
+function graduationShapeDefects(graduation, action) {
+  const defects = [];
+  if (action === 'graduate') {
+    if (!Number.isInteger(graduation['observed-cycles'])) {
+      defects.push({
+        field: 'observed-cycles',
+        message: 'graduation records no "observed-cycles" — v1 computes no counts, so this number is the ONLY record of what the moderator judged against the category\'s threshold; without it the graduation cannot be reviewed by anyone who was not in the room (UCS-1155: the analytics are manual by design)',
+      });
+    }
+    for (const field of ['revokes', 'defect']) {
+      if (graduation[field] !== undefined) {
+        defects.push({
+          field,
+          message: `graduation carries "${field}", which describes a WITHDRAWAL of autonomy — this entry grants it. Remove the field, or change "action" to revoke if the entry was meant to withdraw a graduation`,
+        });
+      }
+    }
+    return defects;
+  }
+  if (typeof graduation.defect !== 'string' || graduation.defect.trim() === '') {
+    defects.push({
+      field: 'defect',
+      message: 'revocation names no "defect" — revocation is automatic ON A DEFECT, so the defect is the trigger and the substance both; without it the record says trust was withdrawn for no stated reason, and the next graduation of this category has nothing to have fixed',
+    });
+  }
+  return defects;
+}
+
+function checkGraduations(model, push) {
+  // One table per store, keyed "<store>/<name>"; decisions is where graduation
+  // is governed (the change process is the team's truth anchor, D-003).
+  const tables = [...model.graduations.values()];
+  // Which categories the store carries a GRADUATION for, and the entry that
+  // granted it. Built once: a revocation's coherence is a question about the
+  // store as a whole, not about the entry in isolation, so it cannot be
+  // answered while looking at one record.
+  const graduatedBy = new Map();
+  for (const entry of model.decisions.values()) {
+    const block = entry.record.graduation;
+    if (!isObject(block) || block.action !== 'graduate') continue;
+    if (typeof block.category !== 'string') continue;
+    if (!graduatedBy.has(block.category)) graduatedBy.set(block.category, recordId(entry));
+  }
+  for (const entry of model.decisions.values()) {
+    const { file, record } = entry;
+    const graduation = record.graduation;
+    if (!isObject(graduation)) continue; // an ordinary decision carries no block
+    const { action, category } = graduation;
+    // A non-string category or unknown action is a schema defect KK-02 already
+    // reported; judging it again here would double-report one mistake.
+    if (typeof category !== 'string' || (action !== 'graduate' && action !== 'revoke')) continue;
+    // The entry's own `category` field must be `trust`. The third store governs
+    // the trust boundary (PRD §3), and `trust` is the category that says so —
+    // an entry filed under `process` or `governance` that quietly moves the
+    // boundary is invisible to anyone auditing the boundary by category, which
+    // is how a steward reads the decisions store. A malformed value is a schema
+    // defect KK-02 already reported, so only a well-formed MISMATCH is judged
+    // here; one omission earns one finding.
+    if (typeof record.category === 'string' && record.category !== 'trust') {
+      push({
+        severity: 'error', code: 'graduation-not-trust-category', id: recordId(entry), file,
+        path: 'category',
+        message: `entry carries a graduation block but is filed under category "${record.category}" — an entry that moves the trust boundary is a "trust" decision (PRD §3: the third store governs changes to the system's own trust boundary), and one filed elsewhere is invisible to anyone auditing that boundary by category`,
+      });
+    }
+    // Which fields belong to which action. The schema describes these rules in
+    // prose and cannot enforce them — its keyword subset has no conditional —
+    // and a rule stated where nothing enforces it is contract drift wearing the
+    // appearance of a check. One code for the family, like the loader's
+    // `graduation-threshold-shape`, with a message per field: they are one
+    // defect class (this block's fields disagree with its own action) and an
+    // author fixes them the same way.
+    for (const defect of graduationShapeDefects(graduation, action)) {
+      push({
+        severity: 'error', code: 'graduation-field-shape', id: recordId(entry), file,
+        path: `graduation.${defect.field}`, message: defect.message,
+      });
+    }
+    if (!tables.length) {
+      push({
+        severity: 'error', code: 'missing-graduation-table', id: recordId(entry), file,
+        path: 'graduation.category',
+        message: `entry ${action}s the category "${category}", but the store carries no graduation category table — the table that declares which categories may graduate never loaded, so this entry's category was never checked (a check that never ran is a blocking defect, PRD §5)`,
+      });
+      continue;
+    }
+    const row = tables.map((t) => t.categories.get(category)).find(Boolean);
+    if (!row) {
+      const table = tables[0];
+      push({
+        severity: 'error', code: 'undeclared-category', id: recordId(entry), file,
+        path: 'graduation.category',
+        message: `category "${category}" is not declared in the graduation category table (${table.file}) — autonomy is granted per CATEGORY, so a ${action} naming an undeclared one has no scope anyone wrote down; declare the category with its eligibility and warrant, or correct the name`,
+      });
+      continue;
+    }
+    // A revocation only ever narrows autonomy, so it is legitimate against any
+    // declared category — including a gated one, where it is a no-op that
+    // records a defect was found. Only GRADUATION is refused.
+    if (action === 'graduate' && row.eligibility === 'gated') {
+      push({
+        severity: 'error', code: 'gated-category-graduation', id: recordId(entry), file,
+        path: 'graduation.category',
+        message: `category "${category}" is PERMANENTLY GATED in ${row.file} and cannot graduate — the table's warrant for gating it is the standing answer, and a judgment call does not become mechanical by having been made correctly ${typeof graduation['observed-cycles'] === 'number' ? graduation['observed-cycles'] : 'N'} times; changing that is a table edit with its own Decisions entry, never a graduation against the table as it stands`,
+      });
+    }
+    // A revocation must name the graduation it withdraws WHEN THERE IS ONE.
+    // The `revokes` field's whole promise is that the withdrawal and the thing
+    // withdrawn stay connected in the record; a revocation that omits it while
+    // a graduation for that category stands leaves the store asserting both,
+    // with nothing linking them — a reader cannot tell whether the graduation
+    // is live, and the revocation names no target to check against.
+    //
+    // Omission stays CLEAN when no graduation for the category exists. That is
+    // the standing-position case: recording that a never-graduated category is
+    // (and remains) at full inspection is a legitimate entry, and it has no
+    // graduation to point at. Demanding a ref there would demand a citation of
+    // something that does not exist.
+    if (action === 'revoke' && typeof graduation.revokes !== 'string') {
+      const granted = graduatedBy.get(category);
+      if (granted !== undefined) {
+        push({
+          severity: 'error', code: 'disconnected-revocation', id: recordId(entry), file,
+          path: 'graduation.revokes',
+          message: `revocation of "${category}" names no graduation, but ${granted} graduates that category — the withdrawal and the thing withdrawn must stay connected in the record, or a reader cannot tell whether ${granted} still stands; name it in "revokes"`,
+        });
+      }
+    }
+    // A PRESENT `revokes` must name an actual graduation OF THIS CATEGORY.
+    // Existence alone is what the ref graph checks, and existence is not the
+    // claim: `revokes` asserts "this entry withdraws that grant", so a
+    // revocation pointing at an ordinary ADR, or at a graduation of some other
+    // category, records a withdrawal of something that was never granted —
+    // clean-looking, and false. The ref graph cannot see this because every id
+    // it resolves is equally a real decision.
+    //
+    // An UNRESOLVED id is skipped: that is the ref graph's `unresolved-ref` to
+    // report, and adding a second finding would double-report one typo.
+    if (action === 'revoke' && typeof graduation.revokes === 'string') {
+      const target = model.decisions.get(graduation.revokes);
+      if (target !== undefined) {
+        const targetBlock = target.record.graduation;
+        const targetIsGraduation = isObject(targetBlock) && targetBlock.action === 'graduate';
+        if (!targetIsGraduation) {
+          push({
+            severity: 'error', code: 'disconnected-revocation', id: recordId(entry), file,
+            path: 'graduation.revokes',
+            message: `"revokes" names ${graduation.revokes}, which is not a graduation — a revocation withdraws a grant of autonomy, so it must name the entry that granted it; ${graduation.revokes} ${isObject(targetBlock) ? 'is itself a revocation' : 'carries no graduation block at all'}`,
+          });
+        } else if (targetBlock.category !== category) {
+          push({
+            severity: 'error', code: 'disconnected-revocation', id: recordId(entry), file,
+            path: 'graduation.revokes',
+            message: `this entry revokes "${category}" but "revokes" names ${graduation.revokes}, which graduates "${targetBlock.category}" — a revocation must withdraw a grant made for its OWN category, or it records the withdrawal of something that was never granted while leaving the real graduation standing`,
+          });
+        }
+      }
+    }
+  }
+}
+
 function checkDecisionCycles(model, push) {
   const seen = new Set(); // canonical cycle keys — each loop reported once
   const color = new Map(); // 0/undefined = white, 1 = on stack, 2 = done
@@ -998,10 +1262,51 @@ export function runChecks(model, repoRoot = model.root) {
   checkCitations(model, push);
   checkVerifiedDates(model, push);
   checkEditions(model, push);
+  checkGraduations(model, push);
   checkDecisionCycles(model, push);
   findings.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code) || compare(a.id, b.id));
   return findings;
+}
+
+/**
+ * Decision-entry provenance, published so a defect is traceable (UCS-1155).
+ *
+ * The point of recording an author and a skill version is being able to ask the
+ * question backwards. When a graduated category turns out to be producing bad
+ * changes, "which entries did that skill revision write?" is the question that
+ * bounds the damage — and it is unanswerable if provenance is only ever stored
+ * and never surfaced. So the validator publishes it for every entry that
+ * carries it, and a bad skill revision becomes traceable like any other defect
+ * rather than a thing someone has to remember.
+ *
+ * Entries WITHOUT provenance are omitted rather than listed as nulls. The field
+ * is optional — the whole installed base predates it (D-001: no update channel,
+ * so seeded stores keep what they have) — and a list padded with an entry for
+ * every un-migrated record would bury the ones that can actually be traced.
+ *
+ * Stable-sorted by id and free of timestamps, like every other part of this
+ * payload, so it stays baseline-diffable (D-012).
+ *
+ * @param {object} model the loaded store model
+ * @returns {Array<{id: string, file: string, author: string|null, 'skill-version': string|null}>}
+ */
+function decisionProvenance(model) {
+  const rows = [];
+  for (const entry of model.decisions.values()) {
+    const provenance = entry.record?.provenance;
+    if (!isObject(provenance)) continue;
+    const author = typeof provenance.author === 'string' ? provenance.author : null;
+    const skillVersion = typeof provenance['skill-version'] === 'string'
+      ? provenance['skill-version']
+      : null;
+    // A provenance block carrying neither field records nothing; publishing it
+    // would advertise traceability the entry does not actually have.
+    if (author === null && skillVersion === null) continue;
+    rows.push({ id: recordId(entry), file: entry.file, author, 'skill-version': skillVersion });
+  }
+  rows.sort((a, b) => compare(a.id, b.id));
+  return rows;
 }
 
 // ------------------------------------------------------------- CLI plumbing
@@ -1036,6 +1341,15 @@ function render(payload) {
     lines.push(`store health: ${health.errors} error(s), ${health.warnings} warning(s) — loader warnings do not block; errors would have (exit 2)`, '');
   }
   if (payload.concepts) lines.push(`filtered to concepts: ${payload.concepts.join(', ')}`, '');
+  // Provenance is traceability, so it is printed where a human reading a
+  // failing run can see it — not only in the JSON a machine parses.
+  if (payload.provenance.length) {
+    lines.push('decision provenance (author / skill version):');
+    for (const p of payload.provenance) {
+      lines.push(`    ${p.id}  ${p.author ?? '—'}  ${p['skill-version'] ?? '—'}`);
+    }
+    lines.push('');
+  }
   for (const f of payload.findings) {
     lines.push(`${f.severity}  ${f.code}  ${f.id}  ${f.file}  ${f.path}`, `    ${f.message}`);
   }
@@ -1096,6 +1410,7 @@ export function main(argv) {
     const payload = {
       checks: CHECKS,
       ...(opts.concepts ? { concepts: opts.concepts } : {}),
+      provenance: decisionProvenance(model),
       'store-health': healthSummary(storeHealth(model)),
       counts: {
         errors: findings.filter((f) => f.severity === 'error').length,

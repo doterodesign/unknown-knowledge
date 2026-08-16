@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-201
+    title: One gadget store
+    file: entries/D-201-gadget-store.yaml

@@ -45,9 +45,62 @@
         "leaves": { "type": "array", "items": { "$ref": "#/$defs/leafRef" } },
         "decisions": { "type": "array", "items": { "$ref": "#/$defs/decisionRef" } }
       }
+    },
+    "graduation": {
+      "$ref": "#/$defs/graduation",
+      "description": "OPTIONAL typed block marking this entry as a trust graduation or revocation (UCS-1155). Present only on the entries that move the trust boundary; an ordinary decision omits it. Deliberately a BLOCK on the existing record rather than a forked record kind: a graduation IS an ADR — it has context, a decision, consequences, deciders and a date, and it supersedes and is superseded like any other — so forking the kind would duplicate the whole envelope to add three fields, and split the decisions store into two things a steward has to know apart. The validator holds this block against the graduation category table (graduation-categories.schema.json)."
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance",
+      "description": "Who authored this entry and with which skill revision (UCS-1149's leaf provenance, applied to decision entries by UCS-1155). Optional, so the installed base and every fixture written before it stay valid. It is what makes a defect traceable: when a graduated category produces a bad change, the question is not only which entry was wrong but which AUTHOR and which SKILL VERSION produced it — a bad skill revision is then traceable like any other defect, and every entry it touched is findable rather than guessed at."
     }
   },
   "$defs": {
+    "graduation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "category"],
+      "description": "A move of the trust boundary: this entry either GRADUATES a change category from full inspection to sampling, or REVOKES a graduation and returns the category to full inspection (UCS-1155). Both directions are the same shape because both are the same governed act — a recorded, reviewable, reversible statement about how much reading a class of change gets — and giving revocation a lesser shape would make un-earning trust cheaper to record than earning it, which is backwards.",
+      "properties": {
+        "action": {
+          "enum": ["graduate", "revoke"],
+          "description": "`graduate` — the category moves from full inspection to sampling. `revoke` — a graduation is withdrawn and the category returns to full inspection. Revocation is AUTOMATIC on any defect found in a graduated category (conduct, documented in the steward guide): the steward records it, the mechanism does not wait for a judgment call about whether this particular defect was bad enough."
+        },
+        "category": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "The change category being graduated or revoked — must name a row in the graduation category table (decisions/_registries/). An entry naming an absent category is a validator finding, as is a graduation for a permanently gated one: autonomy that cites no declared category is autonomy nobody scoped."
+        },
+        "observed-cycles": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The count of consecutive approved-unmodified cycles the moderator OBSERVED for this category, as recorded by reflect. v1 DOES NOT COMPUTE OR VERIFY THIS NUMBER — the analytics stay manual, and this field is the steward's written record of what they judged against the table's threshold, not an engine-derived total. Recording it is what makes the judgment reviewable after the fact: a reader can ask whether the number was met, even though no code asserts the number itself. REQUIRED on a `graduate` (a `graduation-field-shape` finding otherwise) — a grant with no written count is exactly the unreviewable judgment the manual-analytics stance depends on not existing. Meaningless but tolerated on a `revoke`, which is triggered by a defect rather than by a count. The action-conditional rules are enforced by the structural validator rather than here, because this document is interpreted by the engine's own validator, whose keyword subset has no conditional."
+        },
+        "revokes": {
+          "$ref": "#/$defs/decisionRef",
+          "description": "On a `revoke`, the graduation entry being withdrawn. When present it is resolved like any other cross-store ref, so an id naming no decision is an unresolved-ref error — and the structural validator additionally checks WHAT it names: the target must carry a graduation block, with action `graduate`, for this entry's own category, since resolution alone cannot tell a grant from an unrelated ADR (`disconnected-revocation`). REFUSED on a `graduate`, which grants rather than withdraws (`graduation-field-shape`). REQUIRED WHENEVER A GRADUATION FOR THE SAME CATEGORY EXISTS in the store — otherwise the store asserts both a graduation and its revocation with nothing linking them, and a reader cannot tell whether the graduation still stands (a `disconnected-revocation` finding). It stays OPTIONAL when no graduation for the category exists, which is the standing-position case: recording that a never-graduated category remains at full inspection is legitimate and has nothing to point at. That conditional is enforced by the structural validator rather than here, because this document is interpreted by the engine's own validator, whose keyword subset has no conditional — and a rule stated in a keyword nothing enforces is contract drift wearing the appearance of a check."
+        },
+        "defect": {
+          "type": "string",
+          "description": "On a `revoke`, what went wrong — the defect that triggered it. Prose, because the point is that a human can read why trust was withdrawn; the machine-checkable half is that a revocation exists and names something. REQUIRED on a `revoke` and REFUSED on a `graduate` (a `graduation-field-shape` finding either way): revocation is automatic ON A DEFECT, so a revocation naming none records that trust was withdrawn for no stated reason and leaves the next graduation of that category with nothing to have fixed — while a defect on a GRANT is withdrawal vocabulary on an entry moving the other direction. Validator-enforced, per the note on `observed-cycles`."
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Who wrote this entry and with which authoring skill (UCS-1149's leaf shape, applied to decision entries by UCS-1155). Recorded, never judged: no registry governs it, because an author name and a skill version are facts about how the entry came to exist rather than governed vocabulary. Surfaced in validator and resolver output so a defect is traceable to both.",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Who authored the entry — a human steward or the agent that drafted it."
+        },
+        "skill-version": {
+          "type": "string",
+          "description": "The version of the authoring skill that produced the entry, so a systematic drafting defect can be traced to the vintage that introduced it — the property that makes a bad skill revision recallable rather than merely regrettable."
+        }
+      }
+    },
     "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
     "decisionRef": {
       "type": "string",

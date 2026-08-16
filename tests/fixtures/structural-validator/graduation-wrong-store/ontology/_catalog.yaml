@@ -1,0 +1,7 @@
+# UCS-1155 fixture — the ontology store is clean; the category table is deliberately filed under the wrong store (knowledge/).
+schema-version: 1
+store: ontology
+entries:
+  - id: K-410
+    title: Gadget
+    file: classes/400-gadgets.yaml

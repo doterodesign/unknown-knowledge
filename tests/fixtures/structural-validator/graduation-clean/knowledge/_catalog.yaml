@@ -1,0 +1,9 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000601
+    title: Gadget registry rules
+    file: widgets/600.1-gadget-registry.md
+  - id: L-000602
+    title: Gadget handling
+    file: widgets/600.2-gadget-handling.md
