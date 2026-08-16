@@ -342,6 +342,7 @@ test('resolver knowledge entry points publish the accession id', () => {
     runCli('resolve.js', 'widget', '--root', ACCESSIONED, '--json').stdout);
   assert.deepEqual(out.results[0].knowledge, [
     {
+      via: 'terms',
       id: 'L-000101',
       notation: '700.1',
       heading: 'Widget registry rules',
@@ -354,6 +355,12 @@ test('resolver knowledge entry points publish the accession id', () => {
       provenance: null,
       downranked: false,
       file: 'knowledge/widgets/700.1-widget-registry.md',
+      // Typed-edge keys (UCS-1151) on the same v1 leaf, and for the same
+      // reason: present and empty, never absent. `via: terms` because this
+      // pre-1151 leaf reaches its concept the only way it could — text.
+      relates: {
+        'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
+      },
     },
   ]);
 });
@@ -382,17 +389,18 @@ test('a non-string accession publishes null, never the raw value', () => {
 test('a notation-only store resolves identically apart from the added field', () => {
   // The golden diff. Strip the added keys and the result must be exactly the
   // pre-ticket shape — so every existing consumer keeps reading what it read.
-  // UCS-1144 added `id`; UCS-1149 added stage/excerpt/provenance/downranked.
-  // Each takes a FIXED position, because JSON.stringify preserves insertion
-  // order and a field that moved would rewrite every byte-stable golden.
+  // UCS-1144 added `id`; UCS-1149 added stage/excerpt/provenance/downranked;
+  // UCS-1151 added `via` and `relates`. Each takes a FIXED position, because
+  // JSON.stringify preserves insertion order and a field that moved would
+  // rewrite every byte-stable golden.
   const out = JSON.parse(
     runCli('resolve.js', 'payment', 'method', '--root', fixture('resolver/store'), '--json').stdout);
   const entries = out.results[0].knowledge;
-  const ADDED = ['id', 'stage', 'excerpt', 'provenance', 'downranked'];
+  const ADDED = ['via', 'id', 'stage', 'excerpt', 'provenance', 'downranked', 'relates'];
   for (const entry of entries) {
     assert.deepEqual(
       Object.keys(entry),
-      ['id', 'notation', 'heading', 'stage', 'excerpt', 'provenance', 'downranked', 'file'],
+      ['via', 'id', 'notation', 'heading', 'stage', 'excerpt', 'provenance', 'downranked', 'file', 'relates'],
       'the added fields take FIXED positions, so output stays byte-stable',
     );
     assert.equal(entry.id, null, 'an unminted leaf publishes null, never omits the key');

@@ -1,0 +1,13 @@
+# Typed edges fixture (UCS-1151). Two concepts, and the split between them is
+# the point: K-201 is named by no leaf's `terms` at all, so the ONLY way a leaf
+# reaches it is the structural `concepts` edge. K-202 is reachable both ways,
+# which is what lets the `via` field be tested for both values in one store.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-201
+    title: Retrieval ranking
+    file: classes/200-retrieval.yaml
+  - id: K-202
+    title: Index build
+    file: classes/200-retrieval.yaml

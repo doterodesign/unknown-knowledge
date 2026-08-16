@@ -16,10 +16,14 @@
  *   id-range          concept id outside the class file's declared range: the
  *                     numeric filename prefix N declares [N, N+99] (§3.5 ids
  *                     are minted within class ranges, leaving gaps)
- *   missing-path      a concept source-of-truth path that does not exist in
- *                     the working tree. Deprecated concepts demote to warning
- *                     (§3.5 — the source-deletion escape hatch); draft and
- *                     proposed stay blocking: structural checks always apply
+ *   missing-path      a declared pointer into the working tree that is not
+ *                     there — a concept source-of-truth path, or a knowledge
+ *                     leaf `paths` entry (UCS-1151). One code, because it is
+ *                     one defect class: the truth anchor is the artifact (§3.1)
+ *                     and the artifact is gone. Deprecated concepts demote to
+ *                     warning (§3.5 — the source-deletion escape hatch); draft
+ *                     and proposed stay blocking, and leaves have no demotion
+ *                     at all: structural checks always apply
  *   index-drift       catalog/tree index inconsistency: a row naming a file
  *                     that was not loaded, or naming a file that does not
  *                     contain the row's id. The documented pending marker
@@ -74,8 +78,8 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import {
-  LEAF_ACCESSION_FIELD, LEAF_ID_FIELD, healthSummary, loadStores, normalizeConceptIds,
-  recordId, storeHealth,
+  LEAF_ACCESSION_FIELD, LEAF_ID_FIELD, LEAF_PATHS_FIELD, healthSummary, loadStores,
+  normalizeConceptIds, recordId, storeHealth,
 } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
@@ -211,6 +215,49 @@ function checkConcepts(model, push, repoRoot) {
         push({
           severity, code: 'missing-path', id, file, path: `source-of-truth[${i}]`,
           message: `source-of-truth path "${p}" does not exist in the working tree — the truth anchor is the artifact (§3.1)`,
+        });
+      }
+    });
+  }
+}
+
+/**
+ * Leaf `paths` must exist in the working tree (UCS-1151) — the same check
+ * concept source-of-truth pointers already ride, deliberately reusing the same
+ * CODE.
+ *
+ * Three of frontmatter v2's typed edge families are declared in the ref-field
+ * table and get `unresolved-ref` for free. `paths` cannot join them, and the
+ * reason is worth stating plainly rather than papering over: the ref graph
+ * resolves IDS. Its whole question is whether a string is minted in some store's
+ * id space, and a repo path is not an id — it names the working tree, which is a
+ * different truth anchor (§3.1: the artifact) checked by a different means (the
+ * filesystem). Declaring `paths` as a ref row would have asked the loader
+ * whether `src/api/handler.ts` resolves to a knowledge entry, which it never
+ * could, and every leaf carrying a path would have failed for the wrong reason.
+ *
+ * So the family gets the HONEST mechanism for what it points at, and it is not a
+ * new one: `missing-path` already means exactly this — a declared pointer into
+ * the working tree that is not there. Reusing the code keeps one finding class
+ * for one defect class, so a steward who has fixed a concept's dead pointer
+ * needs nothing new to fix a leaf's.
+ *
+ * Unlike concepts there is no deprecation demotion. That escape hatch exists so
+ * a source-deletion PR can land while a DEPRECATED concept still points at what
+ * it deleted (§3.5); a leaf has no `status`, and its `facets.stage` is a
+ * promotion lifecycle rather than a retirement one — there is no stage that
+ * means "this leaf's pointers are allowed to dangle". Inventing one here would
+ * be a governance decision this ticket has no warrant to make.
+ */
+function checkLeafPaths(model, push, repoRoot) {
+  for (const entry of model.leaves.values()) {
+    const { file, record } = entry;
+    strings(record[LEAF_PATHS_FIELD]).forEach((p, i) => {
+      if (!statSync(join(repoRoot, p), { throwIfNoEntry: false })) {
+        push({
+          severity: 'error', code: 'missing-path', id: recordId(entry), file,
+          path: `${LEAF_PATHS_FIELD}[${i}]`,
+          message: `path "${p}" does not exist in the working tree — a leaf's paths name the repo tree it governs, and a pointer at nothing governs nothing (UCS-1151)`,
         });
       }
     });
@@ -724,6 +771,7 @@ export function runChecks(model, repoRoot = model.root) {
   const push = (f) => findings.push(f);
   checkCatalogs(model, push);
   checkConcepts(model, push, repoRoot);
+  checkLeafPaths(model, push, repoRoot);
   checkOrphans(model, push);
   checkRegistryMembership(model, push);
   checkCitations(model, push);

@@ -115,8 +115,13 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   // whether or not the store has started minting accessions or declaring
   // stages. `excerpt` is derived from the body's topic sentence — the retired
   // `description` field is not read, because it no longer exists.
+  // Extended again by typed edges (UCS-1151): `via` names which join reached
+  // the leaf, and `relates` carries its one-hop neighborhood with every declared
+  // kind present as a stable key — empty here, because this fixture leaf
+  // declares no relates edges.
   assert.deepEqual(method.knowledge, [
     {
+      via: 'terms',
       id: null,
       notation: '410.2',
       heading: 'Accepted payment instruments',
@@ -125,6 +130,9 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
       provenance: null,
       downranked: true,
       file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
+      relates: {
+        'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
+      },
     },
   ]);
 });
@@ -136,6 +144,7 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
   const settlement = runJson('settlement').results.find((r) => r.id === 'K-120');
   assert.deepEqual(settlement.knowledge, [
     {
+      via: 'terms',
       id: null,
       notation: '410.1',
       heading: 'Card settlement windows',
@@ -146,6 +155,9 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
       provenance: { author: 'dimitri', 'skill-version': 'kb-build@2.0.0' },
       downranked: false,
       file: 'knowledge/payments/410.1-card-settlement-windows.md',
+      relates: {
+        'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
+      },
     },
   ]);
 
@@ -214,12 +226,17 @@ test('zero-hit query is a normal outcome: exit 0, explicit empty result', () => 
 test('--paths: exact file pointer maps back to its concept', () => {
   const out = runJson('--paths', 'src/payments/settlement.ts');
   assert.equal(out.mode, 'paths');
+  // `knowledge` joins the result shape in UCS-1151 — the leaves governing this
+  // path. Empty here: this fixture's leaves declare neither `paths` nor
+  // `concepts`, so the reverse lookup is unchanged for a pre-1151 store, which
+  // is the compatibility claim worth pinning alongside the new field.
   assert.deepEqual(out.paths, [
     {
       path: 'src/payments/settlement.ts',
       concepts: [
         { id: 'K-120', term: 'Settlement', status: 'active', pointer: 'src/payments/settlement.ts' },
       ],
+      knowledge: [],
     },
   ]);
 });
@@ -245,7 +262,7 @@ test('--paths: nesting applies only to folder pointers, never file pointers', ()
   // src/payments/settlement.ts is a FILE pointer; a path "under" it cannot exist.
   const out = runJson('--paths', 'src/payments/settlement.ts/anything.ts');
   assert.deepEqual(out.paths, [
-    { path: 'src/payments/settlement.ts/anything.ts', concepts: [] },
+    { path: 'src/payments/settlement.ts/anything.ts', concepts: [], knowledge: [] },
   ]);
 });
 
@@ -270,7 +287,7 @@ test('--paths: paths are normalized — .., //, internal ./, backslashes, absolu
 
 test('--paths: unmatched path is a normal outcome — empty concepts, exit 0', () => {
   const out = runJson('--paths', 'src/unmapped/thing.ts');
-  assert.deepEqual(out.paths, [{ path: 'src/unmapped/thing.ts', concepts: [] }]);
+  assert.deepEqual(out.paths, [{ path: 'src/unmapped/thing.ts', concepts: [], knowledge: [] }]);
   const human = run('--paths', 'src/unmapped/thing.ts', '--root', store);
   assert.equal(human.status, 0);
   assert.match(human.stdout, /no concepts point at this path/);

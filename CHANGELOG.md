@@ -15,6 +15,33 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Typed edges (UCS-1151): leaves gain three edge families, giving structural
+  neighborhood without term luck. `concepts` (leaf → ontology concept),
+  `paths` (leaf → repo tree), and `relates` (`depends-on` / `see-also` /
+  `contradicts` / `supersedes`, leaf → leaf).
+- `concepts` and the four `relates` kinds are rows in the ref-field table, so
+  an unresolvable target is the existing `unresolved-ref` with no bespoke
+  check. `paths` names the working tree rather than an id space, so it takes
+  the path-existence treatment instead: a leaf path that is not in the working
+  tree is a `missing-path` finding — the same code a concept's dead
+  source-of-truth pointer earns, because it is the same defect.
+- The leaf↔concept edge is derived BIDIRECTIONALLY at load
+  (`model.leavesByConcept`). It is authored once, leaf-side, because deciding
+  what a leaf is about is curatorial work under the human write gate — and
+  traversable from either end, so resolving a concept surfaces its declaring
+  leaves even when no term or alias text matches. Knowledge stops depending on
+  two authors choosing the same words.
+- `resolve --paths` joins over leaf `paths` alongside concept source-of-truth
+  pointers, so a diff-shaped path list surfaces the leaves that govern those
+  files before an edit. Each published leaf carries `via`, naming which join
+  reached it (`direct` / `concept` in reverse lookup, `declared` / `terms` in
+  query mode) — two joins of different strength, so the result says which one
+  fired rather than leaving a reader to assume the stronger.
+- Every leaf the resolver publishes carries `relates`: its ONE-HOP
+  neighborhood, keyed by edge kind, each neighbor a minimal stable reference
+  (`id`, `notation`, `heading`, `file`). Outgoing edges only — what the leaf's
+  own author asserted. Exactly one hop: a neighbor's neighbors are absent,
+  because depth 2 is most of the store arriving unranked.
 - Frontmatter v2 core (UCS-1149): the leaf classification layer, built
   entirely from governed vocabularies. `facets.form`, `facets.anchor`, and
   `facets.stage` join `facets.domain` as registry-checked fields — three

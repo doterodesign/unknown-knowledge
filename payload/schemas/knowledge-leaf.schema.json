@@ -112,6 +112,43 @@
         }
       }
     },
+    "concepts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conceptRef" },
+      "description": "Ontology concepts this leaf is knowledge ABOUT (UCS-1151). The edge lives leaf-side because deciding what a leaf is about is curatorial, and the leaf is what sits under the human write gate. It is derived BIDIRECTIONALLY at load: the loader builds concept -> leaves from these declarations, so resolving a concept surfaces its declaring leaves structurally, with no dependence on whether the leaf's `terms` happen to spell the concept's term. Targets must resolve — an unresolvable id is the ordinary unresolved-ref finding, declared in the ref-field table like every other typed edge."
+    },
+    "paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Repo-relative file or directory paths this leaf governs (UCS-1151). NOT an id space: these name the working tree, so existence is checked against the filesystem as a missing-path finding — the same mechanism concept source-of-truth pointers already ride — rather than through the ref graph, which only knows how to ask whether an ID resolves. Reverse lookup (resolve --paths) joins over these alongside concept pointers, so the files in a diff surface the knowledge that governs them before an edit."
+    },
+    "relates": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Typed leaf-to-leaf edges (UCS-1151). Four kinds, each a distinct claim about how two leaves stand to one another, and each a declared row in the ref-field table targeting the leaf space. The resolver expands exactly ONE hop over these from any hit, labeled by kind, so a hit carries its structural neighborhood without a second lookup. Targets are leaf refs: an accession id, or a notation while both citation forms remain legal (UCS-1144) — the citation contract that narrows this to accessions alone is UCS-1147, and narrowing it early would break every notation-form citation the store still carries.",
+      "properties": {
+        "depends-on": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "This leaf's claim is only usable once the target's is — a prerequisite, not a suggestion."
+        },
+        "see-also": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "Related context worth reading alongside. The weakest of the four: no dependency, no conflict."
+        },
+        "contradicts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "The two leaves make claims that cannot both hold. Recorded rather than resolved — surfacing the conflict is what lets a human settle it, and a store that hid it would let a reader cite either one unaware."
+        },
+        "supersedes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "This leaf replaces the target's claim. Distinct from contradicts: the disagreement is already settled, and this leaf is the settlement."
+        }
+      }
+    },
     "terms": { "type": "array", "items": { "type": "string" } },
     "edition": { "type": "integer", "minimum": 1 },
     "contributors": { "type": "array", "items": { "type": "string" } }
@@ -119,6 +156,7 @@
   "$defs": {
     "notation": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
     "accession": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
     "leafRef": { "type": "string", "pattern": "^((L-[0-9]{6})|([0-9]+(\\.[0-9]+)*))$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "note": {
