@@ -339,10 +339,51 @@ export function assertGovernedKinds(table) {
   }
 }
 
-// Checked as this module loads: a facet governed by nothing is a defect in the
-// kit itself, and must surface the moment it is introduced rather than as a
-// store that quietly passes checks it never ran.
+/**
+ * Refuse a facet table whose rows disagree about one registry's SHAPE — an
+ * engine failure at load, never a silent pass.
+ *
+ * The shape check runs once per registry, because a mismatch is a fact about
+ * the registry rather than about any record that drew from it. That
+ * de-duplication is only sound while every row naming a registry agrees about
+ * its shape: if two rows disagreed, the first one seen would settle the
+ * question and the second would be checked against a shape it never asked for
+ * — a facet silently governed by the wrong rule, which is the exact failure
+ * `registry-shape-mismatch` exists to catch one level down.
+ *
+ * The contradiction cannot be resolved here either. One registry is either
+ * hierarchical or flat; two facets needing it both ways need two registries,
+ * and picking a winner by declaration order would be an arbitrary answer to a
+ * question the table asked wrongly.
+ *
+ * @param {Record<string, ReadonlyArray<{ registry: string, hierarchical?: boolean }>>} table
+ * @throws {Error} if two rows name one registry with different shapes
+ */
+export function assertConsistentRegistryShapes(table) {
+  const expected = new Map(); // registry key -> { hierarchical, kind, field }
+  for (const [kind, rows] of Object.entries(table)) {
+    for (const row of rows) {
+      const previous = expected.get(row.registry);
+      if (previous === undefined) {
+        expected.set(row.registry, { hierarchical: row.hierarchical, kind, field: row.field });
+      } else if (previous.hierarchical !== row.hierarchical) {
+        throw new Error(
+          `facet table declares registry "${row.registry}" as both hierarchical=${previous.hierarchical} `
+          + `(${previous.kind}.${previous.field}) and hierarchical=${row.hierarchical} (${kind}.${row.field}) — `
+          + 'one registry has one shape, so one of these facets would be governed by a rule it never asked for; '
+          + 'a facet needing the other shape needs its own registry',
+        );
+      }
+    }
+  }
+}
+
+// Both checked as this module loads: a facet governed by nothing, or governed
+// against a shape another row settled, is a defect in the kit itself. Each must
+// surface the moment it is introduced rather than as a store that quietly
+// passes checks it never ran.
 assertGovernedKinds(FACET_REGISTRIES);
+assertConsistentRegistryShapes(FACET_REGISTRIES);
 
 /** Follow a dotted path into a record; undefined if any segment is missing. */
 function valueAtPath(record, field) {
@@ -471,7 +512,10 @@ function checkRegistryMembership(model, push) {
   // whose shape disagrees with the facet it governs is judging the wrong
   // question, so the disagreement is reported against the registry file rather
   // than against every record that drew from it. De-duplicated across kinds,
-  // since two kinds may legitimately draw on one registry.
+  // since two kinds may legitimately draw on one registry — sound because
+  // assertConsistentRegistryShapes refused at load any table whose rows
+  // disagree about a registry's shape, so whichever row is seen first here
+  // speaks for all of them.
   const shapeChecked = new Set();
   for (const rows of Object.values(FACET_REGISTRIES)) {
     for (const { registry: registryKey, hierarchical } of rows) {

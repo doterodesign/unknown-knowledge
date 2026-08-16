@@ -16,8 +16,14 @@
       "$ref": "#/$defs/notation",
       "description": "Positional within the per-project tree (e.g. \"362.1\"). Quote it — unquoted it parses as a number."
     },
-    "domain": { "type": "string" },
-    "division": { "type": "string" },
+    "domain": {
+      "type": "string",
+      "description": "LEGACY navigational domain — a free string naming the tree branch this leaf files under, paired with `division` and mirrored in the notation spine (§3.2). Ungoverned: nothing checks it against a vocabulary. Distinct from `facets.domain`, which is the REGISTRY-GOVERNED subject path (UCS-1148) whose every segment must be minted. The two coexist while v2 lands; UCS-1149 settles which survives."
+    },
+    "division": {
+      "type": "string",
+      "description": "Legacy navigational subdivision under `domain`, ungoverned in the same way. See the note on `domain`."
+    },
     "heading": { "type": "string" },
     "description": { "type": "string" },
     "notes": {
@@ -59,7 +65,7 @@
       "properties": {
         "domain": {
           "type": "string",
-          "description": "Hierarchical domain path from the domains registry, '/'-joined. Valid only when EVERY segment is minted — a child cannot hang off an unminted parent."
+          "description": "Hierarchical domain path from the domains registry, '/'-joined. Valid only when EVERY segment is minted — a child cannot hang off an unminted parent. This is the GOVERNED subject path, not the legacy top-level `domain` free string: membership here is a structural-validator check against knowledge/_registries/domains.yaml, and the top level of that registry is open (a new class is a registry edit plus a Decisions entry)."
         }
       }
     },

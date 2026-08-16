@@ -25,7 +25,8 @@ import {
   REGISTRY_DIR, STORES, STORE_DESCRIPTORS, assertReadersResolve, loadStores,
 } from '../payload/engine/lib/load-stores.js';
 import {
-  CHECKS, FACET_REGISTRIES, GOVERNED_COLLECTIONS, assertGovernedKinds,
+  CHECKS, FACET_REGISTRIES, GOVERNED_COLLECTIONS,
+  assertConsistentRegistryShapes, assertGovernedKinds,
 } from '../payload/engine/commands/validate.js';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
 
@@ -453,6 +454,27 @@ test('a facet table naming a kind with no collection is refused at load', () => 
     /maps to no model collection/,
   );
   assert.doesNotThrow(() => assertGovernedKinds(FACET_REGISTRIES));
+});
+
+test('two rows disagreeing about one registry shape are refused at load', () => {
+  // The shape check runs once per registry, which is only sound while every
+  // row naming that registry agrees about its shape. If two disagreed, the
+  // first seen would settle it and the second facet would be governed by a
+  // rule it never asked for — silently, since the dedup skips it.
+  assert.throws(
+    () => assertConsistentRegistryShapes({
+      'knowledge-leaf': [{ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: true }],
+      'ontology-concept': [{ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: false }],
+    }),
+    /would be governed by a rule it never asked for/,
+  );
+  // Two rows AGREEING on one registry are legitimate — that is the case the
+  // per-registry de-duplication exists to serve.
+  assert.doesNotThrow(() => assertConsistentRegistryShapes({
+    'knowledge-leaf': [{ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: true }],
+    'ontology-concept': [{ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: true }],
+  }));
+  assert.doesNotThrow(() => assertConsistentRegistryShapes(FACET_REGISTRIES));
 });
 
 test('a descriptor naming a reader that does not exist is refused at load', () => {
