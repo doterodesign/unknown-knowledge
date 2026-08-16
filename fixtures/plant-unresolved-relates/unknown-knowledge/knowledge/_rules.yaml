@@ -1,0 +1,4 @@
+# Plant store (UCS-1159) — unresolvable relates ref.
+schema-version: 1
+store: knowledge
+rules: []

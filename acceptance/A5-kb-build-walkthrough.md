@@ -8,7 +8,8 @@ prompts, so their test is a checklist, not CI. Time the run (A5
 walkthroughs are wall-clock timed).
 
 Every expected observation below was produced by actually running the
-commands (kit @ this branch, 2026-07-09); outputs are pasted byte-honest.
+commands (kit @ this branch, re-captured 2026-08-16 against the UCS-1159
+fixture); outputs are pasted byte-honest.
 Only the random hex suffix in fragment file names varies run to run.
 
 ## Setup (the human, not the agent)
@@ -84,7 +85,8 @@ the observation matches.
 
 ## 1. CLASSIFY — one subject home
 
-The agent enters through the catalog (`L-000100` is the only leaf), reads
+The agent enters through the catalog (two leaves, `L-000100` and
+`L-000200`, both sportsbook), reads
 the spine in `knowledge/_rules.yaml`, and probes for existing coverage:
 
 ```sh
@@ -109,8 +111,9 @@ K-104  Withdrawal method  [active]  score 60 (term-match)
     src/types/withdrawal.ts
 ```
 
-- [ ] No knowledge entry point covers settlement windows (leaf `L-000100`
-  is sportsbook onboarding) → new leaf, not a revision. The spine names
+- [ ] No knowledge entry point covers settlement windows (`L-000100` is
+  sportsbook onboarding, `L-000200` is bet cash-out — both
+  `product/sportsbook`) → new leaf, not a revision. The spine names
   the subject home: `facets.domain` `product/payments`.
 - [ ] The agent mints a fresh accession for the new leaf — `L-000110`.
   Nothing is looked up to find "the next free" anything in the tree: an
@@ -286,14 +289,22 @@ validate: the store loader reported 2 error(s) — structural checks never ran (
 ```
 
 A leaf file present but its catalog row missing — exit 1, `orphan`, and
-the finding is keyed by the accession, not by any notation:
+the finding is keyed by the accession, not by any notation. The two
+trailing `unregistered-value` findings on `L-000100` are the fixture's own
+UCS-1159 planted cases 2 and 4 (an unminted `facets.form` and an unminted
+`applies.jurisdictions` value); they ride along in every structural run on
+this fixture and are not what this probe is testing:
 
 ```
-structural validate -> 1 finding(s) (1 error(s), 0 warning(s))
-checks run: id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unminted-segment, unregistered-value
+structural validate -> 3 finding(s) (3 error(s), 0 warning(s))
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
 error  orphan  L-000110  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  id
     "L-000110" is not declared in knowledge/_catalog.yaml — unreachable through the store's navigational entry point (§3)
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
+    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+    value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 
 fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
 ```
@@ -304,13 +315,26 @@ With the real draft and row in place:
 node "$KIT/engine/validate.js" --root .
 ```
 
-- [ ] Exit 0:
+- [ ] Exit 1 — and every finding that named `L-000110` is gone. What
+  remains is the fixture's own baseline: the two `unregistered-value`
+  findings on `L-000100` are UCS-1159 planted cases 2 and 4 and are
+  expected here. The new leaf is clean; nothing below names it:
 
 ```
-structural validate -> 0 findings — structurally clean
-checks run: id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unminted-segment, unregistered-value
+structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
+
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
+    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+    value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+
+fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
 ```
 
+- [ ] Negative check: the agent does NOT "fix" those two planted findings
+  to make its own run go green — they belong to a leaf it did not author,
+  and minting a registry value is the human's call (step 3).
 - [ ] The agent declares done only now, and hands off — the leaf, the
   catalog row, and the gap fragment ride one PR for the human gate
   (agents draft; humans approve). It does NOT self-merge or claim the

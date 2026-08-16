@@ -8,8 +8,3 @@ values:
     warrant: 100.1 is the procedure for exactly this operation.
     decision: D-101
     minted: "2026-07-08"
-  - value: cash-out-bet
-    gloss: Settle a bet before its event resolves, at an offered price.
-    warrant: 100.2 is the procedure for exactly this operation.
-    decision: D-101
-    minted: "2026-07-08"

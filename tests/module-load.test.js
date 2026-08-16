@@ -25,6 +25,13 @@ import { fileURLToPath } from 'node:url';
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const engineDir = join(repoRoot, 'payload', 'engine');
 const fixture = join(repoRoot, 'fixtures', 'ts-app');
+// The happy-path shim check needs a store the STRUCTURAL validator exits 0 on.
+// ts-app is not that store: it carries UCS-1159's planted registry-membership
+// drift, so validate.js exits 1 there by design. swift-app's planted cases are
+// value-side (validate-values.js), leaving it structurally clean — which is the
+// only property this test needs, since it is about the shim's overhead on a
+// healthy run, not about any fixture's findings.
+const structurallyCleanFixture = join(repoRoot, 'fixtures', 'swift-app');
 
 /** Every entry shim, i.e. every path an agent is told to invoke. */
 const SURFACES = readdirSync(engineDir).filter((f) => f.endsWith('.js'));
@@ -140,7 +147,7 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
 test('a healthy engine is untouched by the shim', (t) => {
   // The guard must cost nothing on the happy path.
   const dir = sandbox(t);
-  const r = run(dir, 'validate.js', '--root', fixture, '--json');
+  const r = run(dir, 'validate.js', '--root', structurallyCleanFixture, '--json');
   assert.equal(r.status, 0, r.stderr);
   assert.doesNotMatch(r.stderr, /internal failure/);
   assert.ok(JSON.parse(r.stdout), 'the shim forwards stdout untouched');
