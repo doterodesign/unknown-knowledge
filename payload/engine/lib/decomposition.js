@@ -8,7 +8,7 @@
  *
  *   verb  -> the `knowledge/operations` registry   ("add a sport" -> add-sport)
  *   noun  -> concept terms and aliases             ("sport"       -> K-101)
- *   place -> the `knowledge/jurisdictions` registry ("new jersey" -> NJ-DGE)
+ *   place -> the `knowledge/jurisdictions` registry ("new jersey" -> new-jersey)
  *
  * What makes this the deterministic core rather than a search box is that every
  * axis lands in a MINTED vocabulary value. The operations registry says which
@@ -112,26 +112,36 @@ export const phraseWords = (phrase) => String(phrase).toLowerCase().split(/\s+/)
 /**
  * Which query tokens satisfy this phrase, or null when it is not satisfied.
  *
- * Every word must find a DISTINCT token — the returned array is the tokens
+ * Every word must find a DISTINCT OCCURRENCE — the returned array is the tokens
  * consumed, which is what makes residue computable: a token that satisfied some
  * phrase is by definition not unresolved.
  *
- * Greedy first-fit, which is sound because vocabulary phrases are short and
- * their words are distinct. A phrase repeating a word ("sport sport") would
- * need two tokens and correctly fails against one, which is the conservative
- * direction: under-matching leaves residue a steward can see.
+ * Distinctness is tracked by INDEX, not by token text, and that is the whole
+ * subtlety. A query can legitimately repeat a word, and two occurrences of
+ * "sport" are two things the user typed — matching them by value would let the
+ * first occurrence be found again and rejected as already-used, so a phrase
+ * needing two would fail against a query that actually supplied two. Indexing
+ * also forecloses the opposite error: one occurrence can never satisfy two
+ * words, because its index is consumed the first time it is taken.
+ *
+ * Greedy first-fit, which is sound because vocabulary phrases are short. Where
+ * it cannot satisfy a phrase it returns null rather than backtracking, and that
+ * conservative direction is deliberate: under-matching leaves residue a steward
+ * can see, while over-matching silently swallows tokens nothing resolved.
  *
  * @param {string[]} phrase the vocabulary phrase's words
  * @param {string[]} tokens the query's tokens
- * @returns {string[]|null} the tokens consumed, or null
+ * @returns {string[]|null} the tokens consumed, in phrase order, or null
  */
 export function phraseHit(phrase, tokens) {
   if (!phrase.length) return null; // an empty phrase matches nothing, never everything
+  const takenIndexes = new Set();
   const used = [];
   for (const word of phrase) {
-    const token = tokens.find((t) => sameWord(t, word) && !used.includes(t));
-    if (token === undefined) return null;
-    used.push(token);
+    const index = tokens.findIndex((t, i) => !takenIndexes.has(i) && sameWord(t, word));
+    if (index === -1) return null;
+    takenIndexes.add(index);
+    used.push(tokens[index]);
   }
   return used;
 }
@@ -196,7 +206,7 @@ export function suppressedValues(model, key) {
  * The phrases a registry value answers to.
  *
  * A minted value is an identifier, and identifiers are written for machines:
- * `add-sport`, `NJ-DGE`. So a value contributes TWO phrases — the value itself
+ * `add-sport`, `new-jersey`. So a value contributes TWO phrases — the value itself
  * as one word, and the value with its separators opened into spaces, which is
  * what a human types. "add sport" reaching `add-sport` is not fuzzy matching;
  * it is reading the identifier's own internal structure, which the author put

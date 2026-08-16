@@ -1,0 +1,25 @@
+# Query-decomposition fixture (UCS-1152) — the REORDERED twin of resolver-v2.
+#
+# Semantically identical to resolver-v2, with every declaration order reversed
+# or shuffled: catalog rows, registry values, and ontology entries. The engine
+# must produce byte-identical output against both, because the ordering
+# guarantee is that output depends on the CONTENT of a store and never on the
+# order its authors happened to write things down (D-012).
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000133
+    title: Settlement rounding rules
+    file: payments/610.1-settlement-rounding.md
+  - id: L-000213
+    title: Sport launch checklist
+    file: sportsbook/600.4-sport-launch-checklist.md
+  - id: L-000190
+    title: RTP disclosure before wager
+    file: sportsbook/600.3-rtp-disclosure.md
+  - id: L-000140
+    title: Void-bet refund basis
+    file: sportsbook/600.2-void-bet-refund-basis.md
+  - id: L-000102
+    title: Adding a new sport
+    file: sportsbook/600.1-adding-a-new-sport.md

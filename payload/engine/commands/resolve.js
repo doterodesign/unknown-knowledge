@@ -676,8 +676,8 @@ function decompose(model, query, queryWords, tokens) {
  * drift run silently until the store stops being usable.
  *
  * All three axes are swept, not just concepts, because a verb or a place can
- * near-miss exactly as a noun can — "settle bets in maltese" should say that
- * `MGA` was one token away rather than reporting a bare zero.
+ * near-miss exactly as a noun can — an ask that half-names a place should say
+ * which jurisdiction it was a token away from rather than reporting a bare zero.
  *
  * Sorted by kind then id, so the section is byte-stable regardless of the order
  * the vocabularies happened to load in.
@@ -751,23 +751,38 @@ function scoreLeaves(model, decomposition, today) {
   const scored = [];
   for (const entry of model.leaves.values()) {
     const { record: leaf } = entry;
-    const signals = [];
     // Signals are gathered in DESCENDING weight — operation, concept, term —
     // so the strongest reason a leaf surfaced reads first in the output.
+    //
+    // WITHIN each weight class they are sorted by `via`, and that sort is a
+    // determinism requirement rather than tidiness. Every one of these three
+    // sources is an AUTHORED array (the query's matched operations, the leaf's
+    // declared concepts, the leaf's `terms`), so emitting them in encounter
+    // order would make the published `signals` depend on the order somebody
+    // happened to write a list in — two stores with identical content and
+    // different authoring order would produce different bytes, which is exactly
+    // what D-012 forbids. Sorting on the value makes the output a function of
+    // WHAT a leaf declares, never of the sequence it was typed in.
     const declaredOps = leafOperations(leaf);
-    for (const { value } of operations) {
-      if (declaredOps.includes(value)) signals.push({ signal: 'operation', via: value });
-    }
-    for (const id of declaringConcept.get(entry.identity) ?? []) {
-      signals.push({ signal: 'concept', via: id });
-    }
+    const operationSignals = operations
+      .filter(({ value }) => declaredOps.includes(value))
+      .map(({ value }) => ({ signal: 'operation', via: value }));
+    const conceptSignals = [...(declaringConcept.get(entry.identity) ?? [])]
+      .map((id) => ({ signal: 'concept', via: id }));
     const termTokens = [];
+    const termSignals = [];
     for (const term of strings(leaf.terms)) {
       const hit = phraseHit(phraseWords(term), tokens);
       if (!hit) continue;
       termTokens.push(...hit);
-      signals.push({ signal: 'term', via: term });
+      termSignals.push({ signal: 'term', via: term });
     }
+    const byVia = (a, b) => compare(a.via, b.via);
+    const signals = [
+      ...operationSignals.sort(byVia),
+      ...conceptSignals.sort(byVia),
+      ...termSignals.sort(byVia),
+    ];
     if (!signals.length) continue;
     // A leaf's own term text consumes tokens too — it is a join like any other,
     // and a token it accounted for is not unresolved. Recorded on the shared
@@ -776,11 +791,16 @@ function scoreLeaves(model, decomposition, today) {
     const { score, signals: weighted } = leafScore(signals);
     scored.push({ entry, score, signals: weighted });
   }
+  // Both declared arrays are SORTED before publication, for the same reason the
+  // signals are: they are authored lists, and byte-stable output must be a
+  // function of what a leaf declares rather than the order its author typed it
+  // (D-012). Sorted copies, never in place — mutating the loaded record would
+  // reorder the model every other surface reads.
   return scored.map(({ entry, score, signals }) => ({
     score,
     signals,
-    applies: leafJurisdictions(entry.record),
-    [OPERATIONS_FIELD]: leafOperations(entry.record),
+    applies: [...leafJurisdictions(entry.record)].sort(compare),
+    [OPERATIONS_FIELD]: [...leafOperations(entry.record)].sort(compare),
     ...publishLeaf(model, entry, today),
   }));
 }
@@ -906,7 +926,7 @@ function resolveQuery(model, terms, today) {
       // The acceptance criterion is that residue is emitted "with the resolved
       // context attached" — a bare unresolved token is a finding nobody can act
       // on, while "`lacrosse` was unresolved in an ask that DID resolve
-      // add-sport and NJ-DGE" localizes the gap precisely enough that the
+      // add-sport and new-jersey" localizes the gap precisely enough that the
       // minting decision writes itself.
       'resolved-context': [
         ...decomposition.operations.map((o) => o.value),

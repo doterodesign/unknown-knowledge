@@ -99,9 +99,7 @@ asserts no domain word (`sport`, `bet`, `settlement`, `jersey`, `malta`,
 
 ### Exclusion output shape
 
-```json
-{ "id", "notation", "heading", "file", "applies", "asked", "reason" }
-```
+Fields: `id`, `notation`, `heading`, `file`, `applies`, `asked`, `reason`.
 
 A leaf is excluded when it declares jurisdictions and the query named a
 jurisdiction not among them. Published in its own `exclusions` section, never
@@ -182,6 +180,52 @@ published, still scored, still explains itself.
 | `npm run lint` | 184 files, 0 failures |
 | `npm test` | 784 pass, 0 fail (749 baseline + 35 new) |
 | `npm run acceptance` | OK — all asserted criteria (A1-A4, A6) pass |
+
+## Review round (CodeRabbit on PR #57)
+
+Nine findings. Six fixed, three declined.
+
+### Fixed — two real bugs
+
+**`phraseHit` distinctness was by VALUE, not by occurrence.** `used.includes(token)`
+compared token text, so `tokens.find` kept returning the same first occurrence and
+rejecting it as already-used. A query genuinely supplying two occurrences of a word
+failed to satisfy a phrase needing two: `phraseHit(['sport','sport'], ['sport','sport'])`
+returned `null`. Now tracked by index with a `Set`, which fixes both directions at once —
+two occurrences satisfy two words, and one occurrence can never satisfy two.
+
+**Published output depended on AUTHORING order.** Found by building the reordered twin
+fixture the reviewer asked for. Two leaks: `signals` followed the leaf's `terms` array
+order, and the published `operations` array passed through unsorted. Both now sorted —
+signals within each weight class by `via`, and the declared arrays as sorted copies (never
+in place, which would reorder the model every other surface reads). This is a genuine
+D-012 violation that no single-store test could have caught: a field published in
+authoring order looks perfectly sorted as long as the author typed it in order.
+
+### Fixed — fixture honesty
+
+- `operations.yaml`: three warrants cited `600.1` for operations it has nothing to do
+  with. `settle-bet` now cites `610.1`/`600.2`/`600.3`, `void-bet` cites `600.2`, and
+  `retire-sport` cites `600.4` (which now declares it).
+- `100-sportsbook.yaml`: K-103 ("the lifecycle state a placed bet is in") pointed at
+  `src/settlement/rounding.ts`, a rounding helper with no bet lifecycle in it. Added
+  `src/types/bet-status.ts` defining the status union and repointed.
+- `600.1`: the body instructed updating "the K-101 concept's enumerated values", but
+  K-101 has no `enumerates` descriptor — the leaf told a reader to edit a field that does
+  not exist. Reworded to what the fixture actually supports.
+- Stale `NJ-DGE`/`MGA` doc examples contradicting the place-not-regulator decision:
+  four occurrences across `decomposition.js` and `resolve.js`, all corrected.
+
+### Declined
+
+- **Two MD041 body-H1 findings on fixture leaves.** Fixture leaf bodies carry no H1 by
+  design — frontmatter `heading` is the title. Adding one would break the convention every
+  other fixture in the repo follows and would change what `firstSentence` reads back as the
+  excerpt.
+- **`600.1` paths should include the ontology class file.** Declined: `paths` names the
+  REPO TREE, and the ontology class file is a store file, not a repo-tree path. Declaring
+  it would make `missing-path` validation meaningless and conflate two different pointer
+  families. The prose was corrected instead.
 
 ## Note for follow-up
 

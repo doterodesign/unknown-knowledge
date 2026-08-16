@@ -24,5 +24,10 @@ entries:
     class: 100-sportsbook
     summary: The lifecycle state a placed bet is in.
     aliases: [bet]
-    source-of-truth: [src/settlement/rounding.ts]
+    # The pointer names where the lifecycle is DEFINED — the status union
+    # itself. `src/settlement/rounding.ts` is where one transition happens to
+    # be implemented, which is a different claim: a source-of-truth pointer
+    # that named it would send a reader after the rounding helper when they
+    # asked what states a bet can be in.
+    source-of-truth: [src/types/bet-status.ts]
     status: active

@@ -48,6 +48,13 @@ dates are recorded at release time, never retroactively.
   human surface: exit 0 with an explicit empty result is machine-distinguishable
   from a failure, and an agent reading JSON is told what to do next rather than
   left to infer it from empty arrays.
+- Every array the resolver publishes off a leaf is sorted rather than passed
+  through in the order it was authored: the per-leaf `signals` (within each
+  weight class), `operations`, and `applies`. Byte-stable output must be a
+  function of what a store DECLARES, never of the sequence somebody typed a
+  list in — two stores with identical content and different authoring order now
+  provably resolve to identical bytes, pinned by a reordered twin fixture
+  (`tests/fixtures/resolver-v2-reordered/`).
 - Scoring extracted into `payload/engine/lib/scoring.js` as an explicit
   signal→score table, done BEFORE the new signals were added. Concept rungs
   (100/80/60/50/40, −30 draft downrank) keep their numbers and never add up;

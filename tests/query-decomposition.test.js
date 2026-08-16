@@ -31,6 +31,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LEAF_SIGNALS, leafScore } from '../payload/engine/lib/scoring.js';
@@ -43,6 +44,13 @@ const fixture = (name) => join(root, 'tests/fixtures', name);
 
 /** The query-decomposition scenario store — verb/noun/place vocabularies populated. */
 const STORE = fixture('resolver-v2');
+
+/**
+ * The same store with every declaration order changed — catalog rows, registry
+ * values, ontology entries, and the arrays inside the leaves. Identical content,
+ * different authoring order: the engine must not be able to tell them apart.
+ */
+const REORDERED = fixture('resolver-v2-reordered');
 
 // The injected date every verdict here is measured against (D-012). Pinned, so
 // these expectations hold forever — the engine never reads the wall clock.
@@ -126,15 +134,23 @@ test('the operation join is STRUCTURAL — it reaches a leaf whose text never sa
   );
 });
 
-test('a minted operation no leaf declares resolves as a verb and gathers nothing', () => {
-  // `retire-sport` is governed vocabulary with no knowledge behind it. The verb
-  // must still resolve — "the store knows this word and has nothing on it" is a
-  // real answer, and a different one from "unknown verb".
-  const payload = resolve('retire a sport');
-  assert.deepEqual(payload.decomposition.operations.map((o) => o.value), ['retire-sport']);
-  assert.ok(
-    !payload.leaves.some((l) => l.signals.some((s) => s.via === 'retire-sport')),
-    'no leaf declares retire-sport, so none may be scored by it',
+test('only the operation the ask NAMED scores, not every operation a leaf declares', () => {
+  // L-000213 declares both `add-sport` and `retire-sport`. An ask that names
+  // one must score it on that one alone — crediting a leaf for every verb it
+  // happens to declare would make the score a property of the leaf rather than
+  // of the match, and two leaves with different declared breadth would rank by
+  // how much they claim instead of by how well they answer.
+  const retiring = resolve('retire a sport');
+  assert.deepEqual(retiring.decomposition.operations.map((o) => o.value), ['retire-sport']);
+  assert.deepEqual(
+    leaf(retiring, 'L-000213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
+    ['retire-sport'],
+  );
+
+  const adding = resolve('add a sport');
+  assert.deepEqual(
+    leaf(adding, 'L-000213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
+    ['add-sport'],
   );
 });
 
@@ -415,13 +431,93 @@ test('output is byte-identical across runs, with no wall-clock leak (D-012)', ()
   }
 });
 
-test('every published section is stable-sorted independent of store iteration order', () => {
+test('golden: output is independent of the order a store was AUTHORED in', () => {
+  // The determinism contract D-012 leans on, tested the only way that actually
+  // proves it: against a second store with identical CONTENT and every
+  // declaration order changed — catalog rows, registry values, ontology
+  // entries, and the `terms`/`operations` arrays inside the leaves themselves.
+  //
+  // Asserting a sorted projection of one store cannot catch this. A field
+  // published in authoring order looks perfectly sorted as long as the author
+  // happened to type it in order, and only a differently-ordered twin reveals
+  // it. This test found two real leaks when it was written: `signals` followed
+  // the leaf's `terms` order, and the published `operations` array passed
+  // through unsorted.
+  //
+  // FULL payload equality, not a projection — every section at once, so a new
+  // section cannot be added later without inheriting the guarantee.
+  for (const query of [
+    'add a sport',
+    'retire a sport',
+    'settle bets in malta',
+    'settle bets in new jersey',
+    'sport registry',
+    'add a new sport (lacrosse) for the new jersey launch',
+    'settle a bet',
+    'bet settlement',
+    'sport',
+    'prediction markets liquidity',
+  ]) {
+    const ordered = json('resolve.js', 0, query, '--root', STORE, '--today', TODAY);
+    const reordered = json('resolve.js', 0, query, '--root', REORDERED, '--today', TODAY);
+    assert.deepEqual(
+      reordered, ordered,
+      `"${query}" resolves differently against a store whose declarations were written in another order`,
+    );
+  }
+
+  // --paths mode takes the same guarantee: it publishes leaves too.
+  assert.deepEqual(
+    json('resolve.js', 0, '--paths', 'src/registry/sports.ts,src/settlement/rounding.ts', '--root', REORDERED, '--today', TODAY),
+    json('resolve.js', 0, '--paths', 'src/registry/sports.ts,src/settlement/rounding.ts', '--root', STORE, '--today', TODAY),
+  );
+});
+
+test('the reordered twin is genuinely reordered — the test would be vacuous otherwise', () => {
+  // A fixture invariant. If the twin were ever synced back into the same
+  // declaration order, the test above would pass while proving nothing.
+  const read = (store, file) => readFileSync(join(store, file), 'utf8');
+  for (const [file, field] of [
+    ['knowledge/_catalog.yaml', /- id: (L-\d+)/g],
+    ['ontology/classes/100-sportsbook.yaml', /- id: (K-\d+)/g],
+    ['knowledge/_registries/operations.yaml', /- value: ([a-z-]+)/g],
+    ['knowledge/_registries/jurisdictions.yaml', /- value: ([a-z-]+)/g],
+  ]) {
+    const ids = (store) => [...read(store, file).matchAll(field)].map((m) => m[1]);
+    assert.notDeepEqual(
+      ids(REORDERED), ids(STORE),
+      `fixture invariant broken: ${file} is in the same order in both stores`,
+    );
+    assert.deepEqual(
+      [...ids(REORDERED)].sort(), [...ids(STORE)].sort(),
+      `fixture invariant broken: ${file} does not hold the same values in both stores`,
+    );
+  }
+  // And the within-record arrays differ too, which is what caught the signals leak.
+  assert.notEqual(
+    read(REORDERED, 'knowledge/sportsbook/600.4-sport-launch-checklist.md').match(/^operations: .*$/m)[0],
+    read(STORE, 'knowledge/sportsbook/600.4-sport-launch-checklist.md').match(/^operations: .*$/m)[0],
+  );
+});
+
+test('a leaf publishes its declared arrays sorted, not as authored', () => {
+  // The direct statement of the fix, so a regression names itself rather than
+  // showing up as an opaque payload diff.
+  const payload = resolve('add a sport');
+  const checklist = leaf(payload, 'L-000213');
+  // Authored `[retire-sport, add-sport]` in the reordered twin and
+  // `[add-sport, retire-sport]` here; both publish the sorted form.
+  assert.deepEqual(checklist.operations, ['add-sport', 'retire-sport']);
+  // Signals are sorted within each weight class — here one operation and one
+  // term, so the class ordering (operation before term) is what shows.
+  assert.deepEqual(checklist.signals.map((s) => s.via), ['add-sport', 'sport']);
+});
+
+test('within one demotion class and score, leaves tie-break by id ascending', () => {
   const payload = resolve('settle a bet');
-  const ids = payload.leaves.map((l) => l.id ?? l.notation);
-  // Within one demotion class and one score, ties break by id ascending.
   const tied = payload.leaves.filter((l) => !l.downranked && l.score === payload.leaves[0].score);
+  assert.ok(tied.length > 1, 'the fixture must produce a tie for this ordering test to mean anything');
   assert.deepEqual(tied.map((l) => l.id), [...tied.map((l) => l.id)].sort());
-  assert.ok(ids.length, 'the fixture must return leaves for this ordering test to mean anything');
 });
 
 // ------------------------------------------------- backward compatibility
@@ -471,12 +567,40 @@ test('tokenize keeps path-shaped tokens whole', () => {
 test('phraseHit requires every word and consumes DISTINCT tokens', () => {
   assert.deepEqual(phraseHit(['new', 'jersey'], ['new', 'jersey']), ['new', 'jersey']);
   assert.equal(phraseHit(['new', 'jersey'], ['jersey']), null, 'a missing word fails the phrase');
-  // One token must not satisfy a two-word phrase twice over.
-  assert.equal(phraseHit(['sport', 'sport'], ['sport']), null);
   // The singular/plural fold, and nothing beyond it.
   assert.deepEqual(phraseHit(['bet'], ['bets']), ['bets']);
   assert.equal(phraseHit(['sport'], ['sporting']), null, 'no stemming — aliases are the governed mechanism');
   assert.equal(phraseHit([], ['anything']), null, 'an empty phrase matches nothing, never everything');
+});
+
+test('phraseHit tracks distinctness by OCCURRENCE, not by token text', () => {
+  // The regression this pins: distinctness was once tested with
+  // `used.includes(token)`, comparing by VALUE. `tokens.find` then kept
+  // returning the same first occurrence and rejecting it as already-used, so a
+  // repeated word failed both ways at once.
+
+  // Under-matching direction — a query that genuinely supplies two occurrences
+  // must satisfy a phrase that needs two. This returned null before the fix.
+  assert.deepEqual(phraseHit(['sport', 'sport'], ['sport', 'sport']), ['sport', 'sport']);
+  assert.deepEqual(phraseHit(['new', 'new'], ['new', 'new']), ['new', 'new']);
+
+  // Over-matching direction — ONE occurrence must never satisfy two words.
+  assert.equal(phraseHit(['sport', 'sport'], ['sport']), null);
+
+  // Two occurrences that differ only by the plural fold are still two
+  // occurrences, and each may be taken once.
+  assert.deepEqual(phraseHit(['bet', 'bet'], ['bet', 'bets']), ['bet', 'bets']);
+
+  // A duplicated query token does not break an ordinary single-word phrase.
+  assert.deepEqual(phraseHit(['sport'], ['sport', 'sport']), ['sport']);
+});
+
+test('a repeated word in a query still resolves its vocabulary end-to-end', () => {
+  // The CLI-level consequence, so the fix is pinned at the seam and not only in
+  // the unit. A stuttered ask resolves exactly as the clean one does.
+  const stuttered = resolve('add add a sport');
+  assert.deepEqual(stuttered.decomposition.operations.map((o) => o.value), ['add-sport']);
+  assert.deepEqual(stuttered.decomposition.residue, [], 'the duplicate is consumed, not left as residue');
 });
 
 test('phraseOverlap is the match test relaxed to any-word', () => {
