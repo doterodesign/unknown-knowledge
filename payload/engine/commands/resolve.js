@@ -57,7 +57,7 @@
 import process from 'node:process';
 import { statSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { healthSummary, loadStores, storeHealth } from '../lib/load-stores.js';
+import { healthSummary, loadStores, recordId, storeHealth } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
@@ -120,12 +120,17 @@ function knowledgeEntryPoints(model, record) {
       .map(norm),
   );
   const out = [];
-  for (const { notation, file, record: leaf } of model.leaves.values()) {
+  for (const entry of model.leaves.values()) {
+    const { file, record: leaf } = entry;
     if (strings(leaf.terms).some((t) => names.has(norm(t)))) {
-      out.push({ notation, heading: leaf.heading ?? null, file });
+      // `notation` is this command's PUBLISHED field name (§4), so it is
+      // spelled here on purpose; the VALUE is read through the loader's
+      // neutral identity key, which is what an id-space change moves
+      // (UCS-1142). Wire name and storage field are two different decisions.
+      out.push({ notation: recordId(entry), heading: leaf.heading ?? null, file });
     }
   }
-  return out; // model.leaves is already sorted by notation
+  return out; // model.leaves is already sorted by leaf id
 }
 
 function resolveQuery(model, terms) {
