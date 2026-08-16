@@ -34,13 +34,16 @@ const ACCESSIONED = fixture('structural-validator/accessioned');
  * One leaf's file text. `accession` and `seeAlso` are optional so a caller
  * spells only the field the case is about.
  */
-const leafFile = ({ heading, notation, accession, seeAlso }) => [
+const leafFile = ({ heading, notation, accession, seeAlso, terms }) => [
   '---',
   'schema-version: 1',
+  // Written unquoted, so a caller can hand in `12345` and get the YAML NUMBER
+  // that an author's unquoted `id:` would really produce.
   ...(accession ? [`id: ${accession}`] : []),
   `notation: "${notation}"`,
   'domain: w',
   `heading: ${heading}`,
+  ...(terms ? [`terms: [${terms}]`] : []),
   ...(seeAlso ? ['cross-references:', `  see-also: [${seeAlso}]`] : []),
   'citations: [{source: s}]',
   '---',
@@ -49,14 +52,19 @@ const leafFile = ({ heading, notation, accession, seeAlso }) => [
 ].join('\n');
 
 /**
- * Load a throwaway store built from the given knowledge leaves and hand the
- * model to `check`. Collision cases turn on which file the loader reads FIRST,
- * which is filename order — so they need a real directory, not a stub.
+ * Build a throwaway store from the given knowledge leaves and hand `check` its
+ * loaded model plus its root. Collision cases turn on which file the loader
+ * reads FIRST, which is filename order — so they need a real directory, not a
+ * stub; the root is passed on for the cases that drive a CLI over it.
+ *
+ * `concept` seeds one ontology concept, for tests that need the resolver to
+ * have something to match a query against.
  *
  * @param {Record<string, string>} leaves filename under knowledge/w → file text
- * @param {(model: object) => void} check assertions against the loaded model
+ * @param {(model: object, root: string) => void} check assertions to run
+ * @param {{ concept?: { id: string, term: string } }} [options]
  */
-function withStore(leaves, check) {
+function withStore(leaves, check, { concept } = {}) {
   const root = mkdtempSync(join(tmpdir(), 'kk-accession-'));
   try {
     for (const store of ['knowledge', 'ontology', 'decisions']) {
@@ -67,11 +75,17 @@ function withStore(leaves, check) {
         writeFileSync(join(root, store, '_rules.yaml'), `schema-version: 1\nstore: ${store}\nrules: []\n`);
       }
     }
+    if (concept) {
+      mkdirSync(join(root, 'ontology/classes'), { recursive: true });
+      writeFileSync(join(root, 'ontology/classes/500-w.yaml'),
+        `schema-version: 1\nentries:\n  - id: ${concept.id}\n    term: ${concept.term}\n`
+        + '    class: 500-w\n    summary: fixture concept\n    status: active\n');
+    }
     mkdirSync(join(root, 'knowledge/w'), { recursive: true });
     for (const [name, text] of Object.entries(leaves)) {
       writeFileSync(join(root, 'knowledge/w', name), text);
     }
-    check(loadStores(root));
+    check(loadStores(root), root);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
@@ -107,6 +121,48 @@ test('the leaf-ref grammar accepts either shape, and is composed from both', () 
   // they may write — not just that what they wrote was wrong.
   assert.match(ID_GRAMMARS['leaf-ref'].hint, /L-NNNNNN/);
   assert.match(ID_GRAMMARS['leaf-ref'].hint, /362\.1/);
+});
+
+test('the union refuses a member that is not anchored at both ends', () => {
+  // `body()` strips the ^ and $ before composing. Stripping what it merely
+  // FINDS would be silent and unrecoverable in two directions: an unanchored
+  // member widens the union, and a member ending in an escaped `\$` — a
+  // literal dollar sign, not an anchor — loses that character and widens it
+  // further, accepting strings the member itself rejects. So it refuses.
+  //
+  // `body` is private, and it stays that way: D-014 forbids eval/new Function
+  // in this codebase, and widening a module's public surface so a test can
+  // reach a helper is its own defect. The guard is instead pinned where it
+  // actually bites — the composed union, and the anchoring invariant every
+  // shipped member must satisfy for that composition to be sound.
+  //
+  // Every alternative in the union is a member's body wrapped in its own
+  // parens, so a member whose anchors had been mis-stripped would show up here
+  // as an alternative that is not exactly `(<member body>)`.
+  const union = ID_GRAMMARS['leaf-ref'].pattern;
+  for (const member of ['accessions', 'knowledge']) {
+    const { pattern } = ID_GRAMMARS[member];
+    assert.ok(pattern.startsWith('^') && pattern.endsWith('$'),
+      `${member}: a member of the union must be anchored at both ends`);
+    // The trailing `$` must be a real anchor, not an escaped literal dollar:
+    // an ODD run of backslashes before it would make it a character, and
+    // stripping it would silently widen the union past what the member accepts.
+    const escapes = /(\\*)\$$/.exec(pattern);
+    assert.equal(escapes[1].length % 2, 0,
+      `${member}: trailing $ must be an anchor, not an escaped literal`);
+    assert.ok(union.includes(`(${pattern.slice(1, -1)})`),
+      `${member}: exactly its anchor-stripped body must appear as an alternative`);
+  }
+  // The union itself is anchored — the composition adds back what it stripped.
+  assert.ok(union.startsWith('^(') && union.endsWith(')$'), 'the union re-anchors');
+
+  // Enforcement is at MODULE LOAD, like assertDistinctPaths for the ref table:
+  // `union()` runs while this module initializes, so a shipped grammar that
+  // lost an anchor refuses the import outright rather than composing a quietly
+  // wider pattern. Verified by hand against a temporarily un-anchored
+  // `accessions` — the import threw a TypeError naming the offending pattern.
+  // Nothing here can assert that without mutating the shipped module, and a
+  // test that rewrites engine source to prove a point is worse than the note.
 });
 
 test('minting grammars stay strict: a leaf cannot mint an accession into notation', () => {
@@ -292,6 +348,27 @@ test('resolver knowledge entry points publish the accession id', () => {
       file: 'knowledge/widgets/700.1-widget-registry.md',
     },
   ]);
+});
+
+test('a non-string accession publishes null, never the raw value', () => {
+  // An unquoted YAML `id: 12345` parses as a NUMBER. The schema rejects that
+  // leaf, but the resolver deliberately does not gate on store health — a
+  // lookup runs on whatever loaded (§4) — so it is the one surface that can be
+  // asked to publish an id no check approved. `??` would have passed the
+  // number straight through and broken the field's published type; `typeof`
+  // is what keeps `id` string-or-null for every consumer.
+  withStore(
+    { 'a.md': leafFile({ heading: 'H', notation: '700.1', accession: '12345', terms: 'Widget' }) },
+    (model, root) => {
+      const out = JSON.parse(runCli('resolve.js', 'widget', '--root', root, '--json').stdout);
+      const entry = out.results[0].knowledge[0];
+      assert.equal(entry.id, null, 'a non-string accession publishes as null');
+      assert.equal(entry.notation, '700.1', 'the notation is unaffected');
+      // Identity still falls back to the notation, so the leaf remains findable.
+      assert.deepEqual([...model.leaves.keys()], ['700.1']);
+    },
+    { concept: { id: 'K-510', term: 'Widget' } },
+  );
 });
 
 test('a notation-only store resolves identically apart from the added field', () => {

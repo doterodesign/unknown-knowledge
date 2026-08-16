@@ -150,9 +150,17 @@ function knowledgeEntryPoints(model, record) {
       // field that silently changed meaning would break every consumer
       // reading it as a tree position. Identity moves to `id`; `notation`
       // keeps saying what it always said.
+      // Both ids are published as STRING-OR-NULL, tested with `typeof` rather
+      // than `??`: `??` only catches null/undefined, so an unquoted YAML
+      // `id: 12345` — a number, not an accession — would travel into the JSON
+      // as a number and break the field's published type for every consumer.
+      // The schema already rejects that leaf, but the resolver never gates on
+      // store health (a lookup runs on whatever loaded, §4), so it is the one
+      // surface that can be asked to publish an id no check has approved.
+      // Same `typeof` test the loader and the orphan check use.
       out.push({
-        id: entry.id ?? null,
-        notation: entry.notation ?? null,
+        id: typeof entry.id === 'string' ? entry.id : null,
+        notation: typeof entry.notation === 'string' ? entry.notation : null,
         heading: leaf.heading ?? null,
         file,
       });
