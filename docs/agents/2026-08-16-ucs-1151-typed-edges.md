@@ -143,8 +143,45 @@ they send an author to three different edits.
 `knowledge.length > 0`. Now asserts the published neighborhood resolves the
 notation-spelled citation to the accessioned leaf's identity.
 
+## Review round 2 (symlink canonicalization + test nits)
+
+**Symlink escape — REAL, fixed.** The containment check added in round 1 was
+lexical, so `src/link.ts` — a symlink sitting inside the repo whose target is
+outside it — passed every string test and validated clean. Same defect class as
+the original: the verdict still came from something the repo does not contain.
+`pointerDefect` now canonicalizes with `realpathSync` and re-tests.
+
+Three ordering details that matter:
+
+- Existence is checked BEFORE canonicalization. A path that is not there has no
+  canonical form, and reporting it as an escape would send an author hunting a
+  link that does not exist. A dangling symlink therefore reports `missing`,
+  which is what it is.
+- BOTH sides are canonicalized. The root itself may be reached through a link —
+  macOS hands tests a `/tmp` that is really `/private/tmp` — so comparing a
+  canonical target against a lexical root would read every ordinary path as an
+  escape.
+- A failed `realpathSync` (permissions wall, race with a delete) returns null
+  and the pointer is accepted rather than failed. The lexical test already
+  passed and the path exists; inventing a defect from a failed syscall would be
+  worse than the gap. Same conduct the resolver's folder test already applies.
+
+**Test nits, all three taken.** The fixture-invariant test lowercased `term` but
+not `aliases`, so a Title-Case alias would have evaded the case-insensitive
+match it claims to guard. The resolver call in the root-pointer test parsed
+stdout without asserting spawn status, and its only assertion was negative —
+which an empty result would have satisfied; it now uses the checked helper and
+anchors the expected entries positively first. Two fixture catalog comments
+claimed `via`/both-join coverage their single-leaf stores do not deliver
+(copied from the clean fixture); both now describe what those stores actually
+are.
+
+**Optional refactor taken.** `withEscapeStore` now prepares the store and hands
+back `(repo, dir)`, with `rewrite`/`leafOf`/`validateWithLeafPaths` helpers —
+the three hand-rolled temp-dir blocks are gone.
+
 ## Gates
 
-- `npm test` — 718 pass, 0 fail (baseline 696 + 22 new).
+- `npm test` — 719 pass, 0 fail (baseline 696 + 23 new).
 - `npm run lint` — 179 files, 0 failures.
 - `npm run acceptance` — OK, all asserted criteria (A1–A4, A6) pass.

@@ -21,9 +21,13 @@
  *                     knowledge leaf `paths` entry (UCS-1151). Three shapes,
  *                     one code, because from the store's side they are one
  *                     defect class: the pointer is absent, it ESCAPES the repo
- *                     root (`../elsewhere`, or an absolute path), or it names
- *                     the repo ROOT itself — a pointer at everything attributes
- *                     nothing. Deprecated concepts demote an ABSENT pointer to
+ *                     root (`../elsewhere`, an absolute path, or a symlink
+ *                     inside the repo whose target is outside it — containment
+ *                     is judged on CANONICAL paths, never lexically), or it
+ *                     names the repo ROOT itself — a pointer at everything
+ *                     attributes nothing. A dangling symlink reports as absent
+ *                     rather than escaping, which is what it is.
+ *                     Deprecated concepts demote an ABSENT pointer to
  *                     warning (§3.5 — the source-deletion escape hatch) but
  *                     never an escaping or root one: that hatch is for a path
  *                     that used to exist, not for a claim the store was never
@@ -77,7 +81,7 @@
  * JSON findings output is deterministic and stable-sorted by file/path/code/id
  * (shared comparator), no timestamps — baseline-diffable (D-012).
  */
-import { statSync } from 'node:fs';
+import { realpathSync, statSync } from 'node:fs';
 import { isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
@@ -157,13 +161,57 @@ const POINTER_MESSAGES = Object.freeze({
 });
 
 function pointerDefect(repoRoot, p) {
-  const target = resolve(repoRoot, p);
-  const rel = relative(resolve(repoRoot), target);
-  if (rel === '') return 'root';
-  // `..` at the front means the target climbed out; an absolute `rel` means it
-  // landed on a different volume entirely. Either way it is not ours to judge.
-  if (rel.startsWith('..') || isAbsolute(rel)) return 'escapes';
-  return statSync(target, { throwIfNoEntry: false }) ? null : 'missing';
+  const root = resolve(repoRoot);
+  const target = resolve(root, p);
+  // The repo root itself is its own defect — a pointer at everything — so it is
+  // separated from the escapes it otherwise shares a test with.
+  if (relative(root, target) === '') return 'root';
+  if (outside(root, target)) return 'escapes';
+  // Existence before canonicalization, because the two questions are ordered:
+  // a path that is not there has no canonical form to compare, and reporting
+  // it as an escape would send an author looking for a link that does not
+  // exist. A dangling symlink lands here too — statSync follows links, so a
+  // link whose target is gone is `missing`, which is what it is.
+  if (!statSync(target, { throwIfNoEntry: false })) return 'missing';
+  // Then AGAIN on the canonical paths. The lexical test above is necessary but
+  // not sufficient: `src/link.ts` is lexically inside the repo while resolving
+  // to anywhere at all, so a symlink would carry the whole escape back in
+  // through a path that looks contained. Both sides are canonicalized, because
+  // the ROOT may itself be reached through a link (a /tmp that is really
+  // /private/tmp, which is exactly what macOS hands a test) — comparing a
+  // canonical target against a lexical root would then read every ordinary
+  // path as an escape.
+  const realRoot = realpathOrNull(root);
+  const realTarget = realpathOrNull(target);
+  // If either cannot be canonicalized the filesystem has declined to answer.
+  // The lexical test already passed and the path exists, so the honest reading
+  // is to accept it rather than invent a defect from a failed syscall.
+  if (realRoot === null || realTarget === null) return null;
+  return outside(realRoot, realTarget) ? 'escapes' : null;
+}
+
+/** Is `target` outside `root`, or root itself? Both must already be absolute. */
+function outside(root, target) {
+  const rel = relative(root, target);
+  // `''` is the root itself; a leading `..` climbed out; an absolute result
+  // means a different volume entirely.
+  return rel === '' || rel.startsWith('..') || isAbsolute(rel);
+}
+
+/**
+ * The canonical path, or null when the filesystem will not say.
+ *
+ * A pointer this engine cannot canonicalize (a permissions wall on a parent, a
+ * race with a concurrent delete) must not crash a validation run that can still
+ * answer for every other pointer — the same conduct the resolver's folder test
+ * already applies to an unreadable pointer.
+ */
+function realpathOrNull(path) {
+  try {
+    return realpathSync(path);
+  } catch {
+    return null;
+  }
 }
 
 // -------------------------------------------------------------- the checks

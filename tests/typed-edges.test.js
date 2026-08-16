@@ -28,7 +28,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import {
-  cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
+  cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -146,27 +146,43 @@ test('golden: an unresolvable paths target is a missing-path finding at the vali
 // ------------------------ pointers may only name things inside THIS repo
 
 /**
- * Copy the clean fixture into a temp dir, rewrite one pointer list, and run the
- * validator against it — with a real file sitting OUTSIDE the copied repo, so
- * an escaping pointer would resolve to something that genuinely exists.
+ * Copy the clean fixture into a temp dir and hand it to `fn` — with a real file
+ * sitting OUTSIDE the copied repo, at `<dir>/outside/secret.ts`.
  *
- * That file is the whole point of the harness. Without it an escaping pointer
- * would fail as `missing` and the test would pass for the wrong reason,
- * proving nothing about containment.
+ * That outside file is the whole point of the harness. Without it an escaping
+ * pointer would fail as `missing` and every containment test would pass for the
+ * wrong reason, proving nothing about containment at all.
+ *
+ * `fn` receives both the repo root and the parent dir, since a test that plants
+ * a symlink needs to name a target outside the repo.
  */
-function withEscapeStore(rewrite, fn) {
+function withEscapeStore(fn) {
   const dir = mkdtempSync(join(tmpdir(), 'uk-1151-escape-'));
   try {
     const repo = join(dir, 'repo');
     cpSync(CLEAN, repo, { recursive: true });
     mkdirSync(join(dir, 'outside'), { recursive: true });
     writeFileSync(join(dir, 'outside', 'secret.ts'), '// outside the repo\n');
-    const leaf = join(repo, 'knowledge/library/501.1-result-ordering.md');
-    writeFileSync(leaf, rewrite(readFileSync(leaf, 'utf8')));
-    return fn(repo);
+    return fn(repo, dir);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+}
+
+/** Rewrite one file inside a prepared store, by string replacement. */
+function rewrite(file, find, replacement) {
+  writeFileSync(file, readFileSync(file, 'utf8').replace(find, replacement));
+}
+
+/** The fixture leaf whose `paths` list the containment tests rewrite. */
+const leafOf = (repo) => join(repo, 'knowledge/library/501.1-result-ordering.md');
+
+/** Replace the leaf's `paths` list with `entries`, then validate the store. */
+function validateWithLeafPaths(entries, expectStatus = 1) {
+  return withEscapeStore((repo) => {
+    rewrite(leafOf(repo), '  - src/retrieval', entries.map((e) => `  - ${e}`).join('\n'));
+    return json('validate.js', expectStatus, '--root', repo);
+  });
 }
 
 test('a leaf path that escapes the repo root is a finding, even when the target exists', () => {
@@ -175,10 +191,7 @@ test('a leaf path that escapes the repo root is a finding, even when the target 
   // would depend on what sits outside it, passing on the author's machine and
   // failing on a machine where that file is absent. A check whose answer comes
   // from outside the unit under review is not a check.
-  const payload = withEscapeStore(
-    (text) => text.replace('  - src/retrieval', '  - ../outside/secret.ts'),
-    (repo) => json('validate.js', 1, '--root', repo),
-  );
+  const payload = validateWithLeafPaths(['../outside/secret.ts']);
   assert.deepEqual(
     payload.findings.map((f) => [f.code, f.severity, f.path]),
     [['missing-path', 'error', 'paths[0]']],
@@ -190,10 +203,7 @@ test('an absolute leaf path is refused the same way — it is not repo-relative'
   // `/etc/passwd` joins to `<repoRoot>/etc/passwd`, which is a different claim
   // than the author wrote. Paths are repo-relative (§9.1); an absolute one is
   // refused rather than silently reinterpreted.
-  const payload = withEscapeStore(
-    (text) => text.replace('  - src/retrieval', '  - /etc/passwd'),
-    (repo) => json('validate.js', 1, '--root', repo),
-  );
+  const payload = validateWithLeafPaths(['/etc/passwd']);
   assert.deepEqual(payload.findings.map((f) => f.code), ['missing-path']);
   assert.match(payload.findings[0].message, /resolves outside the repo root/);
 });
@@ -204,28 +214,75 @@ test('a leaf path naming the repo root is refused — a pointer at everything at
   // leaf in front of every developer regardless of what they touched). Neither
   // is a claim worth having, so it is refused where it is authored. The
   // resolver's `--paths` input side already refuses the same shape.
-  const payload = withEscapeStore(
-    (text) => text.replace('  - src/retrieval', '  - "."'),
-    (repo) => json('validate.js', 1, '--root', repo),
-  );
+  const payload = validateWithLeafPaths(['"."']);
   assert.deepEqual(payload.findings.map((f) => f.code), ['missing-path']);
   assert.match(payload.findings[0].message, /names the repo root/);
 
   // ...and the resolver does not act on such a pointer either, since it never
   // gates on store health (§4) and so can be pointed at an unvalidated store.
   // Under-report rather than false-attribute: §3.1's costlier-error direction.
-  const resolved = withEscapeStore(
-    (text) => text.replace('  - src/retrieval', '  - "."'),
-    (repo) => JSON.parse(spawnSync(
-      process.execPath,
-      [join(root, 'payload/engine/resolve.js'), '--paths', 'src/index/build.ts', '--root', repo, '--json'],
-      { encoding: 'utf8' },
-    ).stdout),
+  const resolved = withEscapeStore((repo) => {
+    rewrite(leafOf(repo), '  - src/retrieval', '  - "."');
+    // The CHECKED helper: an unasserted spawn that failed would parse empty
+    // stdout and throw somewhere less legible, or worse, satisfy a negative
+    // assertion by returning nothing at all.
+    return json('resolve.js', 0, '--paths', 'src/index/build.ts', '--root', repo);
+  });
+  // Anchored positively first — the lookup really did answer, with exactly the
+  // leaves that legitimately govern this path. Without this, the negative below
+  // would pass just as well against an empty result.
+  assert.deepEqual(
+    resolved.paths[0].knowledge.map((k) => [k.via, k.id]),
+    [['direct', 'L-000510'], ['concept', 'L-000511']],
   );
+  // ...and the root-pointer leaf is not among them.
   assert.equal(
-    resolved.paths[0].knowledge.some((k) => k.id === 'L-000501' && k.via === 'direct'), false,
+    resolved.paths[0].knowledge.some((k) => k.id === 'L-000501'), false,
     'a root pointer must not attribute its leaf to every path',
   );
+});
+
+test('a symlink INSIDE the repo whose target is outside is still an escape', (t) => {
+  // Containment cannot be judged lexically alone. `src/link.ts` sits inside the
+  // repo by every string test there is, and resolves to a file outside it — so
+  // the store's verdict would once again depend on something it does not
+  // contain, which is the exact defect the lexical check was added to close.
+  // Canonicalizing both sides is what actually closes it.
+  const payload = withEscapeStore((repo, dir) => {
+    try {
+      // Escapes via link; stays inside via link; and a link to nothing.
+      symlinkSync(join(dir, 'outside', 'secret.ts'), join(repo, 'src/link.ts'));
+      symlinkSync(join(repo, 'src/index/build.ts'), join(repo, 'src/inlink.ts'));
+      symlinkSync(join(dir, 'outside', 'gone.ts'), join(repo, 'src/dangling.ts'));
+    } catch {
+      // Some platforms and CI sandboxes forbid symlink creation outright.
+      // There is no hole to test where there are no symlinks.
+      return null;
+    }
+    rewrite(
+      leafOf(repo), '  - src/retrieval',
+      '  - src/link.ts\n  - src/inlink.ts\n  - src/dangling.ts\n  - src/retrieval',
+    );
+    return json('validate.js', 1, '--root', repo);
+  });
+  if (payload === null) {
+    t.skip('symlink creation not permitted here');
+    return;
+  }
+  assert.deepEqual(
+    payload.findings.map((f) => f.path),
+    [
+      // paths[0] escapes THROUGH the link...
+      'paths[0]',
+      // ...paths[1] resolves back inside and is fine, so it is absent...
+      // ...and paths[2] is a link to nothing, which is missing rather than
+      // escaping: statSync follows links, and an author pointed at an escape
+      // would go looking for a target that is not there to find.
+      'paths[2]',
+    ],
+  );
+  assert.match(payload.findings[0].message, /resolves outside the repo root/);
+  assert.match(payload.findings[1].message, /does not exist in the working tree/);
 });
 
 test('concept source-of-truth pointers are held to the same containment rule', () => {
@@ -233,24 +290,19 @@ test('concept source-of-truth pointers are held to the same containment rule', (
   // containment test lives in ONE function both of them call. A leaf's paths
   // and a concept's source-of-truth are the same kind of claim about the same
   // repo, so they must not be judged by two different rules.
-  const dir = mkdtempSync(join(tmpdir(), 'uk-1151-ssot-'));
-  try {
-    const repo = join(dir, 'repo');
-    cpSync(CLEAN, repo, { recursive: true });
-    mkdirSync(join(dir, 'outside'), { recursive: true });
-    writeFileSync(join(dir, 'outside', 'secret.ts'), '// outside the repo\n');
-    const classes = join(repo, 'ontology/classes/200-retrieval.yaml');
-    writeFileSync(classes, readFileSync(classes, 'utf8')
-      .replace('source-of-truth: [src/index/build.ts]', 'source-of-truth: [../outside/secret.ts]'));
-    const payload = json('validate.js', 1, '--root', repo);
-    assert.deepEqual(
-      payload.findings.map((f) => [f.code, f.id, f.path]),
-      [['missing-path', 'K-202', 'source-of-truth[0]']],
+  const payload = withEscapeStore((repo) => {
+    rewrite(
+      join(repo, 'ontology/classes/200-retrieval.yaml'),
+      'source-of-truth: [src/index/build.ts]',
+      'source-of-truth: [../outside/secret.ts]',
     );
-    assert.match(payload.findings[0].message, /resolves outside the repo root/);
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
+    return json('validate.js', 1, '--root', repo);
+  });
+  assert.deepEqual(
+    payload.findings.map((f) => [f.code, f.id, f.path]),
+    [['missing-path', 'K-202', 'source-of-truth[0]']],
+  );
+  assert.match(payload.findings[0].message, /resolves outside the repo root/);
 });
 
 test('a DEPRECATED concept does not demote an escaping pointer to a warning', () => {
@@ -259,31 +311,24 @@ test('a DEPRECATED concept does not demote an escaping pointer to a warning', ()
   // without dead-ending. That hatch is about a path that USED to exist. It says
   // nothing about a pointer that was never this store's to make, and demoting
   // one would let a malformed claim ship under a warning at exit 0.
-  const dir = mkdtempSync(join(tmpdir(), 'uk-1151-dep-'));
-  try {
-    const repo = join(dir, 'repo');
-    cpSync(CLEAN, repo, { recursive: true });
-    mkdirSync(join(dir, 'outside'), { recursive: true });
-    writeFileSync(join(dir, 'outside', 'secret.ts'), '// outside the repo\n');
-    const classes = join(repo, 'ontology/classes/200-retrieval.yaml');
-    writeFileSync(classes, readFileSync(classes, 'utf8').replace(
+  const payload = withEscapeStore((repo) => {
+    rewrite(
+      join(repo, 'ontology/classes/200-retrieval.yaml'),
       '    source-of-truth: [src/index/build.ts]\n    status: active',
       '    source-of-truth: [../outside/secret.ts, src/gone.ts]\n    status: deprecated',
-    ));
-    const payload = json('validate.js', 1, '--root', repo);
-    assert.deepEqual(
-      payload.findings.map((f) => [f.severity, f.path]),
-      [
-        // The escaping pointer stays blocking...
-        ['error', 'source-of-truth[0]'],
-        // ...while an ordinarily absent one still demotes, so the hatch it
-        // exists for is untouched.
-        ['warning', 'source-of-truth[1]'],
-      ],
     );
-  } finally {
-    rmSync(dir, { recursive: true, force: true });
-  }
+    return json('validate.js', 1, '--root', repo);
+  });
+  assert.deepEqual(
+    payload.findings.map((f) => [f.severity, f.path]),
+    [
+      // The escaping pointer stays blocking...
+      ['error', 'source-of-truth[0]'],
+      // ...while an ordinarily absent one still demotes, so the hatch it
+      // exists for is untouched.
+      ['warning', 'source-of-truth[1]'],
+    ],
+  );
 });
 
 // ------------- AC2: the leaf<->concept edge is derived bidirectionally at load
@@ -308,7 +353,12 @@ test('golden: resolving a concept surfaces its declaring leaves with NO term mat
   // textual join reaches nothing at all.
   const model = loadStores(CLEAN);
   const concept = model.concepts.get('K-201').record;
-  const names = new Set([concept.term.toLowerCase(), ...(concept.aliases ?? [])]);
+  // Both sides lowercased: the join this guards is case-INSENSITIVE, so a
+  // Title-Case alias compared raw would slip past the invariant and leave the
+  // test claiming a textual miss that had actually become a hit.
+  const names = new Set(
+    [concept.term, ...(concept.aliases ?? [])].map((name) => name.toLowerCase()),
+  );
   for (const leaf of model.leaves.values()) {
     for (const term of leaf.record.terms ?? []) {
       assert.equal(

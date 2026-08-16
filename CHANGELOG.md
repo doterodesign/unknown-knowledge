@@ -34,7 +34,13 @@ dates are recorded at release time, never retroactively.
   or an absolute path — used to be judged against whatever sat there, so a
   store passed or failed on what existed OUTSIDE it: clean on the author's
   machine, broken on a machine without that file. It is now a `missing-path`
-  finding on its shape. A pointer naming the repo root is refused for the
+  finding on its shape. Containment is judged on the CANONICAL paths, not
+  lexically: a symlink sitting inside the repo whose target is outside it
+  passes every string test there is, and would otherwise carry the whole
+  escape back in through a path that looks contained. Both sides are
+  canonicalized, since the root itself may be reached through a link. A
+  dangling symlink reports as missing rather than escaping — which is what it
+  is, and it sends the author to the edit they can actually make. A pointer naming the repo root is refused for the
   matching reason: it attributes to everything, which attributes nothing, and
   `resolve --paths` already refused the same shape as an input. A deprecated
   concept still demotes an ABSENT pointer to a warning (§3.5's source-deletion
