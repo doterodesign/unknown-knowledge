@@ -1,8 +1,10 @@
-# Frontmatter v2 fixture (UCS-1149) — the jurisdictions registry.
+# Time facet findings fixture (UCS-1150) — the jurisdictions registry, empty.
 #
-# Both leaves here claim universally (`applies.jurisdictions: []`), so nothing
-# has warrant yet. An EMPTY registry is not a missing one: it is a vocabulary
-# nothing has needed, and empty `jurisdictions` means universal, not unchecked.
+# Neither leaf here declares `applies`. This fixture pins exactly two findings —
+# `missing-verified` and `malformed-verified` — and its finding set is asserted
+# in FULL, so any field that could raise a third would be pinning the wrong
+# thing. An EMPTY registry is not a missing one: it is a vocabulary nothing here
+# has needed warrant for.
 schema-version: 1
 store: knowledge
 registry: jurisdictions

@@ -77,8 +77,13 @@ const verdicts = (expectStatus, ...args) =>
 test('the pinned thresholds are 365 stable / 90 volatile / static never', () => {
   // The numbers themselves, read off the module rather than restated — a table
   // that drifted from the ticket would still pass a test asserting only the
-  // verdicts it produces.
-  assert.deepEqual(VOLATILITY_LIMITS, { static: Infinity, stable: 365, volatile: 90 });
+  // verdicts it produces. Compared as ENTRIES because the table is
+  // null-prototype (see the inherited-name regression below), and deepEqual
+  // against an object literal would fail on the prototype rather than on any
+  // threshold being wrong.
+  assert.deepEqual(Object.entries(VOLATILITY_LIMITS).sort(), [
+    ['stable', 365], ['static', Infinity], ['volatile', 90],
+  ]);
   assert.deepEqual(VOLATILITY_CLASSES, ['stable', 'static', 'volatile']);
   assert.ok(Object.isFrozen(VOLATILITY_LIMITS), 'a mutated threshold would silently re-date the store');
 });
@@ -503,6 +508,92 @@ test('the verdict function is pure and total — every input yields a stable sha
   assert.equal(leafVerified({ verified: '2026-02-30' }), null);
   assert.equal(leafVerified({ verified: 'yesterday' }), null);
   assert.equal(leafVerified({ verified: '2026-08-16' }), '2026-08-16');
+});
+
+test('an INHERITED property name is not a volatility class', () => {
+  // Regression. `VOLATILITY_LIMITS` was an object literal and membership was
+  // tested with `in`, so every name on Object.prototype answered TRUE:
+  // `volatility: toString` read as a known class whose limit was a native
+  // function. Three things went wrong at once, and the first is the worst —
+  //
+  //   1. `age > someFunction` is always false, so a leaf verified in 2020 came
+  //      back `trusted` and UNDEMOTED. Rotted knowledge wearing a clean verdict
+  //      is the exact failure this facet exists to prevent.
+  //   2. `JSON.stringify` DROPS function values, so `limit` vanished from the
+  //      published object — breaking the stable-key contract that says a
+  //      consumer never needs a presence check.
+  //   3. `[native code]` leaked into the reason string a human reads.
+  //
+  // The schema enum refuses such a leaf, so no validated store reaches this.
+  // That is not enough: the resolver deliberately never gates on store health
+  // (§4), so it is precisely the surface that can be asked to publish a verdict
+  // on a leaf no check approved — which is asserted against the CLI below.
+  for (const inherited of ['toString', 'constructor', 'valueOf', 'hasOwnProperty', '__proto__', 'isPrototypeOf']) {
+    assert.equal(leafVolatility({ volatility: inherited }), null, inherited);
+    const v = timeVerdict({ volatility: inherited, verified: '2020-01-01' }, TODAY);
+    assert.equal(v.verdict, TIME_VERDICTS.EXEMPT, `${inherited} must not read as a known class`);
+    assert.equal(v.limit, null, `${inherited} must not publish a function as its limit`);
+    assert.equal(v.stale, false);
+    assert.doesNotMatch(v.reason, /native code/, 'no engine internals leak into a human-read reason');
+    // The published shape survives the JSON round trip with every key intact —
+    // a function value would have been silently dropped here.
+    assert.deepEqual(JSON.parse(JSON.stringify(v)), v, `${inherited} must survive JSON intact`);
+  }
+
+  // The table itself is null-prototype, so the whole class of bug is gone at
+  // the source rather than patched at each call site.
+  assert.equal(Object.getPrototypeOf(VOLATILITY_LIMITS), null);
+  assert.equal('toString' in VOLATILITY_LIMITS, false);
+  // And the three real classes are unaffected by the hardening.
+  for (const real of VOLATILITY_CLASSES) {
+    assert.equal(leafVolatility({ volatility: real }), real);
+  }
+});
+
+test('the resolver publishes an honest verdict for a leaf the schema would refuse', () => {
+  // The end-to-end half of the regression above, through the surface that can
+  // actually be asked to do it: the resolver runs on whatever loaded, so a
+  // store carrying an invalid volatility still resolves. It must report the
+  // leaf as `exempt` — not `trusted`, and never demoted-or-promoted on the
+  // strength of a limit that is a native function.
+  const dir = mkdtempSync(join(tmpdir(), 'uk-time-proto-'));
+  try {
+    cpSync(CLEAN, dir, { recursive: true });
+    const leaf = join(dir, 'knowledge/freshness/302.1-stable-past-the-limit.md');
+    const text = readFileSync(leaf, 'utf8');
+    assert.ok(text.includes('volatility: stable'), 'fixture shape changed');
+    writeFileSync(leaf, text.replace('volatility: stable', 'volatility: toString'));
+
+    const entry = json('resolve.js', 0, 'freshness boundary', '--root', dir, '--today', TODAY)
+      .results[0].knowledge.find((k) => k.id === 'L-000302');
+    assert.equal(entry.time.verdict, 'exempt');
+    assert.equal(entry.time.volatility, null, 'an uninterpretable class is not carried forward');
+    // `limit` is PRESENT and null. Before the fix it was absent, because
+    // JSON.stringify drops function values.
+    assert.ok('limit' in entry.time, 'the stable-key contract holds even here');
+    assert.equal(entry.time.limit, null);
+
+    // The schema still refuses the leaf, so the defect is reported where it is
+    // fixable rather than only tolerated where it is read.
+    const bad = runCli('validate.js', '--root', dir, '--json');
+    assert.equal(bad.status, 2);
+    assert.match(bad.stderr, /invalid-enum-value/);
+    assert.match(bad.stderr, /volatility/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the validator reads volatility through ONE reader, so `in` cannot creep back', () => {
+  // The validator's presence check must not spell its own membership test. A
+  // second spelling would answer TRUE for inherited names and then demand a
+  // `verified` date from a class that has no threshold — a finding raised
+  // against a leaf for failing a rule that does not apply to it.
+  const source = readFileSync(join(root, 'payload/engine/commands/validate.js'), 'utf8');
+  const code = source.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.doesNotMatch(code, /\bin VOLATILITY_LIMITS\b/,
+    'membership must go through leafVolatility, never a bare `in`');
+  assert.match(code, /leafVolatility\(record\)/);
 });
 
 test('a leaf under time governance whose age cannot be computed is never trusted', () => {

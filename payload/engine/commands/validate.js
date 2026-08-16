@@ -100,7 +100,7 @@ import { ID_GRAMMARS, idPattern } from '../lib/id-grammars.js';
 // The Time facet's field spellings and pinned thresholds (UCS-1150), read from
 // the one module that owns them — the validator's presence check and every
 // surface's staleness verdict must agree about which fields those are.
-import { VERIFIED_FIELD, VOLATILITY_FIELD, VOLATILITY_LIMITS } from '../lib/time-verdicts.js';
+import { VERIFIED_FIELD, VOLATILITY_LIMITS, leafVolatility } from '../lib/time-verdicts.js';
 import { isCalendarDate } from '../lib/iso-date.js';
 
 export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <dir>] [--concepts <ids>]';
@@ -881,10 +881,17 @@ function checkCitations(model, push) {
 function checkVerifiedDates(model, push) {
   for (const leaf of model.leaves.values()) {
     const { file, record } = leaf;
-    const volatility = record[VOLATILITY_FIELD];
-    // A non-string volatility is a schema defect already reported; judging its
-    // date would be a second finding for one mistake.
-    if (typeof volatility !== 'string' || !(volatility in VOLATILITY_LIMITS)) continue;
+    // Read through the module's own reader rather than testing membership here.
+    // A second spelling of "is this a known class" is a second chance to get it
+    // wrong — `volatility in VOLATILITY_LIMITS` would answer TRUE for inherited
+    // names like `toString`, and this check would then demand a date from a
+    // class that has no threshold. One reader, one answer.
+    //
+    // Null covers both a non-string volatility and an unknown class. Either is
+    // a schema defect already reported, and judging the date on top of it would
+    // be a second finding for one mistake.
+    const volatility = leafVolatility(record);
+    if (volatility === null) continue;
     const verified = record[VERIFIED_FIELD];
 
     if (verified === undefined) {

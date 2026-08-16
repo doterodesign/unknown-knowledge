@@ -54,13 +54,30 @@ export const VOLATILITY_FIELD = 'volatility';
  * directions by golden fixtures, because "more than a year old" and "a year or
  * more old" differ by exactly one day and nothing in the phrase says which.
  *
+ * NULL-PROTOTYPE, and that is a correctness requirement rather than a style
+ * preference. A plain object literal inherits `toString`, `constructor`,
+ * `valueOf` and the rest of Object.prototype, so `'toString' in LIMITS` is
+ * TRUE and `LIMITS['toString']` is a native function. A leaf spelling
+ * `volatility: toString` would then be treated as a known class whose limit is
+ * a function — and `age > someFunction` is always false, so a leaf verified in
+ * 2020 would read `trusted`, undemoted, with `limit` silently dropped from the
+ * JSON (JSON.stringify omits function values) and `[native code]` leaking into
+ * the reason a human reads.
+ *
+ * The schema enum already refuses such a leaf, so no VALIDATED store reaches
+ * it. That is not enough: the resolver deliberately never gates on store health
+ * — a lookup runs on whatever loaded (§4) — so it is precisely the surface that
+ * can be asked to publish a verdict on a leaf no check approved. Fixing it at
+ * the table rather than at each call site means a future consumer of this
+ * module cannot reintroduce the bug by reaching for `in` or `[]` itself.
+ *
  * @type {Readonly<Record<string, number>>}
  */
-export const VOLATILITY_LIMITS = Object.freeze({
+export const VOLATILITY_LIMITS = Object.freeze(Object.assign(Object.create(null), {
   static: Infinity,
   stable: 365,
   volatile: 90,
-});
+}));
 
 /** The closed volatility vocabulary, sorted — the schema enum's single source. */
 export const VOLATILITY_CLASSES = Object.freeze(Object.keys(VOLATILITY_LIMITS).sort());
@@ -87,12 +104,20 @@ export const TIME_VERDICTS = Object.freeze({
  * threshold table would produce `undefined > n` — which is `false`, i.e. a
  * silent `trusted` for a leaf whose volatility nobody can interpret.
  *
+ * Membership is an OWN-property test, never `in`. The table is null-prototype
+ * so `in` would be safe today, but this is the gate every unknown value passes
+ * through and it should be correct on its own terms rather than by depending on
+ * how the table above happens to be built — an inherited name like `toString`
+ * reading as a known class is the one failure this function exists to prevent.
+ *
  * @param {object} record a leaf's front-matter record
  * @returns {string|null}
  */
 export function leafVolatility(record) {
   const volatility = record?.[VOLATILITY_FIELD];
-  return typeof volatility === 'string' && volatility in VOLATILITY_LIMITS ? volatility : null;
+  return typeof volatility === 'string' && Object.prototype.hasOwnProperty.call(VOLATILITY_LIMITS, volatility)
+    ? volatility
+    : null;
 }
 
 /**

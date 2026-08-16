@@ -1,8 +1,20 @@
-# Frontmatter v2 fixture (UCS-1149) — the jurisdictions registry.
+# Time facet fixture (UCS-1150) — the jurisdictions registry, deliberately empty.
 #
-# Both leaves here claim universally (`applies.jurisdictions: []`), so nothing
-# has warrant yet. An EMPTY registry is not a missing one: it is a vocabulary
-# nothing has needed, and empty `jurisdictions` means universal, not unchecked.
+# No leaf in this fixture declares `applies` at all. That is the point: these
+# seven leaves exist to isolate ONE facet, and every field they carry beyond the
+# schema's required set is a field a reader has to rule out before believing a
+# verdict came from the time facet rather than from something else.
+#
+# Absence and an explicit `applies.jurisdictions: []` are indistinguishable to
+# the engine — both validate clean, and neither is checked against this registry
+# (membership judges the values in the list, and there is no list). So spelling
+# the empty case out would encode a claim about SPACE into fixtures that pin
+# TIME, without pinning anything the Space facet's own fixtures do not already
+# pin better.
+#
+# The registry still ships because the store loads its registries as a set; an
+# EMPTY registry is not a missing one — it is a vocabulary nothing here has
+# needed warrant for.
 schema-version: 1
 store: knowledge
 registry: jurisdictions
