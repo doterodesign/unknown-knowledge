@@ -91,7 +91,7 @@ Two claims in the item:
 ```sh
 node "$KIT/engine/log-entry.js" create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf 100.1, concept K-104","consulted":{"concepts":["K-104"],"leaves":["100.1"]}}'
+  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf 100.1, concept K-104","consulted":{"concepts":["K-104"],"leaves":["L-000100"]}}'
 ```
 
 - [ ] Exit 0; the helper prints the minted fragment (hex suffix varies):
@@ -110,7 +110,7 @@ node "$KIT/engine/log-entry.js" create --log gaps --date 2026-07-09 \
         "K-104"
       ],
       "leaves": [
-        "100.1"
+        "L-000100"
       ]
     }
   }
