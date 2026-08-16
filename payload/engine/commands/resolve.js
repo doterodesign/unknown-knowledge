@@ -5,6 +5,30 @@
  *
  *   node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
  *   node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>]
+ *   node payload/engine/resolve.js --doc <document> [--json] [--root <dir>]
+ *
+ * ONE ENTRY POINT, THREE INPUT SHAPES (UCS-1156). A query, a set of repo paths,
+ * and a whole document all enter here, and the pipeline is SIZE- AND
+ * FORMAT-INVARIANT because a query is processed as a ONE-BLOCK DOCUMENT through
+ * the same code: `resolveQuery` and `--doc` both reach the store through
+ * `joinText`, so a query and its equivalent one-block document produce
+ * identical joins by construction rather than by two implementations agreeing.
+ * A second document-shaped matcher is how two surfaces come to disagree about
+ * what a store contains, and the disagreement would be invisible — both would
+ * return plausible results.
+ *
+ * --doc mode emits a COVERAGE MAP (lib/coverage.js): per-section joins and
+ * candidates, a gather rollup with verdicts and scope-mismatch flags, and
+ * ranked candidates each carrying a section locator for just-in-time reads. Its
+ * size grows with content RICHNESS, not document length — a long redundant
+ * document repeats vocabulary that joins nothing new, so it produces a smaller
+ * map than a short dense one. An agent's context cost is the map plus the
+ * sections it chooses to open, never the document.
+ *
+ * An unsupported format, or content outside an adapter's envelope, is a HARD
+ * ERROR WITH CONDUCT and exits 2 — a parse that never ran is a failure, never a
+ * silent partial that would report a document as covered when half of it was
+ * never read (PRD §5.1).
  *
  * Query mode — scored term matching over the ontology. The query is the terms
  * joined by single spaces, lowercased. A concept scores on the HIGHEST rung it
@@ -169,8 +193,8 @@
  * id asc; paths/pointers/entry points lexicographic — with no timestamps.
  */
 import process from 'node:process';
-import { statSync } from 'node:fs';
-import { join, posix } from 'node:path';
+import { readFileSync, statSync } from 'node:fs';
+import { join, posix, resolve as resolvePath } from 'node:path';
 import {
   LEAF_PATHS_FIELD, RELATES_FIELD, RELATES_KINDS, healthSummary, isPrePromotionStatus,
   leafIdentityOf, leafStage, loadStores, storeHealth,
@@ -192,9 +216,16 @@ import { conceptScore, leafScore, scoringTable } from '../lib/scoring.js';
 // stale here is never verdicted trusted there.
 import { timeCheckStatus, timeVerdict } from '../lib/time-verdicts.js';
 import { isCalendarDate } from '../lib/iso-date.js';
+// The document coverage map (UCS-1156) and the adapter seam it reads. The
+// coverage module owns the MAP; this command owns the JOINS, and passes its own
+// joiner in — so the document path cannot grow a second matcher.
+import { buildCoverageMap } from '../lib/coverage.js';
+import { AdaptError, UnsupportedFormatError, adapt, adapterFor } from '../lib/format-adapters.js';
+import { loadSuppressions } from '../lib/suppressions.js';
 
 export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
-       node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]`;
+       node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
+       node payload/engine/resolve.js --doc <document> [--json] [--root <dir>] [--today <YYYY-MM-DD>]`;
 
 // The concept ladder and the draft downrank moved to lib/scoring.js (UCS-1152)
 // — one signal→score table, so a reader asking "what is a score of 70 made of"
@@ -863,13 +894,55 @@ const rankLeaves = (leaves) => [...leaves].sort((a, b) =>
   || b.score - a.score
   || compare(a.id ?? a.notation, b.id ?? b.notation));
 
-function resolveQuery(model, terms, today) {
-  const raw = terms.join(' ');
+/**
+ * THE JOIN CORE — one text in, the store's joins out (UCS-1156).
+ *
+ * Extracted from `resolveQuery` so that a query and a document section reach
+ * the store through the SAME function rather than through two implementations
+ * that are supposed to agree. This is what makes the ticket's size-invariance
+ * claim a property of the code instead of a promise: `resolveQuery` calls it
+ * with the whole query, and `--doc` calls it once per section, so a query and
+ * its equivalent one-block document cannot produce different joins.
+ *
+ * Everything here was already the query path's behavior — the decomposition,
+ * the additive leaf scoring, the scope exclusion, the ranking. Nothing about
+ * matching changed; only its call site moved so a second caller could exist.
+ *
+ * @param {object} model the loaded store model
+ * @param {string} raw the text to join — a query, or one section's prose
+ * @param {string|null} today the injected date verdicts are measured against
+ * @returns {{query, tokens, decomposition, leaves, exclusions, residue, ...}}
+ */
+function joinText(model, raw, today) {
   const query = norm(raw);
   const queryWords = words(query);
-  if (!queryWords.length) throw new UsageError('query terms must contain a word');
   const tokens = tokenize(raw);
   const decomposition = decompose(model, query, queryWords, tokens);
+  const { kept, excluded } = applyScope(scoreLeaves(model, decomposition, today), decomposition.jurisdictions);
+  // Residue is computed LAST, after every join has had its chance to consume:
+  // it is defined as what nothing resolved, so anything computed earlier would
+  // be measuring a partially-run decomposition. De-duplicated, in query order —
+  // a token the user typed twice is one unresolved thing.
+  const residue = [...new Set(tokens.filter((t) => !decomposition.consumed.has(t) && !STOPWORDS.has(t)))];
+  return {
+    query,
+    queryWords,
+    tokens,
+    decomposition,
+    operations: decomposition.operations,
+    concepts: decomposition.concepts,
+    jurisdictions: decomposition.jurisdictions,
+    leaves: rankLeaves(kept),
+    exclusions: excluded.sort((a, b) => compare(a.id ?? a.notation, b.id ?? b.notation)),
+    residue,
+  };
+}
+
+function resolveQuery(model, terms, today) {
+  const raw = terms.join(' ');
+  if (!words(norm(raw)).length) throw new UsageError('query terms must contain a word');
+  const joined = joinText(model, raw, today);
+  const { query, decomposition, tokens, residue } = joined;
 
   // Concept results keep their pre-1152 shape and their pre-1152 scores — the
   // structured joins are ADDITIVE surface, never a renegotiation of a ranking
@@ -897,13 +970,6 @@ function resolveQuery(model, terms, today) {
     });
   }
   results.sort((a, b) => b.score - a.score || compare(a.id, b.id));
-
-  const { kept, excluded } = applyScope(scoreLeaves(model, decomposition, today), decomposition.jurisdictions);
-  // Residue is computed LAST, after every join has had its chance to consume:
-  // it is defined as what nothing resolved, so anything computed earlier would
-  // be measuring a partially-run decomposition. De-duplicated, in query order —
-  // a token the user typed twice is one unresolved thing.
-  const residue = [...new Set(tokens.filter((t) => !decomposition.consumed.has(t) && !STOPWORDS.has(t)))];
 
   return {
     query,
@@ -942,14 +1008,14 @@ function resolveQuery(model, terms, today) {
     // concept-attached `knowledge` lists above are untouched and still
     // published: this extends the payload rather than breaking it, so every
     // existing consumer keeps working while a new one can read leaves directly.
-    leaves: rankLeaves(kept),
+    leaves: joined.leaves,
     // Excluded, never silently absent.
-    exclusions: excluded.sort((a, b) => compare(a.id ?? a.notation, b.id ?? b.notation)),
+    exclusions: joined.exclusions,
     // Zero resolution is a NORMAL outcome and must be machine-distinguishable
     // from a failure (PRD §7). The conduct text is IN THE PAYLOAD rather than
     // only on the human surface, so an agent reading JSON is told what to do
     // next instead of inferring it from an empty array.
-    ...(results.length || kept.length ? {} : { conduct: ZERO_RESOLUTION_CONDUCT }),
+    ...(results.length || joined.leaves.length ? {} : { conduct: ZERO_RESOLUTION_CONDUCT }),
   };
 }
 
@@ -1157,20 +1223,158 @@ function governingLeaves(model, path, concepts, leafPointers, governs, today) {
     || compare(a.id ?? a.notation, b.id ?? b.notation));
 }
 
+// ---------------------------------------------------------------- doc mode
+
+/**
+ * Resolve a whole document into a COVERAGE MAP (UCS-1156).
+ *
+ * The document is adapted into the IR by the versioned adapter seam
+ * (UCS-1153), then the coverage module sections it and streams the store's
+ * vocabularies over each section — using THIS command's `joinText`, so a
+ * section's join is the query pipeline run over that section's text.
+ *
+ * The suppression entries are loaded here, from the same client-zone
+ * `suppressions.yaml` the reverse audit reads, and they FAIL OPEN exactly as
+ * they do there: a malformed file suppresses nothing and its warnings travel
+ * into the payload, because a suppression that could silence a candidate by
+ * being broken is one nobody can trust.
+ *
+ * @param {object} model the loaded store model
+ * @param {string} document the submitted document's path
+ * @param {string} kitRoot where suppressions.yaml lives
+ * @param {string|null} today the injected date
+ */
+function resolveDoc(model, document, kitRoot, today) {
+  // DISPATCH BEFORE READ, the same order ingest.js uses and for the same
+  // reason: whether the bytes exist is irrelevant when no adapter claims the
+  // format, and reading first would answer a `.docx` submission with "cannot
+  // read", burying the conduct the submitter actually needs.
+  adapterFor(document);
+  let bytes;
+  try {
+    bytes = readFileSync(resolvePath(document));
+  } catch (error) {
+    rethrowIfBug(error);
+    throw new UsageError(`cannot read ${document}: ${error.message}`);
+  }
+  const ir = adapt(document, bytes);
+  const { entries, warnings } = loadSuppressions(kitRoot);
+  const map = buildCoverageMap({
+    document,
+    ir,
+    model,
+    joinSection: (text) => joinText(model, text, today),
+    suppressionEntries: entries,
+  });
+  // Warnings surface in the payload, never only on stderr: a malformed
+  // suppressions file must not vanish silently from a machine-read output.
+  // A STABLE KEY that may be an empty array, like every other field in this
+  // payload — a consumer must never need a presence check to tell "the
+  // suppressions file was clean" from "this engine predates the warning".
+  return { ...map, 'suppression-warnings': warnings };
+}
+
+/**
+ * The coverage map, for a human.
+ *
+ * Deliberately COMPACT. The map's whole promise is that it is cheaper to read
+ * than the document, and a human surface that reprinted every join per section
+ * would cost as much as the document it summarizes. So: one line per section
+ * with its locator, one line per gathered leaf with its verdict, and the ranked
+ * candidates. The `--json` payload carries everything.
+ */
+function renderDoc(payload) {
+  const lines = [];
+  const map = payload.map;
+  lines.push(
+    `resolve --doc ${map.document} -> ${map.sections.length} section(s) with signal, `
+    + `${map.gather.length} governed leaf/leaves, ${map['candidates-ranked'].length} candidate(s)`,
+    '',
+    `adapter: ${map.adapter}  hash: ${map.hash}  (byte-identical resubmission dedupes on this hash)`,
+    `ir: ${map.ir.blocks} block(s) -> ${map.ir.sections} section(s); `
+    + `repetition threshold ${map.ir['repetition-threshold']} (pinned step function of document size)`,
+    '',
+  );
+  renderTimeCheck(payload, lines);
+  renderHealth(payload['store-health'], lines);
+
+  if (map.sections.length) {
+    lines.push('coverage by section:');
+    for (const s of map.sections) {
+      const at = s.locator.line === undefined
+        ? `p${s.locator.page}-${s.locator.endPage}`
+        : `L${s.locator.line}-${s.locator.endLine}`;
+      lines.push(`  ${at}  ${s.section}`);
+      const joins = [
+        s.joins.operations.length ? `operations: ${s.joins.operations.join(', ')}` : null,
+        s.joins.concepts.length ? `concepts: ${s.joins.concepts.join(', ')}` : null,
+        s.joins.jurisdictions.length ? `jurisdictions: ${s.joins.jurisdictions.join(', ')}` : null,
+        s.joins.leaves.length ? `leaves: ${s.joins.leaves.join(', ')}` : null,
+      ].filter(Boolean);
+      for (const join of joins) lines.push(`    ${join}`);
+      if (s.candidates.length) lines.push(`    candidates: ${s.candidates.join(', ')}`);
+      // Folded sections are named, not merely counted away: an agent may need
+      // to open any one of them, so each keeps its own address and locator.
+      if (s['repeats-count']) {
+        const shown = s.repeats.map((r) => r.section).join(', ');
+        const more = s['repeats-count'] - s.repeats.length;
+        lines.push(`    same coverage in ${s['repeats-count']} other section(s): ${shown}${more ? ` (+${more} more)` : ''}`);
+      }
+    }
+    lines.push('');
+  }
+
+  if (map.gather.length) {
+    lines.push('gather rollup:');
+    for (const g of map.gather) {
+      lines.push(`  ${g.id ? `${g.id}  ` : ''}${g.notation}  ${g.heading}  score ${g.score}  [${g.verdict}]  (${g.file})`);
+      const reached = `${g.sections.join(', ')}${g['sections-more'] ? ` (+${g['sections-more']} more)` : ''}`;
+      lines.push(`    signals: ${g.signals.join(', ')}    sections: ${reached}`);
+      // The flag is printed on its own line because it is a claim about
+      // applicability the reader has to act on, not a detail of the hit.
+      if (g['scope-mismatch']) lines.push(`    scope-mismatch: ${g['scope-mismatch']}`);
+      for (const d of g.demotions) lines.push(`    demoted (${d.reason}): ${d.detail}`);
+    }
+    lines.push('');
+  }
+
+  if (map['candidates-ranked'].length) {
+    lines.push('candidates (ranked — the document\'s residue, section-addressed):');
+    for (const c of map['candidates-ranked']) {
+      const where = `${c.sections.join(', ')}${c['sections-more'] ? ` (+${c['sections-more']} more)` : ''}`;
+      lines.push(`  ${c.term}  x${c.count}  [${c.signatures.join(', ')}]  in ${where}`);
+    }
+    lines.push('');
+  }
+  // Suppressed candidates are NAMED, not counted away: "reported as suppressed
+  // rather than silently absent" is the acceptance criterion, and a bare count
+  // would leave a reader unable to tell which term a steward had settled.
+  if (map.suppressed.length) {
+    lines.push('suppressed candidates (a steward refused these; reported, never silently absent):');
+    for (const c of map.suppressed) lines.push(`  ${c.term}  x${c.count}  in ${c.sections.join(', ')}`);
+    lines.push('');
+  }
+  for (const w of payload.map['suppression-warnings'] ?? []) lines.push(w);
+  lines.push('open a section just-in-time with its locator — the context cost is this map plus what you open, never the document');
+  return lines;
+}
+
 // ------------------------------------------------------------- CLI plumbing
 
 function parseArgs(argv) {
   const { options, positionals } = parseFlags(argv, {
     boolean: ['json'],
-    value: ['root', 'today'],
+    value: ['root', 'today', 'doc'],
     repeatable: ['paths'],
-    // Query terms arrive as bare arguments; --paths is the reverse lookup.
+    // Query terms arrive as bare arguments; --paths is the reverse lookup;
+    // --doc is the third input shape (UCS-1156).
     positionals: true,
   });
   const opts = {
     json: !!options.json,
     root: options.root ?? process.cwd(),
     paths: options.paths ? options.paths.flatMap((v) => v.split(',')) : null,
+    doc: options.doc ?? null,
     terms: positionals,
     // The injected date the time verdicts are measured against (UCS-1150).
     // Null is a legitimate answer, not a default to be filled in: without it
@@ -1183,11 +1387,19 @@ function parseArgs(argv) {
     // a day the caller never named — and here that age decides a demotion.
     throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
   }
-  if (opts.paths && opts.terms.length) {
-    throw new UsageError('give either query terms or --paths, not both');
+  // The three input shapes are alternatives, not a combination. Two of them at
+  // once has no honest answer — a coverage map of a document is not a lookup of
+  // a query — so it is a usage error rather than a silently-preferred mode.
+  const shapes = [
+    opts.terms.length ? 'query terms' : null,
+    opts.paths ? '--paths' : null,
+    opts.doc ? '--doc' : null,
+  ].filter(Boolean);
+  if (shapes.length > 1) {
+    throw new UsageError(`give exactly one input shape, got ${shapes.join(' and ')} — a query, --paths, or --doc`);
   }
-  if (!opts.paths && !opts.terms.length) {
-    throw new UsageError('nothing to resolve — give query terms or --paths');
+  if (!shapes.length) {
+    throw new UsageError('nothing to resolve — give query terms, --paths, or --doc');
   }
   return opts;
 }
@@ -1403,11 +1615,13 @@ export function main(argv) {
     const opts = parseArgs(argv);
 
     let model;
+    let kitRoot;
     try {
       // KK-08 two-root convention: --root is the REPO root; the stores live
       // at <root>/unknown-knowledge/ when seeded (§9.1) or at the root itself
       // (dogfood layout).
-      model = loadStores(locateKitRoot(opts.root));
+      kitRoot = locateKitRoot(opts.root);
+      model = loadStores(kitRoot);
     } catch (error) {
       // An EXPECTED refusal from the loader — an unreadable root, an ambiguous
       // kit layout, a Store that will not load. The stores this command would
@@ -1424,19 +1638,43 @@ export function main(argv) {
     // found everything fresh, which is a check that never ran wearing a clean
     // result (PRD §5).
     const timeCheck = timeCheckStatus(opts.today);
-    const payload = opts.paths
-      ? {
+    let payload;
+    if (opts.doc) {
+      // An out-of-envelope submission is an ANTICIPATED REFUSAL, not a bug: it
+      // exits 2 with the adapter's conduct, because a parse that never ran is a
+      // failure and never a silent partial (PRD §5.1). The exit contract is
+      // unchanged — 0 ran, 2 never ran, never 1.
+      try {
+        payload = {
+          mode: 'doc',
+          'time-check': timeCheck,
+          'store-health': health,
+          map: resolveDoc(model, opts.doc, kitRoot, opts.today),
+        };
+      } catch (error) {
+        rethrowIfBug(error);
+        if (!(error instanceof UnsupportedFormatError || error instanceof AdaptError)) throw error;
+        // Nothing goes to stdout: a caller piping it must receive no map at
+        // all, not a truncated one.
+        process.stderr.write(`error: ${error.message}\n`);
+        return EXIT_CODES.FAILURE;
+      }
+    } else if (opts.paths) {
+      payload = {
         mode: 'paths', 'time-check': timeCheck, 'store-health': health,
         paths: resolvePaths(model, opts.paths, opts.root, opts.today),
-      }
-      : {
+      };
+    } else {
+      payload = {
         mode: 'query', 'time-check': timeCheck, 'store-health': health,
         ...resolveQuery(model, opts.terms, opts.today),
       };
+    }
 
+    const RENDER = { query: renderQuery, paths: renderPaths, doc: renderDoc };
     const lines = opts.json
       ? [JSON.stringify(payload, null, 2)]
-      : (payload.mode === 'query' ? renderQuery(payload) : renderPaths(payload));
+      : RENDER[payload.mode](payload);
     process.stdout.write(`${lines.join('\n').replace(/\n+$/, '')}\n`);
     return EXIT_CODES.CLEAN;
   }

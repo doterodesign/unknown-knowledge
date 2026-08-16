@@ -15,6 +15,37 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Document coverage map (UCS-1156): `resolve --doc <document>` makes a
+  document-sized request processable. `resolve` is now the ONE ENTRY POINT for
+  three input shapes — a query, `--paths`, and a document — and the pipeline is
+  size- and format-invariant because a query is processed as a ONE-BLOCK
+  DOCUMENT through the same join core. A query and its equivalent one-block
+  document produce identical joins by construction, not by two implementations
+  agreeing; a golden equivalence pair pins it.
+- The coverage map itself: per-section joins each carrying a LOCATOR usable for
+  a just-in-time section read, a gather rollup that de-duplicates leaves across
+  sections and carries time verdicts and scope-mismatch flags, and ranked
+  candidates each addressed to the sections they came from. An agent's context
+  cost is the map plus the sections it chooses to open, never the document.
+- Salience extraction on PINNED signatures: emphasis spans, multi-word
+  Title-Case phrases, and repetition above a threshold that is a pinned STEP
+  FUNCTION of document size (spelled as a table, and published in the map so a
+  candidate list is re-derivable). Known vocabulary, stopwords, code blocks,
+  and suppressions are subtracted. Repetition must also be CONCENTRATED —
+  boilerplate repeated once per section in a long document is spread, not
+  stressed, and never becomes a candidate.
+- Document candidates are suppressible through the SAME entry grammar the
+  reverse audit uses (`{ term, sourcePath, reason, date }`, exact match, fails
+  open), where `sourcePath` is the submitted document. A suppressed candidate
+  is REPORTED as suppressed, never silently absent.
+- Output grows with content richness, not length: sections whose coverage
+  exactly repeats an earlier section fold into it (keeping every address
+  openable), and address lists are capped with the overflow reported as an
+  exact count. A long redundant document therefore yields a smaller map than a
+  short rich one, asserted on a fixture pair.
+- Resubmission dedupes on the adapter's content hash, carried in the map — the
+  same bytes produce a byte-identical map under any filename. No submissions
+  log: the output stays a pure function of the input (D-012).
 - Query decomposition (UCS-1152): `resolve` now decomposes the query itself
   against the governed vocabularies rather than matching text against concepts
   alone. Three axes, three vocabularies, no guessing — verb joins the
