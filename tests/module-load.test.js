@@ -111,10 +111,16 @@ test('a SyntaxError in the command module exits 2', (t) => {
 test('a missing runtime dependency makes every surface exit 2, never 1', (t) => {
   // The seeded kit resolves js-yaml from the CLIENT's node_modules (§9.1). A
   // client who never installed it must get an engine failure, not findings.
+  //
+  // ingest.js is the one surface that reaches no YAML: it adapts a document to
+  // IR (UCS-1153) and never loads a store, so js-yaml's absence is invisible to
+  // it. That is a real property, not an exemption — it still must never exit 1,
+  // which the loop below asserts for every surface either way.
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
     const r = run(dir, surface, '--root', fixture);
     assertNeverFindings(r, surface, 'with js-yaml absent');
+    if (surface === 'ingest.js') continue; // loads cleanly; refuses on its own grammar
     assert.match(r.stderr, /internal failure — the engine could not be loaded/);
     assert.match(r.stderr, /Cannot find package|ERR_MODULE_NOT_FOUND/);
   }

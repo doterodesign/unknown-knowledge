@@ -1,0 +1,45 @@
+# Expected IR for sample.pdf — the pdf@1 adapter (UCS-1153).
+#
+# LOCATOR SCHEME differs from the text formats, because a PDF is not line-
+# addressable: { page, object } is the 1-based page ordinal in document order
+# plus the 1-based ordinal of the text-showing operation within that page's
+# content stream. Both derive from content-stream order, never from object
+# numbering or enumeration order, so they are stable for identical bytes.
+#
+# The sample is hand-crafted by scripts/make-pdf-fixture.js so this expectation
+# is genuinely reviewable rather than checked against an opaque binary. It
+# exercises exactly the pdf@1 envelope: page 1 is an UNCOMPRESSED stream using
+# Tj and a TJ kerning array (whose fragments join into one block), with an
+# escaped paren \( and an octal \050 both decoding to literal parens; page 2 is
+# a FLATEDECODE stream (inflated with node:zlib — stdlib decompression, never
+# execution) using the ' (next-line-and-show) operator and a hex <...> string.
+#
+# Every kind here is a paragraph: PDF has no paragraph or heading concept, and
+# clustering text by coordinates to invent one would be a guess. One text-
+# showing operation, one block, one locator.
+format: pdf
+file: sample.pdf
+adapter: "pdf@1"
+hash: "fnv1a64:b0b66f569c906a34"
+blocks:
+  - kind: paragraph
+    text: "Odds feed onboarding"
+    locator: { page: 1, object: 1 }
+  - kind: paragraph
+    text: "The provider must expose a websocket endpoint and a REST fallback."
+    locator: { page: 1, object: 2 }
+  - kind: paragraph
+    text: "Latency budget is 400ms (end-to-end), measured from ingest to price."
+    locator: { page: 1, object: 3 }
+  - kind: paragraph
+    text: "Suspended (not settled) is a distinct state."
+    locator: { page: 1, object: 4 }
+  - kind: paragraph
+    text: "Escalation"
+    locator: { page: 2, object: 1 }
+  - kind: paragraph
+    text: "Page the trading desk when the feed suspends for more than ninety seconds."
+    locator: { page: 2, object: 2 }
+  - kind: paragraph
+    text: "Provider credentials are sandboxed."
+    locator: { page: 2, object: 3 }

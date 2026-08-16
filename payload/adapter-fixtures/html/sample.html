@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Odds feed onboarding</title>
+  <style>h1 { color: rebeccapurple; content: "settled"; }</style>
+</head>
+<body>
+  <!-- Adapter fixture — html. Adversarial-but-adaptable: script and style
+       bodies that must never reach the IR, inline markup inside blocks,
+       XML entities, a nested block element, and a table. -->
+  <h1>Odds feed onboarding</h1>
+
+  <p>The provider must expose a <strong>websocket</strong> endpoint and a
+     REST fallback. Latency budget is 400ms &amp; measured end-to-end.</p>
+
+  <script>
+    // Executing this would be a D-014 violation. It is discarded as text.
+    document.title = "settled";
+  </script>
+
+  <ul>
+    <li>Websocket endpoint, TLS only</li>
+    <li><p>REST fallback for replay</p></li>
+  </ul>
+
+  <pre>provider:
+  name: oddsco
+  timeout-ms: 400</pre>
+
+  <table>
+    <tr><th>Field</th><th>Meaning</th></tr>
+    <tr><td>suspended</td><td>market locked, &lt;not&gt; settled</td></tr>
+  </table>
+
+  <blockquote>Page the trading desk when the feed suspends for more than
+  ninety seconds.</blockquote>
+</body>
+</html>

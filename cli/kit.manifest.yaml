@@ -61,6 +61,15 @@ unconditional:
     # Stack-agnostic fixture authoring guide: ships even with no stack
     # selected — a config-only client authoring its first pack starts here.
     - { from: extractor-fixtures/README.md, to: engine/tests/fixtures/README.md }
+    # Format-adapter fixture pairs (UCS-1153). These ship UNCONDITIONALLY,
+    # where extractor fixtures ship per selected stack (D-009). The difference
+    # is real, not an oversight: an extractor kind is stack-specific (a Swift
+    # client has no use for ts-union), but a FORMAT is not — any client on any
+    # stack can be handed a PDF or a markdown spec. And the pairs are the
+    # authoring template for client-drafted adapters (D-005), so a client whose
+    # format is unsupported needs them present at the moment of the refusal,
+    # which is exactly when they have no vendor to return to (D-001).
+    - { from: adapter-fixtures, to: engine/tests/adapter-fixtures }
   store-scaffolding:
     # Empty seeds (§9.1): catalogs/rules the bootstrap skill fills. Decisions
     # has no _rules.yaml by design (§9.1).
