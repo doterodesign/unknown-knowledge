@@ -122,25 +122,6 @@ export function leavesInScope(model, scope) {
 }
 
 /**
- * Spell a facet value so YAML reads it back as the same string (UCS-1154).
- *
- * Registry values are strings, and the facet grammar permits segments that YAML
- * does not read as strings: `010` reloads as 10 (octal under YAML 1.1), `2024`
- * as a number, `1e5` as 100000. Written bare, such a value would come back a
- * number, stop equalling the minted string it was checked against, and turn a
- * validated move into a membership finding on the next run — a corruption the
- * engine itself introduced.
- *
- * Decided by ROUND-TRIPPING rather than by a character rule: the question is
- * exactly "does the loader give this back unchanged", so the loader is what
- * answers it, and no hand-written list of YAML's coercion traps can fall behind.
- * Values that survive bare are written bare, which keeps the ordinary diff
- * unquoted and unremarkable.
- *
- * @param {string} value the facet value to write
- * @returns {string} the value, quoted only if it would not survive unquoted
- */
-/**
  * Split a scalar line's value from its trailing comment (UCS-1154).
  *
  * A steward's ` # ∈ registry (Personality)` note is authored content, and
@@ -167,6 +148,25 @@ export function trailingComment(rest) {
   return { comment: rest.slice(hash).replace(/\s+$/, '') };
 }
 
+/**
+ * Spell a facet value so YAML reads it back as the same string (UCS-1154).
+ *
+ * Registry values are strings, and the facet grammar permits segments that YAML
+ * does not read as strings: `010` reloads as 10 (octal under YAML 1.1), `2024`
+ * as a number, `1e5` as 100000. Written bare, such a value would come back a
+ * number, stop equalling the minted string it was checked against, and turn a
+ * validated move into a membership finding on the next run — a corruption the
+ * engine itself introduced.
+ *
+ * Decided by ROUND-TRIPPING rather than by a character rule: the question is
+ * exactly "does the loader give this back unchanged", so the loader is what
+ * answers it, and no hand-written list of YAML's coercion traps can fall behind.
+ * Values that survive bare are written bare, which keeps the ordinary diff
+ * unquoted and unremarkable.
+ *
+ * @param {string} value the facet value to write
+ * @returns {string} the value, quoted only if it would not survive unquoted
+ */
 export function yamlScalar(value) {
   let roundTripped;
   try {

@@ -36,7 +36,9 @@
  */
 import { resolve } from 'node:path';
 import { locateKitRoot } from '../lib/kit-root.js';
-import { loadStores, storeHealth, healthSummary, PHOENIX_DIR } from '../lib/load-stores.js';
+import {
+  loadStores, storeHealth, healthSummary, PHOENIX_DIR, PHOENIX_STORES,
+} from '../lib/load-stores.js';
 import { CHECKS, applyRewrites, planEvent, phoenixPath } from '../lib/phoenix.js';
 import { compare } from '../lib/validate-record.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
@@ -54,7 +56,9 @@ function parseArgs(argv) {
     throw new UsageError(`unexpected argument ${JSON.stringify(positionals[1])} — one event at a time`);
   }
   if (!positionals.length) {
-    throw new UsageError('name the phoenix event to apply, e.g. P-001 (its mapping is knowledge/_phoenix/<event>.yaml)');
+    throw new UsageError(
+      `name the phoenix event to apply, e.g. P-001 (its mapping is ${phoenixPath(PHOENIX_STORES[0], '<event>')})`,
+    );
   }
   // Naming both verbs states two intentions and the difference between them is
   // whether the store gets written to. Refusing is the only reading that cannot
@@ -134,11 +138,16 @@ export function main(argv) {
     return EXIT_CODES.FAILURE;
   }
 
-  const event = model.phoenix.get(`knowledge/${opts.event}`);
+  // Which stores may carry events is the descriptor table's answer, not this
+  // command's: naming "knowledge" here would leave a second phoenix-capable
+  // store's events loaded into the model and unreachable from the CLI.
+  const event = PHOENIX_STORES.map((store) => model.phoenix.get(`${store}/${opts.event}`))
+    .find((found) => found !== undefined);
   if (!event) {
-    const known = [...model.phoenix.keys()].map((k) => k.split('/')[1]).sort(compare);
+    const known = [...model.phoenix.keys()].map((k) => k.slice(k.indexOf('/') + 1)).sort(compare);
+    const looked = PHOENIX_STORES.map((store) => phoenixPath(store, opts.event)).join(' or ');
     process.stderr.write(
-      `phoenix: no event "${opts.event}" — expected its mapping at ${phoenixPath('knowledge', opts.event)}`
+      `phoenix: no event "${opts.event}" — expected its mapping at ${looked}`
       + `${known.length ? `; this store carries ${known.join(', ')}` : `; this store carries no ${PHOENIX_DIR}/ mappings`}\n`,
     );
     return EXIT_CODES.FAILURE;

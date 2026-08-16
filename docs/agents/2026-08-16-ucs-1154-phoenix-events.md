@@ -224,6 +224,29 @@ read prose); the test's `citationBlock` helper is bounded at the closing fence;
 the root-privilege case calls `t.skip` with a message rather than returning
 silently.
 
+## Review round 3 — CodeRabbit on 7a05815
+
+No majors. 3 small accepts, 3 recycled MD041 declines. Gates after: **899 pass /
+0 fail**, lint 196 files 0 failures, acceptance OK.
+
+- **Orphaned JSDoc.** Round 2 inserted `trailingComment` directly beneath
+  `yamlScalar`'s doc block, leaving both docs stacked above the wrong function.
+  Reordered so each precedes its own. Self-inflicted in the previous round —
+  worth noting as the kind of thing that only shows up when someone reads the
+  file top to bottom rather than diffing it.
+- **Hardcoded store prefix.** The command named `knowledge/` for event lookup
+  and in two messages, while the loader derives phoenix capability from
+  `STORE_DESCRIPTORS[store].phoenix`. A second store gaining the flag would have
+  its events loaded into `model.phoenix` and unreachable from the CLI — present
+  in the model, absent from every lookup. Added `PHOENIX_STORES`, derived from
+  the descriptors, and the command now searches all of them; the missing-event
+  and usage messages name the derived path. User-facing output is byte-identical
+  today (one capable store), so this is pure decoupling. Pinned by a test that
+  also asserts each entry is a real store the loader walks.
+- **`halves()` precondition.** Asserts the closing fence was found before
+  slicing, matching what `citationBlock` already did, so a malformed fixture
+  fails loudly instead of comparing two equally nonsensical halves.
+
 ## Not done
 
 Not merged, per instructions. `--apply` still writes in place rather than

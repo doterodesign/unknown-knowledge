@@ -443,6 +443,21 @@ export const STORE_DESCRIPTORS = Object.freeze({
 /** The store directories the loader walks, in load order. */
 export const STORES = Object.freeze(Object.keys(STORE_DESCRIPTORS));
 
+/**
+ * The stores that may carry phoenix events, derived from the descriptors
+ * (UCS-1154).
+ *
+ * DERIVED, never restated. The loader reads `descriptor.phoenix` to decide
+ * where to look for mappings; a consumer that hardcoded "knowledge" instead
+ * would keep working right up until a second store gained the flag, at which
+ * point that store's events would load into `model.phoenix` and be unreachable
+ * from the command line — present in the model, absent from every lookup. One
+ * table decides, and everything asks it.
+ */
+export const PHOENIX_STORES = Object.freeze(
+  STORES.filter((store) => STORE_DESCRIPTORS[store].phoenix),
+);
+
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
 function sortedMap(map) {

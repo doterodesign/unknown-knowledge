@@ -18,6 +18,7 @@ import { load } from 'js-yaml';
 import {
   CHECKS, FACET_REGISTRY, rewriteFailure, rewriteLeaf, rewriteScalarLine,
 } from '../payload/engine/lib/phoenix.js';
+import { PHOENIX_STORES, STORES, STORE_DESCRIPTORS } from '../payload/engine/lib/load-stores.js';
 import { FACET_REGISTRIES } from '../payload/engine/commands/validate.js';
 
 const cli = fileURLToPath(new URL('../payload/engine/phoenix.js', import.meta.url));
@@ -66,6 +67,10 @@ function accessible(file) {
 /** The frontmatter half of a leaf file, and the body half, split at the closing fence. */
 function halves(text) {
   const end = text.indexOf('\n---\n', 4);
+  // Without this a malformed fixture slices at -1 and the halves come back
+  // silently wrong — a body comparison that passes because both sides are
+  // equally nonsense.
+  assert.notEqual(end, -1, 'leaf has no closing front-matter fence');
   return { front: text.slice(0, end), body: text.slice(end) };
 }
 /** Every citation line, verbatim — the bytes that must survive an event. */
@@ -719,6 +724,23 @@ test('every facet a phoenix event may move names the registry the validator gove
       `the validator governs ${facet}, and no phoenix event can move it`);
   }
   assert.equal(Object.keys(FACET_REGISTRY).length, governed.size);
+});
+
+test('the stores an event may live in are derived from the descriptors, not named', () => {
+  // The loader decides where mappings live by reading `descriptor.phoenix`. A
+  // command that named "knowledge" instead would keep working right up until a
+  // second store gained the flag, at which point that store's events would load
+  // into the model and be unreachable from the CLI.
+  assert.deepEqual([...PHOENIX_STORES], ['knowledge']);
+  for (const store of PHOENIX_STORES) {
+    assert.equal(STORE_DESCRIPTORS[store].phoenix, true);
+  }
+  // Every phoenix-capable store is a real store the loader walks.
+  for (const store of PHOENIX_STORES) assert.ok(STORES.includes(store));
+  // And the command's own messages name the derived path, not a literal.
+  const r = run('P-404', '--root', SPLIT);
+  assert.equal(r.status, 2);
+  for (const store of PHOENIX_STORES) assert.match(r.stderr, new RegExp(`${store}/_phoenix/P-404\\.yaml`));
 });
 
 test('the checks the command reports are sorted and complete', () => {
