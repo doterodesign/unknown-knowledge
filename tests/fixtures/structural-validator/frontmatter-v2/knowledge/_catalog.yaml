@@ -1,0 +1,9 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000117
+    title: Odds feed provider quirks
+    file: sportsbook/117.1-odds-feed-provider-quirks.md
+  - id: L-000213
+    title: Live-betting latency budget
+    file: sportsbook/213.1-live-betting-latency-budget.md

@@ -1,0 +1,15 @@
+# Frontmatter v2 fixture (UCS-1149) — the form registry.
+schema-version: 1
+store: knowledge
+registry: form
+values:
+  - value: reference
+    gloss: States how something is, for lookup.
+    warrant: L-000117 states the provider's behaviour for lookup.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: constraint
+    gloss: A rule the system must not violate.
+    warrant: L-000213 states a latency budget the system must hold.
+    decision: D-401
+    minted: "2026-08-16"

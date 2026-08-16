@@ -73,9 +73,34 @@ asserts is *hard error, never a silently wrong value set*.
   K-101..K-116, every `enumerates.source` names a listed `source-of-truth`
   entry (§3.5).
 - `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md` — one
-  cited leaf.
+  cited leaf, carrying the full frontmatter v2 record (UCS-1149): all four
+  governed facets, a registry-minted operation, an empty `applies.jurisdictions`
+  (universal), a tiered citation, and `provenance`. Its body opens with a topic
+  sentence, which is what display surfaces derive a one-liner from now that
+  `description` is retired.
+- `unknown-knowledge/knowledge/_registries/*.yaml` — the seven governed
+  vocabularies (domains, form, anchor, stage, operations, jurisdictions,
+  authority-tiers). Every minted value cites D-101, and the warrants show the
+  three kinds of rationale a real store carries:
+  - **material-based** (domains, form, operations, authority-tiers, plus
+    `anchor: artifact` and `stage: verified`) — the warrant names leaf 100.1,
+    which exists and needs the value. This is the ordinary case and the only
+    one literary warrant strictly demands.
+  - **fixed-vocabulary** (`anchor: world`, `anchor: team`) — minted with no
+    leaf using them yet, because the three truth anchors are D-003's store
+    model rather than a per-project choice; a store carrying only one of them
+    would still not be free to invent a fourth.
+  - **lifecycle** (`stage: draft`, `stage: proposed`) — minted because the
+    shared pre-promotion predicate reads exactly these spellings, so they are
+    load-bearing on engine behaviour rather than on any one leaf.
+
+  `jurisdictions` is deliberately EMPTY: the store's one leaf claims
+  universally (`applies.jurisdictions: []`), so no jurisdiction has warrant.
+  No `deprecated` stage is minted — no leaf surface implements the demotion
+  that word carries in the concept lifecycle.
 - `unknown-knowledge/decisions/entries/D-101-sports-registry-const-array.yaml`
-  — referenced by K-101's `rationale` and relating back to K-101 / leaf 100.1.
+  — referenced by K-101's `rationale` and relating back to K-101 / leaf 100.1,
+  and cited by every registry value as the minting decision.
 
 ## Non-anchor scenery
 

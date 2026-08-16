@@ -1,0 +1,53 @@
+# The stage registry — where a leaf sits in its promotion lifecycle.
+#
+# THE VOCABULARY IS LOAD-BEARING, BUT THE FILE STILL SHIPS EMPTY. Both facts
+# matter, for the same reasons the anchor registry states.
+#
+# Load-bearing: two engine surfaces read these values through ONE shared
+# predicate (isPrePromotionStatus in engine/lib/load-stores.js). A project that
+# renamed `draft` to `wip` would not be extending a vocabulary — it would be
+# handing the resolver's downrank and preflight's unknown verdict two different
+# answers to "is this leaf provisional yet", which is the exact divergence the
+# shared predicate exists to make impossible. `draft` and `proposed` are the two
+# spellings the predicate recognizes, and they match the concept lifecycle
+# (ontology-concept.schema.json `status`) rather than being a parallel
+# vocabulary. Mint from the four below and no others.
+#
+# Empty anyway: a registry value must cite a Decisions entry that RESOLVES, and
+# a freshly seeded repo's decisions store is empty by design (D-001). The
+# bootstrap interview mints these with an entry of your own.
+#
+# A leaf at `draft` or `proposed` is downranked in resolver output and verdicted
+# `unknown` by preflight. Those are the same leaf, judged once.
+#
+# THREE VALUES, NOT FOUR. There is deliberately no `deprecated` stage yet. The
+# concept lifecycle has one, and it carries real semantics there (§3.5 demotes a
+# deprecated concept's pointer and value findings to warnings) — but no leaf
+# surface implements the matching demotion. A `deprecated` value minted here
+# with nothing behind it would rank a retired leaf ABOVE a draft one and let
+# preflight verdict it `trusted`, which is worse than not offering the term:
+# a vocabulary that looks governed and governs nothing. Retiring a leaf is a
+# later ticket, and it lands with its semantics or not at all.
+#
+# Flat vocabulary. Value shape: lowercase kebab. Mint exactly these:
+#
+#   values:
+#     - value: draft
+#       gloss: Written but not promoted — nothing certifies the claim yet.
+#       warrant: The default stage for every newly authored leaf.
+#       decision: <your entry adopting the lifecycle>
+#       minted: "2026-07-07"
+#     - value: proposed
+#       gloss: Put forward for promotion and awaiting a moderator.
+#       warrant: The second stage the pre-promotion predicate recognizes.
+#       decision: <your entry adopting the lifecycle>
+#       minted: "2026-07-07"
+#     - value: verified
+#       gloss: A moderator promoted it — the citations were checked and hold.
+#       warrant: <the first leaf a moderator promoted>
+#       decision: <your entry adopting the lifecycle>
+#       minted: "2026-07-07"
+schema-version: 1
+store: knowledge
+registry: stage
+values: []

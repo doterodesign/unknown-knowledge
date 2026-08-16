@@ -118,15 +118,52 @@ this skill makes on top of the schema:
   notations the catalog declares; `including` is standing room — candidate
   topics parked under the heading, not authoritative, never citable as
   fact.
-- **`citations`** — the step-2 survivors, verbatim; at least one.
+- **`facets`** — the classification block, and every value must be minted in
+  its registry (`knowledge/_registries/`): `domain` (the hierarchical subject
+  path — every segment minted), `form` (what KIND of knowledge this is),
+  `anchor` (which truth anchor settles the claim — artifact, world, or team,
+  per D-003), and `stage`. A value the registry does not carry is a blocking
+  finding, and minting one is a registry edit plus a Decisions entry — never
+  an ad-hoc string. If no minted value fits, that is the signal to propose a
+  minting, not to invent a spelling.
+- **`stage`** — start at `draft`. A draft leaf is downranked in resolver
+  output and verdicted `unknown` by preflight, which is correct and not a
+  defect: nothing has certified it yet. Promotion to `verified` is a
+  moderator's act after the citations are checked, never the author's.
+- **`operations`** — the verbs this leaf lets a reader DO, from the
+  operations registry. **`applies.jurisdictions`** — from the jurisdictions
+  registry; EMPTY means universal, which is a claim, so leave it empty only
+  when the knowledge really does hold everywhere.
+- **`citations`** — the step-2 survivors, verbatim; at least one, each with
+  an `authority` tier from the authority-tiers registry. The tier records how
+  far the source can be trusted: without it a regulator's text and a hallway
+  conversation read identically. Recording it is also what lets a later
+  resolution pipeline rank conflicting citations — nothing compares tiers
+  today, and a tier nobody wrote down cannot be ranked retroactively.
 - **`terms`** — the words a future resolve should hit; write them for the
   searcher, not the author.
+- **`provenance`** — optional `author` and `skill-version`, so a systematic
+  drafting defect can be traced to the vintage that introduced it.
 - **Body** — the markdown below the frontmatter is the content; each claim
-  reads back to a listed citation.
+  reads back to a listed citation. **Open with a topic sentence**: there is
+  no `description` field (retired in v2), and display prose is DERIVED from
+  the body's first sentence wherever a one-liner is shown. Write it as the
+  sentence you would want to read in a search result.
+
+  What the deriver actually does, so the guidance is not a guess: it skips
+  leading markdown structure line by line — headings, list items, block
+  quotes, fenced code, table rows — and takes the first prose line it finds,
+  joining hard-wrapped continuation lines. It ends the excerpt at the first
+  `.`, `!`, or `?` followed by whitespace, so `§4.2` and `v3.2` do not cut it
+  short. Prose with no terminator is shown whole rather than dropped. The
+  only body with nothing to show is one that is *entirely* structure — all
+  heading, all list, all code — so the failure mode to avoid is opening with
+  a bare list or a code block, not writing a fragment.
 
 **Done when** every cross-reference resolves to an existing notation (or
-was removed, with the removal noted in the revision note) and every step-2
-citation appears in the frontmatter.
+was removed, with the removal noted in the revision note), every step-2
+citation appears in the frontmatter with a tier, every governed facet value
+is minted, and the body opens with a topic sentence.
 
 ### 4. INDEX — the catalog row
 

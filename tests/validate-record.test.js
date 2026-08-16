@@ -215,13 +215,25 @@ test('relates-to is typed: unknown ref buckets are rejected', () => {
 
 // ------------------------------------------------------ knowledge leaf §3.2
 
+// The frontmatter v2 record shape in full (UCS-1149): identity, the four
+// governed facets, registry-governed operations/applies/authority, provenance.
+// Membership of the governed values is a structural-validator check, not a
+// schema one — this fixture pins the SHAPE.
 const LEAF_YAML = `
 schema-version: 1
+id: L-000117
 notation: "362.1"
 domain: regulation
 division: settlement
 heading: ACH settlement windows
-description: Prose is navigation, never the fact.
+facets:
+  domain: regulation/settlement
+  form: reference
+  anchor: world
+  stage: verified
+operations: [onboard-provider]
+applies:
+  jurisdictions: []
 notes:
   - type: scope
     text: US-facing operators only.
@@ -235,14 +247,70 @@ cross-references:
 citations:
   - source: NACHA operating rules 2026
     accessed: "2026-07-07"
+    authority: regulator
 terms: [ACH, settlement]
 edition: 1
 contributors: [dimitri]
+provenance:
+  author: dimitri
+  skill-version: kb-build@2.0.0
 `;
 
 test('accepts the §3.2 canonical leaf front matter', () => {
   const result = validateRecord('knowledge-leaf', load(LEAF_YAML));
   assert.deepEqual(result, { ok: true, errors: [] });
+});
+
+test('v2: the four governed facets are schema-shaped, membership left to KK-05', () => {
+  // The schema knows facets are strings; WHICH strings is the registry's
+  // question (UCS-1148). A schema enum would freeze the vocabulary at seed
+  // time, and under D-001 a seeded repo has no update channel.
+  const record = load(LEAF_YAML);
+  assert.deepEqual(Object.keys(record.facets).sort(), ['anchor', 'domain', 'form', 'stage']);
+  for (const facet of ['domain', 'form', 'anchor', 'stage']) {
+    const bad = load(LEAF_YAML);
+    bad.facets[facet] = 42;
+    assert.deepEqual(codesAt(validateRecord('knowledge-leaf', bad), `facets.${facet}`), ['wrong-type']);
+  }
+  const unknown = load(LEAF_YAML);
+  unknown.facets.volatility = 'volatile'; // a LATER ticket's facet
+  assert.deepEqual(codesAt(validateRecord('knowledge-leaf', unknown), 'facets.volatility'), [
+    'unknown-property',
+  ]);
+});
+
+test('v2: the retired `description` field fails as an unknown property (golden)', () => {
+  // The sanctioned v2 break (D-021 major release): display prose is DERIVED
+  // from the body's topic sentence, so an authored one-liner is a second copy
+  // of the claim — and the copy is what goes stale. A leaf still carrying it
+  // must FAIL rather than be quietly ignored, or the drift it was retired to
+  // prevent would persist unreported.
+  const record = load(LEAF_YAML);
+  record.description = 'Prose is navigation, never the fact.';
+  const result = validateRecord('knowledge-leaf', record);
+  assert.equal(result.ok, false);
+  assert.deepEqual(codesAt(result, 'description'), ['unknown-property']);
+});
+
+test('v2: provenance validates and refuses fields nobody declared', () => {
+  const record = load(LEAF_YAML);
+  assert.deepEqual(validateRecord('knowledge-leaf', record), { ok: true, errors: [] });
+
+  // Optional as a whole — provenance is recorded, never demanded.
+  delete record.provenance;
+  assert.deepEqual(validateRecord('knowledge-leaf', record), { ok: true, errors: [] });
+
+  const typed = load(LEAF_YAML);
+  typed.provenance['skill-version'] = 2;
+  assert.deepEqual(codesAt(validateRecord('knowledge-leaf', typed), 'provenance.skill-version'), [
+    'wrong-type',
+  ]);
+
+  const stray = load(LEAF_YAML);
+  stray.provenance.author_email = 'dimitri@example.com';
+  assert.deepEqual(codesAt(validateRecord('knowledge-leaf', stray), 'provenance.author_email'), [
+    'unknown-property',
+  ]);
 });
 
 test('§3.2: citations are REQUIRED — an unsourced claim is not promotable', () => {

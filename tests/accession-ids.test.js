@@ -345,6 +345,14 @@ test('resolver knowledge entry points publish the accession id', () => {
       id: 'L-000101',
       notation: '700.1',
       heading: 'Widget registry rules',
+      // Frontmatter v2 keys (UCS-1149) on a leaf that declares none of them:
+      // present and null, never absent. This fixture predates v2 and is left
+      // that way on purpose — it is the proof that a v1 leaf still resolves,
+      // and still publishes one stable result shape.
+      stage: null,
+      excerpt: 'Cites its sibling by NOTATION while carrying an accession itself — the mixed state every store passes through mid-migration.',
+      provenance: null,
+      downranked: false,
       file: 'knowledge/widgets/700.1-widget-registry.md',
     },
   ]);
@@ -372,23 +380,36 @@ test('a non-string accession publishes null, never the raw value', () => {
 });
 
 test('a notation-only store resolves identically apart from the added field', () => {
-  // The golden diff. Strip the new key and the result must be exactly the
+  // The golden diff. Strip the added keys and the result must be exactly the
   // pre-ticket shape — so every existing consumer keeps reading what it read.
+  // UCS-1144 added `id`; UCS-1149 added stage/excerpt/provenance/downranked.
+  // Each takes a FIXED position, because JSON.stringify preserves insertion
+  // order and a field that moved would rewrite every byte-stable golden.
   const out = JSON.parse(
     runCli('resolve.js', 'payment', 'method', '--root', fixture('resolver/store'), '--json').stdout);
   const entries = out.results[0].knowledge;
+  const ADDED = ['id', 'stage', 'excerpt', 'provenance', 'downranked'];
   for (const entry of entries) {
-    assert.deepEqual(Object.keys(entry), ['id', 'notation', 'heading', 'file'],
-      'the accession takes a FIXED position, so output stays byte-stable');
+    assert.deepEqual(
+      Object.keys(entry),
+      ['id', 'notation', 'heading', 'stage', 'excerpt', 'provenance', 'downranked', 'file'],
+      'the added fields take FIXED positions, so output stays byte-stable',
+    );
     assert.equal(entry.id, null, 'an unminted leaf publishes null, never omits the key');
   }
-  assert.deepEqual(entries.map(({ id, ...rest }) => rest), [
-    {
-      notation: '410.2',
-      heading: 'Accepted payment instruments',
-      file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
-    },
-  ], 'removing the added field reproduces the pre-ticket output exactly');
+  assert.deepEqual(
+    entries.map((entry) => Object.fromEntries(
+      Object.entries(entry).filter(([key]) => !ADDED.includes(key)),
+    )),
+    [
+      {
+        notation: '410.2',
+        heading: 'Accepted payment instruments',
+        file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
+      },
+    ],
+    'removing the added fields reproduces the pre-ticket output exactly',
+  );
 });
 
 // ------------------------- AC5: both shapes cite, both shapes can dangle

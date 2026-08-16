@@ -36,6 +36,21 @@
  * answer two questions — which leaf this is, and where it sits — and once
  * accessions are minted those stop being the same string.
  *
+ * Frontmatter v2 adds three more (UCS-1149), all stable keys that may be null
+ * rather than fields that come and go:
+ *
+ *   stage       the leaf's promotion stage (facets.stage), or null
+ *   excerpt     the first sentence of the BODY, derived — v2 retired the
+ *               authored `description`, so display prose is read back from the
+ *               content and cannot drift from it
+ *   provenance  { author, skill-version }, carried through untouched
+ *
+ * A leaf at a pre-promotion stage is DOWNRANKED: flagged `downranked: true` and
+ * sorted below every promoted entry point. The flag comes off the same
+ * `isPrePromotionStatus` predicate preflight verdicts on, so the resolver's
+ * demotion and preflight's unknown verdict cannot disagree about which leaves
+ * are provisional.
+ *
  * --paths mode — reverse lookup over the loader's pointer index: "which
  * concepts point at these files". A path matches a pointer when equal to it or
  * nested under a FOLDER pointer (§3.1). Folder-ness is read from the
@@ -63,7 +78,7 @@
 import process from 'node:process';
 import { statSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { healthSummary, loadStores, storeHealth } from '../lib/load-stores.js';
+import { healthSummary, isPrePromotionStatus, leafStage, loadStores, storeHealth } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
@@ -81,9 +96,84 @@ const MATCH_SCORES = Object.freeze({
 });
 const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still surfaces
 
+/**
+ * The first sentence of a leaf's body, or null when it has none (UCS-1149).
+ *
+ * Frontmatter v2 retired the free-prose `description` field, so display prose
+ * is DERIVED rather than authored: a leaf opens its body with a topic sentence
+ * and this reads it back. The point is that the summary cannot drift from the
+ * content — an authored one-liner is a second copy of the claim, and the copy
+ * is what goes stale when the body is edited and the frontmatter is not.
+ *
+ * Deliberately literal about what a "first sentence" is, because a clever
+ * extractor that guesses wrong is worse than a plain one that occasionally
+ * returns a long line:
+ *
+ *   - Markdown structure is skipped LINE BY LINE, not block by block. That is
+ *     the whole subtlety: structure in markdown is a property of a line, and a
+ *     heading needs no blank line after it, so `# Title\nThe real opening.` is
+ *     one block whose first line is a heading and whose second is the prose.
+ *     Discarding the block would blank the excerpt for a perfectly ordinary
+ *     body; discarding just the heading line finds the sentence underneath.
+ *   - Fenced code is skipped WHOLE, tracked as state across lines rather than
+ *     matched line by line, in both CommonMark spellings (``` and ~~~).
+ *     Matching only the fence markers would leave the code between them
+ *     looking like ordinary prose, which is how `code();` ends up published as
+ *     a leaf's excerpt. An unclosed fence runs to the end of the body.
+ *   - Prose then runs to the next blank line or structural line, with internal
+ *     newlines collapsed to single spaces: bodies are hard-wrapped, so a
+ *     sentence routinely spans two lines and a line-based reader would truncate
+ *     it mid-clause.
+ *   - A sentence ends at `.`/`!`/`?` followed by whitespace or end-of-text.
+ *     `§4.2` and `v3.` do not end a sentence mid-token, which is why the
+ *     following character must be whitespace rather than anything at all.
+ *   - Prose with no terminator IS the excerpt — a body whose opening line is a
+ *     fragment still has display prose, and returning null there would silently
+ *     blank the surface rather than show what the author wrote.
+ *
+ * @param {string|undefined} body the markdown below the front matter
+ * @returns {string|null}
+ */
+export function firstSentence(body) {
+  if (typeof body !== 'string') return null;
+  // Headings, list items, ordered items, block quotes, and table rows.
+  const structural = /^(#{1,6}\s|[-*+]\s|\d+[.)]\s|>\s|\|)/;
+  // Both fence spellings — CommonMark allows ~~~ as well as ```.
+  const fence = /^(```|~~~)/;
+  // A fence has to be tracked as STATE, not matched as a line: skipping the
+  // fence markers alone would leave the code BETWEEN them looking like
+  // ordinary prose, and `code();` would be published as a leaf's excerpt.
+  // So everything from an opening fence to its closing one is skipped whole.
+  const prose = [];
+  let fenced = false;
+  for (const raw of body.split('\n')) {
+    const line = raw.trim();
+    if (fence.test(line)) {
+      // An unclosed fence runs to the end of the body — which is the honest
+      // reading of a malformed block, and never leaves code in the excerpt.
+      fenced = !fenced;
+      if (prose.length) break; // prose already collected; a fence ends it
+      continue;
+    }
+    if (fenced) continue;
+    if (line === '' || structural.test(line)) {
+      // Prose stops AT structure rather than swallowing it, so an excerpt
+      // never shows markup; before any prose, structure is just skipped.
+      if (prose.length) break;
+      continue;
+    }
+    prose.push(line);
+  }
+  if (!prose.length) return null;
+  const flat = prose.join(' ').replace(/\s+/g, ' ').trim();
+  const stop = flat.search(/[.!?](\s|$)/);
+  return stop === -1 ? flat : flat.slice(0, stop + 1);
+}
+
 const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();
 const words = (s) => norm(s).split(/[^a-z0-9]+/).filter(Boolean);
 const strings = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
+const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
 // ---------------------------------------------------------------- query mode
 
@@ -118,7 +208,17 @@ function confusables(model, record) {
     .map((id) => ({ id, term: model.concepts.get(id)?.record.term ?? null }));
 }
 
-/** Knowledge entry points: leaves whose `terms` name the concept term/alias. */
+/**
+ * Knowledge entry points: leaves whose `terms` name the concept term/alias.
+ *
+ * Ordered promoted-first (UCS-1149): a pre-promotion leaf sorts BELOW every
+ * promoted one, and ties keep the loader's id order so output stays byte-stable.
+ * That ordering is the resolver's half of the draft-stage contract — an agent
+ * reading the list top-down reaches certified knowledge before provisional
+ * knowledge — and it is deliberately a demotion rather than a filter: a draft
+ * leaf is still the best answer when it is the only answer, and hiding it would
+ * send the reader to invent one instead.
+ */
 function knowledgeEntryPoints(model, record) {
   const names = new Set(
     [record.term, ...strings(record.aliases)]
@@ -158,15 +258,48 @@ function knowledgeEntryPoints(model, record) {
       // store health (a lookup runs on whatever loaded, §4), so it is the one
       // surface that can be asked to publish an id no check has approved.
       // Same `typeof` test the loader and the orphan check use.
+      //
+      // `stage`, `excerpt`, and `provenance` are frontmatter v2 (UCS-1149).
+      // Like `id` they are stable keys whose value may be null, never omitted
+      // keys: a store mid-migration must emit ONE result shape, or every
+      // consumer needs a presence check to tell "this leaf declares no stage"
+      // from "this engine predates stages".
+      //
+      // `excerpt` is DERIVED from the body, not read from a field — v2 retired
+      // the authored `description` precisely so display prose cannot drift from
+      // the content it summarizes.
+      //
+      // `provenance` travels verbatim: no registry governs it, so the resolver
+      // has no judgement to apply and passing it through unchanged is the whole
+      // contract. Spelled field by field rather than spread, so a later
+      // provenance field cannot leak into published output before anyone
+      // decided it should be public.
+      const stage = leafStage(leaf);
+      const provenance = leaf.provenance;
       out.push({
         id: typeof entry.id === 'string' ? entry.id : null,
         notation: typeof entry.notation === 'string' ? entry.notation : null,
         heading: leaf.heading ?? null,
+        stage,
+        excerpt: firstSentence(entry.body),
+        provenance: isObject(provenance)
+          ? {
+            author: typeof provenance.author === 'string' ? provenance.author : null,
+            'skill-version': typeof provenance['skill-version'] === 'string' ? provenance['skill-version'] : null,
+          }
+          : null,
+        // The SAME predicate preflight verdicts on (UCS-1149). A leaf whose
+        // stage is pre-promotion is downranked here and verdicted unknown
+        // there; reading the two off one predicate is what stops the surfaces
+        // disagreeing about which leaves are provisional.
+        downranked: isPrePromotionStatus(stage),
         file,
       });
     }
   }
-  return out; // model.leaves is already sorted by leaf id
+  // Stable by construction: model.leaves is already sorted by leaf id, and a
+  // boolean comparator moves only the downranked ones, so ties never reorder.
+  return out.sort((a, b) => Number(a.downranked) - Number(b.downranked));
 }
 
 function resolveQuery(model, terms) {
@@ -353,8 +486,15 @@ function renderQuery(payload) {
       // with the notation still shown, since that is what the tree and every
       // not-yet-migrated citation spell. An unminted leaf reads exactly as it
       // did before (UCS-1144).
+      // The draft marker rides the same line as the heading, so the demotion is
+      // visible where the ordering already put the leaf last — an agent
+      // skimming the list sees WHY a leaf sits at the bottom without a second
+      // lookup. The derived excerpt follows indented beneath, which is the
+      // display prose the retired `description` field used to be for; a leaf
+      // whose body opens with no prose simply shows no excerpt line.
       for (const k of r.knowledge) {
-        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}  (${k.file})`);
+        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}${k.downranked ? `  [${k.stage} — downranked]` : ''}  (${k.file})`);
+        if (k.excerpt) lines.push(`      ${k.excerpt}`);
       }
     }
     lines.push('');

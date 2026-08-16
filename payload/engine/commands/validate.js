@@ -90,7 +90,7 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
-  'id-range', 'id-shape', 'index-drift', 'missing-citation',
+  'id-range', 'id-shape', 'index-drift', 'missing-authority', 'missing-citation',
   'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
   'registry-shape-mismatch', 'suppressed-value', 'unminted-segment',
   'unregistered-value',
@@ -284,6 +284,12 @@ function checkOrphans(model, push) {
  *   hierarchical
  *             the registry SHAPE this facet requires. Declared, and checked
  *             against the registry's own flag: see registryShapeMismatch
+ *   blankOwnedBy
+ *             the check that owns this field's ABSENCE, when one exists. A
+ *             blank value is then that check's to report and membership defers,
+ *             so one omission earns one finding. Absent means membership judges
+ *             blanks itself — the safe default, since a field whose emptiness
+ *             nobody checks would otherwise pass governed-but-unchecked
  *
  * Frozen all the way down: a mutated row would silently redirect a facet at a
  * different vocabulary, which is a governed store quietly ungoverned.
@@ -293,9 +299,22 @@ function checkOrphans(model, push) {
 export const FACET_REGISTRIES = Object.freeze({
   'knowledge-leaf': Object.freeze([
     Object.freeze({ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: true }),
+    // Frontmatter v2's remaining classification facets (UCS-1149). Each is a
+    // ROW, which is the whole point of the table: three more governed fields
+    // cost three declarations and no second membership code path.
+    Object.freeze({ field: 'facets.form', registry: 'knowledge/form', hierarchical: false }),
+    Object.freeze({ field: 'facets.anchor', registry: 'knowledge/anchor', hierarchical: false }),
+    Object.freeze({ field: 'facets.stage', registry: 'knowledge/stage', hierarchical: false }),
     Object.freeze({ field: 'operations', each: true, registry: 'knowledge/operations', hierarchical: false }),
     Object.freeze({ field: 'applies.jurisdictions', each: true, registry: 'knowledge/jurisdictions', hierarchical: false }),
-    Object.freeze({ within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers', hierarchical: false }),
+    // `blankOwnedBy` names the check that OWNS this field's absence. Only
+    // `authority` has one (`missing-authority`), so only `authority` may leave
+    // a blank value to it; every other governed field judges a blank itself as
+    // an unregistered value, because otherwise `stage: ""` would pass silently.
+    Object.freeze({
+      within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers',
+      hierarchical: false, blankOwnedBy: 'missing-authority',
+    }),
   ]),
 });
 
@@ -545,7 +564,7 @@ function checkRegistryMembership(model, push) {
 function checkOneRecord(model, push, entry, rows) {
   const { file, record } = entry;
   const id = recordId(entry);
-  for (const { within, field, each, registry: registryKey } of rows) {
+  for (const { within, field, each, registry: registryKey, blankOwnedBy } of rows) {
     const registry = model.registries.get(registryKey);
     // A row may sit inside a repeated sub-record (citations[]); declaring the
     // container once keeps the table free of per-index rows.
@@ -565,6 +584,18 @@ function checkOneRecord(model, push, entry, rows) {
         : [[raw, field]];
       for (const [value, valuePath] of values) {
         if (typeof value !== 'string') continue;
+        // A BLANK value is deferred ONLY when another check owns this field's
+        // absence — declared as `blankOwnedBy`, which today is just
+        // `citations[].authority` and its `missing-authority` check. There,
+        // reporting `unregistered-value ""` too would put a second finding on a
+        // path that already carries the one an author can act on.
+        //
+        // Everywhere else a blank is judged HERE, and that asymmetry is the
+        // point: no check owns `facets.stage: ""`, so skipping it would make an
+        // empty governed facet pass silently at exit 0 — a governed field
+        // ungoverned by an empty string, which is worse than double-reporting.
+        // The registry does not mint "", so it falls out as unregistered.
+        if (value.trim() === '' && blankOwnedBy) continue;
         const verdict = judgeValue(registry, registryKey, value);
         if (!verdict) continue;
         push({
@@ -577,17 +608,63 @@ function checkOneRecord(model, push, entry, rows) {
   }
 }
 
-/** Leaf citations must carry a non-empty source (§3.2). */
+/**
+ * Leaf citations must carry a non-empty source (§3.2) and an authority tier
+ * (UCS-1149).
+ *
+ * The two failures are separate codes because they are separate defects. An
+ * empty `source` is an unsourced claim. A missing `authority` is a sourced
+ * claim that records nothing about HOW FAR the source can be trusted — a
+ * regulator's text and a hallway conversation read identically once the tier
+ * is gone, and a reader comparing two leaves that disagree has nothing to go
+ * on but the source strings themselves.
+ *
+ * Note what this check does and does not claim. It governs the tier as
+ * VOCABULARY: present, and minted in the registry. Nothing in this engine
+ * compares two tiers or resolves a conflict between citations today —
+ * automatic conflict ranking arrives with the resolution pipeline (UCS-1152).
+ * Requiring the tier now is what makes that possible later: a tier nobody
+ * recorded cannot be ranked retroactively.
+ *
+ * Absence is checked here; a tier naming a value the registry does not carry is
+ * the ordinary `unregistered-value` finding the facet table already declares
+ * (`{ within: 'citations', field: 'authority' }`). Two codes, because "you left
+ * it out" and "that tier does not exist" send an author to two different edits
+ * — and neither is checked by the other: the membership walk skips a value that
+ * is not a string, which is exactly what an absent field is.
+ *
+ * The tier requirement is gated on the store CARRYING an authority-tiers
+ * registry, which is UCS-1148's opt-in conduct applied one level up rather than
+ * a softening of it. A store with no such registry has no vocabulary to draw a
+ * tier from, so demanding one would be demanding a value that could only be
+ * unregistered — every leaf failing twice for one thing the store never opted
+ * into. Once the registry exists the project HAS said tiers govern its
+ * citations, and an untiered citation is then a real omission. The escalation
+ * is the steward's, made by adding the file, and it is exactly the escalation
+ * `missing-registry` refuses to let happen silently in the other direction.
+ */
 function checkCitations(model, push) {
+  const tiersGoverned = model.registries.has('knowledge/authority-tiers');
   for (const leaf of model.leaves.values()) {
     const { file, record } = leaf;
     if (!Array.isArray(record.citations)) continue; // presence is a schema check
     record.citations.forEach((c, i) => {
-      if (isObject(c) && typeof c.source === 'string' && c.source.trim() === '') {
+      if (!isObject(c)) return;
+      if (typeof c.source === 'string' && c.source.trim() === '') {
         push({
           severity: 'error', code: 'missing-citation', id: recordId(leaf), file,
           path: `citations[${i}].source`,
           message: 'citation source is empty — an unsourced claim is not promotable (§3.2)',
+        });
+      }
+      // A non-string authority is a schema defect KK-02 already reported;
+      // complaining again here would double-report one mistake.
+      if (tiersGoverned
+        && (c.authority === undefined || (typeof c.authority === 'string' && c.authority.trim() === ''))) {
+        push({
+          severity: 'error', code: 'missing-authority', id: recordId(leaf), file,
+          path: `citations[${i}].authority`,
+          message: 'citation carries no authority tier — nothing records how far this source can be trusted, so a regulator\'s text and a hallway conversation read identically; name a tier minted in the "knowledge/authority-tiers" registry (UCS-1149)',
         });
       }
     });

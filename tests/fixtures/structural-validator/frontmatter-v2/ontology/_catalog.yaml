@@ -1,0 +1,7 @@
+# Frontmatter v2 fixture (UCS-1149) — the concept both leaves are entry points for.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-102
+    title: Odds feed
+    file: classes/100-feed.yaml

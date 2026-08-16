@@ -69,16 +69,27 @@ unconditional:
     - { from: templates/knowledge/_catalog.yaml, to: knowledge/_catalog.yaml }
     - { from: templates/knowledge/_rules.yaml, to: knowledge/_rules.yaml }
     - { from: templates/decisions/_catalog.yaml, to: decisions/_catalog.yaml }
-    # Governed vocabulary registries (UCS-1148). Seeded EMPTY, like the
-    # catalogs: the bootstrap interview mints the first values from material
-    # that already exists, because a value minted ahead of its material is
-    # speculative shelving (protocol/registry-warrant.md). They ship as store
-    # scaffolding rather than as templates-to-copy because a registry is a
-    # LIVE governed file — the client edits this one, it is not a pattern.
+    # Governed vocabulary registries (UCS-1148, extended by UCS-1149). All
+    # seeded EMPTY, like the catalogs: the bootstrap interview mints the first
+    # values from material that already exists, because a value minted ahead of
+    # its material is speculative shelving (protocol/registry-warrant.md). They
+    # ship as store scaffolding rather than as templates-to-copy because a
+    # registry is a LIVE governed file — the client edits this one, it is not a
+    # pattern.
+    #
+    # anchor/ and stage/ are empty for a SECOND reason worth stating: their
+    # vocabularies are fixed by the kit (D-003's anchors; the stages the shared
+    # pre-promotion predicate reads), so their headers name the exact values to
+    # mint. They still ship valueless because every value must cite a Decisions
+    # entry that resolves, and a seeded repo's decisions store is empty by
+    # design (D-001) — seeded values would hand every client a broken ref.
     - { from: templates/knowledge/_registries/domains.yaml, to: knowledge/_registries/domains.yaml }
     - { from: templates/knowledge/_registries/operations.yaml, to: knowledge/_registries/operations.yaml }
     - { from: templates/knowledge/_registries/jurisdictions.yaml, to: knowledge/_registries/jurisdictions.yaml }
     - { from: templates/knowledge/_registries/authority-tiers.yaml, to: knowledge/_registries/authority-tiers.yaml }
+    - { from: templates/knowledge/_registries/form.yaml, to: knowledge/_registries/form.yaml }
+    - { from: templates/knowledge/_registries/anchor.yaml, to: knowledge/_registries/anchor.yaml }
+    - { from: templates/knowledge/_registries/stage.yaml, to: knowledge/_registries/stage.yaml }
   docs:
     # Client-facing docs (KK-24). The seeded README lands at the kit-dir
     # root; the guides land under docs/.
