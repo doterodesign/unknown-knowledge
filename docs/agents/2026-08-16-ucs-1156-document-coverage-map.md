@@ -29,8 +29,8 @@ content richness rather than document length.
 - `tests/fixtures/coverage-docs/short-rich.md` — 12 blocks, many distinct joins.
 
 **New — tests**
-- `tests/document-coverage.test.js` — 23 tests, one per acceptance criterion
-  plus determinism and exit-contract coverage.
+- `tests/document-coverage.test.js` — 27 tests, one per acceptance criterion
+  plus determinism, exit-contract, and review-round regression coverage.
 
 **Docs**
 - `CHANGELOG.md` — Unreleased/Added.
@@ -92,8 +92,8 @@ openable, exact count retained); address lists cap at 8 with exact overflow
 counts — that last one was the only part of the map still growing linearly with
 document length.
 
-Measured: redundant (50 blocks) → 3090 bytes, 2 candidates, 3 mapped sections.
-Rich (12 blocks) → 4234 bytes, 5 candidates, 6 mapped sections.
+Measured: redundant (50 blocks) → 2511 bytes, 2 candidates. Rich (12 blocks)
+→ 4260 bytes, 5 candidates.
 
 ## Acceptance criteria
 
@@ -105,12 +105,52 @@ comparison proves something.
 
 ## Gates
 
-- `npm test` — 833 pass, 0 fail (baseline 810; +23 new)
+- `npm test` — 837 pass, 0 fail (baseline 810; +27 new)
 - `npm run lint` — 191 files, 0 failures
 - `npm run acceptance` — OK
 
 Reordered-store determinism holds: the map is byte-identical against
 `resolver-v2-reordered`.
+
+## Review round 1 (CodeRabbit, 5 findings)
+
+All five verified against the code and reproduced before fixing. All five valid,
+all fixed, each with a regression test proven to fail against the pre-fix code.
+
+**1. Section address used as identity (major).** `ownBlocks` keyed `owner` and
+`byAddress` by `section.address`, a string. Two sections with the same heading
+("## Details" under two parents is ordinary authoring) collided. Reproduced:
+their prose pooled, so `appear`/`term`/`detail` each cleared the repetition
+threshold on *combined* counts they never reach individually; the second section
+vanished from the map entirely; both terms were attributed to one ambiguous
+address. Same bug in the gather rollup (`entry.sections` de-duplicated by
+address) and in candidate tracking. Fixed by keying on the section OBJECT
+throughout; the address is now strictly a display label.
+
+**2. Address cap leaking into semantics (major).** `capAddresses` replaced
+`candidate.sections` with the capped list, and section membership was then
+tested against it. Reproduced with a term spanning 12 sections: sections 9–12
+published empty candidate lists and, being otherwise identical, folded into a
+*different* group than 1–8 — so the published repeat count measured the display
+cap rather than the document. Fixed by carrying the uncapped set on a Symbol key
+(`IN_SECTIONS`, same non-enumerable pattern as `SUPPRESSION_IDENTITY`) and
+testing membership against it. Capping is now display-only.
+
+**3. One span counted once per signature (minor).** An emphasized Title-Case
+phrase matched both patterns and incremented the count twice, inflating salience
+selectively for phrases that happen to be both — so ranking partly measured
+markup rather than use. Fixed by deduplicating spans by start offset and
+recording one occurrence carrying both signature labels.
+
+**4. `suppression-warnings` conditionally present (trivial).** Now a stable key,
+empty when clean, like every other field in the payload.
+
+**5. Temp dirs leaked in tests (trivial).** `tempDir(t)` registers `t.after`
+cleanup at all eight call sites; runs on failure too.
+
+Side effect worth noting: fixing (1) and (3) removed spurious candidates, so the
+redundant fixture's map shrank from 3090 to 2511 bytes — the richness-not-length
+margin widened.
 
 ## Notes for review
 

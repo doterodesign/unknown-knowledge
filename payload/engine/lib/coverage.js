@@ -108,6 +108,18 @@ const capAddresses = (addresses) => ({
 });
 
 /**
+ * The UNCAPPED set of sections a candidate appeared in, carried on the
+ * published candidate for internal membership tests.
+ *
+ * A Symbol, for the same reason `SUPPRESSION_IDENTITY` is one: `JSON.stringify`
+ * and `Object.keys` skip symbol keys, so it cannot reach the wire, and the
+ * map's published shape is a contract. It exists because CAPPING IS A DISPLAY
+ * DECISION and the rest of the pipeline must never read the capped list — see
+ * `rankCandidates` for what breaks when it does.
+ */
+const IN_SECTIONS = Symbol('uncapped candidate sections');
+
+/**
  * Group IR blocks into sections.
  *
  * The address is the heading TEXT, and the locator is the line range — together
@@ -221,23 +233,26 @@ const scannableText = (section) => section.blocks
  * @returns {Array<{address: string, text: string}>} one entry per section, disjoint text
  */
 function ownBlocks(sections) {
-  // The innermost section owning a block is the LAST one in document order
-  // whose block list contains it: `sectionsOf` appends a nested section after
-  // its parent, so scanning forward and letting later sections win lands on the
-  // deepest. Identity comparison, because the same block object is shared.
+  // KEYED BY SECTION OBJECT, NEVER BY ADDRESS. Two sections can carry the SAME
+  // heading text — "## Details" under two different parents is ordinary
+  // authoring — and a string key silently merges them: their prose pools into
+  // one bucket, so counts that neither section reaches alone clear the
+  // repetition threshold together, and the second section's own text is
+  // attributed to the first. A section is identified by which section it IS;
+  // the address is a LABEL for the reader, and a label was never an identity.
   const owner = new Map();
   for (const section of sections) {
-    for (const block of section.blocks) owner.set(block, section.address);
+    for (const block of section.blocks) owner.set(block, section);
   }
-  const byAddress = new Map(sections.map((s) => [s.address, []]));
+  const bySection = new Map(sections.map((s) => [s, []]));
   for (const section of sections) {
     for (const block of section.blocks) {
-      if (owner.get(block) === section.address && block.kind !== 'code') {
-        byAddress.get(section.address).push(block.text);
+      if (owner.get(block) === section && block.kind !== 'code') {
+        bySection.get(section).push(block.text);
       }
     }
   }
-  return sections.map((s) => ({ address: s.address, text: byAddress.get(s.address).join('\n') }));
+  return sections.map((s) => ({ section: s, address: s.address, text: bySection.get(s).join('\n') }));
 }
 
 /**
@@ -458,11 +473,11 @@ export function knownVocabulary(model) {
  * @param {Array} sections from `sectionsOf`
  * @param {Set<string>} known the folded known-vocabulary words
  * @param {number} threshold the repetition threshold for this document's size
- * @returns {Map<string, {term, count, signatures: Set, sections: string[]}>}
+ * @returns {Map<string, {term, count, signatures: Set, sections: Set<object>}>}
  */
 function extractCandidates(sections, known, threshold) {
   const found = new Map();
-  const record = (raw, signature, address) => {
+  const record = (raw, signatures, section) => {
     // A sentence-initial determiner is capitalization for position, not part of
     // the term — stripping it keeps one term from splitting into two candidates.
     const term = stripDeterminer(foldPhrase(raw));
@@ -474,11 +489,15 @@ function extractCandidates(sections, known, threshold) {
     if (words.length < 2) return;
     // Fully-known phrases are recombinations, not new vocabulary.
     if (words.every((w) => known.has(w) || STOPWORDS.has(w))) return;
-    if (!found.has(term)) found.set(term, { term, count: 0, signatures: new Set(), sections: [] });
+    if (!found.has(term)) found.set(term, { term, count: 0, signatures: new Set(), sections: new Set() });
     const entry = found.get(term);
+    // ONE OCCURRENCE, however many signatures it earned — see the span
+    // deduplication below.
     entry.count += 1;
-    entry.signatures.add(signature);
-    if (!entry.sections.includes(address)) entry.sections.push(address);
+    for (const s of signatures) entry.signatures.add(s);
+    // Sections are tracked by OBJECT, not by address: two sections can share a
+    // heading, and a Set of addresses would count them as one place.
+    entry.sections.add(section);
   };
 
   // Counted over the DISJOINT partition — each block once, attributed to the
@@ -486,14 +505,40 @@ function extractCandidates(sections, known, threshold) {
   // view would let nesting depth inflate a count past the threshold.
   const owned = ownBlocks(sections);
 
-  for (const { address, text } of owned) {
+  for (const { section, text } of owned) {
+    // ONE SPAN, ONE OCCURRENCE — even when it earns two signatures.
+    //
+    // An emphasized Title-Case phrase (`**Provisional Market Ladder**`) matches
+    // both the emphasis pattern and the Title-Case pattern, and recording each
+    // match separately would count one occurrence twice. That inflates the
+    // number a steward reads as "how often did the author say this", and it
+    // inflates it SELECTIVELY — only for phrases that happen to be both
+    // emphasized and Title-Case — so the candidate ranking would order terms by
+    // how they were marked up rather than by how often they were used.
+    //
+    // Both signature LABELS are still recorded, because which signatures fired
+    // is real evidence about why the phrase is a candidate. What is deduplicated
+    // is the occurrence, keyed by where in the text the span started.
+    const spans = new Map(); // start offset -> { raw, signatures }
+    const mark = (index, raw, signature) => {
+      if (!spans.has(index)) spans.set(index, { raw, signatures: new Set() });
+      spans.get(index).signatures.add(signature);
+    };
     for (const match of text.matchAll(EMPHASIS)) {
       const span = match[2] ?? match[4] ?? '';
       // Single words are stress, not vocabulary — see the salience header.
       if (foldPhrase(span).split(' ').length < 2) continue;
-      record(span, 'emphasis', address);
+      // The offset of the span's TEXT, not of the markers, so an emphasized
+      // Title-Case phrase lands on the same key its bare Title-Case match does.
+      mark(match.index + match[0].indexOf(span), span, 'emphasis');
     }
-    for (const match of text.matchAll(TITLE_CASE)) record(match[1], 'title-case', address);
+    for (const match of text.matchAll(TITLE_CASE)) mark(match.index, match[1], 'title-case');
+    // Sorted by offset so recording runs in document order, not in Map
+    // insertion order across two passes — the counts are identical either way,
+    // but determinism should not depend on that being true.
+    for (const [, { raw, signatures }] of [...spans].sort((a, b) => a[0] - b[0])) {
+      record(raw, signatures, section);
+    }
   }
 
   // Repetition is counted DOC-WIDE, over single tokens, and only promoted to a
@@ -502,7 +547,7 @@ function extractCandidates(sections, known, threshold) {
   // "did the author mark this up" but "did the document keep coming back to
   // it" — and a term can legitimately earn both.
   const repeats = new Map();
-  for (const { address, text } of owned) {
+  for (const { section, text } of owned) {
     for (const token of tokenize(text)) {
       const word = singular(token);
       // Stopwords, known vocabulary, short tokens, and anything path- or
@@ -510,24 +555,22 @@ function extractCandidates(sections, known, threshold) {
       // term a steward would mint.
       if (STOPWORDS.has(token) || STOPWORDS.has(word) || known.has(word)) continue;
       if (word.length < 4 || word.includes('.') || word.includes('/')) continue;
-      if (!repeats.has(word)) repeats.set(word, { count: 0, sections: [] });
+      if (!repeats.has(word)) repeats.set(word, { count: 0, sections: new Set() });
       const entry = repeats.get(word);
       entry.count += 1;
-      if (!entry.sections.includes(address)) entry.sections.push(address);
+      entry.sections.add(section);
     }
   }
   for (const [word, entry] of repeats) {
     if (entry.count < threshold) continue;
     // Frequent AND concentrated — see `isConcentrated`. Boilerplate clears the
     // count threshold in any long document and must not clear this one.
-    if (!isConcentrated(entry.count, entry.sections.length)) continue;
-    if (!found.has(word)) found.set(word, { term: word, count: 0, signatures: new Set(), sections: [] });
+    if (!isConcentrated(entry.count, entry.sections.size)) continue;
+    if (!found.has(word)) found.set(word, { term: word, count: 0, signatures: new Set(), sections: new Set() });
     const candidate = found.get(word);
     candidate.count += entry.count;
     candidate.signatures.add('repetition');
-    for (const address of entry.sections) {
-      if (!candidate.sections.includes(address)) candidate.sections.push(address);
-    }
+    for (const section of entry.sections) candidate.sections.add(section);
   }
 
   return found;
@@ -576,14 +619,26 @@ function rankCandidates(found, documentPath, suppressionEntries) {
       // just-in-time read, and this is that address in the map's own
       // vocabulary. Capped, so a term that appears everywhere costs the map a
       // constant rather than one entry per section (see ADDRESS_CAP).
-      const { sections, more } = capAddresses([...candidate.sections].sort(compare));
-      return suppressibleBy({
+      //
+      // CAPPING IS A DISPLAY DECISION AND NOTHING ELSE. The uncapped section
+      // SET travels on the returned object (non-enumerable, so it cannot reach
+      // the wire) for `buildCoverageMap` to test membership against. Testing
+      // against the capped list instead would make a candidate invisible to
+      // every section past the eighth — those sections would publish empty
+      // candidate lists, and being otherwise identical they would fold into a
+      // DIFFERENT group than the first eight. The published repeat count would
+      // then be an artifact of the display cap rather than a fact about the
+      // document.
+      const { sections, more } = capAddresses([...candidate.sections].map((s) => s.address).sort(compare));
+      const published = suppressibleBy({
         term: candidate.term,
         count: candidate.count,
         signatures: [...candidate.signatures].sort(compare),
         sections,
         'sections-more': more,
       }, candidateIdentity(candidate.term, documentPath));
+      published[IN_SECTIONS] = candidate.sections;
+      return published;
     })
     .sort((a, b) => b.count - a.count || compare(a.term, b.term));
 
@@ -643,8 +698,11 @@ export function buildCoverageMap({ document, ir, model, joinSection, suppression
   const perSection = [];
   const bySignal = new Map();
   for (const { section, join } of joined) {
+    // Membership reads the UNCAPPED set, keyed by section identity — never the
+    // published (capped) address list, and never an address string. See
+    // `IN_SECTIONS` and `rankCandidates`.
     const sectionCandidates = ranked.kept
-      .filter((c) => c.sections.includes(section.address))
+      .filter((c) => c[IN_SECTIONS].has(section))
       .map((c) => c.term);
     const hasJoin = join.operations.length || join.concepts.length
       || join.jurisdictions.length || join.leaves.length;
@@ -746,9 +804,11 @@ function gatherRollup(joined) {
   for (const { section, join } of joined) {
     for (const leaf of join.leaves) {
       const key = leaf.id ?? leaf.notation;
-      if (!byLeaf.has(key)) byLeaf.set(key, { leaf, sections: [], signals: new Set() });
+      if (!byLeaf.has(key)) byLeaf.set(key, { leaf, sections: new Set(), signals: new Set() });
       const entry = byLeaf.get(key);
-      if (!entry.sections.includes(section.address)) entry.sections.push(section.address);
+      // By section OBJECT: two sections sharing a heading are two places this
+      // leaf was reached, and de-duplicating them by address would under-report.
+      entry.sections.add(section);
       for (const signal of leaf.signals) entry.signals.add(`${signal.signal}:${signal.via}`);
       // The highest score any section gave this leaf. A leaf is as strongly
       // reached as its best section reached it — averaging would let a long
@@ -764,7 +824,7 @@ function gatherRollup(joined) {
       && !leaf.applies.some((j) => scopes.includes(j));
     // Capped for the same reason a candidate's are: a leaf joined from every
     // section of a long document must not cost one line per section.
-    const reached = capAddresses([...sections].sort(compare));
+    const reached = capAddresses([...sections].map((s) => s.address).sort(compare));
     rollup.push({
       id: leaf.id,
       notation: leaf.notation,

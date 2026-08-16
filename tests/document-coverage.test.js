@@ -36,7 +36,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -74,7 +74,20 @@ function query(text, { store = STORE, today = TODAY } = {}) {
   return JSON.parse(r.stdout);
 }
 
-const tempDir = () => mkdtempSync(join(tmpdir(), 'uk-coverage-'));
+/**
+ * A scratch directory that removes itself when the test ends.
+ *
+ * Registered on the test context rather than left behind: these tests write
+ * documents and whole copied stores, and a suite that leaks a directory per run
+ * fills a developer's tmpdir with near-identical fixtures that are impossible
+ * to tell apart later. `t.after` runs on failure too, so a failing assertion
+ * cleans up exactly as a passing one does.
+ */
+const tempDir = (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'uk-coverage-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  return dir;
+};
 
 // ---------------------------------------------------------------------------
 // 1. ONE ENTRY POINT, THREE INPUT SHAPES
@@ -97,12 +110,12 @@ test('one entry point accepts all three input shapes', () => {
   assert.equal(JSON.parse(d.stdout).mode, 'doc');
 });
 
-test('GOLDEN: a query and its equivalent one-block document produce IDENTICAL joins', () => {
+test('GOLDEN: a query and its equivalent one-block document produce IDENTICAL joins', (t) => {
   // The size-invariance claim, made falsifiable. A query is processed as a
   // one-block document through the same `joinText`, so these must agree on
   // every axis AND on the scores — not merely overlap.
   const text = 'add a new sport for the new jersey launch';
-  const dir = tempDir();
+  const dir = tempDir(t);
   const doc = join(dir, 'one-block.txt');
   writeFileSync(doc, text);
 
@@ -313,8 +326,8 @@ test('the repetition threshold is a pinned STEP FUNCTION of document size', () =
   assert.equal(repetitionThreshold(10000), 8);
 });
 
-test('known vocabulary, stopwords, and code blocks are SUBTRACTED from candidates', () => {
-  const dir = tempDir();
+test('known vocabulary, stopwords, and code blocks are SUBTRACTED from candidates', (t) => {
+  const dir = tempDir(t);
   const doc = join(dir, 'subtraction.md');
   writeFileSync(doc, [
     '# Subtraction check',
@@ -343,6 +356,100 @@ test('known vocabulary, stopwords, and code blocks are SUBTRACTED from candidate
   assert.ok(!terms.includes('widget factory'), 'nor are Title-Case phrases inside code');
 });
 
+test('two sections sharing a heading stay DISTINCT — an address is a label, not an identity', (t) => {
+  // A heading is not unique. "## Details" under two different parents is
+  // ordinary authoring, and keying section state by address merges them:
+  // their prose pools into one bucket (so counts neither section reaches alone
+  // clear the repetition threshold together), the second section's content is
+  // attributed to the first, and one of the two disappears from the map with
+  // its locator — sending a reader who opens it to the wrong lines.
+  const dir = tempDir(t);
+  const doc = join(dir, 'duplicate-headings.md');
+  writeFileSync(doc, [
+    '# Notes',
+    '',
+    '## Details',
+    'The **Alpha Beta Gamma** term appears here.',
+    '',
+    '## Other',
+    'Filler about sport registry.',
+    '',
+    '## Details',
+    'The **Delta Epsilon Zeta** term appears here.',
+  ].join('\n'));
+
+  const map = coverage(doc);
+  const details = map.sections.filter((s) => s.section === 'Details');
+  assert.equal(details.length, 2, 'both sections are published, not merged into one');
+  assert.notDeepEqual(details[0].locator, details[1].locator, 'each keeps its own line range');
+
+  // Each section carries ONLY its own candidate.
+  assert.deepEqual(details[0].candidates, ['alpha beta gamma']);
+  assert.deepEqual(details[1].candidates, ['delta epsilon zeta']);
+
+  // And nothing was invented by pooling: words that appear once in each section
+  // must not clear the repetition threshold by being counted together.
+  const terms = map['candidates-ranked'].map((c) => c.term);
+  for (const pooled of ['appear', 'term', 'detail']) {
+    assert.ok(!terms.includes(pooled), `"${pooled}" appears once per section — pooling would mint it`);
+  }
+});
+
+test('the address cap is DISPLAY ONLY — it never changes section membership or folding', (t) => {
+  // Capping is how the map stays bounded, but it must not become a semantic
+  // decision. If section membership were tested against the capped list, a
+  // candidate spanning more than the cap would be invisible to every section
+  // past it — those sections would publish empty candidate lists and, being
+  // otherwise identical, would fold into a DIFFERENT group than the first
+  // eight. The published repeat count would then measure the cap, not the doc.
+  const dir = tempDir(t);
+  const doc = join(dir, 'wide-spread.md');
+  const spread = ADDRESS_CAP + 4;
+  const lines = ['# Spread test', ''];
+  for (let i = 1; i <= spread; i += 1) {
+    lines.push(`## Section ${i}`, 'The **Wide Spanning Term** appears in this section along with prose.', '');
+  }
+  writeFileSync(doc, lines.join('\n'));
+
+  const map = coverage(doc);
+  const candidate = map['candidates-ranked'].find((c) => c.term === 'wide spanning term');
+  assert.ok(candidate, 'the spanning term is a candidate');
+
+  // Published: capped list plus an EXACT overflow count.
+  assert.equal(candidate.sections.length, ADDRESS_CAP);
+  assert.equal(candidate.sections.length + candidate['sections-more'], spread,
+    'the total is exact even though the list is capped');
+
+  // Every section carries it, including the ones past the cap — so they all
+  // fold into ONE group whose count is the real number of repeats.
+  const groups = map.sections.filter((s) => s.candidates.includes('wide spanning term'));
+  assert.equal(groups.length, 1, 'identical sections fold into a single entry');
+  assert.equal(groups[0]['repeats-count'], spread - 1,
+    'the fold count reflects the document, not the display cap');
+});
+
+test('one span counts ONCE even when it earns two signatures', (t) => {
+  // `**Alpha Beta Gamma**` matches emphasis AND Title-Case. Recording each
+  // match separately counts one occurrence twice, which inflates the salience
+  // number selectively — only for phrases that happen to be both — so the
+  // ranking would order candidates by markup rather than by use.
+  const dir = tempDir(t);
+  const doc = join(dir, 'dual-signature.md');
+  writeFileSync(doc, [
+    '# Signature test',
+    '',
+    'The **Alpha Beta Gamma** phrase is emphasized and Title-Case at once.',
+    'Later we mention Alpha Beta Gamma again without emphasis.',
+  ].join('\n'));
+
+  const candidate = coverage(doc)['candidates-ranked'].find((c) => c.term === 'alpha beta gamma');
+  assert.ok(candidate);
+  // TWO occurrences in the document: the emphasized one and the plain one.
+  assert.equal(candidate.count, 2, 'the emphasized occurrence counts once, not twice');
+  // Both signature labels survive — which signatures fired is real evidence.
+  assert.deepEqual(candidate.signatures, ['emphasis', 'title-case']);
+});
+
 test('long-but-redundant repetition never becomes a candidate — richness, not length', () => {
   // The concentration rule, tested directly: boilerplate repeated once per
   // section clears any doc-wide count threshold in a long enough document, and
@@ -360,8 +467,8 @@ test('long-but-redundant repetition never becomes a candidate — richness, not 
 // 4. SUPPRESSION — exactly as for reverse-audit terms
 // ---------------------------------------------------------------------------
 
-test('GOLDEN: a suppressed term is excluded from candidates and REPORTED as suppressed', () => {
-  const dir = tempDir();
+test('GOLDEN: a suppressed term is excluded from candidates and REPORTED as suppressed', (t) => {
+  const dir = tempDir(t);
   const store = join(dir, 'store');
   cpSync(STORE, store, { recursive: true });
   const document = join(DOCS, 'launch-plan.md');
@@ -393,8 +500,8 @@ test('GOLDEN: a suppressed term is excluded from candidates and REPORTED as supp
   assert.ok(suppressed.sections.length > 0, 'and its section addresses');
 });
 
-test('suppression FAILS OPEN: a malformed file suppresses nothing and says so', () => {
-  const dir = tempDir();
+test('suppression FAILS OPEN: a malformed file suppresses nothing and says so', (t) => {
+  const dir = tempDir(t);
   const store = join(dir, 'store');
   cpSync(STORE, store, { recursive: true });
   writeFileSync(join(store, 'suppressions.yaml'), 'not: a list\n');
@@ -402,14 +509,22 @@ test('suppression FAILS OPEN: a malformed file suppresses nothing and says so', 
   const map = coverage(join(DOCS, 'launch-plan.md'), { store });
   assert.ok(map['candidates-ranked'].some((c) => c.term === 'quiet period'),
     'a broken suppressions file must never silence a candidate');
-  assert.ok(map['suppression-warnings']?.length, 'and the breakage is reported, never silent');
+  assert.ok(map['suppression-warnings'].length, 'and the breakage is reported, never silent');
+});
+
+test('suppression-warnings is a STABLE KEY — present and empty when the file is clean', () => {
+  // Like every other field in this payload. A key that appears only on failure
+  // makes a consumer write a presence check to tell "the file was clean" from
+  // "this engine predates the warning", and those are different facts.
+  const map = coverage(join(DOCS, 'launch-plan.md'));
+  assert.deepEqual(map['suppression-warnings'], []);
 });
 
 // ---------------------------------------------------------------------------
 // 5. IDEMPOTENCE VIA CONTENT HASH
 // ---------------------------------------------------------------------------
 
-test('GOLDEN: resubmitting byte-identical content dedupes via content hash', () => {
+test('GOLDEN: resubmitting byte-identical content dedupes via content hash', (t) => {
   const document = join(DOCS, 'launch-plan.md');
   const first = coverage(document);
   const second = coverage(document);
@@ -424,7 +539,7 @@ test('GOLDEN: resubmitting byte-identical content dedupes via content hash', () 
 
   // The hash is of the CONTENT, not the path: the same bytes submitted under a
   // different name are the same submission.
-  const dir = tempDir();
+  const dir = tempDir(t);
   const copy = join(dir, 'renamed.md');
   cpSync(document, copy);
   const renamed = coverage(copy);
@@ -529,8 +644,8 @@ test('a run without --today says its verdicts were SKIPPED, never silently fresh
   for (const hit of payload.map.gather) assert.equal(hit.verdict, 'skipped');
 });
 
-test('an unsupported format exits 2 with the adapter conduct, and emits NO map', () => {
-  const dir = tempDir();
+test('an unsupported format exits 2 with the adapter conduct, and emits NO map', (t) => {
+  const dir = tempDir(t);
   const doc = join(dir, 'plan.docx');
   writeFileSync(doc, 'binary-ish');
   const r = runCli('--doc', doc, '--root', STORE, '--today', TODAY, '--json');
@@ -543,8 +658,8 @@ test('an unsupported format exits 2 with the adapter conduct, and emits NO map',
   assert.match(r.stderr, /author an adapter/);
 });
 
-test('an unreadable document exits 2 — a map that never ran is a failure', () => {
-  const r = runCli('--doc', join(tempDir(), 'absent.md'), '--root', STORE, '--today', TODAY);
+test('an unreadable document exits 2 — a map that never ran is a failure', (t) => {
+  const r = runCli('--doc', join(tempDir(t), 'absent.md'), '--root', STORE, '--today', TODAY);
   assert.equal(r.status, 2);
   assert.equal(r.stdout, '');
 });
@@ -574,11 +689,11 @@ test('the human surface carries the map\'s substance, not just its counts', () =
   assert.match(out, /candidates \(ranked/);
 });
 
-test('a txt document degrades structure but not process', () => {
+test('a txt document degrades structure but not process', (t) => {
   // No headings means ONE section covering the document — the honest answer.
   // The map's structure degrades with the input's; the process is identical,
   // and no section boundaries are invented that an editor would not show.
-  const dir = tempDir();
+  const dir = tempDir(t);
   const doc = join(dir, 'plain.txt');
   writeFileSync(doc, [
     'We plan to add a new sport for the new jersey launch.',

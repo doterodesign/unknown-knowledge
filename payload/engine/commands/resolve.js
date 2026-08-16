@@ -1268,7 +1268,10 @@ function resolveDoc(model, document, kitRoot, today) {
   });
   // Warnings surface in the payload, never only on stderr: a malformed
   // suppressions file must not vanish silently from a machine-read output.
-  return warnings.length ? { ...map, 'suppression-warnings': warnings } : map;
+  // A STABLE KEY that may be an empty array, like every other field in this
+  // payload — a consumer must never need a presence check to tell "the
+  // suppressions file was clean" from "this engine predates the warning".
+  return { ...map, 'suppression-warnings': warnings };
 }
 
 /**
