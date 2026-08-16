@@ -67,9 +67,9 @@ test('findings are stable-sorted by file/path/code/id — attribution pinned (D-
     out.findings.map((f) => [f.code, f.id]),
     [
       ['ref-cycle', 'D-101'],
-      ['index-drift', '500.2'],
-      ['missing-citation', '500.1'],
-      ['orphan', '500.3'],
+      ['index-drift', 'L-000502'],
+      ['missing-citation', 'L-000501'],
+      ['orphan', 'L-000503'],
       ['id-shape', 'BAD'],
       ['index-drift', 'K-330'],
       ['id-range', 'K-999'],
@@ -116,7 +116,7 @@ test('index-drift: catalog row naming a file that does not exist', () => {
 
 test('index-drift: catalog row whose id is not in the file it names', () => {
   const out = runJson(1, '--root', findingsStore);
-  const f = out.findings.find((x) => x.code === 'index-drift' && x.id === '500.2');
+  const f = out.findings.find((x) => x.code === 'index-drift' && x.id === 'L-000502');
   assert.equal(f.file, 'knowledge/_catalog.yaml');
   assert.match(f.message, /not found in/);
 });
@@ -124,14 +124,14 @@ test('index-drift: catalog row whose id is not in the file it names', () => {
 test('orphan: loaded records the store catalog never declares (both stores)', () => {
   const out = runJson(1, '--root', findingsStore);
   const orphans = out.findings.filter((x) => x.code === 'orphan');
-  assert.deepEqual(orphans.map((f) => f.id).sort(), ['500.3', 'K-320']);
+  assert.deepEqual(orphans.map((f) => f.id).sort(), ['K-320', 'L-000503']);
   for (const f of orphans) assert.match(f.message, /catalog/);
 });
 
 test('missing-citation: a leaf citation with an empty source', () => {
   const out = runJson(1, '--root', findingsStore);
   const f = out.findings.find((x) => x.code === 'missing-citation');
-  assert.equal(f.id, '500.1');
+  assert.equal(f.id, 'L-000501');
   assert.equal(f.path, 'citations[0].source');
 });
 

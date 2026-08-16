@@ -115,9 +115,11 @@ this skill makes on top of the schema:
   flagged the classification as contestable. On revision, bump `edition`
   alongside the new `revision` note.
 - **`cross-references`** — `class-elsewhere` and `see-also` must resolve to
-  notations the catalog declares; `including` is standing room — candidate
-  topics parked under the heading, not authoritative, never citable as
-  fact.
+  leaves the catalog declares. Cite the target's accession id (`L-NNNNNN`);
+  a notation still resolves, so stores mid-migration keep loading, but new
+  references should be written in accession form.
+  `including` is standing room — candidate topics parked under the heading,
+  not authoritative, never citable as fact.
 - **`facets`** — the classification block, and every value must be minted in
   its registry (`knowledge/_registries/`): `domain` (the hierarchical subject
   path — every segment minted), `form` (what KIND of knowledge this is),
