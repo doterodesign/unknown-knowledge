@@ -80,6 +80,14 @@
         }
       }
     },
+    "verified": {
+      "$ref": "#/$defs/isoDate",
+      "description": "When this leaf's claim was last checked against its citations — the Time facet's date half (UCS-1150). TOP-LEVEL, alongside `volatility`, not under `facets`: a facet is a governed classification of what the leaf IS, drawn from a registry, while this is a governance fact about the record's own upkeep. Paired with `volatility` to produce a pinned trusted/stale verdict, computed ONLY against an injected `--today` — the engine never reads the wall clock (D-012), and without an injected date the check reports itself skipped rather than passing silently. Same calendar-date pattern as every other date in this schema; a date matching the pattern but naming no real day (2026-02-30) is a structural-validator finding, because an age measured from a day that does not exist is a number nobody's calendar agrees with."
+    },
+    "volatility": {
+      "enum": ["static", "stable", "volatile"],
+      "description": "How fast this leaf's subject moves — the Time facet's rate half (UCS-1150). Governs when the leaf stales: `static` never, `stable` after 365 days, `volatile` after 90, measured from `verified`. A SCHEMA ENUM rather than a registry, which is the opposite of how form/anchor/stage are governed and deliberately so: those registries hold values the engine only compares, so a project may mint its own, whereas each value here is a KEY INTO A PINNED NUMERIC TABLE in engine/lib/time-verdicts.js. A project that minted a fourth class by registry edit would produce leaves with no threshold at all — a governed field silently ungoverned, which is the failure class this engine exists to prevent. Extending the vocabulary means shipping a threshold for it, so it is an engine release with a Decisions entry, and the schema is where that is said. ABSENT means the leaf is EXEMPT from time governance, not that it defaults to a class: the facet arrived in v2 and stores are mid-migration, so defaulting would stale every un-migrated leaf in the store at once on the first run that passed --today. Exempt is reported as its own verdict class, never as `trusted` — a leaf nothing governs has not passed a check."
+    },
     "provenance": {
       "type": "object",
       "additionalProperties": false,

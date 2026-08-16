@@ -34,7 +34,7 @@ test('clean store: every requested active concept is trusted — exit 0', () => 
   const out = runJson('clean', 0, '--concepts', 'K-100,K-110');
   assert.equal(out.ok, true);
   assert.equal(out['store-verdict'], 'trusted');
-  assert.deepEqual(out.counts, { trusted: 2, quarantined: 0, unknown: 0 });
+  assert.deepEqual(out.counts, { trusted: 2, quarantined: 0, unknown: 0, stale: 0 });
   for (const id of ['K-100', 'K-110']) {
     const v = verdictOf(out, id);
     assert.equal(v.verdict, 'trusted');
@@ -48,7 +48,7 @@ test('clean store: every requested active concept is trusted — exit 0', () => 
 test('fixture drift: quarantined verdict for the touching concept, trusted for the rest — exit 1', () => {
   const out = runJson('drift', 1, '--concepts', 'K-100,K-110');
   assert.equal(out.ok, false);
-  assert.deepEqual(out.counts, { trusted: 1, quarantined: 1, unknown: 0 });
+  assert.deepEqual(out.counts, { trusted: 1, quarantined: 1, unknown: 0, stale: 0 });
   const bad = verdictOf(out, 'K-100');
   assert.equal(bad.verdict, 'quarantined');
   const codes = bad.evidence.map((e) => e.code);
@@ -80,7 +80,7 @@ test('store-wide parse failure degrades ALL requested verdicts to unknown — ex
   const out = runJson('malformed', 2, '--concepts', 'K-100,K-110');
   assert.equal(out.ok, false);
   assert.equal(out['store-verdict'], 'unknown');
-  assert.deepEqual(out.counts, { trusted: 0, quarantined: 0, unknown: 2 });
+  assert.deepEqual(out.counts, { trusted: 0, quarantined: 0, unknown: 2, stale: 0 });
   for (const v of out.verdicts) {
     assert.equal(v.verdict, 'unknown');
     assert.match(v.reason, /store-wide failure/);
@@ -233,6 +233,6 @@ test('human mode reports each verdict with concept, status, and next action', ()
 test('human mode on an all-trusted run says so', () => {
   const r = run('--root', fixture('clean'), '--concepts', 'K-100,K-110');
   assert.equal(r.status, 0);
-  assert.match(r.stdout, /2 trusted, 0 quarantined, 0 unknown/);
+  assert.match(r.stdout, /2 trusted, 0 quarantined, 0 stale, 0 unknown/);
   assert.match(r.stdout, /never cached/);
 });

@@ -1,0 +1,8 @@
+# Time facet fixture (UCS-1150) — the concept all seven leaves are entry
+# points for, so one resolver query ranks the whole boundary set at once.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-102
+    title: Freshness boundary
+    file: classes/100-freshness.yaml

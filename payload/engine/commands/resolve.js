@@ -72,6 +72,30 @@
  * demotion and preflight's unknown verdict cannot disagree about which leaves
  * are provisional.
  *
+ * The Time facet adds two more published fields and a second demotion
+ * (UCS-1150):
+ *
+ *   time       the leaf's freshness verdict — {verdict, stale, volatility,
+ *              verified, age, limit, reason}, from the shared
+ *              lib/time-verdicts.js that preflight and the derived layer also
+ *              read. Verdict classes: trusted, stale, skipped (no --today was
+ *              injected), exempt (the leaf declares no volatility), undated
+ *              (it declares one but carries no usable date)
+ *   demotions  every demotion that fired, each with its reason — `stage` for a
+ *              pre-promotion leaf, `time` for a stale one. Never a bare flag:
+ *              a demotion a reader cannot explain is one they cannot act on
+ *
+ * `downranked` is now the UNION of both demotions, so a stale leaf sorts below
+ * the fresh ones through the comparator the draft demotion already used. It is
+ * still a demotion and never a filter — a stale leaf is still the best answer
+ * when it is the only answer, and hiding it would send the reader to invent one.
+ *
+ * `--today <YYYY-MM-DD>` injects the date verdicts are measured against, and
+ * the engine never reads the wall clock (D-012). WITHOUT it, time verdicts
+ * report themselves `skipped` and the output SAYS so on a `time-check` line
+ * present in every payload: a run that computed no freshness verdicts must not
+ * read like one that checked and found everything fresh.
+ *
  * --paths mode — reverse lookup over BOTH pointer families: "which concepts
  * point at these files, and which leaves govern them" (UCS-1151). The join runs
  * over concept source-of-truth pointers and over leaf `paths` declarations, so
@@ -111,9 +135,14 @@ import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
 import { compare } from '../lib/validate-record.js';
+// The Time facet (UCS-1150). The resolver computes no verdict of its own — one
+// implementation, shared with preflight and the derived layer, so a leaf ranked
+// stale here is never verdicted trusted there.
+import { timeCheckStatus, timeVerdict } from '../lib/time-verdicts.js';
+import { isCalendarDate } from '../lib/iso-date.js';
 
-export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
-       node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>]`;
+export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
+       node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]`;
 
 const MATCH_SCORES = Object.freeze({
   'exact-term': 100,
@@ -329,10 +358,16 @@ function relatesNeighborhood(model, record) {
  * are exactly the ones whose whole contract is that they are STABLE keys that
  * may be null.
  */
-function publishLeaf(model, entry) {
+function publishLeaf(model, entry, today) {
   const { file, record: leaf } = entry;
   const stage = leafStage(leaf);
   const provenance = leaf.provenance;
+  // The Time facet's verdict (UCS-1150), computed once per published leaf and
+  // carried on it. Published on EVERY leaf including the exempt and the
+  // skipped ones, for the reason every other v2 field is a stable key: a
+  // consumer must never need a presence check to tell "this leaf is fresh"
+  // from "this run never asked what day it is".
+  const time = timeVerdict(leaf, today);
   return {
     // `notation` and `id` are this command's PUBLISHED field names (§4), so
     // they are spelled here on purpose; the VALUES come from the loader's
@@ -393,7 +428,29 @@ function publishLeaf(model, entry) {
     // stage is pre-promotion is downranked here and verdicted unknown
     // there; reading the two off one predicate is what stops the surfaces
     // disagreeing about which leaves are provisional.
-    downranked: isPrePromotionStatus(stage),
+    //
+    // `downranked` is now the UNION of two independent demotions (UCS-1150):
+    // a pre-promotion stage and a stale time verdict. It stays a single
+    // boolean because it answers a single question — does this leaf sort
+    // below the promoted ones — and every consumer already reads it that way.
+    // WHICH demotions fired is `demotions`, so a leaf that is both draft and
+    // stale reports both rather than having one silently absorb the other.
+    downranked: isPrePromotionStatus(stage) || time.stale,
+    // Never a bare flag: the ticket's demand is that a demotion is never
+    // silent, so the reason travels with it. Empty for a leaf that was not
+    // demoted — a stable key whose value is an empty array, like every other
+    // v2 field that may be absent-but-present.
+    demotions: [
+      ...(isPrePromotionStatus(stage)
+        ? [{ reason: 'stage', detail: `stage "${stage}" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)` }]
+        : []),
+      ...(time.stale ? [{ reason: 'time', detail: time.reason }] : []),
+    ],
+    // The full time verdict (UCS-1150) — verdict class, the declared facts it
+    // was computed from, and the reason. Carried on every leaf so a projection
+    // can show WHY without recomputing, which is what keeps every surface
+    // reading one answer.
+    time,
     file,
     // The one-hop structural neighborhood (UCS-1151) — every leaf the resolver
     // publishes carries it, so "any hit carries its relates neighborhood" is
@@ -418,7 +475,7 @@ function publishLeaf(model, entry) {
 const VIA_DECLARED = 'declared';
 const VIA_TERMS = 'terms';
 
-function knowledgeEntryPoints(model, record, conceptId) {
+function knowledgeEntryPoints(model, record, conceptId, today) {
   const names = new Set(
     [record.term, ...strings(record.aliases)]
       .filter((s) => typeof s === 'string')
@@ -438,15 +495,18 @@ function knowledgeEntryPoints(model, record, conceptId) {
       // `via` records WHICH join fired, because the two are not equally
       // reliable and a reader should not have to guess. The structural edge
       // wins a tie: it is the claim that survives a concept rename.
-      out.push({ via: declared ? VIA_DECLARED : VIA_TERMS, ...publishLeaf(model, entry) });
+      out.push({ via: declared ? VIA_DECLARED : VIA_TERMS, ...publishLeaf(model, entry, today) });
     }
   }
   // Stable by construction: model.leaves is already sorted by leaf id, and a
   // boolean comparator moves only the downranked ones, so ties never reorder.
+  // `downranked` now folds in the stale verdict (UCS-1150), so a stale leaf
+  // sorts below the fresh ones through the SAME comparator the draft demotion
+  // already used — one ordering rule, not two competing ones.
   return out.sort((a, b) => Number(a.downranked) - Number(b.downranked));
 }
 
-function resolveQuery(model, terms) {
+function resolveQuery(model, terms, today) {
   const query = norm(terms.join(' '));
   const queryWords = words(query);
   if (!queryWords.length) throw new UsageError('query terms must contain a word');
@@ -464,7 +524,7 @@ function resolveQuery(model, terms) {
       file,
       'source-of-truth': strings(record['source-of-truth']),
       'confusable-with': confusables(model, record),
-      knowledge: knowledgeEntryPoints(model, record, id),
+      knowledge: knowledgeEntryPoints(model, record, id, today),
     });
   }
   results.sort((a, b) => b.score - a.score || compare(a.id, b.id));
@@ -529,7 +589,7 @@ function folderPointerTest(repoRoot) {
   };
 }
 
-function resolvePaths(model, rawPaths, repoRoot) {
+function resolvePaths(model, rawPaths, repoRoot, today) {
   // Pointers are repo-root-relative (§9.1), so both sides normalize against
   // the repo root — the KK-08 two-root convention (model.root may be the
   // nested unknown-knowledge/ store dir in a seeded repo).
@@ -586,7 +646,7 @@ function resolvePaths(model, rawPaths, repoRoot) {
       }
     }
     concepts.sort((a, b) => compare(a.id, b.id));
-    return { path, concepts, knowledge: governingLeaves(model, path, concepts, leafPointers, governs) };
+    return { path, concepts, knowledge: governingLeaves(model, path, concepts, leafPointers, governs, today) };
   });
 }
 
@@ -641,7 +701,7 @@ function leafPathIndex(model) {
  * downranked, then by identity. An agent reading top-down reaches certified
  * knowledge first, and byte-stability does not depend on store iteration order.
  */
-function governingLeaves(model, path, concepts, leafPointers, governs) {
+function governingLeaves(model, path, concepts, leafPointers, governs, today) {
   const via = new Map(); // leaf identity -> how it was reached
   for (const [pointer, identities] of leafPointers) {
     if (!governs(pointer, path)) continue;
@@ -655,7 +715,7 @@ function governingLeaves(model, path, concepts, leafPointers, governs) {
   const out = [];
   for (const [identity, how] of via) {
     const entry = model.leaves.get(identity);
-    if (entry) out.push({ via: how, ...publishLeaf(model, entry) });
+    if (entry) out.push({ via: how, ...publishLeaf(model, entry, today) });
   }
   return out.sort((a, b) =>
     Number(a.downranked) - Number(b.downranked)
@@ -667,7 +727,7 @@ function governingLeaves(model, path, concepts, leafPointers, governs) {
 function parseArgs(argv) {
   const { options, positionals } = parseFlags(argv, {
     boolean: ['json'],
-    value: ['root'],
+    value: ['root', 'today'],
     repeatable: ['paths'],
     // Query terms arrive as bare arguments; --paths is the reverse lookup.
     positionals: true,
@@ -677,7 +737,17 @@ function parseArgs(argv) {
     root: options.root ?? process.cwd(),
     paths: options.paths ? options.paths.flatMap((v) => v.split(',')) : null,
     terms: positionals,
+    // The injected date the time verdicts are measured against (UCS-1150).
+    // Null is a legitimate answer, not a default to be filled in: without it
+    // the verdicts report themselves skipped, and the output says so.
+    today: options.today ?? null,
   };
+  if (opts.today !== null && !isCalendarDate(opts.today)) {
+    // Same strictness as audit and preflight (UCS-957): `Date.parse` rolls
+    // 2026-02-30 forward to March 2nd, so a leaf's age would be measured from
+    // a day the caller never named — and here that age decides a demotion.
+    throw new UsageError(`--today must be a real calendar date (YYYY-MM-DD), got ${JSON.stringify(opts.today)}`);
+  }
   if (opts.paths && opts.terms.length) {
     throw new UsageError('give either query terms or --paths, not both');
   }
@@ -718,10 +788,37 @@ function renderRelates(leaf, indent = '      ') {
   return lines;
 }
 
+/**
+ * The demotion marker for one published leaf, for the human surface
+ * (UCS-1150).
+ *
+ * Every demotion that fired is named, on the line the ordering already put the
+ * leaf on — a reader skimming top-down sees WHY a leaf sits at the bottom
+ * without a second lookup. A leaf that is both draft and stale shows both: the
+ * two are independent reasons to distrust it, and printing only the first would
+ * hide a stale verdict behind a draft one.
+ */
+const renderDemotions = (leaf) => (leaf.demotions?.length
+  ? `  [${leaf.demotions.map((d) => (d.reason === 'time'
+    ? `stale — ${leaf.time.volatility} verified ${leaf.time.age}d ago > ${leaf.time.limit}d`
+    : `${leaf.stage} — downranked`)).join('; ')}]`
+  : '');
+
+/**
+ * Whether time verdicts ran, printed on every human run (UCS-1150).
+ *
+ * Unconditional, and that is the requirement rather than a stylistic choice: a
+ * run without `--today` computed no freshness verdicts, and a surface that said
+ * nothing would be indistinguishable from one that checked and found everything
+ * fresh. A check that never ran is never a silent pass (PRD §5).
+ */
+const renderTimeCheck = (payload, lines) => lines.push(`time check: ${payload['time-check']}`, '');
+
 function renderQuery(payload) {
   const lines = [];
   const n = payload.results.length;
   lines.push(`resolve "${payload.query}" -> ${n} concept${n === 1 ? '' : 's'}`, '');
+  renderTimeCheck(payload, lines);
   renderHealth(payload['store-health'], lines);
   if (!n) {
     lines.push(
@@ -754,7 +851,7 @@ function renderQuery(payload) {
       // display prose the retired `description` field used to be for; a leaf
       // whose body opens with no prose simply shows no excerpt line.
       for (const k of r.knowledge) {
-        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}${k.downranked ? `  [${k.stage} — downranked]` : ''}  (${k.file})`);
+        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}${renderDemotions(k)}  (${k.file})`);
         if (k.excerpt) lines.push(`      ${k.excerpt}`);
         lines.push(...renderRelates(k));
       }
@@ -768,6 +865,7 @@ function renderPaths(payload) {
   const lines = [];
   const n = payload.paths.length;
   lines.push(`resolve --paths -> ${n} path${n === 1 ? '' : 's'}`, '');
+  renderTimeCheck(payload, lines);
   renderHealth(payload['store-health'], lines);
   for (const { path, concepts, knowledge } of payload.paths) {
     lines.push(path);
@@ -784,7 +882,7 @@ function renderPaths(payload) {
     if (knowledge.length) {
       lines.push('  governing knowledge:');
       for (const k of knowledge) {
-        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}  [via ${k.via}]${k.downranked ? `  [${k.stage} — downranked]` : ''}  (${k.file})`);
+        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}  [via ${k.via}]${renderDemotions(k)}  (${k.file})`);
         if (k.excerpt) lines.push(`      ${k.excerpt}`);
         lines.push(...renderRelates(k));
       }
@@ -815,9 +913,21 @@ export function main(argv) {
     }
 
     const health = healthSummary(storeHealth(model));
+    // `time-check` is on EVERY payload, in both modes, whether or not --today
+    // was passed (UCS-1150). A run that computed no verdicts must say so in
+    // its output — otherwise it is indistinguishable from one that checked and
+    // found everything fresh, which is a check that never ran wearing a clean
+    // result (PRD §5).
+    const timeCheck = timeCheckStatus(opts.today);
     const payload = opts.paths
-      ? { mode: 'paths', 'store-health': health, paths: resolvePaths(model, opts.paths, opts.root) }
-      : { mode: 'query', 'store-health': health, ...resolveQuery(model, opts.terms) };
+      ? {
+        mode: 'paths', 'time-check': timeCheck, 'store-health': health,
+        paths: resolvePaths(model, opts.paths, opts.root, opts.today),
+      }
+      : {
+        mode: 'query', 'time-check': timeCheck, 'store-health': health,
+        ...resolveQuery(model, opts.terms, opts.today),
+      };
 
     const lines = opts.json
       ? [JSON.stringify(payload, null, 2)]

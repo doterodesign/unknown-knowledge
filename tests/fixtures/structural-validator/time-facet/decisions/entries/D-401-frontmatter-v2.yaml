@@ -1,0 +1,17 @@
+schema-version: 1
+entries:
+  - id: D-401
+    title: Frontmatter v2 vocabularies
+    category: governance
+    status: accepted
+    date: "2026-08-16"
+    deciders: [dimitri]
+    context: >
+      The v2 leaf record draws every classification field from a registry.
+      This fixture's material — an odds-feed reference leaf and a draft
+      latency constraint — supplies the warrant for each value minted below.
+    decision: >
+      Mint the domain, form, anchor, stage, operations, and authority-tier
+      values this store's leaves actually use. Adopt D-003's three truth
+      anchors and the kit's promotion stages verbatim.
+    supersedes: []

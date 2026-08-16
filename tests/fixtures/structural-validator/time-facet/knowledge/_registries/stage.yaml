@@ -1,0 +1,29 @@
+# Frontmatter v2 fixture (UCS-1149) — the stage registry.
+#
+# `draft` and `proposed` are the two values the SHARED pre-promotion predicate
+# recognizes (isPrePromotionStatus). A leaf at either is downranked by the
+# resolver and verdicted unknown by preflight — one predicate, so the two
+# surfaces cannot disagree.
+schema-version: 1
+store: knowledge
+registry: stage
+values:
+  - value: draft
+    gloss: Written but not promoted — nothing certifies the claim yet.
+    warrant: L-000213 is a draft; the interview it rests on has not been checked back.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: proposed
+    gloss: Put forward for promotion and awaiting a moderator.
+    warrant: The second pre-promotion stage, matching the concept lifecycle.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: verified
+    gloss: A moderator promoted it — the citations were checked and hold.
+    warrant: L-000117 is promoted; its vendor citation was checked.
+    decision: D-401
+    minted: "2026-08-16"
+# No `deprecated` stage: the concept lifecycle has one with real semantics
+# (§3.5 demotes its findings to warnings), but no leaf surface implements the
+# matching demotion, so the term would rank a retired leaf above a draft one and
+# read as `trusted`. Retiring a leaf is a later ticket, with its semantics.

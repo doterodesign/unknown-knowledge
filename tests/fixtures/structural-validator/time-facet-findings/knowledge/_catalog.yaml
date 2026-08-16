@@ -1,0 +1,19 @@
+# Time facet findings fixture (UCS-1150) — the two ways a leaf's `verified`
+# date is wrong, one leaf each:
+#
+#   L-000401  volatile, no date          -> missing-verified
+#   L-000402  stable, "2026-02-30"       -> malformed-verified
+#
+# Both findings are DATE-FREE: they ask whether the leaf can be judged, never
+# whether it is stale. So this fixture's finding set is identical on every run
+# forever, whatever day it is — which is what keeps baseline diffing intact
+# (D-012).
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000401
+    title: Volatile knowledge with no verified date
+    file: freshness/401.1-volatile-missing-verified.md
+  - id: L-000402
+    title: Knowledge verified on a day that does not exist
+    file: freshness/402.1-malformed-verified.md
