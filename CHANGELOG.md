@@ -15,6 +15,62 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Phoenix events (UCS-1154): `phoenix.js`, the ninth engine surface and the
+  FIRST that mutates a store. A phoenix event re-files a drifted subtree in bulk
+  from a leaf-granular mapping, bumps the `edition` of every leaf it moves — the
+  only thing that ever bumps it in v2 — and lands as an ordinary PR: a
+  reviewable two-line-per-leaf diff, not a migration project.
+- The mapping is leaf-granular because a class-level rule cannot express a
+  SPLIT: when one class's material divides across two successors, only a
+  per-accession table can say which leaf went where, and each row's `why` is
+  what a reviewer reads. Mappings live at `knowledge/_phoenix/<event>.yaml`
+  (new `phoenix-event` record kind) and are RETAINED in the store after the
+  event, so the governance is checkable from the working tree with no git
+  history.
+- Citations are untouched BY CONSTRUCTION. Identity is the accession id and an
+  event never changes one, so nothing that cites a leaf chases its
+  reclassification. The rewriter replaces individual frontmatter lines and
+  copies every other byte through — field order, comments, quoting, citations
+  and body survive because they are never touched. A committed golden
+  before/after pair (`tests/fixtures/phoenix/split{,-after}/`) shows the diff is
+  exactly two lines per leaf.
+- All-or-nothing by design: the whole mapping is planned against the whole store
+  BEFORE a byte is written, and any finding refuses the entire event. A mapping
+  that misses a leaf in its declared scope, names an unknown accession, or moves
+  a leaf to an unminted value is exit 1 (findings — the input has defects its
+  author fixes), never a partial apply. `--check` is the default verb; writing
+  takes an explicit `--apply`.
+- The rewriter matches on INDENTATION as well as name, at every level: a
+  top-level field is matched only at column 0 and a nested one only at its own
+  parent's indent. Without that, a `citations:` block containing an `edition:`
+  key shadowed the leaf's own edition — the rewriter edited the citation and
+  left the real field alone, which is precisely the corruption the by-
+  construction claim rules out.
+- Facet values are written through a YAML round-trip check, so a value like
+  `010` or `2024` is quoted rather than reloading as a number and ceasing to
+  equal the minted string it was validated against.
+- A row whose `to` is where the leaf already sits is refused (`noop-row`), and a
+  move with no `why` is refused (`unexplained-move`). The first makes "`to`
+  present ⇔ the leaf moved" true by construction, which is what lets the
+  applier and the validator agree without either consulting the other; the
+  second is the rationale a split's whole review rests on.
+- A write that fails part-way through `--apply` exits 2 and names every file it
+  may have changed, in order, flagging the one the write threw on —
+  `writeFileSync` can truncate a file and then fail, so the file whose write did
+  not complete is the likeliest of all of them to need reverting. Exit 2 rather
+  than 1, because the event did not finish and exit 1 would claim a clean
+  refusal with nothing written.
+- A steward's trailing `# comment` on a rewritten line is carried across,
+  alignment included, rather than deleted with the value it annotates. A line
+  whose value could hide a `#` inside quotes is refused at the gate instead of
+  guessed at.
+- `validate.js` gains `unaccounted-edition`: a leaf's edition must EQUAL
+  `1 + the retained phoenix events that moved it`. An equality rather than a
+  floor, so a hand-typed number, an edition that lags its event, and a mapping
+  landed without being applied are all findings.
+- `payload/templates/decisions/phoenix-event.yaml`, manifest-listed: the
+  Decisions-entry template a steward copies to record the event that sanctions a
+  bulk re-taxonomy.
 - Document coverage map (UCS-1156): `resolve --doc <document>` makes a
   document-sized request processable. `resolve` is now the ONE ENTRY POINT for
   three input shapes — a query, `--paths`, and a document — and the pipeline is

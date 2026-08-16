@@ -102,6 +102,10 @@ import { ID_GRAMMARS, idPattern } from '../lib/id-grammars.js';
 // surface's staleness verdict must agree about which fields those are.
 import { VERIFIED_FIELD, VOLATILITY_LIMITS, leafVolatility } from '../lib/time-verdicts.js';
 import { isCalendarDate } from '../lib/iso-date.js';
+// Phoenix events own the `edition` field: they are the only thing that bumps it
+// (UCS-1154), so the check that every bump was sanctioned reads its rule from
+// the same module that applies them.
+import { EDITION_FIELD, FIRST_EDITION, unaccountedEditions } from '../lib/phoenix.js';
 
 export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <dir>] [--concepts <ids>]';
 
@@ -110,7 +114,7 @@ export const CHECKS = Object.freeze([
   'id-range', 'id-shape', 'index-drift', 'malformed-verified', 'missing-authority',
   'missing-citation', 'missing-path', 'missing-registry', 'missing-verified',
   'orphan', 'ref-cycle', 'registry-shape-mismatch', 'suppressed-value',
-  'unminted-segment', 'unregistered-value',
+  'unaccounted-edition', 'unminted-segment', 'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -904,6 +908,38 @@ function checkVerifiedDates(model, push) {
 }
 
 /** Decision supersedes chains must be acyclic (§3.3). One finding per cycle. */
+/**
+ * Every edition bump must be sanctioned by a phoenix event (UCS-1154).
+ *
+ * `edition` is not an ordinary field an author may increment. A phoenix event
+ * is THE ONLY thing that bumps it in v2, so a leaf at edition > 1 is making a
+ * claim — "a governed bulk re-taxonomy moved me" — and this check holds it to
+ * that claim. Without it the field would be a number anyone could type, and
+ * "the edition tells you a phoenix event happened" would be a convention rather
+ * than a fact.
+ *
+ * Checkable from the WORKING TREE ALONE, which is why the event mappings are
+ * retained in `knowledge/_phoenix/` rather than living only in the PR that
+ * applied them. The validator sees a fresh clone with no git history, and a
+ * governance rule it could only verify by reading commits is a rule it cannot
+ * verify at all.
+ *
+ * A carried-forward row does not count: it records that a leaf was considered
+ * and deliberately left alone, so it cannot also be the warrant for an edition
+ * that says the leaf changed.
+ */
+function checkEditions(model, push) {
+  for (const { id, file, edition, events, expected } of unaccountedEditions(model)) {
+    const sanctioned = events.length
+      ? `${events.length} retained phoenix event(s) move it (${events.join(', ')}), so it should be at ${expected}`
+      : `no retained phoenix event moves it, so it should be at ${FIRST_EDITION}`;
+    push({
+      severity: 'error', code: 'unaccounted-edition', id, file, path: EDITION_FIELD,
+      message: `leaf "${id}" is at ${EDITION_FIELD} ${edition}, but ${sanctioned} — an edition COUNTS the governed re-taxonomies that moved a leaf, and a phoenix event is the only thing that bumps it, so a number that matches no mapping is one nobody sanctioned (UCS-1154)`,
+    });
+  }
+}
+
 function checkDecisionCycles(model, push) {
   const seen = new Set(); // canonical cycle keys — each loop reported once
   const color = new Map(); // 0/undefined = white, 1 = on stack, 2 = done
@@ -961,6 +997,7 @@ export function runChecks(model, repoRoot = model.root) {
   checkRegistryMembership(model, push);
   checkCitations(model, push);
   checkVerifiedDates(model, push);
+  checkEditions(model, push);
   checkDecisionCycles(model, push);
   findings.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code) || compare(a.id, b.id));

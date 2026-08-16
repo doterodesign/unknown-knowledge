@@ -1,0 +1,33 @@
+schema-version: 1
+entries:
+  - id: D-420
+    title: "Phoenix: split odds-feed into feeds/* (edition 2)"
+    category: governance
+    status: accepted
+    date: "2026-08-17"
+    deciders: [dimitri]
+    context: >
+      `sportsbook/odds-feed` accumulated two kinds of material that no longer
+      share a reader: how feed data gets IN (provider quirks, ingest latency)
+      and what happens to a market once it settles. The settlement material
+      landed there because it arrived with a feed integration, not because
+      anyone judged it to be feed-ingest knowledge. Someone looking for the
+      rounding rule had to know it was filed under odds-feed, and someone
+      onboarding a provider read past settlement material to reach it. The
+      class had drifted from the material it holds — the case a phoenix event
+      exists for.
+    decision: >
+      Split `sportsbook/odds-feed` into `feeds/ingest` and `feeds/settlement`.
+      Apply it as phoenix event P-001, whose leaf-granular mapping
+      (knowledge/_phoenix/P-001.yaml) records where each leaf went and why. A
+      class-level rename could not express this: one predecessor's leaves
+      divide across two successors, so no rule over the class says which leaf
+      goes where — only a per-accession table does.
+    consequences: >
+      Each moved leaf's edition goes 1 -> 2. No accession id changes, so every
+      citation into these leaves stays valid across the event and nothing that
+      cites them needs editing — the whole point of keying identity to the
+      accession rather than to the shelf.
+    supersedes: []
+    relates-to:
+      leaves: [L-000117, L-000133, L-000213]

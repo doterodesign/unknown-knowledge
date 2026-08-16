@@ -1,0 +1,37 @@
+# Phoenix event P-001 (UCS-1154) — the prototype's demo, as a store artifact.
+#
+# `sportsbook/odds-feed` SPLITS: its material divides across `feeds/ingest` and
+# `feeds/settlement`. That is why this table is leaf-granular. A class-level
+# rename could express "odds-feed becomes feeds/ingest" and would then be wrong
+# about L-000133, which is settlement material that was filed under odds-feed
+# because it arrived with a feed integration — the drift this event exists to
+# fix. No rule over the class can say which leaf goes where; only the rows can,
+# and the `why` on each row is what a reviewer actually reads.
+#
+# This file is RETAINED in the store after the event applies. It is what lets
+# the structural validator confirm, from the working tree alone, that every
+# edition above 1 was sanctioned by an event rather than typed by hand.
+schema-version: 1
+event: P-001
+title: Split odds-feed into feeds/ingest and feeds/settlement
+decision: D-420
+applied: "2026-08-17"
+scope:
+  facet: facets.domain
+  values:
+    - sportsbook/odds-feed
+leaves:
+  - id: L-000117
+    to: feeds/ingest
+    why: Provider quirks are ingest material — they describe the wire, not the book.
+  - id: L-000213
+    to: feeds/ingest
+    why: >-
+      The latency budget is spent between the provider's wire and our priced
+      book, which is the ingest path end to end.
+  - id: L-000133
+    to: feeds/settlement
+    why: >-
+      The other side of the split: rounding is applied when a market settles,
+      long after ingest is done. It was filed under odds-feed only because it
+      arrived with a feed integration, which is the misfiling this event fixes.

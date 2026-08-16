@@ -39,7 +39,7 @@ test('clean store: exit 0, zero findings, every check class reported as run', ()
     'id-range', 'id-shape', 'index-drift', 'malformed-verified', 'missing-authority',
     'missing-citation', 'missing-path', 'missing-registry', 'missing-verified',
     'orphan', 'ref-cycle', 'registry-shape-mismatch', 'suppressed-value',
-    'unminted-segment', 'unregistered-value',
+    'unaccounted-edition', 'unminted-segment', 'unregistered-value',
   ]);
 });
 

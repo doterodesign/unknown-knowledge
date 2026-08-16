@@ -1,0 +1,48 @@
+# Phoenix fixture (UCS-1154) — the domains registry ACROSS a phoenix event.
+#
+# It carries the old classes and the new ones at once, which is the honest
+# state of a store mid-event: the successors must be minted before the mapping
+# may move anything to them (the engine refuses an unminted destination), and
+# the predecessor stays listed until the event that retires it has landed.
+# Suppressing `sportsbook/odds-feed` here would refuse the very leaves the
+# event is about to move off it.
+#
+# All three leaves sit under `sportsbook/odds-feed`, which is what makes P-001
+# a genuine SPLIT rather than a rename: one predecessor, two successors, and
+# only the mapping's rows can say which leaf goes to which.
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: sportsbook
+    gloss: The sportsbook vertical.
+    warrant: L-000117, L-000133 and L-000213 all document sportsbook material.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: sportsbook/odds-feed
+    gloss: Odds ingestion and the providers that supply it.
+    warrant: >-
+      L-000117 states provider quirks, L-000213 the latency budget, and
+      L-000133 the settlement rounding rule that arrived with a feed
+      integration — the drift D-420 splits apart.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: feeds
+    gloss: Feed material, independent of the vertical consuming it.
+    warrant: >-
+      D-420 found the odds-feed class had drifted: it held ingestion material
+      and settlement material that no longer shared a reader. This is the
+      parent the split needs, and a child may not hang off an unminted parent.
+    decision: D-420
+    minted: "2026-08-17"
+  - value: feeds/ingest
+    gloss: Getting feed data in — providers, pipelines, and their quirks.
+    warrant: L-000117 (provider quirks) and L-000213 (ingest latency budget).
+    decision: D-420
+    minted: "2026-08-17"
+  - value: feeds/settlement
+    gloss: Turning settled feed data into settled markets.
+    warrant: L-000133 (banker's rounding at settlement), split out of odds-feed.
+    decision: D-420
+    minted: "2026-08-17"

@@ -99,6 +99,45 @@ the final `D-NNN` within range, and hold the append-mostly line — status
 transitions never rewrite `context`/`decision`, and supersession chains must
 resolve and stay acyclic.
 
+## Phoenix events — re-filing a drifted subtree
+
+Sometimes the material is fine and the shelf is wrong: one class holds two kinds
+of thing that no longer share a reader, or a name stopped meaning what it says.
+A phoenix event fixes that in bulk, under review, without breaking a single
+citation.
+
+It is a PR like any other, carrying four things: the Decisions entry that
+sanctions it (copy `templates/decisions/phoenix-event.yaml`), the registry
+mintings the new values need, the mapping at `knowledge/_phoenix/<event>.yaml`,
+and the leaf rewrites — which you never make by hand:
+
+```
+node unknown-knowledge/engine/phoenix.js P-001 --root .            # dry run: plan it, write nothing
+node unknown-knowledge/engine/phoenix.js P-001 --root . --apply    # write, only if the plan is clean
+```
+
+What to check when you review one:
+
+- **The mapping is complete.** Every leaf in the declared scope must be mapped,
+  split, or explicitly carried forward. The engine refuses the event and names
+  the leaf otherwise — it will not half-apply, so a rejected event leaves the
+  store exactly as it found it.
+- **Each row's `why` earns its move.** On a split this is the whole substance:
+  the class-level rule cannot say why L-000117 went to ingest and its neighbour
+  went to settlement, so the rows have to.
+- **The diff is two lines per leaf.** `edition` and the one facet. If a leaf's
+  citations, body, or `id` appear in the diff, something is wrong — the engine
+  rewrites single frontmatter lines and copies every other byte through.
+- **The mapping stays.** Do not delete it after the event lands. It is what lets
+  the validator confirm every edition above 1 was sanctioned, reading only the
+  working tree. A leaf's edition must equal `1 + the events that moved it`, and
+  `validate.js` reports `unaccounted-edition` when it does not.
+
+Identity never moves. Accession ids are untouched, so every citation into the
+subtree — decisions entries, catalog rows, leaf cross-references — stays valid
+across the event. If a proposal needs an id renamed or reissued, it is not a
+phoenix event.
+
 ## Findings are lossy, by design
 
 Keep the corroboration math honest by knowing what the log is not:
