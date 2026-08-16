@@ -5,7 +5,7 @@ notation: "700.1"
 domain: widgets
 heading: Widget registry rules
 cross-references:
-  see-also: [L-000102, L-001501]
+  see-also: [L-000102, L-010501]
 citations:
   - source: Widget registry operating manual 2026
     accessed: "2026-07-07"

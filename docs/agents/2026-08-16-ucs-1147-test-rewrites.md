@@ -189,9 +189,17 @@ a separate `prefix-sharding.test.js` would have split one argument across two fi
 2. **"a notation-form value FAILS in every position a leaf citation is legal"** — all three
    citation sites at the schema seam: leaf `cross-references.see-also[0]`, decision
    `relates-to.leaves[0]`, log-fragment `consulted.leaves[0]`. Each yields exactly one
-   `pattern-mismatch` quoting `ID_GRAMMARS['leaf-ref'].pattern`. Then asserts the catalog
-   `id-shape` finding's message includes `ACCESSION_MIGRATION_HINT` verbatim — the one
-   place the engine tells an author what to do instead of only what is wrong.
+   `pattern-mismatch` quoting `ID_GRAMMARS['leaf-ref'].hint`, which names the migration.
+
+   CORRECTION (superseded within the same ticket): this report originally said the
+   `pattern-mismatch` message quoted the raw pattern, and that the catalog `id-shape`
+   finding was "the one place the engine tells an author what to do instead of only what
+   is wrong". Both were true when written and are no longer. The follow-up bound each id
+   grammar's HINT alongside its pattern in `bindIdGrammars`, so `pattern-mismatch` quotes
+   the hint too (replacing the regex), and `missing-required` on a leaf's `id` quotes the
+   accession grammar's hint via `requiredHint()`. Three surfaces name the migration now,
+   not one: the catalog `id-shape` finding, any `pattern-mismatch` on a leaf-ref, and the
+   `missing-required` an unaccessioned leaf produces.
 3. **"a notation-form citation is refused at the CLI seam, in every store position"** —
    copies the sharded fixture, rewrites exactly one accession-form citation back to the
    notation its target still carries as a label (once in a leaf, once in a decision), and

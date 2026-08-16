@@ -122,11 +122,17 @@ this skill makes on top of the schema:
   unquoted it parses as a number) recording where the leaf sat in an older
   tree, kept only so a reader who knows that tree still recognizes the leaf.
   It is not an identity: nothing indexes by it and no citation resolves
-  through it. New leaves need not carry one. Reclassifying a leaf is an
-  edit to `facets.domain`, not a new leaf: a move is a new leaf plus a
+  through it. New leaves need not carry one.
+
+  Two things that used to be one, now that identity is opaque. **Refiling**
+  a leaf whose content still stands — a better domain, a different shard
+  directory — is an edit in place: change `facets.domain` or the file's
+  location, leave `id` alone, and every citation keeps resolving.
+  **Replacing** a leaf's content is still a new leaf plus a
   `class-elsewhere` redirect from the old one, never a rename in place
-  (§3.5), only when the CONTENT is genuinely being replaced rather than
-  refiled.
+  (§3.5) — a new claim earns a new identity, so readers holding the old
+  citation land on the redirect rather than silently reading something
+  else.
 - **`notes`** — every leaf carries a `scope` note (what it covers and
   pointedly does not) and every write appends a `revision` note with
   `date` (initial entry, or what changed); add `class-here` when step 1

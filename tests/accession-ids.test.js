@@ -497,6 +497,46 @@ test('a non-string accession publishes null, and indexes the leaf nowhere', () =
   );
 });
 
+test('a leaf whose id is notation-form takes no identity, so the notation still refuses', () => {
+  // REGRESSION (code review of UCS-1147). `leafIdentity` tested the accession
+  // for being a STRING, not for matching the accession grammar, so a leaf
+  // carrying `id: "700.2"` took identity under its own notation — and because
+  // the leaf index is what ref resolution consults, a notation-form citation of
+  // it RESOLVED. The schema reported both records, and the citation worked
+  // anyway: two mechanisms disagreeing about whether a notation is a citation,
+  // which is exactly the dual-shape contract this ticket retired.
+  //
+  // The malformed id is a string, so it passes every `typeof` guard; only the
+  // grammar catches it. That is why the check has to be the grammar.
+  withStore({
+    'a.md': leafFile({ heading: 'Malformed', notation: '700.2', accession: '"700.2"' }),
+    'b.md': leafFile({ heading: 'Citer', notation: '700.1', accession: 'L-000101', seeAlso: '"700.2"' }),
+  }, (model) => {
+    assert.deepEqual([...model.leaves.keys()], ['L-000101'],
+      'a leaf whose id is not accession-shaped holds no identity to be keyed under');
+
+    const cite = model.refs.find((r) => r.to === '700.2');
+    assert.equal(cite.resolved, false,
+      'the notation resolves to nothing — an unapproved id must not become a citable spelling');
+
+    // Each defect is reported against the file whose author must edit it, and
+    // nothing is reported about the leaf that failed to load — no cascade of
+    // secondaries about a record that simply is not there.
+    //
+    // The citing leaf earns TWO findings, and both belong: the shape check says
+    // a notation is not a legal citation, and the resolution check says this
+    // one reaches no leaf. They are independent mechanisms, so a store where a
+    // notation happened to be well-formed-but-absent would still get the
+    // second — muting either would leave a way for one to pass alone.
+    const codes = model.diagnostics.map((d) => [d.code, d.file.split('/').pop(), d.path]);
+    assert.deepEqual(codes.sort(), [
+      ['pattern-mismatch', 'a.md', 'id'],
+      ['pattern-mismatch', 'b.md', 'cross-references.see-also[0]'],
+      ['unresolved-ref', 'b.md', 'cross-references.see-also[0]'],
+    ]);
+  });
+});
+
 // ------------------- AC5: one shape cites, and every other shape is refused
 
 test('cross-references, relates-to and catalog rows name leaves by accession', () => {
@@ -599,7 +639,7 @@ test('a notation-form citation is refused at the CLI seam, in every store positi
   // target EXISTS; only the spelling is retired. That is what makes these
   // findings about the contract rather than about a typo.
   const cases = [
-    ['knowledge/L-01/L-001501-widget-audit.md', 'see-also: [L-000101]', 'see-also: ["700.1"]',
+    ['knowledge/L-01/L-010501-widget-audit.md', 'see-also: [L-000101]', 'see-also: ["700.1"]',
       'cross-references.see-also[0]'],
     ['decisions/entries/D-302-prefix-sharding.yaml', 'leaves: [L-000101]', 'leaves: ["700.1"]',
       'entries[0].relates-to.leaves[0]'],
@@ -730,7 +770,7 @@ test('log-fragment leaf refs take accessions, and only accessions', () => {
 // leaves however it likes — and may re-file them later without touching a
 // single reference. The `sharded` fixture is that claim as data: leaves live
 // under knowledge/L-00/ and knowledge/L-01/ by accession prefix, a fanout device
-// with no meaning, and L-000101 and L-001501 cite each other ACROSS shards.
+// with no meaning, and L-000101 and L-010501 cite each other ACROSS shards.
 
 test('a store sharded by accession prefix loads, validates and resolves clean', () => {
   // The precondition for the move golden below, and a claim in its own right:
@@ -740,12 +780,12 @@ test('a store sharded by accession prefix loads, validates and resolves clean', 
   const model = loadStores(SHARDED);
   assert.deepEqual(model.diagnostics, [], 'a shard directory is just a directory');
   assert.equal(model.ok, true);
-  assert.deepEqual([...model.leaves.keys()], ['L-000101', 'L-000102', 'L-001501']);
+  assert.deepEqual([...model.leaves.keys()], ['L-000101', 'L-000102', 'L-010501']);
   // The cross-shard citations resolve exactly as the same-shard one does.
   assert.deepEqual(
     model.refs.filter((r) => r.type.startsWith('cross-references'))
       .map((r) => [r.from, r.to, r.resolved]),
-    [['L-000101', 'L-000102', true], ['L-000101', 'L-001501', true], ['L-001501', 'L-000101', true]],
+    [['L-000101', 'L-000102', true], ['L-000101', 'L-010501', true], ['L-010501', 'L-000101', true]],
   );
 
   const validated = runCli('validate.js', '--root', SHARDED, '--json');
@@ -758,7 +798,7 @@ test('a store sharded by accession prefix loads, validates and resolves clean', 
   assert.equal(resolved.status, 0, `the sharded store must resolve clean:\n${resolved.stderr}`);
   const out = JSON.parse(resolved.stdout);
   assert.equal(out['store-health'].ok, true);
-  assert.deepEqual(out.results[0].knowledge.map((k) => k.id), ['L-000101', 'L-000102', 'L-001501'],
+  assert.deepEqual(out.results[0].knowledge.map((k) => k.id), ['L-000101', 'L-000102', 'L-010501'],
     'all three leaves reach the concept, whichever shard they are filed under');
 });
 
@@ -797,7 +837,7 @@ test('moving a leaf between shards changes its file field and nothing else', () 
 
     // Nothing else was touched. Asserted rather than merely intended: a test
     // that silently rewrote a citation would prove the opposite of its claim.
-    for (const leaf of ['L-00/L-000101-widget-registry.md', 'L-01/L-001501-widget-audit.md']) {
+    for (const leaf of ['L-00/L-000101-widget-registry.md', 'L-01/L-010501-widget-audit.md']) {
       assert.equal(
         readFileSync(join(root, 'knowledge', leaf), 'utf8'),
         readFileSync(join(SHARDED, 'knowledge', leaf), 'utf8'),
@@ -825,7 +865,7 @@ test('moving a leaf between shards changes its file field and nothing else', () 
     assert.deepEqual(ids(after), [
       ['L-000101', '700.1', 'Widget registry rules'],
       ['L-000102', '700.2', 'Widget retirement rules'],
-      ['L-001501', '701.5', 'Widget audit schedule'],
+      ['L-010501', '701.5', 'Widget audit schedule'],
     ]);
 
     // The `file` field DID move, and tracks where the bytes actually are —

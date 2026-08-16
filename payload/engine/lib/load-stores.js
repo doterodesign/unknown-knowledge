@@ -97,6 +97,10 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { load, YAMLException } from 'js-yaml';
 import { validateStoreFile, ERROR_CODES, compare } from './validate-record.js';
+// The accession grammar, from the one module that owns it (UCS-1142) — the same
+// source the schemas bind to, so what the loader will INDEX and what the
+// validator will ACCEPT can never be two different notions of a leaf id.
+import { idPattern } from './id-grammars.js';
 import { UsageError } from './usage-error.js';
 
 export const SEVERITIES = Object.freeze(['error', 'warning']);
@@ -142,16 +146,30 @@ export const LEAF_ACCESSION_FIELD = 'id';
  * Falling back to the notation would instead index the leaf under a spelling
  * nothing may cite — present in every enumeration, reachable by no reference.
  *
- * Non-string ids are dropped rather than coerced — KK-02 already diagnoses the
- * wrong type, and a coerced key would index a leaf under a spelling no author
- * ever wrote.
+ * The id is checked against the ACCESSION GRAMMAR, not merely for being a
+ * string, and that is load-bearing rather than defensive. The index is what ref
+ * resolution consults, so whatever key a leaf lands under becomes a spelling
+ * that RESOLVES. A leaf carrying `id: "700.2"` would otherwise take identity
+ * under its own notation and quietly restore the dual-shape contract this
+ * ticket retired: the schema would report both records, and the citation would
+ * resolve anyway — the two mechanisms disagreeing about whether a notation is a
+ * citation. Refusing the malformed id here keeps one answer. The defect is
+ * already reported (a `pattern-mismatch` on the leaf's `id`, and `id-shape` on
+ * any catalog row naming it), so this adds no finding; it only declines to
+ * build an index entry on top of a value no check approved.
+ *
+ * Non-string and malformed ids are dropped rather than coerced — KK-02 already
+ * diagnoses both, and a coerced key would index a leaf under a spelling no
+ * author ever wrote.
  *
  * @param {object} record a parsed leaf front matter
  * @returns {string|undefined} the leaf's identity, or undefined when it mints none
  */
 export function leafIdentity(record) {
   const accession = record[LEAF_ACCESSION_FIELD];
-  return typeof accession === 'string' ? accession : undefined;
+  return typeof accession === 'string' && idPattern('accessions').test(accession)
+    ? accession
+    : undefined;
 }
 
 /**

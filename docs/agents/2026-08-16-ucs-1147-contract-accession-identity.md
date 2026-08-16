@@ -211,6 +211,49 @@ the knowledge-leaf schema's descriptions.
 - `npm run lint` — 192 files, 0 failures
 - `npm run acceptance` — OK, all asserted criteria (A1–A4, A6) pass
 
+## Code-review follow-up (second commit)
+
+**A real hole in the contract, found by review.** `leafIdentity` tested the
+accession for being a STRING, not for matching the accession grammar. So a leaf
+carrying `id: "700.2"` took identity under its own notation, and because the leaf
+index is what ref resolution consults, a notation-form citation of it **resolved**.
+The schema reported both records and the citation worked anyway — two mechanisms
+disagreeing about whether a notation is a citation, which is the dual-shape
+contract this ticket exists to retire. Reproduced before fixing, fixed by gating
+`leafIdentity` on `idPattern('accessions')`, and pinned by a regression test that
+was verified to fail without the guard.
+
+The fix adds no finding: the defect is already reported as a `pattern-mismatch`
+on the leaf's `id`, plus `id-shape` on any catalog row naming it. It only
+declines to build an index entry on a value no check approved.
+
+**The residual path, stated honestly.** A notation-form *catalog row* still makes
+that string resolvable, through `ctx.declared[store]` — the documented
+"catalog-declared ids resolve" rule that exists so pending imports work. That set
+is generic across all three stores and is not leaf-identity code; narrowing it
+would teach a store-agnostic mechanism about leaf grammar. The malformed row is
+already caught by `id-shape`, so it is reported, not silent. Left as is
+deliberately rather than expanded into this ticket's scope.
+
+**Shard rule violated by my own fixture.** `L-001501`'s numeric part is `001501`,
+whose first two digits are `00` — so by the documented rule it belonged in
+`L-00/`, not the `L-01/` I filed it under. I picked the id to get a second shard
+and mis-derived the prefix. Renumbered to `L-010501`, which genuinely shards to
+`L-01`, keeping the cross-shard citation the fixture exists to demonstrate. All
+three leaves now verified against the rule programmatically.
+
+**Docs.** kb-build.md's notation bullet fused refiling and replacing into one
+contradictory clause; split into two named cases — refiling a leaf whose content
+stands is an edit in place with `id` untouched, replacing content is still a new
+leaf plus redirect. The test-rewrites report's claim that the catalog `id-shape`
+finding is the only surface naming the migration was true when written and stale
+after the hint-binding change; corrected in place, with the supersession noted
+rather than silently rewritten.
+
+Declined: the MD041 "first line should be a top-level heading" finding on the
+accessioned fixture leaf. Fixture leaf bodies carry no H1 by standing convention —
+the frontmatter `heading` is the title — and no leaf in the repo does.
+
 ## Follow-on worth flagging
 
 `unresolved-ref` still reports a notation-form citation with the generic "does
