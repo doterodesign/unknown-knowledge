@@ -1,0 +1,42 @@
+# Query-decomposition fixture (UCS-1152) — the operations registry, the VERB
+# vocabulary the query's verb axis joins through.
+#
+# `add-sport` is the prototype session's central case: the ask "add a new sport
+# (lacrosse) for the new jersey launch" names no concept, and the leaf that
+# answers it is reached because it DECLARED this operation. That is the join
+# this registry exists to make possible.
+#
+# `retire-sport` is declared only by 600.4, which declares add-sport too — so a
+# leaf carrying MORE THAN ONE operation exists, and the published `operations`
+# array has an order that must not depend on how it was authored.
+#
+# `void-bet` is SUPPRESSED: a value a steward explicitly refused. It must never
+# join an ask, and it must not be treated as unheard-of either.
+schema-version: 1
+store: knowledge
+registry: operations
+values:
+  - value: add-sport
+    gloss: Enter a new sport into the sportsbook registry.
+    warrant: 600.1 documents the sport registration recipe.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: settle-bet
+    gloss: Settle a placed bet once its event resolves.
+    warrant: 610.1 documents banker's rounding at settlement; 600.2 and 600.3
+      state the jurisdiction constraints settling answers to.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: retire-sport
+    gloss: Withdraw a sport from the registry.
+    warrant: 600.4's checklist covers the withdrawal pass as well as the launch
+      one, and declares this operation alongside add-sport.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: void-bet
+    gloss: Void a placed bet before settlement.
+    warrant: 600.2 states the refund basis for voided bets, so the term was
+      recorded; the stewards refused it as an operation in favour of settle-bet.
+    decision: D-201
+    minted: "2026-07-07"
+    status: suppressed

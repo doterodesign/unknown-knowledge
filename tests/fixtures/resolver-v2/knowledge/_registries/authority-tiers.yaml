@@ -1,0 +1,20 @@
+# Query-decomposition fixture (UCS-1152) — the citation authority tiers.
+schema-version: 1
+store: knowledge
+registry: authority-tiers
+values:
+  - value: regulator
+    gloss: A regulator's own published text.
+    warrant: L-000140 cites an NJ DGE bulletin; L-000190 an MGA directive.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: internal
+    gloss: A document this organisation wrote for itself.
+    warrant: L-000102 cites the trading team's onboarding doc.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: interview
+    gloss: A conversation with someone who knows, written down.
+    warrant: L-000213 rests on a trading-team interview.
+    decision: D-201
+    minted: "2026-07-07"

@@ -96,6 +96,50 @@
  * present in every payload: a run that computed no freshness verdicts must not
  * read like one that checked and found everything fresh.
  *
+ * QUERY DECOMPOSITION (UCS-1152) turns the query itself into joins against the
+ * governed vocabularies, and says what did not join. Three axes, three
+ * vocabularies, and none of them guessing:
+ *
+ *   verb  -> the `knowledge/operations` registry     "add a sport" -> add-sport
+ *   noun  -> concept terms and aliases               "sport"       -> K-101
+ *   place -> the `knowledge/jurisdictions` registry  "new jersey"  -> new-jersey
+ *
+ * Four sections join the payload, every one a STABLE key that may be empty:
+ *
+ *   decomposition  what each axis resolved to, the tokens it consumed, the
+ *                  near-misses, the residue, and the resolved context residue
+ *                  should be recorded alongside
+ *   scoring        the signal→score table the ranking was computed with, so a
+ *                  consumer reproducing it never vendors a copy that goes stale
+ *   leaves         leaves as FIRST-CLASS SCORED RESULTS, each carrying the
+ *                  signals that scored it. Before this ticket a leaf could only
+ *                  appear as an attachment to a concept, which made an entire
+ *                  class of correct answer unreachable: "add a sport" resolves a
+ *                  VERB, and the leaf declaring that operation is the answer
+ *                  whether or not any concept matched
+ *   exclusions     leaves the query's scope excluded, each with its REASON —
+ *                  excluded, never silently absent
+ *
+ * EXTENSION, NOT REPLACEMENT. `results` and its concept-attached `knowledge`
+ * lists are untouched, and concept scores are exactly what they were: the
+ * ladder still decides them, and a concept the ask merely NAMED (reached by the
+ * token-level phrase test but not the whole-query ladder) appears in
+ * `decomposition.concepts` without being given an invented rung in `results`.
+ * Every pre-1152 consumer keeps working; a new one can read leaves directly.
+ *
+ * SCOPE EXCLUSION is the criterion that most needs saying out loud: a leaf
+ * whose `applies.jurisdictions` is non-empty and excludes the query's
+ * jurisdiction is published in `exclusions` with the reason, never dropped.
+ * "No knowledge about settling bets in Malta" and "the knowledge about settling
+ * bets is New-Jersey-only" demand opposite conduct, and a filtered-away leaf
+ * makes them indistinguishable. An empty `applies` is UNIVERSAL and never
+ * excluded; a query naming no jurisdiction excludes nothing.
+ *
+ * RESIDUE is the unconsumed non-stopword tokens — the store's own record of
+ * what it does not yet know — emitted with `resolved-context` so the gap is
+ * localized enough to act on. The stopword list is pinned and shipped in the
+ * engine (lib/decomposition.js), never configurable per run.
+ *
  * --paths mode — reverse lookup over BOTH pointer families: "which concepts
  * point at these files, and which leaves govern them" (UCS-1151). The join runs
  * over concept source-of-truth pointers and over leaf `paths` declarations, so
@@ -135,6 +179,14 @@ import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
 import { compare } from '../lib/validate-record.js';
+// Query decomposition (UCS-1152) — the joins against the governed vocabularies,
+// and the scoring table those joins are weighed by. Both extracted into lib so
+// the signal→score mapping is one declaration rather than arithmetic spread
+// through the matcher.
+import {
+  STOPWORDS, mintedValues, phraseHit, phraseOverlap, phraseWords, tokenize, valuePhrases,
+} from '../lib/decomposition.js';
+import { conceptScore, leafScore, scoringTable } from '../lib/scoring.js';
 // The Time facet (UCS-1150). The resolver computes no verdict of its own — one
 // implementation, shared with preflight and the derived layer, so a leaf ranked
 // stale here is never verdicted trusted there.
@@ -144,14 +196,20 @@ import { isCalendarDate } from '../lib/iso-date.js';
 export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
        node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]`;
 
-const MATCH_SCORES = Object.freeze({
-  'exact-term': 100,
-  'exact-alias': 80,
-  'term-match': 60,
-  'alias-match': 50,
-  'summary-match': 40,
-});
-const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still surfaces
+// The concept ladder and the draft downrank moved to lib/scoring.js (UCS-1152)
+// — one signal→score table, so a reader asking "what is a score of 70 made of"
+// has one place to look and `explain`-style reproduction is possible at all.
+// The NUMBERS are unchanged and pinned by the existing goldens: the extraction
+// moved this arithmetic, it did not renegotiate it.
+
+/** Registry keys the query's verb and place axes join through (UCS-1148). */
+const OPERATIONS_REGISTRY = 'knowledge/operations';
+const JURISDICTIONS_REGISTRY = 'knowledge/jurisdictions';
+
+/** The leaf front-matter fields the structured joins read. */
+const OPERATIONS_FIELD = 'operations';
+const APPLIES_FIELD = 'applies';
+const JURISDICTIONS_FIELD = 'jurisdictions';
 
 /**
  * The first sentence of a leaf's body, or null when it has none (UCS-1149).
@@ -251,11 +309,36 @@ function matchConcept(query, queryWords, record) {
   return null;
 }
 
-function score(match, status) {
-  const base = MATCH_SCORES[match];
-  return status === 'draft' || status === 'proposed'
-    ? Math.max(1, base - STATUS_DOWNRANK)
-    : base;
+/**
+ * A leaf's declared operations (UCS-1152) — the single reader of the
+ * `operations` spelling, for the same reason `leafConcepts` is for `concepts`.
+ *
+ * Non-strings are dropped rather than coerced: the schema already diagnoses the
+ * wrong type, and a coerced value would join a leaf to an operation nobody
+ * declared.
+ *
+ * @param {object} record a leaf's front-matter record
+ * @returns {string[]}
+ */
+const leafOperations = (record) => strings(record?.[OPERATIONS_FIELD]);
+
+/**
+ * The jurisdictions a leaf declares itself applicable to (UCS-1152).
+ *
+ * An EMPTY list is the universal case and is load-bearing: a leaf that declares
+ * no jurisdictions applies everywhere and is never scope-excluded. The
+ * distinction between "applies to nowhere" and "applies everywhere" is
+ * precisely the one an empty array has to carry, and it reads as universal
+ * because that is what an author who wrote no jurisdiction meant — the
+ * alternative would silently hide every leaf in every store that has not yet
+ * adopted the facet.
+ *
+ * @param {object} record a leaf's front-matter record
+ * @returns {string[]}
+ */
+function leafJurisdictions(record) {
+  const applies = record?.[APPLIES_FIELD];
+  return isObject(applies) ? strings(applies[JURISDICTIONS_FIELD]) : [];
 }
 
 /** confusable-with ids, each resolved to its term for one-lookup disambiguation. */
@@ -506,20 +589,306 @@ function knowledgeEntryPoints(model, record, conceptId, today) {
   return out.sort((a, b) => Number(a.downranked) - Number(b.downranked));
 }
 
-function resolveQuery(model, terms, today) {
-  const query = norm(terms.join(' '));
-  const queryWords = words(query);
-  if (!queryWords.length) throw new UsageError('query terms must contain a word');
-  const results = [];
+/**
+ * Decompose the query against the governed vocabularies (UCS-1152).
+ *
+ * Three axes, three vocabularies, no guessing — the module header of
+ * lib/decomposition.js argues the semantics; this is the join itself. Each axis
+ * records the TOKENS it consumed, because residue is defined as what no join
+ * consumed and that is only computable if every join says what it took.
+ *
+ * Concept matching runs the pre-1152 ladder (`matchConcept`), NOT the phrase
+ * test, so published concept scores stay exactly what they were. The phrase
+ * test is used only to learn which tokens the concept consumed — a concept that
+ * matched on `summary-match` consumed nothing nameable, and claiming otherwise
+ * would delete residue the store should have reported.
+ *
+ * @returns {{operations, concepts, jurisdictions, tokens, consumed, nearMiss}}
+ */
+function decompose(model, query, queryWords, tokens) {
+  const consumed = new Set();
+  const consume = (taken) => { for (const t of taken) consumed.add(t); };
+
+  /** Join one registry's minted values, recording the spelling that matched. */
+  const joinRegistry = (key) => {
+    const hits = [];
+    for (const value of mintedValues(model, key)) {
+      for (const { spelling, words: phrase } of valuePhrases(value)) {
+        const taken = phraseHit(phrase, tokens);
+        if (!taken) continue;
+        consume(taken);
+        hits.push({ value, matched: spelling, tokens: [...taken] });
+        break; // one value resolves once; the first (identifier) spelling wins
+      }
+    }
+    return hits;
+  };
+
+  const operations = joinRegistry(OPERATIONS_REGISTRY);
+  const jurisdictions = joinRegistry(JURISDICTIONS_REGISTRY);
+
+  // The NOUN axis. Two joins are asked, and they answer different questions:
+  //
+  //   ladder  `matchConcept` — the pre-1152 whole-query ladder that produces
+  //           the published concept `score`. It is deliberately strict: it
+  //           tests the query AS A WHOLE against a term, so "add a sport" does
+  //           NOT reach "Sport", and the concept result list stays exactly what
+  //           consumers already rank on.
+  //   phrase  the token-level phrase test — does the concept's name appear IN
+  //           the ask at all? "add a sport" does contain "sport", and the leaf
+  //           declaring K-101 is a correct answer to it.
+  //
+  // Before this ticket only the ladder existed, so a concept the ask genuinely
+  // named went unjoined whenever the ask said anything else as well — which is
+  // every real query. Running both, and keeping them separate, is what lets the
+  // decomposition find the noun without renegotiating the published ranking:
+  // `match` is the ladder's verdict and is null when only the phrase test
+  // fired, so a reader can always tell which join reached the concept.
+  const concepts = [];
   for (const { id, file, record } of model.concepts.values()) {
     const match = matchConcept(query, queryWords, record);
-    if (!match) continue;
+    // Which tokens this concept's own vocabulary accounts for. Only the term
+    // and aliases are consulted — a `summary-match` consumes nothing, because
+    // a summary is prose about the concept, not a name for it, and treating it
+    // as one would silently absorb tokens the store cannot actually resolve.
+    const taken = [];
+    for (const name of [record.term, ...strings(record.aliases)]) {
+      if (typeof name !== 'string') continue;
+      const hit = phraseHit(phraseWords(name), tokens);
+      if (hit) taken.push(...hit);
+    }
+    if (match === null && !taken.length) continue;
+    consume(taken);
+    concepts.push({ id, file, record, match, tokens: [...new Set(taken)] });
+  }
+
+  return { operations, concepts, jurisdictions, tokens, consumed, nearMiss: nearMisses(model, tokens, operations, concepts, jurisdictions) };
+}
+
+/**
+ * Vocabulary entries that share tokens with the query but did NOT match
+ * (UCS-1152).
+ *
+ * The answer that was nearly right, reported with the overlap that carried it.
+ * A reader whose query returned nothing useful needs to see these more than
+ * anyone: the near-miss is where a store's vocabulary and its users' vocabulary
+ * are visibly drifting apart, and a search that reports only its hits lets that
+ * drift run silently until the store stops being usable.
+ *
+ * All three axes are swept, not just concepts, because a verb or a place can
+ * near-miss exactly as a noun can — an ask that half-names a place should say
+ * which jurisdiction it was a token away from rather than reporting a bare zero.
+ *
+ * Sorted by kind then id, so the section is byte-stable regardless of the order
+ * the vocabularies happened to load in.
+ */
+function nearMisses(model, tokens, operations, concepts, jurisdictions) {
+  const out = [];
+  const matchedValues = (hits) => new Set(hits.map((h) => h.value));
+
+  const sweepRegistry = (kind, key, hits) => {
+    const already = matchedValues(hits);
+    for (const value of mintedValues(model, key)) {
+      if (already.has(value)) continue;
+      // The widest spelling decides the overlap: `add-sport` opened into
+      // ["add","sport"] shares a token with "sport" that the closed spelling
+      // never would, and reporting the narrower answer would hide the miss.
+      let overlap = [];
+      for (const { words: phrase } of valuePhrases(value)) {
+        const shared = phraseOverlap(phrase, tokens);
+        if (shared.length > overlap.length) overlap = shared;
+      }
+      if (overlap.length) out.push({ kind, id: value, overlap });
+    }
+  };
+
+  sweepRegistry('operation', OPERATIONS_REGISTRY, operations);
+  sweepRegistry('jurisdiction', JURISDICTIONS_REGISTRY, jurisdictions);
+
+  const matchedConcepts = new Set(concepts.map((c) => c.id));
+  for (const { id, record } of model.concepts.values()) {
+    if (matchedConcepts.has(id)) continue;
+    let overlap = [];
+    for (const name of [record.term, ...strings(record.aliases)]) {
+      if (typeof name !== 'string') continue;
+      const shared = phraseOverlap(phraseWords(name), tokens);
+      if (shared.length > overlap.length) overlap = shared;
+    }
+    if (overlap.length) out.push({ kind: 'concept', id, overlap });
+  }
+
+  return out.sort((a, b) => compare(a.kind, b.kind) || compare(a.id, b.id));
+}
+
+/**
+ * The leaves a decomposed query reaches, as FIRST-CLASS SCORED RESULTS
+ * (UCS-1152).
+ *
+ * Before this ticket a leaf could only appear as an attachment to a concept
+ * result, which made an entire class of correct answer unreachable: "add a
+ * sport" resolves a VERB, and the leaf declaring that operation is the answer
+ * whether or not any concept matched. Hanging it off a concept meant either
+ * guessing a noun to hang it on or losing it.
+ *
+ * Scored additively over the structured joins — see lib/scoring.js for why this
+ * family adds where the concept ladder does not. Every leaf carries its
+ * `signals`, so the score is reproducible: `sum(signals[].score) === score`.
+ *
+ * Concept-declaration joins read the loader's reverse index (`leavesByConcept`),
+ * the same structural edge UCS-1151 built, so a leaf reaches its concept without
+ * term luck here exactly as it does there.
+ */
+function scoreLeaves(model, decomposition, today) {
+  const { operations, concepts, tokens } = decomposition;
+  const declaringConcept = new Map(); // leaf identity -> concept ids it declares
+  for (const { id } of concepts) {
+    for (const identity of model.leavesByConcept.get(id) ?? []) {
+      if (!declaringConcept.has(identity)) declaringConcept.set(identity, []);
+      declaringConcept.get(identity).push(id);
+    }
+  }
+
+  const scored = [];
+  for (const entry of model.leaves.values()) {
+    const { record: leaf } = entry;
+    // Signals are gathered in DESCENDING weight — operation, concept, term —
+    // so the strongest reason a leaf surfaced reads first in the output.
+    //
+    // WITHIN each weight class they are sorted by `via`, and that sort is a
+    // determinism requirement rather than tidiness. Every one of these three
+    // sources is an AUTHORED array (the query's matched operations, the leaf's
+    // declared concepts, the leaf's `terms`), so emitting them in encounter
+    // order would make the published `signals` depend on the order somebody
+    // happened to write a list in — two stores with identical content and
+    // different authoring order would produce different bytes, which is exactly
+    // what D-012 forbids. Sorting on the value makes the output a function of
+    // WHAT a leaf declares, never of the sequence it was typed in.
+    const declaredOps = leafOperations(leaf);
+    const operationSignals = operations
+      .filter(({ value }) => declaredOps.includes(value))
+      .map(({ value }) => ({ signal: 'operation', via: value }));
+    const conceptSignals = [...(declaringConcept.get(entry.identity) ?? [])]
+      .map((id) => ({ signal: 'concept', via: id }));
+    const termTokens = [];
+    const termSignals = [];
+    for (const term of strings(leaf.terms)) {
+      const hit = phraseHit(phraseWords(term), tokens);
+      if (!hit) continue;
+      termTokens.push(...hit);
+      termSignals.push({ signal: 'term', via: term });
+    }
+    const byVia = (a, b) => compare(a.via, b.via);
+    const signals = [
+      ...operationSignals.sort(byVia),
+      ...conceptSignals.sort(byVia),
+      ...termSignals.sort(byVia),
+    ];
+    if (!signals.length) continue;
+    // A leaf's own term text consumes tokens too — it is a join like any other,
+    // and a token it accounted for is not unresolved. Recorded on the shared
+    // consumed set so residue sees it.
+    for (const t of termTokens) decomposition.consumed.add(t);
+    const { score, signals: weighted } = leafScore(signals);
+    scored.push({ entry, score, signals: weighted });
+  }
+  // Both declared arrays are SORTED before publication, for the same reason the
+  // signals are: they are authored lists, and byte-stable output must be a
+  // function of what a leaf declares rather than the order its author typed it
+  // (D-012). Sorted copies, never in place — mutating the loaded record would
+  // reorder the model every other surface reads.
+  return scored.map(({ entry, score, signals }) => ({
+    score,
+    signals,
+    applies: [...leafJurisdictions(entry.record)].sort(compare),
+    [OPERATIONS_FIELD]: [...leafOperations(entry.record)].sort(compare),
+    ...publishLeaf(model, entry, today),
+  }));
+}
+
+/**
+ * Split scored leaves into those the query's scope keeps and those it excludes
+ * (UCS-1152).
+ *
+ * A leaf is EXCLUDED when it declares jurisdictions and the query named a
+ * jurisdiction that is not among them. It is excluded WITH ITS REASON and
+ * published in its own section — never silently absent, which is the acceptance
+ * criterion and the whole point. "No knowledge about settling bets in Malta"
+ * and "the knowledge about settling bets is New-Jersey-only" demand opposite
+ * conduct from a reader, and a filtered-away leaf makes them indistinguishable.
+ *
+ * A leaf declaring NO jurisdictions is universal and never excluded — see
+ * `leafJurisdictions`. A query naming no jurisdiction excludes nothing: with no
+ * scope asserted there is nothing to be out of scope of.
+ */
+function applyScope(scored, jurisdictions) {
+  if (!jurisdictions.length) return { kept: scored, excluded: [] };
+  const asked = jurisdictions.map((j) => j.value);
+  const kept = [];
+  const excluded = [];
+  for (const leaf of scored) {
+    if (!leaf.applies.length || leaf.applies.some((j) => asked.includes(j))) {
+      kept.push(leaf);
+      continue;
+    }
+    excluded.push({
+      id: leaf.id,
+      notation: leaf.notation,
+      heading: leaf.heading,
+      file: leaf.file,
+      applies: leaf.applies,
+      asked,
+      reason: `declares applies.jurisdictions [${leaf.applies.join(', ')}] — the query is scoped to [${asked.join(', ')}], which this leaf does not cover (UCS-1152)`,
+    });
+  }
+  return { kept, excluded };
+}
+
+/**
+ * Rank scored leaves: time-verdict and stage demotions first, then score
+ * (UCS-1152).
+ *
+ * `downranked` is already the UNION of the stage and time demotions
+ * (publishLeaf, UCS-1150), so sorting on it applies BOTH demotions through one
+ * comparator rather than two competing ones — a stale leaf and a draft leaf
+ * both sort below the promoted, fresh ones, and a leaf that is both reports
+ * both reasons without either absorbing the other.
+ *
+ * Demotion before score, deliberately: a high-scoring stale leaf is still one
+ * whose claims nobody has re-verified, and putting it above a fresh lower-scoring
+ * answer would rank confidence above currency. It is a demotion and never a
+ * filter — the leaf is still published, still scored, still explains itself.
+ */
+const rankLeaves = (leaves) => [...leaves].sort((a, b) =>
+  Number(a.downranked) - Number(b.downranked)
+  || b.score - a.score
+  || compare(a.id ?? a.notation, b.id ?? b.notation));
+
+function resolveQuery(model, terms, today) {
+  const raw = terms.join(' ');
+  const query = norm(raw);
+  const queryWords = words(query);
+  if (!queryWords.length) throw new UsageError('query terms must contain a word');
+  const tokens = tokenize(raw);
+  const decomposition = decompose(model, query, queryWords, tokens);
+
+  // Concept results keep their pre-1152 shape and their pre-1152 scores — the
+  // structured joins are ADDITIVE surface, never a renegotiation of a ranking
+  // consumers already read.
+  const results = [];
+  for (const { id, file, record, match } of decomposition.concepts) {
+    // Only LADDER matches become concept results. A concept the phrase test
+    // reached but the ladder did not has no rung and therefore no score, and
+    // inventing one would put concepts in this list that the pre-1152 engine
+    // never returned — breaking the ranking this ticket promised to leave
+    // alone. It is still published in `decomposition.concepts`, where it is
+    // what it actually is: a noun the ask named, joined structurally to leaves.
+    if (match === null) continue;
     results.push({
       id,
       term: record.term ?? null,
       summary: record.summary ?? null,
       status: record.status ?? null,
-      score: score(match, record.status),
+      score: conceptScore(match, record.status),
       match,
       file,
       'source-of-truth': strings(record['source-of-truth']),
@@ -528,8 +897,74 @@ function resolveQuery(model, terms, today) {
     });
   }
   results.sort((a, b) => b.score - a.score || compare(a.id, b.id));
-  return { query, results };
+
+  const { kept, excluded } = applyScope(scoreLeaves(model, decomposition, today), decomposition.jurisdictions);
+  // Residue is computed LAST, after every join has had its chance to consume:
+  // it is defined as what nothing resolved, so anything computed earlier would
+  // be measuring a partially-run decomposition. De-duplicated, in query order —
+  // a token the user typed twice is one unresolved thing.
+  const residue = [...new Set(tokens.filter((t) => !decomposition.consumed.has(t) && !STOPWORDS.has(t)))];
+
+  return {
+    query,
+    // The decomposition itself, published (UCS-1152) — which vocabulary each
+    // axis of the ask landed in, and what did not land anywhere. This is the
+    // section that makes the resolution auditable: a reader can see that "add a
+    // sport" resolved a VERB through the operations registry rather than
+    // guessing at a noun.
+    decomposition: {
+      tokens,
+      operations: decomposition.operations,
+      concepts: decomposition.concepts.map((c) => ({ id: c.id, term: c.record.term ?? null, match: c.match, tokens: c.tokens })),
+      jurisdictions: decomposition.jurisdictions,
+      // Every one of these is a STABLE key that may be an empty array, never an
+      // omitted one: a consumer must not need a presence check to tell "nothing
+      // near-missed" from "this engine predates near-miss reporting".
+      'near-miss': decomposition.nearMiss,
+      residue,
+      // The resolved context a residue finding is logged ALONGSIDE (UCS-1152).
+      // The acceptance criterion is that residue is emitted "with the resolved
+      // context attached" — a bare unresolved token is a finding nobody can act
+      // on, while "`lacrosse` was unresolved in an ask that DID resolve
+      // add-sport and new-jersey" localizes the gap precisely enough that the
+      // minting decision writes itself.
+      'resolved-context': [
+        ...decomposition.operations.map((o) => o.value),
+        ...decomposition.concepts.map((c) => c.id),
+        ...decomposition.jurisdictions.map((j) => j.value),
+      ],
+    },
+    // The scoring table the ranking above was computed with, so a consumer
+    // reproducing it never hard-codes weights or vendors a copy that goes stale.
+    scoring: scoringTable(),
+    results,
+    // Leaves as FIRST-CLASS scored results, not attachments (UCS-1152). The
+    // concept-attached `knowledge` lists above are untouched and still
+    // published: this extends the payload rather than breaking it, so every
+    // existing consumer keeps working while a new one can read leaves directly.
+    leaves: rankLeaves(kept),
+    // Excluded, never silently absent.
+    exclusions: excluded.sort((a, b) => compare(a.id ?? a.notation, b.id ?? b.notation)),
+    // Zero resolution is a NORMAL outcome and must be machine-distinguishable
+    // from a failure (PRD §7). The conduct text is IN THE PAYLOAD rather than
+    // only on the human surface, so an agent reading JSON is told what to do
+    // next instead of inferring it from an empty array.
+    ...(results.length || kept.length ? {} : { conduct: ZERO_RESOLUTION_CONDUCT }),
+  };
 }
+
+/**
+ * What to do when nothing resolved (PRD §7) — the fallback conduct, in the
+ * payload.
+ *
+ * Zero resolution exits 0 and is a normal outcome, common in month one. What
+ * makes it machine-distinguishable from a failure is not the exit code alone
+ * but this: an explicit empty result WITH the conduct that follows from it. An
+ * agent that receives empty arrays and no instruction has to guess whether the
+ * lookup failed or the store is simply silent on the topic, and those demand
+ * different next steps.
+ */
+const ZERO_RESOLUTION_CONDUCT = 'zero resolution is a normal outcome (PRD §7): fall back to search within survey-scope.yaml; append a retrieval-miss finding only if this topic plausibly should be mapped (an unmapped area the scope excludes is expected, not a miss)';
 
 // ---------------------------------------------------------------- paths mode
 
@@ -814,18 +1249,88 @@ const renderDemotions = (leaf) => (leaf.demotions?.length
  */
 const renderTimeCheck = (payload, lines) => lines.push(`time check: ${payload['time-check']}`, '');
 
+/**
+ * The decomposition block, for the human surface (UCS-1152).
+ *
+ * Printed BEFORE the results, because it is what the results follow from: a
+ * reader who sees "verb: add-sport" first understands why leaves about sports
+ * registries came back for an ask that named no concept. Only non-empty axes
+ * print — except residue and exclusions, which print their absence explicitly
+ * elsewhere, since "nothing was unresolved" is a claim worth making out loud.
+ */
+function renderDecomposition(payload, lines) {
+  const d = payload.decomposition;
+  if (!d) return;
+  lines.push('decomposition:');
+  if (d.operations.length) {
+    lines.push(`  verb  -> operations: ${d.operations.map((o) => `${o.value} (matched "${o.matched}")`).join(', ')}`);
+  }
+  if (d.concepts.length) {
+    // `match` is the ladder's rung, and it is null for a concept the phrase
+    // test reached but the ladder did not. Printed as `named` rather than as
+    // "null", because that is what it means: the ask named this concept without
+    // being a query for it, which is the ordinary case for any ask that says
+    // more than one thing.
+    lines.push(`  noun  -> concepts: ${d.concepts.map((c) => `${c.id} "${c.term ?? '?'}" (${c.match ?? 'named'})`).join(', ')}`);
+  }
+  if (d.jurisdictions.length) {
+    lines.push(`  place -> jurisdictions: ${d.jurisdictions.map((j) => `${j.value} (matched "${j.matched}")`).join(', ')}`);
+  }
+  if (!d.operations.length && !d.concepts.length && !d.jurisdictions.length) {
+    lines.push('  no axis of this ask joined a governed vocabulary');
+  }
+  // Residue is stated either way. "Residue: none" is the store saying it
+  // understood the whole ask, which is a different and more useful message than
+  // saying nothing at all.
+  lines.push(d.residue.length
+    ? `  residue (unresolved): ${d.residue.join(', ')}  [resolved context: ${d['resolved-context'].join(', ') || 'none'}]`
+    : '  residue: none — every non-stopword token resolved');
+  for (const m of d['near-miss']) {
+    lines.push(`  near-miss: ${m.kind} ${m.id} — token overlap [${m.overlap.join(', ')}] below the match threshold`);
+  }
+  lines.push('');
+}
+
+/** Scope exclusions, for the human surface — excluded, never silently absent. */
+function renderExclusions(payload, lines) {
+  if (!payload.exclusions?.length) return;
+  lines.push('excluded by scope:');
+  for (const x of payload.exclusions) {
+    lines.push(`  ${x.id ? `${x.id}  ` : ''}${x.notation}  ${x.heading}  (${x.file})`);
+    lines.push(`    ${x.reason}`);
+  }
+  lines.push('');
+}
+
+/** Leaves as first-class results, for the human surface (UCS-1152). */
+function renderLeaves(payload, lines) {
+  if (!payload.leaves?.length) return;
+  lines.push(`knowledge leaves -> ${payload.leaves.length}`);
+  for (const leaf of payload.leaves) {
+    lines.push(`  ${leaf.id ? `${leaf.id}  ` : ''}${leaf.notation}  ${leaf.heading}  score ${leaf.score}${renderDemotions(leaf)}  (${leaf.file})`);
+    // The signals, so the score is reproducible on the human surface too — a
+    // ranking a reader cannot decompose is one they cannot check.
+    lines.push(`    signals: ${leaf.signals.map((s) => `${s.signal}:${s.via} +${s.score}`).join(', ')}`);
+    if (leaf.excerpt) lines.push(`    ${leaf.excerpt}`);
+    lines.push(...renderRelates(leaf, '    '));
+  }
+  lines.push('');
+}
+
 function renderQuery(payload) {
   const lines = [];
   const n = payload.results.length;
   lines.push(`resolve "${payload.query}" -> ${n} concept${n === 1 ? '' : 's'}`, '');
   renderTimeCheck(payload, lines);
   renderHealth(payload['store-health'], lines);
+  renderDecomposition(payload, lines);
+  renderLeaves(payload, lines);
+  renderExclusions(payload, lines);
   if (!n) {
-    lines.push(
-      'no concepts matched — a normal outcome (PRD §7). Fall back to search within',
-      'survey-scope.yaml; append a retrieval-miss finding only if this topic plausibly',
-      'should be mapped (an unmapped area the scope excludes is expected, not a miss).',
-    );
+    // The same conduct the payload carries, so the two surfaces cannot drift
+    // into telling a reader different things about the same empty result.
+    if (payload.conduct) lines.push(payload.conduct);
+    else lines.push('no concepts matched, but knowledge leaves resolved directly — see above');
     return lines;
   }
   for (const r of payload.results) {
