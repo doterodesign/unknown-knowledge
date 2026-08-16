@@ -113,7 +113,17 @@ direct evidence the expand contract holds.
 ## Golden-change audit
 
 Fixture diffs contain only added `id:` lines and `id:` rewrites — verified by
-`git diff | grep | sort | uniq -c`, which shows no other changed line shape.
+counting the distinct changed-line shapes:
+
+```sh
+git diff 1463b0a..HEAD -- tests/fixtures fixtures \
+  | grep -E '^[+-]' | grep -vE '^(\+\+\+|---)' \
+  | sort | uniq -c | sort -rn
+```
+
+Every line in that output is either `+id: L-NNNNNN` (a minted accession) or a
+catalog row moving from `- id: "<notation>"` to `- id: L-NNNNNN`. No other line
+shape appears.
 
 Test-golden changes, all traceable to an identifier rewrite:
 

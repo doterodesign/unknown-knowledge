@@ -11,6 +11,11 @@
 // un-migrating — a future fixture edit that reintroduces a notation-form
 // citation in migrated territory fails here, naming the file and the field.
 //
+// The reference check reads the typed `relates.*` kinds in addition to the
+// `cross-references` fields this batch rewrote — deliberately wider than
+// UCS-1145's edit list, since both target the same leaf-ref union. `leafRefs`
+// explains why that costs nothing and what it buys.
+//
 // The exemptions are EXACT PATHS, never prefixes or globs. A fixture added
 // later cannot join them by sitting in the right directory: it either migrates
 // or it fails, and someone decides deliberately which. Each exemption below
@@ -146,10 +151,24 @@ const isNotationForm = (value) => {
 /**
  * Every leaf-to-leaf citation in one leaf's frontmatter, with its field path.
  *
- * `cross-references.class-elsewhere` and `see-also` are this batch's scope.
- * The typed `relates.*` kinds (UCS-1151) target the same leaf-ref union and so
- * are read too — not to migrate them here, but so the exemption verifier below
- * can SEE the notation-form citation an exempt typed-edges fixture plants.
+ * DELIBERATELY WIDER THAN UCS-1145's BATCH. The batch that rewrote data covered
+ * `cross-references.class-elsewhere` and `see-also`. This reads the typed
+ * `relates.*` kinds (UCS-1151) as well, because they target the same leaf-ref
+ * union and so can carry the same defect.
+ *
+ * Reading them costs nothing and buys two things. Every `relates.*` edge in the
+ * repo is ALREADY accession-form except the one deliberately-exempt
+ * typed-edges fixture, so the wider read starts green — and it keeps those
+ * edges from regressing to notation form later, which a batch-scoped assertion
+ * would not notice. It is also what lets the exemption verifier below SEE the
+ * notation-form citation the exempt typed-edges fixture plants; scoped
+ * narrowly, that exemption would look stale and fail its own check.
+ *
+ * What this file pins is therefore the MIGRATED-STATE INVARIANT — no
+ * notation-form leaf-to-leaf reference anywhere in scope — not the narrower
+ * "what UCS-1145 rewrote". A future batch that migrates more fields should
+ * widen this helper rather than add a parallel assertion.
+ *
  * `including` is standing room, not a leaf reference, and never appears.
  */
 const leafRefs = (front) => {
@@ -168,7 +187,11 @@ const leafRefs = (front) => {
   return refs;
 };
 
-test('no notation-form leaf-to-leaf reference survives in the migrated scope', () => {
+// Scope note: this covers cross-references AND typed relates.* — wider than the
+// fields UCS-1145 rewrote. See `leafRefs` for why the invariant is pinned at the
+// union rather than at this batch's edit list.
+test('no notation-form leaf-to-leaf reference survives in the migrated scope '
+  + '(cross-references and typed relates alike)', () => {
   const offenders = [];
   for (const root of SCOPE_ROOTS) {
     for (const file of walk(root, (name) => name.endsWith('.md'))) {
