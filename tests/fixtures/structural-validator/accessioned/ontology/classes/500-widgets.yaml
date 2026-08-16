@@ -1,0 +1,8 @@
+schema-version: 1
+entries:
+  - id: K-510
+    term: Widget
+    class: 500-widgets
+    summary: A widget offered by the fixture app.
+    source-of-truth: [src/gadgets/registry.ts]
+    status: active

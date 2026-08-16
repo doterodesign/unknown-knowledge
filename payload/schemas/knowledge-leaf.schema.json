@@ -2,12 +2,16 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:knowledge-leaf",
   "title": "Knowledge leaf front matter (PRD §3.2)",
-  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5). Notation is immutable once any reference cites it; moves happen by new leaf + class-elsewhere redirect, never by renaming in place (§3.5). Cross-reference resolution and tree-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013).",
+  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5). A leaf may carry an opaque accession id (id: L-NNNNNN), minted at PR time and never reused, alongside its positional notation; the loader indexes by the accession when present and both spellings resolve in cross-references (UCS-1144). Notation is immutable once any reference cites it; moves happen by new leaf + class-elsewhere redirect, never by renaming in place (§3.5). Cross-reference resolution and tree-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013).",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema-version", "notation", "domain", "heading", "citations"],
   "properties": {
     "schema-version": { "type": "integer", "minimum": 1 },
+    "id": {
+      "$ref": "#/$defs/accession",
+      "description": "Accession id — opaque, minted at PR time, never reused, never positional (L-NNNNNN). Optional while the store migrates; when present it is the leaf's identity and what the loader indexes by."
+    },
     "notation": {
       "$ref": "#/$defs/notation",
       "description": "Positional within the per-project tree (e.g. \"362.1\"). Quote it — unquoted it parses as a number."
@@ -27,13 +31,13 @@
       "properties": {
         "class-elsewhere": {
           "type": "array",
-          "items": { "$ref": "#/$defs/notation" },
-          "description": "Redirects — must resolve."
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "Redirects — must resolve. Either an accession id or a notation."
         },
         "see-also": {
           "type": "array",
-          "items": { "$ref": "#/$defs/notation" },
-          "description": "Related context — must resolve."
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "Related context — must resolve. Either an accession id or a notation."
         },
         "including": {
           "type": "array",
@@ -54,6 +58,8 @@
   },
   "$defs": {
     "notation": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+    "accession": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "leafRef": { "type": "string", "pattern": "^((L-[0-9]{6})|([0-9]+(\\.[0-9]+)*))$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "note": {
       "type": "object",

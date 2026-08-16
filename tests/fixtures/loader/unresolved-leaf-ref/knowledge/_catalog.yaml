@@ -1,0 +1,8 @@
+# Both leaf-ref shapes must be resolvable AND refusable: a dangling accession
+# and a dangling notation are each an unresolved-ref error (UCS-1144).
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000101
+    title: Widget registry rules
+    file: widgets/700.1-widget-registry.md

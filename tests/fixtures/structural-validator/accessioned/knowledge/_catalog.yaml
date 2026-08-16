@@ -1,0 +1,12 @@
+# A catalog row is a POINTER at a leaf, so it may name its target by either
+# legal spelling (UCS-1144): 700.1 is named by its accession, 700.2 by its
+# notation. Both agree with the file they point at.
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000101
+    title: Widget registry rules
+    file: widgets/700.1-widget-registry.md
+  - id: "700.2"
+    title: Widget retirement rules
+    file: widgets/700.2-widget-retirement.md

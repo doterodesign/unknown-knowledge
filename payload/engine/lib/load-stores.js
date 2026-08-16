@@ -21,10 +21,20 @@
  *       { present, catalog, rules, files } },   // parsed docs (null if absent),
  *                                               // record files root-relative
  *     concepts:  Map id       -> { id, file, record },
- *     leaves:    Map leaf-id  -> { identity, notation, file, record, body },
+ *     leaves:    Map leaf-id  -> { identity, id, notation, file, record, body },
  *                               // `identity` is the neutral id key consumers
- *                               // read (UCS-1142); `notation` is the same
- *                               // value under the public wire name
+ *                               // read (UCS-1142) — the accession when the
+ *                               // leaf mints one, the notation otherwise
+ *                               // (UCS-1144); `id` and `notation` are the two
+ *                               // public wire names, `id` null when unminted
+ *     leafAliases: Map spelling -> leaf identity,
+ *                               // the OTHER legal spelling of an accessioned
+ *                               // leaf: its notation. Cross-references may
+ *                               // cite either form while both are legal, and
+ *                               // this is what makes the second one resolve
+ *                               // (UCS-1144). Ref resolution reads it; nothing
+ *                               // that enumerates leaves does, so an aliased
+ *                               // leaf is still exactly one record
  *     decisions: Map id       -> { id, file, record },
  *     pointers:  Map source-of-truth path -> [concept ids],  // KK-06 --paths
  *     refs:      [{ from, type, to, file, path, resolved }], // cross-ref graph
@@ -67,7 +77,7 @@ import { UsageError } from './usage-error.js';
 export const SEVERITIES = Object.freeze(['error', 'warning']);
 
 /**
- * The record field a knowledge leaf currently mints its id in (UCS-1142).
+ * The record field a knowledge leaf falls back to for its id (UCS-1142).
  *
  * Named ONCE, here. The loader reads the leaf's id through this constant and
  * indexes the result under the neutral `identity` key, so nothing downstream
@@ -80,6 +90,50 @@ export const SEVERITIES = Object.freeze(['error', 'warning']);
  * spelling on the indexed entry alongside `identity` for exactly that reason.
  */
 export const LEAF_ID_FIELD = 'notation';
+
+/**
+ * The field a knowledge leaf mints its ACCESSION id in (UCS-1144).
+ *
+ * An accession is opaque, minted at PR time, never reused, never positional —
+ * everything a dotted notation is not. When a leaf carries one it IS the
+ * leaf's identity: `leafIdentity` prefers it, so the whole store can migrate
+ * leaf by leaf without any consumer learning that two id spaces exist.
+ */
+export const LEAF_ACCESSION_FIELD = 'id';
+
+/**
+ * A leaf's identity, and every spelling a reference may reach it by (UCS-1144).
+ *
+ * The expand phase's entire contract, in one function. `identity` is what the
+ * leaf IS — the accession when it has one, the notation otherwise — and it is
+ * what every consumer reads, reports and serializes. `keys` is what the leaf
+ * ANSWERS TO, which is a strictly larger set while both citation forms stay
+ * legal: a leaf with an accession is still cited by notation from every store
+ * and fixture written before it was minted, and those citations must keep
+ * resolving unchanged.
+ *
+ * Keeping the two apart is what lets identity move to accessions immediately
+ * while the migrate batches proceed at their own pace. Collapsing them would
+ * force the choice the ticket exists to avoid: either no leaf may carry an
+ * accession yet, or every notation-form reference breaks the day one does.
+ *
+ * Non-string ids are dropped rather than coerced — KK-02 already diagnoses the
+ * wrong type, and a coerced key would index a leaf under a spelling no author
+ * ever wrote.
+ *
+ * @param {object} record a parsed leaf front matter
+ * @returns {{ identity: unknown, keys: string[] }} the leaf's id, and the
+ *   distinct keys it is indexed under (identity first)
+ */
+export function leafIdentity(record) {
+  const accession = record[LEAF_ACCESSION_FIELD];
+  const notation = record[LEAF_ID_FIELD];
+  const identity = typeof accession === 'string' ? accession : notation;
+  const keys = [identity, notation].filter(
+    (key, i, all) => typeof key === 'string' && all.indexOf(key) === i,
+  );
+  return { identity, keys };
+}
 
 /**
  * The id of one indexed record, whatever store it came from.
@@ -179,6 +233,22 @@ const SPACE_TO_STORE = Object.freeze({
   decisions: 'decisions',
 });
 
+/**
+ * The spaces whose records answer to more than one spelling, and the context
+ * key holding those alternate spellings (UCS-1144).
+ *
+ * Declared rather than branched on, for the same reason REF_FIELDS is: "which
+ * spaces accept a second id shape" is a fact about the STORES, and a fact
+ * about the stores belongs in a table every consumer reads. `leaves` is the
+ * only such space today; when notation retires it leaves this table, and ref
+ * resolution narrows without being edited.
+ *
+ * @type {Readonly<Record<string, string>>}
+ */
+const SPACE_ALIASES = Object.freeze({
+  leaves: 'leafAliases',
+});
+
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
 function sortedMap(map) {
@@ -208,18 +278,79 @@ function validateInto(ctx, kind, file, doc) {
   return ok;
 }
 
-/** Index one record by id; the second mint of an id is a duplicate-id error. */
+/**
+ * The record already answering to `id` through an alternate spelling, if any.
+ *
+ * One lookup, used by both indexing paths, so "is this id taken?" has a single
+ * answer regardless of which order the two claimants happened to load in.
+ * Spaces with no alias index (concepts, decisions) simply never match.
+ *
+ * @param {object} ctx the loader context
+ * @param {string} space the id space being indexed into
+ * @param {string} id the id being claimed
+ * @returns {object|undefined} the record already holding that spelling
+ */
+function aliasOwner(ctx, space, id) {
+  const identity = ctx[SPACE_ALIASES[space]]?.get(id);
+  return identity === undefined ? undefined : ctx[space].get(identity);
+}
+
+/**
+ * Index one record by id; the second mint of an id is a duplicate-id error.
+ *
+ * @returns {boolean} whether the record took the id. A caller with further
+ *   indexing to do for the same record must check: a record that LOST a
+ *   collision owns nothing, and anything else indexed in its name would be
+ *   filed under the winner (see loadLeafFiles).
+ */
 function indexRecord(ctx, space, id, file, path, entry) {
-  if (typeof id !== 'string') return; // shape defects already diagnosed by KK-02
-  const existing = ctx[space].get(id);
+  if (typeof id !== 'string') return false; // shape defects already diagnosed by KK-02
+  // An identity collides with an ALIAS as readily as with another identity: a
+  // notation already claimed as some accessioned leaf's alternate spelling is
+  // taken, whichever file happened to load first. Checking only the identity
+  // index would have made the collision order-dependent — caught when the
+  // notation-only leaf loads first, silently accepted when it loads second —
+  // and a duplicate that depends on readdir order is not a hard error at all.
+  const existing = ctx[space].get(id) ?? aliasOwner(ctx, space, id);
   if (existing) {
     ctx.diagnostics.push({
       severity: 'error', code: 'duplicate-id', file, path,
       message: `id "${id}" is already minted in ${existing.file} — published ids are immutable; the later PR renumbers its own entry (§3.5)`,
     });
-    return;
+    return false;
   }
   ctx[space].set(id, entry);
+  return true;
+}
+
+/**
+ * Index one leaf under a spelling that is not its identity (UCS-1144) — the
+ * notation of a leaf whose identity is an accession.
+ *
+ * An alias collides on exactly the same terms an identity does, and says so
+ * with the same code: two leaves claiming one notation is the duplicate-id
+ * defect whether or not either has since been accessioned. Aliases are checked
+ * against the identity index too, so a notation that is already some other
+ * leaf's identity cannot be quietly shadowed by an alias — the second claim
+ * loses, and the first mint stands (§3.5: published ids are immutable).
+ *
+ * @param {object} ctx the loader context
+ * @param {string} alias the alternate spelling to index
+ * @param {string} identity the leaf this spelling resolves to
+ * @param {string} file the leaf's file, for the diagnostic
+ */
+function indexAlias(ctx, alias, identity, file) {
+  const owner = ctx.leaves.get(alias) ?? aliasOwner(ctx, 'leaves', alias);
+  if (owner) {
+    if (owner.identity !== identity) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'duplicate-id', file, path: LEAF_ID_FIELD,
+        message: `id "${alias}" is already minted in ${owner.file} — published ids are immutable; the later PR renumbers its own entry (§3.5)`,
+      });
+    }
+    return;
+  }
+  ctx.leafAliases.set(alias, identity);
 }
 
 /**
@@ -486,16 +617,43 @@ function loadLeafFiles(ctx) {
     validateInto(ctx, 'knowledge-leaf', file, parsed.doc);
     const record = parsed.doc;
     if (!isObject(record)) continue;
-    // The leaf's identity is read through LEAF_ID_FIELD, never by naming the
-    // notation field here: this line is the whole seam an id-space change
-    // moves through (UCS-1142). `identity` is the neutral key consumers index
-    // by; `notation` stays alongside it because it is a PUBLIC resolver field.
-    const id = record[LEAF_ID_FIELD];
-    indexRecord(ctx, 'leaves', id, file, LEAF_ID_FIELD, {
-      identity: id, [LEAF_ID_FIELD]: id, file, record, body: match[2],
-    });
-    if (typeof id === 'string') {
-      collectRefs(ctx, 'knowledge-leaf', id, file, '', record);
+    // The leaf's identity is read through leafIdentity(), never by naming a
+    // field here: that function is the whole seam an id-space change moves
+    // through (UCS-1142, UCS-1144). `identity` is the neutral key consumers
+    // read; `notation` stays alongside it because it is a PUBLIC resolver
+    // field, and `id` because the resolver publishes the accession too.
+    const { identity, keys } = leafIdentity(record);
+    const entry = {
+      identity,
+      [LEAF_ACCESSION_FIELD]: record[LEAF_ACCESSION_FIELD] ?? null,
+      [LEAF_ID_FIELD]: record[LEAF_ID_FIELD],
+      file,
+      record,
+      body: match[2],
+    };
+    // `leaves` is keyed by IDENTITY alone — one entry per leaf, exactly as
+    // before. Every consumer that walks the index (orphan checks, citation
+    // checks, the resolver's entry points) therefore still sees each leaf
+    // once; indexing the aliases here instead would have turned one
+    // accessioned leaf into two orphan findings and two resolver results.
+    //
+    // The alternate spelling goes to `leafAliases`, a lookup consulted by ref
+    // resolution and nothing else. Separating them is what keeps "answers to
+    // two names" from becoming "is two records": identity is a property of the
+    // leaf, an alias is a property of the citation.
+    const idPath = typeof record[LEAF_ACCESSION_FIELD] === 'string'
+      ? LEAF_ACCESSION_FIELD
+      : LEAF_ID_FIELD;
+    // Aliases are indexed only if the leaf actually TOOK its identity. A leaf
+    // that lost the identity to an earlier file owns nothing, so registering
+    // its notation would file that spelling under the winner — pointing a
+    // legitimate notation-form citation at a different leaf in a different
+    // file, which is worse than not resolving it at all.
+    if (indexRecord(ctx, 'leaves', identity, file, idPath, entry)) {
+      for (const alias of keys.slice(1)) indexAlias(ctx, alias, identity, file);
+    }
+    if (typeof identity === 'string') {
+      collectRefs(ctx, 'knowledge-leaf', identity, file, '', record);
     }
   }
 }
@@ -520,7 +678,13 @@ function buildPointers(ctx) {
 function resolveRefs(ctx) {
   for (const ref of ctx.refs) {
     const store = SPACE_TO_STORE[ref.space];
-    ref.resolved = ctx[ref.space].has(ref.to) || ctx.declared[store].has(ref.to);
+    // An alias resolves exactly as an identity does: both citation forms are
+    // legal, so neither is a second-class lookup (UCS-1144). The alias index
+    // is reached through SPACE_ALIASES, so this line never names a space.
+    const aliases = ctx[SPACE_ALIASES[ref.space]];
+    ref.resolved = ctx[ref.space].has(ref.to)
+      || !!aliases?.has(ref.to)
+      || ctx.declared[store].has(ref.to);
     if (!ref.resolved) {
       ctx.diagnostics.push({
         severity: 'error', code: 'unresolved-ref', file: ref.file, path: ref.path,
@@ -555,6 +719,7 @@ export function loadStores(root) {
     declared: { ontology: new Set(), knowledge: new Set(), decisions: new Set() },
     concepts: new Map(),
     leaves: new Map(),
+    leafAliases: new Map(),
     decisions: new Map(),
     refs: [],
     diagnostics: [],
@@ -586,6 +751,7 @@ export function loadStores(root) {
     stores: ctx.stores,
     concepts: sortedMap(ctx.concepts),
     leaves: sortedMap(ctx.leaves),
+    leafAliases: sortedMap(ctx.leafAliases),
     decisions: sortedMap(ctx.decisions),
     pointers,
     refs: ctx.refs,

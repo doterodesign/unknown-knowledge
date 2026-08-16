@@ -109,8 +109,13 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   assert.equal(method.summary, 'A way a user pays money in.');
   assert.deepEqual(method['source-of-truth'], ['src/payments/methods/registry.ts']);
   assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Payout method' }]);
+  // The golden for a notation-only store under UCS-1144: byte-for-byte what it
+  // was, plus `id: null` and nothing else. That the accession field is present
+  // and explicitly null — rather than absent — is the contract: a consumer
+  // reads one result shape whether or not the store has started minting.
   assert.deepEqual(method.knowledge, [
     {
+      id: null,
       notation: '410.2',
       heading: 'Accepted payment instruments',
       file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
