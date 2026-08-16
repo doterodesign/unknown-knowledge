@@ -12,10 +12,10 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. Eight command-line surfaces —
+**Engine** — The vendored deterministic code. Nine command-line surfaces —
 structural validator, value validator, preflight, resolver, survey map, reverse
-audit, log-entry helper, document ingest — over a store loader, an extractor
-library, and a format-adapter library.
+audit, log-entry helper, document ingest, phoenix events — over a store loader,
+an extractor library, and a format-adapter library.
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
 not decide what to do about them (D-011).

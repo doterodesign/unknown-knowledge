@@ -58,6 +58,10 @@ unconditional:
     # a registry value (UCS-1148): every registry edit is a governed act with a
     # written rationale, and this is the shape of that rationale.
     - { from: templates/decisions/registry-minting.yaml, to: templates/decisions/registry-minting.yaml }
+    # The Decisions-entry template a steward copies to record a phoenix event
+    # (UCS-1154): a bulk re-taxonomy is a governed act, and this is the shape of
+    # the rationale that sanctions the edition bump it carries.
+    - { from: templates/decisions/phoenix-event.yaml, to: templates/decisions/phoenix-event.yaml }
     # Stack-agnostic fixture authoring guide: ships even with no stack
     # selected — a config-only client authoring its first pack starts here.
     - { from: extractor-fixtures/README.md, to: engine/tests/fixtures/README.md }

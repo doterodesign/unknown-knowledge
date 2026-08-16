@@ -119,6 +119,7 @@ test('the Engine term names every shipped engine surface', () => {
     audit: 'reverse audit',
     'log-entry': 'log-entry helper',
     ingest: 'document ingest',
+    phoenix: 'phoenix events',
   };
   for (const surface of shipped) {
     assert.ok(Object.hasOwn(prose, surface),

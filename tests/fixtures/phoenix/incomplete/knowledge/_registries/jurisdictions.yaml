@@ -1,0 +1,9 @@
+# Frontmatter v2 fixture (UCS-1149) — the jurisdictions registry.
+#
+# Both leaves here claim universally (`applies.jurisdictions: []`), so nothing
+# has warrant yet. An EMPTY registry is not a missing one: it is a vocabulary
+# nothing has needed, and empty `jurisdictions` means universal, not unchecked.
+schema-version: 1
+store: knowledge
+registry: jurisdictions
+values: []

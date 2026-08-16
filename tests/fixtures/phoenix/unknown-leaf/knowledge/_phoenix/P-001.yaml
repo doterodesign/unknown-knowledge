@@ -1,0 +1,36 @@
+# Phoenix event P-001 — the REJECTION fixture: a row naming an unknown leaf.
+#
+# L-000999 is not in this store. A mapping that names a leaf nobody can open
+# describes an event that cannot be reviewed: either the id is a typo, or the
+# mapping is stale and was written against a store that no longer exists.
+# Either way the event is not what its author believed it was.
+#
+# Every OTHER row here is valid, and the event must still write nothing.
+schema-version: 1
+event: P-001
+title: Split odds-feed into feeds/ingest and feeds/settlement
+decision: D-420
+applied: "2026-08-17"
+scope:
+  facet: facets.domain
+  values:
+    - sportsbook/odds-feed
+    - sportsbook/settlement
+leaves:
+  - id: L-000117
+    to: feeds/ingest
+    why: Provider quirks are ingest material — they describe the wire, not the book.
+  - id: L-000213
+    to: feeds/ingest
+    why: >-
+      The latency budget is spent between the provider's wire and our priced
+      book, which is the ingest path end to end.
+  - id: L-000133
+    to: feeds/settlement
+    why: >-
+      Merged: the rounding rule is settlement material, and the warrant no
+      longer supports a sportsbook-specific settlement class beside the
+      feed-side one.
+  - id: L-000999
+    to: feeds/settlement
+    why: A leaf this store does not carry — the defect this fixture exists for.

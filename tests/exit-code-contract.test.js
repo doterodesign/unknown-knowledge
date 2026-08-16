@@ -50,6 +50,9 @@ const ARGV = {
   // A supported extension, so dispatch succeeds and the injected bug is reached
   // in `main`; an unsupported one would be refused before it ever got there.
   'payload/engine/ingest.js': ['some-document.md'],
+  // The event to apply. It need not exist: naming one gets past the flag
+  // grammar into `main`, where the injected bug waits.
+  'payload/engine/phoenix.js': ['P-001'],
   'cli/init-copy.js': ['--target', '.'],
 };
 
@@ -60,6 +63,9 @@ const EMITS_FINDINGS = new Set([
   'payload/engine/preflight.js', // quarantined concepts
   'payload/engine/audit.js', // findings, under the human opt-in only
   'payload/engine/survey-map.js', // blind spots
+  // A refused mapping: the store or the mapping has defects its author fixes,
+  // which is the findings case. Nothing is written on that path (UCS-1154).
+  'payload/engine/phoenix.js',
 ]);
 
 /** The command module behind a surface's entry shim. */

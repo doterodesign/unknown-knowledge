@@ -43,6 +43,13 @@
  *                               // structural-validator check (KK-05), never a
  *                               // schema enum — the vocabulary grows by steward
  *                               // review, not by an engine release
+ *     phoenix:   Map "<store>/<event>" ->
+ *                  { event, store, file, decision, scope, rows:Map id->row },
+ *                               // retained phoenix event mappings (UCS-1154):
+ *                               // the record of a bulk re-taxonomy that already
+ *                               // happened, kept so the validator can hold every
+ *                               // non-1 edition against a sanctioning event
+ *                               // without reading git history
  *     pointers:  Map source-of-truth path -> [concept ids],  // KK-06 --paths
  *     leavesByConcept: Map concept id -> [leaf identities],
  *                               // the leaf→concept edge derived in REVERSE at
@@ -198,6 +205,8 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'registry-name-mismatch',
   'registry-store-mismatch',
   'duplicate-registry-value',
+  'phoenix-name-mismatch',
+  'duplicate-phoenix-row',
 ]);
 
 /**
@@ -349,6 +358,19 @@ export const REGISTRY_DIR = '_registries';
 const REGISTRY_EXTENSION = '.yaml';
 
 /**
+ * Where a store keeps its phoenix event mappings (UCS-1154).
+ *
+ * `_`-prefixed for the same reason `_registries` is: the record walks skip
+ * every underscore entry, so an event mapping can never be mistaken for a
+ * leaf. The mappings are RETAINED in the store after the event applies,
+ * because they are what lets the structural validator confirm — from the
+ * working tree alone, with no git history — that every non-1 edition was
+ * sanctioned by a phoenix event rather than typed by hand.
+ */
+export const PHOENIX_DIR = '_phoenix';
+const PHOENIX_EXTENSION = '.yaml';
+
+/**
  * Per-store file-class descriptors (UCS-1148) — what a store IS, as data.
  *
  * The loader used to carry each store's shape in its control flow: which
@@ -374,6 +396,8 @@ const REGISTRY_EXTENSION = '.yaml';
  *   rules       whether the store declares a `_rules.yaml` (decisions does
  *               not, by design — §9.1)
  *   registries  whether the store may carry `_registries/*.yaml`
+ *   phoenix     whether the store may carry `_phoenix/*.yaml` — the retained
+ *               event mappings a bulk re-taxonomy leaves behind (UCS-1154)
  *
  * Frozen: every surface reads this table, so a consumer able to mutate a row
  * would be redefining a store's shape out from under the loader.
@@ -401,6 +425,9 @@ export const STORE_DESCRIPTORS = Object.freeze({
     reader: 'loadLeafFiles',
     rules: true,
     registries: true,
+    // Only knowledge carries phoenix events: an event re-taxonomizes LEAVES,
+    // and the leaves live here.
+    phoenix: true,
   }),
   decisions: Object.freeze({
     dir: 'decisions',
@@ -783,6 +810,68 @@ function loadRegistryFiles(ctx, store) {
   }
 }
 
+/**
+ * Load a store's retained phoenix event mappings (UCS-1154).
+ *
+ * Shaped after `loadRegistryFiles`, and for the same reason: the file's
+ * declared id must agree with its filename, or a finding that names an event
+ * would cite a file a steward cannot open under that name.
+ *
+ * The mapping is indexed but never APPLIED here. Applying it is the phoenix
+ * command's job, and it happens once; what the loader publishes is the record
+ * of an event that already happened, so the validator can hold every non-1
+ * edition against it.
+ *
+ * @param {object} ctx the in-flight load context
+ * @param {string} store the store directory carrying `_phoenix/`
+ */
+function loadPhoenixFiles(ctx, store) {
+  const dir = `${store}/${PHOENIX_DIR}`;
+  for (const file of listFiles(ctx, dir, PHOENIX_EXTENSION, false, { skipUnderscore: false })) {
+    const name = file.slice(dir.length + 1, -PHOENIX_EXTENSION.length);
+    ctx.stores[store].files.push(file);
+    const doc = loadMetaFile(ctx, file, 'phoenix-event');
+    if (doc === null) continue; // parse-error or schema defect already diagnosed
+    if (doc.event !== name) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'phoenix-name-mismatch', file, path: 'event',
+        message: `phoenix event declares id "${doc.event}" but lives at ${file} — a finding that names an event must name the file a steward opens`,
+      });
+      continue;
+    }
+    // The event's warrant rides the ordinary ref graph, exactly as a registry
+    // minting's does: a decision id naming no decision is the same
+    // `unresolved-ref` error it would be anywhere else. A bulk re-taxonomy
+    // nobody signed is the ungoverned drift this mechanism exists to replace.
+    ctx.refs.push({
+      from: `${store}/${PHOENIX_DIR}/${doc.event}`,
+      type: 'phoenix.decision',
+      to: doc.decision,
+      file,
+      path: 'decision',
+      space: 'decisions',
+    });
+    const rows = new Map();
+    for (const [i, row] of doc.leaves.entries()) {
+      if (!isObject(row) || typeof row.id !== 'string') continue; // KK-02 diagnosed the shape
+      // One row per leaf. Two rows for one accession would make "what did this
+      // event do to L-x" a question the file answers twice, and choosing by
+      // file order would be a governance decision nobody made.
+      if (rows.has(row.id)) {
+        ctx.diagnostics.push({
+          severity: 'error', code: 'duplicate-phoenix-row', file, path: `leaves[${i}].id`,
+          message: `leaf "${row.id}" is mapped twice by event ${doc.event} — one row per leaf, or the event states two fates for one leaf and the engine would pick by file order`,
+        });
+        continue;
+      }
+      rows.set(row.id, { ...row, index: i });
+    }
+    ctx.phoenix.set(`${store}/${name}`, {
+      event: doc.event, store, file, decision: doc.decision, scope: doc.scope, rows,
+    });
+  }
+}
+
 function listFiles(ctx, dir, extension, recursive, { skipUnderscore = true } = {}) {
   const out = [];
   const walk = (rel) => {
@@ -1030,6 +1119,7 @@ export function loadStores(root) {
     leaves: new Map(),
     decisions: new Map(),
     registries: new Map(),
+    phoenix: new Map(),
     refs: [],
     diagnostics: [],
   };
@@ -1047,6 +1137,7 @@ export function loadStores(root) {
     }
     loadCatalogAndRules(ctx, store, descriptor.rules);
     if (descriptor.registries) loadRegistryFiles(ctx, store);
+    if (descriptor.phoenix) loadPhoenixFiles(ctx, store);
   }
   // Records load after every registry, in every store: membership is judged
   // against the whole governed vocabulary, so no record may be read before the
@@ -1071,6 +1162,7 @@ export function loadStores(root) {
     leaves: sortedMap(ctx.leaves),
     decisions: sortedMap(ctx.decisions),
     registries: sortedMap(ctx.registries),
+    phoenix: sortedMap(ctx.phoenix),
     pointers,
     leavesByConcept,
     refs: ctx.refs,

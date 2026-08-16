@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:phoenix-event",
+  "title": "Phoenix event mapping (knowledge/_phoenix/<event>.yaml)",
+  "description": "A governed bulk re-taxonomy: the leaf-granular mapping that rewrites a drifted subtree's facets and bumps each touched leaf's edition (UCS-1154). A phoenix event is the ONLY thing that bumps edition in v2. It lands as an ordinary PR — a reviewable diff, not a migration project — carrying this mapping, the leaf rewrites the engine applied from it, the registry mintings the new values needed, and a Decisions entry recording why. The mapping is retained IN the store after the event, because it is what lets the structural validator confirm, from the working tree alone, that every non-1 edition was sanctioned by a phoenix event rather than typed by hand. Identity is never touched: a leaf keeps its accession id across a phoenix event, so nothing that cites it notices, and citations never chase reclassification. The mapping is leaf-granular because class-level rules cannot express a SPLIT — when one class's material divides across two successors, only a per-leaf table can say which leaf went where.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema-version", "event", "decision", "scope", "leaves"],
+  "properties": {
+    "schema-version": { "type": "integer", "minimum": 1 },
+    "event": {
+      "type": "string",
+      "pattern": "^P-[0-9]{3,}$",
+      "description": "The event's id (P-NNN), matching the file's basename so the file a finding names is the event it names."
+    },
+    "title": { "type": "string", "description": "What this event did, in one line — navigation, never the fact." },
+    "decision": {
+      "$ref": "#/$defs/decisionRef",
+      "description": "REQUIRED — the Decisions entry that sanctioned this event (§3.3). A bulk re-taxonomy nobody signed is exactly the ungoverned drift the phoenix mechanism exists to replace, so the mapping cites its warrant like a registry minting does."
+    },
+    "applied": { "$ref": "#/$defs/isoDate", "description": "The day the event was applied, recorded by the steward." },
+    "scope": {
+      "$ref": "#/$defs/scope",
+      "description": "The subtree this event claims. Every leaf inside it must be accounted for by a row below — the completeness gate that makes a phoenix event total rather than partial."
+    },
+    "leaves": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/leafRow" },
+      "description": "The leaf-granular mapping: one row per leaf in scope. Order is the steward's; the engine keys by accession."
+    }
+  },
+  "$defs": {
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "decisionRef": { "type": "string", "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$" },
+    "accession": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "facetValue": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*(/[a-z0-9]+(-[a-z0-9]+)*)*$" },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["facet", "values"],
+      "properties": {
+        "facet": {
+          "enum": ["facets.domain", "facets.form", "facets.anchor", "facets.stage"],
+          "description": "Which facet this event re-taxonomizes. One facet per event: an event that moved two independent axes at once would be two reviews wearing one diff."
+        },
+        "values": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/facetValue" },
+          "description": "The OLD facet values this event claims. For a hierarchical facet a value claims its whole subtree, so listing a parent claims every descendant — which is what makes 'every leaf in scope' a question the engine can answer without the steward enumerating the tree."
+        }
+      }
+    },
+    "leafRow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/accession",
+          "description": "The leaf this row governs. Identity is the accession and it does not change: this names the SAME leaf before and after, which is why no citation has to move."
+        },
+        "to": {
+          "$ref": "#/$defs/facetValue",
+          "description": "The new value for the scope's facet. Absent means CARRIED FORWARD — the leaf is in scope, was looked at, and deliberately keeps its current value. Carrying forward is not a rewrite, so it bumps no edition; it exists so that 'accounted for' can mean 'considered' rather than only 'moved'."
+        },
+        "why": {
+          "type": "string",
+          "pattern": "\\S",
+          "description": "Why this leaf went where it went. On a split this is the whole substance of the event — the class-level rule cannot say it, so the row must."
+        }
+      }
+    }
+  }
+}

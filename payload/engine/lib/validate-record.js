@@ -43,6 +43,7 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'catalog': 'catalog.schema.json',
   'rules': 'rules.schema.json',
   'registry': 'registry.schema.json',
+  'phoenix-event': 'phoenix-event.schema.json',
 });
 
 export const KINDS = Object.freeze(Object.keys(KIND_SCHEMA_FILES));
