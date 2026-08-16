@@ -21,7 +21,10 @@
  *       { present, catalog, rules, files } },   // parsed docs (null if absent),
  *                                               // record files root-relative
  *     concepts:  Map id       -> { id, file, record },
- *     leaves:    Map notation -> { notation, file, record, body },
+ *     leaves:    Map leaf-id  -> { identity, notation, file, record, body },
+ *                               // `identity` is the neutral id key consumers
+ *                               // read (UCS-1142); `notation` is the same
+ *                               // value under the public wire name
  *     decisions: Map id       -> { id, file, record },
  *     pointers:  Map source-of-truth path -> [concept ids],  // KK-06 --paths
  *     refs:      [{ from, type, to, file, path, resolved }], // cross-ref graph
@@ -62,6 +65,34 @@ import { validateStoreFile, ERROR_CODES, compare } from './validate-record.js';
 import { UsageError } from './usage-error.js';
 
 export const SEVERITIES = Object.freeze(['error', 'warning']);
+
+/**
+ * The record field a knowledge leaf currently mints its id in (UCS-1142).
+ *
+ * Named ONCE, here. The loader reads the leaf's id through this constant and
+ * indexes the result under the neutral `identity` key, so nothing downstream
+ * has to know which field the notation lives in — changing the leaf id space
+ * is this constant plus the grammar in lib/id-grammars.js, not a rename that
+ * fans out through every consumer.
+ *
+ * It is deliberately NOT the public wire name: the resolver still emits
+ * `notation` in its JSON (a published field, §4), and the loader keeps that
+ * spelling on the indexed entry alongside `identity` for exactly that reason.
+ */
+export const LEAF_ID_FIELD = 'notation';
+
+/**
+ * The id of one indexed record, whatever store it came from.
+ *
+ * Concepts and decisions carry `id`, leaves carry `identity` — one accessor,
+ * so a consumer that walks all three spaces (catalog checks, orphan checks)
+ * never names a store-specific field. The Map key is the same value; this is
+ * for the code paths that hold the entry rather than the pair.
+ *
+ * @param {{ id?: string, identity?: string }} entry an indexed record
+ * @returns {string|undefined} the record's id
+ */
+export const recordId = (entry) => entry.identity ?? entry.id;
 
 export const DIAGNOSTIC_CODES = Object.freeze([
   ...ERROR_CODES,
@@ -285,11 +316,16 @@ function loadLeafFiles(ctx) {
     validateInto(ctx, 'knowledge-leaf', file, parsed.doc);
     const record = parsed.doc;
     if (!isObject(record)) continue;
-    indexRecord(ctx, 'leaves', record.notation, file, 'notation', {
-      notation: record.notation, file, record, body: match[2],
+    // The leaf's identity is read through LEAF_ID_FIELD, never by naming the
+    // notation field here: this line is the whole seam an id-space change
+    // moves through (UCS-1142). `identity` is the neutral key consumers index
+    // by; `notation` stays alongside it because it is a PUBLIC resolver field.
+    const id = record[LEAF_ID_FIELD];
+    indexRecord(ctx, 'leaves', id, file, LEAF_ID_FIELD, {
+      identity: id, [LEAF_ID_FIELD]: id, file, record, body: match[2],
     });
-    if (typeof record.notation === 'string') {
-      collectRefs(ctx, 'knowledge-leaf', record.notation, file, '', record);
+    if (typeof id === 'string') {
+      collectRefs(ctx, 'knowledge-leaf', id, file, '', record);
     }
   }
 }

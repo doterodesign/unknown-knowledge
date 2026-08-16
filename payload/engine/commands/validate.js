@@ -51,11 +51,17 @@ import { statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
-import { healthSummary, loadStores, normalizeConceptIds, storeHealth } from '../lib/load-stores.js';
+import {
+  LEAF_ID_FIELD, healthSummary, loadStores, normalizeConceptIds, recordId, storeHealth,
+} from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
 import { compare } from '../lib/validate-record.js';
+// Catalog id grammars come from the one module that owns them (UCS-1142), the
+// same source the record-level schema patterns bind to — so a catalog row and
+// the record it points at can never be judged by two different grammars.
+import { ID_GRAMMARS, idPattern } from '../lib/id-grammars.js';
 
 export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <dir>] [--concepts <ids>]';
 
@@ -64,16 +70,6 @@ export const CHECKS = Object.freeze([
   'id-range', 'id-shape', 'index-drift', 'missing-citation',
   'missing-path', 'orphan', 'ref-cycle',
 ]);
-
-/** Store → catalog id grammar (§3.5; record-level ids are schema-checked). */
-const ID_GRAMMARS = Object.freeze({
-  ontology: { pattern: /^K-[0-9]+$/, hint: 'K-NNN' },
-  knowledge: { pattern: /^[0-9]+(\.[0-9]+)*$/, hint: 'dotted notation, e.g. "362.1"' },
-  decisions: {
-    pattern: /^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$/,
-    hint: 'D-NNN or provisional D-YYYY-MM-DD-slug',
-  },
-});
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
 const PENDING_MARKER = 'pending-import';
@@ -91,17 +87,18 @@ function checkCatalogs(model, push) {
     if (!idsByFile.has(file)) idsByFile.set(file, new Set());
     idsByFile.get(file).add(id);
   };
-  for (const { id, file } of model.concepts.values()) addTo(file, id);
-  for (const { notation, file } of model.leaves.values()) addTo(file, notation);
-  for (const { id, file } of model.decisions.values()) addTo(file, id);
+  for (const records of [model.concepts, model.decisions, model.leaves]) {
+    for (const entry of records.values()) addTo(entry.file, recordId(entry));
+  }
 
   for (const store of ['decisions', 'knowledge', 'ontology']) {
     const catalog = model.stores[store].catalog;
     if (!isObject(catalog) || !Array.isArray(catalog.entries)) continue; // absent/invalid: loader diagnosed
     const grammar = ID_GRAMMARS[store];
+    const pattern = idPattern(store);
     catalog.entries.forEach((row, i) => {
       if (!isObject(row) || typeof row.id !== 'string' || typeof row.file !== 'string') return;
-      if (!grammar.pattern.test(row.id)) {
+      if (!pattern.test(row.id)) {
         push({
           severity: 'error', code: 'id-shape', id: row.id,
           file: `${store}/_catalog.yaml`, path: `entries[${i}].id`,
@@ -174,9 +171,12 @@ function checkOrphans(model, push) {
       if (isObject(row) && typeof row.id === 'string') declared[store].add(row.id);
     }
   }
+  // The third element is the FINDING path — where in the record the id was
+  // read from — not how this check gets at the id: identity comes through
+  // recordId(), so a leaf id space change never reaches this loop (UCS-1142).
   const spaces = [
     ['ontology', model.concepts, 'id'],
-    ['knowledge', model.leaves, 'notation'],
+    ['knowledge', model.leaves, LEAF_ID_FIELD],
     ['decisions', model.decisions, 'id'],
   ];
   for (const [store, records, idPath] of spaces) {
@@ -194,12 +194,13 @@ function checkOrphans(model, push) {
 
 /** Leaf citations must carry a non-empty source (§3.2). */
 function checkCitations(model, push) {
-  for (const { notation, file, record } of model.leaves.values()) {
+  for (const leaf of model.leaves.values()) {
+    const { file, record } = leaf;
     if (!Array.isArray(record.citations)) continue; // presence is a schema check
     record.citations.forEach((c, i) => {
       if (isObject(c) && typeof c.source === 'string' && c.source.trim() === '') {
         push({
-          severity: 'error', code: 'missing-citation', id: notation, file,
+          severity: 'error', code: 'missing-citation', id: recordId(leaf), file,
           path: `citations[${i}].source`,
           message: 'citation source is empty — an unsourced claim is not promotable (§3.2)',
         });

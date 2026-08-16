@@ -29,6 +29,7 @@
  * run-over-run diffs mean something.
  */
 import { readFileSync } from 'node:fs';
+import { ID_GRAMMARS, SCHEMA_DEFS } from './id-grammars.js';
 
 /** Record kind → schema document shipped in payload/schemas/. */
 const KIND_SCHEMA_FILES = Object.freeze({
@@ -80,6 +81,24 @@ export const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 
 const schemaCache = new Map();
 
+/**
+ * Bind the shared id grammars onto a freshly parsed schema (UCS-1142).
+ *
+ * The schema files keep their own `$defs` copies so each stays self-contained
+ * for external consumers, but the ENGINE validates against lib/id-grammars.js
+ * — the one module that owns each id space's pattern. Overwriting rather than
+ * asserting is deliberate: a drifted copy is corrected here, so the engine can
+ * only ever enforce the live grammar. (tests/id-grammars.test.js pins that the
+ * shipped copies agree, which is what keeps the published documents honest.)
+ */
+function bindIdGrammars(schema) {
+  for (const [space, def] of Object.entries(SCHEMA_DEFS)) {
+    const node = schema.$defs?.[def];
+    if (node) node.pattern = ID_GRAMMARS[space].pattern;
+  }
+  return schema;
+}
+
 function schemaFor(kind) {
   const file = KIND_SCHEMA_FILES[kind];
   if (!file) {
@@ -87,7 +106,7 @@ function schemaFor(kind) {
   }
   if (!schemaCache.has(kind)) {
     const url = new URL(`../../schemas/${file}`, import.meta.url);
-    schemaCache.set(kind, JSON.parse(readFileSync(url, 'utf8')));
+    schemaCache.set(kind, bindIdGrammars(JSON.parse(readFileSync(url, 'utf8'))));
   }
   return schemaCache.get(kind);
 }
