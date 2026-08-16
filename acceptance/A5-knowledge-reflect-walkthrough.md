@@ -49,9 +49,53 @@ node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-04 --suffix
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-06 --suffix 00000006 \
   --root unknown-knowledge \
   --entry '{"trigger":"correction","summary":"correction: K-120 EPL is correct in Sources/Sportsbook/Sport.swift; the UEFA claim is wrong","consulted":{"concepts":["K-120"]},"session":"s-c414"}'
+
+# Three corroborating RESIDUE findings about the same unresolved term
+# (UCS-1160) — the misses the loop turns into tomorrow's edges. Two are query
+# residue carrying the context that DID resolve; the third is a --doc candidate
+# carrying its section locator:
+node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-02 --suffix 00000007 \
+  --root unknown-knowledge \
+  --entry '{"trigger":"retrieval-miss","summary":"residue from resolve: lacrosse unresolved in an ask that resolved add-sport","residue":["lacrosse"],"resolved-context":["add-sport","K-110"],"session":"s-4b02"}'
+node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-05 --suffix 00000008 \
+  --root unknown-knowledge \
+  --entry '{"trigger":"retrieval-miss","summary":"residue from resolve: lacrosse unresolved; add-sport and K-110 resolved","residue":["lacrosse"],"resolved-context":["add-sport","K-110"],"session":"s-9d17"}'
+node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-07 --suffix 00000009 \
+  --root unknown-knowledge \
+  --entry '{"trigger":"retrieval-miss","summary":"document candidate: lacrosse in docs/sports-expansion.md; K-110 resolved","residue":["lacrosse"],"resolved-context":["K-110"],"section":{"document":"docs/sports-expansion.md","address":"Planned sports","line":24},"session":"s-e330"}'
 ```
 
-Six `open` fragments now sit in `unknown-knowledge/logs/findings/`. Give
+Each of those nine writes one fragment — one file per finding, so the
+concurrent sessions that produced them never merge-conflict. The last one
+prints its locator back:
+
+```
+{
+  "file": "logs/findings/2026-07-07-00000009.yaml",
+  "status": "open",
+  "entry": {
+    "schema-version": 1,
+    "date": "2026-07-07",
+    "status": "open",
+    "trigger": "retrieval-miss",
+    "summary": "document candidate: lacrosse in docs/sports-expansion.md; K-110 resolved",
+    "residue": [
+      "lacrosse"
+    ],
+    "resolved-context": [
+      "K-110"
+    ],
+    "section": {
+      "document": "docs/sports-expansion.md",
+      "address": "Planned sports",
+      "line": 24
+    },
+    "session": "s-e330"
+  }
+}
+```
+
+Nine `open` fragments now sit in `unknown-knowledge/logs/findings/`. Give
 the agent `payload/protocol/skills/knowledge-reflect.md` (plus
 `payload/protocol/AGENTS.md`, which it operates under) and nothing else;
 the human plays the steward at the gate. Where the skill writes
@@ -63,20 +107,27 @@ matches.
 
 ## 1. SWEEP — inventory, read-only
 
-- [ ] The agent reads the six fragments (fragments are the entries; no
-  raw repo traversal, no hand-editing) and inventories: 6 `open`, 0
+- [ ] The agent reads the nine fragments (fragments are the entries; no
+  raw repo traversal, no hand-editing) and inventories: 9 `open`, 0
   `proposed`, no `logs/misses/` or `logs/gaps/` backlog, no
   `logs/last-reflect.yaml` (first cycle — archival counting starts now).
 
-## 2. CLUSTER — three clusters, one disputed
+## 2. CLUSTER — four clusters, one disputed
 
-- [ ] Clustering by `consulted:` concept refs yields exactly three
-  clusters, every fragment in exactly one:
+- [ ] Clustering yields exactly four clusters, every fragment in exactly
+  one. The first three cluster by `consulted:` concept refs; the fourth
+  clusters by its `residue` term, because residue findings are about a word
+  the store has no concept for — that is the whole point of them:
   - **K-110** — 3 corrections (…00000001, …00000002, …00000003)
   - **K-120** — 2 corrections (…00000005, …00000006), **mutually
     contradictory** (UEFA-not-EPL vs. EPL-is-correct) → flagged
     `disputed` (a cluster flag for this run — never a fragment status)
   - **K-130** — 1 retrieval-struggle (…00000004)
+  - **residue `lacrosse`** — 3 retrieval-misses (…00000007, …00000008,
+    …00000009), clustered on the shared unresolved term. Their
+    `resolved-context` agrees (`add-sport`, `K-110`), which localizes the
+    gap: the ask resolved the operation and the sports concept and fell
+    over on the sport itself.
 
 ## 3. Disputed cluster (K-120) — resolved by reading the SSOT
 
@@ -144,9 +195,20 @@ and the resolution carries the stamped `verified` date:
   appears on the recommendation list, and neither finding corroborates
   any other cluster (a dispute never counts as corroboration).
 
-## 4. RECOMMEND + GATE — one item reaches the queue
+## 4. RECOMMEND + GATE — two items reach the queue
 
-- [ ] Exactly one recommendation item, presented per-item in the
+- [ ] The agent presents the **reflect queue**, not a store browse — the
+  moderator reviews what reflect puts in front of them and never goes
+  looking through `ontology/` or `knowledge/` for things to fix. All four
+  queue sections are present, in order:
+  - **Mint proposals** — the `lacrosse` item (below)
+  - **Corroborated findings** — the K-110 item (below)
+  - **Drafts awaiting promotion** — empty this cycle (no
+    `knowledge-promotion` or `extractor-draft` handoffs)
+  - **Sampled spot-checks** — the K-130 single struggle, shown explicitly
+    as under-corroborated so the human can audit the threshold itself,
+    never as a recommendation
+- [ ] Exactly two recommendation items, presented per-item in the
   conversation with category, concrete diff, and the justifying findings
   attached:
   - **category `concept-fix`** — K-110: replace claimed value `cricket`
@@ -154,12 +216,30 @@ and the resolution carries the stamped `verified` date:
     `Sources/Sportsbook/Sport.swift` (drafted from the source, never from
     the findings' prose); evidence: `logs/findings/2026-07-01-00000001.yaml`,
     `…2026-07-03-00000002.yaml`, `…2026-07-06-00000003.yaml`.
+  - **category `mint-proposal`** — mint `lacrosse` as a value. Three
+    distinct fragments corroborate it (2026-07-02, 2026-07-05, 2026-07-07 —
+    one correction is a data point, three are a pattern), and the **literary
+    warrant** is material that exists now: the agent opened
+    `docs/sports-expansion.md` at the `Planned sports` section its candidate
+    locator addressed (line 24) rather than trusting the finding's prose — a
+    candidate is a claim about the map until someone reads the source.
+    Evidence: `logs/findings/2026-07-02-00000007.yaml`,
+    `…2026-07-05-00000008.yaml`, `…2026-07-07-00000009.yaml`.
+- [ ] The mint proposal is drafted as **one Decisions entry**, copied from
+  `templates/decisions/reflect-mint-proposal.yaml` with its `id` and `date`
+  placeholders filled. Paste it unedited and validation refuses it — exactly
+  two diagnostics, `entries[0].date` and `entries[0].id` `pattern-mismatch`
+  — so a placeholder rationale can never reach the Decisions store.
+- [ ] Corroboration was counted **by hand**. No CLI reported a
+  corroboration score; the engine has no opinion about how many findings
+  make a pattern.
 - [ ] The K-130 single struggle got **no item** — one correction is a
   data point, three are a pattern; it stays `open` and ages.
-- [ ] Nothing was applied before the human approved. **The human
-  approves the K-110 item** (simulated approval); the outcome
-  `concept-fix: approved` is recorded for the stamp, and the three
-  justifying findings move `open → proposed`:
+- [ ] Nothing was applied before the human approved. **The human approves
+  both items per-item, never as a bulk yes** (simulated approval); the
+  outcomes `concept-fix: approved` and `mint-proposal: approved` are
+  recorded for the stamp, and each item's justifying findings move
+  `open → proposed`:
 
 ```sh
 node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-01-00000001.yaml \
@@ -167,6 +247,12 @@ node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-01-00000
 node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-03-00000002.yaml \
   --to proposed --date 2026-07-09 --root unknown-knowledge
 node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-06-00000003.yaml \
+  --to proposed --date 2026-07-09 --root unknown-knowledge
+node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-02-00000007.yaml \
+  --to proposed --date 2026-07-09 --root unknown-knowledge
+node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-05-00000008.yaml \
+  --to proposed --date 2026-07-09 --root unknown-knowledge
+node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-07-00000009.yaml \
   --to proposed --date 2026-07-09 --root unknown-knowledge
 ```
 
@@ -228,6 +314,51 @@ node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-06-00000
 
 Each prints `"status": "resolved"` with `"verified": "2026-07-09"`.
 
+- [ ] The approved **mint** lands as its own governed act: the filled
+  Decisions entry (one entry for the one value minted) plus the registry
+  edit that cites it, in the same PR as the material that supplied the
+  warrant. Then its three findings resolve the same way:
+
+```sh
+node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-02-00000007.yaml \
+  --to resolved --date 2026-07-09 --root unknown-knowledge
+node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-05-00000008.yaml \
+  --to resolved --date 2026-07-09 --root unknown-knowledge
+node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-07-00000009.yaml \
+  --to resolved --date 2026-07-09 --root unknown-knowledge
+```
+
+- [ ] The residue payload survives the whole lifecycle — it is what the
+  minting decision cites, so losing it mid-transition would strand the
+  evidence. The candidate's locator is still on the resolved fragment:
+
+```
+{
+  "file": "logs/findings/2026-07-07-00000009.yaml",
+  "status": "resolved",
+  "entry": {
+    "schema-version": 1,
+    "date": "2026-07-07",
+    "status": "resolved",
+    "trigger": "retrieval-miss",
+    "summary": "document candidate: lacrosse in docs/sports-expansion.md; K-110 resolved",
+    "residue": [
+      "lacrosse"
+    ],
+    "resolved-context": [
+      "K-110"
+    ],
+    "section": {
+      "document": "docs/sports-expansion.md",
+      "address": "Planned sports",
+      "line": 24
+    },
+    "session": "s-e330",
+    "verified": "2026-07-09"
+  }
+}
+```
+
 - [ ] Lifecycle guard check: the helper refuses to shortcut the K-130
   entry straight to resolved —
 
@@ -244,8 +375,14 @@ log-entry: logs/findings/2026-07-05-00000004.yaml: illegal transition open → r
 
 ## 6. STAMP — prune verdict, then the observable cycle
 
-- [ ] The queue tally is now 1 `open` / 1 `rejected` / 4 `resolved`
-  (`grep -h "^status:" unknown-knowledge/logs/findings/*.yaml | sort | uniq -c`).
+- [ ] The queue tally is now 1 `open` / 1 `rejected` / 7 `resolved`
+  (`grep -h "^status:" unknown-knowledge/logs/findings/*.yaml | sort | uniq -c`):
+
+```
+   1 status: open
+   1 status: rejected
+   7 status: resolved
+```
 - [ ] Prune verdict: the K-130 fragment is uncorroborated but this is
   **cycle 1 of N = 3** — it is kept, not archived; nothing is deleted
   this run, and `archived:` stamps empty.
@@ -258,6 +395,7 @@ date: 2026-07-09
 cycles: [2026-07-09]
 outcomes:
   concept-fix: { approved: 1, approved-with-modification: 0, rejected: 0 }
+  mint-proposal: { approved: 1, approved-with-modification: 0, rejected: 0 }
 archived: []
 ```
 
@@ -265,11 +403,12 @@ archived: []
 recommendation item — it appears in the run report, not in `outcomes:`.)
 
 - [ ] The agent declares done only now — every gate outcome recorded,
-  every close-the-loop re-run green — and reports: 3 clusters, 1
-  recommended item (approved, applied, verified), 1 disputed cluster
-  resolved by SSOT read (1 rejected with reason, 1 resolved), 1
-  under-corroborated finding held open (cycle 1/3), stamp written. In a
-  client repo the whole bundle — diff, transitioned fragments, stamp —
+  every close-the-loop re-run green — and reports: 4 clusters, 2
+  recommended items (both approved, applied, verified — one of them a mint
+  carrying its own Decisions entry), 1 disputed cluster resolved by SSOT
+  read (1 rejected with reason, 1 resolved), 1 under-corroborated finding
+  held open (cycle 1/3), stamp written. In a client repo the whole bundle —
+  diff, registry edit, Decisions entry, transitioned fragments, stamp —
   lands as one reflect PR.
 
 ## Re-open, not duplicate (next-cycle demonstration)

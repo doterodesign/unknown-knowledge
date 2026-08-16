@@ -1,0 +1,78 @@
+# Decisions-entry template — a reflect MINT PROPOSAL (UCS-1160).
+#
+# Reflect is where misses become tomorrow's deterministic edges. A corroborated
+# cluster of residue or document-candidate findings is evidence that the store
+# has no word for something the material keeps naming. Minting that word — a
+# term, an alias, an operation, or a domain class — is a governed act, and this
+# file is the shape of the rationale that sanctions it.
+#
+# Copy this file to decisions/entries/<id>-<slug>.yaml, fill it, and open ONE
+# PR carrying the entry, the registry (or concept) edit that cites it, and the
+# findings that supplied the warrant. Conduct in full:
+# protocol/skills/knowledge-reflect.md (Minting conduct) and
+# protocol/registry-warrant.md.
+#
+# Draft with a provisional date-suffixed id (D-YYYY-MM-DD-slug) and
+# `status: proposed`; the steward assigns the final D-NNN at acceptance (§3.5).
+# Agents draft; humans approve.
+#
+# The two rules this entry exists to evidence:
+#   ONE FINDING IS A DATA POINT, THREE ARE A PATTERN. `evidence` must name at
+#   least three DISTINCT fragments before a mint reaches the gate. A single
+#   unresolved token is noise; the same token unresolved across three sessions
+#   is a vocabulary the store is missing.
+#   A VALUE IS MINTED ONLY ON LITERARY WARRANT. If `context` cannot name
+#   material that exists NOW, the value is not ready — corroboration says the
+#   word keeps coming up, warrant says there is something for it to hold.
+#
+# The `id` and `date` placeholders below are DELIBERATELY not valid, so this
+# file fails validation until a steward fills them — pasting the template
+# unedited must never produce a Decisions entry, or a vocabulary value would end
+# up carrying a warrant nobody wrote. (Same conduct as registry-minting.yaml and
+# the audit's `K-XXX` drafts.) Every other field is real: fill those two and the
+# entry validates.
+schema-version: 1
+entries:
+  - id: D-YYYY-MM-DD-mint-example-from-reflect
+    title: Mint <value> in the <registry> registry (reflect cycle <date>)
+    # `governance` — minting a vocabulary value changes what the Store may say,
+    # not how the engine works.
+    category: governance
+    status: proposed
+    date: "YYYY-MM-DD"
+    deciders: [<steward>]
+    # THE WARRANT, plus the CORROBORATION that raised it. Name the material that
+    # exists and needs this value, AND the findings that kept landing on it.
+    # Reflect's own recommendation list is not evidence — the fragments are.
+    # "We will need it later" is the case the warrant rule refuses; "it came up
+    # once" is the case the corroboration rule refuses.
+    context: >-
+      <Which material exists, and why no minted value fits it. Then: how many
+      DISTINCT fragments corroborate it, over which dates, and what resolved
+      alongside the unresolved term (the findings' `resolved-context`) — that is
+      what localizes the gap. For a document candidate, name the section the
+      findings' `section` locators point at and say what reading it confirmed:
+      a candidate is a claim about the map until someone opens the source.>
+    # What is being minted, at which level, and in which vocabulary. For a
+    # hierarchical domain path, mint every segment: a child may not hang off an
+    # unminted parent.
+    decision: >-
+      Mint <value> in <registry>. <For an alias: name the concept it attaches to
+      and the surface form the findings kept using. For an operation: name the
+      verb and what it operates on. For a new top-level domain class: this is a
+      registry edit plus this entry — the top level is open, so no schema or
+      engine change is involved.>
+    # For a SUPPRESSION, keep the same shape and say what was refused and why.
+    # The value stays listed with `status: suppressed` rather than being
+    # deleted, so the refusal is durable and the term cannot be quietly
+    # re-minted — and the next reflect cycle that clusters the same residue sees
+    # that this term was already considered.
+    consequences: >-
+      <What this obliges: leaves to reclassify, siblings this now sits beside,
+      the residue this stops producing, or — on a suppression — where the
+      material should go instead.>
+    supersedes: []
+    # A re-minting REVERSES an earlier suppression: name that decision here and
+    # say in `context` why the refusal no longer holds.
+    relates-to:
+      leaves: []

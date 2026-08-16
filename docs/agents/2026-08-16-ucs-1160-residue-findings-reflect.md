@@ -1,0 +1,176 @@
+# UCS-1160 — Residue and candidates as fragment-based findings; reflect corroboration and minting conduct
+
+Branch: `ucs-1160-residue-and-candidates-as-fragment-based-findings-reflect`
+(cut from `faceted-store-v2` @ 8e41a06). Date: 2026-08-16.
+
+## What the ticket asked for, and what shipped
+
+The loop that turns misses into tomorrow's deterministic edges. Residue (from
+any input shape) and ranked document candidates are written as fragment-based
+findings through the **existing** log-entry surface — git-native, so concurrent
+sessions never merge-conflict — and the reflect **skill** (a protocol doc, not
+an engine command) gains the corroboration and minting conduct.
+
+Nothing new was built at the engine layer. The whole ticket landed as three
+additive schema fields, one new template, and protocol/docs prose with
+assertions. That was the right shape: the corroboration threshold and the
+warrant judgment are the human half of the loop, and building either into the
+engine would have made the threshold un-auditable and the warrant automatic.
+
+## The four acceptance criteria
+
+### 1. Residue and candidates emit as valid finding fragments through the CLI
+
+**The gap, found empirically before writing anything.** Running the residue
+shape through the CLI as it stood:
+
+```
+log-entry: logs/findings/2026-08-16-00000001.yaml: entry does not validate
+against finding.schema.json: resolved-context: unknown-property — unknown
+property "resolved-context" (additive schema evolution edits the schema;
+unknown keys are typos)
+```
+
+Exit 2. `resolve` had published `decomposition.residue` and
+`decomposition['resolved-context']` since UCS-1152, but the finding schema had
+no field to receive them — the two halves of the loop were not connected.
+
+**The fix** — `payload/schemas/finding.schema.json` gains three additive fields
+(§3.5 additive-only, D-013):
+
+- `residue` — array of strings, the unresolved terms this finding is about.
+- `resolved-context` — array of strings, `resolve`'s own
+  `decomposition.resolved-context` (operations, concept ids, jurisdictions).
+- `section` — closed object `{document, address, line?, page?}`, `document` and
+  `address` required.
+
+No new record kind and no parallel surface: residue is a **finding**, so
+reflect's existing sweep/cluster/transition machinery consumes it unchanged.
+`KIND_SCHEMA_FILES` in `validate-record.js` was untouched, so the KINDS pins in
+the validate-record tests needed no edit.
+
+Verified at the CLI seam: two creates, exit 0, two distinct files
+(`logs/findings/<date>-<hex8>.yaml`), each validating as `finding`.
+
+### 2. Each finding carries its resolved context and section locator
+
+Pinned as a golden on the exact bytes, in
+`tests/log-entry.test.js` ("UCS-1160 golden: the emitted fragment shape is
+byte-stable"). The candidate fragment on disk:
+
+```yaml
+schema-version: 1
+date: '2026-08-16'
+status: open
+trigger: retrieval-miss
+summary: 'document candidate: parlay in docs/betting-rules.md'
+residue:
+  - parlay
+resolved-context:
+  - K-110
+section:
+  document: docs/betting-rules.md
+  address: Bet types
+  line: 42
+```
+
+Byte-identical across two fresh roots (confirmed by `diff` before the test was
+written). Query residue carries no `section` — there is no document to address.
+A locator is line- OR page-addressed (pdf sources are page-addressed per
+`lib/coverage.js`), and the object is closed: a missing `document` or a
+typo'd key (`lines` for `line`) exits 2, because a locator that sends a reader
+to the wrong lines is worse than no locator.
+
+Also pinned: the residue payload survives the full `open → proposed →
+resolved` lifecycle. It is what the minting decision cites, so losing it
+mid-transition would strand the evidence.
+
+### 3. The placeholder idiom, extended — empirically, not by assumption
+
+**How the existing idiom works.** `payload/templates/decisions/registry-minting.yaml`
+carries `id: D-YYYY-MM-DD-mint-example-domain` and `date: "YYYY-MM-DD"`. The
+`decisionRef` pattern in `registry.schema.json` accepts `D-NNN` or
+`D-YYYY-MM-DD-slug` with **digits** — so the literal `YYYY` fails. Every other
+field is real, so filling exactly those two yields a valid entry.
+
+**New file** — `payload/templates/decisions/reflect-mint-proposal.yaml`, the
+same idiom for the vocabularies reflect mints. Per the UCS-1155 lesson, I ran
+validation against a pasted-unedited proposal rather than assuming the failure
+mode. First run used `validateRecord`, which validates a single *entry* and
+reported ten misleading diagnostics; the right seam is `validateStoreFile`
+(what `tests/registries.test.js` uses), which validates the file wrapper:
+
+```
+UNEDITED: [["entries[0].date","pattern-mismatch"],["entries[0].id","pattern-mismatch"]]
+FILLED:   []
+```
+
+Exactly two diagnostics, and filling the two placeholders yields a clean
+entry. That pair is pinned as the golden in `tests/registries.test.js`
+("UCS-1160 golden: a reflect mint proposal pasted UNEDITED fails validation").
+Worth recording: had I pinned from `validateRecord`, the golden would have
+asserted ten diagnostics that describe a validation seam nothing in the
+codebase actually uses on this file.
+
+The template also states, where a drafter reads it, both rules the entry
+exists to evidence: `ONE FINDING IS A DATA POINT, THREE ARE A PATTERN` and
+`A VALUE IS MINTED ONLY ON LITERARY WARRANT`. Registered in
+`cli/kit.manifest.yaml` — a payload file the manifest does not name never
+reaches a client (D-007).
+
+### 4. Reflect skill + walkthrough
+
+`payload/protocol/skills/knowledge-reflect.md` gains:
+
+- A note that the corroboration rule is **counted by hand** — `log-entry.js`
+  has no opinion about how many findings make a pattern, and no CLI reports a
+  corroboration score.
+- A "Residue and candidate findings" subsection describing both shapes, how to
+  cluster them (by `residue` term, since they are about words the store has no
+  concept for), and that zero resolution is a normal outcome, not a miss —
+  consistent with `ZERO_RESOLUTION_CONDUCT` in `resolve.js`.
+- A **"Minting conduct"** section: four mintable vocabularies (terms, aliases,
+  operations, domain classes) and three binding rules — literary warrant always
+  (corroboration alone is "speculative shelving wearing evidence"), evidence
+  attached verbatim, and one Decisions entry per minting.
+- A **reflect queue** table in the GATE step: mint proposals, corroborated
+  findings, drafts awaiting promotion, sampled spot-checks. The spot-check
+  sample is load-bearing — without it the human only ever sees what the
+  threshold admitted, and a threshold nobody audits is a threshold nobody can
+  tune.
+- `mint-proposal` added to the closed change-category vocabulary.
+
+`acceptance/A5-knowledge-reflect-walkthrough.md` seeds three corroborating
+residue findings (two query residue, one document candidate with its locator),
+carries them through a `mint-proposal` item at the gate, and records
+`mint-proposal: approved: 1` in the stamp. **Every command output was
+re-captured by running it** against `fixtures/swift-app` — the queue tally
+changed from 1/1/4 to 1/1/7 because six more fragments now flow through, and
+that number came from an actual `grep | sort | uniq -c`, not arithmetic.
+
+## Gates
+
+All green at the reporting commit:
+
+- `npm test` — 972 pass, 0 fail (baseline was 959; 13 new tests)
+- `npm run lint` — 204 files, 0 failures
+- `npm run acceptance` — OK, all asserted criteria (A1-A4, A6); A5 manual by design
+
+## Notes for whoever picks this up next
+
+- **The branch checkout failed exactly as the ticket warned.** `git checkout -b`
+  under the sandbox created the ref but left HEAD on `faceted-store-v2`
+  ("could not lock config file"). Recovery was a plain `git checkout <branch>`
+  unsandboxed. Always verify with `git branch --show-current` before committing.
+- **Docs-assertion regexes must tolerate the markdown line wrap.** Three
+  assertions failed on first run purely because the phrase they matched spans a
+  newline in the 72-column prose. Use `\s+` at the wrap point rather than
+  reflowing the prose to suit the test.
+- **`validateRecord` vs `validateStoreFile`** is a real trap for template
+  assertions — the first validates one entry, the second the file wrapper.
+  Template goldens want the second.
+- The engine was deliberately left alone. If a future ticket wants residue
+  findings *emitted automatically* by `resolve`, note that `resolve` is a
+  read-only query surface and `log-entry.js` is the only write path into
+  `logs/` — wiring one to the other would give a read command a write effect,
+  which is a bigger design decision than it looks.

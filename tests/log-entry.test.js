@@ -353,6 +353,176 @@ test('CLI: creating the same accession-citing fragment twice is byte-stable', ()
   assert.equal(bytes(tmpRoot()), bytes(tmpRoot()));
 });
 
+// --- UCS-1160: residue and document candidates as fragment findings ---------
+// The loop that turns misses into tomorrow's deterministic edges. Both flow
+// through THIS surface — one fragment per finding, so concurrent sessions
+// never merge-conflict — and each carries the context it fell out of.
+
+/** Query residue: the tokens no join consumed, with what DID resolve (UCS-1152). */
+const RESIDUE_FINDING = {
+  trigger: 'retrieval-miss',
+  summary: 'residue from resolve: lacrosse unresolved',
+  residue: ['lacrosse'],
+  'resolved-context': ['add-sport', 'K-110', 'new-jersey'],
+};
+
+/** A ranked --doc candidate: the document's own residue, section-addressed. */
+const CANDIDATE_FINDING = {
+  trigger: 'retrieval-miss',
+  summary: 'document candidate: parlay in docs/betting-rules.md',
+  residue: ['parlay'],
+  'resolved-context': ['K-110'],
+  section: { document: 'docs/betting-rules.md', address: 'Bet types', line: 42 },
+};
+
+test('CLI: residue and document candidates emit as valid finding fragments, exit 0', () => {
+  const root = tmpRoot();
+  for (const [what, fields] of [['residue', RESIDUE_FINDING], ['candidate', CANDIDATE_FINDING]]) {
+    const created = runCli([
+      'create', '--log', 'findings', '--date', '2026-08-16',
+      '--entry', JSON.stringify(fields),
+    ], root);
+    assert.equal(created.status, 0, `${what}: ${created.stderr}`);
+    const { file, entry } = JSON.parse(created.stdout);
+    // ONE FRAGMENT PER FINDING (D-010) — the filename is the entry id, so
+    // hundreds of sessions on hundreds of branches append without conflict.
+    assert.match(file, /^logs\/findings\/2026-08-16-[0-9a-f]{8}\.yaml$/, what);
+    assert.equal(entry.status, 'open', `${what}: findings are born open`);
+    // And it validates as a FINDING — not a new record kind. The fragment shape
+    // took additive fields (§3.5), never a parallel schema.
+    assert.deepEqual(validateRecord('finding', entry).errors, [], what);
+  }
+  // Two findings, two files: neither overwrote nor merged into the other.
+  assert.equal(readdirSync(join(root, 'logs', 'findings')).length, 2);
+});
+
+test('CLI: each emitted finding carries its resolved context; candidates carry the section locator', () => {
+  // The acceptance criterion this ticket exists for. A bare unresolved token is
+  // a finding nobody can act on: `lacrosse` unresolved in an ask that DID
+  // resolve add-sport and new-jersey localizes the gap precisely enough that
+  // the minting decision writes itself.
+  const root = tmpRoot();
+
+  const residue = JSON.parse(runCli([
+    'create', '--log', 'findings', '--date', '2026-08-16',
+    '--entry', JSON.stringify(RESIDUE_FINDING),
+  ], root).stdout);
+  assert.deepEqual(residue.entry.residue, ['lacrosse']);
+  assert.deepEqual(residue.entry['resolved-context'], ['add-sport', 'K-110', 'new-jersey'],
+    'the resolved context travels in written order, never reordered');
+  // Query residue has no document to address, so it carries no locator.
+  assert.equal(residue.entry.section, undefined);
+
+  const candidate = JSON.parse(runCli([
+    'create', '--log', 'findings', '--date', '2026-08-16',
+    '--entry', JSON.stringify(CANDIDATE_FINDING),
+  ], root).stdout);
+  assert.deepEqual(candidate.entry.section, CANDIDATE_FINDING.section,
+    'a candidate addresses the section it fell out of, for a just-in-time read');
+
+  // On disk, not just in the report the CLI printed.
+  for (const payload of [residue, candidate]) {
+    const onDisk = load(readFileSync(join(root, payload.file), 'utf8'));
+    assert.deepEqual(onDisk, payload.entry, 'the fragment file carries the whole entry');
+  }
+});
+
+test('UCS-1160 golden: the emitted fragment shape is byte-stable', () => {
+  // The fragment name carries a random hex suffix, so byte-stability is a
+  // property of the CONTENT (D-012). Pinned as a GOLDEN because reflect reads
+  // these fragments by hand: a key order that drifted run-over-run would make
+  // every reflect PR a diff of noise.
+  const bytes = (fields, root) => {
+    const created = runCli([
+      'create', '--log', 'findings', '--date', '2026-08-16', '--suffix', '00000001',
+      '--entry', JSON.stringify(fields),
+    ], root);
+    assert.equal(created.status, 0, created.stderr);
+    return readFileSync(join(root, JSON.parse(created.stdout).file), 'utf8');
+  };
+
+  assert.equal(bytes(RESIDUE_FINDING, tmpRoot()), [
+    'schema-version: 1',
+    "date: '2026-08-16'",
+    'status: open',
+    'trigger: retrieval-miss',
+    "summary: 'residue from resolve: lacrosse unresolved'",
+    'residue:',
+    '  - lacrosse',
+    'resolved-context:',
+    '  - add-sport',
+    '  - K-110',
+    '  - new-jersey',
+    '',
+  ].join('\n'));
+
+  assert.equal(bytes(CANDIDATE_FINDING, tmpRoot()), [
+    'schema-version: 1',
+    "date: '2026-08-16'",
+    'status: open',
+    'trigger: retrieval-miss',
+    "summary: 'document candidate: parlay in docs/betting-rules.md'",
+    'residue:',
+    '  - parlay',
+    'resolved-context:',
+    '  - K-110',
+    'section:',
+    '  document: docs/betting-rules.md',
+    '  address: Bet types',
+    '  line: 42',
+    '',
+  ].join('\n'));
+});
+
+test('UCS-1160: residue findings take the ordinary lifecycle — reflect consolidates them like any fragment', () => {
+  // Residue is not a new kind with a new lifecycle: it is a finding. Pinned
+  // because the whole point is that reflect's existing machinery consumes it.
+  const root = tmpRoot();
+  const { file } = JSON.parse(runCli([
+    'create', '--log', 'findings', '--date', '2026-08-16',
+    '--entry', JSON.stringify(RESIDUE_FINDING),
+  ], root).stdout);
+
+  const proposed = runCli(['transition', '--file', file, '--to', 'proposed', '--date', '2026-08-17'], root);
+  assert.equal(proposed.status, 0, proposed.stderr);
+  const resolved = runCli(['transition', '--file', file, '--to', 'resolved', '--date', '2026-08-18'], root);
+  assert.equal(resolved.status, 0, resolved.stderr);
+  const entry = JSON.parse(resolved.stdout).entry;
+  assert.equal(entry.verified, '2026-08-18', 'resolving stamps the verified date');
+  // The residue payload survived every transition — it is what the minting
+  // decision cites, so losing it mid-lifecycle would strand the evidence.
+  assert.deepEqual(entry.residue, ['lacrosse']);
+  assert.deepEqual(entry['resolved-context'], ['add-sport', 'K-110', 'new-jersey']);
+});
+
+test('UCS-1160: a section locator is line- OR page-addressed, and its shape is closed', () => {
+  const root = tmpRoot();
+  // pdf sources are page-addressed rather than line-addressed (lib/coverage.js).
+  const page = runCli([
+    'create', '--log', 'findings', '--date', '2026-08-16',
+    '--entry', JSON.stringify({
+      ...CANDIDATE_FINDING,
+      section: { document: 'docs/handbook.pdf', address: 'Settlement', page: 7 },
+    }),
+  ], root);
+  assert.equal(page.status, 0, page.stderr);
+  assert.equal(JSON.parse(page.stdout).entry.section.page, 7);
+
+  // A locator with no document, or with a typo'd key, is a hard error — a
+  // locator that sends a reader to the wrong lines is worse than no locator.
+  for (const [why, section] of [
+    ['no document', { address: 'Bet types', line: 42 }],
+    ['typo key', { document: 'a.md', address: 'Bet types', lines: 42 }],
+  ]) {
+    const bad = runCli([
+      'create', '--log', 'findings', '--date', '2026-08-16',
+      '--entry', JSON.stringify({ ...CANDIDATE_FINDING, section }),
+    ], root);
+    assert.equal(bad.status, 2, why);
+    assert.match(bad.stderr, /does not validate against finding\.schema\.json/, why);
+  }
+});
+
 test('CLI: accepts --flag=value spelling and hard-errors on unknown flags', () => {
   const root = tmpRoot();
   const created = runCli([
