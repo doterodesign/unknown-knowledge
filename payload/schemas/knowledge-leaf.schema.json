@@ -72,11 +72,11 @@
         },
         "anchor": {
           "type": "string",
-          "description": "The truth anchor this leaf's claim answers to — artifact, world, or team (D-003). Flat value from the anchor registry, which unlike domains SEEDS with those three: the anchor vocabulary is the kit's own architecture, not a per-project judgement, so a project that minted a fourth anchor would be describing a store this engine does not have."
+          "description": "The truth anchor this leaf's claim answers to — artifact, world, or team (D-003). Flat value from the anchor registry. That vocabulary is FIXED by the kit rather than chosen per project — the three anchors are the kit's own architecture, and a project minting a fourth would be describing a store this engine does not have — but the registry still ships EMPTY, because every value must cite a Decisions entry that resolves and a seeded repo's decisions store starts empty (D-001). The bootstrap interview mints the three with an entry of the project's own; the registry template's header names them."
         },
         "stage": {
           "type": "string",
-          "description": "Where this leaf sits in its promotion lifecycle — draft until a moderator promotes it, verified once they have (UCS-1149). Flat value from the stage registry, which SEEDS with the kit's lifecycle vocabulary because the same values drive the shared pre-promotion predicate (isPrePromotionStatus): a project that renamed them would have a resolver downrank and a preflight verdict disagreeing about which leaves are provisional. A draft leaf is downranked in resolver output and verdicted unknown by preflight, through that one predicate."
+          "description": "Where this leaf sits in its promotion lifecycle — draft until a moderator promotes it, verified once they have (UCS-1149). Flat value from the stage registry: draft, proposed, verified. That vocabulary is FIXED by the kit rather than chosen per project, because the same values drive the shared pre-promotion predicate (isPrePromotionStatus) — a project that renamed them would have a resolver downrank and a preflight verdict disagreeing about which leaves are provisional — but the registry still ships EMPTY, since every value must cite a Decisions entry that resolves and a seeded repo's decisions store starts empty (D-001). A draft or proposed leaf is downranked in resolver output and verdicted unknown by preflight, through that one predicate. There is deliberately no deprecated stage yet: no leaf surface implements the demotion the concept lifecycle gives that word, so the term would govern nothing."
         }
       }
     },

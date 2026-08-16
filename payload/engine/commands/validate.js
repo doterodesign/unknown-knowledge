@@ -614,9 +614,17 @@ function checkOneRecord(model, push, entry, rows) {
  *
  * The two failures are separate codes because they are separate defects. An
  * empty `source` is an unsourced claim. A missing `authority` is a sourced
- * claim whose source cannot be RANKED: the tier is what lets two leaves citing
- * different sources be compared when they disagree, so an untiered citation
- * silently opts out of conflict resolution while still looking complete.
+ * claim that records nothing about HOW FAR the source can be trusted — a
+ * regulator's text and a hallway conversation read identically once the tier
+ * is gone, and a reader comparing two leaves that disagree has nothing to go
+ * on but the source strings themselves.
+ *
+ * Note what this check does and does not claim. It governs the tier as
+ * VOCABULARY: present, and minted in the registry. Nothing in this engine
+ * compares two tiers or resolves a conflict between citations today —
+ * automatic conflict ranking arrives with the resolution pipeline (UCS-1152).
+ * Requiring the tier now is what makes that possible later: a tier nobody
+ * recorded cannot be ranked retroactively.
  *
  * Absence is checked here; a tier naming a value the registry does not carry is
  * the ordinary `unregistered-value` finding the facet table already declares
@@ -656,7 +664,7 @@ function checkCitations(model, push) {
         push({
           severity: 'error', code: 'missing-authority', id: recordId(leaf), file,
           path: `citations[${i}].authority`,
-          message: 'citation carries no authority tier — a source with no tier cannot be ranked against a conflicting one, so the citation reads as complete while opting out of conflict resolution; name a tier minted in the "knowledge/authority-tiers" registry (UCS-1149)',
+          message: 'citation carries no authority tier — nothing records how far this source can be trusted, so a regulator\'s text and a hallway conversation read identically; name a tier minted in the "knowledge/authority-tiers" registry (UCS-1149)',
         });
       }
     });

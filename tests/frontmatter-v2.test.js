@@ -362,6 +362,18 @@ test('the excerpt deriver is literal about what a first sentence is', () => {
   // And prose stops AT structure rather than swallowing it, so an excerpt never
   // shows markup.
   assert.equal(firstSentence('Prose here\n- then a list item'), 'Prose here');
+  // Fences are tracked as STATE, not matched as lines, and in BOTH spellings
+  // (CommonMark allows ~~~ as well as ```). Skipping only the fence markers
+  // would leave the code BETWEEN them looking like ordinary prose — which is
+  // how `code();` ends up published as a leaf's excerpt.
+  assert.equal(firstSentence('```\ncode();\n```\n\nThe prose. More.'), 'The prose.');
+  assert.equal(firstSentence('~~~\ncode();\n~~~\n\nThe prose. More.'), 'The prose.');
+  assert.equal(firstSentence('~~~\nx\n~~~\nProse right after.'), 'Prose right after.');
+  assert.equal(firstSentence('Prose first.\n\n```\ncode();\n```'), 'Prose first.');
+  assert.equal(firstSentence('~~~js\ncode();\n~~~'), null, 'a body that is only a fenced block has no prose');
+  // An unclosed fence runs to the end of the body — the honest reading of a
+  // malformed block, and it never leaves code in the excerpt.
+  assert.equal(firstSentence('```\nunclosed code'), null);
   // A paragraph with no terminator IS the excerpt: returning null would blank
   // the surface rather than show what the author wrote.
   assert.equal(firstSentence('no terminator here'), 'no terminator here');
@@ -378,9 +390,46 @@ test('a citation with no authority tier is a finding (golden)', () => {
   const finding = payload.findings.find((f) => f.code === 'missing-authority');
   assert.equal(finding.path, 'citations[0].authority');
   assert.equal(finding.severity, 'error');
-  assert.match(finding.message, /cannot be ranked against a conflicting one/);
+  assert.match(finding.message, /how far this source can be trusted/);
   assert.match(finding.message, /knowledge\/authority-tiers/);
   assert.ok(CHECKS.includes('missing-authority'), 'reported as a check class on every run');
+  // The message must not promise ranking. Tiers are governed as VOCABULARY
+  // here: nothing in this engine compares two tiers or resolves a conflict
+  // between citations, and conflict ranking arrives with the resolution
+  // pipeline (UCS-1152). A finding that claimed otherwise would send an author
+  // looking for behaviour that does not exist.
+  assert.doesNotMatch(finding.message, /rank/i, 'the finding must not promise ranking this engine does not do');
+});
+
+test('no shipped prose claims the engine ranks conflicting citations', () => {
+  // The overclaim guard. Requiring a tier now is what makes ranking possible
+  // LATER — a tier nobody wrote down cannot be ranked retroactively — but the
+  // documentation has to say that in the future tense, because a reader who
+  // believes conflicts are already resolved will not check them by hand.
+  const sites = [
+    'payload/engine/commands/validate.js',
+    'payload/templates/knowledge/_registries/authority-tiers.yaml',
+    'tests/fixtures/structural-validator/frontmatter-v2/knowledge/_registries/authority-tiers.yaml',
+    'payload/protocol/skills/kb-build.md',
+  ];
+  for (const rel of sites) {
+    // Checked per PARAGRAPH, not per line: these are hard-wrapped comment
+    // blocks, so "cannot be ranked retroactively" routinely spans two lines
+    // and a line-based check would flag its own disclaimer.
+    const text = readFileSync(join(root, rel), 'utf8');
+    const paragraphs = text.split(/\n\s*\n|\n(?=\s*(?:\/\*\*|\*\/))/);
+    for (const para of paragraphs) {
+      if (!/\brank/i.test(para)) continue;
+      const flat = para.replace(/\s+/g, ' ');
+      // A paragraph may mention ranking only while placing it in the future or
+      // denying it happens today.
+      assert.match(
+        flat,
+        /UCS-1152|arrives with the resolution pipeline|cannot be ranked retroactively|lets a later|nothing compares|must not promise|would rank a retired/,
+        `${rel} claims ranking as present behaviour: ${flat.trim().slice(0, 160)}`,
+      );
+    }
+  }
 });
 
 test('a tier ABSENT from the registry is a separate finding from a tier omitted', () => {

@@ -115,6 +115,11 @@ const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still
  *     one block whose first line is a heading and whose second is the prose.
  *     Discarding the block would blank the excerpt for a perfectly ordinary
  *     body; discarding just the heading line finds the sentence underneath.
+ *   - Fenced code is skipped WHOLE, tracked as state across lines rather than
+ *     matched line by line, in both CommonMark spellings (``` and ~~~).
+ *     Matching only the fence markers would leave the code between them
+ *     looking like ordinary prose, which is how `code();` ends up published as
+ *     a leaf's excerpt. An unclosed fence runs to the end of the body.
  *   - Prose then runs to the next blank line or structural line, with internal
  *     newlines collapsed to single spaces: bodies are hard-wrapped, so a
  *     sentence routinely spans two lines and a line-based reader would truncate
@@ -131,16 +136,36 @@ const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still
  */
 export function firstSentence(body) {
   if (typeof body !== 'string') return null;
-  // Headings, list items, ordered items, block quotes, fences, and table rows.
-  const structural = /^(#{1,6}\s|[-*+]\s|\d+[.)]\s|>\s|```|\|)/;
-  const lines = body.split('\n').map((line) => line.trim());
-  const start = lines.findIndex((line) => line !== '' && !structural.test(line));
-  if (start === -1) return null;
-  // Run to the first blank or structural line: prose that bumps into a list is
-  // still prose, and swallowing the list into the excerpt would show markup.
-  let end = start;
-  while (end < lines.length && lines[end] !== '' && !structural.test(lines[end])) end += 1;
-  const flat = lines.slice(start, end).join(' ').replace(/\s+/g, ' ').trim();
+  // Headings, list items, ordered items, block quotes, and table rows.
+  const structural = /^(#{1,6}\s|[-*+]\s|\d+[.)]\s|>\s|\|)/;
+  // Both fence spellings — CommonMark allows ~~~ as well as ```.
+  const fence = /^(```|~~~)/;
+  // A fence has to be tracked as STATE, not matched as a line: skipping the
+  // fence markers alone would leave the code BETWEEN them looking like
+  // ordinary prose, and `code();` would be published as a leaf's excerpt.
+  // So everything from an opening fence to its closing one is skipped whole.
+  const prose = [];
+  let fenced = false;
+  for (const raw of body.split('\n')) {
+    const line = raw.trim();
+    if (fence.test(line)) {
+      // An unclosed fence runs to the end of the body — which is the honest
+      // reading of a malformed block, and never leaves code in the excerpt.
+      fenced = !fenced;
+      if (prose.length) break; // prose already collected; a fence ends it
+      continue;
+    }
+    if (fenced) continue;
+    if (line === '' || structural.test(line)) {
+      // Prose stops AT structure rather than swallowing it, so an excerpt
+      // never shows markup; before any prose, structure is just skipped.
+      if (prose.length) break;
+      continue;
+    }
+    prose.push(line);
+  }
+  if (!prose.length) return null;
+  const flat = prose.join(' ').replace(/\s+/g, ' ').trim();
   const stop = flat.search(/[.!?](\s|$)/);
   return stop === -1 ? flat : flat.slice(0, stop + 1);
 }

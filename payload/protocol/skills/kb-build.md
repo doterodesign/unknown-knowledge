@@ -135,9 +135,11 @@ this skill makes on top of the schema:
   registry; EMPTY means universal, which is a claim, so leave it empty only
   when the knowledge really does hold everywhere.
 - **`citations`** — the step-2 survivors, verbatim; at least one, each with
-  an `authority` tier from the authority-tiers registry. The tier is what
-  ranks a source against a conflicting one, so an untiered citation reads as
-  complete while opting out of conflict resolution.
+  an `authority` tier from the authority-tiers registry. The tier records how
+  far the source can be trusted: without it a regulator's text and a hallway
+  conversation read identically. Recording it is also what lets a later
+  resolution pipeline rank conflicting citations — nothing compares tiers
+  today, and a tier nobody wrote down cannot be ranked retroactively.
 - **`terms`** — the words a future resolve should hit; write them for the
   searcher, not the author.
 - **`provenance`** — optional `author` and `skill-version`, so a systematic
@@ -145,9 +147,18 @@ this skill makes on top of the schema:
 - **Body** — the markdown below the frontmatter is the content; each claim
   reads back to a listed citation. **Open with a topic sentence**: there is
   no `description` field (retired in v2), and display prose is DERIVED from
-  that first sentence wherever a one-liner is shown. Write it as the sentence
-  you would want to read in a search result — if the opening line is a
-  fragment or a heading, the surface has nothing to show.
+  the body's first sentence wherever a one-liner is shown. Write it as the
+  sentence you would want to read in a search result.
+
+  What the deriver actually does, so the guidance is not a guess: it skips
+  leading markdown structure line by line — headings, list items, block
+  quotes, fenced code, table rows — and takes the first prose line it finds,
+  joining hard-wrapped continuation lines. It ends the excerpt at the first
+  `.`, `!`, or `?` followed by whitespace, so `§4.2` and `v3.2` do not cut it
+  short. Prose with no terminator is shown whole rather than dropped. The
+  only body with nothing to show is one that is *entirely* structure — all
+  heading, all list, all code — so the failure mode to avoid is opening with
+  a bare list or a code block, not writing a fragment.
 
 **Done when** every cross-reference resolves to an existing notation (or
 was removed, with the removal noted in the revision note), every step-2

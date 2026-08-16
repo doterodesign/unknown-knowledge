@@ -1,7 +1,14 @@
 # Frontmatter v2 fixture (UCS-1149) — the citation authority tiers.
 #
-# The tier is what lets two leaves citing different sources be RANKED when they
-# disagree, which is why a citation with no tier is its own finding.
+# The tier records HOW FAR a cited source can be trusted: without it a
+# regulator's text and a hallway conversation read identically. That is why a
+# citation with no tier is its own finding.
+#
+# Governed as VOCABULARY only, at this ticket. Nothing in the engine compares
+# two tiers or resolves a conflict between citations yet — automatic conflict
+# ranking arrives with the resolution pipeline (UCS-1152). Recording the tier
+# now is what makes that possible: a tier nobody wrote down cannot be ranked
+# retroactively.
 schema-version: 1
 store: knowledge
 registry: authority-tiers
