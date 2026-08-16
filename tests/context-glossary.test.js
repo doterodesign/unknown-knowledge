@@ -120,6 +120,7 @@ test('the Engine term names every shipped engine surface', () => {
     'log-entry': 'log-entry helper',
     ingest: 'document ingest',
     phoenix: 'phoenix events',
+    derive: 'derived layer',
   };
   for (const surface of shipped) {
     assert.ok(Object.hasOwn(prose, surface),

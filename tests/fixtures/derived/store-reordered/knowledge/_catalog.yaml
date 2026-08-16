@@ -1,0 +1,33 @@
+# Derived-layer fixture (UCS-1158) — the DETERMINISM TWIN of ../store.
+#
+# Same six leaves, same facets, same everything a tree projects — and a
+# different order everywhere the order is not the content: the catalog rows run
+# backwards, and the leaf FILENAMES are renamed so the loader's directory walk
+# hands them over in a different sequence than in the twin.
+#
+# The trees generated from this store must be BYTE-IDENTICAL to the trees
+# generated from ../store, except for the `file` values in index.json, which
+# name real paths and are content rather than order. That is the stable-sort
+# claim stated as a fixture: a browse tree's shape must come from the store's
+# facts, never from the order the filesystem happened to enumerate them in.
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000228
+    title: Currency rounding table
+    file: payments/1-currency-rounding-table.md
+  - id: L-000213
+    title: Live-betting latency budget
+    file: sportsbook/1-live-betting-latency-budget.md
+  - id: L-000171
+    title: Chargeback dispute playbook
+    file: payments/2-chargeback-dispute-playbook.md
+  - id: L-000162
+    title: Withdrawal KYC thresholds
+    file: payments/3-withdrawal-kyc-thresholds.md
+  - id: L-000133
+    title: Banker's rounding at settlement
+    file: sportsbook/2-bankers-rounding-at-settlement.md
+  - id: L-000117
+    title: Odds feed provider quirks
+    file: sportsbook/3-odds-feed-provider-quirks.md

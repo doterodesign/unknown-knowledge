@@ -381,6 +381,23 @@ const SPACE_TO_STORE = Object.freeze({
  * registry can never be mistaken for a leaf — the naming grammar does the
  * separating, with no exception list to keep in sync.
  */
+/**
+ * The derived layer's directory name (UCS-1158) — declared HERE, where the
+ * loader that must ignore it lives.
+ *
+ * The derived layer is engine output: plural browse trees, synthesized call
+ * numbers, a resolution index. It is regenerable and disposable, and the
+ * property that makes those words true is that nothing reads it back. The
+ * loader is the surface that would break that first — browse trees are markdown
+ * files under `knowledge/`, exactly like leaves — so the name lives beside the
+ * walk that skips it rather than in lib/derived.js, which would make the loader
+ * import the layer it is supposed to be independent of.
+ *
+ * lib/derived.js re-exports this so the generating side and the ignoring side
+ * name one string.
+ */
+export const DERIVED_DIR = 'derived';
+
 export const REGISTRY_DIR = '_registries';
 const REGISTRY_EXTENSION = '.yaml';
 
@@ -1099,8 +1116,9 @@ function loadPhoenixFiles(ctx, store) {
   }
 }
 
-function listFiles(ctx, dir, extension, recursive, { skipUnderscore = true } = {}) {
+function listFiles(ctx, dir, extension, recursive, { skipUnderscore = true, skipDirs = [] } = {}) {
   const out = [];
+  const skipped = new Set(skipDirs);
   const walk = (rel) => {
     let entries;
     try {
@@ -1115,6 +1133,16 @@ function listFiles(ctx, dir, extension, recursive, { skipUnderscore = true } = {
       // the `_registries` directory) does not.
       if (skipUnderscore && entry.name.startsWith('_')) continue;
       if (entry.name.startsWith('.')) continue;
+      // A named directory the walk must not descend into, and must not warn
+      // about either (UCS-1158). `derived/` holds engine OUTPUT in the same
+      // extension the records use — browse trees are markdown, and so are
+      // leaves — so neither the underscore rule nor the extension check can
+      // tell them apart. Skipping by name is what keeps a generated artifact
+      // from being loaded as a leaf, which would make the derived layer
+      // load-bearing: the trees would enter the model, fail the leaf schema,
+      // and a store's health would depend on a directory whose whole contract
+      // is that deleting it loses nothing.
+      if (entry.isDirectory() && skipped.has(entry.name)) continue;
       const relPath = `${rel}/${entry.name}`;
       if (entry.isDirectory()) {
         if (recursive) walk(relPath);
@@ -1161,7 +1189,7 @@ function loadEntriesFiles(ctx, store, { subdir, kind, space, extension, recursiv
 
 /** Knowledge leaves: YAML front matter + markdown body, one leaf per file. */
 function loadLeafFiles(ctx) {
-  for (const file of listFiles(ctx, 'knowledge', '.md', true)) {
+  for (const file of listFiles(ctx, 'knowledge', '.md', true, { skipDirs: [DERIVED_DIR] })) {
     ctx.stores.knowledge.files.push(file);
     const raw = readText(ctx, file);
     if (raw === null) continue; // read-error already diagnosed

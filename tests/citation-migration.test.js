@@ -62,10 +62,11 @@ const SCOPE_ROOTS = [
  * exemptions — the contract they demonstrated no longer exists, so a fixture
  * demonstrating it would be teaching a shape the engine refuses.
  *
- * What remains is one entry, and it is not a dual-shape exemption. It is here
- * because the verifier below tests a value for "is not an accession", and a
- * MALFORMED id answers that question the same way a notation does. Read the
- * reason: it plants an id of no legal shape at all.
+ * What remains is two entries, and NEITHER is a dual-shape exemption. Both are
+ * here because the verifier below tests a value for "is not an accession", and
+ * an id of some OTHER illegal shape answers that question the same way a
+ * notation does. Read the reasons: each plants a spelling the engine refuses,
+ * and the refusal is the thing under test.
  */
 const EXEMPT = new Map([
   [
@@ -77,6 +78,19 @@ const EXEMPT = new Map([
     + 'finding whose message carries the citation grammar hint an author acts on. It '
     + 'appears in this allowlist only because "not an accession" is how the check '
     + 'below recognises a notation, and a malformed id trips the same test.',
+  ],
+  [
+    'tests/fixtures/derived/call-number-citation/knowledge/sportsbook/odds-feed-provider-quirks.md',
+    'Its relates.see-also carries "SPO/ODD/CON·L-000133" — a SYNTHESIZED CALL NUMBER '
+    + '(UCS-1158), which is a display string generated for one browse-tree projection '
+    + 'and never an identity. This is not a retired spelling being kept alive: it is a '
+    + 'shape that was never citable, planted so derived-call-numbers.test.js can prove '
+    + 'the accession-only grammar refuses it. A call number is the most tempting thing '
+    + 'in the derived layer to paste into a citation — compact, readable, positional, '
+    + 'everything the retired notation was — so the refusal needs a specimen rather '
+    + 'than an inference. It appears in this allowlist only because "not an accession" '
+    + 'is how the check below recognises a notation, and a call number trips the same '
+    + 'test for the same reason a malformed id does.',
   ],
 ]);
 

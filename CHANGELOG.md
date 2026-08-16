@@ -15,6 +15,56 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- The derived layer (UCS-1158): everything discovery-shaped becomes engine
+  output, regenerated from the flat store and disposable by construction. A
+  tenth engine surface, `engine/derive.js`, writes `knowledge/derived/` — plural
+  browse trees, synthesized call numbers, and a resolution index. Two verbs,
+  read-only by default (`--check`), writing only when asked (`--write`), the
+  shape phoenix established.
+- Plural browse trees over one flat store: `tree.domain-form.md` orders by
+  subject for stewards, `tree.form-domain.md` by kind of knowledge for agents.
+  Plural is the point — the store's first life filed each leaf at one position
+  that was also its identity, so a leaf in the wrong place stayed there. Once
+  identity stopped being positional the cost of a second ordering fell to zero,
+  and a third axis is now one row in the `AXES` table rather than a code change.
+- Synthesized call numbers (`SPO/ODD/REF·L-000117`) as display strings in those
+  trees, and NEVER as identity. The same leaf reads differently on each axis
+  because a call number describes a position, not a record. No id grammar
+  accepts one — the middle-dot separator is in no id space, and a test checks
+  every synthesized call number against every entry in `ID_GRAMMARS`, so a new
+  id space that accepted them fails the day it is added. A call number in a
+  citation-shaped field is both a `pattern-mismatch` and an `unresolved-ref`,
+  which the accession-only `leaf-ref` grammar (UCS-1147) already gave us; a
+  planted fixture now proves it rather than leaving it as an inference.
+- Stale and draft leaves are visibly DEMOTED in generated trees — annotated with
+  their reason and sorted last within their node, never hidden. Hiding them
+  would make a tree lie by omission: an empty shelf reads as "we know nothing
+  about this" when the truth is "what we know has rotted", and those are
+  opposite calls to action. Both demotions read the predicates that already own
+  them (`timeVerdict`, `isPrePromotionStatus`), so a leaf cannot read stale in a
+  tree and trusted in the resolver. Staleness needs `--today` injected as
+  everywhere else; without it the time verdicts are `skipped` and every artifact
+  says so in its header, never a silent pass (D-012).
+- Deleting the derived layer loses nothing, and it is enforced rather than
+  promised: the loader skips `derived/` by name (browse trees are markdown under
+  `knowledge/`, exactly like leaves, so nothing but the name distinguishes
+  output from a record), `--check` reports a missing, hand-edited, or
+  engine-unknown file as findings, and a round-trip test deletes the directory,
+  regenerates, and asserts the bytes are identical. A determinism twin fixture
+  with reversed catalog rows and renamed leaf files pins that a tree's shape
+  comes from the store's facts, never from the loader's enumeration order.
+- The gated position of embedding recall, documented in
+  `protocol/derived-layer.md` and structurally present as `RECALL_SLOT` plus
+  `gateProposal()` — with the implementation deliberately ABSENT. Recall may
+  live only in the derived layer, is consulted only after the deterministic
+  layer is exhausted, and produces proposals that are neither citable nor
+  persistable; the gate refuses every proposal by construction, so the only
+  route into the store stays the ordinary one. Model selection and semantic
+  search are out of scope; what ships is the position, so it cannot later be
+  occupied somewhere worse — an embedding cached in frontmatter would be a guess
+  sitting in the same file as cited facts, indistinguishable to every reader
+  after. Docs-assertion tests hold the prose to the code, and a source assertion
+  bans a recall implementation from shipping in these files.
 - Trust graduation (UCS-1155): the mechanism that lets moderation narrow from
   100% inspection to sampling. Autonomy is per change CATEGORY and never per
   leaf — "this leaf was right ten times" is not evidence about the eleventh,

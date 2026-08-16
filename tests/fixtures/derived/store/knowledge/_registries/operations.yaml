@@ -1,0 +1,20 @@
+# Frontmatter v2 fixture (UCS-1149) — the operations registry (verbs).
+schema-version: 1
+store: knowledge
+registry: operations
+values:
+  - value: onboard-provider
+    gloss: Bring a new odds-feed provider into the ingest pipeline.
+    warrant: L-000117 documents what onboarding a provider must account for.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: settle-bet
+    gloss: Settle a priced market once its event finishes.
+    warrant: L-000133 states the rounding rule settlement applies.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: process-withdrawal
+    gloss: Pay money out to a customer, and run the checks that gate it.
+    warrant: L-000162 states the KYC threshold and L-000171 the dispute procedure.
+    decision: D-401
+    minted: "2026-08-16"

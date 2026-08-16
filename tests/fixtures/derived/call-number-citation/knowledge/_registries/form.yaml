@@ -1,0 +1,23 @@
+# Derived-layer fixture (UCS-1158) — the form registry.
+#
+# Three forms, so the form-first axis has real structure to nest and the two
+# axes visibly differ rather than being one tree relabelled.
+schema-version: 1
+store: knowledge
+registry: form
+values:
+  - value: reference
+    gloss: States how something is, for lookup.
+    warrant: L-000117 states the provider's behaviour for lookup; L-000228 the minor-unit table.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: constraint
+    gloss: A rule the system must not violate.
+    warrant: L-000133, L-000162 and L-000213 each state a rule the system must hold.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: runbook
+    gloss: An ordered procedure for handling a situation.
+    warrant: L-000171 is the procedure for a chargeback dispute.
+    decision: D-401
+    minted: "2026-08-16"
