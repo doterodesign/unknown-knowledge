@@ -490,30 +490,40 @@ test('the hop is exactly ONE — a neighbor\'s neighbors are absent', () => {
     'L-000503 is two hops away and must be absent — the hop is one, not "one or more"',
   );
   // ...and it really is reachable at depth 2, so its absence is the boundary
-  // rather than a broken fixture: the middle leaf does declare it.
+  // rather than a broken fixture: the middle leaf does declare it. The declared
+  // value is the ACCESSION now — it was the notation "501.3" while both
+  // spellings were legal (UCS-1144), and the fixture migrated with UCS-1147.
   const model = loadStores(CLEAN);
   assert.deepEqual(
     model.leaves.get('L-000502').record[RELATES_FIELD]['depends-on'],
-    ['501.3'],
+    ['L-000503'],
   );
 });
 
-test('neighbors resolve under either legal citation spelling', () => {
-  // 501.2 cites 501.3 by NOTATION while 501.3 carries an accession. Both
-  // spellings are legal while the migrate batches run (UCS-1144), so neither is
-  // a second-class lookup — and the neighborhood publishes the leaf's identity
-  // regardless of how the citation happened to spell it.
+test('a neighbor is published by IDENTITY, and its notation is only a label', () => {
+  // REPLACES "neighbors resolve under either legal citation spelling". That
+  // test's whole subject was the dual shape: 501.2 cited 501.3 by NOTATION
+  // while 501.3 carried an accession, and the claim was that neither spelling
+  // was second-class. There is only one spelling now, so "either" has nothing
+  // left to range over and the citation itself was migrated.
+  //
+  // What survives, and is worth keeping, is the property that survived the
+  // narrowing rather than being deleted by it: a neighborhood entry publishes
+  // the target leaf's IDENTITY, and carries the legacy notation alongside as a
+  // display label. Those were two facts that happened to coincide when the
+  // citation could be spelled either way; now that a citation IS the identity,
+  // the interesting half is that `notation` is still published and is still not
+  // what anything resolves through.
   const model = loadStores(CLEAN);
-  // The setup: the citation is spelled as a NOTATION, the target carries an
-  // ACCESSION, and the two are the same leaf.
-  assert.deepEqual(model.leaves.get('L-000502').record[RELATES_FIELD]['depends-on'], ['501.3']);
-  assert.equal(model.leaves.get('L-000503').notation, '501.3');
+  assert.deepEqual(model.leaves.get('L-000502').record[RELATES_FIELD]['depends-on'], ['L-000503']);
+  assert.equal(model.leaves.get('L-000503').notation, '501.3',
+    'the target keeps its legacy label — the citation simply does not use it');
+  assert.equal(model.leaves.has('501.3'), false,
+    'and nothing is indexed under that label, so no lookup can reach it');
 
-  // The claim, asserted where it is actually observable: the middle leaf's
-  // PUBLISHED neighborhood resolves that notation to the accessioned leaf and
-  // emits its identity, not the spelling the citation happened to use. The
-  // middle leaf reaches the resolver as a one-hop neighbor of L-000501, so this
-  // also pins that a neighbor is published by identity at any position.
+  // The claim, asserted where it is actually observable: the middle leaf
+  // reaches the resolver as a one-hop neighbor of L-000501, published under its
+  // accession with its notation riding along.
   const [head] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'K-201');
   assert.deepEqual(head[RELATES_FIELD]['depends-on'], [{
     id: 'L-000502',
@@ -521,10 +531,10 @@ test('neighbors resolve under either legal citation spelling', () => {
     heading: 'Score computation',
     file: 'knowledge/library/501.2-score-computation.md',
   }]);
-  // And the notation-cited leaf resolves to its accession wherever it is
-  // published in its own right — here as a direct hit's neighbor would be, via
-  // the loader's alias index rather than a second id lookup.
-  assert.equal(model.leafAliases.get('501.3'), 'L-000503');
+  // The alias index this test used to read through is GONE (UCS-1147) — there
+  // is one index, keyed by accession, and a neighbor is found in it directly.
+  assert.equal(model.leafAliases, undefined,
+    'no second index translates a spelling; there is only one spelling');
 });
 
 test('every leaf the resolver publishes carries a neighborhood, in both modes', () => {

@@ -2,19 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:knowledge-leaf",
   "title": "Knowledge leaf front matter (PRD §3.2)",
-  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5). A leaf may carry an opaque accession id (id: L-NNNNNN), minted at PR time and never reused, alongside its positional notation; the loader indexes by the accession when present and both spellings resolve in cross-references (UCS-1144). Notation is immutable once any reference cites it; moves happen by new leaf + class-elsewhere redirect, never by renaming in place (§3.5). Cross-reference resolution and tree-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013), with one sanctioned exception: frontmatter v2 RETIRED the free-prose `description` field (UCS-1149). A leaf now opens its body with a topic sentence and display prose is DERIVED from it, so the one-line summary can never drift from the content it summarizes. Under additionalProperties:false a leaf still carrying `description` fails as an unknown property — a deliberate break, and the major release D-021 defines for exactly this.",
+  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5) — v2-shape leaves stamp schema-version: 2 (UCS-1147). Every leaf carries an opaque accession id (id: L-NNNNNN), minted at PR time and never reused: it is the leaf's identity, what the loader indexes by, and the ONLY shape a citation of a leaf may take. The dotted `notation` is demoted to an optional legacy display label that nothing treats as identity (UCS-1147, retiring the dual-shape citation contract UCS-1144 opened). Because identity is opaque rather than positional, a leaf file may be moved — between prefix shards, between directories — without invalidating a single citation: position on disk carries no meaning. Cross-reference resolution and catalog-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013), with one sanctioned exception: frontmatter v2 RETIRED the free-prose `description` field (UCS-1149). A leaf now opens its body with a topic sentence and display prose is DERIVED from it, so the one-line summary can never drift from the content it summarizes. Under additionalProperties:false a leaf still carrying `description` fails as an unknown property — a deliberate break, and the major release D-021 defines for exactly this.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema-version", "notation", "domain", "heading", "citations"],
+  "required": ["schema-version", "id", "domain", "heading", "citations"],
   "properties": {
     "schema-version": { "type": "integer", "minimum": 1 },
     "id": {
       "$ref": "#/$defs/accession",
-      "description": "Accession id — opaque, minted at PR time, never reused, never positional (L-NNNNNN). Optional while the store migrates; when present it is the leaf's identity and what the loader indexes by."
+      "description": "Accession id — opaque, minted at PR time, never reused, never positional (L-NNNNNN). REQUIRED: it is the leaf's identity, the key the loader indexes by, and the only spelling any record may cite this leaf as (UCS-1147). A leaf without one has no identity, so its absence is a missing-required finding and the remedy is to assign one."
     },
     "notation": {
       "$ref": "#/$defs/notation",
-      "description": "Positional within the per-project tree (e.g. \"362.1\"). Quote it — unquoted it parses as a number."
+      "description": "OPTIONAL LEGACY display label — the leaf's old position in the per-project tree (e.g. \"362.1\"), kept so a reader who knows the tree still recognizes the leaf. It is NOT an identity: nothing indexes by it, no citation resolves through it, and moving the leaf's file does not invalidate it. Still validated by pattern when present, because a malformed label is a defect even though nothing resolves through it. Quote it — unquoted it parses as a number."
     },
     "domain": {
       "type": "string",
@@ -37,12 +37,12 @@
         "class-elsewhere": {
           "type": "array",
           "items": { "$ref": "#/$defs/leafRef" },
-          "description": "Redirects — must resolve. Either an accession id or a notation."
+          "description": "Redirects — must resolve. Cite the target leaf by its accession id (L-NNNNNN)."
         },
         "see-also": {
           "type": "array",
           "items": { "$ref": "#/$defs/leafRef" },
-          "description": "Related context — must resolve. Either an accession id or a notation."
+          "description": "Related context — must resolve. Cite the target leaf by its accession id (L-NNNNNN)."
         },
         "including": {
           "type": "array",
@@ -133,7 +133,7 @@
     "relates": {
       "type": "object",
       "additionalProperties": false,
-      "description": "Typed leaf-to-leaf edges (UCS-1151). Four kinds, each a distinct claim about how two leaves stand to one another, and each a declared row in the ref-field table targeting the leaf space. The resolver expands exactly ONE hop over these from any hit, labeled by kind, so a hit carries its structural neighborhood without a second lookup. Targets are leaf refs: an accession id, or a notation while both citation forms remain legal (UCS-1144) — the citation contract that narrows this to accessions alone is UCS-1147, and narrowing it early would break every notation-form citation the store still carries.",
+      "description": "Typed leaf-to-leaf edges (UCS-1151). Four kinds, each a distinct claim about how two leaves stand to one another, and each a declared row in the ref-field table targeting the leaf space. The resolver expands exactly ONE hop over these from any hit, labeled by kind, so a hit carries its structural neighborhood without a second lookup. Targets are leaf refs, which since UCS-1147 means accession ids and nothing else: the dotted notation is a legacy display label and no longer resolves.",
       "properties": {
         "depends-on": {
           "type": "array",
@@ -165,7 +165,7 @@
     "notation": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
     "accession": { "type": "string", "pattern": "^L-[0-9]{6}$" },
     "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
-    "leafRef": { "type": "string", "pattern": "^((L-[0-9]{6})|([0-9]+(\\.[0-9]+)*))$" },
+    "leafRef": { "type": "string", "pattern": "^L-[0-9]{6}$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "note": {
       "type": "object",

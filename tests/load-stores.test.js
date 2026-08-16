@@ -43,13 +43,18 @@ test('healthy store: ok, zero diagnostics', () => {
 test('healthy store: entries indexed by id in each id space', () => {
   const model = fixtureModel('healthy');
   assert.deepEqual([...model.concepts.keys()], ['K-210', 'K-220']);
-  assert.deepEqual([...model.leaves.keys()], ['362.1', '362.2']);
+  // Leaves are keyed by ACCESSION (UCS-1147). This golden read ['362.1',
+  // '362.2'] while the notation was a leaf's identity; the fixture minted
+  // L-000362/L-000363 and the notation became the legacy display label, which
+  // no index answers to.
+  assert.deepEqual([...model.leaves.keys()], ['L-000362', 'L-000363']);
   assert.deepEqual([...model.decisions.keys()], ['D-004']);
   const sport = model.concepts.get('K-210');
   assert.equal(sport.record.term, 'Sport');
   assert.equal(sport.file, 'ontology/classes/200-sportsbook.yaml');
-  const leaf = model.leaves.get('362.1');
+  const leaf = model.leaves.get('L-000362');
   assert.equal(leaf.record.heading, 'ACH settlement windows');
+  assert.equal(leaf.notation, '362.1', 'the notation rides along as a published field');
   assert.match(leaf.body, /actual knowledge content/);
   assert.equal(model.decisions.get('D-004').record.status, 'accepted');
 });
@@ -65,13 +70,22 @@ test('healthy store: pointer index maps source-of-truth paths to concepts (KK-06
 
 test('healthy store: cross-ref graph edges are typed and resolved', () => {
   const model = fixtureModel('healthy');
+  // Both ENDS of a leaf edge are accessions now (UCS-1147): the `from` is the
+  // declaring leaf's identity, and the `to` is the only spelling a citation may
+  // take. This golden read notations at both positions before that ticket.
+  //
+  // The leaf edge also MOVED, from first row to last, and that is a real
+  // consequence rather than a cosmetic one: `refs` is sorted by `from`, so
+  // re-identifying leaves from "362.1" to "L-000362" re-sorts the published
+  // graph. It is pinned as a golden precisely so a change like that cannot pass
+  // unnoticed (PRD §5 diffability).
   assert.deepEqual(model.refs, [
-    { from: '362.1', type: 'cross-references.see-also', to: '362.2', file: 'knowledge/regulation/362.1-ach-settlement-windows.md', path: 'cross-references.see-also[0]', resolved: true },
     { from: 'D-004', type: 'relates-to.concepts', to: 'K-210', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.concepts[0]', resolved: true },
-    { from: 'D-004', type: 'relates-to.leaves', to: '362.1', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.leaves[0]', resolved: true },
+    { from: 'D-004', type: 'relates-to.leaves', to: 'L-000362', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.leaves[0]', resolved: true },
     { from: 'K-210', type: 'rationale', to: 'D-004', file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[0].rationale[0]', resolved: true },
     { from: 'K-210', type: 'used-by', to: 'K-220', file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[0].used-by[0]', resolved: true },
     { from: 'K-220', type: 'confusable-with', to: 'K-210', file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[1].confusable-with[0]', resolved: true },
+    { from: 'L-000362', type: 'cross-references.see-also', to: 'L-000363', file: 'knowledge/regulation/362.1-ach-settlement-windows.md', path: 'cross-references.see-also[0]', resolved: true },
   ]);
 });
 
@@ -183,7 +197,11 @@ test('unresolved-ref: messages name the missing id and its store', () => {
   const messages = byCode(model, 'unresolved-ref').map((d) => d.message).join('\n');
   assert.match(messages, /"K-999".*ontology/);
   assert.match(messages, /"D-777".*decisions/);
-  assert.match(messages, /"999\.9".*knowledge/);
+  // The dangling leaf target is spelled "L-000999" since UCS-1147 (it was the
+  // notation "999.9"). A notation can no longer reach the ref graph at all —
+  // the schema refuses it first — so the specimen for a dangling LEAF ref has
+  // to be a well-formed accession that names nothing.
+  assert.match(messages, /"L-000999".*knowledge/);
   assert.match(messages, /"K-888".*ontology/);
 });
 
@@ -200,7 +218,10 @@ test('unresolved-ref: catalog-declared pending ids resolve (file check is KK-05)
 test('unresolved-ref: the graph still records dangling edges as resolved: false', () => {
   const model = fixtureModel('unresolved-ref');
   const dangling = model.refs.filter((r) => !r.resolved).map((r) => r.to).sort();
-  assert.deepEqual(dangling, ['999.9', 'D-777', 'K-888', 'K-999']);
+  // "999.9" became "L-000999" with the fixture's migration (UCS-1147), which
+  // also re-sorts it: the leaf target now sorts among the other id spaces
+  // rather than ahead of them all.
+  assert.deepEqual(dangling, ['D-777', 'K-888', 'K-999', 'L-000999']);
 });
 
 // ------------------------------------ §3.5 YAML coercion trap, end to end

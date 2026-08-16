@@ -1,12 +1,12 @@
 schema-version: 1
 entries:
   - id: D-301
-    title: Dangling leaf refs of both shapes
+    title: Dangling leaf refs
     category: architecture
     status: accepted
     date: "2026-07-07"
     deciders: [dimitri]
     context: relates-to.leaves is a leaf-targeting edge like any other.
-    decision: A dangling target of either shape must refuse.
+    decision: A dangling accession target must refuse.
     supersedes: []
-    relates-to: { concepts: [], leaves: [L-000998, "700.8"], decisions: [] }
+    relates-to: { concepts: [], leaves: [L-000998, L-000996], decisions: [] }

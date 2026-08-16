@@ -1,0 +1,21 @@
+# Structural-validator fixture (UCS-1147) — the store is sharded by ACCESSION
+# ID PREFIX: knowledge/L-00/, knowledge/L-01/. The prefix is the first two
+# digits of the accession's numeric part, a fanout device and nothing more.
+#
+# Position carries no meaning. A row names its leaf by accession and locates it
+# by `file`, and those are two independent facts: moving a leaf between shard
+# directories changes the second, invalidates no citation, and produces no
+# diagnostic. L-000101 and L-010501 cite each other ACROSS shards to make the
+# point — neither citation could be written differently if they shared one.
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000101
+    title: Widget registry rules
+    file: L-00/L-000101-widget-registry.md
+  - id: L-000102
+    title: Widget retirement rules
+    file: L-00/L-000102-widget-retirement.md
+  - id: L-010501
+    title: Widget audit schedule
+    file: L-01/L-010501-widget-audit.md

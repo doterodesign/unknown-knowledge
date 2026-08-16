@@ -31,7 +31,8 @@ never truth. The rules that follow from this:
   concept's prose or its `enumerates` values; they exist so the engine can
   diff them against the artifact, not so you can skip the read.
 - **Reference by concept ID and path, never by copied value.** Anything you
-  write into a store or a log carries `K-NNN` / `D-NNN` / leaf notation and
+  write into a store or a log carries `K-NNN` / `D-NNN` / leaf accession
+  (`L-NNNNNN`) and
   file paths — copying a value out of source into prose mints a second,
   uncheckable claim.
 - **Trust is per-run.** A verdict is valid for the run that computed it;
@@ -55,7 +56,7 @@ never grep the store tree cold, and never raw-traverse the repo (triage
 Cross-reference semantics (knowledge leaves, §3.2):
 
 - **`class-elsewhere` is a redirect — follow it.** The content lives at the
-  target notation; the leaf you found is a signpost, not an answer.
+  target accession; the leaf you found is a signpost, not an answer.
 - **`see-also` is context.** Related material; consult when useful, never a
   substitute for the leaf you resolved.
 - **`including` is standing room.** Candidate topics parked under a heading —

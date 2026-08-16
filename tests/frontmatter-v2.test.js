@@ -174,7 +174,9 @@ test('a leaf with a quarantined-grade finding verdicts quarantined, not unknown'
   // Evidence outranks stage: a leaf whose facets do not resolve is a defect to
   // fix, and reporting it as merely "unknown" would file a broken leaf under
   // the same verdict as an honest draft.
-  const payload = json('preflight.js', 1, '--leaves', '900.1', '--root', FINDINGS);
+  // Named by accession, the one spelling `--leaves` takes (UCS-1147); this read
+  // '900.1' while a leaf also answered to its notation.
+  const payload = json('preflight.js', 1, '--leaves', 'L-000901', '--root', FINDINGS);
   const [verdict] = payload['leaf-verdicts'];
   assert.equal(verdict.verdict, 'quarantined');
   assert.equal(verdict.evidence.length, 7);
@@ -182,14 +184,28 @@ test('a leaf with a quarantined-grade finding verdicts quarantined, not unknown'
     'a leaf carries no descriptor, so it has no value-check evidence');
 });
 
-test('--leaves names a leaf by EITHER spelling, and an unknown id is exit 2', () => {
-  // A leaf answers to its accession and its notation while both are legal
-  // (UCS-1144), so a caller may name it the way their citation spells it.
-  const byNotation = json('preflight.js', 2, '--leaves', '213.1', '--root', CLEAN);
-  assert.deepEqual(byNotation['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
-  // Named both ways, it is ONE leaf — not two verdicts about nothing.
-  const both = json('preflight.js', 2, '--leaves', '213.1,L-000213', '--root', CLEAN);
-  assert.equal(both['leaf-verdicts'].length, 1);
+test('--leaves names a leaf by its accession; a notation is an unknown id (exit 2)', () => {
+  // REWRITTEN from "--leaves names a leaf by EITHER spelling". That test's
+  // subject was the dual shape: a caller could name a leaf the way their
+  // citation happened to spell it, because both spellings reached the same
+  // record. UCS-1147 took the second one away, and this flag narrowed with the
+  // rest of the surface rather than keeping a private convenience alias — a
+  // selector that accepted a spelling no citation may use would be the alias
+  // table growing back in one command's argument parser.
+  const byAccession = json('preflight.js', 2, '--leaves', 'L-000213', '--root', CLEAN);
+  assert.deepEqual(byAccession['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
+  // Naming it twice is still ONE leaf, not two verdicts about nothing. The
+  // de-duplication outlived the narrowing it was written for.
+  const twice = json('preflight.js', 2, '--leaves', 'L-000213,L-000213', '--root', CLEAN);
+  assert.equal(twice['leaf-verdicts'].length, 1);
+
+  // The inversion, pinned where a caller meets it. The leaf EXISTS and still
+  // carries "213.1" as its legacy display label — the selector simply does not
+  // resolve labels, so this is an unknown id and a check that never ran, which
+  // is exit 2 rather than an empty verdict list at exit 0 (PRD §5).
+  const byNotation = runCli('preflight.js', '--leaves', '213.1', '--root', CLEAN, '--json');
+  assert.equal(byNotation.status, 2, 'a notation selector names nothing, and must say so');
+  assert.match(byNotation.stderr, /--leaves names id\(s\) not in the knowledge store: 213\.1/);
 
   const unknown = runCli('preflight.js', '--leaves', 'L-999999', '--root', CLEAN, '--json');
   assert.equal(unknown.status, 2, 'a verdict on a typo must never read as anything');
@@ -198,12 +214,17 @@ test('--leaves names a leaf by EITHER spelling, and an unknown id is exit 2', ()
 
 test('a degraded store reports the SAME leaf name and stage a healthy one would', () => {
   // The store-wide-failure path degrades every verdict to unknown without
-  // selecting anything, so it cannot lean on selectLeaves to translate the
-  // caller's spelling. Both paths call leafIdentityOf, or a leaf named by
-  // NOTATION would report under one name with a null stage on a broken store
-  // and under its accession with its real stage on a healthy one — the same
-  // leaf wearing two names for a reason that has nothing to do with its name.
-  const healthy = json('preflight.js', 2, '--leaves', '213.1', '--root', CLEAN);
+  // selecting anything, so it cannot lean on selectLeaves to resolve the
+  // caller's id. Both paths call leafIdentityOf, or a leaf would report with a
+  // null stage on a broken store and with its real stage on a healthy one for a
+  // reason that has nothing to do with the leaf.
+  //
+  // The id is the accession in both paths now (UCS-1147), which is a weaker
+  // hazard than the one this test was written against — leafIdentityOf no
+  // longer TRANSLATES a notation into an accession, it just answers whether the
+  // store carries the leaf. It stays pinned because the two paths must still
+  // agree, and agreeing is what they got wrong the first time.
+  const healthy = json('preflight.js', 2, '--leaves', 'L-000213', '--root', CLEAN);
   assert.deepEqual(healthy['leaf-verdicts'].map((v) => [v.leaf, v.stage]), [['L-000213', 'draft']]);
 
   const dir = mkdtempSync(join(tmpdir(), 'uk-v2-degraded-'));
@@ -213,16 +234,16 @@ test('a degraded store reports the SAME leaf name and stage a healthy one would'
     // diagnostic, which is what degrades every verdict (a structural finding
     // would only quarantine the record it names).
     writeFileSync(join(dir, 'ontology/classes/100-feed.yaml'), 'entries: [oops\n');
-    const degraded = json('preflight.js', 2, '--leaves', '213.1', '--root', dir);
+    const degraded = json('preflight.js', 2, '--leaves', 'L-000213', '--root', dir);
     assert.equal(degraded['store-verdict'], 'unknown', 'the store must actually be broken');
     assert.deepEqual(degraded['leaf-verdicts'].map((v) => [v.leaf, v.stage, v.verdict]), [
       ['L-000213', 'draft', 'unknown'],
     ]);
 
     // And it de-duplicates by identity like the healthy path: one leaf named
-    // both ways is ONE verdict, not two rows a caller has to reconcile.
-    const both = json('preflight.js', 2, '--leaves', '213.1,L-000213', '--root', dir);
-    assert.deepEqual(both['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
+    // twice is ONE verdict, not two rows a caller has to reconcile.
+    const twice = json('preflight.js', 2, '--leaves', 'L-000213,L-000213', '--root', dir);
+    assert.deepEqual(twice['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
 
     // An id that resolves to nothing keeps the caller's spelling — on a store
     // this broken the leaf may simply have failed to load — and two distinct

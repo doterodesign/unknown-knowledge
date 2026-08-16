@@ -182,10 +182,9 @@ function computeVerdicts(model, ids, repoRoot) {
  *                draft-stage contract; the resolver's half is the downrank.
  *   trusted      neither.
  *
- * Attribution is by the finding's `id`, which for a leaf is its identity — the
- * accession when minted, the notation otherwise (UCS-1142/1144) — so a leaf is
- * matched by the same string the validator names it by, not by a second guess
- * at its id space.
+ * Attribution is by the finding's `id`, which for a leaf is its identity — its
+ * accession (UCS-1142/1147) — so a leaf is matched by the same string the
+ * validator names it by, not by a second guess at its id space.
  */
 function computeLeafVerdicts(model, ids, repoRoot, today) {
   const structural = runChecks(model, repoRoot);
@@ -262,18 +261,16 @@ function computeLeafVerdicts(model, ids, repoRoot, today) {
 /**
  * Store-wide failure: no check ran — every requested LEAF verdict is unknown.
  *
- * Ids are resolved through `leafIdentityOf`, the same translation the healthy
- * path's `selectLeaves` uses. Looking them up raw would have made a leaf named
- * by NOTATION report under the caller's spelling with a null stage on a broken
- * store, and under its accession with its real stage on a healthy one — the
- * same leaf wearing two names depending on a condition that has nothing to do
- * with what it is called.
+ * Ids are resolved through `leafIdentityOf`, the same lookup the healthy path's
+ * `selectLeaves` uses, so a leaf that IS in the store reports under its own
+ * identity whether the store loaded clean or not. An id that resolves to
+ * nothing keys on the caller's spelling instead — see below.
  */
 function degradeAllLeaves(model, ids, today) {
   const errors = storeHealth(model).errorCount;
-  // De-duplicated by IDENTITY, like selectLeaves: naming one leaf by both its
-  // accession and its notation is one leaf, and emitting two verdict rows for
-  // it would have a caller reconciling two answers about a single record. An
+  // De-duplicated by IDENTITY, like selectLeaves: naming one leaf twice is one
+  // leaf, and emitting two verdict rows for it would have a caller reconciling
+  // two answers about a single record. An
   // id that resolves to nothing keys on the caller's spelling instead — on a
   // store this broken the leaf may simply have failed to load, so echoing back
   // what was asked for is more honest than inventing an identity, and two

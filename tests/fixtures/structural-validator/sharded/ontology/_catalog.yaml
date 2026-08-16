@@ -1,0 +1,6 @@
+schema-version: 1
+store: ontology
+entries:
+  - id: K-510
+    title: Widget
+    file: classes/500-widgets.yaml

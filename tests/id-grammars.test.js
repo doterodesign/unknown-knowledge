@@ -71,10 +71,19 @@ test('the shipped schema copies agree with the grammar module', () => {
 
 test('the engine validates leaves against the module, not the schema file copy', () => {
   // Proven at the seam that matters: the pattern the validator enforces is the
-  // module's. A leaf id the grammar rejects is a pattern-mismatch, and one it
+  // module's. A leaf field the grammar rejects is a pattern-mismatch, and one it
   // accepts is not — whatever the JSON file happens to say.
+  //
+  // The leaf carries an `id` now, and that is the inversion UCS-1147 made here:
+  // this test used to build a leaf from a notation ALONE, which validated clean
+  // and so doubled as a pin on the notation being a leaf's identity. It is not.
+  // The accession is required, so a leaf without one fails on `id` before its
+  // notation is ever judged — which would have made this test about the wrong
+  // field. The notation rides along as the optional legacy label it now is, and
+  // is still checked when present, which is the property under test.
   const leaf = (notation) => ({
-    'schema-version': 1,
+    'schema-version': 2,
+    id: 'L-000362',
     notation,
     domain: 'test',
     heading: 'test leaf',
@@ -87,10 +96,49 @@ test('the engine validates leaves against the module, not the schema file copy',
   assert.deepEqual(
     rejected.errors.map((e) => e.code),
     ['pattern-mismatch'],
-    'an id from another space must not pass the leaf grammar',
+    'an id from another space must not pass the leaf notation grammar',
   );
-  assert.match(rejected.errors[0].message, new RegExp(ID_GRAMMARS.knowledge.pattern.replace(/[\\^$*+?.()|[\]{}]/g, '\\$&')),
-    'the message quotes the grammar the module owns');
+  // The message quotes the module's HINT rather than its pattern (UCS-1147):
+  // an id-space pattern is bound together with the hint that describes it, and
+  // the hint is what an author can act on. Asserting on the hint pins the same
+  // property the pattern assertion did — the message comes from this module's
+  // entry for this space, not from the schema file's copy — while checking the
+  // half a human actually reads.
+  assert.ok(rejected.errors[0].message.includes(ID_GRAMMARS.knowledge.hint),
+    'the message quotes the hint the module owns, alongside the pattern it enforces');
+
+  // The inverted half, pinned rather than merely noted: drop the accession and
+  // the leaf fails on `id` — a notation is not an identity a leaf may hold.
+  const { id, ...unminted } = leaf('362.1');
+  assert.deepEqual(
+    validateRecord('knowledge-leaf', unminted).errors.map((e) => [e.path, e.code]),
+    [['id', 'missing-required']],
+    'the accession is REQUIRED — a leaf carrying only a notation has no identity',
+  );
+});
+
+test('the citation grammar and the minting grammar are separately declared', () => {
+  // UCS-1147 narrowed `leaf-ref` from a union of accession-and-notation to the
+  // accession alone, which made it pattern-identical to `accessions`. The two
+  // stay separate entries, and this pins why: they answer different questions —
+  // what a leaf MINTS versus what a record may CITE — and each carries its own
+  // hint, because a minting finding names a shape while a citation finding names
+  // the migration that took the other spelling away.
+  assert.equal(ID_GRAMMARS['leaf-ref'].pattern, ID_GRAMMARS.accessions.pattern,
+    'they coincide today, which is the fact — not an excuse to collapse them');
+  assert.notEqual(ID_GRAMMARS['leaf-ref'].hint, ID_GRAMMARS.accessions.hint,
+    'the hints differ because the two findings say different things');
+
+  // The legacy notation keeps its own grammar and its own `$defs`, because the
+  // field is still VALIDATED when present even though nothing resolves through
+  // it — a malformed display label is a defect regardless.
+  assert.notEqual(ID_GRAMMARS.knowledge.pattern, ID_GRAMMARS['leaf-ref'].pattern);
+  assert.match(ID_GRAMMARS.knowledge.hint, /legacy/,
+    'a finding quoting the notation hint must not read as an invitation to cite that way');
+  assert.deepEqual(
+    Object.keys(SCHEMA_DEFS).sort(), ['accessions', 'knowledge', 'leaf-ref'],
+    'three leaf-side defs stay three, by what they SAY rather than what they match',
+  );
 });
 
 test('adding an id space touches the grammar module and nothing else', () => {

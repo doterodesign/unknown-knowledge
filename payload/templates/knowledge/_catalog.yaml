@@ -1,4 +1,7 @@
-# knowledge/_catalog.yaml — navigational entry point (catalog -> rules -> tree leaves).
+# knowledge/_catalog.yaml — navigational entry point (catalog -> rules -> leaves).
+# Each row names its leaf by ACCESSION id (L-NNNNNN) and locates it with `file`;
+# those are two independent facts, so moving a leaf between prefix-shard
+# directories updates `file` alone and invalidates no citation.
 # Empty seed: init copies it; the kb-build skill fills entries as cited leaves land.
 # Shape: payload/schemas/catalog.schema.json. schema-version evolves additively (§3.5).
 schema-version: 1

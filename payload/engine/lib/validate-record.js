@@ -91,11 +91,23 @@ const schemaCache = new Map();
  * asserting is deliberate: a drifted copy is corrected here, so the engine can
  * only ever enforce the live grammar. (tests/id-grammars.test.js pins that the
  * shipped copies agree, which is what keeps the published documents honest.)
+ *
+ * The grammar's HINT is bound alongside its pattern, under a key the schema
+ * keyword set does not interpret, so a pattern-mismatch on an id can say what
+ * shape was expected instead of quoting a regex at an author. That matters most
+ * where the shape CHANGED: since UCS-1147 a leaf citation must be an accession,
+ * and `"700.2" does not match ^L-[0-9]{6}$` tells an author what failed while
+ * naming neither the remedy nor the migration that moved it. The hint travels
+ * from the same frozen entry as the pattern, for the reason id-grammars.js
+ * exists — a hint that drifted from its pattern would describe the wrong shape.
  */
 function bindIdGrammars(schema) {
   for (const [space, def] of Object.entries(SCHEMA_DEFS)) {
     const node = schema.$defs?.[def];
-    if (node) node.pattern = ID_GRAMMARS[space].pattern;
+    if (node) {
+      node.pattern = ID_GRAMMARS[space].pattern;
+      node.hint = ID_GRAMMARS[space].hint;
+    }
   }
   return schema;
 }
@@ -171,6 +183,34 @@ function resolveRef(root, ref) {
   return target;
 }
 
+/**
+ * The id-grammar hint a required property carries, if it declares one.
+ *
+ * Only reaches a hint bound by bindIdGrammars — a property whose shape is an id
+ * space. Everything else returns null and the plain message stands, which is
+ * the right default: "required property "heading" is missing" needs no gloss,
+ * and a hint invented per field would be prose with nothing keeping it true.
+ *
+ * A `$ref` that does not resolve is swallowed rather than thrown: this runs
+ * only to DECORATE a defect the validator has already found, and a schema
+ * authoring error must not turn a legitimate finding into a crash.
+ *
+ * @param {object} root the schema document, for $defs resolution
+ * @param {object} schema the object schema declaring the required property
+ * @param {string} required the missing property's name
+ * @returns {string|null} the hint, or null when the property declares none
+ */
+function requiredHint(root, schema, required) {
+  const property = schema.properties?.[required];
+  if (!property) return null;
+  try {
+    const target = property.$ref ? resolveRef(root, property.$ref) : property;
+    return typeof target.hint === 'string' ? target.hint : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Interpret the supported JSON Schema subset against a value. */
 function check(root, schema, value, path, errors) {
   if (schema.$ref) {
@@ -196,7 +236,16 @@ function check(root, schema, value, path, errors) {
     errors.push({
       path,
       code: 'pattern-mismatch',
-      message: `${JSON.stringify(value)} does not match ${schema.pattern}`,
+      // An id-space pattern arrives with the hint bound by bindIdGrammars, and
+      // the hint REPLACES the regex rather than trailing it: it says everything
+      // the pattern says and says it to a human, so printing both would just
+      // make the author read the regex first. Patterns from the schema files
+      // themselves carry no hint and keep quoting the regex — there is nothing
+      // better to say about them, and inventing prose per pattern here would be
+      // the drift id-grammars.js exists to prevent.
+      message: schema.hint
+        ? `${JSON.stringify(value)} is not a valid id here — expected ${schema.hint}`
+        : `${JSON.stringify(value)} does not match ${schema.pattern}`,
     });
   }
   if (schema.minimum !== undefined && typeof value === 'number' && value < schema.minimum) {
@@ -221,10 +270,20 @@ function check(root, schema, value, path, errors) {
   if (isPlainObject(value)) {
     for (const required of schema.required ?? []) {
       if (!Object.hasOwn(value, required)) {
+        // A missing property has no value to test, so the pattern branch above
+        // can never speak for it — yet "required property "id" is missing" is
+        // exactly the finding an author gets for a leaf that mints no accession,
+        // and on its own it names neither the shape to write nor why the field
+        // became required. So the hint is read from the property's OWN grammar
+        // here, through the same `$defs` binding: one fact, quoted wherever the
+        // author meets it.
+        const hint = requiredHint(root, schema, required);
         errors.push({
           path: joinPath(path, required),
           code: 'missing-required',
-          message: `required property "${required}" is missing`,
+          message: hint
+            ? `required property "${required}" is missing — expected ${hint}`
+            : `required property "${required}" is missing`,
         });
       }
     }

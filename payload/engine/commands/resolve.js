@@ -54,11 +54,11 @@
  * knowledge-catalog descent, PRD §4), and confusable-with surfaced with each
  * referenced concept's term so disambiguation needs no second lookup.
  *
- * Each knowledge entry point publishes both leaf ids: `id`, the accession
- * (L-NNNNNN) when the leaf has been minted one and null when it has not, and
- * `notation`, its position in the tree (UCS-1144). Two fields because they
- * answer two questions — which leaf this is, and where it sits — and once
- * accessions are minted those stop being the same string.
+ * Each knowledge entry point publishes `id`, the accession (L-NNNNNN) that IS
+ * the leaf's identity and the only spelling anything cites it by (UCS-1147),
+ * and `notation`, the optional legacy display label, null when the leaf carries
+ * none. Two fields because they answer two questions — which leaf this is, and
+ * what it was once filed as — and only the first is an identity.
  *
  * Frontmatter v2 adds three more (UCS-1149), all stable keys that may be null
  * rather than fields that come and go:
@@ -420,10 +420,11 @@ function confusables(model, record) {
  * this", where it can be labeled as such rather than blended into the leaf's
  * own assertions.
  *
- * Neighbors resolve through `leafIdentityOf`, so an edge citing a leaf by
- * notation reaches an accessioned leaf exactly as one citing it by accession
- * does (UCS-1144) — both spellings are legal, so neither is a second-class
- * lookup. An edge that resolves to nothing is DROPPED here rather than
+ * Neighbors resolve through `leafIdentityOf`, the one lookup every surface
+ * asks — so an edge citing a leaf by its retired notation reaches nothing here
+ * for the same reason it fails validation (UCS-1147), rather than through a
+ * second rule this function spells itself. An edge that resolves to nothing is
+ * DROPPED here rather than
  * published as a stub: the loader has already raised the unresolved-ref finding
  * against it, and a neighborhood entry naming a leaf that does not exist would
  * send a reader after a file nobody can open.
@@ -488,29 +489,26 @@ function publishLeaf(model, entry, today) {
     // indexed entry, which is what an id-space change moves (UCS-1142).
     // Wire name and storage field are two different decisions.
     //
-    // `id` is the accession, EXPLICITLY null for a leaf that has not been
-    // minted one (UCS-1144) rather than omitted. Omission would make the key
-    // set vary leaf by leaf, so a store mid-migration would emit two
-    // different result shapes and every consumer would need a presence check
-    // to tell "no accession" from "old engine". A stable key whose value is
-    // null says the one thing that is true: this leaf has no accession yet.
+    // `id` is the accession — the leaf's IDENTITY (UCS-1147), and the only
+    // spelling anything may cite it by. Placed first for that reason;
+    // JSON.stringify preserves insertion order, so this fixes the field's
+    // position in the byte-stable output for good.
     //
-    // Placed before `notation` because it is the identity once minting
-    // completes; JSON.stringify preserves insertion order, so this fixes the
-    // field's position in the byte-stable output for good.
+    // `notation` is the OPTIONAL LEGACY display label, published alongside and
+    // never as identity. It stays because it is still a fact about the leaf a
+    // reader may want to see, and because a published field that vanished would
+    // break consumers as surely as one that changed meaning — but nothing
+    // resolves through it, and a store keying on it is keying on a label.
     //
-    // `notation` stays the leaf's NOTATION, not its identity: once a leaf
-    // mints an accession those stop being the same string, and a published
-    // field that silently changed meaning would break every consumer
-    // reading it as a tree position. Identity moves to `id`; `notation`
-    // keeps saying what it always said.
-    // Both ids are published as STRING-OR-NULL, tested with `typeof` rather
-    // than `??`: `??` only catches null/undefined, so an unquoted YAML
-    // `id: 12345` — a number, not an accession — would travel into the JSON
-    // as a number and break the field's published type for every consumer.
-    // The schema already rejects that leaf, but the resolver never gates on
-    // store health (a lookup runs on whatever loaded, §4), so it is the one
-    // surface that can be asked to publish an id no check has approved.
+    // Both are published as STRING-OR-NULL, tested with `typeof` rather than
+    // `??`: `??` only catches null/undefined, so an unquoted YAML `id: 12345` —
+    // a number, not an accession — would travel into the JSON as a number and
+    // break the field's published type for every consumer. `id` is null only
+    // for a leaf no check has approved: the schema requires an accession, but
+    // the resolver never gates on store health (a lookup runs on whatever
+    // loaded, §4), so it is the one surface that can be asked to publish an id
+    // the store should not have had. A stable key whose value is null is what
+    // it says then, rather than a key that disappears.
     // Same `typeof` test the loader and the orphan check use.
     id: typeof entry.id === 'string' ? entry.id : null,
     notation: typeof entry.notation === 'string' ? entry.notation : null,
@@ -1557,10 +1555,9 @@ function renderQuery(payload) {
     }
     if (r.knowledge.length) {
       lines.push('  knowledge entry points:');
-      // The accession leads when there is one — it is the leaf's identity —
-      // with the notation still shown, since that is what the tree and every
-      // not-yet-migrated citation spell. An unminted leaf reads exactly as it
-      // did before (UCS-1144).
+      // The accession leads — it is the leaf's identity and what a citation
+      // must spell (UCS-1147) — with the legacy notation still shown after it,
+      // since a reader navigating an older tree still recognizes it.
       // The draft marker rides the same line as the heading, so the demotion is
       // visible where the ordering already put the leaf last — an agent
       // skimming the list sees WHY a leaf sits at the bottom without a second
