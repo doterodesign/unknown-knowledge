@@ -42,6 +42,9 @@ unconditional:
     # incl. AGENTS.md — the navigation contract + runtime loop (§7).
     - { from: protocol/AGENTS.md, to: protocol/AGENTS.md }
     - { from: protocol/new-kind-pipeline.md, to: protocol/new-kind-pipeline.md }
+    # Warrant-minting and suppression conduct for the governed vocabulary
+    # registries (UCS-1148) — the rules a steward follows before editing one.
+    - { from: protocol/registry-warrant.md, to: protocol/registry-warrant.md }
     # Protocol skills (D-019 names) — the phase-2 procedures agents run.
     - { from: protocol/skills/knowledge-bootstrap.md, to: protocol/skills/knowledge-bootstrap.md }
     - { from: protocol/skills/knowledge-reflect.md, to: protocol/skills/knowledge-reflect.md }
@@ -51,6 +54,10 @@ unconditional:
     # The §5.2 new-kind authoring template — clients extend the extractor
     # library themselves (D-001/D-009), so the template always ships.
     - { from: templates/new-kind, to: templates/new-kind }
+    # The Decisions-entry template a steward copies when minting or suppressing
+    # a registry value (UCS-1148): every registry edit is a governed act with a
+    # written rationale, and this is the shape of that rationale.
+    - { from: templates/decisions/registry-minting.yaml, to: templates/decisions/registry-minting.yaml }
     # Stack-agnostic fixture authoring guide: ships even with no stack
     # selected — a config-only client authoring its first pack starts here.
     - { from: extractor-fixtures/README.md, to: engine/tests/fixtures/README.md }
@@ -62,6 +69,16 @@ unconditional:
     - { from: templates/knowledge/_catalog.yaml, to: knowledge/_catalog.yaml }
     - { from: templates/knowledge/_rules.yaml, to: knowledge/_rules.yaml }
     - { from: templates/decisions/_catalog.yaml, to: decisions/_catalog.yaml }
+    # Governed vocabulary registries (UCS-1148). Seeded EMPTY, like the
+    # catalogs: the bootstrap interview mints the first values from material
+    # that already exists, because a value minted ahead of its material is
+    # speculative shelving (protocol/registry-warrant.md). They ship as store
+    # scaffolding rather than as templates-to-copy because a registry is a
+    # LIVE governed file — the client edits this one, it is not a pattern.
+    - { from: templates/knowledge/_registries/domains.yaml, to: knowledge/_registries/domains.yaml }
+    - { from: templates/knowledge/_registries/operations.yaml, to: knowledge/_registries/operations.yaml }
+    - { from: templates/knowledge/_registries/jurisdictions.yaml, to: knowledge/_registries/jurisdictions.yaml }
+    - { from: templates/knowledge/_registries/authority-tiers.yaml, to: knowledge/_registries/authority-tiers.yaml }
   docs:
     # Client-facing docs (KK-24). The seeded README lands at the kit-dir
     # root; the guides land under docs/.

@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:registry",
+  "title": "Governed vocabulary registry (_registries/<name>.yaml)",
+  "description": "A store-level registry: the closed vocabulary one facet draws its values from (PRD §3, UCS-1148). Registries are governed files, not schema enums — a value is MINTED into a registry by literary warrant (material exists that needs it) and every minting is a Decisions entry, so the vocabulary grows by steward review rather than by an engine release. Hierarchical registries (domain) mint each path segment as its own value and a child path is valid only when every segment above it is minted; the TOP level is open by construction — a new top-level class is a registry edit plus a Decisions entry, never a schema or engine change. A rejected value is SUPPRESSED rather than deleted (status: suppressed), so a vocabulary proposal that was considered and refused stays visible and cannot be silently re-minted. Membership of facet values in their registry is a structural-validator check (KK-05); this schema governs the registry file itself. Schema evolution is additive-only (§3.5, D-013).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema-version", "store", "registry", "values"],
+  "properties": {
+    "schema-version": { "type": "integer", "minimum": 1 },
+    "store": { "enum": ["ontology", "knowledge", "decisions"] },
+    "registry": {
+      "type": "string",
+      "description": "The registry's name — must equal the file's basename, so the file a finding names is the registry it names (a structural-validator check)."
+    },
+    "hierarchical": {
+      "type": "boolean",
+      "description": "When true, values are path segments joined by '/' and a child path is valid only if every segment above it is itself minted. Absent means flat."
+    },
+    "values": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/registryValue" },
+      "description": "The minted vocabulary. Order is the steward's; the engine compares as a set."
+    }
+  },
+  "$defs": {
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "decisionRef": { "type": "string", "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$" },
+    "registryValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "warrant"],
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*(/[a-z0-9]+(-[a-z0-9]+)*)*$",
+          "description": "The minted term: lowercase kebab segments, '/'-joined for a hierarchical registry."
+        },
+        "gloss": { "type": "string", "description": "What the term means here — prose is navigation, never the fact." },
+        "warrant": {
+          "type": "string",
+          "description": "The literary warrant: the material that exists and needs this value. A value minted without material to fill it is speculative shelving, which is what this field refuses."
+        },
+        "status": {
+          "enum": ["minted", "suppressed"],
+          "description": "Absent means minted. A suppressed value was proposed and REJECTED — it stays listed so the refusal is durable and the term cannot be quietly re-minted; using it is a membership finding like any unminted value."
+        },
+        "decision": {
+          "$ref": "#/$defs/decisionRef",
+          "description": "The Decisions entry recording this minting or suppression (§3.3). Every registry edit is a governed act with a written rationale."
+        },
+        "minted": { "$ref": "#/$defs/isoDate" }
+      }
+    }
+  }
+}

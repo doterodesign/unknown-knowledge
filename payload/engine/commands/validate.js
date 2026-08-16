@@ -33,6 +33,22 @@
  *   ref-cycle         a decision supersedes chain that loops (§3.3 chains
  *                     must be acyclic; supersedes/superseded-by mirror pairs
  *                     are legitimate, so only supersedes edges are walked)
+ *   unregistered-value  a governed facet value absent from its registry
+ *                     (UCS-1148). Registry membership cannot be a schema enum:
+ *                     the vocabulary is minted by literary warrant under
+ *                     steward review, so it lives in a governed file that
+ *                     grows without an engine release
+ *   unminted-segment  a hierarchical domain path with an unminted segment —
+ *                     the finding names the SEGMENT, which is the edit the
+ *                     author can actually make
+ *   suppressed-value  a value the registry lists as REJECTED. Suppression is
+ *                     durable and visible: a refused term must not read as a
+ *                     typo, and must not be quietly re-minted
+ *   missing-registry  a record cites a governed facet whose registry the store
+ *                     does not carry. Registry absence surfaces HERE, at the
+ *                     point a value actually needs judging — a store that
+ *                     governs nothing is complete, but a value checked against
+ *                     a registry that never loaded is a check that never ran
  *
  * Exit codes (PRD §5, lib/exit-codes.js): 0 clean, 1 findings (any
  * error-severity finding), 2 engine failure. Loader error-severity
@@ -69,7 +85,8 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
   'id-range', 'id-shape', 'index-drift', 'missing-citation',
-  'missing-path', 'orphan', 'ref-cycle',
+  'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
+  'suppressed-value', 'unminted-segment', 'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -237,6 +254,166 @@ function checkOrphans(model, push) {
   }
 }
 
+// ------------------------------------------- registry membership (UCS-1148)
+
+/**
+ * Which governed vocabulary each facet field draws from (UCS-1148).
+ *
+ * A DECLARATION, in the same spirit as the loader's REF_FIELDS: "this field's
+ * values must be minted in that registry" is a fact about the store shape, and
+ * facts about the store shape belong in a table every surface reads. Adding a
+ * governed facet is adding a row — there is no per-facet branch in the checker
+ * to extend, which is what lets frontmatter v2 (UCS-1149) declare the rest of
+ * its facets here rather than growing a second membership code path.
+ *
+ * Each row:
+ *   field     a path of object keys into the record, dotted. The path may end
+ *             at a single string or at an ARRAY of strings; `each` says which
+ *   each      true when the field holds an array, so every member is checked
+ *             and the finding path carries the index the author can point at
+ *   registry  "<store>/<name>" — the registry key, matching the loader's index
+ *   within    an optional path prefix, so a field nested inside a repeated
+ *             sub-record (a citation) is declared once rather than per index
+ *
+ * Frozen all the way down: a mutated row would silently redirect a facet at a
+ * different vocabulary, which is a governed store quietly ungoverned.
+ *
+ * @type {Readonly<Record<string, ReadonlyArray<Readonly<object>>>>}
+ */
+export const FACET_REGISTRIES = Object.freeze({
+  'knowledge-leaf': Object.freeze([
+    Object.freeze({ field: 'facets.domain', registry: 'knowledge/domains' }),
+    Object.freeze({ field: 'operations', each: true, registry: 'knowledge/operations' }),
+    Object.freeze({ field: 'applies.jurisdictions', each: true, registry: 'knowledge/jurisdictions' }),
+    Object.freeze({ within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers' }),
+  ]),
+});
+
+/** Follow a dotted path into a record; undefined if any segment is missing. */
+function valueAtPath(record, field) {
+  let node = record;
+  for (const segment of field.split('.')) {
+    if (!isObject(node)) return undefined;
+    node = node[segment];
+  }
+  return node;
+}
+
+/**
+ * Judge one facet value against its registry — the whole membership rule.
+ *
+ * Returns the finding this value earns, or null when it is legitimately
+ * minted. Four outcomes, and each one names both the value and the registry,
+ * because a finding that says only "unknown value" leaves the author guessing
+ * which of four vocabularies to go read:
+ *
+ *   - the registry did not load at all → `missing-registry`. This is where
+ *     registry ABSENCE surfaces, and it surfaces HERE rather than at load
+ *     because absence is only meaningful once a record actually claims a
+ *     governed value. A store that governs nothing is complete; a store whose
+ *     leaf cites a domain with no domains registry is a check that never ran.
+ *   - the value is minted → clean.
+ *   - the value is SUPPRESSED → `suppressed-value`, quoting the refusal. A
+ *     term that was considered and rejected must not read as a typo: the
+ *     author needs to know the vocabulary decision already went against them.
+ *   - a hierarchical path with an unminted segment → `unminted-segment`,
+ *     naming the SEGMENT rather than the whole path. "trading/derivatives/swaps
+ *     is not in the registry" sends an author looking for the wrong edit; the
+ *     finding they can act on is which parent is missing.
+ *   - otherwise → `unregistered-value`.
+ *
+ * @param {object} registry the loaded registry, or undefined if absent
+ * @param {string} registryKey the "<store>/<name>" the row declared
+ * @param {string} value the facet value as the record spells it
+ * @returns {{ code: string, message: string }|null}
+ */
+function judgeValue(registry, registryKey, value) {
+  if (!registry) {
+    return {
+      code: 'missing-registry',
+      message: `value "${value}" is governed by the "${registryKey}" registry, which the store does not carry — the vocabulary this value must be minted in never loaded, so its membership was never checked (a check that never ran is a blocking defect, PRD §5)`,
+    };
+  }
+  const where = `the "${registryKey}" registry (${registry.file})`;
+  if (registry.suppressed.has(value)) {
+    return {
+      code: 'suppressed-value',
+      message: `value "${value}" is SUPPRESSED in ${where} — this term was proposed and refused, and a suppression is durable: re-minting it is a registry edit with its own Decisions entry, never a quiet reuse`,
+    };
+  }
+  if (registry.hierarchical) {
+    // Every segment above a child must itself be minted: a hierarchy where a
+    // child may hang off an unminted parent is not a hierarchy, it is a set of
+    // strings that happen to contain slashes.
+    const segments = value.split('/');
+    for (let i = 0; i < segments.length; i += 1) {
+      const path = segments.slice(0, i + 1).join('/');
+      if (registry.suppressed.has(path)) {
+        return {
+          code: 'suppressed-value',
+          message: `value "${value}" descends from "${path}", which is SUPPRESSED in ${where} — a refused class mints no children`,
+        };
+      }
+      if (!registry.minted.has(path)) {
+        return {
+          code: 'unminted-segment',
+          message: `value "${value}" is invalid: the segment "${path}" is not minted in ${where} — every segment of a hierarchical path must be minted before a child may hang off it, and each minting is a registry edit plus a Decisions entry (literary warrant: material must exist to fill it)`,
+        };
+      }
+    }
+    return null;
+  }
+  if (registry.minted.has(value)) return null;
+  return {
+    code: 'unregistered-value',
+    message: `value "${value}" is not minted in ${where} — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string`,
+  };
+}
+
+/**
+ * Every governed facet value is minted in its registry (UCS-1148).
+ *
+ * Generic over FACET_REGISTRIES: this function knows how to walk a declared
+ * path and how to judge a value, and nothing about which facets exist. That is
+ * the seam UCS-1149 extends by declaration.
+ */
+function checkRegistryMembership(model, push) {
+  const rows = FACET_REGISTRIES['knowledge-leaf'];
+  for (const leaf of model.leaves.values()) {
+    const { file, record } = leaf;
+    const id = recordId(leaf);
+    for (const { within, field, each, registry: registryKey } of rows) {
+      const registry = model.registries.get(registryKey);
+      // A row may sit inside a repeated sub-record (citations[]); declaring the
+      // container once keeps the table free of per-index rows.
+      const hosts = within
+        ? (Array.isArray(valueAtPath(record, within))
+          ? valueAtPath(record, within).map((host, i) => [host, `${within}[${i}]`])
+          : [])
+        : [[record, '']];
+      for (const [host, hostPath] of hosts) {
+        if (!isObject(host)) continue;
+        const raw = valueAtPath(host, field);
+        // Non-strings are already diagnosed by KK-02's schema check; a second
+        // complaint here would double-report one defect.
+        const values = each
+          ? (Array.isArray(raw) ? raw.map((v, i) => [v, `${field}[${i}]`]) : [])
+          : [[raw, field]];
+        for (const [value, valuePath] of values) {
+          if (typeof value !== 'string') continue;
+          const verdict = judgeValue(registry, registryKey, value);
+          if (!verdict) continue;
+          push({
+            severity: 'error', code: verdict.code, id, file,
+            path: hostPath ? `${hostPath}.${valuePath}` : valuePath,
+            message: verdict.message,
+          });
+        }
+      }
+    }
+  }
+}
+
 /** Leaf citations must carry a non-empty source (§3.2). */
 function checkCitations(model, push) {
   for (const leaf of model.leaves.values()) {
@@ -308,6 +485,7 @@ export function runChecks(model, repoRoot = model.root) {
   checkCatalogs(model, push);
   checkConcepts(model, push, repoRoot);
   checkOrphans(model, push);
+  checkRegistryMembership(model, push);
   checkCitations(model, push);
   checkDecisionCycles(model, push);
   findings.sort((a, b) =>

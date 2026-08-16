@@ -1,0 +1,18 @@
+# The operations registry — the verbs a knowledge leaf lets a reader DO.
+#
+# Ships EMPTY; each value is minted by literary warrant (material must exist to
+# fill it) with a Decisions entry recording the minting. See
+# protocol/registry-warrant.md.
+#
+# Flat vocabulary. Value shape: lowercase kebab.
+#
+#   values:
+#     - value: reconcile
+#       gloss: Match a settlement batch against the ledger.
+#       warrant: 362.1 documents the reconciliation procedure.
+#       decision: D-014
+#       minted: "2026-07-07"
+schema-version: 1
+store: knowledge
+registry: operations
+values: []

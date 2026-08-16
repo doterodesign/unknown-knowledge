@@ -1,0 +1,15 @@
+# Structural-validator fixture (UCS-1148) — a MALFORMED registry.
+#
+# PLANTED: unparseable YAML (a bare `:` opening a mapping with no key). A
+# vocabulary the engine could not read is a check that never ran, so this is a
+# loader parse-error — error severity, gating the validator to exit 2. It must
+# never degrade to "the registry is empty", which would silently fail every
+# value that WAS minted.
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: widgets
+   : broken
+    warrant: unreachable

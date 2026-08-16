@@ -1,0 +1,18 @@
+schema-version: 1
+entries:
+  - id: D-202
+    title: Mint the logistics top-level domain class
+    category: governance
+    status: accepted
+    date: "2026-07-08"
+    deciders: [dimitri]
+    context: >-
+      600.3 documents inter-site transfer windows. The material exists and has
+      nowhere to sit: it is neither a widget class nor a gadget class, and
+      filing it under either would misrepresent it.
+    decision: >-
+      Mint `logistics` as a new TOP-LEVEL domain class, and `logistics/transfer`
+      beneath it. The domains registry top level is open by design, so this is a
+      registry edit plus this entry — no schema change and no engine release.
+      Literary warrant is satisfied: 600.3 is the material that fills it.
+    supersedes: []

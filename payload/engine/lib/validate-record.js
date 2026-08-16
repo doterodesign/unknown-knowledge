@@ -42,6 +42,7 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'survey-scope': 'survey-scope.schema.json',
   'catalog': 'catalog.schema.json',
   'rules': 'rules.schema.json',
+  'registry': 'registry.schema.json',
 });
 
 export const KINDS = Object.freeze(Object.keys(KIND_SCHEMA_FILES));

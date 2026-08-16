@@ -52,6 +52,34 @@
       "items": { "$ref": "#/$defs/citation" },
       "description": "REQUIRED — an unsourced claim is not promotable."
     },
+    "facets": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Governed facets: values drawn from the store's registries (UCS-1148). Membership is a structural-validator check, never a schema enum — the vocabulary is minted by literary warrant under steward review, so it grows by a registry edit plus a Decisions entry rather than by an engine release.",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Hierarchical domain path from the domains registry, '/'-joined. Valid only when EVERY segment is minted — a child cannot hang off an unminted parent."
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Verbs from the operations registry — what this leaf lets a reader DO."
+    },
+    "applies": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Where this leaf's claim holds.",
+      "properties": {
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Values from the jurisdictions registry."
+        }
+      }
+    },
     "terms": { "type": "array", "items": { "type": "string" } },
     "edition": { "type": "integer", "minimum": 1 },
     "contributors": { "type": "array", "items": { "type": "string" } }
@@ -77,7 +105,11 @@
       "required": ["source"],
       "properties": {
         "source": { "type": "string" },
-        "accessed": { "$ref": "#/$defs/isoDate" }
+        "accessed": { "$ref": "#/$defs/isoDate" },
+        "authority": {
+          "type": "string",
+          "description": "The source's authority tier, from the authority-tiers registry (UCS-1148). A tier is a governed value, not an enum: which tiers a project recognizes is its own to mint."
+        }
       }
     }
   }

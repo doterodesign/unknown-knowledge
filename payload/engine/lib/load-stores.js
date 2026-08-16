@@ -13,6 +13,12 @@
  *   knowledge/  _catalog.yaml  _rules.yaml  **\/*.md          (leaf = YAML front
  *                                                             matter + markdown body)
  *   decisions/  _catalog.yaml  entries/*.yaml                (decision records)
+ *   <store>/    _registries/*.yaml                          (governed vocabularies,
+ *                                                            UCS-1148 — optional)
+ *
+ * Which files a store carries is DATA, not control flow: STORE_DESCRIPTORS
+ * below is the table, so a registry is a declared file class rather than a
+ * fourth bespoke reader.
  *
  * Model shape (all collections deterministically sorted — PRD §5 diffability):
  *   {
@@ -36,6 +42,13 @@
  *                               // that enumerates leaves does, so an aliased
  *                               // leaf is still exactly one record
  *     decisions: Map id       -> { id, file, record },
+ *     registries: Map "<store>/<name>" ->
+ *                  { name, store, file, hierarchical, minted:Set, suppressed:Set },
+ *                               // governed vocabularies (UCS-1148): the closed
+ *                               // value sets facets draw from. Membership is a
+ *                               // structural-validator check (KK-05), never a
+ *                               // schema enum — the vocabulary grows by steward
+ *                               // review, not by an engine release
  *     pointers:  Map source-of-truth path -> [concept ids],  // KK-06 --paths
  *     refs:      [{ from, type, to, file, path, resolved }], // cross-ref graph
  *     diagnostics: [{ severity, code, file, path, message }],
@@ -64,6 +77,10 @@
  *                               have all three)
  *   missing-catalog    error    store directory present without _catalog.yaml
  *                               (the navigational entry point, PRD §3)
+ *   registry-name-mismatch
+ *                      error    a registry's declared name disagrees with its
+ *                               filename, so a finding could not name both the
+ *                               registry and the file a steward opens (UCS-1148)
  *
  * A nonexistent/unreadable root THROWS — an engine failure (exit-code 2
  * territory, PRD §5), never a silent diagnostic.
@@ -158,6 +175,7 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'missing-store',
   'missing-catalog',
   'missing-rules',
+  'registry-name-mismatch',
 ]);
 
 /**
@@ -248,6 +266,81 @@ const SPACE_TO_STORE = Object.freeze({
 const SPACE_ALIASES = Object.freeze({
   leaves: 'leafAliases',
 });
+
+/**
+ * The subdirectory a store keeps its governed vocabulary REGISTRIES in
+ * (UCS-1148), and the extension those files carry.
+ *
+ * Underscore-prefixed like `_catalog.yaml` and `_rules.yaml`, and for the same
+ * reason: it is governed store META, not a record. `listFiles` already skips
+ * every `_`-prefixed entry, so the record walks cannot see registries and a
+ * registry can never be mistaken for a leaf — the naming grammar does the
+ * separating, with no exception list to keep in sync.
+ */
+export const REGISTRY_DIR = '_registries';
+const REGISTRY_EXTENSION = '.yaml';
+
+/**
+ * Per-store file-class descriptors (UCS-1148) — what a store IS, as data.
+ *
+ * The loader used to carry each store's shape in its control flow: which
+ * directory the records sit in, which extension they wear, whether the walk
+ * recurses, whether a `_rules.yaml` is expected, and a `store !== 'decisions'`
+ * ternary at the call site. Adding registries as a fourth bespoke code path
+ * would have been the fifth place a store's shape is spelled, so the shape
+ * moved here instead: a store is a row, a registry is a declared file class,
+ * and `loadStores` reads the table rather than knowing the stores.
+ *
+ *   dir         the store directory, root-relative (also the store's name)
+ *   records     how the record files are found and read, or null for a store
+ *               whose records are loaded by a bespoke reader (knowledge leaves
+ *               are front matter + body, which is a parser, not a descriptor)
+ *     subdir      where under the store the record files live
+ *     kind        the KK-02 record kind each file validates as
+ *     space       the id space the records index into
+ *     extension   the file extension the walk reads
+ *     recursive   whether the walk descends into subdirectories
+ *   rules       whether the store declares a `_rules.yaml` (decisions does
+ *               not, by design — §9.1)
+ *   registries  whether the store may carry `_registries/*.yaml`
+ *
+ * Frozen: every surface reads this table, so a consumer able to mutate a row
+ * would be redefining a store's shape out from under the loader.
+ *
+ * @type {Readonly<Record<string, Readonly<object>>>}
+ */
+export const STORE_DESCRIPTORS = Object.freeze({
+  ontology: Object.freeze({
+    dir: 'ontology',
+    records: Object.freeze({
+      subdir: 'classes', kind: 'ontology-concept', space: 'concepts',
+      extension: '.yaml', recursive: false,
+    }),
+    rules: true,
+    registries: true,
+  }),
+  knowledge: Object.freeze({
+    dir: 'knowledge',
+    // Leaves are YAML front matter plus a markdown body — a parse shape, not a
+    // walk shape, so `loadLeafFiles` stays its own reader. The descriptor still
+    // owns everything ABOUT the store that is data (rules, registries).
+    records: null,
+    rules: true,
+    registries: true,
+  }),
+  decisions: Object.freeze({
+    dir: 'decisions',
+    records: Object.freeze({
+      subdir: 'entries', kind: 'decision-entry', space: 'decisions',
+      extension: '.yaml', recursive: false,
+    }),
+    rules: false, // §9.1: decisions has no _rules.yaml
+    registries: true,
+  }),
+});
+
+/** The store directories the loader walks, in load order. */
+export const STORES = Object.freeze(Object.keys(STORE_DESCRIPTORS));
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 
@@ -545,7 +638,72 @@ function loadCatalogAndRules(ctx, store, hasRules) {
   }
 }
 
-function listFiles(ctx, dir, extension, recursive) {
+/**
+ * Load one store's governed vocabulary registries (UCS-1148).
+ *
+ * A registry is a DECLARED FILE CLASS, reached through the store descriptor,
+ * not a fourth bespoke reader: the same read → parse → validate pipeline every
+ * store meta file rides, pointed at `<store>/_registries/*.yaml`.
+ *
+ * Registry ABSENCE is deliberately not diagnosed here, and that is the ticket's
+ * central conduct choice. A store with no registries is the whole installed
+ * base (and every fixture written before this ticket), so demanding registries
+ * unconditionally would fail every existing store for a governance layer it
+ * never opted into. Absence surfaces where it can actually mean something
+ * instead: at the point a record CITES a governed facet. A leaf naming
+ * `facets.domain` in a store with no domains registry is an explicit
+ * `missing-registry` finding naming both the value and the registry it wanted —
+ * never a silent pass, and never a demand on a store that governs nothing.
+ *
+ * A MALFORMED registry, by contrast, is a hard error the moment it is read:
+ * unparseable YAML is `parse-error` and a schema defect carries its KK-02 code,
+ * both error-severity, both gating the validator to exit 2. A vocabulary the
+ * engine could not read is a check that never ran, so membership must never be
+ * judged against half a registry.
+ *
+ * @param {object} ctx the loader context
+ * @param {string} store the store whose registries to load
+ */
+function loadRegistryFiles(ctx, store) {
+  const dir = `${store}/${REGISTRY_DIR}`;
+  for (const file of listFiles(ctx, dir, REGISTRY_EXTENSION, false, { skipUnderscore: false })) {
+    const name = file.slice(dir.length + 1, -REGISTRY_EXTENSION.length);
+    ctx.stores[store].files.push(file);
+    const doc = loadMetaFile(ctx, file, 'registry');
+    if (doc === null) continue; // parse-error or schema defect already diagnosed
+    // A registry whose declared name disagrees with its filename would make
+    // every membership finding cite a file that does not answer to the name it
+    // quotes. Refusing here keeps "the registry a finding names" and "the file
+    // a steward opens" the same thing.
+    if (doc.registry !== name) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'registry-name-mismatch', file, path: 'registry',
+        message: `registry declares name "${doc.registry}" but lives at ${file} — a finding that names a registry must name the file a steward opens`,
+      });
+      continue;
+    }
+    const registry = {
+      name,
+      store,
+      file,
+      hierarchical: doc.hierarchical === true,
+      minted: new Set(),
+      suppressed: new Set(),
+    };
+    for (const entry of doc.values) {
+      if (!isObject(entry) || typeof entry.value !== 'string') continue; // KK-02 diagnosed the shape
+      // Absent status means minted; only an explicit suppression withholds a
+      // value. Both sets are kept because they answer different questions: a
+      // suppressed value is not usable, but it IS accounted for, and a finding
+      // that can say so tells an author "this was refused" rather than the far
+      // less useful "this does not exist".
+      (entry.status === 'suppressed' ? registry.suppressed : registry.minted).add(entry.value);
+    }
+    ctx.registries.set(`${store}/${name}`, registry);
+  }
+}
+
+function listFiles(ctx, dir, extension, recursive, { skipUnderscore = true } = {}) {
   const out = [];
   const walk = (rel) => {
     let entries;
@@ -555,7 +713,12 @@ function listFiles(ctx, dir, extension, recursive) {
       return;
     }
     for (const entry of entries) {
-      if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
+      // Underscore-prefixed names are governed store META (`_catalog.yaml`,
+      // `_rules.yaml`, `_registries/`), never records — so a record walk skips
+      // them, and the registry walk (which IS a meta walk, already pointed at
+      // the `_registries` directory) does not.
+      if (skipUnderscore && entry.name.startsWith('_')) continue;
+      if (entry.name.startsWith('.')) continue;
       const relPath = `${rel}/${entry.name}`;
       if (entry.isDirectory()) {
         if (recursive) walk(relPath);
@@ -577,9 +740,13 @@ function listFiles(ctx, dir, extension, recursive) {
   return out.sort(compare);
 }
 
-/** Ontology class files / decision entries files: the storeFile envelope. */
-function loadEntriesFiles(ctx, store, subdir, kind, space) {
-  for (const file of listFiles(ctx, `${store}/${subdir}`, '.yaml', false)) {
+/**
+ * Ontology class files / decision entries files: the storeFile envelope.
+ * Driven by the store's `records` descriptor, so the two stores that share
+ * this shape share it as data rather than as two call sites spelling it out.
+ */
+function loadEntriesFiles(ctx, store, { subdir, kind, space, extension, recursive }) {
+  for (const file of listFiles(ctx, `${store}/${subdir}`, extension, recursive)) {
     ctx.stores[store].files.push(file);
     const text = readText(ctx, file);
     if (text === null) continue; // read-error already diagnosed
@@ -711,21 +878,20 @@ export function loadStores(root) {
   }
   const ctx = {
     root: absRoot,
-    stores: {
-      ontology: { present: false, catalog: null, rules: null, files: [] },
-      knowledge: { present: false, catalog: null, rules: null, files: [] },
-      decisions: { present: false, catalog: null, rules: null, files: [] },
-    },
-    declared: { ontology: new Set(), knowledge: new Set(), decisions: new Set() },
+    stores: Object.fromEntries(STORES.map((store) =>
+      [store, { present: false, catalog: null, rules: null, files: [] }])),
+    declared: Object.fromEntries(STORES.map((store) => [store, new Set()])),
     concepts: new Map(),
     leaves: new Map(),
     leafAliases: new Map(),
     decisions: new Map(),
+    registries: new Map(),
     refs: [],
     diagnostics: [],
   };
 
-  for (const store of Object.keys(ctx.stores)) {
+  for (const store of STORES) {
+    const descriptor = STORE_DESCRIPTORS[store];
     const meta = ctx.stores[store];
     meta.present = !!statSync(join(absRoot, store), { throwIfNoEntry: false })?.isDirectory();
     if (!meta.present) {
@@ -735,11 +901,18 @@ export function loadStores(root) {
       });
       continue;
     }
-    loadCatalogAndRules(ctx, store, store !== 'decisions'); // decisions has no _rules.yaml (§9.1)
+    loadCatalogAndRules(ctx, store, descriptor.rules);
+    if (descriptor.registries) loadRegistryFiles(ctx, store);
   }
-  if (ctx.stores.ontology.present) loadEntriesFiles(ctx, 'ontology', 'classes', 'ontology-concept', 'concepts');
-  if (ctx.stores.knowledge.present) loadLeafFiles(ctx);
-  if (ctx.stores.decisions.present) loadEntriesFiles(ctx, 'decisions', 'entries', 'decision-entry', 'decisions');
+  // Records load after every registry, in every store: membership is judged
+  // against the whole governed vocabulary, so no record may be read before the
+  // vocabulary it draws from is complete.
+  for (const store of STORES) {
+    if (!ctx.stores[store].present) continue;
+    const { records } = STORE_DESCRIPTORS[store];
+    if (records) loadEntriesFiles(ctx, store, records);
+    else if (store === 'knowledge') loadLeafFiles(ctx);
+  }
 
   const pointers = buildPointers(ctx);
   resolveRefs(ctx);
@@ -753,6 +926,7 @@ export function loadStores(root) {
     leaves: sortedMap(ctx.leaves),
     leafAliases: sortedMap(ctx.leafAliases),
     decisions: sortedMap(ctx.decisions),
+    registries: sortedMap(ctx.registries),
     pointers,
     refs: ctx.refs,
     diagnostics: ctx.diagnostics,
