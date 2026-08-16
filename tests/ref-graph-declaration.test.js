@@ -37,7 +37,7 @@ const engineDir = join(repoRoot, 'payload', 'engine');
 // arrays — the shape frontmatter v2's `relates` uses, one level deeper than
 // anything the walker handled before this ticket.
 const NEW_EDGE = "    { field: 'meta.relates.depends-on', space: 'leaves' },";
-const ANCHOR = "  'knowledge-leaf': Object.freeze([";
+const ANCHOR = "  'knowledge-leaf': [";
 
 /**
  * Run validate.js from an engine copy whose REF_FIELDS may carry an extra row.
@@ -105,6 +105,13 @@ function withStore(fn) {
   try {
     cpSync(join(repoRoot, 'tests', 'fixtures', 'loader', 'healthy'), root, { recursive: true });
     mkdirSync(join(root, 'knowledge', 'regulation'), { recursive: true });
+    // The fixture's concepts anchor to source-of-truth paths, which the
+    // structural validator requires to exist in the working tree (§3.1).
+    // Creating them is what lets the control run assert a clean exit 0, so an
+    // unrelated CLI failure cannot masquerade as "no edge was collected".
+    mkdirSync(join(root, 'src', 'verticals', 'sportsbook', 'sports'), { recursive: true });
+    writeFileSync(join(root, 'src', 'verticals', 'sportsbook', 'sports', 'registry.ts'), '// fixture anchor\n');
+    mkdirSync(join(root, 'src', 'verticals', 'sportsbook', 'bet-slip'), { recursive: true });
     // 362.1 already exists and is catalog-declared; this rewrites it to carry
     // the nested `relates` map. `depends-on` names a notation no store mints.
     writeFileSync(join(root, 'knowledge', 'regulation', '362.1-ach-settlement-windows.md'), [
@@ -138,11 +145,11 @@ test('an undeclared nested edge is invisible — the control', () => {
   // declaration and nothing else.
   const before = withStore((store) => runValidate(store, { declare: false }));
   const output = `${before.stdout}${before.stderr}`;
+  // Exit 0 first: a control that "passed" because of some unrelated loader or
+  // CLI failure would prove nothing about the declaration.
+  assert.equal(before.status, 0, `expected a clean control validation: ${output}`);
   assert.equal(output.includes('unresolved-ref'), false, `an undeclared field must not produce an edge: ${output}`);
   assert.equal(output.includes('999.9'), false, 'the dangling target is not referenced by anything');
-  // The loader is healthy: the record parses and validates, the field is
-  // simply not part of the ref graph.
-  assert.equal(output.includes('structural checks never ran'), false, output);
 });
 
 test('one declaration makes the new typed edge real, surfacing at the CLI seam', () => {

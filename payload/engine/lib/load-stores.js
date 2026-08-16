@@ -107,6 +107,27 @@ export const DIAGNOSTIC_CODES = Object.freeze([
 ]);
 
 /**
+ * Freeze a ref-field table through every level it has: the table, each kind's
+ * row array, each row, and an array-form field path. `Object.freeze` is
+ * shallow, so freezing only the outer object would leave every row writable —
+ * and a mutated row is a silently rewritten cross-reference graph.
+ *
+ * @template {Record<string, Array<{ field: string|string[], space: string }>>} T
+ * @param {T} table the declaration table
+ * @returns {Readonly<T>} the same table, frozen all the way down
+ */
+function deepFreezeTable(table) {
+  for (const rows of Object.values(table)) {
+    for (const row of rows) {
+      if (Array.isArray(row.field)) Object.freeze(row.field);
+      Object.freeze(row);
+    }
+    Object.freeze(rows);
+  }
+  return Object.freeze(table);
+}
+
+/**
  * Typed cross-references per store record shape (§3.1–3.3): field path → id space.
  *
  * This table IS the cross-reference graph. Every typed edge the engine knows
@@ -126,25 +147,29 @@ export const DIAGNOSTIC_CODES = Object.freeze([
  * `model.refs`, quoted in the unresolved-ref message), so it always reads as
  * the dotted path an author would find in their own file.
  *
+ * Frozen all the way down (rows, and any array-form path): the table is a
+ * declaration every surface reads, so a consumer that could mutate a row would
+ * be rewriting the cross-reference graph out from under the loader.
+ *
  * @type {Readonly<Record<string, ReadonlyArray<{ field: string|string[], space: string }>>>}
  */
-export const REF_FIELDS = Object.freeze({
-  'ontology-concept': Object.freeze([
+export const REF_FIELDS = deepFreezeTable({
+  'ontology-concept': [
     { field: 'used-by', space: 'concepts' },
     { field: 'confusable-with', space: 'concepts' },
     { field: 'rationale', space: 'decisions' },
-  ]),
-  'knowledge-leaf': Object.freeze([
+  ],
+  'knowledge-leaf': [
     { field: 'cross-references.class-elsewhere', space: 'leaves' },
     { field: 'cross-references.see-also', space: 'leaves' },
-  ]),
-  'decision-entry': Object.freeze([
+  ],
+  'decision-entry': [
     { field: 'supersedes', space: 'decisions' },
     { field: 'superseded-by', space: 'decisions' },
     { field: 'relates-to.concepts', space: 'concepts' },
     { field: 'relates-to.leaves', space: 'leaves' },
     { field: 'relates-to.decisions', space: 'decisions' },
-  ]),
+  ],
 });
 
 /** The id spaces a ref row may target, and the store each one is declared in. */
@@ -207,6 +232,61 @@ function indexRecord(ctx, space, id, file, path, entry) {
 const fieldSegments = (field) => (Array.isArray(field) ? field : field.split('.'));
 
 /**
+ * The author-facing spelling of a declared path — the edge's `type`, and the
+ * stem of the `path` a finding quotes.
+ *
+ * Deliberately a plain dotted join, with NO escaping. This string's whole job
+ * is to be findable: an author reading `cross-references.see-also[0]` searches
+ * their own file for exactly that. An escaped rendering (`v1\.2.refs[0]`)
+ * would match nothing they wrote, so escaping would trade a real, everyday
+ * cost against a collision that only two DECLARATIONS can create.
+ *
+ * That collision is instead refused at the source (assertDistinctPaths): two
+ * rows like ['a.b','c'] and ['a','b.c'] would render identically, and the fix
+ * is to reject the ambiguous TABLE, not to disfigure every finding message.
+ *
+ * @param {string[]} segments the declared segments
+ * @returns {string} the dotted path as an author would find it in their file
+ */
+const pathLabel = (segments) => segments.join('.');
+
+/**
+ * Refuse a ref-field table in which two rows render the same author-facing
+ * path — an engine failure at load, never a silent diagnostic.
+ *
+ * Only the array form can cause this (a segment carrying a literal dot), and
+ * only against another row of the same record kind. Two indistinguishable
+ * edges would make a finding ambiguous about which declaration it came from,
+ * so the table is refused rather than believed: shipping it would be a check
+ * whose output cannot be acted on (PRD §5).
+ *
+ * @param {Record<string, ReadonlyArray<{ field: string|string[] }>>} table
+ * @throws {Error} if any record kind declares two rows with the same rendering
+ */
+export function assertDistinctPaths(table) {
+  for (const [kind, rows] of Object.entries(table)) {
+    const seen = new Map();
+    for (const { field } of rows) {
+      const label = pathLabel(fieldSegments(field));
+      const previous = seen.get(label);
+      if (previous !== undefined) {
+        throw new Error(
+          `ref-field table for "${kind}" declares two edges that render the same path "${label}" `
+          + `(${JSON.stringify(previous)} and ${JSON.stringify(field)}) — findings could not say which edge they came from; `
+          + 'spell one of them so the rendered paths differ',
+        );
+      }
+      seen.set(label, field);
+    }
+  }
+}
+
+// The shipped table is checked as this module loads: an ambiguous declaration
+// is a defect in the kit itself, and must surface the moment it is introduced
+// rather than as a confusing finding in somebody's repo.
+assertDistinctPaths(REF_FIELDS);
+
+/**
  * Follow a declared field path into one record, at any depth.
  *
  * Returns the value at the end of the path, or undefined if any intermediate
@@ -259,7 +339,7 @@ export function refEdges(rows, record, { from, file, basePath = '' }) {
     const segments = fieldSegments(field);
     const list = valueAtPath(record, segments);
     if (!Array.isArray(list)) continue;
-    const type = segments.join('.');
+    const type = pathLabel(segments);
     list.forEach((to, i) => {
       if (typeof to !== 'string') return; // wrong-type already diagnosed
       const path = basePath ? `${basePath}.${type}[${i}]` : `${type}[${i}]`;

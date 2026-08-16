@@ -13,6 +13,7 @@ import {
   loadStores,
   refEdges,
   REF_FIELDS,
+  assertDistinctPaths,
   DIAGNOSTIC_CODES,
   SEVERITIES,
 } from '../payload/engine/lib/load-stores.js';
@@ -396,4 +397,74 @@ test('ref graph: the shipped table declares every edge as a path plus an id spac
       assert.ok(spaces.has(space), `${kind}: row targets unknown id space "${space}"`);
     }
   }
+});
+
+test('ref graph: two declarations that would render the same path are refused', () => {
+  // ['a.b','c'] and ['a','b.c'] both render "a.b.c". Two indistinguishable
+  // edges would make a finding ambiguous about which declaration produced it,
+  // so the TABLE is refused at load rather than believed. The alternative —
+  // escaping dots in the rendered path — was rejected deliberately: `type` and
+  // `path` are author-facing strings whose job is to be findable in the
+  // author's own file, and `v1\.2.refs[0]` matches nothing anyone wrote.
+  assert.throws(
+    () => assertDistinctPaths({ 'synthetic-kind': [
+      { field: ['a.b', 'c'], space: 'leaves' },
+      { field: ['a', 'b.c'], space: 'leaves' },
+    ] }),
+    /render the same path "a\.b\.c"/,
+  );
+
+  // The dotted string form collides with the equivalent array form too.
+  assert.throws(
+    () => assertDistinctPaths({ 'synthetic-kind': [
+      { field: 'a.b', space: 'leaves' },
+      { field: ['a', 'b'], space: 'leaves' },
+    ] }),
+    /render the same path "a\.b"/,
+  );
+
+  // Distinct renderings are fine, including a dotted segment that collides
+  // with nothing — the check refuses ambiguity, not the array form itself.
+  assert.doesNotThrow(() => assertDistinctPaths({ 'synthetic-kind': [
+    { field: ['v1.2', 'refs'], space: 'leaves' },
+    { field: 'v1.3.refs', space: 'leaves' },
+    { field: 'plain', space: 'leaves' },
+  ] }));
+
+  // Same rendering under DIFFERENT record kinds is not a collision: a finding
+  // already knows which kind of record it came from.
+  assert.doesNotThrow(() => assertDistinctPaths({
+    'kind-a': [{ field: 'a.b', space: 'leaves' }],
+    'kind-b': [{ field: ['a', 'b'], space: 'leaves' }],
+  }));
+});
+
+test('ref graph: the shipped table is unambiguous and frozen all the way down', () => {
+  // The shipped table is checked as the module loads; asserting it here keeps
+  // the property visible where the rest of the ref-graph contract lives.
+  assert.doesNotThrow(() => assertDistinctPaths(REF_FIELDS));
+
+  // Object.freeze is shallow, so the rows and any array-form path need their
+  // own freeze — a mutable row is a silently rewritten cross-reference graph.
+  assert.equal(Object.isFrozen(REF_FIELDS), true, 'the table itself');
+  for (const [kind, rows] of Object.entries(REF_FIELDS)) {
+    assert.equal(Object.isFrozen(rows), true, `${kind}: the row array`);
+    for (const row of rows) {
+      assert.equal(Object.isFrozen(row), true, `${kind}: the row ${JSON.stringify(row.field)}`);
+      if (Array.isArray(row.field)) {
+        assert.equal(Object.isFrozen(row.field), true, `${kind}: the array-form path`);
+      }
+    }
+  }
+
+  // Frozen means a consumer's write does not land (strict mode throws; the
+  // property that matters is that the declaration is unchanged either way).
+  const [kind] = Object.keys(REF_FIELDS);
+  const before = REF_FIELDS[kind][0].space;
+  try {
+    REF_FIELDS[kind][0].space = 'mutated';
+  } catch {
+    // strict-mode ESM throws on writing a frozen property — also acceptable
+  }
+  assert.equal(REF_FIELDS[kind][0].space, before, 'a consumer must not be able to rewrite a declared row');
 });
