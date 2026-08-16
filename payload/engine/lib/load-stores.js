@@ -81,6 +81,14 @@
  *                      error    a registry's declared name disagrees with its
  *                               filename, so a finding could not name both the
  *                               registry and the file a steward opens (UCS-1148)
+ *   registry-store-mismatch
+ *                      error    a registry's declared store disagrees with the
+ *                               directory it sits in (UCS-1148)
+ *   duplicate-registry-value
+ *                      error    one value declared twice in a registry —
+ *                               redundantly, or as both minted AND suppressed,
+ *                               which the engine must never settle by file
+ *                               order (UCS-1148)
  *
  * A nonexistent/unreadable root THROWS — an engine failure (exit-code 2
  * territory, PRD §5), never a silent diagnostic.
@@ -176,6 +184,8 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'missing-catalog',
   'missing-rules',
   'registry-name-mismatch',
+  'registry-store-mismatch',
+  'duplicate-registry-value',
 ]);
 
 /**
@@ -682,6 +692,18 @@ function loadRegistryFiles(ctx, store) {
       });
       continue;
     }
+    // The same argument one level up: a registry filed under the wrong store
+    // governs facets in a store it does not sit in. Registries are keyed
+    // "<store>/<name>", so believing the declaration would index this file
+    // under a key its own path contradicts — and a steward following the key
+    // would open a different store's directory.
+    if (doc.store !== store) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'registry-store-mismatch', file, path: 'store',
+        message: `registry declares store "${doc.store}" but lives under ${store}/ — a registry governs the store it sits in, and the two spellings must agree`,
+      });
+      continue;
+    }
     const registry = {
       name,
       store,
@@ -690,14 +712,58 @@ function loadRegistryFiles(ctx, store) {
       minted: new Set(),
       suppressed: new Set(),
     };
-    for (const entry of doc.values) {
+    // A value is declared ONCE. Two rows claiming one value is a defect
+    // whichever statuses they carry, and the two shapes fail differently:
+    //
+    //   same status twice  — a redundant row. Harmless to the sets, but one of
+    //                        the two warrants is the live one and a reader
+    //                        cannot tell which, so the vocabulary's own record
+    //                        of why a term exists has become ambiguous.
+    //   minted AND suppressed — the value lands in both sets, and `judgeValue`
+    //                        tests suppression first, so a MINTED value silently
+    //                        reads as refused. The registry contradicts itself
+    //                        and the engine resolves it by evaluation order,
+    //                        which is not a governance decision anyone made.
+    //
+    // Both are refused rather than reconciled: "minted or suppressed" is the
+    // one question a registry exists to answer, and a file that answers it
+    // twice must be fixed by a steward, never guessed at here.
+    const declared = new Map(); // value -> the status its first row carried
+    for (const [i, entry] of doc.values.entries()) {
       if (!isObject(entry) || typeof entry.value !== 'string') continue; // KK-02 diagnosed the shape
+      const status = entry.status === 'suppressed' ? 'suppressed' : 'minted';
+      const first = declared.get(entry.value);
+      if (first !== undefined) {
+        ctx.diagnostics.push({
+          severity: 'error', code: 'duplicate-registry-value', file, path: `values[${i}].value`,
+          message: first === status
+            ? `value "${entry.value}" is declared twice, both times as ${status} — a value is declared once, and a duplicate row leaves two warrants with no way to tell which one governs`
+            : `value "${entry.value}" is declared as both ${first} and ${status} — a registry cannot mint and refuse the same value, and resolving the contradiction by file order would be a governance decision nobody made`,
+        });
+        continue;
+      }
+      declared.set(entry.value, status);
+      // "Each minting a Decisions entry" (UCS-1148) enforced rather than
+      // merely documented: the citation rides the ordinary ref graph, so an
+      // id naming no decision is the same `unresolved-ref` error it would be
+      // anywhere else, and the registry's governance is checked by the same
+      // machinery as every other cross-store citation.
+      if (typeof entry.decision === 'string') {
+        ctx.refs.push({
+          from: `${name}/${entry.value}`,
+          type: 'registry.decision',
+          to: entry.decision,
+          file,
+          path: `values[${i}].decision`,
+          space: 'decisions',
+        });
+      }
       // Absent status means minted; only an explicit suppression withholds a
       // value. Both sets are kept because they answer different questions: a
       // suppressed value is not usable, but it IS accounted for, and a finding
       // that can say so tells an author "this was refused" rather than the far
       // less useful "this does not exist".
-      (entry.status === 'suppressed' ? registry.suppressed : registry.minted).add(entry.value);
+      registry[status].add(entry.value);
     }
     ctx.registries.set(`${store}/${name}`, registry);
   }

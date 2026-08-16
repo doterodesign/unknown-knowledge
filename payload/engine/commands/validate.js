@@ -49,6 +49,12 @@
  *                     point a value actually needs judging — a store that
  *                     governs nothing is complete, but a value checked against
  *                     a registry that never loaded is a check that never ran
+ *   registry-shape-mismatch
+ *                     a registry's hierarchical flag disagrees with the shape
+ *                     the facet it governs requires. Reported once, against the
+ *                     registry file: a domains registry missing its
+ *                     `hierarchical: true` would judge whole paths as opaque
+ *                     strings, silently disabling the segment rule at exit 0
  *
  * Exit codes (PRD §5, lib/exit-codes.js): 0 clean, 1 findings (any
  * error-severity finding), 2 engine failure. Loader error-severity
@@ -86,7 +92,8 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 export const CHECKS = Object.freeze([
   'id-range', 'id-shape', 'index-drift', 'missing-citation',
   'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
-  'suppressed-value', 'unminted-segment', 'unregistered-value',
+  'registry-shape-mismatch', 'suppressed-value', 'unminted-segment',
+  'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -274,6 +281,9 @@ function checkOrphans(model, push) {
  *   registry  "<store>/<name>" — the registry key, matching the loader's index
  *   within    an optional path prefix, so a field nested inside a repeated
  *             sub-record (a citation) is declared once rather than per index
+ *   hierarchical
+ *             the registry SHAPE this facet requires. Declared, and checked
+ *             against the registry's own flag: see registryShapeMismatch
  *
  * Frozen all the way down: a mutated row would silently redirect a facet at a
  * different vocabulary, which is a governed store quietly ungoverned.
@@ -282,10 +292,10 @@ function checkOrphans(model, push) {
  */
 export const FACET_REGISTRIES = Object.freeze({
   'knowledge-leaf': Object.freeze([
-    Object.freeze({ field: 'facets.domain', registry: 'knowledge/domains' }),
-    Object.freeze({ field: 'operations', each: true, registry: 'knowledge/operations' }),
-    Object.freeze({ field: 'applies.jurisdictions', each: true, registry: 'knowledge/jurisdictions' }),
-    Object.freeze({ within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers' }),
+    Object.freeze({ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: true }),
+    Object.freeze({ field: 'operations', each: true, registry: 'knowledge/operations', hierarchical: false }),
+    Object.freeze({ field: 'applies.jurisdictions', each: true, registry: 'knowledge/jurisdictions', hierarchical: false }),
+    Object.freeze({ within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers', hierarchical: false }),
   ]),
 });
 
@@ -297,6 +307,39 @@ function valueAtPath(record, field) {
     node = node[segment];
   }
   return node;
+}
+
+/**
+ * The registry SHAPE a facet requires, checked against the shape the registry
+ * declares — a silent disagreement here disables the rule it governs.
+ *
+ * `facets.domain` is hierarchical: its whole membership rule is that every
+ * segment of a path is minted. That rule lives behind `registry.hierarchical`,
+ * so a domains registry that lost its `hierarchical: true` line would judge a
+ * two-segment path as one opaque string and pass it the moment that exact
+ * string appeared in the file — the segment rule switched off by an omission,
+ * at exit 0, with nothing said. The converse is as bad: a flat registry
+ * declaring itself hierarchical would split values on '/' and demand parents
+ * nobody meant to mint.
+ *
+ * Neither direction is a defect the value-level checks can see, because both
+ * produce a coherent-looking verdict about the wrong question. So the shape is
+ * declared on both sides and the disagreement is the finding: reported ONCE per
+ * registry, against the registry file, because the registry is what must change
+ * — reporting it per value would bury one edit under a finding for every leaf.
+ *
+ * @param {object} registry the loaded registry
+ * @param {boolean|undefined} expected the shape the declaration requires
+ * @returns {{ code: string, message: string }|null}
+ */
+function registryShapeMismatch(registry, expected, registryKey) {
+  if (expected === undefined || registry.hierarchical === expected) return null;
+  return {
+    code: 'registry-shape-mismatch',
+    message: expected
+      ? `the "${registryKey}" registry must be hierarchical — the facet it governs is a '/'-joined path whose every segment must be minted, and a flat registry would judge the whole path as one opaque string, silently disabling that rule. Add "hierarchical: true" to ${registry.file}`
+      : `the "${registryKey}" registry declares itself hierarchical, but the facet it governs is a flat value — path splitting would demand parent values nobody minted. Remove "hierarchical: true" from ${registry.file}`,
+  };
 }
 
 /**
@@ -379,6 +422,21 @@ function judgeValue(registry, registryKey, value) {
  */
 function checkRegistryMembership(model, push) {
   const rows = FACET_REGISTRIES['knowledge-leaf'];
+  // Shape first, once per registry: a registry whose shape disagrees with the
+  // facet it governs is judging the wrong question, so the disagreement is
+  // reported against the registry file rather than against every leaf that
+  // drew from it.
+  for (const { registry: registryKey, hierarchical } of rows) {
+    const registry = model.registries.get(registryKey);
+    if (!registry) continue; // absence is the per-value missing-registry finding
+    const mismatch = registryShapeMismatch(registry, hierarchical, registryKey);
+    if (mismatch) {
+      push({
+        severity: 'error', code: mismatch.code, id: registryKey,
+        file: registry.file, path: 'hierarchical', message: mismatch.message,
+      });
+    }
+  }
   for (const leaf of model.leaves.values()) {
     const { file, record } = leaf;
     const id = recordId(leaf);

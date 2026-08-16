@@ -69,7 +69,10 @@ minted.
 4. **Draft the Decisions entry** from `templates/decisions/registry-minting.yaml`.
    Every minting is a governed act with a written rationale (§3.3): the entry
    records the warrant, the value, and who decided.
-5. **Edit the registry**, citing the decision id in the value's `decision:` field.
+5. **Edit the registry**, citing the decision id in the value's `decision:`
+   field. This is required and it is checked: a value citing no decision fails
+   the schema, and one citing an id no Decisions entry answers to fails as an
+   unresolved ref.
 6. **Open one PR** carrying the registry edit, the Decisions entry, and the
    material that supplied the warrant. Agents draft; humans approve.
 
@@ -94,7 +97,7 @@ registry edit citing it, in one reviewed PR.
 
 ## What the engine checks
 
-Registry membership is a **structural-validator** check (`engine/validate.js`),
+Registry membership is a **structural-validator** check (`engine/commands/validate.js`),
 not a schema check. The hand-rolled schema subset cannot express "this value
 appears in that file", and hierarchical segment membership is not a JSON Schema
 shape at all.
@@ -105,18 +108,40 @@ shape at all.
 | `unminted-segment` | a hierarchical path whose named segment is not minted |
 | `suppressed-value` | the value is listed as refused |
 | `missing-registry` | the record cites a governed facet whose registry the store does not carry |
+| `registry-shape-mismatch` | the registry's `hierarchical` flag disagrees with the facet it governs |
 
 Every one of them names **both the value and the registry file**, so the finding
 points at the edit rather than at the symptom.
 
-Two engine conducts are worth stating outright, because both are the difference
+The loader refuses a registry file outright — exit 2, before any membership is
+judged — when it contradicts itself: a value declared twice, a value declared
+both minted *and* suppressed (`duplicate-registry-value`), a declared `registry`
+or `store` disagreeing with the file's own path (`registry-name-mismatch`,
+`registry-store-mismatch`), or a `decision` naming no Decisions entry
+(`unresolved-ref`). None of these can be settled by the engine: picking a winner
+by file order would be a governance decision nobody made.
+
+Three engine conducts are worth stating outright, because each is the difference
 between a governed vocabulary and a decorative one:
+
+**Every value cites a decision, and the citation is checked.** `decision` is a
+*required* field, and it resolves through the same cross-store ref graph as
+every other citation — an id naming no Decisions entry is an ordinary
+`unresolved-ref` error. "Each minting a Decisions entry" is therefore enforced,
+not merely encouraged: a vocabulary change nobody signed cannot reach the store.
 
 **A malformed registry is a hard error, never an empty one.** Unparseable YAML
 or a schema defect in a registry file is a loader error that gates every
 surface to exit 2. Degrading to "the registry loaded as empty" would fail every
 value that *was* minted — a check that never ran, wearing the exit code of a
 check that ran and found problems (PRD §5).
+
+**A registry's shape must match the facet it governs.** The `hierarchical` flag
+is what turns on segment-by-segment membership, so a domains registry that lost
+it would judge a whole path as one opaque string — the segment rule switched
+off by an omitted line, at exit 0. The engine therefore declares the shape each
+facet requires and refuses a registry that disagrees
+(`registry-shape-mismatch`), reported once against the registry file.
 
 **An absent registry surfaces where it can mean something.** A Store that
 carries no registries is complete and valid: registries are opt-in governance,

@@ -10,6 +10,10 @@
 # Value shape (hierarchical): lowercase kebab segments joined by "/". A child is
 # valid only when EVERY segment above it is itself minted here.
 #
+# `warrant` and `decision` are BOTH required on every value: the material that
+# needs the term, and the Decisions entry that signed it off. The decision id is
+# resolved like any other citation, so it must name a real entry.
+#
 #   values:
 #     - value: regulation
 #       gloss: Rules imposed from outside the organization.
@@ -32,5 +36,8 @@
 schema-version: 1
 store: knowledge
 registry: domains
+# Load-bearing: this flag is what turns on segment-by-segment membership.
+# Without it a whole path would be judged as one opaque string, so the engine
+# refuses a flat domains registry rather than quietly obeying it.
 hierarchical: true
 values: []

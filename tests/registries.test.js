@@ -303,6 +303,137 @@ test('the engine holds no list of legal facet values anywhere', () => {
 
 // ------------------------------- AC5: the field→registry declaration map
 
+// -------------------- registry shape, duplicates, and governed decision refs
+// (post-review hardening: each of these was a silent pass before.)
+
+test('a registry whose shape disagrees with its facet is refused, not silently obeyed', () => {
+  // The worst of the silent passes: dropping `hierarchical: true` from the
+  // domains registry turned every path into an opaque string, disabling the
+  // segment rule entirely — at exit 0, with nothing reported.
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/domains.yaml');
+    writeFileSync(file, readFileSync(file, 'utf8').replace(/^hierarchical: true\n/m, ''));
+    const payload = JSON.parse(run('--root', dir, '--json').stdout);
+    const f = payload.findings.find((x) => x.code === 'registry-shape-mismatch');
+    assert.ok(f, 'a flat domains registry must be refused, never quietly obeyed');
+    // Reported ONCE, against the registry file — that is the one edit that
+    // fixes it. Per-leaf reporting would bury it under a finding per leaf.
+    assert.equal(payload.findings.filter((x) => x.code === 'registry-shape-mismatch').length, 1);
+    assert.equal(f.file, 'knowledge/_registries/domains.yaml');
+    assert.match(f.message, /must be hierarchical/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('the converse shape mismatch is refused too: a flat facet on a hierarchical registry', () => {
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/operations.yaml');
+    writeFileSync(file, readFileSync(file, 'utf8')
+      .replace('registry: operations', 'registry: operations\nhierarchical: true'));
+    const payload = JSON.parse(run('--root', dir, '--json').stdout);
+    const f = payload.findings.find((x) => x.code === 'registry-shape-mismatch');
+    assert.ok(f, 'path-splitting a flat vocabulary would demand parents nobody minted');
+    assert.match(f.message, /declares itself hierarchical/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('one value declared twice in a registry is refused', () => {
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/operations.yaml');
+    writeFileSync(file, `${readFileSync(file, 'utf8')}  - value: register
+    gloss: A redundant second row for a value already minted above.
+    warrant: Duplicate.
+    decision: D-201
+`);
+    const r = run('--root', dir, '--json');
+    assert.equal(r.status, 2, 'a registry that declares a value twice never loaded cleanly');
+    assert.match(r.stderr, /duplicate-registry-value/);
+    assert.match(r.stderr, /two warrants with no way to tell which one governs/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a value both MINTED and SUPPRESSED is refused, never settled by file order', () => {
+  // Before this check the value landed in both sets, and because judgeValue
+  // tests suppression first a minted value silently read as refused — the
+  // engine resolving a governance contradiction by evaluation order.
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/operations.yaml');
+    writeFileSync(file, `${readFileSync(file, 'utf8')}  - value: register
+    gloss: The same value, this time refused.
+    warrant: Contradicts the minting above.
+    status: suppressed
+    decision: D-201
+`);
+    const r = run('--root', dir, '--json');
+    assert.equal(r.status, 2);
+    assert.match(r.stderr, /declared as both minted and suppressed/);
+    assert.match(r.stderr, /governance decision nobody made/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a registry filed under the wrong store is refused', () => {
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/jurisdictions.yaml');
+    writeFileSync(file, readFileSync(file, 'utf8').replace('store: knowledge', 'store: ontology'));
+    const r = run('--root', dir, '--json');
+    assert.equal(r.status, 2);
+    assert.match(r.stderr, /registry-store-mismatch/);
+    assert.match(r.stderr, /governs the store it sits in/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('every registry value MUST cite a Decisions entry, and the citation must resolve', () => {
+  // "Each minting a Decisions entry" enforced mechanically rather than left to
+  // conduct: a vocabulary change nobody signed is exactly what the warrant rule
+  // exists to prevent.
+  const schema = JSON.parse(readFileSync(join(root, 'payload/schemas/registry.schema.json'), 'utf8'));
+  assert.ok(schema.$defs.registryValue.required.includes('decision'),
+    'a value citing no decision is a vocabulary change nobody signed');
+
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/operations.yaml');
+    // A well-formed id that names no decision: it rides the ordinary ref graph,
+    // so it fails as the same unresolved-ref error as any other dangling
+    // cross-store citation rather than through bespoke registry machinery.
+    writeFileSync(file, readFileSync(file, 'utf8').replace('decision: D-201', 'decision: D-999'));
+    const r = run('--root', dir, '--json');
+    assert.equal(r.status, 2);
+    assert.match(r.stderr, /unresolved-ref/);
+    assert.match(r.stderr, /D-999/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a whitespace-only warrant is refused — the field must carry actual material', () => {
+  const dir = tempCopy(CLEAN);
+  try {
+    const file = join(dir, 'knowledge/_registries/operations.yaml');
+    writeFileSync(file, readFileSync(file, 'utf8')
+      .replace('warrant: 600.1 documents the registration procedure.', 'warrant: "   "'));
+    const r = run('--root', dir, '--json');
+    assert.equal(r.status, 2, 'blank warrant is speculative shelving wearing a filled field');
+    assert.match(r.stderr, /pattern-mismatch/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('facet→registry is a DECLARATION, not a per-facet branch', () => {
   // The seam UCS-1149 extends: a new governed facet is a new row here, and
   // nothing in the checker changes. Every declared registry must be one the
@@ -318,7 +449,15 @@ test('facet→registry is a DECLARATION, not a per-facet branch', () => {
   for (const row of FACET_REGISTRIES['knowledge-leaf']) {
     assert.ok(Object.isFrozen(row), 'a mutated row would silently reroute a facet at another vocabulary');
     assert.equal(typeof row.field, 'string');
+    // Each row declares the registry SHAPE it needs, so a registry that
+    // disagrees is caught rather than silently obeyed.
+    assert.equal(typeof row.hierarchical, 'boolean', `${row.field} must declare its registry shape`);
   }
+  // Only the domain facet is hierarchical; the rest are flat vocabularies.
+  assert.deepEqual(
+    FACET_REGISTRIES['knowledge-leaf'].filter((r) => r.hierarchical).map((r) => r.field),
+    ['facets.domain'],
+  );
 });
 
 test('the declaration map drives the checker: every declared facet is checked', () => {

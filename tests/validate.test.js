@@ -38,7 +38,8 @@ test('clean store: exit 0, zero findings, every check class reported as run', ()
   assert.deepEqual(out.checks, [
     'id-range', 'id-shape', 'index-drift', 'missing-citation',
     'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
-    'suppressed-value', 'unminted-segment', 'unregistered-value',
+    'registry-shape-mismatch', 'suppressed-value', 'unminted-segment',
+    'unregistered-value',
   ]);
 });
 

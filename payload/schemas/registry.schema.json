@@ -29,7 +29,7 @@
     "registryValue": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["value", "warrant"],
+      "required": ["value", "warrant", "decision"],
       "properties": {
         "value": {
           "type": "string",
@@ -39,7 +39,8 @@
         "gloss": { "type": "string", "description": "What the term means here — prose is navigation, never the fact." },
         "warrant": {
           "type": "string",
-          "description": "The literary warrant: the material that exists and needs this value. A value minted without material to fill it is speculative shelving, which is what this field refuses."
+          "pattern": "\\S",
+          "description": "The literary warrant: the material that exists and needs this value. A value minted without material to fill it is speculative shelving, which is what this field refuses — so it must carry actual text, not whitespace."
         },
         "status": {
           "enum": ["minted", "suppressed"],
@@ -47,7 +48,7 @@
         },
         "decision": {
           "$ref": "#/$defs/decisionRef",
-          "description": "The Decisions entry recording this minting or suppression (§3.3). Every registry edit is a governed act with a written rationale."
+          "description": "REQUIRED — the Decisions entry recording this minting or suppression (§3.3). Every registry edit is a governed act with a written rationale, so a value that cites no decision is a vocabulary change nobody signed. The citation is resolved like any other cross-store ref: an id naming no decision is an unresolved-ref error."
         },
         "minted": { "$ref": "#/$defs/isoDate" }
       }
