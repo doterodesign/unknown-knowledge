@@ -15,6 +15,33 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Residue and document candidates as fragment-based findings (UCS-1160): the
+  loop that turns misses into tomorrow's deterministic edges. Both flow through
+  the EXISTING `log-entry.js` surface — one file per finding, so the concurrent
+  sessions that produced them never merge-conflict — and each carries the
+  context it fell out of. `finding.schema.json` gains three additive fields:
+  `residue` (the unresolved terms), `resolved-context` (what DID resolve in the
+  same ask), and `section` (a document candidate's locator: document, heading
+  address, line or page). A locator addresses EXACTLY ONE coordinate system —
+  neither is underspecified, both is contradictory — enforced as the
+  `locator-shape` validator convention rather than a schema keyword, because
+  the engine's JSON Schema subset has no conditionals and an unenforced keyword
+  is silent contract drift. A bare unresolved token is a finding nobody can act
+  on; `lacrosse` unresolved in an ask that resolved `add-sport` localizes the
+  gap precisely enough that the minting decision writes itself.
+- The reflect skill's minting conduct: four mintable vocabularies (terms,
+  aliases, operations, domain classes), each minted only on **literary warrant
+  with its corroborating fragments attached**, each minting its own Decisions
+  entry. A new `mint-proposal` change category, and
+  `templates/decisions/reflect-mint-proposal.yaml` — whose `id` and `date` are
+  deliberately invalid, so a proposal pasted unedited fails validation rather
+  than reaching the Decisions store with a rationale nobody wrote (the
+  registry-minting placeholder idiom, extended to the new vocabularies).
+- The moderator's interface is the **reflect queue**, not store browsing: mint
+  proposals, corroborated findings, drafts awaiting promotion, and sampled
+  spot-checks of what did NOT clear the threshold — because a threshold nobody
+  audits is a threshold nobody can tune. Corroboration stays human judgment:
+  the engine never counts it and no CLI reports a corroboration score.
 - The derived layer (UCS-1158): everything discovery-shaped becomes engine
   output, regenerated from the flat store and disposable by construction. A
   tenth engine surface, `engine/derive.js`, writes `knowledge/derived/` — plural

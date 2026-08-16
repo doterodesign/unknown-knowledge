@@ -620,6 +620,85 @@ test('the minting Decisions template is a decision entry in every field but its 
   assert.deepEqual(validateStoreFile('decision-entry', filled).errors, []);
 });
 
+test('UCS-1160 golden: a reflect mint proposal pasted UNEDITED fails validation', () => {
+  // The placeholder idiom, extended to the vocabularies reflect mints (terms,
+  // aliases, operations, domain classes). Empirically pinned — not assumed:
+  // these are the exact two diagnostics an unedited paste fires today, so a
+  // template edit that accidentally made the file valid breaks this test
+  // rather than quietly letting a placeholder rationale reach the Decisions
+  // store and a minted value carry a warrant nobody wrote.
+  const path = join(root, 'payload/templates/decisions/reflect-mint-proposal.yaml');
+  const doc = load(readFileSync(path, 'utf8'));
+  const entry = doc.entries[0];
+  assert.equal(entry.status, 'proposed', 'drafted provisionally (§3.5) — agents draft, humans approve');
+  assert.equal(entry.category, 'governance', 'minting changes what the Store may say, not how the engine works');
+  assert.equal(doc['schema-version'], 1);
+
+  const { errors } = validateStoreFile('decision-entry', doc);
+  assert.deepEqual(errors.map((e) => [e.path, e.code]), [
+    ['entries[0].date', 'pattern-mismatch'],
+    ['entries[0].id', 'pattern-mismatch'],
+  ], 'the mint proposal refuses to validate until its placeholders are filled');
+
+  // Everything else is real, so filling exactly those two yields a valid entry.
+  const filled = load(readFileSync(path, 'utf8'));
+  filled.entries[0].id = 'D-2026-08-16-mint-example-from-reflect';
+  filled.entries[0].date = '2026-08-16';
+  assert.deepEqual(validateStoreFile('decision-entry', filled).errors, []);
+});
+
+test('UCS-1160: the mint proposal is honest about which placeholders validate GREEN', () => {
+  // The template's own UCS-1155 lesson, applied to itself. Filling `id` and
+  // `date` makes the file VALIDATE while five fields still hold
+  // <angle-bracket> prose — so "it validates" must never be read as "the
+  // rationale is written". The comment says so explicitly, and this test pins
+  // the inventory to the fields that actually behave that way: if a later edit
+  // adds a sixth green placeholder or patterns one of these, the comment stops
+  // matching the file and this fails.
+  const path = join(root, 'payload/templates/decisions/reflect-mint-proposal.yaml');
+  const filled = load(readFileSync(path, 'utf8'));
+  filled.entries[0].id = 'D-2026-08-16-mint-example-from-reflect';
+  filled.entries[0].date = '2026-08-16';
+  assert.deepEqual(validateStoreFile('decision-entry', filled).errors, [],
+    'filling the two machine-refused placeholders yields a VALID entry');
+
+  const stillPlaceheld = Object.entries(filled.entries[0])
+    .filter(([, value]) => /<[a-zA-Z]/.test(JSON.stringify(value)))
+    .map(([field]) => field)
+    .sort();
+  assert.deepEqual(stillPlaceheld, ['consequences', 'context', 'deciders', 'decision', 'title'],
+    'exactly these fields validate green while still holding placeholder text');
+
+  // And the file WARNS about precisely those, by name.
+  const text = readFileSync(path, 'utf8');
+  assert.match(text, /MACHINE-REFUSED/);
+  assert.match(text, /GREEN BUT STILL A PLACEHOLDER/);
+  for (const field of stillPlaceheld) {
+    assert.ok(new RegExp(`^#\\s+${field}\\s`, 'm').test(text),
+      `the green-placeholder inventory must name ${field}`);
+  }
+  assert.match(text, /NEVER "the\s+#?\s*rationale is written"/);
+});
+
+test('UCS-1160: the mint proposal states the corroboration rule and the warrant rule, and ships through the manifest', () => {
+  const text = readFileSync(join(root, 'payload/templates/decisions/reflect-mint-proposal.yaml'), 'utf8');
+  // One finding is a data point, three are a pattern — stated where a drafter
+  // reads it, not only in the skill.
+  assert.match(text, /ONE FINDING IS A DATA POINT, THREE ARE A PATTERN/);
+  assert.match(text, /least three DISTINCT fragments/);
+  // Distinctness is DEFINED once, in the skill — the template points at it
+  // rather than paraphrasing, so the two can never drift apart.
+  assert.match(text, /is defined once, in\s+#?\s*protocol\/skills\/knowledge-reflect\.md under Minting/);
+  assert.match(text, /counts independent resolution\s+#?\s*events, not files/);
+  // Warrant is not satisfied by corroboration: both, or neither.
+  assert.match(text, /A VALUE IS MINTED ONLY ON LITERARY WARRANT/);
+  // The placeholders are deliberate, and the file says so.
+  assert.match(text, /DELIBERATELY not\s+#?\s*valid/);
+  // A payload file the manifest does not name never reaches a client (D-007).
+  const manifest = readFileSync(join(root, 'cli', 'kit.manifest.yaml'), 'utf8');
+  assert.match(manifest, /from: templates\/decisions\/reflect-mint-proposal\.yaml/);
+});
+
 test('the conduct doc states the warrant rule, the suppression rule, and the open top level', () => {
   const doc = readFileSync(join(root, 'payload/protocol/registry-warrant.md'), 'utf8');
   assert.match(doc, /minted only when material exists to fill it/i, 'literary warrant');

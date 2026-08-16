@@ -76,9 +76,120 @@ test('the last-reflect stamp: engine-readable, per-item approval outcome by cate
   assert.match(doc, /outcomes:\s+# per-item approval outcome BY CATEGORY/);
   assert.match(doc, /days-since-last-reflect/);
   // The closed change-category vocabulary the graduation trigger measures.
-  for (const category of ['concept-fix', 'alias-addition', 'ssot-repoint', 'scope-widen', 'knowledge-promotion', 'extractor-draft']) {
+  for (const category of ['concept-fix', 'alias-addition', 'ssot-repoint', 'scope-widen', 'knowledge-promotion', 'extractor-draft', 'mint-proposal']) {
     assert.ok(doc.includes(category), `missing change category ${category}`);
   }
+});
+
+// --- UCS-1160: the minting conduct and the moderator's interface -------------
+// Reflect is where misses become tomorrow's deterministic edges. These are
+// DOCS assertions on purpose: corroboration counting and warrant judgment are
+// the human half of the loop, and building either into the engine would make
+// the threshold un-auditable and the warrant automatic.
+
+test('residue and document candidates are documented as fragment findings carrying their context', () => {
+  // Residue arrives with what DID resolve alongside it — a bare unresolved
+  // token is a finding nobody can act on.
+  assert.match(doc, /`resolved-context`/);
+  assert.match(doc, /decomposition\.residue/);
+  // Document candidates carry a section locator, so clustering opens the
+  // section just-in-time rather than re-reading the document.
+  assert.match(doc, /`section` locator/);
+  assert.match(doc, /candidates-ranked/);
+  assert.match(doc, /just-in-time/);
+  // Both flow through the EXISTING log-entry surface, not a parallel one.
+  assert.match(doc, /through\s+`log-entry\.js` like every other fragment/);
+  // Zero resolution is normal, not a miss — consistent with resolve's own conduct.
+  assert.match(doc, /[Zz]ero\s+resolution is a normal outcome, not a miss/);
+});
+
+test('the corroboration rule is stated as human judgment the engine never counts', () => {
+  assert.match(doc, /counted \*\*by hand, here\*\* — the engine never\s+counts it/);
+  assert.match(doc, /no CLI reports a corroboration\s+score/);
+});
+
+test('"three distinct fragments" is defined ONCE, and counts events rather than files', () => {
+  // The threshold is only as good as its unit. Three fragments logged by one
+  // session about one ask is one data point wearing three filenames — letting
+  // it clear the bar would let a single session vote three times.
+  assert.match(doc, /### What "three distinct fragments" means/);
+  assert.match(doc, /\*\*independent resolution\s+events, not files\.\*\*/);
+  // The case ruled out, and the case admitted, both stated.
+  assert.match(doc, /That is \*\*one\*\* data point wearing three\s+filenames/);
+  assert.match(doc, /Each date in `occurrences` is a\s+genuinely separate occasion/);
+  // Defined once: the evidence standard points at the definition instead of
+  // restating it, so the two cannot drift.
+  assert.match(doc, /defined in full under Minting conduct below/);
+  // Exactly one section defines it — a second definition is drift by construction.
+  assert.equal((doc.match(/### What "three distinct fragments" means/g) ?? []).length, 1);
+});
+
+test('minting conduct: literary warrant with evidence attached, one Decisions entry per mint', () => {
+  // The four mintable vocabularies the loop produces.
+  for (const vocabulary of ['terms', 'aliases', 'operations', 'domain classes']) {
+    assert.ok(doc.includes(`**${vocabulary}**`), `minting conduct must name ${vocabulary}`);
+  }
+  // Warrant: corroboration alone never mints.
+  assert.match(doc, /[Ll]iterary warrant, always/);
+  assert.match(doc, /minted only when material\s+exists to fill it/);
+  assert.match(doc, /speculative shelving\s+wearing evidence/);
+  // Evidence attached, verbatim, like every other recommendation item.
+  assert.match(doc, /\*\*Evidence attached\.\*\*/);
+  assert.match(doc, /names the corroborating fragment\s+paths verbatim/);
+  // One Decisions entry per minting — each segment, alias, operation.
+  assert.match(doc, /\*\*One Decisions entry per minting\.\*\*/);
+  assert.match(doc, /each domain\s+segment, each alias, each operation/);
+  // Drafted from the template whose placeholders refuse an unedited paste.
+  assert.ok(doc.includes('templates/decisions/reflect-mint-proposal.yaml'));
+  assert.match(doc, /pasted unedited\s+fails validation/);
+  // Suppression is durable, never a deletion.
+  assert.match(doc, /`status: suppressed`/);
+  // Proposal-first: minting is gated like any other item.
+  assert.match(doc, /never edits a\s+registry ahead of its approval/);
+  assert.match(doc, /never mints a child path segment whose\s+parent is unminted/);
+});
+
+test('the A5 walkthrough exercises the residue cluster through to an approved mint', () => {
+  // The walkthrough is the honest seam for prose protocol: if reflect is where
+  // misses become edges, the acceptance run has to actually walk one.
+  assert.match(walkthrough, /residue `lacrosse`/);
+  // Seeded as findings through the CLI, carrying their context and locator.
+  assert.match(walkthrough, /"residue":\["lacrosse"\]/);
+  assert.match(walkthrough, /"resolved-context":\["add-sport","K-110"\]/);
+  assert.match(walkthrough, /"section":\{"document":"docs\/sports-expansion\.md","address":"Planned sports","line":24\}/);
+  // A mint-proposal item reaches the gate on three distinct fragments, and the
+  // warrant was checked by opening the source the locator addressed.
+  assert.match(walkthrough, /category `mint-proposal`/);
+  assert.match(walkthrough, /\*\*literary\s+warrant\*\*/);
+  assert.match(walkthrough, /a\s+candidate is a claim about the map until someone reads the source/);
+  // One Decisions entry per mint, from the placeholder-guarded template.
+  assert.match(walkthrough, /templates\/decisions\/reflect-mint-proposal\.yaml/);
+  assert.match(walkthrough, /entries\[0\]\.date` and `entries\[0\]\.id` `pattern-mismatch`/);
+  // The outcome is recorded by category, so graduation can measure it.
+  assert.match(walkthrough, /mint-proposal: \{ approved: 1/);
+  // Corroboration is counted by hand — the engine never reports a score.
+  assert.match(walkthrough, /Corroboration was counted \*\*by hand\*\*/);
+});
+
+test('the A5 walkthrough presents the reflect queue as the moderator interface', () => {
+  assert.match(walkthrough, /presents the \*\*reflect queue\*\*, not a store browse/);
+  for (const section of ['Mint proposals', 'Corroborated findings', 'Drafts awaiting promotion', 'Sampled spot-checks']) {
+    assert.ok(walkthrough.includes(`**${section}**`), `the walkthrough queue must show ${section}`);
+  }
+  // The spot-check section shows what did NOT clear the threshold.
+  assert.match(walkthrough, /as under-corroborated so the human can audit the threshold itself/);
+});
+
+test("the moderator's interface is the reflect queue's four sections, not store browsing", () => {
+  assert.match(doc, /\*\*The moderator's interface is the reflect queue, not the store\.\*\*/);
+  assert.match(doc, /do\s+not browse `knowledge\/` or `ontology\/`/);
+  // The four sections, each present as a queue row.
+  for (const section of ['Mint proposals', 'Corroborated findings', 'Drafts awaiting promotion', 'Sampled spot-checks']) {
+    assert.ok(doc.includes(`**${section}**`), `the queue must have a ${section} section`);
+  }
+  // The spot-check sample audits the THRESHOLD, not just what cleared it.
+  assert.match(doc, /a threshold nobody\s+audits is a threshold nobody can tune/);
+  assert.match(doc, /approving one does not bypass the standard/);
 });
 
 test('resume semantics are explicit: entry detection plus per-step rules', () => {

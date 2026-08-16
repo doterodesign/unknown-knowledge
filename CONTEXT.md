@@ -77,7 +77,9 @@ retrieval-miss, quarantine (engine-attributed). Raw signal; no judgment at
 capture time; content policy: concept IDs and file paths only, never
 verbatim user text or secrets. Logs are fragment-based (one file per entry)
 so concurrent sessions never merge-conflict; uncorroborated entries age out
-after N reflect cycles.
+after N reflect cycles. A retrieval-miss finding may carry `residue` (the
+unresolved terms), `resolved-context` (what did resolve in the same ask), and
+a `section` locator when it came from a document candidate.
 
 **Verdict** — Preflight's per-concept output: `trusted / quarantined /
 unknown`. Computed deterministically by the engine; what an agent does about
@@ -96,8 +98,25 @@ along invisibly.
 
 **Reflect skill** — Human-run consolidation (daily/weekly): clusters findings
 into a per-item approve/reject recommendation list. Gated changes require
-multiple corroborating findings (one is a data point, three are a pattern).
-Approved items apply, then the relevant validator re-runs.
+multiple corroborating findings (one is a data point, three are a pattern) —
+counted by hand, never by the engine. Approved items apply, then the relevant
+validator re-runs. Minting a vocabulary value (term, alias, operation, domain
+class) from a corroborated residue cluster needs **literary warrant** on top of
+corroboration, carries its evidence, and writes one Decisions entry per mint.
+
+**Reflect queue** — The moderator's interface, and the reason they never browse
+the store: four sections — mint proposals, corroborated findings, drafts
+awaiting promotion, and sampled spot-checks of what did NOT clear the evidence
+threshold. Browsing is unbounded and finds whatever the eye lands on; the queue
+is bounded, evidenced, and complete. The spot-check sample is what makes the
+threshold itself auditable.
+
+**Residue** — The non-stopword query tokens no join consumed (`resolve`'s
+`decomposition.residue`), and, for `resolve --doc`, the document's own residue
+as ranked candidates. Logged as findings through `log-entry.js` carrying
+`resolved-context` (what DID resolve alongside) and, for candidates, a `section`
+locator — so a miss arrives localized enough to mint from. Zero resolution is a
+normal outcome, not a miss.
 
 **Trust graduation** — Per-category autonomy upgrades: moderation narrows from
 100% inspection to sampling for one change category at a time, never globally

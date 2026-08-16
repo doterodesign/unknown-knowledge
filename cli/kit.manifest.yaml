@@ -64,6 +64,11 @@ unconditional:
     # a registry value (UCS-1148): every registry edit is a governed act with a
     # written rationale, and this is the shape of that rationale.
     - { from: templates/decisions/registry-minting.yaml, to: templates/decisions/registry-minting.yaml }
+    # The Decisions-entry template reflect copies when a corroborated cluster of
+    # residue/candidate findings warrants minting a term, alias, operation, or
+    # domain class (UCS-1160): every mint is a governed act carrying BOTH its
+    # literary warrant and the three-fragment evidence that raised it.
+    - { from: templates/decisions/reflect-mint-proposal.yaml, to: templates/decisions/reflect-mint-proposal.yaml }
     # The Decisions-entry template a steward copies to record a phoenix event
     # (UCS-1154): a bulk re-taxonomy is a governed act, and this is the shape of
     # the rationale that sanctions the edition bump it carries.

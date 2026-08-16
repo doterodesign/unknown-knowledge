@@ -29,6 +29,28 @@
         "leaves": { "type": "array", "items": { "$ref": "#/$defs/leafRef" } }
       }
     },
+    "residue": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "The unresolved terms this finding is about (UCS-1160) — resolve's `decomposition.residue` for a query, or a ranked candidate's term for a document. Terms are the store's own tokens, never quoted user prose (capture content policy)."
+    },
+    "resolved-context": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "What DID resolve in the same ask (UCS-1160) — resolve's `decomposition.resolved-context`: the operations, concept ids, and jurisdictions the query landed in. A bare unresolved token is a finding nobody can act on; the context localizes the gap precisely enough that the minting decision writes itself."
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Where a DOCUMENT candidate was found (UCS-1160) — the section locator from the --doc coverage map, so reflect can open the section just-in-time rather than re-reading the document. Absent on query residue, which has no document to address. EXACTLY ONE of line/page is required: coverage emits {line, endLine} for line-addressed sources and {page, object} for pdf, never both. Neither is an underspecified locator (the coordinate-free claim the locator exists to replace); both is contradictory. That rule is enforced by the VALIDATOR as the `locator-shape` convention, not by this document, because the engine's JSON Schema subset has no conditional keywords (no oneOf/anyOf/allOf/not) — writing one here would promise a rule nothing checks.",
+      "required": ["document", "address"],
+      "properties": {
+        "document": { "type": "string", "description": "Repo-relative path of the document the candidate fell out of." },
+        "address": { "type": "string", "description": "The section's heading text — the coverage map's own address for it." },
+        "line": { "type": "integer", "minimum": 1, "description": "First line of the section's range; absent for page-addressed sources (pdf). Exactly one of line/page — see the `locator-shape` convention above." },
+        "page": { "type": "integer", "minimum": 1, "description": "Page number for page-addressed sources (pdf); absent for line-addressed ones. Exactly one of line/page — see the `locator-shape` convention above." }
+      }
+    },
     "status": {
       "enum": ["open", "proposed", "resolved", "rejected"],
       "description": "Lifecycle: open → proposed → resolved/rejected; re-open-not-duplicate."
