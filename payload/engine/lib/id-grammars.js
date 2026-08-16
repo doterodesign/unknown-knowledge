@@ -28,15 +28,6 @@
  */
 
 /**
- * Store → the id grammar its ids obey (§3.5).
- *
- * `pattern` is an anchored JSON-Schema-flavored regex source; `hint` is the
- * human-facing shape quoted back in findings, and travels WITH the pattern so
- * a grammar change cannot leave the prose describing the old one.
- *
- * @type {Readonly<Record<string, { pattern: string, hint: string }>>}
- */
-/**
  * The body of an anchored pattern — what it matches, without its ^ and $.
  *
  * Only `union` below uses it, and only so a union can be COMPOSED from the
@@ -44,10 +35,33 @@
  * members would be exactly the defect this module exists to remove, one level
  * up: three spellings of the notation grammar, two of which drift silently.
  *
+ * REFUSES a pattern that is not anchored at both ends, rather than stripping
+ * what it finds. Both failure modes are silent and neither is detectable
+ * downstream: an unanchored member composes into a union with a hole in the
+ * middle (`^(a|b)$` where `b` was `b` and not `^b$` accepts nothing new, but
+ * `^(a|.*x)$` would), and a member ending in an ESCAPED `\$` — a literal
+ * dollar sign, not an anchor — would have that character silently eaten,
+ * widening the union to match strings the member itself rejects. A grammar
+ * module whose composition step can quietly widen a pattern is worse than no
+ * composition at all, so a malformed member is an engine failure at load.
+ *
  * @param {string} pattern an anchored pattern source
  * @returns {string} the same pattern with its anchors stripped
+ * @throws {TypeError} if the pattern is not anchored at both ends
  */
-const body = (pattern) => pattern.replace(/^\^/, '').replace(/\$$/, '');
+function body(pattern) {
+  // A trailing `$` is an anchor only if it is not itself escaped. Count the
+  // backslashes immediately before it: an even number (including zero) leaves
+  // the `$` live, an odd number escapes it into a literal dollar sign.
+  const escapes = /(\\*)\$$/.exec(pattern);
+  const anchored = pattern.startsWith('^') && escapes !== null && escapes[1].length % 2 === 0;
+  if (!anchored) {
+    throw new TypeError(
+      `id grammar pattern must be anchored at both ends to compose into a union, got ${JSON.stringify(pattern)}`,
+    );
+  }
+  return pattern.slice(1, -1);
+}
 
 /**
  * An anchored alternation over other grammars' patterns, with the hints joined
@@ -93,6 +107,15 @@ const accessions = Object.freeze({
   hint: 'L-NNNNNN',
 });
 
+/**
+ * Store → the id grammar its ids obey (§3.5).
+ *
+ * `pattern` is an anchored JSON-Schema-flavored regex source; `hint` is the
+ * human-facing shape quoted back in findings, and travels WITH the pattern so
+ * a grammar change cannot leave the prose describing the old one.
+ *
+ * @type {Readonly<Record<string, { pattern: string, hint: string }>>}
+ */
 export const ID_GRAMMARS = Object.freeze({
   ontology,
   knowledge,

@@ -30,6 +30,53 @@ const runCli = (name, ...args) =>
 
 const ACCESSIONED = fixture('structural-validator/accessioned');
 
+/**
+ * One leaf's file text. `accession` and `seeAlso` are optional so a caller
+ * spells only the field the case is about.
+ */
+const leafFile = ({ heading, notation, accession, seeAlso }) => [
+  '---',
+  'schema-version: 1',
+  ...(accession ? [`id: ${accession}`] : []),
+  `notation: "${notation}"`,
+  'domain: w',
+  `heading: ${heading}`,
+  ...(seeAlso ? ['cross-references:', `  see-also: [${seeAlso}]`] : []),
+  'citations: [{source: s}]',
+  '---',
+  'body',
+  '',
+].join('\n');
+
+/**
+ * Load a throwaway store built from the given knowledge leaves and hand the
+ * model to `check`. Collision cases turn on which file the loader reads FIRST,
+ * which is filename order — so they need a real directory, not a stub.
+ *
+ * @param {Record<string, string>} leaves filename under knowledge/w → file text
+ * @param {(model: object) => void} check assertions against the loaded model
+ */
+function withStore(leaves, check) {
+  const root = mkdtempSync(join(tmpdir(), 'kk-accession-'));
+  try {
+    for (const store of ['knowledge', 'ontology', 'decisions']) {
+      mkdirSync(join(root, store), { recursive: true });
+      writeFileSync(join(root, store, '_catalog.yaml'), `schema-version: 1\nstore: ${store}\nentries: []\n`);
+      // decisions has no _rules.yaml (§9.1).
+      if (store !== 'decisions') {
+        writeFileSync(join(root, store, '_rules.yaml'), `schema-version: 1\nstore: ${store}\nrules: []\n`);
+      }
+    }
+    mkdirSync(join(root, 'knowledge/w'), { recursive: true });
+    for (const [name, text] of Object.entries(leaves)) {
+      writeFileSync(join(root, 'knowledge/w', name), text);
+    }
+    check(loadStores(root));
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+}
+
 // ------------------------------------------------ the grammar (one module)
 
 test('the accession grammar is declared in the one id-grammar module', () => {
@@ -156,18 +203,8 @@ test('a notation collision is caught whichever leaf loads first', () => {
   // spelling of an accessioned one, so a second claimant must lose either way
   // — otherwise the same two files pass or fail on readdir order, which is a
   // silent pass wearing a clean exit for half the repos that hit it.
-  const leaf = (heading, accession) => [
-    '---',
-    'schema-version: 1',
-    ...(accession ? [`id: ${accession}`] : []),
-    'notation: "700.1"',
-    'domain: w',
-    `heading: ${heading}`,
-    'citations: [{source: s}]',
-    '---',
-    'body',
-    '',
-  ].join('\n');
+  // Every leaf here claims notation "700.1"; only the accession varies.
+  const leaf = (heading, accession) => leafFile({ heading, notation: '700.1', accession });
 
   const cases = [
     ['notation-only first', { 'a.md': leaf('A'), 'b.md': leaf('B', 'L-000102') }, 'knowledge/w/b.md'],
@@ -176,26 +213,34 @@ test('a notation collision is caught whichever leaf loads first', () => {
   ];
 
   for (const [label, leaves, expectedFile] of cases) {
-    const root = mkdtempSync(join(tmpdir(), 'kk-accession-'));
-    try {
-      for (const [store, entries] of [['knowledge', 'entries: []'], ['ontology', 'entries: []'], ['decisions', 'entries: []']]) {
-        mkdirSync(join(root, store), { recursive: true });
-        writeFileSync(join(root, store, '_catalog.yaml'), `schema-version: 1\nstore: ${store}\n${entries}\n`);
-        if (store !== 'decisions') {
-          writeFileSync(join(root, store, '_rules.yaml'), `schema-version: 1\nstore: ${store}\nrules: []\n`);
-        }
-      }
-      mkdirSync(join(root, 'knowledge/w'), { recursive: true });
-      for (const [name, text] of Object.entries(leaves)) {
-        writeFileSync(join(root, 'knowledge/w', name), text);
-      }
-      const duplicates = loadStores(root).diagnostics.filter((d) => d.code === 'duplicate-id');
+    withStore(leaves, (model) => {
+      const duplicates = model.diagnostics.filter((d) => d.code === 'duplicate-id');
       assert.deepEqual(duplicates.map((d) => d.file), [expectedFile],
         `${label}: the SECOND claimant must lose, whichever file that is`);
-    } finally {
-      rmSync(root, { recursive: true, force: true });
-    }
+    });
   }
+});
+
+test('a leaf that loses its identity contributes nothing to the ref graph', () => {
+  // Same defect class as the misattributed alias. Edges are collected under
+  // the leaf's IDENTITY, so collecting them for a leaf that lost that identity
+  // files its cross-references under the winner — the graph would show the
+  // winning leaf declaring edges it never wrote, in a file it does not own.
+  // A losing mint contributes nothing: not an entry, not an alias, not an edge.
+  withStore({
+    'a.md': leafFile({ heading: 'Winner', accession: 'L-000101', notation: '700.1' }),
+    'b.md': leafFile({
+      heading: 'Loser', accession: 'L-000101', notation: '700.2', seeAlso: '"999.9"',
+    }),
+  }, (model) => {
+    assert.deepEqual(model.refs, [], 'the loser\'s edge must not enter the graph');
+    assert.deepEqual(
+      model.diagnostics.filter((d) => d.code === 'unresolved-ref'), [],
+      'and must not produce an unresolved-ref attributed to the winner',
+    );
+    assert.deepEqual(model.diagnostics.map((d) => d.code), ['duplicate-id'],
+      'the collision is the whole story');
+  });
 });
 
 test('an accession collision surfaces at every CLI surface', () => {

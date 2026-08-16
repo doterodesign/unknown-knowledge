@@ -644,15 +644,15 @@ function loadLeafFiles(ctx) {
     const idPath = typeof record[LEAF_ACCESSION_FIELD] === 'string'
       ? LEAF_ACCESSION_FIELD
       : LEAF_ID_FIELD;
-    // Aliases are indexed only if the leaf actually TOOK its identity. A leaf
-    // that lost the identity to an earlier file owns nothing, so registering
-    // its notation would file that spelling under the winner — pointing a
-    // legitimate notation-form citation at a different leaf in a different
-    // file, which is worse than not resolving it at all.
+    // Everything downstream is indexed under this leaf's identity, so it all
+    // hangs on the leaf actually TAKING that identity. A leaf that lost the id
+    // to an earlier file owns nothing, and anything filed in its name would be
+    // filed under the WINNER: its notation would point a legitimate citation
+    // at a different leaf in a different file, and its cross-references would
+    // enter the graph as edges the winner never declared. Both are worse than
+    // the leaf simply not being there, which is what a losing mint means.
     if (indexRecord(ctx, 'leaves', identity, file, idPath, entry)) {
       for (const alias of keys.slice(1)) indexAlias(ctx, alias, identity, file);
-    }
-    if (typeof identity === 'string') {
       collectRefs(ctx, 'knowledge-leaf', identity, file, '', record);
     }
   }

@@ -210,7 +210,11 @@ function checkOrphans(model, push) {
   // the author is pointed at the line they would actually edit (UCS-1144).
   const spaces = [
     ['ontology', model.concepts, () => 'id'],
-    ['knowledge', model.leaves, (entry) => (entry.id ? LEAF_ACCESSION_FIELD : LEAF_ID_FIELD)],
+    // `typeof`, not truthiness — the same test the loader used to decide which
+    // field the identity came from. A non-string `id` (a YAML-coerced number,
+    // say) is not an accession there, so it must not be named as one here: the
+    // two must agree about which line an author is pointed at.
+    ['knowledge', model.leaves, (e) => (typeof e.id === 'string' ? LEAF_ACCESSION_FIELD : LEAF_ID_FIELD)],
     ['decisions', model.decisions, () => 'id'],
   ];
   // A leaf is declared when the catalog names it by EITHER legal spelling
