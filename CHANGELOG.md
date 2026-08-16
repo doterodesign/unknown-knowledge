@@ -15,6 +15,54 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Typed edges (UCS-1151): leaves gain three edge families, giving structural
+  neighborhood without term luck. `concepts` (leaf → ontology concept),
+  `paths` (leaf → repo tree), and `relates` (`depends-on` / `see-also` /
+  `contradicts` / `supersedes`, leaf → leaf).
+- `concepts` and the four `relates` kinds are rows in the ref-field table, so
+  an unresolvable target is the existing `unresolved-ref` with no bespoke
+  check. `paths` names the working tree rather than an id space, so it takes
+  the path-existence treatment instead: a leaf path that is not in the working
+  tree is a `missing-path` finding — the same code a concept's dead
+  source-of-truth pointer earns, because it is the same defect.
+
+### Fixed
+
+- Declared pointers into the working tree are now checked for CONTAINMENT
+  before existence, in both families (concept `source-of-truth` and the new
+  leaf `paths`). A pointer resolving outside the repo root — `../elsewhere`,
+  or an absolute path — used to be judged against whatever sat there, so a
+  store passed or failed on what existed OUTSIDE it: clean on the author's
+  machine, broken on a machine without that file. It is now a `missing-path`
+  finding on its shape. Containment is judged on the CANONICAL paths, not
+  lexically: a symlink sitting inside the repo whose target is outside it
+  passes every string test there is, and would otherwise carry the whole
+  escape back in through a path that looks contained. Both sides are
+  canonicalized, since the root itself may be reached through a link. A
+  dangling symlink reports as missing rather than escaping — which is what it
+  is, and it sends the author to the edit they can actually make. A pointer naming the repo root is refused for the
+  matching reason: it attributes to everything, which attributes nothing, and
+  `resolve --paths` already refused the same shape as an input. A deprecated
+  concept still demotes an ABSENT pointer to a warning (§3.5's source-deletion
+  hatch) but never an escaping or root one — that hatch is for a path that used
+  to exist, not for a claim the store was never entitled to make.
+- The leaf↔concept edge is derived BIDIRECTIONALLY at load
+  (`model.leavesByConcept`). It is authored once, leaf-side, because deciding
+  what a leaf is about is curatorial work under the human write gate — and
+  traversable from either end, so resolving a concept surfaces its declaring
+  leaves even when no term or alias text matches. Knowledge stops depending on
+  two authors choosing the same words.
+- `resolve --paths` joins over leaf `paths` alongside concept source-of-truth
+  pointers, so a diff-shaped path list surfaces the leaves that govern those
+  files before an edit. Each published leaf carries `via`, naming which join
+  reached it (`direct` / `concept` in reverse lookup, `declared` / `terms` in
+  query mode) — two joins of different strength, so the result says which one
+  fired rather than leaving a reader to assume the stronger.
+- Every leaf the resolver publishes carries `relates`: its ONE-HOP
+  neighborhood, keyed by edge kind, each neighbor a minimal stable reference
+  (`id`, `notation`, `heading`, `file`). Outgoing edges only — what the leaf's
+  own author asserted. Exactly one hop: a neighbor's neighbors are absent,
+  because depth 2 is most of the store arriving unranked.
 - Frontmatter v2 core (UCS-1149): the leaf classification layer, built
   entirely from governed vocabularies. `facets.form`, `facets.anchor`, and
   `facets.stage` join `facets.domain` as registry-checked fields — three

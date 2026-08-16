@@ -142,6 +142,30 @@ this skill makes on top of the schema:
   today, and a tier nobody wrote down cannot be ranked retroactively.
 - **`terms`** — the words a future resolve should hit; write them for the
   searcher, not the author.
+- **`concepts`** — the ontology concepts (`K-NNN`) this leaf is knowledge
+  ABOUT. Declare them even when `terms` already names the concept's term: the
+  concept edge is STRUCTURAL, so it keeps working when the concept is renamed
+  or when your leaf uses different words than the ontology does. `terms` is a
+  text match between two authors' vocabularies; this is a claim. Each must
+  resolve — a concept id nothing mints is a blocking finding.
+- **`paths`** — the repo-relative files or directories this leaf governs. A
+  directory covers its subtree. This is what makes the leaf surface in
+  `resolve --paths`, so the files in a diff surface the knowledge that governs
+  them BEFORE the edit. Every path must name something that exists INSIDE this
+  repo: a path pointing at nothing governs nothing, one that escapes the repo
+  root (`../elsewhere`, or an absolute path) is not this store's to claim, and
+  `.` — the repo root — attributes nothing by attributing to everything. All
+  three are blocking findings.
+- **`relates`** — typed leaf-to-leaf edges, and the type carries the meaning,
+  so choose it rather than defaulting to `see-also`:
+  `depends-on` (this leaf's claim is only usable once the target's is),
+  `see-also` (worth reading alongside — no dependency, no conflict),
+  `contradicts` (the two claims cannot both hold — recorded, not resolved, so a
+  human can settle it), and `supersedes` (this leaf replaces the target's
+  claim — the disagreement is already settled). A resolver hit carries its
+  neighborhood one hop out, labeled by kind, so these are what an agent reads
+  next. Targets are leaf refs — an accession or a notation — and each must
+  resolve.
 - **`provenance`** — optional `author` and `skill-version`, so a systematic
   drafting defect can be traced to the vintage that introduced it.
 - **Body** — the markdown below the frontmatter is the content; each claim

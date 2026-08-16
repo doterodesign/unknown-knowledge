@@ -1,0 +1,18 @@
+# Typed edges fixture (UCS-1151) — the two ID-SPACE families, each dangling.
+#
+# The ontology is inherited from the clean fixture and is incidental here: this
+# store carries ONE leaf, whose `concepts` and `relates.depends-on` both name
+# ids nothing mints. Neither K-201 nor K-202 is referenced by it — the point of
+# the store is the two unresolved-ref findings, not the concepts themselves.
+#
+# The `via` field and the structural-vs-textual join are exercised in the clean
+# fixture, which has the leaves to do it with — not here.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-201
+    title: Retrieval ranking
+    file: classes/200-retrieval.yaml
+  - id: K-202
+    title: Index build
+    file: classes/200-retrieval.yaml

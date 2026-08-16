@@ -1,0 +1,24 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000501
+    title: Result ordering
+    file: library/501.1-result-ordering.md
+  - id: L-000502
+    title: Score computation
+    file: library/501.2-score-computation.md
+  - id: L-000503
+    title: Query tokenization
+    file: library/501.3-query-tokenization.md
+  - id: L-000504
+    title: Ordering rationale
+    file: library/501.4-ordering-rationale.md
+  - id: L-000505
+    title: Recency ordering
+    file: library/501.5-recency-ordering.md
+  - id: L-000510
+    title: Index build batch
+    file: library/502.1-index-build.md
+  - id: L-000511
+    title: Index freshness window
+    file: library/502.2-index-freshness.md

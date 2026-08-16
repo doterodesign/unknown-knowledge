@@ -50,6 +50,12 @@
  *                               // schema enum — the vocabulary grows by steward
  *                               // review, not by an engine release
  *     pointers:  Map source-of-truth path -> [concept ids],  // KK-06 --paths
+ *     leavesByConcept: Map concept id -> [leaf identities],
+ *                               // the leaf→concept edge derived in REVERSE at
+ *                               // load (UCS-1151). Declared leaf-side, walked
+ *                               // from either end: resolving a concept surfaces
+ *                               // its declaring leaves structurally, with no
+ *                               // dependence on whether any term text matches
  *     refs:      [{ from, type, to, file, path, resolved }], // cross-ref graph
  *     diagnostics: [{ severity, code, file, path, message }],
  *     ok,                       // true iff no error-severity diagnostic
@@ -244,6 +250,19 @@ export const REF_FIELDS = deepFreezeTable({
   'knowledge-leaf': [
     { field: 'cross-references.class-elsewhere', space: 'leaves' },
     { field: 'cross-references.see-also', space: 'leaves' },
+    // Typed edges (UCS-1151). `concepts` is the leaf→ontology edge, declared
+    // leaf-side because deciding what a leaf is ABOUT is curatorial and the
+    // leaf is what sits under the human write gate; the loader derives the
+    // reverse direction at load (leavesByConcept). The four `relates` rows are
+    // the leaf→leaf edge kinds, each a distinct claim, each reaching the leaf
+    // space — which is what the prefactor's arbitrary-depth walker was built
+    // for. Note what is NOT here: `paths` names the working tree rather than an
+    // id space, so it cannot be a ref row (see checkLeafPaths in validate.js).
+    { field: 'concepts', space: 'concepts' },
+    { field: 'relates.depends-on', space: 'leaves' },
+    { field: 'relates.see-also', space: 'leaves' },
+    { field: 'relates.contradicts', space: 'leaves' },
+    { field: 'relates.supersedes', space: 'leaves' },
   ],
   'decision-entry': [
     { field: 'supersedes', space: 'decisions' },
@@ -253,6 +272,55 @@ export const REF_FIELDS = deepFreezeTable({
     { field: 'relates-to.decisions', space: 'decisions' },
   ],
 });
+
+/**
+ * The leaf→leaf edge KINDS, in the order a neighborhood presents them
+ * (UCS-1151), and the field the map itself lives under.
+ *
+ * Read from REF_FIELDS rather than restated, so the kinds a resolver expands
+ * over and the kinds the ref graph resolves are the same list by construction.
+ * Declaring a fifth kind is one more row in the table above; nothing here, and
+ * nothing in the resolver, has to learn about it.
+ *
+ * Order is the DECLARATION order, deliberately not alphabetical: `depends-on`
+ * before `see-also` before `contradicts` before `supersedes` is a rough reading
+ * of how load-bearing each edge is, and the table is where that judgement is
+ * recorded. Output within each kind is sorted; the kinds themselves keep this
+ * order, so a neighborhood is stable without being arbitrary.
+ */
+export const RELATES_FIELD = 'relates';
+export const RELATES_KINDS = Object.freeze(
+  REF_FIELDS['knowledge-leaf']
+    .map(({ field }) => (Array.isArray(field) ? field : field.split('.')))
+    .filter((segments) => segments.length === 2 && segments[0] === RELATES_FIELD)
+    .map((segments) => segments[1]),
+);
+
+/**
+ * The leaf field holding repo-tree paths (UCS-1151) — named once, here.
+ *
+ * Two surfaces read it and they must never disagree about the spelling: the
+ * validator checks each path EXISTS, and the resolver joins reverse lookups
+ * over the same list. A rename that reached one and not the other would leave
+ * paths reverse-looked-up but unchecked, or checked but unreachable — either
+ * way a seam that silently half-works.
+ */
+export const LEAF_PATHS_FIELD = 'paths';
+
+/**
+ * The concepts one leaf declares (UCS-1151) — the single reader of the leaf's
+ * `concepts` spelling, for the same reason `leafStage` is for `facets.stage`.
+ *
+ * Non-strings are dropped rather than coerced: KK-02 already diagnoses the
+ * wrong type, and a coerced id would join a leaf to a concept nobody named.
+ *
+ * @param {object} record a leaf's front-matter record
+ * @returns {string[]} the declared concept ids, in authored order
+ */
+export function leafConcepts(record) {
+  const declared = record?.concepts;
+  return Array.isArray(declared) ? declared.filter((id) => typeof id === 'string') : [];
+}
 
 /** The id spaces a ref row may target, and the store each one is declared in. */
 const SPACE_TO_STORE = Object.freeze({
@@ -953,6 +1021,45 @@ function buildPointers(ctx) {
   return sortedMap(pointers);
 }
 
+/**
+ * The leaf↔concept edge, derived in BOTH directions at load (UCS-1151).
+ *
+ * The edge is authored once, leaf-side, because deciding what a leaf is about
+ * is curatorial work under the human write gate. But it has to be traversable
+ * from either end: an agent that resolves a concept needs the leaves that claim
+ * it, and an agent holding a leaf needs the concepts it answers to. Deriving
+ * the reverse here is what makes the concept→leaves direction STRUCTURAL — the
+ * join is over declared ids, so it holds whether or not the leaf's `terms`
+ * happen to spell the concept's term or one of its aliases. Text matching was
+ * the only join before this ticket, which meant a leaf reached its concept by
+ * term LUCK: rename the concept, or write the leaf with a different vocabulary,
+ * and the two silently stopped seeing each other at exit 0.
+ *
+ * Keyed by concept id, valued by leaf IDENTITY (never the entry) so the index
+ * cannot become a second copy of a leaf that the leaves map disagrees with.
+ * Every list is de-duplicated and sorted, and the map itself is sorted, because
+ * this is a published model field that resolver output is built from.
+ *
+ * Unresolvable concept ids are left in: this index says what the leaf CLAIMS,
+ * and the ref graph is what judges whether the claim resolves. Filtering here
+ * would silently drop the very edge the unresolved-ref finding is about.
+ *
+ * @param {object} ctx the loader context
+ * @returns {Map<string, string[]>} concept id -> declaring leaf identities
+ */
+function buildLeavesByConcept(ctx) {
+  const index = new Map();
+  for (const entry of ctx.leaves.values()) {
+    for (const id of leafConcepts(entry.record)) {
+      if (!index.has(id)) index.set(id, []);
+      const identities = index.get(id);
+      if (!identities.includes(entry.identity)) identities.push(entry.identity);
+    }
+  }
+  for (const identities of index.values()) identities.sort(compare);
+  return sortedMap(index);
+}
+
 /** Resolve every collected edge; a miss is an unresolved-ref error. */
 function resolveRefs(ctx) {
   for (const ref of ctx.refs) {
@@ -1027,6 +1134,7 @@ export function loadStores(root) {
   }
 
   const pointers = buildPointers(ctx);
+  const leavesByConcept = buildLeavesByConcept(ctx);
   resolveRefs(ctx);
   ctx.diagnostics.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code));
@@ -1040,6 +1148,7 @@ export function loadStores(root) {
     decisions: sortedMap(ctx.decisions),
     registries: sortedMap(ctx.registries),
     pointers,
+    leavesByConcept,
     refs: ctx.refs,
     diagnostics: ctx.diagnostics,
     ok: ctx.diagnostics.every((d) => d.severity !== 'error'),
