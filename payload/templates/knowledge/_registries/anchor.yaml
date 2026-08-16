@@ -1,0 +1,42 @@
+# The anchor registry — which truth anchor a leaf's claim answers to.
+#
+# THE VOCABULARY IS FIXED BY D-003, BUT THE FILE STILL SHIPS EMPTY. Those are
+# two different facts and both matter.
+#
+# Fixed: the three anchors ARE the kit's architecture (D-003 splits facts into
+# three stores by truth anchor — Ontology/artifact, Knowledge/world,
+# Decisions/team). A project that minted a fourth would be describing a store
+# this engine does not have, so unlike domains or form, this is not a vocabulary
+# to invent. Mint from the three below and no others.
+#
+# Empty anyway: every registry value must cite a Decisions entry that RESOLVES
+# (UCS-1148), and a freshly seeded repo's decisions store is empty by design
+# (D-001 — the repo is yours the moment it lands, and the kit does not write
+# entries into it). Shipping values citing the kit's own D-003 would seed every
+# client repo with a broken ref, and shipping them citing nothing would put a
+# vocabulary change in the store that nobody signed. So the bootstrap interview
+# mints these three the same way it mints everything else: this file plus one
+# Decisions entry of your own, recording that you adopted D-003's split.
+#
+# Flat vocabulary. Value shape: lowercase kebab. Mint exactly these:
+#
+#   values:
+#     - value: artifact
+#       gloss: The repo decides. The claim is checkable against code, config, or schema.
+#       warrant: <the leaf whose claim reads back to a source-of-truth pointer>
+#       decision: <your entry adopting the D-003 anchors>
+#       minted: "2026-07-07"
+#     - value: world
+#       gloss: An outside authority decides — a regulator, a vendor, a standard.
+#       warrant: <the leaf whose claim only a cited outside source can settle>
+#       decision: <your entry adopting the D-003 anchors>
+#       minted: "2026-07-07"
+#     - value: team
+#       gloss: The team decided. The claim is true because it was chosen, not discovered.
+#       warrant: <the leaf restating a team choice, which answers to the entry that made it>
+#       decision: <your entry adopting the D-003 anchors>
+#       minted: "2026-07-07"
+schema-version: 1
+store: knowledge
+registry: anchor
+values: []

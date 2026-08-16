@@ -1107,6 +1107,16 @@ export class UnknownConceptsError extends UsageError {
 }
 
 /**
+ * The `--leaves` counterpart (UCS-1149): an id the knowledge store does not
+ * carry, under either of a leaf's two legal spellings. A usage error for the
+ * same reason — the caller named something that does not exist, so the command
+ * refused its arguments rather than reporting on nothing. Exit 2, never 1.
+ */
+export class UnknownLeavesError extends UsageError {
+  name = 'UnknownLeavesError';
+}
+
+/**
  * The `--concepts` grammar, settled in one place (UCS-935).
  *
  * Ids are trimmed, empties dropped, duplicates collapsed, order stable. Every
@@ -1142,10 +1152,97 @@ export function selectConcepts(model, ids) {
   return ids.map((id) => model.concepts.get(id));
 }
 
+/**
+ * Select leaves by id (null/undefined = every leaf) — the `--leaves` analogue
+ * of selectConcepts (UCS-1149).
+ *
+ * Same contract, for the same reason: an id the store does not carry throws
+ * rather than filtering to nothing, because a verdict set "filtered" to a typo
+ * is a check that never ran wearing a clean exit (PRD §5).
+ *
+ * One difference, and it is the leaf id space rather than a policy change: a
+ * leaf answers to TWO spellings while accessions expand (UCS-1144), its
+ * accession and its notation. Both resolve here, through `leafAliases` — the
+ * same lookup cross-reference resolution uses — so a caller may name a leaf the
+ * way their citation spells it. De-duplicated by identity afterwards: naming
+ * one leaf both ways is one leaf, not two verdicts that would then disagree
+ * about nothing.
+ *
+ * @param {object} model the loaded store model
+ * @param {string[]|null} ids leaf ids as the caller spelled them
+ * @returns {object[]} the indexed leaf entries, in the order named
+ */
+export function selectLeaves(model, ids) {
+  if (!ids) return [...model.leaves.values()];
+  const unknown = ids.filter((id) => leafIdentityOf(model, id) === undefined);
+  if (unknown.length) {
+    throw new UnknownLeavesError(`--leaves names id(s) not in the knowledge store: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
+  }
+  const seen = new Set();
+  const out = [];
+  for (const id of ids) {
+    const identity = leafIdentityOf(model, id);
+    if (seen.has(identity)) continue;
+    seen.add(identity);
+    out.push(model.leaves.get(identity));
+  }
+  return out;
+}
+
+/**
+ * The IDENTITY a leaf id names, under either legal spelling (UCS-1149).
+ *
+ * A leaf answers to its accession and its notation while both are legal
+ * (UCS-1144), and `model.leaves` is keyed by identity alone. So a caller's
+ * spelling has to be translated before anything looks the leaf up — and every
+ * caller must translate the SAME way, or two surfaces asked about one leaf
+ * would report it under two different names.
+ *
+ * Exported for exactly that reason: preflight's healthy path resolves ids
+ * through selectLeaves, and its store-wide-failure path cannot (the verdicts
+ * are degraded without selecting anything). Both call this, so a leaf named by
+ * notation reports its canonical identity and its real stage whether the store
+ * loaded clean or not.
+ *
+ * @param {object} model the loaded store model
+ * @param {string} id a leaf id as the caller spelled it
+ * @returns {string|undefined} the leaf's identity, or undefined if unknown
+ */
+export function leafIdentityOf(model, id) {
+  return model.leaves.has(id) ? id : model.leafAliases.get(id);
+}
+
 
 /**
  * §3.5: draft/proposed concepts get structural checks only — the value check
  * skips them and preflight verdicts them unknown. One predicate, so the two
  * surfaces can never diverge on which statuses that means.
+ *
+ * Frontmatter v2 puts LEAVES through this same predicate (UCS-1149). A leaf has
+ * no `status`; it has `facets.stage`, and `leafStage` below is the one place
+ * that spelling is read. The predicate itself is unchanged and untyped as to
+ * what it is judging, which is what lets a leaf's `draft` and a concept's
+ * `draft` mean the same thing to every surface that asks.
  */
 export const isPrePromotionStatus = (status) => status === 'draft' || status === 'proposed';
+
+/**
+ * A leaf's promotion stage, or null when it declares none (UCS-1149).
+ *
+ * The single reader of the `facets.stage` spelling. Two surfaces ask this
+ * question — the resolver, to downrank a provisional leaf, and preflight, to
+ * verdict one unknown — and if either reached into the record itself, a later
+ * move of the field would leave one of them silently reading `undefined`:
+ * a leaf that stopped being downranked, at exit 0, with nothing said.
+ *
+ * A stage that is not a string is null rather than the raw value: the schema
+ * has already reported it, and passing a number into the predicate would just
+ * return false, quietly promoting the leaf the defect was meant to hold back.
+ *
+ * @param {object} record a leaf's front-matter record
+ * @returns {string|null}
+ */
+export function leafStage(record) {
+  const stage = record?.facets?.stage;
+  return typeof stage === 'string' ? stage : null;
+}

@@ -1,0 +1,6 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: "900.1"
+    title: Every governed facet violated
+    file: sportsbook/900.1-every-facet-violated.md

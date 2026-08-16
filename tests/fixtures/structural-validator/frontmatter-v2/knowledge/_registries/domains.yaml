@@ -1,0 +1,16 @@
+# Frontmatter v2 fixture (UCS-1149) — the hierarchical domains registry.
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: sportsbook
+    gloss: The sportsbook vertical.
+    warrant: L-000117 and L-000213 both document sportsbook material.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: sportsbook/odds-feed
+    gloss: Odds ingestion and the providers that supply it.
+    warrant: L-000117 states provider quirks; L-000213 states the latency budget.
+    decision: D-401
+    minted: "2026-08-16"

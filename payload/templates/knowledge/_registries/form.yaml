@@ -1,0 +1,38 @@
+# The form registry — what KIND of knowledge a leaf is.
+#
+# Ships EMPTY, for the same reason domains does: which forms a project
+# recognizes is a judgement about its own material, not a fact about software.
+# A store whose leaves are all reference material has no warrant for a
+# `runbook` form, and minting one ahead of the first runbook is speculative
+# shelving (see protocol/registry-warrant.md).
+#
+# Flat vocabulary. Value shape: lowercase kebab.
+#
+# The forms the design bench drew from, offered as a starting vocabulary rather
+# than a seeded one — mint the ones your material actually needs:
+#
+#   values:
+#     - value: reference
+#       gloss: States how something is, for lookup.
+#       warrant: 362.1 states the ACH settlement windows themselves.
+#       decision: D-014
+#       minted: "2026-07-07"
+#     - value: recipe
+#       gloss: The ordered steps for performing a task.
+#       warrant: 100.1 is the step list for onboarding a sport.
+#       decision: D-014
+#       minted: "2026-07-07"
+#     - value: runbook
+#       gloss: What to do when something is on fire.
+#       warrant: 121.1 is the feed-outage response procedure.
+#       decision: D-014
+#       minted: "2026-07-07"
+#     - value: constraint
+#       gloss: A rule the system must not violate.
+#       warrant: 133.1 states the settlement rounding rule.
+#       decision: D-014
+#       minted: "2026-07-07"
+schema-version: 1
+store: knowledge
+registry: form
+values: []

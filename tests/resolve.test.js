@@ -109,18 +109,60 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   assert.equal(method.summary, 'A way a user pays money in.');
   assert.deepEqual(method['source-of-truth'], ['src/payments/methods/registry.ts']);
   assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Payout method' }]);
-  // The golden for a notation-only store under UCS-1144: byte-for-byte what it
-  // was, plus `id: null` and nothing else. That the accession field is present
-  // and explicitly null — rather than absent — is the contract: a consumer
-  // reads one result shape whether or not the store has started minting.
+  // The golden for a notation-only store under UCS-1144, extended by the
+  // frontmatter v2 fields (UCS-1149). Every added key is present and may be
+  // null rather than coming and going: a consumer reads ONE result shape
+  // whether or not the store has started minting accessions or declaring
+  // stages. `excerpt` is derived from the body's topic sentence — the retired
+  // `description` field is not read, because it no longer exists.
   assert.deepEqual(method.knowledge, [
     {
       id: null,
       notation: '410.2',
       heading: 'Accepted payment instruments',
+      stage: 'draft',
+      excerpt: 'Which instruments a regulator allows for pay-in is settled per jurisdiction.',
+      provenance: null,
+      downranked: true,
       file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
     },
   ]);
+});
+
+test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched (golden)', () => {
+  // The resolver half of the draft-stage contract (UCS-1149). 410.1 is
+  // verified and carries provenance; 410.2 is draft and carries none. Each is
+  // pinned through the concept whose terms reach it.
+  const settlement = runJson('settlement').results.find((r) => r.id === 'K-120');
+  assert.deepEqual(settlement.knowledge, [
+    {
+      id: null,
+      notation: '410.1',
+      heading: 'Card settlement windows',
+      stage: 'verified',
+      excerpt: 'Card networks settle captured funds in fixed windows.',
+      // Carried verbatim: no registry governs provenance, so the resolver has
+      // no judgement to apply and passing it through unchanged is the contract.
+      provenance: { author: 'dimitri', 'skill-version': 'kb-build@2.0.0' },
+      downranked: false,
+      file: 'knowledge/payments/410.1-card-settlement-windows.md',
+    },
+  ]);
+
+  // The draft leaf still SURFACES — a demotion, never a filter: a draft leaf is
+  // the best answer when it is the only answer, and hiding it would send the
+  // reader off to invent one.
+  const instruments = runJson('payment', 'instrument').results.find((r) => r.id === 'K-100');
+  assert.equal(instruments.knowledge[0].downranked, true);
+  assert.equal(instruments.knowledge[0].stage, 'draft');
+
+  // The human surface says WHY the leaf sits where it does, and shows the
+  // derived excerpt where display prose used to come from `description`.
+  const human = run('settlement', '--root', store);
+  assert.equal(human.status, 0);
+  assert.match(human.stdout, /Card networks settle captured funds in fixed windows\./);
+  const drafty = run('payment', 'instrument', '--root', store);
+  assert.match(drafty.stdout, /\[draft — downranked\]/);
 });
 
 test('knowledge entry points come from leaf terms naming the concept term or alias', () => {

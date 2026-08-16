@@ -118,15 +118,41 @@ this skill makes on top of the schema:
   notations the catalog declares; `including` is standing room — candidate
   topics parked under the heading, not authoritative, never citable as
   fact.
-- **`citations`** — the step-2 survivors, verbatim; at least one.
+- **`facets`** — the classification block, and every value must be minted in
+  its registry (`knowledge/_registries/`): `domain` (the hierarchical subject
+  path — every segment minted), `form` (what KIND of knowledge this is),
+  `anchor` (which truth anchor settles the claim — artifact, world, or team,
+  per D-003), and `stage`. A value the registry does not carry is a blocking
+  finding, and minting one is a registry edit plus a Decisions entry — never
+  an ad-hoc string. If no minted value fits, that is the signal to propose a
+  minting, not to invent a spelling.
+- **`stage`** — start at `draft`. A draft leaf is downranked in resolver
+  output and verdicted `unknown` by preflight, which is correct and not a
+  defect: nothing has certified it yet. Promotion to `verified` is a
+  moderator's act after the citations are checked, never the author's.
+- **`operations`** — the verbs this leaf lets a reader DO, from the
+  operations registry. **`applies.jurisdictions`** — from the jurisdictions
+  registry; EMPTY means universal, which is a claim, so leave it empty only
+  when the knowledge really does hold everywhere.
+- **`citations`** — the step-2 survivors, verbatim; at least one, each with
+  an `authority` tier from the authority-tiers registry. The tier is what
+  ranks a source against a conflicting one, so an untiered citation reads as
+  complete while opting out of conflict resolution.
 - **`terms`** — the words a future resolve should hit; write them for the
   searcher, not the author.
+- **`provenance`** — optional `author` and `skill-version`, so a systematic
+  drafting defect can be traced to the vintage that introduced it.
 - **Body** — the markdown below the frontmatter is the content; each claim
-  reads back to a listed citation.
+  reads back to a listed citation. **Open with a topic sentence**: there is
+  no `description` field (retired in v2), and display prose is DERIVED from
+  that first sentence wherever a one-liner is shown. Write it as the sentence
+  you would want to read in a search result — if the opening line is a
+  fragment or a heading, the surface has nothing to show.
 
 **Done when** every cross-reference resolves to an existing notation (or
-was removed, with the removal noted in the revision note) and every step-2
-citation appears in the frontmatter.
+was removed, with the removal noted in the revision note), every step-2
+citation appears in the frontmatter with a tier, every governed facet value
+is minted, and the body opens with a topic sentence.
 
 ### 4. INDEX — the catalog row
 

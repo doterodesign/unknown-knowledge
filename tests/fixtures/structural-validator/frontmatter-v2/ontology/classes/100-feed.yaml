@@ -1,0 +1,8 @@
+schema-version: 1
+entries:
+  - id: K-102
+    term: Odds feed
+    class: 100-feed
+    summary: The provider stream prices are ingested from.
+    source-of-truth: [src/feed/latency.ts]
+    status: active

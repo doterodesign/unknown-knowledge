@@ -1,0 +1,8 @@
+# Acceptance-fixture store (KK-15) — the jurisdictions registry.
+# Ships with no values: 100.1's claim is universal (`applies.jurisdictions: []`),
+# so no jurisdiction has warrant yet. An empty registry is not a missing one —
+# it is a vocabulary nothing has needed.
+schema-version: 1
+store: knowledge
+registry: jurisdictions
+values: []

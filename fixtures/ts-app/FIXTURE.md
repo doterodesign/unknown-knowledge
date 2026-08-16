@@ -73,9 +73,19 @@ asserts is *hard error, never a silently wrong value set*.
   K-101..K-116, every `enumerates.source` names a listed `source-of-truth`
   entry (§3.5).
 - `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md` — one
-  cited leaf.
+  cited leaf, carrying the full frontmatter v2 record (UCS-1149): all four
+  governed facets, a registry-minted operation, an empty `applies.jurisdictions`
+  (universal), a tiered citation, and `provenance`. Its body opens with a topic
+  sentence, which is what display surfaces derive a one-liner from now that
+  `description` is retired.
+- `unknown-knowledge/knowledge/_registries/*.yaml` — the seven governed
+  vocabularies (domains, form, anchor, stage, operations, jurisdictions,
+  authority-tiers). Every value minted here cites D-101 and carries a warrant
+  naming the material that needed it; `jurisdictions` is deliberately EMPTY,
+  since the store's one leaf claims universally.
 - `unknown-knowledge/decisions/entries/D-101-sports-registry-const-array.yaml`
-  — referenced by K-101's `rationale` and relating back to K-101 / leaf 100.1.
+  — referenced by K-101's `rationale` and relating back to K-101 / leaf 100.1,
+  and cited by every registry value as the minting decision.
 
 ## Non-anchor scenery
 

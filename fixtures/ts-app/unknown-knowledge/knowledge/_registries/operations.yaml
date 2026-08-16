@@ -1,0 +1,10 @@
+# Acceptance-fixture store (KK-15) — the operations registry (verbs).
+schema-version: 1
+store: knowledge
+registry: operations
+values:
+  - value: add-sport
+    gloss: Onboard a new sport into the sportsbook.
+    warrant: 100.1 is the procedure for exactly this operation.
+    decision: D-101
+    minted: "2026-07-08"

@@ -16,7 +16,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -514,10 +514,14 @@ test('facet→registry is a DECLARATION, not a per-facet branch', () => {
   // by a vocabulary that does not exist.
   const declared = FACET_REGISTRIES['knowledge-leaf'].map((r) => r.registry);
   assert.deepEqual([...declared].sort(), [
+    // UCS-1149 added three rows and no checker code: form, anchor, stage.
+    'knowledge/anchor',
     'knowledge/authority-tiers',
     'knowledge/domains',
+    'knowledge/form',
     'knowledge/jurisdictions',
     'knowledge/operations',
+    'knowledge/stage',
   ]);
   for (const row of FACET_REGISTRIES['knowledge-leaf']) {
     assert.ok(Object.isFrozen(row), 'a mutated row would silently reroute a facet at another vocabulary');
@@ -563,7 +567,14 @@ test('the four registry templates and the minting Decisions template are manifes
 });
 
 test('every shipped registry template validates and seeds EMPTY', () => {
-  for (const name of ['domains', 'operations', 'jurisdictions', 'authority-tiers']) {
+  // Read the DIRECTORY rather than a list: UCS-1149 added three registries, and
+  // a hardcoded roster would have let a fourth ship unchecked.
+  const dir = join(root, 'payload/templates/knowledge/_registries');
+  const names = readdirSync(dir).filter((f) => f.endsWith('.yaml')).map((f) => f.slice(0, -5));
+  assert.deepEqual(names.sort(), [
+    'anchor', 'authority-tiers', 'domains', 'form', 'jurisdictions', 'operations', 'stage',
+  ]);
+  for (const name of names) {
     const path = join(root, 'payload/templates/knowledge/_registries', `${name}.yaml`);
     const doc = load(readFileSync(path, 'utf8'));
     assert.deepEqual(validateStoreFile('registry', doc).errors, [], name);

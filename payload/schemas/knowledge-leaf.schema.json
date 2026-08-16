@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:knowledge-leaf",
   "title": "Knowledge leaf front matter (PRD §3.2)",
-  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5). A leaf may carry an opaque accession id (id: L-NNNNNN), minted at PR time and never reused, alongside its positional notation; the loader indexes by the accession when present and both spellings resolve in cross-references (UCS-1144). Notation is immutable once any reference cites it; moves happen by new leaf + class-elsewhere redirect, never by renaming in place (§3.5). Cross-reference resolution and tree-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013).",
+  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5). A leaf may carry an opaque accession id (id: L-NNNNNN), minted at PR time and never reused, alongside its positional notation; the loader indexes by the accession when present and both spellings resolve in cross-references (UCS-1144). Notation is immutable once any reference cites it; moves happen by new leaf + class-elsewhere redirect, never by renaming in place (§3.5). Cross-reference resolution and tree-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013), with one sanctioned exception: frontmatter v2 RETIRED the free-prose `description` field (UCS-1149). A leaf now opens its body with a topic sentence and display prose is DERIVED from it, so the one-line summary can never drift from the content it summarizes. Under additionalProperties:false a leaf still carrying `description` fails as an unknown property — a deliberate break, and the major release D-021 defines for exactly this.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema-version", "notation", "domain", "heading", "citations"],
@@ -25,7 +25,6 @@
       "description": "Legacy navigational subdivision under `domain`, ungoverned in the same way. See the note on `domain`."
     },
     "heading": { "type": "string" },
-    "description": { "type": "string" },
     "notes": {
       "type": "array",
       "items": { "$ref": "#/$defs/note" },
@@ -66,6 +65,33 @@
         "domain": {
           "type": "string",
           "description": "Hierarchical domain path from the domains registry, '/'-joined. Valid only when EVERY segment is minted — a child cannot hang off an unminted parent. This is the GOVERNED subject path, not the legacy top-level `domain` free string: membership here is a structural-validator check against knowledge/_registries/domains.yaml, and the top level of that registry is open (a new class is a registry edit plus a Decisions entry)."
+        },
+        "form": {
+          "type": "string",
+          "description": "What KIND of knowledge this leaf is — reference, recipe, runbook, constraint (UCS-1149). Flat value from the form registry. Ships EMPTY like domains: which forms a project recognizes is a judgement about its own material, so the vocabulary is minted by warrant rather than shipped as an enum."
+        },
+        "anchor": {
+          "type": "string",
+          "description": "The truth anchor this leaf's claim answers to — artifact, world, or team (D-003). Flat value from the anchor registry, which unlike domains SEEDS with those three: the anchor vocabulary is the kit's own architecture, not a per-project judgement, so a project that minted a fourth anchor would be describing a store this engine does not have."
+        },
+        "stage": {
+          "type": "string",
+          "description": "Where this leaf sits in its promotion lifecycle — draft until a moderator promotes it, verified once they have (UCS-1149). Flat value from the stage registry, which SEEDS with the kit's lifecycle vocabulary because the same values drive the shared pre-promotion predicate (isPrePromotionStatus): a project that renamed them would have a resolver downrank and a preflight verdict disagreeing about which leaves are provisional. A draft leaf is downranked in resolver output and verdicted unknown by preflight, through that one predicate."
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Who wrote this leaf and with which authoring skill (UCS-1149). Recorded, never judged: no registry governs it, because an author name and a skill version are facts about how the entry came to exist rather than governed vocabulary. Round-trips untouched through resolver and validator output.",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Who authored the entry — a human steward or the agent that drafted it."
+        },
+        "skill-version": {
+          "type": "string",
+          "description": "The version of the authoring skill that produced the entry, so a systematic drafting defect can be traced to the vintage that introduced it."
         }
       }
     },

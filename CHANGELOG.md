@@ -13,6 +13,38 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+### Added
+
+- Frontmatter v2 core (UCS-1149): the leaf classification layer, built
+  entirely from governed vocabularies. `facets.form`, `facets.anchor`, and
+  `facets.stage` join `facets.domain` as registry-checked fields — three
+  declarations in `FACET_REGISTRIES`, no new membership code path — with
+  three new registry templates (`form`, `anchor`, `stage`) seeded into the
+  client's knowledge store.
+- Optional `provenance` (`author`, `skill-version`) on leaves, recorded but
+  never judged: it round-trips untouched through resolver and validator
+  output.
+- `missing-authority`: a leaf citation with no authority tier is a finding
+  in any store that carries an authority-tiers registry. The tier is what
+  ranks a source against a conflicting one, so an untiered citation reads as
+  complete while opting out of conflict resolution.
+- `preflight --leaves <ids>`: leaf-facing verdicts, counted and gated
+  alongside concept verdicts. A `stage: draft` leaf verdicts `unknown` and
+  is downranked in resolver output through the SAME `isPrePromotionStatus`
+  predicate, so the two surfaces cannot disagree about which leaves are
+  provisional.
+- Resolver knowledge entry points publish `stage`, `excerpt`, `provenance`,
+  and `downranked`, each a stable key that may be null.
+
+### Changed (BREAKING — major, per D-021)
+
+- The leaf `description` field is RETIRED. Under `additionalProperties:
+  false` a leaf still carrying it fails as an unknown property. Display
+  prose is now DERIVED from the body's first sentence, so a leaf's one-liner
+  cannot drift from the content it summarizes — bodies must open with a
+  topic sentence. This is a store schema-version-class break and the reason
+  the next release is a major one.
+
 ## [1.0.0] - 2026-07-09
 
 The first released version. The kit is seeded once and then owned (D-001):

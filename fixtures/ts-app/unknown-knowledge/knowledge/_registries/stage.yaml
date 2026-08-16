@@ -1,0 +1,28 @@
+# Acceptance-fixture store (KK-15) — the stage registry (UCS-1149).
+# Seeded from the kit template: these values drive the shared pre-promotion
+# predicate, so a store that renamed them would hand the resolver's downrank and
+# preflight's unknown verdict two different answers.
+schema-version: 1
+store: knowledge
+registry: stage
+values:
+  - value: draft
+    gloss: Written but not promoted — nothing certifies the claim yet.
+    warrant: The default stage for every newly authored leaf; the pre-promotion predicate recognizes it.
+    decision: D-101
+    minted: "2026-07-08"
+  - value: proposed
+    gloss: Put forward for promotion and awaiting a moderator.
+    warrant: The second stage the pre-promotion predicate recognizes, matching the concept lifecycle.
+    decision: D-101
+    minted: "2026-07-08"
+  - value: verified
+    gloss: A moderator promoted it — the citations were checked and hold.
+    warrant: 100.1 is promoted; its citation was checked back to the source file.
+    decision: D-101
+    minted: "2026-07-08"
+  - value: deprecated
+    gloss: Superseded or no longer true, kept because references still cite it.
+    warrant: Notation is immutable once referenced (§3.5), so a retired leaf is marked rather than deleted.
+    decision: D-101
+    minted: "2026-07-08"

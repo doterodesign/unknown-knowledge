@@ -36,7 +36,7 @@ test('clean store: exit 0, zero findings, every check class reported as run', ()
   assert.deepEqual(out.counts, { errors: 0, warnings: 0 });
   assert.equal(out['store-health'].ok, true);
   assert.deepEqual(out.checks, [
-    'id-range', 'id-shape', 'index-drift', 'missing-citation',
+    'id-range', 'id-shape', 'index-drift', 'missing-authority', 'missing-citation',
     'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
     'registry-shape-mismatch', 'suppressed-value', 'unminted-segment',
     'unregistered-value',

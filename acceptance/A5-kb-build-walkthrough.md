@@ -132,7 +132,14 @@ notation: "110.1"
 domain: product
 division: payments
 heading: ACH withdrawal settlement windows
-description: When an ACH withdrawal actually leaves and lands.
+facets:
+  domain: product/payments
+  form: reference
+  anchor: world
+  stage: draft
+operations: [process-withdrawal]
+applies:
+  jurisdictions: []
 notes:
   - type: scope
     text: Covers ACH rails only; card and crypto rails are separate items.
@@ -150,9 +157,13 @@ cross-references:
 citations:
   - source: "Nacha Operating Rules & Guidelines, 2025 ed., Subsection 3.1 (ACH settlement schedule)"
     accessed: "2026-07-09"
+    authority: regulator
 terms: [ACH, withdrawal, settlement window, payout]
 edition: 1
 contributors: [walkthrough-agent]
+provenance:
+  author: walkthrough-agent
+  skill-version: kb-build@2.0.0
 ---
 
 ACH withdrawals batch at the processor's daily cutoff and settle on the
@@ -160,6 +171,10 @@ next banking day; same-day ACH applies only below the per-entry cap. The
 user-facing promise in the withdrawal flow must quote banking days, not
 calendar days (citation: Nacha rules, above).
 ```
+
+Note the opening line: there is no `description` field (retired in v2), so
+that first sentence is what any surface showing a one-liner will derive and
+display. It is written to read well out of context for that reason.
 
 - [ ] Notation quoted; `scope` + `revision` (dated) notes present;
   `class-here` records the contestable call from step 1; the parked VIP
