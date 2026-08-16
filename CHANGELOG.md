@@ -13,6 +13,34 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+Nothing yet — entries accrue here as PRs land.
+
+## [2.0.0] - 2026-08-16
+
+The faceted knowledge store (GitHub #49), landed as one atomic release: the
+`faceted-store-v2` integration branch collected every ticket in the arc, and
+`main` moved from 1.0.0 to 2.0.0 in a single commit-graph event. The arc, in
+one paragraph: **identity inverts** — the accession id (`L-NNNNNN`) is the
+leaf's only identity and the only legal citation target, with notation demoted
+to an optional legacy display field; **frontmatter v2** classifies every leaf
+by governed facets whose vocabularies live in **warrant-governed registries**
+(a value must be minted before it can be written, and minted only on literary
+warrant); **one deterministic resolution pipeline** answers queries, repo
+paths, and whole documents alike — decomposition with scored leaves, scope
+exclusion, near-misses and residue; format adapters to one IR; the document
+coverage map; typed edges with one-hop expansion and reverse lookup; the time
+facet's trusted/stale verdicts; **governance becomes mechanism** — phoenix
+events apply edition bumps by leaf-granular mapping, trust graduation narrows
+moderation by category table, residue clusters feed reflect's corroborated
+minting conduct, and seeded hooks make validation blocking; and the
+**derived layer** (browse trees, synthesized call numbers, resolution index)
+is regenerable and disposable by construction. This is a MAJOR release per
+D-021 because the arc is a store schema-version-class break: the v2 leaf
+contract retires `description`, requires the governed facet block, and
+accepts accession ids as the only citation spelling — already-seeded repos
+keep v1 (seeded-once-then-owned, D-001); the migration story is this kit repo
+and future seeds.
+
 ### Added
 
 - Seeded git hooks that enforce the protocol mechanically (UCS-1157):
