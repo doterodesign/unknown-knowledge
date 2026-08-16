@@ -1,4 +1,4 @@
-# Structural-validator fixture (KK-05) — clean store: every check passes.
+# UCS-1155 fixture — the ontology store is clean; every planted defect is in decisions/ (entry-level graduation findings).
 schema-version: 1
 store: ontology
 entries:

@@ -36,7 +36,8 @@ test('clean store: exit 0, zero findings, every check class reported as run', ()
   assert.deepEqual(out.counts, { errors: 0, warnings: 0 });
   assert.equal(out['store-health'].ok, true);
   assert.deepEqual(out.checks, [
-    'gated-category-graduation', 'id-range', 'id-shape', 'index-drift',
+    'disconnected-revocation', 'gated-category-graduation',
+    'graduation-not-trust-category', 'id-range', 'id-shape', 'index-drift',
     'malformed-verified', 'missing-authority', 'missing-citation',
     'missing-graduation-table', 'missing-path', 'missing-registry',
     'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
@@ -49,7 +50,7 @@ test('clean store human output says structurally clean and lists checks run', ()
   const r = run('--root', clean);
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /0 findings — structurally clean/);
-  assert.match(r.stdout, /checks run: gated-category-graduation, id-range, id-shape/);
+  assert.match(r.stdout, /checks run: disconnected-revocation, gated-category-graduation/);
 });
 
 // -------------------------------------- every finding class (exit 1, §4)

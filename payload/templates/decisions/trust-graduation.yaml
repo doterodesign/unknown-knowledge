@@ -37,8 +37,25 @@
 # The `id` and `date` placeholders below are DELIBERATELY not valid, so this
 # file fails validation until a steward fills them — pasting the template
 # unedited must never produce a Decisions entry, or moderation would narrow on a
-# rationale nobody wrote. Every other field is real: fill those two and the
-# entry validates.
+# rationale nobody wrote.
+#
+# Those two are what the SCHEMA rejects, but they are not the whole edit. Every
+# <angle-bracket> placeholder must be replaced before this entry says anything
+# true, and the validator cannot tell you so: `<category-name>` is a
+# well-formed string, so an unfilled one reads as an undeclared category rather
+# than as an unfinished template. The full inventory:
+#
+#   id                    the provisional D-YYYY-MM-DD-<slug> (schema-rejected)
+#   date                  the real date (schema-rejected)
+#   title                 <category>
+#   deciders              <steward>
+#   context               the whole prose block — the count and where you read it
+#   decision              <category>, <rate>
+#   consequences          the whole prose block
+#   graduation.category   <category-name> — must match a row in the table
+#   graduation.observed-cycles   your actual count, not 0
+#   provenance.author     <steward-or-agent>
+#   provenance.skill-version     <skill@version>
 schema-version: 1
 entries:
   - id: D-YYYY-MM-DD-graduate-example-category

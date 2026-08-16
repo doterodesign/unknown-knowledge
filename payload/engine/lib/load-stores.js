@@ -219,6 +219,7 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'phoenix-name-mismatch',
   'duplicate-phoenix-row',
   'graduation-table-name-mismatch',
+  'graduation-table-store-mismatch',
   'duplicate-graduation-category',
   'graduation-threshold-shape',
 ]);
@@ -930,6 +931,12 @@ function loadRegistryFiles(ctx, store) {
  *              the declared `table` disagrees with the filename, so a finding
  *              naming the table would cite a file no steward can open under
  *              that name — the same rule registries and phoenix events keep.
+ *   graduation-table-store-mismatch
+ *              the declared `store` disagrees with the directory the file sits
+ *              in. Every store loads `_registries/`, so a table can physically
+ *              land under knowledge/ while declaring `decisions` and pass its
+ *              schema; the key it indexes under would then contradict its own
+ *              path.
  *   duplicate-graduation-category
  *              one category declared twice. Which row governs would then be
  *              decided by file order: two rows can carry different
@@ -961,6 +968,20 @@ function loadGraduationTable(ctx, store, file, name, doc) {
     ctx.diagnostics.push({
       severity: 'error', code: 'graduation-table-name-mismatch', file, path: GRADUATION_TABLE_KEY,
       message: `graduation table declares name "${doc[GRADUATION_TABLE_KEY]}" but lives at ${file} — a finding that names a table must name the file a steward opens`,
+    });
+    return;
+  }
+  // The same argument one level up, and the same check a registry already
+  // keeps: a table filed under the wrong store governs a trust boundary in a
+  // store it does not sit in. Tables are keyed "<store>/<name>", so believing
+  // the declaration would index this file under a key its own path
+  // contradicts, and a steward following the key would open a different
+  // store's directory. The schema requires the field; the loader is what makes
+  // it mean something.
+  if (doc.store !== store) {
+    ctx.diagnostics.push({
+      severity: 'error', code: 'graduation-table-store-mismatch', file, path: 'store',
+      message: `graduation table declares store "${doc.store}" but lives under ${store}/ — a table governs the store it sits in, and the two spellings must agree`,
     });
     return;
   }

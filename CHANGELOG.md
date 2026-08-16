@@ -33,10 +33,16 @@ dates are recorded at release time, never retroactively.
 - Graduations and revocations are ordinary Decisions entries of category `trust`
   carrying a typed `graduation:` block, extended conservatively onto the
   existing schema rather than forked into a new record kind: a graduation IS an
-  ADR. Three new structural checks hold them against the table —
-  `gated-category-graduation`, `undeclared-category`, `missing-graduation-table`
-  — plus three loader diagnostics for the table's own defects
-  (`graduation-table-name-mismatch`, `duplicate-graduation-category`,
+  ADR. Five new structural checks hold them against the table —
+  `gated-category-graduation`, `undeclared-category`, `missing-graduation-table`,
+  `graduation-not-trust-category` (an entry that moves the trust boundary while
+  filed under another decision category is invisible to anyone auditing that
+  boundary by category), and `disconnected-revocation` (a revocation naming no
+  `revokes` while a graduation for the same category stands leaves the store
+  asserting both with nothing linking them; omission stays clean when no
+  graduation exists, which is the standing-position case) — plus four loader
+  diagnostics for the table's own defects (`graduation-table-name-mismatch`,
+  `graduation-table-store-mismatch`, `duplicate-graduation-category`,
   `graduation-threshold-shape`). Revoking is always allowed, including for a
   gated category: revocation only ever narrows autonomy, and refusing to record
   one would be refusing the safe direction.

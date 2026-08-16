@@ -1,4 +1,4 @@
-# Structural-validator fixture (KK-05) — clean store: every check passes.
+# UCS-1155 fixture — trust graduation, CLEAN: the table, a graduation, and two revocations all validate.
 schema-version: 1
 store: ontology
 entries:

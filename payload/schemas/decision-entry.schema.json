@@ -78,7 +78,7 @@
         },
         "revokes": {
           "$ref": "#/$defs/decisionRef",
-          "description": "On a `revoke`, the graduation entry being withdrawn. Resolved like any other cross-store ref, so a revocation naming no graduation is an unresolved-ref error — the withdrawal and the thing withdrawn stay connected in the record."
+          "description": "On a `revoke`, the graduation entry being withdrawn. When present it is resolved like any other cross-store ref, so an id naming no decision is an unresolved-ref error. REQUIRED WHENEVER A GRADUATION FOR THE SAME CATEGORY EXISTS in the store — otherwise the store asserts both a graduation and its revocation with nothing linking them, and a reader cannot tell whether the graduation still stands (a `disconnected-revocation` finding). It stays OPTIONAL when no graduation for the category exists, which is the standing-position case: recording that a never-graduated category remains at full inspection is legitimate and has nothing to point at. That conditional is enforced by the structural validator rather than here, because this document is interpreted by the engine's own validator, whose keyword subset has no conditional — and a rule stated in a keyword nothing enforces is contract drift wearing the appearance of a check."
         },
         "defect": {
           "type": "string",

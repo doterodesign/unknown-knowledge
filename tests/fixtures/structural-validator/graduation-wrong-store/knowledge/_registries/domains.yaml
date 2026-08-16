@@ -1,0 +1,32 @@
+# Structural-validator fixture (UCS-1148) — the hierarchical domains registry.
+#
+# The TOP LEVEL IS OPEN. "widgets" and "gadgets" are two independent top-level
+# classes, and neither is allocated by the schema or the engine: adding a third
+# is this file plus a Decisions entry, with no schema edit and no engine
+# release. That is what `registries-open-top-level/` demonstrates by doing it.
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: widgets
+    gloss: Physical widget lines and their handling.
+    warrant: 600.1 documents widget registry rules and needs a home.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: widgets/care
+    gloss: Maintenance and servicing of widgets.
+    warrant: 600.1 covers servicing intervals — material exists to fill it.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: gadgets
+    gloss: Gadget lines, a class independent of widgets.
+    warrant: 600.2 documents gadget handling and belongs under no widget class.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: widgets/disposal
+    gloss: Proposed and refused — disposal is out of scope for this store.
+    warrant: Proposed for 600.1; no material exists, so no warrant was found.
+    status: suppressed
+    decision: D-201
+    minted: "2026-07-07"

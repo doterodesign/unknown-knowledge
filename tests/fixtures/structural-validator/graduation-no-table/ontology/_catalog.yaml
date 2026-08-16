@@ -1,4 +1,4 @@
-# Structural-validator fixture (KK-05) — clean store: every check passes.
+# UCS-1155 fixture — the ontology store is clean; this store deliberately carries NO category table, so a graduation entry earns missing-graduation-table.
 schema-version: 1
 store: ontology
 entries:

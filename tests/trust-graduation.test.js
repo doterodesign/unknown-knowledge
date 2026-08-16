@@ -95,13 +95,29 @@ test('A1: a malformed table is a HARD ERROR — checks never ran, exit 2, never 
   assert.equal(model.ok, false);
 });
 
-test('A1: the three table defects are declared loader diagnostics', () => {
+test('A1: the four table defects are declared loader diagnostics', () => {
   for (const code of [
-    'graduation-table-name-mismatch', 'duplicate-graduation-category',
-    'graduation-threshold-shape',
+    'graduation-table-name-mismatch', 'graduation-table-store-mismatch',
+    'duplicate-graduation-category', 'graduation-threshold-shape',
   ]) {
     assert.ok(DIAGNOSTIC_CODES.includes(code), `${code} must be a declared diagnostic`);
   }
+});
+
+test('A1: a table filed under the wrong store is a hard error, not a silent index', () => {
+  // Every store loads `_registries/`, so a table can physically land under
+  // knowledge/ while declaring `store: decisions` and still pass its schema.
+  // Believing the declaration would index it under a key its own path
+  // contradicts, and a steward following that key opens the wrong directory.
+  const r = run('--json', '--root', fixture('graduation-wrong-store'));
+  assert.equal(r.status, 2);
+  const model = loadStores(fixture('graduation-wrong-store'));
+  const mismatch = model.diagnostics.filter((d) => d.code === 'graduation-table-store-mismatch');
+  assert.equal(mismatch.length, 1);
+  assert.equal(mismatch[0].file, 'knowledge/_registries/graduation-categories.yaml');
+  assert.equal(mismatch[0].path, 'store');
+  // Refused rather than indexed under the store it claims.
+  assert.equal(model.graduations.size, 0);
 });
 
 test('A1: the table is its own schema kind, validated like every other store file', () => {
@@ -110,12 +126,50 @@ test('A1: the table is its own schema kind, validated like every other store fil
 
 // --------------------------------- A2: entries are held against the table
 
-test('A2: a graduation for a gated category, and one naming an undeclared category, are findings', () => {
+test('A2: every entry-level graduation defect is a finding, and only those', () => {
   const out = runJson(1, '--root', fixture('graduation-findings'));
   assert.deepEqual(codes(out), [
     ['gated-category-graduation', 'D-205', 'graduation.category'],
     ['undeclared-category', 'D-206', 'graduation.category'],
+    ['graduation-not-trust-category', 'D-207', 'category'],
+    ['disconnected-revocation', 'D-208', 'graduation.revokes'],
   ]);
+});
+
+test('A2: an entry that moves the trust boundary must be filed under category `trust`', () => {
+  // D-207 is an otherwise-valid graduation of a declared, eligible category —
+  // filed under `process`. Anyone auditing the trust boundary by decision
+  // category would never see it.
+  const out = runJson(1, '--root', fixture('graduation-findings'));
+  const finding = out.findings.find((f) => f.code === 'graduation-not-trust-category');
+  assert.equal(finding.id, 'D-207');
+  assert.match(finding.message, /filed under category "process"/);
+  assert.match(finding.message, /auditing that boundary by category/);
+});
+
+test('A2: a revocation disconnected from a standing graduation is a finding', () => {
+  const out = runJson(1, '--root', fixture('graduation-findings'));
+  const finding = out.findings.find((f) => f.code === 'disconnected-revocation');
+  assert.equal(finding.id, 'D-208');
+  // The finding names the graduation the reader would otherwise have to hunt for.
+  assert.match(finding.message, /D-207 graduates that category/);
+});
+
+test('A2: omitting `revokes` is CLEAN when no graduation for the category exists', () => {
+  // The rule is coherence with the store, not a mandatory field. D-204 in the
+  // clean fixture revokes a never-graduated gated category — a legitimate
+  // standing-position entry with nothing to point at — and the store validates
+  // clean (asserted in A1). Demanding a ref there would demand a citation of
+  // something that does not exist.
+  const model = loadStores(fixture('graduation-clean'));
+  const d204 = model.decisions.get('D-204').record.graduation;
+  assert.equal(d204.action, 'revoke');
+  assert.equal(d204.revokes, undefined, 'D-204 deliberately names no graduation');
+  const graduated = [...model.decisions.values()]
+    .map((e) => e.record.graduation)
+    .filter((g) => g && g.action === 'graduate')
+    .map((g) => g.category);
+  assert.ok(!graduated.includes(d204.category), 'and no graduation for its category exists');
 });
 
 test('A2: the gated refusal explains that a streak does not make judgment mechanical', () => {
@@ -154,9 +208,10 @@ test('A2: a revocation names the graduation it withdraws, resolved as an ordinar
   assert.equal(edge.resolved, true);
 });
 
-test('A2: the three graduation checks are declared in CHECKS', () => {
+test('A2: every graduation check is declared in CHECKS', () => {
   for (const code of [
     'gated-category-graduation', 'undeclared-category', 'missing-graduation-table',
+    'graduation-not-trust-category', 'disconnected-revocation',
   ]) {
     assert.ok(CHECKS.includes(code), `${code} must be reported as a check class`);
   }
@@ -195,7 +250,7 @@ test('A3: provenance makes a bad skill revision traceable across entries', () =>
   const out = runJson(1, '--root', fixture('graduation-findings'));
   const byVersion = (v) => out.provenance.filter((p) => p['skill-version'] === v).map((p) => p.id);
   assert.deepEqual(byVersion('knowledge-reflect@1.3.0'), ['D-206']);
-  assert.deepEqual(byVersion('knowledge-reflect@1.4.0'), ['D-205']);
+  assert.deepEqual(byVersion('knowledge-reflect@1.4.0'), ['D-205', 'D-207', 'D-208']);
 });
 
 test('A3: provenance is surfaced in the human renderer too, not only in JSON', () => {
@@ -257,6 +312,38 @@ test('A4: both templates parse, carry the typed block, and are DELIBERATELY inva
     assert.ok(entry.provenance, `${file}: templates model provenance`);
   }
 });
+
+test('A4: the templates name EVERY placeholder a steward must replace', () => {
+  // The schema rejects only `id` and `date`, so an instruction block promising
+  // "fill those two and it validates" would be true and misleading at once:
+  // `<category-name>` is a well-formed string, so an unfilled one reads as an
+  // undeclared category rather than an unfinished template. The instructions
+  // must therefore account for every angle-bracket placeholder in the file.
+  for (const file of [
+    'templates/decisions/trust-graduation.yaml',
+    'templates/decisions/trust-revocation.yaml',
+  ]) {
+    const text = readPayload(file);
+    const [instructions, body] = splitOnFirstDocLine(text);
+    const placeholders = new Set(
+      [...body.matchAll(/<([a-z][a-z0-9@ -]*)>/g)].map((m) => m[1]),
+    );
+    assert.ok(placeholders.size > 2, `${file}: expected several placeholders to account for`);
+    for (const p of placeholders) {
+      assert.match(
+        instructions, new RegExp(`<${p.replace(/[@]/g, '\\$&')}>|\\b${p.split(/[ -]/)[0]}\\b`),
+        `${file}: the instruction block must name the "${p}" placeholder`,
+      );
+    }
+  }
+});
+
+/** Split a template into its leading comment block and the YAML body. */
+function splitOnFirstDocLine(text) {
+  const lines = text.split('\n');
+  const i = lines.findIndex((l) => l.startsWith('schema-version:'));
+  return [lines.slice(0, i).join('\n'), lines.slice(i).join('\n')];
+}
 
 test('A4: the seeded category table ships EMPTY — the kit does not pre-judge the client', () => {
   const doc = load(readPayload('templates/decisions/_registries/graduation-categories.yaml'));

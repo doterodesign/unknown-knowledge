@@ -123,7 +123,8 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
-  'gated-category-graduation', 'id-range', 'id-shape', 'index-drift',
+  'disconnected-revocation', 'gated-category-graduation',
+  'graduation-not-trust-category', 'id-range', 'id-shape', 'index-drift',
   'malformed-verified', 'missing-authority', 'missing-citation',
   'missing-graduation-table', 'missing-path', 'missing-registry',
   'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
@@ -990,11 +991,33 @@ function checkEditions(model, push) {
  *              correctly N times. Revoking a gated category is NOT a finding —
  *              a revocation only ever narrows autonomy, and refusing to record
  *              one would be refusing the safe direction.
+ *   graduation-not-trust-category
+ *              an entry carrying a graduation block but filed under some other
+ *              decision category. `trust` is the category that says the third
+ *              store governs the trust boundary (PRD §3); an entry filed
+ *              elsewhere moves that boundary invisibly to anyone auditing it
+ *              by category, which is how a steward reads the store
+ *   disconnected-revocation
+ *              a revocation that names no `revokes` WHILE a graduation for the
+ *              same category stands. The store then asserts both with nothing
+ *              linking them. Omission is clean when no graduation exists — the
+ *              standing-position case has nothing to point at
  */
 function checkGraduations(model, push) {
   // One table per store, keyed "<store>/<name>"; decisions is where graduation
   // is governed (the change process is the team's truth anchor, D-003).
   const tables = [...model.graduations.values()];
+  // Which categories the store carries a GRADUATION for, and the entry that
+  // granted it. Built once: a revocation's coherence is a question about the
+  // store as a whole, not about the entry in isolation, so it cannot be
+  // answered while looking at one record.
+  const graduatedBy = new Map();
+  for (const entry of model.decisions.values()) {
+    const block = entry.record.graduation;
+    if (!isObject(block) || block.action !== 'graduate') continue;
+    if (typeof block.category !== 'string') continue;
+    if (!graduatedBy.has(block.category)) graduatedBy.set(block.category, recordId(entry));
+  }
   for (const entry of model.decisions.values()) {
     const { file, record } = entry;
     const graduation = record.graduation;
@@ -1003,6 +1026,20 @@ function checkGraduations(model, push) {
     // A non-string category or unknown action is a schema defect KK-02 already
     // reported; judging it again here would double-report one mistake.
     if (typeof category !== 'string' || (action !== 'graduate' && action !== 'revoke')) continue;
+    // The entry's own `category` field must be `trust`. The third store governs
+    // the trust boundary (PRD §3), and `trust` is the category that says so —
+    // an entry filed under `process` or `governance` that quietly moves the
+    // boundary is invisible to anyone auditing the boundary by category, which
+    // is how a steward reads the decisions store. A malformed value is a schema
+    // defect KK-02 already reported, so only a well-formed MISMATCH is judged
+    // here; one omission earns one finding.
+    if (typeof record.category === 'string' && record.category !== 'trust') {
+      push({
+        severity: 'error', code: 'graduation-not-trust-category', id: recordId(entry), file,
+        path: 'category',
+        message: `entry carries a graduation block but is filed under category "${record.category}" — an entry that moves the trust boundary is a "trust" decision (PRD §3: the third store governs changes to the system's own trust boundary), and one filed elsewhere is invisible to anyone auditing that boundary by category`,
+      });
+    }
     if (!tables.length) {
       push({
         severity: 'error', code: 'missing-graduation-table', id: recordId(entry), file,
@@ -1030,6 +1067,28 @@ function checkGraduations(model, push) {
         path: 'graduation.category',
         message: `category "${category}" is PERMANENTLY GATED in ${row.file} and cannot graduate — the table's warrant for gating it is the standing answer, and a judgment call does not become mechanical by having been made correctly ${typeof graduation['observed-cycles'] === 'number' ? graduation['observed-cycles'] : 'N'} times; changing that is a table edit with its own Decisions entry, never a graduation against the table as it stands`,
       });
+    }
+    // A revocation must name the graduation it withdraws WHEN THERE IS ONE.
+    // The `revokes` field's whole promise is that the withdrawal and the thing
+    // withdrawn stay connected in the record; a revocation that omits it while
+    // a graduation for that category stands leaves the store asserting both,
+    // with nothing linking them — a reader cannot tell whether the graduation
+    // is live, and the revocation names no target to check against.
+    //
+    // Omission stays CLEAN when no graduation for the category exists. That is
+    // the standing-position case: recording that a never-graduated category is
+    // (and remains) at full inspection is a legitimate entry, and it has no
+    // graduation to point at. Demanding a ref there would demand a citation of
+    // something that does not exist.
+    if (action === 'revoke' && typeof graduation.revokes !== 'string') {
+      const granted = graduatedBy.get(category);
+      if (granted !== undefined) {
+        push({
+          severity: 'error', code: 'disconnected-revocation', id: recordId(entry), file,
+          path: 'graduation.revokes',
+          message: `revocation of "${category}" names no graduation, but ${granted} graduates that category — the withdrawal and the thing withdrawn must stay connected in the record, or a reader cannot tell whether ${granted} still stands; name it in "revokes"`,
+        });
+      }
     }
   }
 }

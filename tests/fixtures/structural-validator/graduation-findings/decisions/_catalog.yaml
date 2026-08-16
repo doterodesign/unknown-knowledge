@@ -10,3 +10,9 @@ entries:
   - id: D-206
     title: Graduate see-also links to sampling
     file: entries/D-206-graduate-undeclared-category.yaml
+  - id: D-207
+    title: Graduate alias additions to sampling
+    file: entries/D-207-graduation-wrong-category.yaml
+  - id: D-208
+    title: Revoke sampling for alias additions
+    file: entries/D-208-disconnected-revocation.yaml

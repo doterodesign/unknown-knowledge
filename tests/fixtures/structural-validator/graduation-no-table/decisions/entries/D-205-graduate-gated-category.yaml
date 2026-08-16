@@ -1,6 +1,11 @@
-# PLANTED: gated-category-graduation. `authority-assignments` is declared
-# `gated` in the table, and a graduation of it must be refused however long the
-# streak — the refusal the whole mechanism exists for.
+# PLANTED: missing-graduation-table. This store carries NO category table at
+# all, so there is nothing to judge this graduation's category against. The
+# absence surfaces HERE, at the entry that needed the table, rather than at
+# load: a store that governs nothing is complete, but a graduation checked
+# against a table that never loaded is a check that never ran (PRD §5).
+#
+# The category named happens to be one the OTHER fixtures gate, but that is
+# incidental — with no table present, its eligibility is unknowable.
 schema-version: 1
 entries:
   - id: D-205

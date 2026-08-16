@@ -27,8 +27,30 @@
 #
 # The `id` and `date` placeholders below are DELIBERATELY not valid, so this
 # file fails validation until a steward fills them — pasting the template
-# unedited must never produce a Decisions entry. Every other field is real: fill
-# those two and the entry validates.
+# unedited must never produce a Decisions entry.
+#
+# Those two are what the SCHEMA rejects, but they are not the whole edit. Every
+# <angle-bracket> placeholder must be replaced before this entry says anything
+# true, and the validator cannot tell you so: `<category-name>` is a
+# well-formed string, so an unfilled one reads as an undeclared category rather
+# than as an unfinished template. The full inventory:
+#
+#   id                    the provisional D-YYYY-MM-DD-<slug> (schema-rejected)
+#   date                  the real date (schema-rejected)
+#   title                 <category>
+#   deciders              <steward>
+#   context               the whole prose block — the defect, and how it surfaced
+#   decision              <category>
+#   consequences          the whole prose block
+#   graduation.category   <category-name> — must match a row in the table
+#   graduation.revokes    D-NNN — the graduation being withdrawn. DELETE this
+#                         line if no graduation for the category exists (the
+#                         standing-position case); leaving `D-NNN` literal is an
+#                         unresolved ref, and omitting it when a graduation DOES
+#                         stand is a `disconnected-revocation` finding
+#   graduation.defect     <what went wrong>
+#   provenance.author     <steward-or-agent>
+#   provenance.skill-version     <skill@version>
 schema-version: 1
 entries:
   - id: D-YYYY-MM-DD-revoke-example-category

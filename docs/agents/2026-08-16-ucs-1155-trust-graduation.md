@@ -2,9 +2,12 @@
 
 > Implementation findings, written on branch
 > `ucs-1155-trust-graduation-category-table-provenance-checks` (base
-> `faceted-store-v2` @ 8e11a4f). Gates green: `npm test` 923 pass / 0 fail,
+> `faceted-store-v2` @ 8e11a4f). Gates green: `npm test` 928 pass / 0 fail,
 > `npm run lint` 197 files / 0 failures, `npm run acceptance` OK (A1–A4, A6
 > pass; A5 manual by design).
+>
+> Updated after the first review round — see "Review round 1" at the end for the
+> three checks added and the one finding declined with reasoning.
 
 ## Erratum in the ticket: the wrong prototype was cited
 
@@ -201,9 +204,92 @@ v1; designed for in the schema", which this ticket makes false.
 - `CHANGELOG.md` — Unreleased/Added
 
 **Tests / fixtures**
-- `tests/trust-graduation.test.js` (new, 24 tests across A1–A4)
-- `tests/fixtures/structural-validator/graduation-{clean,findings,malformed,no-table}/`
+- `tests/trust-graduation.test.js` (new, 29 tests across A1–A4)
+- `tests/fixtures/structural-validator/graduation-{clean,findings,malformed,no-table,wrong-store}/`
 - `tests/validate.test.js`, `tests/validate-record.test.js` — pinned lists extended
+
+## Review round 1
+
+CodeRabbit raised 13 findings on PR #64; the team lead triaged them. Three
+majors and two minors were accepted, one major was half-accepted, and the rest
+were declined against standing repo justifications.
+
+### Accepted — `graduation-not-trust-category` (new check)
+
+The original loop judged the `graduation:` block but never checked the entry's
+own `category:` field, so a graduation filed under `process` or `governance`
+passed clean. The PRD names `trust` as the category for boundary moves — it is
+what makes the third store's governance legible — and an entry filed elsewhere
+moves that boundary invisibly to anyone auditing by category, which is how a
+steward reads the decisions store. Judged only when `record.category` is a
+well-formed string, so a malformed value stays KK-02's to report and one
+omission still earns one finding.
+
+### Accepted — `disconnected-revocation` (new check), with the coherent rule
+
+The schema's `revokes` description promised "the withdrawal and the thing
+withdrawn stay connected in the record", and nothing enforced it. The naive fix
+— make `revokes` mandatory on every revocation — would have broken the D-204
+case, which is deliberately right: revoking a never-graduated gated category is
+a legitimate standing-position entry with nothing to point at.
+
+So the enforced rule is about **coherence with the store**, not field presence:
+a `revoke` that omits `revokes` **while a graduation for the same category
+stands** is a finding; omission is clean when no such graduation exists. That
+required a pre-pass building a category→graduating-entry map, because a
+revocation's coherence is a question about the store as a whole and cannot be
+answered while looking at one record. The schema description was rewritten to
+state exactly this rule, including that the conditional is validator-enforced
+because the engine's keyword subset has no conditional — the same reasoning the
+phoenix schema uses for `why`.
+
+### Half-accepted — `graduation-table-store-mismatch` (new diagnostic)
+
+**Accepted:** the schema requires `store:` and the loader never checked it
+against the directory the file was found in, where the registry loader has
+exactly that check. This is genuinely reachable rather than theoretical: **all
+three stores load `_registries/`**, so a table can physically sit in
+`knowledge/_registries/` while declaring `store: decisions`, pass its schema
+(the enum permits only `decisions`), and index under a key its own path
+contradicts. Verified with the `graduation-wrong-store` fixture: exit 2, and
+`model.graduations.size === 0` — refused rather than indexed under the store it
+claims.
+
+**Declined:** the duplicate-table concern. It is structurally impossible, not
+merely unlikely: tables are keyed by basename, `graduation-table-name-mismatch`
+forces `table:` to equal that basename, and one directory cannot hold two files
+with one basename. A check for it would be dead code, and dead code in a
+validator is worse than absent — it implies a defect class is being watched when
+nothing can reach it.
+
+### Accepted — template placeholder inventories
+
+Both templates claimed only `id` and `date` needed filling. True about what the
+*schema* rejects, and misleading: `<category-name>` is a well-formed string, so
+an unfilled one reads as an `undeclared-category` finding rather than as an
+unfinished template. Each template now carries the full inventory of
+angle-bracket placeholders, and `trust-revocation.yaml` additionally explains
+that `revokes: D-NNN` must be **deleted** rather than left literal in the
+standing-position case. A test pins the instruction block against the actual
+placeholders in the body, so the claim cannot drift again.
+
+### Accepted — stale fixture comments
+
+`# Structural-validator fixture (KK-05) — clean store: every check passes` had
+been copy-pasted into all five graduation fixtures' `ontology/_catalog.yaml`,
+including the ones that exist to produce hard errors. Each now states what its
+fixture actually demonstrates. The `graduation-no-table` fixture also carried a
+stale `D-205` header claiming the category was "declared `gated` in the table" —
+that fixture has no table at all, which is its entire point.
+
+### Declined (standing justifications)
+
+- **Fence language tags in the steward guide** — the guide's fences are untagged
+  throughout; matching the file beats matching a linter the repo does not run.
+  Same call as UCS-1154 round 3.
+- **MD041 first-line-heading on six fixture leaves** — no markdownlint in the
+  repo; frontmatter `heading` is the leaf title by convention, and adding a body
+  H1 would change `firstSentence` excerpts and the golden output that pins them.
 
 ## Note for whoever picks up the next ticket
 
