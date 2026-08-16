@@ -4,6 +4,19 @@ Glossary for the standalone open-source product (D-015/D-016: free, permissive
 license, public npm; named for the Unknown Creatives studio family) that stands
 up self-improving knowledge-base + ontology structures in any codebase.
 
+## Lineage
+
+The knowledge store is **a faceted classification with warrant-governed
+vocabularies, in the DDC editorial tradition**. What is retained from Dewey is
+the editorial machinery — literary warrant (a class earns its place from
+material that exists, never from anticipation), editions, phoenix schedules for
+re-taxonomizing a drifted subtree in full, and the relative index that reaches
+a topic from every word a reader might bring to it. What is deliberately
+abandoned is notation-as-identity, mono-hierarchy, and enumerative
+pre-allocation: identity is an opaque **accession ID**, subject is a **facet**
+drawn from a **registry**, and a leaf may be projected into as many browse trees
+as there are axes worth browsing.
+
 ## Terms
 
 **Kit** — The product itself: a free, open-source CLI (permissive license,
@@ -29,6 +42,45 @@ truth anchor:
 - **Decisions** — facts the *team* owns (why it is this way). YAML-schema'd,
   lifecycle-tracked (proposed → accepted → addressed → archived), append-mostly:
   status transitions never rewrite recorded reasoning.
+
+**Accession ID** — A knowledge leaf's identity (`L-NNNNNN`): opaque, minted from
+a sequence, never reused, never positional. It is what the loader indexes by and
+the only spelling a citation resolves through — the catalog, other leaves,
+decisions and log fragments all name a leaf this way. Because it says nothing
+about where the leaf sits, refiling the leaf changes no citation, which is the
+whole reason identity was inverted away from notation. A dotted **notation** may
+still ride along as a legacy display label; nothing indexes by it.
+
+**Facet** — One governed axis of a leaf's classification, filled from a
+**registry** rather than invented: `domain` (the hierarchical subject path),
+`form` (what kind of knowledge it is), `anchor` (which truth anchor settles it),
+and `stage` (where it sits in the promotion path). Faceting is what replaced the
+single positional slot: a leaf is described along several axes at once instead of
+being filed at one address, so no axis has to carry every question.
+
+**Registry** — A warrant-governed vocabulary file under
+`knowledge/_registries/` (domains, form, anchor, stage, operations,
+jurisdictions, authority-tiers). Every governed value a leaf carries must already
+be minted in its registry, and minting one is a registry edit plus a Decisions
+entry carrying its **literary warrant** — the material that exists for the value
+to hold. A value the registry does not carry is a blocking `unregistered-value`
+finding, which is the mechanism refusing an ad-hoc string rather than trusting an
+author not to write one.
+
+**Phoenix event** — A governed bulk re-taxonomy: a drifted subtree re-filed
+wholesale under a new classification, applied by the `phoenix` surface in full or
+not at all. The whole mapping is planned against the whole store before a byte is
+written, and any finding refuses the entire event — there is no partial apply.
+Dewey's phoenix schedule, kept: the admission that a classification sometimes has
+to be rebuilt rather than patched, made a reviewable act with a Decisions entry
+behind it.
+
+**Coverage map** — What `resolve --doc` returns for an ingested document:
+per-section joins and candidates, a gather rollup with verdicts and
+scope-mismatch flags, and ranked candidates carrying section addresses. It
+reports what the store's vocabulary did and did not reach in the document —
+bounded by the document's own content richness, never by how hard the engine
+tried.
 
 **Truth anchor** — Who owns a fact's truth: artifact, world, or team. Determines
 which store a fact belongs to and every governance property downstream
@@ -65,6 +117,15 @@ gate) → concept emission → miss-log → KB interview + skeleton → validato
 agent intelligence: navigation, runtime loop, gate rules. Per-IDE wrappers
 (Claude Code, Cursor, Copilot, Codex, Gemini — selectable at init) are thin
 pointers to these.
+
+**Hooks** — Seeded git hooks that enforce the protocol mechanically rather than
+relying on anyone remembering it: `hooks/pre-commit` runs blocking validation
+before a commit exists, `hooks/reverse-lookup` runs the reverse lookup over the
+staged diff. Both are **thin wrappers** — each invokes one engine command and
+exits with its code, unchanged, with no bypass variable to read — so the tested
+surface is the wrapped command, and the wiring is reviewed the way the per-IDE
+wrappers are. They seed but do not install: `init` never writes `.git/`, so the
+client hangs the gate the kit ships (D-006).
 
 **Runtime loop** — The per-request agent protocol: resolve → preflight →
 gather (JIT reads of SSOT files; the map is never the fact) → act (concept
