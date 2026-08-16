@@ -103,6 +103,24 @@ shipped CI default.
 - **Nothing ships by omission** (D-007). An explicit manifest lists every file
   `init` seeds; a file it does not name is never copied.
 
+## Hooks — the protocol, enforced mechanically
+
+Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs the blocking
+validator before a commit exists, and `reverse-lookup` runs the `--paths`
+lookup over your staged diff, so the knowledge governing the files you touched
+surfaces without anyone remembering to ask. Each is a thin wrapper — it invokes
+one engine command and exits with its code, unchanged — and neither reads a
+bypass variable, because a hook with an off switch enforces nothing.
+
+They **seed but do not install**: `init` never writes `.git/`, so wiring them is
+your act, not the kit's. Git runs a hook only if it is executable, and the copy
+engine seeds bytes rather than modes — so set the bit when you wire it:
+
+```sh
+chmod +x unknown-knowledge/hooks/*
+ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
+```
+
 ## Seeded once, then owned
 
 After `init`, the seeded directory has no relationship to this kit (D-001).

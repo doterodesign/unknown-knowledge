@@ -1,0 +1,45 @@
+#!/bin/sh
+# unknown-knowledge reverse-lookup hook — automatic attribution (UCS-1157).
+#
+# THIN BY CONSTRUCTION, exactly like the pre-commit hook: it collects the
+# touched paths git already knows about and hands them to one engine
+# command, exiting with that command's code, unchanged. It reads no leaf,
+# joins nothing, and decides nothing — `engine/resolve.js --paths` is what
+# answers "which leaves and concepts govern this file", and the answer is
+# its output, not this script's.
+#
+# This is the AGENTS.md ACT step (attribute before committing) made
+# automatic. An agent can forget to run the reverse lookup; a hook cannot.
+# That is the whole point: the protocol rides along invisibly rather than
+# depending on anyone remembering it.
+#
+# Not a test seam. The tested surface is the wrapped command
+# (`engine/resolve.js --paths`, tests/resolve.test.js and
+# tests/typed-edges.test.js) — this file adds no behavior to test, and the
+# wiring is reviewed like the per-IDE wrappers.
+#
+# Wire it as a pre-commit companion, a post-checkout hook, or run it by
+# hand before writing a commit message — the seeded artifact is the
+# script; wiring it into .git/ is the client's own act.
+#
+# Exit codes are the engine's, propagated verbatim (PRD §5):
+#   0 — the lookup ran (including a zero-hit lookup, which is a real
+#       answer: nothing in the store governs these files).
+#   2 — the lookup never ran.
+# `resolve.js` never exits 1: reporting what governs a path is not a
+# finding, and this hook is attribution, never a gate. What it prints is
+# what the ACT step obliges you to act on.
+#
+# With no staged changes there is nothing to attribute, so the hook exits
+# 0 without invoking the engine — `--paths` with an empty list is a usage
+# error (exit 2), and an empty diff is not a failure.
+set -u
+
+KIT_DIR="${KIT_DIR:-unknown-knowledge}"
+UK_ROOT="${UK_ROOT:-.}"
+
+PATHS=$(git diff --cached --name-only --diff-filter=ACMR | paste -sd, -)
+[ -z "$PATHS" ] && exit 0
+
+node "$UK_ROOT/$KIT_DIR/engine/resolve.js" --paths "$PATHS" --root "$UK_ROOT"
+exit $?

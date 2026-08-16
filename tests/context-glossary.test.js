@@ -134,3 +134,43 @@ test('CONTEXT.md no longer speaks from before the repo existed', () => {
   assert.doesNotMatch(context, /moves to the `unknown-knowledge` repo when it exists/,
     'the repo exists; this file is in it');
 });
+
+// ---------------------------------------------------------------- UCS-1157
+// The faceted-store vocabulary is agent-facing: an agent reads CONTEXT.md to
+// learn what the words mean before it reads a store that uses them. A term
+// the code ships and the glossary never defines is the same drift this file
+// was written to catch, one layer up.
+
+test('the v2 vocabulary has glossary terms', () => {
+  for (const term of ['Accession ID', 'Facet', 'Registry', 'Phoenix event', 'Coverage map', 'Hooks']) {
+    assert.match(context, new RegExp(`\\*\\*${term}\\*\\* — `),
+      `CONTEXT.md ships no glossary term for "${term}" — agents read this file to learn the vocabulary`);
+  }
+});
+
+test('every governed registry the payload seeds has its vocabulary explained', () => {
+  // Re-derived from the shipped templates, not from memory: a registry added
+  // later must land in the glossary's list or this fails.
+  const registryDir = join(root, 'payload', 'templates', 'knowledge', '_registries');
+  const shipped = readdirSync(registryDir).filter((f) => f.endsWith('.yaml')).map((f) => f.replace(/\.yaml$/, ''));
+  const term = /\*\*Registry\*\*[\s\S]*?\n\n/.exec(context)[0].replace(/\s+/g, ' ');
+  for (const registry of shipped) {
+    assert.ok(term.includes(registry),
+      `knowledge/_registries/${registry}.yaml ships and the Registry term never names it`);
+  }
+});
+
+test('the lineage framing is recorded VERBATIM', () => {
+  // The one sentence the spec pins word-for-word. Collapse the wrapping
+  // first — where CONTEXT.md breaks a line, and whether the bold markers
+  // straddle the break, are not facts about the lineage.
+  assert.ok(context.replace(/\s+/g, ' ').replace(/\*\*/g, '')
+    .includes('a faceted classification with warrant-governed vocabularies, in the DDC editorial tradition'),
+  'the lineage framing must read exactly as specified');
+  // And what the tradition keeps versus what it abandoned — the framing is
+  // only honest if both halves are stated.
+  assert.match(context, /literary warrant/);
+  assert.match(context, /phoenix schedules/);
+  assert.match(context, /relative index/);
+  assert.match(context, /notation-as-identity, mono-hierarchy, and enumerative\s+pre-allocation/);
+});

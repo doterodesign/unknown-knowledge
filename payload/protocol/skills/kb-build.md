@@ -19,6 +19,29 @@ promotable.** A claim with no traceable source never becomes a leaf; it
 parks as a gap-log entry (step 2) so the demand signal survives without the
 store vouching for it.
 
+## This skill is thin orchestration
+
+Every mechanical step below **names the engine command that performs it**.
+The commands compute; this skill sequences them and stops on their exit
+codes. Where a step says "run", run it — do not reproduce its answer from
+memory, and do not decide an outcome the engine reports.
+
+Your discretion is limited to three **judgment fills**, and they are the
+only free-form work in the procedure:
+
+| Judgment fill | Where | What it means |
+| --- | --- | --- |
+| **Prose bodies** | step 4 | the leaf's markdown body — written, not generated |
+| **Candidate confirmation** | steps 1–2 | confirming a proposed classification or citation against the source, which is a read no command can do for you |
+| **Mint proposals with warrant evidence** | step 3 | proposing a governed vocabulary value, carrying its literary warrant |
+
+Everything else — locating coverage, minting the accession, checking facet
+values against their registries, checking the catalog, the final gate — is
+the engine's. **Protocol compliance is a property of the mechanism, not of
+agent obedience**: the hooks in `hooks/` run the blocking validation and
+the reverse lookup whether or not anyone remembers to, and they propagate
+the engine's exit codes unchanged.
+
 Two `--root` conventions, stated once (same as AGENTS.md):
 
 - Store-reading CLIs (`resolve.js`, `validate.js`) take `--root` as the
@@ -30,47 +53,50 @@ Two `--root` conventions, stated once (same as AGENTS.md):
 ## The five steps
 
 ```
-1. CLASSIFY  item → one target notation in the domain/division spine
-2. CITE      every claim carries a citation, or the item parks as a gap
-3. DRAFT     the leaf file: §3.2 governance frontmatter + body
-4. INDEX     the catalog row that keeps the tree navigable
-5. VALIDATE  structural validator green, then the human gate
+1. CLASSIFY  item → one facet-set home, via resolve.js
+2. CITE      every claim carries a citation, or it parks via log-entry.js
+3. FACET     fill the governed facets from the registries
+4. DRAFT     the leaf file: §3.2 governance frontmatter + body, at draft stage
+5. VALIDATE  validate.js green, then the human gate
 ```
 
 ### 1. CLASSIFY — one subject home
 
 Enter through the store's navigational grammar (AGENTS.md): read
 `knowledge/_catalog.yaml`, then `knowledge/_rules.yaml` — the
-domain/division spine the bootstrap interview wrote. Then check what
+domain spine the bootstrap interview wrote. Then ask the engine what
 already exists near the item:
 
 ```
 node unknown-knowledge/engine/resolve.js "ach withdrawal settlement" --json --root .
 ```
 
-Resolve surfaces knowledge entry points alongside concepts — read any leaf
-it names before deciding placement (the map is never the fact). Decide, in
-this order:
+`resolve.js` is what answers "does the store already cover this". Read its
+`decomposition` (which operations, concepts and jurisdictions joined) and
+its `residue` (the tokens nothing consumed) — residue is the store telling
+you where its vocabulary runs out, and it is the raw material a later
+`mint-proposal` is built from. Read any leaf it names before deciding
+placement (the map is never the fact): that read is **candidate
+confirmation**, a judgment fill, and no command substitutes for it.
+
+Decide, in this order:
 
 - **An existing leaf already covers the item** → this run is a *revision*
-  of that leaf, not a new one: its accession is its identity and never
-  changes (§3.5), so keep it, bump `edition`, and append a `revision` note
-  in step 3.
-- **The spine names a home** (a domain + division that owns the topic) →
-  a new leaf, classified there. Classification is now a `facets.domain`
-  value, not a slot: mint a fresh accession for the leaf (step 3) and let
-  the subject path say what it is about. Nothing has to be looked up to
-  find "the next free" anything — an accession is opaque and drawn from a
-  sequence, so two authors classifying into one domain never contend for a
-  number. Where the classification was contestable (the item could
-  plausibly file under two divisions), record the call as a `class-here`
-  note on the leaf, and put a `class-elsewhere` redirect on the leaf where
-  sessions will keep looking — the content lives in exactly one place; the
-  redirect is a signpost, and it must resolve.
+  of that leaf: its accession is its identity and never changes (§3.5), so
+  keep it and append a `revision` note in step 4.
+- **The spine names a home** → a new leaf. Classification is a
+  `facets.domain` value, not a position: the subject path says what the leaf
+  is about, and the leaf's identity is a fresh **accession** minted in step
+  4. Nothing has to be looked up to find "the next free" anything — an
+  accession is opaque and drawn from a sequence, so two authors classifying
+  into one domain never contend for a number, and the classification you
+  choose here constrains nothing about the identity you get.
+  Where the classification was contestable (the item could plausibly file
+  under two domains), record the call as a `class-here` note on the leaf.
 - **The spine has no home for it** → the spine is the human's (it came from
   the bootstrap interview): hand the item back with the domains you
   considered and ask whether `knowledge/_rules.yaml` should grow — never
-  invent a domain or division silently.
+  invent a domain silently.
 
 **Done when** exactly one of the three outcomes holds: one subject home
 settled for a new leaf, one existing leaf identified for revision, or the
@@ -86,15 +112,18 @@ state:
 - **Cited**: a `source` (+ `accessed` date) a reviewer can follow to the
   world — a regulation, a standard, a published document, a dated research
   artifact. The citation supports the claim as written, not the topic in
-  general.
+  general. Confirming that is **candidate confirmation**: open the source
+  and read it, because a citation nobody followed is a claim about a
+  citation.
 - **Dropped**: reworded out or removed — the leaf says less and stays true.
 - **Parked**: worth keeping as demand but unsourced. An unsourced claim is
-  not promotable — it goes to the gap log, never into a leaf:
+  not promotable — it goes to the gap log, never into a leaf, and
+  `log-entry.js` is the only write path into `logs/`:
 
 ```
 node unknown-knowledge/engine/log-entry.js create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf 100.1","consulted":{"leaves":["L-000100"]}}'
+  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf L-000100","consulted":{"leaves":["L-000100"]}}'
 ```
 
 `--date` is injected, never wall-clock; the summary carries leaf ids,
@@ -102,70 +131,84 @@ concept IDs, and file paths only — never verbatim user text or secrets
 (§3.4). `consulted.leaves` cites each leaf by its accession id — the only
 spelling that resolves — and the summary should name that same id, so a
 reader can look up what the entry consulted.
+
 **Done when** zero uncited claims remain in the draft. If citing
 and dropping empties the item, park what remains and end the run here — a
 parked item is a recorded demand signal, not a failure.
 
-### 3. DRAFT — §3.2 governance frontmatter + body
+### 3. FACET — fill the governed facets from the registries
+
+`facets` is the classification block, and **every value must already be
+minted in its registry** under `knowledge/_registries/`. Read the registry
+file and take the value from it; a value the registry does not carry is a
+blocking `unregistered-value` finding at step 5, which is the mechanism
+refusing an ad-hoc string rather than trusting you not to write one.
+
+| Facet | Registry | What it records |
+| --- | --- | --- |
+| `domain` | `_registries/domains.yaml` | the hierarchical subject path — every segment minted |
+| `form` | `_registries/form.yaml` | what KIND of knowledge this is |
+| `anchor` | `_registries/anchor.yaml` | which truth anchor settles the claim (artifact, world, team — D-003) |
+| `stage` | `_registries/stage.yaml` | where the leaf sits in the promotion path |
+
+Two adjacent governed lists are filled the same way, from the same kind of
+file: `operations` (the verbs this leaf lets a reader DO,
+`_registries/operations.yaml`) and `applies.jurisdictions`
+(`_registries/jurisdictions.yaml` — EMPTY means universal, which is a
+claim, so leave it empty only when the knowledge really does hold
+everywhere). Each `citations` entry carries an `authority` tier from
+`_registries/authority-tiers.yaml`: the tier records how far the source can
+be trusted, and without it a regulator's text and a hallway conversation
+read identically.
+
+**If no minted value fits, that is the signal to propose a minting, not to
+invent a spelling.** A mint proposal is the third **judgment fill**, and it
+is a governed act with a written rationale: draft it from
+`templates/decisions/registry-minting.yaml` and carry its **literary
+warrant** — the material that already exists for the value to hold. Warrant
+is evidence, not intention: a value minted ahead of its material is
+speculative shelving (`protocol/registry-warrant.md`). Where the proposal
+comes from a corroborated residue cluster instead of a single item, it is
+reflect's `mint-proposal` shape and belongs on the reflect queue —
+`protocol/skills/knowledge-reflect.md` owns that path. Either way the
+proposal goes to the human; this skill never edits a registry.
+
+**Done when** every facet, operation, jurisdiction and authority tier the
+draft will carry is a value its registry already mints, or the run is
+paused on a mint proposal awaiting the human.
+
+### 4. DRAFT — §3.2 governance frontmatter + body
 
 The frontmatter shape is `schemas/knowledge-leaf.schema.json` — the single
-source of truth; the validator enforces it in step 5. The governance calls
+source of truth; `validate.js` enforces it in step 5. The governance calls
 this skill makes on top of the schema:
 
-- **`id`** — the accession (`L-NNNNNN`): opaque, minted at PR time, never
-  reused, never positional. **Required on every leaf.** It is the leaf's
-  identity, what the loader indexes by, and the only spelling other leaves,
-  the catalog, decisions and log fragments may cite it as. Because it says
-  nothing about where the leaf sits, a reclassification — or a move to a
-  different directory — leaves it untouched and breaks no citation.
-- **`notation`** — OPTIONAL, and legacy. A quoted dotted label (`"110.1"` —
-  unquoted it parses as a number) recording where the leaf sat in an older
-  tree, kept only so a reader who knows that tree still recognizes the leaf.
-  It is not an identity: nothing indexes by it and no citation resolves
-  through it. New leaves need not carry one.
-
-  Two things that used to be one, now that identity is opaque. **Refiling**
-  a leaf whose content still stands — a better domain, a different shard
-  directory — is an edit in place: change `facets.domain` or the file's
-  location, leave `id` alone, and every citation keeps resolving.
-  **Replacing** a leaf's content is still a new leaf plus a
-  `class-elsewhere` redirect from the old one, never a rename in place
-  (§3.5) — a new claim earns a new identity, so readers holding the old
-  citation land on the redirect rather than silently reading something
-  else.
+- **`id`** — the accession (`L-NNNNNN`): **required on every leaf**, opaque,
+  never reused, never positional. It is the leaf's identity, what the loader
+  indexes by, and the only spelling other leaves, the catalog, decisions and
+  log fragments may cite it as. Mint the next value in the sequence; because
+  it says nothing about where the leaf sits, refiling the leaf later leaves
+  it untouched and breaks no citation. A collision is a hard error at step 5,
+  never a silently shared identity.
+- **`stage`** — start at **`draft`**. Every agent-authored entry enters at
+  draft stage; this is not a courtesy, it is where the moderation pipeline
+  picks the leaf up. A draft leaf is downranked in resolver output and
+  verdicted `unknown` by preflight, which is correct and not a defect:
+  nothing has certified it yet. Promotion is a moderator's act after the
+  citations are checked, never the author's.
 - **`notes`** — every leaf carries a `scope` note (what it covers and
   pointedly does not) and every write appends a `revision` note with
   `date` (initial entry, or what changed); add `class-here` when step 1
-  flagged the classification as contestable. On revision, bump `edition`
-  alongside the new `revision` note.
+  flagged the classification as contestable.
 - **`cross-references`** — `class-elsewhere` and `see-also` must resolve to
   leaves the catalog declares. Cite the target's accession id (`L-NNNNNN`),
-  which is the only legal spelling: a dotted notation is refused by the
-  validator with a finding naming this migration.
-  `including` is standing room — candidate topics parked under the heading,
-  not authoritative, never citable as fact.
-- **`facets`** — the classification block, and every value must be minted in
-  its registry (`knowledge/_registries/`): `domain` (the hierarchical subject
-  path — every segment minted), `form` (what KIND of knowledge this is),
-  `anchor` (which truth anchor settles the claim — artifact, world, or team,
-  per D-003), and `stage`. A value the registry does not carry is a blocking
-  finding, and minting one is a registry edit plus a Decisions entry — never
-  an ad-hoc string. If no minted value fits, that is the signal to propose a
-  minting, not to invent a spelling.
-- **`stage`** — start at `draft`. A draft leaf is downranked in resolver
-  output and verdicted `unknown` by preflight, which is correct and not a
-  defect: nothing has certified it yet. Promotion to `verified` is a
-  moderator's act after the citations are checked, never the author's.
-- **`operations`** — the verbs this leaf lets a reader DO, from the
-  operations registry. **`applies.jurisdictions`** — from the jurisdictions
-  registry; EMPTY means universal, which is a claim, so leave it empty only
-  when the knowledge really does hold everywhere.
-- **`citations`** — the step-2 survivors, verbatim; at least one, each with
-  an `authority` tier from the authority-tiers registry. The tier records how
-  far the source can be trusted: without it a regulator's text and a hallway
-  conversation read identically. Recording it is also what lets a later
-  resolution pipeline rank conflicting citations — nothing compares tiers
-  today, and a tier nobody wrote down cannot be ranked retroactively.
+  which is the only legal spelling. `including` is standing room —
+  candidate topics parked under the heading, not authoritative, never
+  citable as fact.
+- **`facets`**, **`operations`**, **`applies.jurisdictions`**,
+  **`citations[].authority`** — the step-3 values, verbatim. Nothing minted
+  here that step 3 did not settle.
+- **`citations`** — the step-2 survivors, verbatim; at least one.
 - **`terms`** — the words a future resolve should hit; write them for the
   searcher, not the author.
 - **`concepts`** — the ontology concepts (`K-NNN`) this leaf is knowledge
@@ -175,11 +218,12 @@ this skill makes on top of the schema:
   text match between two authors' vocabularies; this is a claim. Each must
   resolve — a concept id nothing mints is a blocking finding.
 - **`paths`** — the repo-relative files or directories this leaf governs. A
-  directory covers its subtree. This is what makes the leaf surface in
-  `resolve --paths`, so the files in a diff surface the knowledge that governs
-  them BEFORE the edit. Every path must name something that exists INSIDE this
-  repo: a path pointing at nothing governs nothing, one that escapes the repo
-  root (`../elsewhere`, or an absolute path) is not this store's to claim, and
+  directory covers its subtree. This is what makes the leaf surface in the
+  reverse lookup, so the files in a diff surface the knowledge that governs
+  them BEFORE the edit — and it is what the `hooks/reverse-lookup` hook
+  reads. Every path must name something that exists INSIDE this repo: a path
+  pointing at nothing governs nothing, one that escapes the repo root
+  (`../elsewhere`, or an absolute path) is not this store's to claim, and
   `.` — the repo root — attributes nothing by attributing to everything. All
   three are blocking findings.
 - **`relates`** — typed leaf-to-leaf edges, and the type carries the meaning,
@@ -191,14 +235,16 @@ this skill makes on top of the schema:
   claim — the disagreement is already settled). A resolver hit carries its
   neighborhood one hop out, labeled by kind, so these are what an agent reads
   next. Targets are leaf refs and each must resolve: cite the target's
-  accession, as with `cross-references`. A notation is refused here too.
-- **`provenance`** — optional `author` and `skill-version`, so a systematic
-  drafting defect can be traced to the vintage that introduced it.
-- **Body** — the markdown below the frontmatter is the content; each claim
-  reads back to a listed citation. **Open with a topic sentence**: there is
-  no `description` field (retired in v2), and display prose is DERIVED from
-  the body's first sentence wherever a one-liner is shown. Write it as the
-  sentence you would want to read in a search result.
+  accession, as with `cross-references`.
+- **`provenance`** — `author` and `skill-version`, so a systematic drafting
+  defect can be traced to the vintage that introduced it. The skill is
+  versioned and its changes are gated; record the version you ran.
+- **Body** — the markdown below the frontmatter is the content, and it is
+  the first **judgment fill**: each claim reads back to a listed citation.
+  **Open with a topic sentence**: there is no `description` field (retired
+  in v2), and display prose is DERIVED from the body's first sentence
+  wherever a one-liner is shown. Write it as the sentence you would want to
+  read in a search result.
 
   What the deriver actually does, so the guidance is not a guess: it skips
   leading markdown structure line by line — headings, list items, block
@@ -210,28 +256,20 @@ this skill makes on top of the schema:
   heading, all list, all code — so the failure mode to avoid is opening with
   a bare list or a code block, not writing a fragment.
 
-**Done when** every cross-reference resolves to a leaf the catalog declares (or
-was removed, with the removal noted in the revision note), every step-2
-citation appears in the frontmatter with a tier, every governed facet value
-is minted, and the body opens with a topic sentence.
-
-### 4. INDEX — the catalog row
-
-Add the row to `knowledge/_catalog.yaml`: `id` (the leaf's accession id,
-`L-NNNNNN` — the same value as its `id` field, and the only legal spelling),
+Then add the catalog row to `knowledge/_catalog.yaml`: `id` (the leaf's
+accession, the same value as its `id` field, and the only legal spelling),
 `title` (the heading, kept in sync on revision), `file` (the leaf path
-relative to `knowledge/`).
+relative to `knowledge/`). Leaf files are sharded by accession prefix —
+`knowledge/<L-NN>/<accession>-<slug>.md`, where the prefix is `L-` plus the
+first two digits of the accession's numeric part (`L-000101` files under
+`knowledge/L-00/`). The shard is a fanout device for directory size and
+**carries no meaning**: it makes no claim about the leaf's subject, and
+nothing reads it. `validate.js`'s `index-drift` and `orphan` checks are what
+verify the row against the file — do not audit that pairing by eye.
 
-Leaf files are sharded by accession prefix — `knowledge/<L-NN>/<accession>-<slug>.md`,
-where the prefix is `L-` plus the first two digits of the accession's numeric
-part (`L-000101` files under `knowledge/L-00/`). The shard is a fanout device
-for directory size and **carries no meaning**: it makes no claim about the
-leaf's subject, and nothing reads it. A leaf may therefore be moved between
-shard directories freely — update that row's `file` field and nothing else,
-because no citation names a directory.
-**Done when** every leaf file under `knowledge/` has exactly one catalog row
-naming it, and every row names a real leaf — the validator's `index-drift` and
-`orphan` checks verify precisely this.
+**Done when** the leaf file and its catalog row both exist, the body opens
+with a topic sentence, `stage` is `draft`, and every value in the
+frontmatter came from step 2 or step 3.
 
 ### 5. VALIDATE — green, then the human gate
 
@@ -239,15 +277,27 @@ naming it, and every row names a real leaf — the validator's `index-drift` and
 node unknown-knowledge/engine/validate.js --root .
 ```
 
+This is the same command the `hooks/pre-commit` hook runs, so a commit that
+would fail here is refused before it exists — running it now is how you see
+the findings first, not a substitute for the hook.
+
 - **Exit 0** — done drafting. Hand the change to the human gate: the leaf,
   the catalog row, and any gap fragments ride one PR; knowledge writes are
   human-gated, and the merge IS the approval.
 - **Exit 1** — the findings name the defect (`orphan`, `index-drift`,
-  `missing-citation` — an unsourced claim is not promotable): fix the
-  draft, re-run.
+  `missing-citation` — an unsourced claim is not promotable;
+  `unregistered-value` — step 3 was skipped or a value was invented): fix
+  the draft, re-run.
 - **Exit 2** — **stop and fix**: the check never ran (an unresolved
   cross-reference lands here), and a check that never ran is a blocking
   defect, never a silent pass. Re-run until the run itself completes.
+
+Then attribute what you touched, which the `hooks/reverse-lookup` hook does
+automatically over the staged diff and you can run directly:
+
+```
+node unknown-knowledge/engine/resolve.js --paths knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md --json --root .
+```
 
 The skill declares done only on an exit-0 run that saw the final draft —
 a verdict is per-run, never carried (D-011).

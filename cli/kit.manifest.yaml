@@ -56,6 +56,26 @@ unconditional:
     - { from: protocol/skills/knowledge-reflect.md, to: protocol/skills/knowledge-reflect.md }
     - { from: protocol/skills/kb-build.md, to: protocol/skills/kb-build.md }
     - { from: protocol/skills/knowledge-audit.md, to: protocol/skills/knowledge-audit.md }
+  hooks:
+    # Git hooks that enforce the protocol mechanically (UCS-1157): blocking
+    # validation before a commit exists, and automatic reverse lookup over
+    # the staged diff. They are THIN WRAPPERS — each invokes one engine
+    # command and exits with its code, unchanged — so the tested surface is
+    # the wrapped command, and the wiring is reviewed the way the per-IDE
+    # wrappers are.
+    #
+    # They SEED but do not INSTALL. init never writes .git/ (the client's own
+    # config is the client's), so these land at <root>/hooks/ and the client
+    # symlinks or points core.hooksPath at them. That is the same boundary
+    # CI wiring keeps (D-006): the kit ships the gate, the client hangs it.
+    #
+    # The copy engine seeds BYTES, not modes, so a seeded hook arrives
+    # non-executable and git will not run it until the client chmods it. That
+    # is documented at the wiring step (README) rather than fixed here: a
+    # manifest that carried per-entry permissions would be a second thing to
+    # keep true, for one bit the client sets in the same breath as the symlink.
+    - { from: hooks/pre-commit, to: hooks/pre-commit }
+    - { from: hooks/reverse-lookup, to: hooks/reverse-lookup }
   templates:
     # The §5.2 new-kind authoring template — clients extend the extractor
     # library themselves (D-001/D-009), so the template always ships.

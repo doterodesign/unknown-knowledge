@@ -15,6 +15,49 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Seeded git hooks that enforce the protocol mechanically (UCS-1157):
+  `hooks/pre-commit` runs blocking validation before a commit exists, and
+  `hooks/reverse-lookup` runs the `--paths` reverse lookup over the staged
+  diff — the AGENTS.md ACT step, performed without being remembered. Both are
+  thin wrappers: each invokes exactly one engine command and exits with its
+  code **unchanged**, with no bypass variable to read, because a hook with an
+  off switch enforces nothing. They are explicitly **not a test seam** — the
+  tested surface is the wrapped command, and the wiring is reviewed the way
+  the per-IDE wrappers are (`tests/hooks.test.js` pins thinness, exit-code
+  propagation, and the absence of a bypass; it deliberately tests no hook
+  behavior, because there is none to test). They **seed but do not install**:
+  `init` never writes `.git/`, so the kit ships the gate and the client hangs
+  it — the same boundary CI wiring keeps (D-006).
+
+### Changed
+
+- `/kb-build` rewritten as **thin orchestration** over engine commands
+  (UCS-1157). Every mechanical step now names the command that performs it —
+  `resolve.js` for coverage, `log-entry.js` for gap parking, the registries
+  for facet fill, `validate.js` for the gate — and the agent's discretion is
+  confined to three declared **judgment fills**: prose bodies, candidate
+  confirmation, and mint proposals carrying literary warrant. Protocol
+  compliance becomes a property of the mechanism rather than of agent
+  obedience.
+  The step list changes from CLASSIFY → CITE → DRAFT → INDEX → VALIDATE to
+  **CLASSIFY → CITE → FACET → DRAFT → VALIDATE**: facet fill from the
+  registries is promoted to its own step (it is where the `unregistered-value`
+  gate bites), and the catalog row folds into DRAFT (the validator's `orphan`
+  and `index-drift` checks verify it, so it was never a step an agent
+  performed by eye). Entries enter at `draft` stage explicitly.
+  All remaining notation-lifecycle prose is **gone** — mint-the-next-free-
+  notation, move-is-a-new-leaf-plus-redirect, per-revision edition bumps, and
+  the `notation` field walkthrough. `tests/kb-build.test.js` asserts their
+  ABSENCE, because a dead instruction that survives a migration is worse than
+  one never written: agents obey it.
+- `acceptance/A5-kb-build-walkthrough.md` mirrors the rewritten skill
+  step-for-step, with a new section watching both hooks propagate their engine
+  exit codes. Every documented output was re-captured by running the commands.
+- `CONTEXT.md` records the lineage framing — *a faceted classification with
+  warrant-governed vocabularies, in the DDC editorial tradition* — and gains
+  glossary terms for **Accession ID**, **Facet**, **Registry**, **Phoenix
+  event**, **Coverage map**, and **Hooks**.
+
 - Acceptance fixture v2 — the five planted cases with an expected-finding table
   (UCS-1159): the frontmatter-v2 counterpart to the ontology-side drift the
   fixtures already carried. `fixtures/ts-app` gains a second v2 leaf

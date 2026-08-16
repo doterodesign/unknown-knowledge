@@ -141,6 +141,16 @@ committing; exit 2 = the check never ran — stop. These validators are
 blocking-grade; `engine/audit.js` is advisory (proposals for review) and is
 never a gate.
 
+Where the client has wired the seeded hooks (`hooks/pre-commit`,
+`hooks/reverse-lookup`), both of these run automatically: the pre-commit hook
+runs the blocking validation before the commit exists, and the reverse-lookup
+hook runs the `--paths` lookup over the staged diff. Each is a thin wrapper
+around the command above and exits with its code, unchanged — so a wired repo
+enforces this step mechanically rather than depending on you to remember it.
+Run the commands yourself anyway: seeing the findings before the commit is
+cheaper than being refused by it, and a hook the client never wired enforces
+nothing.
+
 ### 5. RECORD — append findings when a trigger fires
 
 See capture obligations below. Findings, misses, and gaps are appended via
@@ -175,6 +185,7 @@ See capture obligations below. Findings, misses, and gaps are appended via
   `protocol/new-kind-pipeline.md`.
 - **Never bypass a gate to go green**: do not delete or edit findings to
   unblock a merge, do not hand-edit log YAML, do not skip the ACT re-run,
+  do not pass `--no-verify` or unwire a hook to get a commit through,
   treat `audit.js` output as advisory (never blocking), and do not carry a
   cached verdict. Autonomy is graduated per change-category by recorded decision
   (category `trust`), never assumed.
