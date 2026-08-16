@@ -8,11 +8,16 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  accessSync, chmodSync, constants, cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHECKS, FACET_REGISTRY, rewriteFailure, rewriteLeaf } from '../payload/engine/lib/phoenix.js';
+import { load } from 'js-yaml';
+import {
+  CHECKS, FACET_REGISTRY, rewriteFailure, rewriteLeaf, rewriteScalarLine,
+} from '../payload/engine/lib/phoenix.js';
 import { FACET_REGISTRIES } from '../payload/engine/commands/validate.js';
 
 const cli = fileURLToPath(new URL('../payload/engine/phoenix.js', import.meta.url));
@@ -49,6 +54,15 @@ function scratch(t, name) {
 }
 
 const read = (root, file) => readFileSync(join(root, file), 'utf8');
+/** Still writable despite a read-only mode — true only when running as root. */
+function accessible(file) {
+  try {
+    accessSync(file, constants.W_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
 /** The frontmatter half of a leaf file, and the body half, split at the closing fence. */
 function halves(text) {
   const end = text.indexOf('\n---\n', 4);
@@ -254,6 +268,83 @@ test('a moved-to value that is not minted is refused — an event does not inven
     'the other rows must not have applied');
 });
 
+test('a no-op row is REFUSED — "to" present must mean moved', (t) => {
+  // Left as a silent carry-forward this was a real inconsistency: the event
+  // applied cleanly and the validator then reported the store as broken,
+  // because planEvent read the row as "not moved" and unaccountedEditions read
+  // it as "moved". Refusing upstream makes `to` present <=> moved true by
+  // construction, and the two agree without either learning about the other.
+  const root = scratch(t, 'split');
+  const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
+  writeFileSync(mapping, readFileSync(mapping, 'utf8')
+    .replace('    to: feeds/settlement\n', '    to: sportsbook/settlement\n'));
+
+  const out = runJson(1, 'P-001', '--root', root, '--apply');
+  assert.equal(out.findings[0].code, 'noop-row');
+  assert.equal(out.findings[0].id, 'L-000133');
+  assert.match(out.findings[0].message, /where it already sits/);
+  assert.match(out.findings[0].message, /omit "to" to carry the leaf forward/);
+  assert.equal(read(root, LEAF_FILES['L-000117']), read(SPLIT, LEAF_FILES['L-000117']),
+    'the whole event is refused, so no sibling was written');
+});
+
+test('a move with no "why" is refused — a moved leaf carries its reason', (t) => {
+  const root = scratch(t, 'split');
+  const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
+  writeFileSync(mapping, readFileSync(mapping, 'utf8').replace(
+    '    why: Provider quirks are ingest material — they describe the wire, not the book.\n', ''));
+
+  const out = runJson(1, 'P-001', '--root', root, '--apply');
+  assert.equal(out.findings[0].code, 'unexplained-move');
+  assert.equal(out.findings[0].id, 'L-000117');
+  assert.match(out.findings[0].message, /no "why"/);
+});
+
+test('re-running an applied event is refused, and says it looks already applied', (t) => {
+  // Refusing is the correct behavior: a second --apply must never bump the
+  // edition twice for a move that happened once. What improves is the wording —
+  // the generic out-of-scope text reads like a broken mapping.
+  const root = scratch(t, 'split');
+  runJson(0, 'P-001', '--root', root, '--apply');
+  const out = runJson(1, 'P-001', '--root', root);
+  for (const f of out.findings) {
+    assert.match(f.message, /appears to have been applied already/);
+    assert.match(f.message, /bump the edition a second time/);
+  }
+  // And a second --apply changes nothing.
+  const before = Object.fromEntries(Object.entries(LEAF_FILES).map(([id, f]) => [id, read(root, f)]));
+  assert.equal(run('P-001', '--root', root, '--apply').status, 1);
+  for (const [id, f] of Object.entries(LEAF_FILES)) assert.equal(read(root, f), before[id], id);
+});
+
+test('two events that each moved a leaf sanction edition 3', (t) => {
+  // The counting rule generalizes: edition === 1 + moves. A second event moving
+  // one leaf again must validate clean at edition 3.
+  const root = scratch(t, 'split');
+  runJson(0, 'P-001', '--root', root, '--apply');
+  writeFileSync(join(root, 'knowledge/_phoenix/P-002.yaml'), [
+    'schema-version: 1',
+    'event: P-002',
+    'title: Move ingest material under a dedicated provider class',
+    'decision: D-420',
+    'scope:',
+    '  facet: facets.domain',
+    '  values: [feeds/ingest]',
+    'leaves:',
+    '  - id: L-000117',
+    '    to: feeds/settlement',
+    '    why: A second governed move, to prove the edition counts events rather than capping at two.',
+    '  - id: L-000213',
+    '', // carried forward: in scope, considered, unmoved
+  ].join('\n'));
+
+  const out = runJson(0, 'P-002', '--root', root, '--apply');
+  assert.deepEqual(out.carried, ['L-000213']);
+  assert.equal(field(read(root, LEAF_FILES['L-000117']), 'edition'), '3');
+  const r = spawnSync(process.execPath, [validateCli, '--root', root], { encoding: 'utf8' });
+  assert.equal(r.status, 0, `edition 3 = 1 + two moves must validate clean:\n${r.stdout}`);
+});
+
 // ------------------------------------------- carried-forward accounting
 
 test('a leaf can be explicitly carried forward: accounted for, unmoved, edition unchanged', (t) => {
@@ -387,6 +478,37 @@ test('usage errors exit 2: no event named, two verbs, a second event', () => {
   assert.equal(run('P-001', 'P-002', '--root', SPLIT).status, 2);
 });
 
+// ------------------------------------------------ write failure mid-apply
+
+test('a write that fails mid-apply exits 2 and names every file already written', (t) => {
+  // The gate makes this improbable, not impossible: a file readable at probe
+  // time can be unwritable at write time. The store is then partially
+  // rewritten, which is the one state this design cannot produce silently — so
+  // it exits 2 (the event did not finish; exit 1 would claim a clean refusal
+  // with nothing written) and lists the files in write order so the revert is
+  // mechanical.
+  const root = scratch(t, 'split');
+  // L-000213 sorts last, so the two earlier leaves are already on disk when
+  // this one refuses the write.
+  const blocked = join(root, LEAF_FILES['L-000213']);
+  chmodSync(blocked, 0o444);
+  // Restore before the scratch dir is removed; `after` hooks run last-first, so
+  // this one runs before scratch's rmSync, but tolerate either order.
+  t.after(() => { try { chmodSync(blocked, 0o644); } catch { /* already removed */ } });
+  if (accessible(blocked)) return; // running as root: permissions are advisory
+
+  const r = run('P-001', '--root', root, '--apply');
+  assert.equal(r.status, 2, `expected the never-finished code, got ${r.status}: ${r.stdout}`);
+  assert.match(r.stderr, /FAILED PART-WAY THROUGH/);
+  assert.match(r.stderr, /2 file\(s\) were written before the failure/);
+  assert.match(r.stderr, /117\.1-odds-feed-provider-quirks\.md/);
+  assert.match(r.stderr, /133\.1-bankers-rounding-at-settlement\.md/);
+  assert.doesNotMatch(r.stderr, /213\.1-live-betting-latency-budget\.md\n.*written/,
+    'the file that failed is not reported as written');
+  // The blocked leaf is genuinely untouched.
+  assert.equal(readFileSync(blocked, 'utf8'), readFileSync(join(SPLIT, LEAF_FILES['L-000213']), 'utf8'));
+});
+
 // --------------------------------------------------------- determinism
 
 test('JSON output is deterministic: two runs byte-identical, no timestamps', (t) => {
@@ -435,6 +557,60 @@ test('a shape the rewriter cannot edit surgically is REFUSED, not reformatted', 
   }
 });
 
+test('a nested key never shadows the top-level field — the citations-block corruption', () => {
+  // The regression that matters most: `citations:` containing an `edition:`
+  // key. Matching on the name alone rewrote the CITATION and left the leaf's
+  // real edition untouched — editing the exact bytes this module promises can
+  // never change. Indentation is part of the match at every level.
+  const text = '---\nid: L-000117\ncitations:\n  edition: 3\nedition: 1\nfacets:\n  domain: a\n---\n\nbody\n';
+  const after = rewriteScalarLine(text, ['edition'], '2');
+  assert.match(after, /^ {2}edition: 3$/m, 'the citation must be byte-identical');
+  assert.match(after, /^edition: 2$/m, 'the real top-level edition is the one that moves');
+});
+
+test('a grandchild key never stands in for a direct child', () => {
+  const text = '---\nedition: 1\nfacets:\n  meta:\n    domain: GRANDCHILD\n  domain: REAL\n---\n\nbody\n';
+  const after = rewriteScalarLine(text, ['facets', 'domain'], 'MOVED');
+  assert.match(after, /^ {4}domain: GRANDCHILD$/m, 'the nested block must be untouched');
+  assert.match(after, /^ {2}domain: MOVED$/m);
+});
+
+test('a shadowed field with no real line is refused, not satisfied by the shadow', () => {
+  // `citations.edition` exists, the leaf's own `edition` does not. Rewriting
+  // the shadow would fabricate a bump on a citation.
+  const text = '---\nid: L-1\ncitations:\n  edition: 3\nfacets:\n  domain: a\n---\n\nbody\n';
+  assert.equal(rewriteScalarLine(text, ['edition'], '2'), null);
+  assert.equal(rewriteFailure(text, 'facets.domain'), 'edition');
+});
+
+test('the rewriter reads the document own indent step, not an assumed one', () => {
+  const text = '---\nedition: 1\nfacets:\n    domain: a\n    form: b\n---\n\nbody\n';
+  const after = rewriteLeaf(text, 'facets.domain', 'moved', 2);
+  assert.match(after, /^ {4}domain: moved$/m);
+  assert.match(after, /^ {4}form: b$/m);
+});
+
+// ------------------------------------------------- YAML round-trip safety
+
+test('a facet value YAML would reload as a number is quoted', () => {
+  // `010` reloads as 10 (octal, YAML 1.1) and `2024` as a number; either would
+  // stop equalling the minted string and turn a validated move into a
+  // membership finding on the next run.
+  for (const value of ['010', '2024', '1e5']) {
+    const text = '---\nedition: 1\nfacets:\n  domain: a\n---\n\nbody\n';
+    const after = rewriteLeaf(text, 'facets.domain', value, 2);
+    const reloaded = load(after.slice(4, after.indexOf('\n---\n', 4)));
+    assert.equal(reloaded.facets.domain, value, `${value} must reload as the same string`);
+    assert.equal(typeof reloaded.facets.domain, 'string');
+  }
+});
+
+test('an ordinary facet value stays unquoted — the common diff is unremarkable', () => {
+  const text = '---\nedition: 1\nfacets:\n  domain: a\n---\n\nbody\n';
+  assert.match(rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2), /^ {2}domain: feeds\/ingest$/m);
+  assert.match(rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2), /^edition: 2$/m);
+});
+
 test('an unrewritable leaf is a GATE finding, so no sibling leaf is written', (t) => {
   const root = scratch(t, 'split');
   const file = LEAF_FILES['L-000133'];
@@ -469,6 +645,14 @@ test('every facet a phoenix event may move names the registry the validator gove
     assert.equal(registry, governed.get(facet),
       `phoenix governs ${facet} by ${registry}; the validator uses ${governed.get(facet)}`);
   }
+  // And the reverse: a scalar leaf facet the validator governs that phoenix
+  // does not know about is a facet no event could ever move — a silent gap
+  // rather than a refusal, which is the harder kind to notice.
+  for (const [facet, registry] of governed) {
+    assert.equal(FACET_REGISTRY[facet], registry,
+      `the validator governs ${facet}, and no phoenix event can move it`);
+  }
+  assert.equal(Object.keys(FACET_REGISTRY).length, governed.size);
 });
 
 test('the checks the command reports are sorted and complete', () => {

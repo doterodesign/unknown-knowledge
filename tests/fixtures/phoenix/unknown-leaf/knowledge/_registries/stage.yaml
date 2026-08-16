@@ -10,7 +10,7 @@ registry: stage
 values:
   - value: draft
     gloss: Written but not promoted — nothing certifies the claim yet.
-    warrant: L-000213 is a draft; the interview it rests on has not been checked back.
+    warrant: The entry stage every leaf passes through before a moderator checks it.
     decision: D-401
     minted: "2026-08-16"
   - value: proposed
@@ -20,7 +20,7 @@ values:
     minted: "2026-08-16"
   - value: verified
     gloss: A moderator promoted it — the citations were checked and hold.
-    warrant: L-000117 is promoted; its vendor citation was checked.
+    warrant: L-000117, L-000133 and L-000213 are all promoted; their citations were checked.
     decision: D-401
     minted: "2026-08-16"
 # No `deprecated` stage: the concept lifecycle has one with real semantics

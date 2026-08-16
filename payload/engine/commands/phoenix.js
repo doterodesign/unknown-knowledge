@@ -148,7 +148,29 @@ export function main(argv) {
   // THE GATE. Everything above decided; nothing above wrote. A single finding
   // refuses the whole event, and the write below is unreachable.
   const refused = plan.findings.length > 0;
-  if (opts.apply && !refused) applyRewrites(model.root, plan.rewrites);
+  if (opts.apply && !refused) {
+    const written = [];
+    try {
+      applyRewrites(model.root, plan.rewrites, written);
+    } catch (error) {
+      rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
+      // The gate passed and the write began, so this is a filesystem failure
+      // between the probe and the write — rare, and the one path that can leave
+      // a store partially rewritten. Exit 2, never 1: the event did not finish,
+      // and an agent reading 1 would conclude it was cleanly refused and that
+      // nothing was written, which is exactly false here. Name the files, in
+      // write order, so the revert is mechanical.
+      process.stderr.write(
+        `phoenix: ${event.event} FAILED PART-WAY THROUGH — the store is partially rewritten\n`
+        + `  ${error.message}\n`
+        + (written.length
+          ? `  ${written.length} file(s) were written before the failure; revert them and re-run:\n`
+            + written.map((f) => `    ${f}\n`).join('')
+          : '  no file was written\n'),
+      );
+      return EXIT_CODES.FAILURE;
+    }
+  }
 
   const payload = {
     event: event.event,

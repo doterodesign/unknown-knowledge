@@ -112,8 +112,8 @@ mintings the new values need, the mapping at `knowledge/_phoenix/<event>.yaml`,
 and the leaf rewrites — which you never make by hand:
 
 ```
-node payload/engine/phoenix.js P-001 --root .            # dry run: plan it, write nothing
-node payload/engine/phoenix.js P-001 --root . --apply    # write, only if the plan is clean
+node unknown-knowledge/engine/phoenix.js P-001 --root .            # dry run: plan it, write nothing
+node unknown-knowledge/engine/phoenix.js P-001 --root . --apply    # write, only if the plan is clean
 ```
 
 What to check when you review one:

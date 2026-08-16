@@ -68,7 +68,7 @@
         "why": {
           "type": "string",
           "pattern": "\\S",
-          "description": "Why this leaf went where it went. On a split this is the whole substance of the event — the class-level rule cannot say it, so the row must."
+          "description": "Why this leaf went where it went. On a split this is the whole substance of the event — the class-level rule cannot say it, so the row must. REQUIRED WHENEVER `to` IS PRESENT: a moved leaf carries the reason it moved. That conditional is enforced by the phoenix command's gate (an `unexplained-move` finding) rather than here, because this document is interpreted by the engine's own validator, whose keyword subset does not include dependentRequired — and a rule stated in a keyword nothing enforces would be contract drift wearing the appearance of a check. Optional in the shape, so a carried-forward row (no `to`) may state a reason or not."
         }
       }
     }

@@ -36,6 +36,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { load } from 'js-yaml';
 import { compare } from './validate-record.js';
 import { PHOENIX_DIR } from './load-stores.js';
 
@@ -56,8 +57,8 @@ export const FIRST_EDITION = 1;
  * a clean result names what it checked rather than only what it found.
  */
 export const CHECKS = Object.freeze([
-  'edition-conflict', 'facet-unminted', 'scope-unaccounted',
-  'unknown-leaf', 'unreadable-leaf', 'unrewritable-leaf',
+  'edition-conflict', 'facet-unminted', 'noop-row', 'scope-unaccounted',
+  'unexplained-move', 'unknown-leaf', 'unreadable-leaf', 'unrewritable-leaf',
 ]);
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -120,6 +121,36 @@ export function leavesInScope(model, scope) {
 }
 
 /**
+ * Spell a facet value so YAML reads it back as the same string (UCS-1154).
+ *
+ * Registry values are strings, and the facet grammar permits segments that YAML
+ * does not read as strings: `010` reloads as 10 (octal under YAML 1.1), `2024`
+ * as a number, `1e5` as 100000. Written bare, such a value would come back a
+ * number, stop equalling the minted string it was checked against, and turn a
+ * validated move into a membership finding on the next run — a corruption the
+ * engine itself introduced.
+ *
+ * Decided by ROUND-TRIPPING rather than by a character rule: the question is
+ * exactly "does the loader give this back unchanged", so the loader is what
+ * answers it, and no hand-written list of YAML's coercion traps can fall behind.
+ * Values that survive bare are written bare, which keeps the ordinary diff
+ * unquoted and unremarkable.
+ *
+ * @param {string} value the facet value to write
+ * @returns {string} the value, quoted only if it would not survive unquoted
+ */
+export function yamlScalar(value) {
+  let roundTripped;
+  try {
+    roundTripped = load(`x: ${value}`)?.x;
+  } catch {
+    roundTripped = undefined; // unparseable bare: quoting is the answer
+  }
+  if (roundTripped === value) return value;
+  return JSON.stringify(value); // JSON strings are valid YAML double-quoted scalars
+}
+
+/**
  * Rewrite one scalar frontmatter line, in place, byte-for-byte otherwise.
  *
  * This is the whole write strategy, and it is deliberately not "parse the YAML
@@ -137,6 +168,16 @@ export function leavesInScope(model, scope) {
  * own line, which is what `edition` and every facet value are — anything else
  * is refused by `rewriteFailure` rather than guessed at.
  *
+ * INDENTATION IS PART OF THE MATCH, at every level. A key is the field being
+ * looked for only when it sits at exactly the depth the path says it does:
+ * top-level keys at column 0, and each nested segment at the indent its own
+ * parent block established. Matching on the name alone would let a key nested
+ * somewhere else stand in for the real one — `citations:` containing an
+ * `edition:` would shadow the leaf's own edition, and the rewriter would edit a
+ * CITATION while the field it was asked to change kept its old value. That is
+ * the one corruption this module claims cannot happen, so the guard belongs
+ * here rather than in a caller.
+ *
  * @param {string} text the file's full text
  * @param {string[]} path the field's path, e.g. ['facets','domain'] or ['edition']
  * @param {string} value the new scalar, already in its wire spelling
@@ -152,13 +193,31 @@ export function rewriteScalarLine(text, path, value) {
   }
 
   let depth = 0;
+  // The indent the current level's keys sit at. Top-level fields are at column
+  // 0 by definition; each nested level's indent is learned from the first key
+  // line inside its parent's block, because YAML lets a document choose its own
+  // step and this rewriter must read the file's convention rather than impose
+  // one.
+  let expected = 0;
   let parentIndent = -1;
   for (let i = 1; i < end; i += 1) {
-    const line = lines[i];
-    const match = /^(\s*)([A-Za-z0-9_-]+):(.*)$/.exec(line);
+    const match = /^(\s*)([A-Za-z0-9_-]+):(.*)$/.exec(lines[i]);
     if (!match) continue;
     const [, indent, key, rest] = match;
-    if (depth > 0 && indent.length <= parentIndent) return null; // left the parent block
+    if (depth > 0) {
+      // Dedented to or past the parent: the block that would have held this
+      // field has ended without it.
+      if (indent.length <= parentIndent) return null;
+      // The first key inside the block fixes the level's indent.
+      if (expected <= parentIndent) expected = indent.length;
+      // Deeper than this level is a grandchild — a key belonging to some nested
+      // block, not the child being looked for. Skip it rather than match it.
+      if (indent.length > expected) continue;
+    } else if (indent.length !== 0) {
+      // A top-level field sits at column 0. Anything indented is nested inside
+      // some other block and is not this field, whatever it is called.
+      continue;
+    }
     if (key !== path[depth]) continue;
     if (depth === path.length - 1) {
       // A scalar sits on its own line. A nested block or a value this function
@@ -170,6 +229,7 @@ export function rewriteScalarLine(text, path, value) {
     // Descend: the next segment must be nested under this key.
     if (rest.trim() !== '') return null; // a scalar where a block was expected
     parentIndent = indent.length;
+    expected = parentIndent; // unset until the block's first key line fixes it
     depth += 1;
   }
   return null;
@@ -196,6 +256,9 @@ export function rewriteFailure(text, facet) {
 /**
  * Apply one event's rewrites to one leaf's text.
  *
+ * The facet value is spelled through `yamlScalar` so it reloads as the string
+ * it was checked against; `edition` is written bare, being an integer by design.
+ *
  * @param {string} text the leaf file's text
  * @param {string} facet the scope facet
  * @param {string} to the new facet value
@@ -203,7 +266,7 @@ export function rewriteFailure(text, facet) {
  * @returns {string|null} rewritten text, or null if either line was not found
  */
 export function rewriteLeaf(text, facet, to, edition) {
-  const withFacet = rewriteScalarLine(text, facet.split('.'), to);
+  const withFacet = rewriteScalarLine(text, facet.split('.'), yamlScalar(to));
   if (withFacet === null) return null;
   return rewriteScalarLine(withFacet, [EDITION_FIELD], String(edition));
 }
@@ -247,9 +310,18 @@ export function planEvent(model, event) {
     const entry = model.leaves.get(id);
     if (!entry || scoped.has(id)) continue;
     const value = valueAt(entry.record, scope.facet);
+    // The commonest way to land here is re-running an event that already
+    // applied: the leaf has moved OUT of the scope, to exactly where this row
+    // sent it. Saying so beats the generic out-of-scope text, which reads like
+    // a broken mapping when the truth is the work is already done. Still exit
+    // 1, and still no write — re-applying would bump the edition a second time
+    // for a move that happened once.
+    const applied = value === row.to;
     push({
       severity: 'error', code: 'unknown-leaf', id, file, path: `leaves[${row.index}].id`,
-      message: `event ${event.event} maps "${id}", whose ${scope.facet} is ${JSON.stringify(value ?? null)} — outside the declared scope (${scope.values.join(', ')}), so the event would touch more than it declares`,
+      message: applied
+        ? `event ${event.event} maps "${id}" to ${scope.facet}: ${row.to}, where it already sits — this event appears to have been applied already, and re-applying it would bump the edition a second time for a move that happened once`
+        : `event ${event.event} maps "${id}", whose ${scope.facet} is ${JSON.stringify(value ?? null)} — outside the declared scope (${scope.values.join(', ')}), so the event would touch more than it declares`,
     });
   }
 
@@ -273,8 +345,36 @@ export function planEvent(model, event) {
     // Carried forward: considered, deliberately unmoved. No rewrite, and so no
     // edition bump — the edition records that a leaf CHANGED, and this one did
     // not. Bumping it anyway would make the edition count reviews, not moves.
-    if (row.to === undefined || row.to === value) {
+    if (row.to === undefined) {
       carried.push(id);
+      continue;
+    }
+
+    // A row whose target is where the leaf already sits is REFUSED, not quietly
+    // treated as a carry-forward. The mapping is the store's only record of what
+    // an event did, and the rows carry no `from`, so after the fact "to: X" on a
+    // leaf sitting at X is indistinguishable from a move that already applied.
+    // Reading it as a carry would leave the validator expecting an edition bump
+    // that never happens; reading it as a move would bump on every re-run. The
+    // honest fix is upstream: `to` present must MEAN moved, so the steward
+    // writes the intent they meant.
+    if (row.to === value) {
+      push({
+        severity: 'error', code: 'noop-row', id, file, path: `leaves[${row.index}].to`,
+        message: `event ${event.event} maps "${id}" to ${scope.facet}: ${row.to}, which is where it already sits — omit "to" to carry the leaf forward, because a row that states a move records one, and the store cannot later tell a no-op row from a move that already applied`,
+      });
+      continue;
+    }
+
+    // A move must say why. On a split this is the whole substance of the review:
+    // the class-level rule cannot explain why one sibling went to ingest and the
+    // other to settlement, so the row has to, and a row that does not is a bulk
+    // rewrite with no rationale attached to the leaf it moved.
+    if (typeof row.why !== 'string' || row.why.trim() === '') {
+      push({
+        severity: 'error', code: 'unexplained-move', id, file, path: `leaves[${row.index}].why`,
+        message: `event ${event.event} moves "${id}" to ${scope.facet}: ${row.to} with no "why" — a moved leaf carries the reason it moved, because that sentence is what a reviewer reads and what a later reader finds when they ask why this leaf is filed here`,
+      });
       continue;
     }
 
@@ -396,13 +496,26 @@ function mintingVerdict(registry, key, value) {
  * then write" are two functions, so no future edit can interleave a write into
  * the checking loop without deleting this seam first.
  *
+ * `written` accumulates the files this call has actually put on disk, IN ORDER,
+ * and it is the caller's — not this function's. The gate makes a mid-loop
+ * failure improbable (every leaf was read and probed moments earlier), not
+ * impossible: a disk can fill and a file can lose its permissions between the
+ * probe and the write. If that happens the store is left partially rewritten,
+ * which is the one state this design refuses to produce silently, so the throw
+ * propagates and the caller can name exactly which files to revert. An array
+ * the caller owns is what makes that list survive the exception.
+ *
  * @param {string} root the store root the rewrites are relative to
  * @param {Array<{ file: string, after: string }>} rewrites
+ * @param {string[]} [written] collects the files written, for the caller's report
+ * @throws {Error} whatever the filesystem threw, after recording what was written
  */
-export function applyRewrites(root, rewrites) {
+export function applyRewrites(root, rewrites, written = []) {
   for (const rewrite of rewrites) {
     writeFileSync(join(root, rewrite.file), rewrite.after);
+    written.push(rewrite.file);
   }
+  return written;
 }
 
 /**
