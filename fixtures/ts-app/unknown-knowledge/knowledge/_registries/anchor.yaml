@@ -1,0 +1,23 @@
+# Acceptance-fixture store (KK-15) — the anchor registry (UCS-1149).
+# Seeded from the kit template: the three truth anchors are D-003's, not this
+# fixture's to choose. Only `artifact` carries fixture material today; the other
+# two are minted because the vocabulary is the store model itself.
+schema-version: 1
+store: knowledge
+registry: anchor
+values:
+  - value: artifact
+    gloss: The repo decides. The claim is checkable against code, config, or schema.
+    warrant: 100.1's claim reads back to src/registry/sports.ts — the repo settles it.
+    decision: D-101
+    minted: "2026-07-08"
+  - value: world
+    gloss: An outside authority decides — a regulator, a vendor, a standard.
+    warrant: D-003 splits the Knowledge store on this anchor; kept so a world-anchored leaf has somewhere to sit.
+    decision: D-101
+    minted: "2026-07-08"
+  - value: team
+    gloss: The team decided. The claim is true because it was chosen, not discovered.
+    warrant: D-003 splits the Decisions store on this anchor; D-101 itself is a team-anchored fact.
+    decision: D-101
+    minted: "2026-07-08"

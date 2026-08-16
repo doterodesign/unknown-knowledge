@@ -1,0 +1,32 @@
+# The citation authority-tiers registry — how far a cited source can be trusted.
+#
+# Ships EMPTY. Which tiers a project recognizes is the project's own to mint: a
+# tier is a governed value, never an engine-shipped enum, because what counts as
+# authoritative is a judgement about a domain rather than a fact about software.
+# See protocol/registry-warrant.md.
+#
+# What the tier does TODAY: it is recorded and checked for membership, so every
+# citation says how far its source can be trusted rather than leaving a
+# regulator's text and a hallway conversation to read identically. Nothing in
+# the engine compares two tiers or resolves a conflict between citations yet —
+# automatic conflict ranking arrives with the resolution pipeline (UCS-1152).
+# Recording the tier now is what makes that possible: a tier nobody wrote down
+# cannot be ranked retroactively.
+#
+# Flat vocabulary. Value shape: lowercase kebab.
+#
+#   values:
+#     - value: primary
+#       gloss: The issuing body's own published text.
+#       warrant: 362.1 cites the NACHA operating rules, the issuer's own text.
+#       decision: D-014
+#       minted: "2026-07-07"
+#     - value: secondary
+#       gloss: Commentary on a primary source.
+#       warrant: 362.2 cites a trade summary of those rules.
+#       decision: D-014
+#       minted: "2026-07-07"
+schema-version: 1
+store: knowledge
+registry: authority-tiers
+values: []

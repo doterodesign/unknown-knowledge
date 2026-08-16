@@ -12,4 +12,4 @@ entries:
     consequences: Three catalogs, one navigational grammar.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-210], leaves: ["362.1"], decisions: [] }
+    relates-to: { concepts: [K-210], leaves: [L-000362], decisions: [] }

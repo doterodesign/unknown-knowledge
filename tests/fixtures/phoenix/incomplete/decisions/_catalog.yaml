@@ -1,0 +1,9 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-401
+    title: Frontmatter v2 vocabularies
+    file: entries/D-401-frontmatter-v2.yaml
+  - id: D-420
+    title: "Phoenix: split odds-feed into feeds/* (edition 2)"
+    file: entries/D-420-phoenix-split-odds-feed.yaml

@@ -109,13 +109,101 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   assert.equal(method.summary, 'A way a user pays money in.');
   assert.deepEqual(method['source-of-truth'], ['src/payments/methods/registry.ts']);
   assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Payout method' }]);
+  // The golden for one published knowledge entry point, extended over several
+  // tickets. `id` is the leaf's ACCESSION: this fixture's leaves were unminted
+  // and published `id: null` under UCS-1144's expand phase, and UCS-1147 made
+  // the accession required, so a null here would now mean a defective store
+  // rather than an unmigrated one. Every other added key stays present-and-
+  // possibly-null so a consumer reads ONE result shape regardless of what the
+  // store declares. `excerpt` is derived from the body's topic sentence — the
+  // retired `description` field is not read, because it no longer exists.
+  // Extended again by typed edges (UCS-1151): `via` names which join reached
+  // the leaf, and `relates` carries its one-hop neighborhood with every declared
+  // kind present as a stable key — empty here, because this fixture leaf
+  // declares no relates edges.
   assert.deepEqual(method.knowledge, [
     {
+      via: 'terms',
+      id: 'L-000411',
       notation: '410.2',
       heading: 'Accepted payment instruments',
+      stage: 'draft',
+      excerpt: 'Which instruments a regulator allows for pay-in is settled per jurisdiction.',
+      provenance: null,
+      downranked: true,
+      // Extended again by the Time facet (UCS-1150). `demotions` names every
+      // demotion that fired with its reason — the stage one here, since this
+      // leaf is draft and declares no volatility. A bare `downranked: true`
+      // would say a leaf was demoted without saying why, and a demotion a
+      // reader cannot explain is one they cannot act on.
+      demotions: [
+        {
+          reason: 'stage',
+          detail: 'stage "draft" is pre-promotion — no moderator has certified this leaf\'s citations (UCS-1149)',
+        },
+      ],
+      time: {
+        volatility: null, verified: null, age: null, limit: null, stale: false,
+        verdict: 'exempt',
+        reason: 'no volatility declared — this leaf is not under time governance, so no freshness verdict applies (UCS-1150)',
+      },
       file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
+      relates: {
+        'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
+      },
     },
   ]);
+});
+
+test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched (golden)', () => {
+  // The resolver half of the draft-stage contract (UCS-1149). 410.1 is
+  // verified and carries provenance; 410.2 is draft and carries none. Each is
+  // pinned through the concept whose terms reach it.
+  const settlement = runJson('settlement').results.find((r) => r.id === 'K-120');
+  assert.deepEqual(settlement.knowledge, [
+    {
+      via: 'terms',
+      id: 'L-000410',
+      notation: '410.1',
+      heading: 'Card settlement windows',
+      stage: 'verified',
+      excerpt: 'Card networks settle captured funds in fixed windows.',
+      // Carried verbatim: no registry governs provenance, so the resolver has
+      // no judgement to apply and passing it through unchanged is the contract.
+      provenance: { author: 'dimitri', 'skill-version': 'kb-build@2.0.0' },
+      downranked: false,
+      // No demotion fired, so the list is empty — a stable key, not an absent
+      // one (UCS-1150).
+      demotions: [],
+      // This leaf declares no volatility, so the Time facet does not govern it:
+      // `exempt`, which is deliberately NOT `trusted`. A leaf nothing governs
+      // has not passed a check.
+      time: {
+        volatility: null, verified: null, age: null, limit: null, stale: false,
+        verdict: 'exempt',
+        reason: 'no volatility declared — this leaf is not under time governance, so no freshness verdict applies (UCS-1150)',
+      },
+      file: 'knowledge/payments/410.1-card-settlement-windows.md',
+      relates: {
+        'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
+      },
+    },
+  ]);
+
+  // The draft leaf still SURFACES — a demotion, never a filter: a draft leaf is
+  // the best answer when it is the only answer, and hiding it would send the
+  // reader off to invent one.
+  const instruments = runJson('payment', 'instrument').results.find((r) => r.id === 'K-100');
+  assert.equal(instruments.knowledge[0].downranked, true);
+  assert.equal(instruments.knowledge[0].stage, 'draft');
+
+  // The human surface says WHY the leaf sits where it does, and shows the
+  // derived excerpt where display prose used to come from `description`.
+  const human = run('settlement', '--root', store);
+  assert.equal(human.status, 0);
+  assert.match(human.stdout, /Card networks settle captured funds in fixed windows\./);
+  const drafty = run('payment', 'instrument', '--root', store);
+  assert.match(drafty.stdout, /\[draft — downranked\]/);
 });
 
 test('knowledge entry points come from leaf terms naming the concept term or alias', () => {
@@ -167,12 +255,17 @@ test('zero-hit query is a normal outcome: exit 0, explicit empty result', () => 
 test('--paths: exact file pointer maps back to its concept', () => {
   const out = runJson('--paths', 'src/payments/settlement.ts');
   assert.equal(out.mode, 'paths');
+  // `knowledge` joins the result shape in UCS-1151 — the leaves governing this
+  // path. Empty here: this fixture's leaves declare neither `paths` nor
+  // `concepts`, so the reverse lookup is unchanged for a pre-1151 store, which
+  // is the compatibility claim worth pinning alongside the new field.
   assert.deepEqual(out.paths, [
     {
       path: 'src/payments/settlement.ts',
       concepts: [
         { id: 'K-120', term: 'Settlement', status: 'active', pointer: 'src/payments/settlement.ts' },
       ],
+      knowledge: [],
     },
   ]);
 });
@@ -198,7 +291,7 @@ test('--paths: nesting applies only to folder pointers, never file pointers', ()
   // src/payments/settlement.ts is a FILE pointer; a path "under" it cannot exist.
   const out = runJson('--paths', 'src/payments/settlement.ts/anything.ts');
   assert.deepEqual(out.paths, [
-    { path: 'src/payments/settlement.ts/anything.ts', concepts: [] },
+    { path: 'src/payments/settlement.ts/anything.ts', concepts: [], knowledge: [] },
   ]);
 });
 
@@ -223,7 +316,7 @@ test('--paths: paths are normalized — .., //, internal ./, backslashes, absolu
 
 test('--paths: unmatched path is a normal outcome — empty concepts, exit 0', () => {
   const out = runJson('--paths', 'src/unmapped/thing.ts');
-  assert.deepEqual(out.paths, [{ path: 'src/unmapped/thing.ts', concepts: [] }]);
+  assert.deepEqual(out.paths, [{ path: 'src/unmapped/thing.ts', concepts: [], knowledge: [] }]);
   const human = run('--paths', 'src/unmapped/thing.ts', '--root', store);
   assert.equal(human.status, 0);
   assert.match(human.stdout, /no concepts point at this path/);

@@ -1,0 +1,25 @@
+# PLANTED: graduation-field-shape (twice, on one entry). This graduation
+# records no `observed-cycles` — the only written record of what the moderator
+# counted, since v1 computes nothing — and it carries `defect`, which describes
+# a withdrawal rather than a grant. Both are the same defect class: the block's
+# fields disagree with its own action.
+schema-version: 1
+entries:
+  - id: D-209
+    title: Graduate alias additions to sampling
+    category: trust
+    status: proposed
+    date: "2026-07-15"
+    deciders: [dimitri]
+    context: >-
+      Alias additions have been reliable for a while now.
+    decision: Graduate alias-additions to sampling at one in four.
+    consequences: Alias additions are no longer read on every change.
+    supersedes: []
+    graduation:
+      action: graduate
+      category: alias-additions
+      defect: copied from the revocation template
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

@@ -1,0 +1,31 @@
+# Query-decomposition fixture (UCS-1152) — the hierarchical domains registry.
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: sportsbook
+    gloss: The sportsbook vertical.
+    warrant: L-000102 and L-000140 both document sportsbook material.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: sportsbook/registry
+    gloss: The registries the book enumerates its offering from.
+    warrant: L-000102 documents the sports registry edit.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: sportsbook/settlement
+    gloss: Settling placed bets once their events resolve.
+    warrant: L-000140 and L-000190 both state settlement constraints.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: payments
+    gloss: Money movement.
+    warrant: L-000133 states the rounding rule money movement obeys.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: payments/settlement
+    gloss: Rounding and precision when funds actually move.
+    warrant: L-000133 states banker's rounding at settlement.
+    decision: D-201
+    minted: "2026-07-07"

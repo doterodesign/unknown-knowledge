@@ -1,0 +1,37 @@
+# Fixture: a well-formed trust graduation category table (UCS-1155).
+# One eligible category with a threshold, one permanently gated category with
+# no threshold — the two shapes the mechanism turns on.
+schema-version: 1
+store: decisions
+table: graduation-categories
+categories:
+  - category: alias-additions
+    eligibility: eligible
+    threshold: 3
+    gloss: Adding an alias to an existing concept.
+    warrant: >-
+      Mechanical: the edit is checkable by reading it against the concept it
+      names, and a run of correct ones is evidence about the next one.
+    decision: D-201
+    declared: "2026-07-07"
+  # Declared so the wrong-CATEGORY revocation (D-211) isolates that defect
+  # rather than compounding it with an undeclared-category finding.
+  - category: verified-bumps
+    eligibility: eligible
+    threshold: 4
+    gloss: Bumping a leaf's verified date after re-reading its source.
+    warrant: >-
+      Mechanical: the edit is checkable against the source it claims to have
+      re-read.
+    decision: D-201
+    declared: "2026-07-07"
+  - category: authority-assignments
+    eligibility: gated
+    gloss: Assigning an authority tier to a citation.
+    warrant: >-
+      Judgment: the tier records how far a source can be trusted, which is a
+      claim about the world rather than about the store. Being right N times
+      running says the assigner was careful, not that the N+1th source needs no
+      reading.
+    decision: D-201
+    declared: "2026-07-07"

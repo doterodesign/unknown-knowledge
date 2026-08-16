@@ -1,0 +1,18 @@
+# Typed edges fixture (UCS-1151) — the `paths` family's dangling target.
+#
+# The ontology is inherited from the clean fixture and is incidental here: this
+# store carries ONE leaf, whose job is to declare a path that is not in the
+# working tree. K-201 exists so that leaf's `concepts` edge resolves and the
+# store's only finding is the missing path; K-202 is simply unused.
+#
+# The `via` field and the structural-vs-textual join are exercised in the clean
+# fixture, which has the leaves to do it with — not here.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-201
+    title: Retrieval ranking
+    file: classes/200-retrieval.yaml
+  - id: K-202
+    title: Index build
+    file: classes/200-retrieval.yaml

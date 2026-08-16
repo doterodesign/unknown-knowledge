@@ -1,0 +1,8 @@
+# Structural-validator fixture (UCS-1144) — leaves carry accession ids and the
+# store still validates clean: shape, uniqueness, and catalog agreement all pass.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-510
+    title: Widget
+    file: classes/500-widgets.yaml

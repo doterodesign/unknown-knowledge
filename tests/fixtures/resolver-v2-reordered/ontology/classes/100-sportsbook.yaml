@@ -1,0 +1,17 @@
+# Reordered twin of resolver-v2 (UCS-1152) — concept entries reversed.
+schema-version: 1
+entries:
+  - id: K-103
+    term: Bet status
+    class: 100-sportsbook
+    summary: The lifecycle state a placed bet is in.
+    aliases: [bet]
+    source-of-truth: [src/types/bet-status.ts]
+    status: active
+  - id: K-101
+    term: Sport
+    class: 100-sportsbook
+    summary: A sport the book offers markets on.
+    aliases: [sport type]
+    source-of-truth: [src/registry/sports.ts]
+    status: active

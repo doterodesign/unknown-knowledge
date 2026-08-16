@@ -1,0 +1,27 @@
+# One entry per file (D-010); schema per PRD §3.3.
+# Plant store (UCS-1159): the minting decision every registry value cites.
+# Self-contained by design — a plant store carries no ontology, so this entry
+# relates to nothing outside its own store. Reaching for the ts-app decision
+# would drag in K-101/L-000100 refs that do not resolve here, and those
+# unresolved-ref errors would pollute the single tabulated plant.
+schema-version: 1
+entries:
+  - id: D-101
+    title: Governed vocabularies are registry-minted
+    category: architecture
+    status: accepted
+    date: "2026-07-08"
+    deciders: [fixture-team]
+    context: >
+      Governed facets must draw from a closed vocabulary, so every value needs
+      a registry home and a decision that minted it.
+    decision: >
+      Mint the governed facet vocabularies (domain, form, anchor, stage,
+      operations, jurisdictions, authority-tiers) as registries under
+      knowledge/_registries/, each value citing this decision.
+    consequences: >
+      A facet value absent from its registry is a validator finding rather than
+      an ad-hoc string, and minting a new value is a reviewable registry edit.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [] }

@@ -8,7 +8,8 @@ their test is a checklist, not CI. Time the run (A5 walkthroughs are
 wall-clock timed).
 
 Every expected observation below was produced by actually running the
-commands (kit @ this branch, 2026-07-08); outputs are pasted byte-honest.
+commands (kit @ this branch, re-captured 2026-08-16 against the UCS-1159
+fixture); outputs are pasted byte-honest.
 Only the random hex suffix in fragment file names varies run to run.
 
 ## Setup (the human, not the agent)
@@ -39,13 +40,26 @@ node "$KIT/engine/resolve.js" sport --root .
 ```
 resolve "sport" -> 1 concept
 
+time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
+
+decomposition:
+  noun  -> concepts: K-101 "Sport" (exact-term)
+  residue: none — every non-stopword token resolved
+  near-miss: operation add-sport — token overlap [sport] below the match threshold
+
+knowledge leaves -> 1
+  L-000100  100.1  Adding a new sport  score 1  (knowledge/product/100.1-adding-a-new-sport.md)
+    signals: term:sport +1
+    Adding a sport is a one-line registry change plus the matching ontology update.
+
 K-101  Sport  [active]  score 100 (exact-term)
   confusable-with: K-113 "League" — confirm this is the concept you mean
   summary: A bettable sport offered by the sportsbook vertical.
   source-of-truth:
     src/registry/sports.ts
   knowledge entry points:
-    100.1  Adding a new sport  (knowledge/product/100.1-adding-a-new-sport.md)
+    L-000100  100.1  Adding a new sport  (knowledge/product/100.1-adding-a-new-sport.md)
+      Adding a sport is a one-line registry change plus the matching ontology update.
 ```
 
 - [ ] The agent notes the `confusable-with` disambiguation (K-113 "League")
@@ -62,9 +76,13 @@ node "$KIT/engine/resolve.js" escrow refund window --root .
 ```
 resolve "escrow refund window" -> 0 concepts
 
-no concepts matched — a normal outcome (PRD §7). Fall back to search within
-survey-scope.yaml; append a retrieval-miss finding only if this topic plausibly
-should be mapped (an unmapped area the scope excludes is expected, not a miss).
+time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
+
+decomposition:
+  no axis of this ask joined a governed vocabulary
+  residue (unresolved): escrow, refund, window  [resolved context: none]
+
+zero resolution is a normal outcome (PRD §7): fall back to search within survey-scope.yaml; append a retrieval-miss finding only if this topic plausibly should be mapped (an unmapped area the scope excludes is expected, not a miss)
 ```
 
 - [ ] The agent proceeds WITHOUT store claims and (step 8) appends a
@@ -80,11 +98,13 @@ node "$KIT/engine/preflight.js" --concepts K-101 --root .
 - [ ] Exit 0:
 
 ```
-preflight: 1 concept(s) — 1 trusted, 0 quarantined, 0 unknown (store verdict trusted)
+preflight: 1 concept(s) — 1 trusted, 0 quarantined, 0 stale, 0 unknown (store verdict trusted)
 
 TRUSTED  K-101  (active)
   every attributable check ran clean this run
   next: proceed — this verdict was computed fresh this run; never cache it (a stale "trusted" is a false all-clear, D-011)
+
+everything requested is trusted this run — verdicts are never cached (D-011)
 ```
 
 - [ ] Conduct: the agent proceeds, and does NOT record the verdict for reuse
@@ -100,7 +120,7 @@ node "$KIT/engine/preflight.js" --concepts K-102 --root . --log --today 2026-07-
   quarantine finding auto-appended (hex suffix varies):
 
 ```
-preflight: 1 concept(s) — 0 trusted, 1 quarantined, 0 unknown (store verdict trusted)
+preflight: 1 concept(s) — 0 trusted, 1 quarantined, 0 stale, 0 unknown (store verdict trusted)
 
 QUARANTINED  K-102  (active)
   1 error-severity check result(s) attributable to this concept — see evidence
@@ -140,6 +160,8 @@ node "$KIT/engine/resolve.js" --paths src/registry/sports.ts --root .
 
 ```
 resolve --paths -> 1 path
+
+time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
 src/registry/sports.ts
   K-101  Sport  [active]  (pointer: src/registry/sports.ts)
@@ -185,7 +207,7 @@ node "$KIT/engine/validate-values.js" --concepts K-101 --root .
 
 ```
 structural validate -> 0 findings — structurally clean
-checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
 filtered to concepts: K-101
 ```
@@ -236,7 +258,8 @@ node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-08 \
 The agent drafts
 `unknown-knowledge/decisions/entries/D-2026-07-08-tennis-launch.yaml`
 (provisional date-suffixed id, `status: proposed`, `relates-to` naming
-K-101 and leaf 100.1) and adds the catalog row in
+K-101 and leaf `L-000100` by its accession — the dotted `100.1` is a legacy
+display label and is refused as a citation) and adds the catalog row in
 `unknown-knowledge/decisions/_catalog.yaml`. It does NOT mint a final
 `D-NNN` — that is the steward's act at acceptance.
 
@@ -244,12 +267,27 @@ K-101 and leaf 100.1) and adds the catalog row in
 node "$KIT/engine/validate.js" --root .
 ```
 
-- [ ] Exit 0 — the provisional id, catalog row, and refs all validate:
+- [ ] Exit 1 — the provisional id, catalog row, and refs all validate; the
+  two remaining findings are the fixture's own planted cases, not this
+  agent's work:
 
 ```
-structural validate -> 0 findings — structurally clean
-checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle
+structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
+
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
+    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+    value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+
+fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
 ```
+
+- [ ] Both `unregistered-value` findings name `L-000100`, the fixture's own
+  leaf — they are UCS-1159 planted cases 2 and 4 (an unminted `facets.form`
+  and an unminted `applies.jurisdictions` value) and are expected here. The
+  agent's decision entry and catalog row contribute no finding: nothing in
+  the run's own output names `D-2026-07-08-tennis-launch`.
 
 ## Done
 

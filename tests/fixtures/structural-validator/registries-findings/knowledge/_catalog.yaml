@@ -1,0 +1,15 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000601
+    title: Gadget registry rules
+    file: widgets/600.1-gadget-registry.md
+  - id: L-000602
+    title: Unminted domain parent
+    file: widgets/600.2-unminted-parent.md
+  - id: L-000603
+    title: Unminted domain leaf segment
+    file: widgets/600.3-unminted-leaf-segment.md
+  - id: L-000604
+    title: Suppressed domain value
+    file: widgets/600.4-suppressed.md

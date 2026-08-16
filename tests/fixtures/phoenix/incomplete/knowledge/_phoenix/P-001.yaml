@@ -1,0 +1,31 @@
+# Phoenix event P-001 — the REJECTION fixture: a mapping that misses a leaf.
+#
+# L-000213 sits at `facets.domain: sportsbook/odds-feed`, squarely inside this
+# event's declared scope, and no row below mentions it. That is the defect: the
+# event would retire the class out from under a leaf still filed there, leaving
+# the store describing its taxonomy two incompatible ways with nothing recording
+# the disagreement.
+#
+# The engine must name L-000213 and refuse the WHOLE event — the other two rows
+# are perfectly good and must still not be written, because a partial apply is
+# the one outcome worse than doing nothing. (The surviving rows still express
+# the split: L-000117 to ingest, L-000133 to settlement, from one predecessor.)
+schema-version: 1
+event: P-001
+title: Split odds-feed into feeds/ingest and feeds/settlement
+decision: D-420
+applied: "2026-08-17"
+scope:
+  facet: facets.domain
+  values:
+    - sportsbook/odds-feed
+leaves:
+  - id: L-000117
+    to: feeds/ingest
+    why: Provider quirks are ingest material — they describe the wire, not the book.
+  - id: L-000133
+    to: feeds/settlement
+    why: >-
+      The other side of the split: rounding is applied when a market settles,
+      long after ingest is done. It was filed under odds-feed only because it
+      arrived with a feed integration, which is the misfiling this event fixes.

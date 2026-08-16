@@ -1,0 +1,29 @@
+# Reordered twin of resolver-v2 (UCS-1152) — registry values reversed.
+schema-version: 1
+store: knowledge
+registry: operations
+values:
+  - value: void-bet
+    gloss: Void a placed bet before settlement.
+    warrant: 600.2 states the refund basis for voided bets, so the term was
+      recorded; the stewards refused it as an operation in favour of settle-bet.
+    decision: D-201
+    minted: "2026-07-07"
+    status: suppressed
+  - value: retire-sport
+    gloss: Withdraw a sport from the registry.
+    warrant: 600.4's checklist covers the withdrawal pass as well as the launch
+      one, and declares this operation alongside add-sport.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: settle-bet
+    gloss: Settle a placed bet once its event resolves.
+    warrant: 610.1 documents banker's rounding at settlement; 600.2 and 600.3
+      state the jurisdiction constraints settling answers to.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: add-sport
+    gloss: Enter a new sport into the sportsbook registry.
+    warrant: 600.1 documents the sport registration recipe.
+    decision: D-201
+    minted: "2026-07-07"

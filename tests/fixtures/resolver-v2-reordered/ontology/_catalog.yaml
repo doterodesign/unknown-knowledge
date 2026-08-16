@@ -1,0 +1,10 @@
+# Reordered twin of resolver-v2 (UCS-1152) — entries reversed.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-103
+    title: Bet status
+    file: classes/100-sportsbook.yaml
+  - id: K-101
+    title: Sport
+    file: classes/100-sportsbook.yaml

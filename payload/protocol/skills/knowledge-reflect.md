@@ -23,8 +23,10 @@ pruned fragments, the stamp — travels together as **one reflect PR**
 
 Any gated change requires multiple corroborating findings — **one
 correction is a data point, three are a pattern**. The threshold is three
-distinct fragments (distinct sessions/dates; a re-opened entry's
-`occurrences` dates each count). Single-occurrence noise never reaches the
+distinct fragments — distinct meaning **independent resolution events, not
+files** (defined in full under Minting conduct below; a re-opened entry's
+`occurrences` dates each count, three logs from one session do not).
+Single-occurrence noise never reaches the
 review queue, or the humans stop trusting it and the graduation path dies
 before it starts. Two hard qualifiers:
 
@@ -32,6 +34,92 @@ before it starts. Two hard qualifiers:
   corrections cancel, they do not add (see Disputed clusters below).
 - Corroboration is per-cluster, never per-log: three findings about three
   different concepts are three data points, not one pattern.
+
+The corroboration rule is counted **by hand, here** — the engine never
+counts it. `log-entry.js` appends fragments and transitions them; it has no
+opinion about how many make a pattern, and no CLI reports a corroboration
+score. Reflect is the judgment half, and this threshold is judgment.
+
+### Residue and candidate findings — the misses that become edges
+
+Sessions append two kinds of finding that exist to be minted from
+(UCS-1160), both through `log-entry.js` like every other fragment:
+
+- **Residue** — from `resolve`'s `decomposition.residue`: the non-stopword
+  tokens no join consumed. Each fragment carries `resolved-context`, the
+  operations, concept ids, and jurisdictions that *did* resolve in the same
+  ask. A bare unresolved token is a finding nobody can act on; `lacrosse`
+  unresolved in an ask that resolved `add-sport` and `new-jersey` localizes
+  the gap precisely enough that the minting decision writes itself.
+- **Document candidates** — from `resolve --doc`'s ranked
+  `candidates-ranked`: the document's own residue. Each fragment adds a
+  `section` locator (document path, heading address, line or page), so
+  clustering opens the section just-in-time instead of re-reading the
+  document.
+
+Cluster these by their `residue` terms, and read `resolved-context` (and,
+for candidates, the located section) as the cluster's evidence. Zero
+resolution is a normal outcome, not a miss — `resolve` says so in its own
+payload; append a residue finding only when the topic plausibly should be
+mapped.
+
+## Minting conduct — how a miss becomes a deterministic edge
+
+A corroborated residue cluster is evidence the store has no word for
+something the material keeps naming. Minting that word is the loop's whole
+point, and it is a governed act. Four vocabularies can be minted from
+reflect: **terms**, **aliases**, **operations**, and **domain classes**.
+
+### What "three distinct fragments" means
+
+The evidence standard counts **independent resolution events, not files.**
+Three fragments are distinct when each records a *separate occasion on which
+the store failed to resolve the thing* — which in practice means a different
+session, or the same session on a different date.
+
+The case this rules out: one session that hit `lacrosse` three times in a
+row and logged three fragments. That is **one** data point wearing three
+filenames. Nothing was independently corroborated — the same agent, the same
+ask, the same unresolved token — and minting from it would let a single
+session vote three times. Cluster them as one.
+
+The case it admits: a re-opened entry. Each date in `occurrences` is a
+genuinely separate occasion (the issue fired again, later, after someone
+thought it was closed), so each counts. Same for the same term surfacing as
+query residue in one session and as a document candidate in another — two
+occasions, two data points.
+
+When in doubt, ask what the fragment is evidence *of*. A file is evidence
+that someone pressed enter; an occasion is evidence that the store has a
+hole. The threshold counts holes.
+
+Three rules bind every one of them:
+
+1. **Literary warrant, always.** A value is minted only when material
+   exists to fill it. Corroboration says the word keeps coming up; warrant
+   says there is something for it to hold. Both, or neither — a term minted
+   on three findings with no material behind it is speculative shelving
+   wearing evidence. Read the source before proposing: a candidate is a
+   claim about the map until someone opens the document its `section`
+   locator addresses.
+2. **Evidence attached.** The proposal names the corroborating fragment
+   paths verbatim, exactly as every other recommendation item does. A mint
+   proposal without its findings attached is not reviewable and does not go
+   on the list.
+3. **One Decisions entry per minting.** Every minted value — each domain
+   segment, each alias, each operation — carries its own entry recording
+   the warrant and the evidence. Draft it from
+   `templates/decisions/reflect-mint-proposal.yaml`; its `id` and `date`
+   are deliberately invalid placeholders, so a proposal pasted unedited
+   fails validation rather than reaching the Decisions store with a
+   rationale nobody wrote. A suppression uses the same shape and the same
+   entry: a refused term stays listed with `status: suppressed` so the next
+   cycle that clusters the same residue can see it was already considered.
+
+Minting is a `mint-proposal` item at the GATE like any other item —
+proposal-first, agents draft and humans approve. Reflect never edits a
+registry ahead of its approval, and never mints a child path segment whose
+parent is unminted.
 
 ## Resumable by construction
 
@@ -105,7 +193,7 @@ evidence standard**; each item carries:
 
 - **category** — one of the closed change-category vocabulary (additive,
   §3.5): `concept-fix`, `alias-addition`, `ssot-repoint`, `scope-widen`,
-  `knowledge-promotion`, `extractor-draft`. Categories are what approval
+  `knowledge-promotion`, `extractor-draft`, `mint-proposal`. Categories are what approval
   outcomes are recorded against (STAMP) and what trust graduation is
   measured per — a miscategorized item corrupts the graduation signal.
 - **the concrete diff** — the exact store change proposed (fix a concept's
@@ -133,6 +221,27 @@ none unaccounted for.
 as-is; only clusters never yet listed get new items.
 
 ### 4. GATE — per-item human approval
+
+**The moderator's interface is the reflect queue, not the store.** A human
+governing this system reviews what reflect puts in front of them; they do
+not browse `knowledge/` or `ontology/` looking for things to fix. Browsing
+a store is unbounded and finds whatever the eye lands on, while the queue
+is bounded, evidenced, and complete — every item carries its justifying
+findings, and every swept fragment is accounted for. The queue has exactly
+four sections, presented in this order:
+
+| Section | What it holds |
+|---|---|
+| **Mint proposals** | `mint-proposal` items — the proposed value, its literary warrant, and the corroborating fragments, one draft Decisions entry each |
+| **Corroborated findings** | every other item that met the evidence standard, with its concrete diff and its justifying fragment paths |
+| **Drafts awaiting promotion** | handoff items (`knowledge-promotion`, `extractor-draft`) — drafted here, written elsewhere; reflect reports them as handed off, never writes them |
+| **Sampled spot-checks** | a sample of what reflect did NOT raise — under-corroborated clusters and fragments due to age out — so the moderator can audit the threshold itself rather than only the items that cleared it |
+
+The spot-check sample is what keeps the queue honest: without it the human
+only ever sees what the evidence standard admitted, and a threshold nobody
+audits is a threshold nobody can tune. Present the sample as
+under-corroborated, explicitly — it is context for judging the queue, never
+a recommendation, and approving one does not bypass the standard.
 
 Present the list in the conversation and transition each listed item's
 justifying findings `open → proposed` — entering the review queue IS the

@@ -1,0 +1,23 @@
+# PLANTED: undeclared-category. `see-also-links` is a plausible mechanical
+# category, but the table does not declare it — so this graduation grants
+# autonomy with no written extent, and nothing could later revoke it by name.
+schema-version: 1
+entries:
+  - id: D-206
+    title: Graduate see-also links to sampling
+    category: trust
+    status: proposed
+    date: "2026-07-12"
+    deciders: [dimitri]
+    context: >-
+      See-also links have run five cycles approved without modification.
+    decision: Graduate see-also-links to sampling at one in four.
+    consequences: See-also edges would no longer be read on every change.
+    supersedes: []
+    graduation:
+      action: graduate
+      category: see-also-links
+      observed-cycles: 5
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.3.0

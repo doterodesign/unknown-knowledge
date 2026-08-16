@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-301
+    title: Mint accession ids for leaves
+    file: entries/D-301-accession-ids.yaml

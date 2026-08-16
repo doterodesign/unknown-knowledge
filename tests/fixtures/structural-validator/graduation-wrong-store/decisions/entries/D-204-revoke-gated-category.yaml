@@ -1,0 +1,29 @@
+# Carried over from graduation-clean so this fixture is otherwise identical to
+# it. Nothing here is exercised: the misfiled category table makes the store
+# fail to load (exit 2), so no entry-level check ever runs against this entry.
+# It is present only so the store shape is realistic.
+schema-version: 1
+entries:
+  - id: D-204
+    title: Revoke sampling for authority assignments
+    category: trust
+    status: accepted
+    date: "2026-07-10"
+    deciders: [dimitri]
+    context: >-
+      Recorded for completeness after a review raised whether this category had
+      ever been sampled. It had not; the entry states the standing position.
+    decision: >-
+      Authority assignments remain at full inspection. The category is
+      permanently gated and no graduation of it stands.
+    consequences: >-
+      No change in conduct — the entry records the position rather than moving
+      it.
+    supersedes: []
+    graduation:
+      action: revoke
+      category: authority-assignments
+      defect: none found; entry records the standing gated position
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

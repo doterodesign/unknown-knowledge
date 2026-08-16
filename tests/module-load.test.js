@@ -25,6 +25,13 @@ import { fileURLToPath } from 'node:url';
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const engineDir = join(repoRoot, 'payload', 'engine');
 const fixture = join(repoRoot, 'fixtures', 'ts-app');
+// The happy-path shim check needs a store the STRUCTURAL validator exits 0 on.
+// ts-app is not that store: it carries UCS-1159's planted registry-membership
+// drift, so validate.js exits 1 there by design. swift-app's planted cases are
+// value-side (validate-values.js), leaving it structurally clean — which is the
+// only property this test needs, since it is about the shim's overhead on a
+// healthy run, not about any fixture's findings.
+const structurallyCleanFixture = join(repoRoot, 'fixtures', 'swift-app');
 
 /** Every entry shim, i.e. every path an agent is told to invoke. */
 const SURFACES = readdirSync(engineDir).filter((f) => f.endsWith('.js'));
@@ -111,10 +118,27 @@ test('a SyntaxError in the command module exits 2', (t) => {
 test('a missing runtime dependency makes every surface exit 2, never 1', (t) => {
   // The seeded kit resolves js-yaml from the CLIENT's node_modules (§9.1). A
   // client who never installed it must get an engine failure, not findings.
+  //
+  // ingest.js is the one surface that reaches no YAML: it adapts a document to
+  // IR (UCS-1153) and never loads a store, so js-yaml's absence is invisible to
+  // it. That is a real property, not an exemption — it still must never exit 1,
+  // which the loop below asserts for every surface either way.
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
     const r = run(dir, surface, '--root', fixture);
     assertNeverFindings(r, surface, 'with js-yaml absent');
+    if (surface === 'ingest.js') {
+      // ingest reaches no YAML, so it LOADS here rather than failing to. That
+      // is asserted positively rather than skipped: it must still exit 2, and
+      // it must do so by reaching its own flag grammar (`--root` is not a flag
+      // it takes) — proving the engine came up, which is the opposite of the
+      // other surfaces' outcome and would otherwise go unverified.
+      assert.doesNotMatch(r.stderr, /the engine could not be loaded/,
+        'ingest has no YAML dependency, so a missing js-yaml must not stop it loading');
+      assert.match(r.stderr, /unknown flag --root/,
+        'ingest must have loaded far enough to parse flags');
+      continue;
+    }
     assert.match(r.stderr, /internal failure — the engine could not be loaded/);
     assert.match(r.stderr, /Cannot find package|ERR_MODULE_NOT_FOUND/);
   }
@@ -123,7 +147,7 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
 test('a healthy engine is untouched by the shim', (t) => {
   // The guard must cost nothing on the happy path.
   const dir = sandbox(t);
-  const r = run(dir, 'validate.js', '--root', fixture, '--json');
+  const r = run(dir, 'validate.js', '--root', structurallyCleanFixture, '--json');
   assert.equal(r.status, 0, r.stderr);
   assert.doesNotMatch(r.stderr, /internal failure/);
   assert.ok(JSON.parse(r.stdout), 'the shim forwards stdout untouched');

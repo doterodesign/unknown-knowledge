@@ -1,0 +1,43 @@
+# The hierarchical domains registry — the subject spine of the knowledge store.
+#
+# Ships EMPTY. The bootstrap interview mints the first top-level classes from
+# material that already exists; nothing is pre-allocated, because a class minted
+# ahead of its material is speculative shelving (see protocol/registry-warrant.md).
+#
+# THE TOP LEVEL IS OPEN. Adding a top-level class is an edit to this file plus a
+# Decisions entry — no schema change, no engine change, no allocation table.
+#
+# Value shape (hierarchical): lowercase kebab segments joined by "/". A child is
+# valid only when EVERY segment above it is itself minted here.
+#
+# `warrant` and `decision` are BOTH required on every value: the material that
+# needs the term, and the Decisions entry that signed it off. The decision id is
+# resolved like any other citation, so it must name a real entry.
+#
+#   values:
+#     - value: regulation
+#       gloss: Rules imposed from outside the organization.
+#       warrant: 362.1 documents ACH settlement windows and needs a home.
+#       decision: D-014
+#       minted: "2026-07-07"
+#     - value: regulation/settlement
+#       gloss: Settlement timing and windows.
+#       warrant: 362.1 states the windows themselves.
+#       decision: D-014
+#       minted: "2026-07-07"
+#
+# A value that was proposed and REFUSED stays listed, marked suppressed, so the
+# refusal is durable and the term cannot be quietly re-minted:
+#
+#     - value: regulation/tax
+#       warrant: Proposed for 362.4; no material exists, so no warrant was found.
+#       status: suppressed
+#       decision: D-015
+schema-version: 1
+store: knowledge
+registry: domains
+# Load-bearing: this flag is what turns on segment-by-segment membership.
+# Without it a whole path would be judged as one opaque string, so the engine
+# refuses a flat domains registry rather than quietly obeying it.
+hierarchical: true
+values: []

@@ -72,12 +72,22 @@ CLIs, same flags. Check each box when the observation matches.
 node "$KIT/engine/validate.js" --root .
 ```
 
-- [ ] Exit 0, run unfiltered (no `--concepts` spot check), captured
-  verbatim including the `checks run:` line:
+- [ ] Exit 1, run unfiltered (no `--concepts` spot check), captured
+  verbatim including the `checks run:` line. The two findings are UCS-1159
+  planted cases 2 and 4 (jurisdiction mismatch, unregistered facet value);
+  the agent records them as findings to report, not as a broken store —
+  the store still LOADS clean, so every check ran:
 
 ```
-structural validate -> 0 findings — structurally clean
-checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle
+structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
+
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
+    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+    value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+
+fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
 ```
 
 ## 2. VALUES — enumerates vs source
@@ -134,12 +144,18 @@ stale check: checked against --today 2026-07-09 (stale after 90 day(s))
 ## 4. KNOWLEDGE — the leaf sweep
 
 - [ ] The agent does not re-derive citation presence or cross-reference
-  resolution (engine checks, step 1). It reads the one catalog-declared
-  leaf (`100.1`) and fills all three columns:
+  resolution (engine checks, step 1). It reads both catalog-declared
+  leaves (`100.1`, `100.2`) and fills all three columns:
 
 | leaf | citations dated | revision note | standing room pressure |
 |---|---|---|---|
 | 100.1 | yes (`accessed: 2026-07-08`) | **missing** — no `revision` note; edition 1 unexplained | none (`including` absent) |
+| 100.2 | yes (`accessed: 2026-01-05`) | **missing** — no `revision` note; edition 1 unexplained | none (`including` absent) |
+
+- [ ] `100.2` declares `volatility: volatile` with `verified: 2026-01-05`,
+  which is 185 days before `<TODAY>` = 2026-07-09 and so past the 90-day
+  limit — the agent reports it as rotted knowledge to re-verify (UCS-1159
+  planted case 1), not as a broken record.
 
 ## 5. DECISIONS — the lifecycle check
 
@@ -192,12 +208,15 @@ grep -rl '^trigger: quarantine' unknown-knowledge/logs/findings 2>/dev/null
 ## Verdicts
 | step | command | exit | reading |
 |---|---|---|---|
-| structure | validate.js | 0 | clean (checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle) |
+| structure | validate.js | 1 | 2 findings to report, not a broken store — the store loads clean, so every check ran (checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value) |
 | values | validate-values.js | 2 | CHECK NEVER RAN on K-113, K-115, K-116 (out-of-envelope); 3 findings on the rest |
 | reverse audit | audit.js --today 2026-07-09 | 0 | advisory — 4 proposals for the steward, never a gate |
 
 ## Structural findings
-none
+- unregistered-value: L-000100 `applies.jurisdictions[0]` — "uk-gc" is not minted
+  in the knowledge/jurisdictions registry
+- unregistered-value: L-000100 `facets.form` — "walkthrough" is not minted in the
+  knowledge/form registry
 
 ## Value findings
 - HARD ERROR out-of-envelope: K-113, K-115, K-116 — the check never ran on these
@@ -213,6 +232,8 @@ none
 
 ## Knowledge leaves
 - 100.1: citations dated; revision note MISSING; no standing-room pressure
+- 100.2: citations dated; revision note MISSING; no standing-room pressure;
+  STALE (volatile, verified 185 days ago vs. the 90-day limit)
 
 ## Decisions lifecycle
 - orphaned relates-to: none

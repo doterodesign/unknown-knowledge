@@ -1,0 +1,13 @@
+# Plant store (UCS-1159) — unresolvable relates ref.
+# The one leaf below is WELL-FORMED: `relates.see-also` is a typed edge of the
+# right shape carrying a syntactically valid accession. The defect is in the
+# VALUE — L-000999 names no leaf in this store and no catalog-declared id — so
+# nothing hides behind a schema error. The loader refuses the edge
+# (`unresolved-ref`, exit 2), which is the tabulated expected finding; see
+# fixtures/ts-app/FIXTURE.md.
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000100
+    title: Adding a new sport
+    file: product/100.1-adding-a-new-sport.md

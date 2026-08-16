@@ -36,8 +36,14 @@ test('clean store: exit 0, zero findings, every check class reported as run', ()
   assert.deepEqual(out.counts, { errors: 0, warnings: 0 });
   assert.equal(out['store-health'].ok, true);
   assert.deepEqual(out.checks, [
-    'id-range', 'id-shape', 'index-drift', 'missing-citation',
-    'missing-path', 'orphan', 'ref-cycle',
+    'disconnected-revocation', 'gated-category-graduation',
+    'graduation-field-shape', 'graduation-not-trust-category',
+    'id-range', 'id-shape', 'index-drift',
+    'malformed-verified', 'missing-authority', 'missing-citation',
+    'missing-graduation-table', 'missing-path', 'missing-registry',
+    'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
+    'suppressed-value', 'unaccounted-edition', 'undeclared-category',
+    'unminted-segment', 'unregistered-value',
   ]);
 });
 
@@ -45,7 +51,7 @@ test('clean store human output says structurally clean and lists checks run', ()
   const r = run('--root', clean);
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /0 findings — structurally clean/);
-  assert.match(r.stdout, /checks run: id-range, id-shape, index-drift/);
+  assert.match(r.stdout, /checks run: disconnected-revocation, gated-category-graduation/);
 });
 
 // -------------------------------------- every finding class (exit 1, §4)
@@ -65,9 +71,9 @@ test('findings are stable-sorted by file/path/code/id — attribution pinned (D-
     out.findings.map((f) => [f.code, f.id]),
     [
       ['ref-cycle', 'D-101'],
-      ['index-drift', '500.2'],
-      ['missing-citation', '500.1'],
-      ['orphan', '500.3'],
+      ['index-drift', 'L-000502'],
+      ['missing-citation', 'L-000501'],
+      ['orphan', 'L-000503'],
       ['id-shape', 'BAD'],
       ['index-drift', 'K-330'],
       ['id-range', 'K-999'],
@@ -114,7 +120,7 @@ test('index-drift: catalog row naming a file that does not exist', () => {
 
 test('index-drift: catalog row whose id is not in the file it names', () => {
   const out = runJson(1, '--root', findingsStore);
-  const f = out.findings.find((x) => x.code === 'index-drift' && x.id === '500.2');
+  const f = out.findings.find((x) => x.code === 'index-drift' && x.id === 'L-000502');
   assert.equal(f.file, 'knowledge/_catalog.yaml');
   assert.match(f.message, /not found in/);
 });
@@ -122,14 +128,14 @@ test('index-drift: catalog row whose id is not in the file it names', () => {
 test('orphan: loaded records the store catalog never declares (both stores)', () => {
   const out = runJson(1, '--root', findingsStore);
   const orphans = out.findings.filter((x) => x.code === 'orphan');
-  assert.deepEqual(orphans.map((f) => f.id).sort(), ['500.3', 'K-320']);
+  assert.deepEqual(orphans.map((f) => f.id).sort(), ['K-320', 'L-000503']);
   for (const f of orphans) assert.match(f.message, /catalog/);
 });
 
 test('missing-citation: a leaf citation with an empty source', () => {
   const out = runJson(1, '--root', findingsStore);
   const f = out.findings.find((x) => x.code === 'missing-citation');
-  assert.equal(f.id, '500.1');
+  assert.equal(f.id, 'L-000501');
   assert.equal(f.path, 'citations[0].source');
 });
 

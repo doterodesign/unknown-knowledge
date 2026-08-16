@@ -1,0 +1,15 @@
+# Structural-validator fixture (UCS-1148) — the operations registry (verbs).
+schema-version: 1
+store: knowledge
+registry: operations
+values:
+  - value: register
+    gloss: Enter a widget into the registry.
+    warrant: 600.1 documents the registration procedure.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: service
+    gloss: Perform scheduled maintenance.
+    warrant: 600.1 documents servicing intervals.
+    decision: D-201
+    minted: "2026-07-07"

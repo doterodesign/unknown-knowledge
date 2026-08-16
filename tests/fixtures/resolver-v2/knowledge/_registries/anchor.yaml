@@ -1,0 +1,21 @@
+# Query-decomposition fixture (UCS-1152) — the anchor registry. D-003's three
+# truth anchors, adopted rather than invented.
+schema-version: 1
+store: knowledge
+registry: anchor
+values:
+  - value: artifact
+    gloss: The repo decides. The claim is checkable against code, config, or schema.
+    warrant: L-000102's registry key is checkable in src/registry/sports.ts.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: world
+    gloss: An outside authority decides — a regulator, a vendor, a standard.
+    warrant: L-000140 and L-000190 are settled by their regulators.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: team
+    gloss: The team decided. The claim is true because it was chosen, not discovered.
+    warrant: L-000213's checklist is a team convention.
+    decision: D-201
+    minted: "2026-07-07"

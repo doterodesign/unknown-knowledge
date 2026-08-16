@@ -42,18 +42,76 @@ unconditional:
     # incl. AGENTS.md — the navigation contract + runtime loop (§7).
     - { from: protocol/AGENTS.md, to: protocol/AGENTS.md }
     - { from: protocol/new-kind-pipeline.md, to: protocol/new-kind-pipeline.md }
+    # Warrant-minting and suppression conduct for the governed vocabulary
+    # registries (UCS-1148) — the rules a steward follows before editing one.
+    - { from: protocol/registry-warrant.md, to: protocol/registry-warrant.md }
+    # The derived layer (UCS-1158) — what `engine/derive.js` generates, why
+    # deleting it loses nothing, and the two rules a reader must not break:
+    # never cite a synthesized call number, and never hand-edit a derived file.
+    # Also the declared position of embedding recall — a slot and a gate, with
+    # the implementation deliberately absent.
+    - { from: protocol/derived-layer.md, to: protocol/derived-layer.md }
     # Protocol skills (D-019 names) — the phase-2 procedures agents run.
     - { from: protocol/skills/knowledge-bootstrap.md, to: protocol/skills/knowledge-bootstrap.md }
     - { from: protocol/skills/knowledge-reflect.md, to: protocol/skills/knowledge-reflect.md }
     - { from: protocol/skills/kb-build.md, to: protocol/skills/kb-build.md }
     - { from: protocol/skills/knowledge-audit.md, to: protocol/skills/knowledge-audit.md }
+  hooks:
+    # Git hooks that enforce the protocol mechanically (UCS-1157): blocking
+    # validation before a commit exists, and automatic reverse lookup over
+    # the staged diff. They are THIN WRAPPERS — each invokes one engine
+    # command and exits with its code, unchanged — so the tested surface is
+    # the wrapped command, and the wiring is reviewed the way the per-IDE
+    # wrappers are.
+    #
+    # They SEED but do not INSTALL. init never writes .git/ (the client's own
+    # config is the client's), so these land at <root>/hooks/ and the client
+    # symlinks or points core.hooksPath at them. That is the same boundary
+    # CI wiring keeps (D-006): the kit ships the gate, the client hangs it.
+    #
+    # The copy engine seeds BYTES, not modes, so a seeded hook arrives
+    # non-executable and git will not run it until the client chmods it. That
+    # is documented at the wiring step (README) rather than fixed here: a
+    # manifest that carried per-entry permissions would be a second thing to
+    # keep true, for one bit the client sets in the same breath as the symlink.
+    - { from: hooks/pre-commit, to: hooks/pre-commit }
+    - { from: hooks/reverse-lookup, to: hooks/reverse-lookup }
   templates:
     # The §5.2 new-kind authoring template — clients extend the extractor
     # library themselves (D-001/D-009), so the template always ships.
     - { from: templates/new-kind, to: templates/new-kind }
+    # The Decisions-entry template a steward copies when minting or suppressing
+    # a registry value (UCS-1148): every registry edit is a governed act with a
+    # written rationale, and this is the shape of that rationale.
+    - { from: templates/decisions/registry-minting.yaml, to: templates/decisions/registry-minting.yaml }
+    # The Decisions-entry template reflect copies when a corroborated cluster of
+    # residue/candidate findings warrants minting a term, alias, operation, or
+    # domain class (UCS-1160): every mint is a governed act carrying BOTH its
+    # literary warrant and the three-fragment evidence that raised it.
+    - { from: templates/decisions/reflect-mint-proposal.yaml, to: templates/decisions/reflect-mint-proposal.yaml }
+    # The Decisions-entry template a steward copies to record a phoenix event
+    # (UCS-1154): a bulk re-taxonomy is a governed act, and this is the shape of
+    # the rationale that sanctions the edition bump it carries.
+    - { from: templates/decisions/phoenix-event.yaml, to: templates/decisions/phoenix-event.yaml }
+    # The Decisions-entry templates a steward copies to move the trust boundary
+    # (UCS-1155): graduating a change category from full inspection to sampling,
+    # and revoking that graduation. Both ship, and the pair is the point —
+    # revocation must be no harder to reach for than graduation, or the boundary
+    # would only ever move one way.
+    - { from: templates/decisions/trust-graduation.yaml, to: templates/decisions/trust-graduation.yaml }
+    - { from: templates/decisions/trust-revocation.yaml, to: templates/decisions/trust-revocation.yaml }
     # Stack-agnostic fixture authoring guide: ships even with no stack
     # selected — a config-only client authoring its first pack starts here.
     - { from: extractor-fixtures/README.md, to: engine/tests/fixtures/README.md }
+    # Format-adapter fixture pairs (UCS-1153). These ship UNCONDITIONALLY,
+    # where extractor fixtures ship per selected stack (D-009). The difference
+    # is real, not an oversight: an extractor kind is stack-specific (a Swift
+    # client has no use for ts-union), but a FORMAT is not — any client on any
+    # stack can be handed a PDF or a markdown spec. And the pairs are the
+    # authoring template for client-drafted adapters (D-005), so a client whose
+    # format is unsupported needs them present at the moment of the refusal,
+    # which is exactly when they have no vendor to return to (D-001).
+    - { from: adapter-fixtures, to: engine/tests/adapter-fixtures }
   store-scaffolding:
     # Empty seeds (§9.1): catalogs/rules the bootstrap skill fills. Decisions
     # has no _rules.yaml by design (§9.1).
@@ -62,6 +120,35 @@ unconditional:
     - { from: templates/knowledge/_catalog.yaml, to: knowledge/_catalog.yaml }
     - { from: templates/knowledge/_rules.yaml, to: knowledge/_rules.yaml }
     - { from: templates/decisions/_catalog.yaml, to: decisions/_catalog.yaml }
+    # Governed vocabulary registries (UCS-1148, extended by UCS-1149). All
+    # seeded EMPTY, like the catalogs: the bootstrap interview mints the first
+    # values from material that already exists, because a value minted ahead of
+    # its material is speculative shelving (protocol/registry-warrant.md). They
+    # ship as store scaffolding rather than as templates-to-copy because a
+    # registry is a LIVE governed file — the client edits this one, it is not a
+    # pattern.
+    #
+    # anchor/ and stage/ are empty for a SECOND reason worth stating: their
+    # vocabularies are fixed by the kit (D-003's anchors; the stages the shared
+    # pre-promotion predicate reads), so their headers name the exact values to
+    # mint. They still ship valueless because every value must cite a Decisions
+    # entry that resolves, and a seeded repo's decisions store is empty by
+    # design (D-001) — seeded values would hand every client a broken ref.
+    - { from: templates/knowledge/_registries/domains.yaml, to: knowledge/_registries/domains.yaml }
+    - { from: templates/knowledge/_registries/operations.yaml, to: knowledge/_registries/operations.yaml }
+    - { from: templates/knowledge/_registries/jurisdictions.yaml, to: knowledge/_registries/jurisdictions.yaml }
+    - { from: templates/knowledge/_registries/authority-tiers.yaml, to: knowledge/_registries/authority-tiers.yaml }
+    - { from: templates/knowledge/_registries/form.yaml, to: knowledge/_registries/form.yaml }
+    - { from: templates/knowledge/_registries/anchor.yaml, to: knowledge/_registries/anchor.yaml }
+    - { from: templates/knowledge/_registries/stage.yaml, to: knowledge/_registries/stage.yaml }
+    # The trust graduation category table (UCS-1155). Filed under decisions/
+    # because graduation governs the change PROCESS, not the knowledge — the
+    # truth anchor is the team (D-003). Seeded empty for the usual reason (every
+    # row cites a decision that must resolve) plus one of its own: whether a
+    # class of change is mechanical enough to sample is a judgment about THIS
+    # project's material, and shipping it pre-made would be the kit deciding how
+    # much someone else's work gets read.
+    - { from: templates/decisions/_registries/graduation-categories.yaml, to: decisions/_registries/graduation-categories.yaml }
   docs:
     # Client-facing docs (KK-24). The seeded README lands at the kit-dir
     # root; the guides land under docs/.

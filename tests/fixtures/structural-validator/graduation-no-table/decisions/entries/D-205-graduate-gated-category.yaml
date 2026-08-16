@@ -1,0 +1,28 @@
+# PLANTED: missing-graduation-table. This store carries NO category table at
+# all, so there is nothing to judge this graduation's category against. The
+# absence surfaces HERE, at the entry that needed the table, rather than at
+# load: a store that governs nothing is complete, but a graduation checked
+# against a table that never loaded is a check that never ran (PRD §5).
+#
+# The category named happens to be one the OTHER fixtures gate, but that is
+# incidental — with no table present, its eligibility is unknowable.
+schema-version: 1
+entries:
+  - id: D-205
+    title: Graduate authority assignments to sampling
+    category: trust
+    status: proposed
+    date: "2026-07-11"
+    deciders: [dimitri]
+    context: >-
+      Authority assignments have run nine cycles approved without modification.
+    decision: Graduate authority-assignments to sampling at one in three.
+    consequences: Authority tiers would no longer be read on every citation.
+    supersedes: []
+    graduation:
+      action: graduate
+      category: authority-assignments
+      observed-cycles: 9
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

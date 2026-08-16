@@ -1,0 +1,62 @@
+# Expected IR for sample.md — the md@1 adapter (UCS-1153).
+#
+# Ordered blocks with kinds and source locators. Order is CONTRACT here (unlike
+# the extractor pairs, whose values are sets): the IR preserves document order,
+# and a coverage map reads it that way. Locators are 1-based inclusive line
+# numbers into the ORIGINAL sample, so a reader can open the file at the line.
+#
+# What this pair pins beyond the happy path: a paragraph reflowed from three
+# source lines onto one block (its locator keeps the full span), fenced code
+# whose newlines and indentation SURVIVE (whitespace is semantic in code, so it
+# is never flattened), all three list markers, the table delimiter row dropped
+# as presentation, and the trailing hashes of a closed ATX heading stripped.
+format: md
+file: sample.md
+adapter: "md@1"
+hash: "fnv1a64:63ab979f688a9533"
+blocks:
+  - kind: heading
+    level: 1
+    text: "Odds feed onboarding"
+    locator: { line: 1, endLine: 1 }
+  - kind: paragraph
+    text: "Adapter fixture — markdown. Adversarial-but-adaptable on purpose: a paragraph wrapped across several source lines, a fenced code block whose indentation is content, both list markers, a table, and a heading with trailing hashes."
+    locator: { line: 3, endLine: 5 }
+  - kind: heading
+    level: 2
+    text: "Provider requirements"
+    locator: { line: 7, endLine: 7 }
+  - kind: paragraph
+    text: "The provider must expose a websocket endpoint and a REST fallback. Latency budget is four hundred milliseconds end-to-end, measured from ingest to price."
+    locator: { line: 9, endLine: 11 }
+  - kind: list-item
+    text: "Websocket endpoint, TLS only"
+    locator: { line: 13, endLine: 13 }
+  - kind: list-item
+    text: "REST fallback for replay"
+    locator: { line: 14, endLine: 14 }
+  - kind: list-item
+    text: "Sandbox credentials before production"
+    locator: { line: 15, endLine: 15 }
+  - kind: paragraph
+    text: "Configuration lives in one block:"
+    locator: { line: 17, endLine: 17 }
+  - kind: code
+    text: "provider:\n  name: oddsco\n  timeout-ms: 400"
+    locator: { line: 19, endLine: 23 }
+  - kind: table-row
+    text: "Field | Meaning"
+    locator: { line: 25, endLine: 25 }
+  - kind: table-row
+    text: "`suspended` | market locked, not settled"
+    locator: { line: 27, endLine: 27 }
+  - kind: table-row
+    text: "`settled` | outcome final"
+    locator: { line: 28, endLine: 28 }
+  - kind: heading
+    level: 3
+    text: "Escalation"
+    locator: { line: 30, endLine: 30 }
+  - kind: paragraph
+    text: "Page the trading desk when the feed suspends for more than ninety seconds."
+    locator: { line: 32, endLine: 32 }

@@ -1,0 +1,25 @@
+# Frontmatter v2 fixture (UCS-1149) — the citation authority tiers.
+#
+# The tier records HOW FAR a cited source can be trusted: without it a
+# regulator's text and a hallway conversation read identically. That is why a
+# citation with no tier is its own finding.
+#
+# Governed as VOCABULARY only, at this ticket. Nothing in the engine compares
+# two tiers or resolves a conflict between citations yet — automatic conflict
+# ranking arrives with the resolution pipeline (UCS-1152). Recording the tier
+# now is what makes that possible: a tier nobody wrote down cannot be ranked
+# retroactively.
+schema-version: 1
+store: knowledge
+registry: authority-tiers
+values:
+  - value: vendor-doc
+    gloss: The vendor's own published documentation.
+    warrant: L-000117 cites the OddsCo API reference.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: interview
+    gloss: A conversation with someone who knows, written down.
+    warrant: L-000213 rests on a trading-team interview.
+    decision: D-401
+    minted: "2026-08-16"

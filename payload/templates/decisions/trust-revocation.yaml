@@ -1,0 +1,106 @@
+# Decisions-entry template — revoking a graduation (UCS-1155).
+#
+# A revocation returns ONE CHANGE CATEGORY from sampling to 100% inspection.
+# Copy this file to decisions/entries/<id>-<slug>.yaml, fill it, and open it as
+# an ordinary PR.
+#
+# REVOCATION IS AUTOMATIC ON ANY DEFECT, and "automatic" is meant literally:
+# the trigger is a defect found in a graduated category, not a judgment that the
+# defect was bad enough. There is no severity threshold to argue about and no
+# discretion to exercise. The warrant for sampling a category was that it had
+# stopped producing surprises; one surprise is the evidence that it has not, and
+# the response is mechanical so that it cannot be talked out of.
+#
+# This is deliberately the CHEAPEST entry in the store to write. Narrowing
+# inspection takes a counted streak and a written rationale; restoring it takes
+# noticing one defect. That asymmetry is the design — if revoking were as
+# laborious as graduating, the laborious thing would quietly not get done, and
+# the trust boundary would only ever move one way.
+#
+# Revoking is always legitimate. The validator refuses a graduation for a
+# permanently gated category, but never a revocation: a revocation only narrows
+# autonomy, and refusing to record one would be refusing the safe direction.
+#
+# After revoking, the category returns to full inspection and its streak starts
+# again from zero. A previously graduated category is not owed a shorter road
+# back — the earlier streak was evidence about a period that has now ended.
+#
+# The `id` and `date` placeholders below are DELIBERATELY not valid, so this
+# file fails validation until a steward fills them — pasting the template
+# unedited must never produce a Decisions entry.
+#
+# Those two are not the whole edit. Every <angle-bracket> placeholder must be
+# replaced before this entry says anything true, and how each unfilled one
+# fails differs — which is worth knowing, because the finding you get is not
+# always the mistake you made:
+#
+#   - `graduation.category` is pattern-checked (lowercase kebab) and
+#     `graduation.revokes` is pattern-checked (D-NNN), so leaving either
+#     unfilled is a KK-02 `pattern-mismatch` at EXIT 2. The store fails to load
+#     rather than validating with findings, so the graduation checks never run.
+#   - the PROSE fields (context, decision, consequences, title, deciders,
+#     defect, provenance) are free strings. Nothing rejects them, so an
+#     unfilled one validates green while saying nothing true. Those are the
+#     dangerous ones: the only check on them is a reader.
+#
+# The full inventory:
+#
+#   id                    the provisional D-YYYY-MM-DD-<slug> (schema-rejected)
+#   date                  the real date (schema-rejected)
+#   title                 <category>
+#   deciders              <steward>
+#   context               the whole prose block — the defect, and how it surfaced
+#   decision              <category>
+#   consequences          the whole prose block
+#   graduation.category   <category-name> — must match a row in the table
+#   graduation.revokes    D-NNN — the graduation being withdrawn. DELETE this
+#                         line if no graduation for the category exists (the
+#                         standing-position case); leaving `D-NNN` literal is an
+#                         unresolved ref, and omitting it when a graduation DOES
+#                         stand is a `disconnected-revocation` finding
+#   graduation.defect     <what went wrong>
+#   provenance.author     <steward-or-agent>
+#   provenance.skill-version     <skill@version>
+schema-version: 1
+entries:
+  - id: D-YYYY-MM-DD-revoke-example-category
+    title: "Revoke sampling for <category>"
+    # `trust` — like the graduation it withdraws, this entry moves the system's
+    # own trust boundary.
+    category: trust
+    status: proposed
+    date: "YYYY-MM-DD"
+    deciders: [<steward>]
+    # THE DEFECT. Name what went wrong concretely — the change, what was wrong
+    # with it, and how it was caught. This is the substance: a revocation whose
+    # context cannot name a defect is a revocation nobody can learn from, and
+    # the next graduation of this category will have nothing to have fixed.
+    context: >-
+      <Which defect was found, in which change, and how it surfaced — a
+      spot-check, a downstream correction, a reader's report. Name the graduation
+      entry this withdraws.>
+    decision: >-
+      <Revoke the graduation of <category>. The category returns to full
+      inspection immediately; its approved-unmodified streak restarts at zero.>
+    # What this obliges. A defect that reached the store under sampling may have
+    # company: say whether the material admitted while graduated needs a sweep.
+    consequences: >-
+      <What returns to full inspection, and whether changes admitted under
+      sampling need reviewing. If the defect suggests a bad skill revision, name
+      it — entry provenance makes the affected entries findable.>
+    supersedes: []
+    graduation:
+      action: revoke
+      category: <category-name>
+      # The graduation entry being withdrawn. Resolved like any other ref, so a
+      # revocation naming no graduation is an unresolved-ref error — the
+      # withdrawal and the thing withdrawn stay connected in the record.
+      revokes: D-NNN
+      # What went wrong, in one line. The machine-checkable half is that a
+      # revocation exists at all; this is the half a human reads.
+      defect: <what went wrong>
+    provenance:
+      author: <steward-or-agent>
+      skill-version: <skill@version>
+    relates-to:
+      decisions: []

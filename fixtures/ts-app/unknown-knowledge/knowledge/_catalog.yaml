@@ -2,6 +2,9 @@
 schema-version: 1
 store: knowledge
 entries:
-  - id: "100.1"
+  - id: L-000100
     title: Adding a new sport
     file: product/100.1-adding-a-new-sport.md
+  - id: L-000200
+    title: Cashing out a bet
+    file: product/100.2-cashing-out-a-bet.md

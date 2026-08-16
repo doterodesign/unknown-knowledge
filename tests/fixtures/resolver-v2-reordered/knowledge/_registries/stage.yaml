@@ -1,0 +1,20 @@
+# Query-decomposition fixture (UCS-1152) — the stage registry.
+schema-version: 1
+store: knowledge
+registry: stage
+values:
+  - value: draft
+    gloss: Written but not promoted — nothing certifies the claim yet.
+    warrant: L-000213 is a draft; its interview has not been checked back.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: proposed
+    gloss: Put forward for promotion and awaiting a moderator.
+    warrant: The second pre-promotion stage, matching the concept lifecycle.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: verified
+    gloss: A moderator promoted it — the citations were checked and hold.
+    warrant: L-000102 is promoted; its onboarding citation was checked.
+    decision: D-201
+    minted: "2026-07-07"

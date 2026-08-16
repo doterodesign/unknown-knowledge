@@ -1,0 +1,10 @@
+# Query-decomposition fixture (UCS-1152) — the noun vocabulary.
+schema-version: 1
+store: ontology
+entries:
+  - id: K-101
+    title: Sport
+    file: classes/100-sportsbook.yaml
+  - id: K-103
+    title: Bet status
+    file: classes/100-sportsbook.yaml

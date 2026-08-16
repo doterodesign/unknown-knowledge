@@ -1,0 +1,19 @@
+# Structural-validator fixture (UCS-1148) — the jurisdictions registry.
+schema-version: 1
+store: knowledge
+registry: jurisdictions
+values:
+  - value: us
+    gloss: United States.
+    warrant: 600.1 states US-only servicing intervals.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: eu
+    gloss: European Union.
+    # This scenario's 600.1 claims [us, apac], so the warrant for `eu` cannot
+    # cite it. `eu` is minted here so that `apac` fails as an UNMINTED value
+    # rather than as an empty registry — the planted case needs a vocabulary
+    # that exists and simply does not contain the value the leaf used.
+    warrant: The EU servicing variants recorded across the widgets division.
+    decision: D-201
+    minted: "2026-07-07"

@@ -1,0 +1,25 @@
+# One entry per file; schema per PRD.html §3.3.
+schema-version: 1
+entries:
+  - id: D-302
+    title: Shard the knowledge store by accession-id prefix
+    category: architecture
+    status: accepted
+    date: "2026-07-10"
+    deciders: [dimitri]
+    context: >
+      Leaf identity is the accession id, which is opaque and carries no
+      position (UCS-1147). A flat knowledge/ directory grows without bound,
+      and the old domain/division directories implied that a leaf's location
+      said something about its subject.
+    consequences: >
+      Directory position carries no meaning: a leaf may be moved between shard
+      directories with no citation rewritten and no diagnostic raised. The
+      catalog row's file field is the only thing a move updates.
+    decision: >
+      Leaves are filed under knowledge/<prefix>/, where the prefix is L- plus
+      the first two digits of the accession's numeric part. The layout is a
+      fanout device for directory size, never a classification.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [K-510], leaves: [L-000101], decisions: [] }

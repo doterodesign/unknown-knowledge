@@ -1,0 +1,7 @@
+# UCS-1155 fixture — the ontology store is clean; the planted defects are in the decisions/ category TABLE (loader hard errors, exit 2).
+schema-version: 1
+store: ontology
+entries:
+  - id: K-410
+    title: Gadget
+    file: classes/400-gadgets.yaml

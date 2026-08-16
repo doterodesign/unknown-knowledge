@@ -1,0 +1,26 @@
+# PLANTED: disconnected-revocation (wrong target) + graduation-field-shape
+# (no defect). `revokes` names D-201, an ordinary architecture ADR carrying no
+# graduation block at all — the ref graph resolves it happily, because every id
+# it checks is equally a real decision, so only this check can see that the
+# entry withdraws something that was never granted.
+schema-version: 1
+entries:
+  - id: D-210
+    title: Revoke sampling for see-also links
+    category: trust
+    status: proposed
+    date: "2026-07-16"
+    deciders: [dimitri]
+    context: >-
+      Recorded after a review; the target reference was pasted from the wrong
+      entry.
+    decision: Revoke the graduation of alias-additions.
+    consequences: The category returns to full inspection.
+    supersedes: []
+    graduation:
+      action: revoke
+      category: alias-additions
+      revokes: D-201
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

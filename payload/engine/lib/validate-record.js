@@ -29,6 +29,7 @@
  * run-over-run diffs mean something.
  */
 import { readFileSync } from 'node:fs';
+import { ID_GRAMMARS, SCHEMA_DEFS } from './id-grammars.js';
 
 /** Record kind → schema document shipped in payload/schemas/. */
 const KIND_SCHEMA_FILES = Object.freeze({
@@ -41,6 +42,9 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'survey-scope': 'survey-scope.schema.json',
   'catalog': 'catalog.schema.json',
   'rules': 'rules.schema.json',
+  'registry': 'registry.schema.json',
+  'phoenix-event': 'phoenix-event.schema.json',
+  'graduation-categories': 'graduation-categories.schema.json',
 });
 
 export const KINDS = Object.freeze(Object.keys(KIND_SCHEMA_FILES));
@@ -58,6 +62,7 @@ export const ERROR_CODES = Object.freeze([
   'duplicate-enumerates-value',
   'enumerates-source-not-listed',
   'lifecycle-field-mismatch',
+  'locator-shape',
 ]);
 
 /**
@@ -80,6 +85,36 @@ export const compare = (a, b) => (a < b ? -1 : a > b ? 1 : 0);
 
 const schemaCache = new Map();
 
+/**
+ * Bind the shared id grammars onto a freshly parsed schema (UCS-1142).
+ *
+ * The schema files keep their own `$defs` copies so each stays self-contained
+ * for external consumers, but the ENGINE validates against lib/id-grammars.js
+ * — the one module that owns each id space's pattern. Overwriting rather than
+ * asserting is deliberate: a drifted copy is corrected here, so the engine can
+ * only ever enforce the live grammar. (tests/id-grammars.test.js pins that the
+ * shipped copies agree, which is what keeps the published documents honest.)
+ *
+ * The grammar's HINT is bound alongside its pattern, under a key the schema
+ * keyword set does not interpret, so a pattern-mismatch on an id can say what
+ * shape was expected instead of quoting a regex at an author. That matters most
+ * where the shape CHANGED: since UCS-1147 a leaf citation must be an accession,
+ * and `"700.2" does not match ^L-[0-9]{6}$` tells an author what failed while
+ * naming neither the remedy nor the migration that moved it. The hint travels
+ * from the same frozen entry as the pattern, for the reason id-grammars.js
+ * exists — a hint that drifted from its pattern would describe the wrong shape.
+ */
+function bindIdGrammars(schema) {
+  for (const [space, def] of Object.entries(SCHEMA_DEFS)) {
+    const node = schema.$defs?.[def];
+    if (node) {
+      node.pattern = ID_GRAMMARS[space].pattern;
+      node.hint = ID_GRAMMARS[space].hint;
+    }
+  }
+  return schema;
+}
+
 function schemaFor(kind) {
   const file = KIND_SCHEMA_FILES[kind];
   if (!file) {
@@ -87,7 +122,7 @@ function schemaFor(kind) {
   }
   if (!schemaCache.has(kind)) {
     const url = new URL(`../../schemas/${file}`, import.meta.url);
-    schemaCache.set(kind, JSON.parse(readFileSync(url, 'utf8')));
+    schemaCache.set(kind, bindIdGrammars(JSON.parse(readFileSync(url, 'utf8'))));
   }
   return schemaCache.get(kind);
 }
@@ -151,6 +186,34 @@ function resolveRef(root, ref) {
   return target;
 }
 
+/**
+ * The id-grammar hint a required property carries, if it declares one.
+ *
+ * Only reaches a hint bound by bindIdGrammars — a property whose shape is an id
+ * space. Everything else returns null and the plain message stands, which is
+ * the right default: "required property "heading" is missing" needs no gloss,
+ * and a hint invented per field would be prose with nothing keeping it true.
+ *
+ * A `$ref` that does not resolve is swallowed rather than thrown: this runs
+ * only to DECORATE a defect the validator has already found, and a schema
+ * authoring error must not turn a legitimate finding into a crash.
+ *
+ * @param {object} root the schema document, for $defs resolution
+ * @param {object} schema the object schema declaring the required property
+ * @param {string} required the missing property's name
+ * @returns {string|null} the hint, or null when the property declares none
+ */
+function requiredHint(root, schema, required) {
+  const property = schema.properties?.[required];
+  if (!property) return null;
+  try {
+    const target = property.$ref ? resolveRef(root, property.$ref) : property;
+    return typeof target.hint === 'string' ? target.hint : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Interpret the supported JSON Schema subset against a value. */
 function check(root, schema, value, path, errors) {
   if (schema.$ref) {
@@ -176,7 +239,16 @@ function check(root, schema, value, path, errors) {
     errors.push({
       path,
       code: 'pattern-mismatch',
-      message: `${JSON.stringify(value)} does not match ${schema.pattern}`,
+      // An id-space pattern arrives with the hint bound by bindIdGrammars, and
+      // the hint REPLACES the regex rather than trailing it: it says everything
+      // the pattern says and says it to a human, so printing both would just
+      // make the author read the regex first. Patterns from the schema files
+      // themselves carry no hint and keep quoting the regex — there is nothing
+      // better to say about them, and inventing prose per pattern here would be
+      // the drift id-grammars.js exists to prevent.
+      message: schema.hint
+        ? `${JSON.stringify(value)} is not a valid id here — expected ${schema.hint}`
+        : `${JSON.stringify(value)} does not match ${schema.pattern}`,
     });
   }
   if (schema.minimum !== undefined && typeof value === 'number' && value < schema.minimum) {
@@ -201,10 +273,20 @@ function check(root, schema, value, path, errors) {
   if (isPlainObject(value)) {
     for (const required of schema.required ?? []) {
       if (!Object.hasOwn(value, required)) {
+        // A missing property has no value to test, so the pattern branch above
+        // can never speak for it — yet "required property "id" is missing" is
+        // exactly the finding an author gets for a leaf that mints no accession,
+        // and on its own it names neither the shape to write nor why the field
+        // became required. So the hint is read from the property's OWN grammar
+        // here, through the same `$defs` binding: one fact, quoted wherever the
+        // author meets it.
+        const hint = requiredHint(root, schema, required);
         errors.push({
           path: joinPath(path, required),
           code: 'missing-required',
-          message: `required property "${required}" is missing`,
+          message: hint
+            ? `required property "${required}" is missing — expected ${hint}`
+            : `required property "${required}" is missing`,
         });
       }
     }
@@ -297,10 +379,54 @@ function lifecycleConventions(record, basePath, errors) {
   }
 }
 
+/**
+ * A document candidate's `section` locator addresses ONE coordinate system
+ * (UCS-1160). `lib/coverage.js` emits `{line, endLine}` for line-addressed
+ * sources and `{page, object}` for page-addressed ones (pdf) — never both,
+ * because a section does not have a line number AND a page number in the same
+ * document. So the finding fragment must carry exactly one:
+ *   - NEITHER is an underspecified locator — "somewhere in this document" is
+ *     the coordinate-free claim the locator exists to replace, and reflect
+ *     would have to re-read the document it was meant to avoid opening.
+ *   - BOTH is contradictory — two coordinate systems disagreeing about where
+ *     the section is, with nothing to say which one a reader should trust.
+ *
+ * This is a CONVENTION rather than a schema keyword because the JSON Schema
+ * subset this module interprets (SUPPORTED_KEYWORDS) has no conditionals —
+ * no `oneOf`, `anyOf`, `allOf`, or `not`. Writing one into the schema would
+ * add a keyword nothing enforces, which is silent contract drift: the schema
+ * would promise a rule no validator checks. The rule lives here, where finding
+ * records are already judged, and the schema's description says so.
+ */
+function locatorConventions(record, basePath, errors) {
+  if (!isPlainObject(record) || !isPlainObject(record.section)) return;
+  const { section } = record;
+  const hasLine = Object.hasOwn(section, 'line');
+  const hasPage = Object.hasOwn(section, 'page');
+  if (hasLine === hasPage) {
+    errors.push({
+      path: joinPath(basePath, 'section'),
+      code: 'locator-shape',
+      message: hasLine
+        ? 'a section locator addresses one coordinate system: line (line-addressed sources) or page (pdf), never both — coverage emits exactly one (UCS-1160)'
+        : 'a section locator needs a coordinate: line for line-addressed sources, page for pdf — a locator with neither cannot open the section it addresses (UCS-1160)',
+    });
+  }
+}
+
+/**
+ * Findings carry the lifecycle every log fragment carries, plus the locator
+ * shape only they can have (a miss/gap has no `section`).
+ */
+function findingConventions(record, basePath, errors) {
+  lifecycleConventions(record, basePath, errors);
+  locatorConventions(record, basePath, errors);
+}
+
 /** Record-local convention checks, keyed by kind (one lookup, both entry points). */
 const CONVENTIONS = Object.freeze({
   'ontology-concept': conceptConventions,
-  finding: lifecycleConventions,
+  finding: findingConventions,
   miss: lifecycleConventions,
   gap: lifecycleConventions,
 });

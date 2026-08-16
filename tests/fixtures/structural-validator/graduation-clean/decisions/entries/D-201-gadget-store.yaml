@@ -1,0 +1,11 @@
+schema-version: 1
+entries:
+  - id: D-201
+    title: One gadget store
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: Fixture context.
+    decision: Keep one gadget store.
+    supersedes: []

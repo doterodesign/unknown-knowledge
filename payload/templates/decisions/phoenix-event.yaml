@@ -1,0 +1,74 @@
+# Decisions-entry template — a phoenix event (UCS-1154).
+#
+# A phoenix event is a governed bulk re-taxonomy: a drifted subtree's facets are
+# rewritten from a leaf-granular mapping, every leaf the event moves has its
+# `edition` bumped — the only thing that ever bumps it — and the whole thing
+# lands as an ordinary PR. Copy this file to decisions/entries/<id>-<slug>.yaml,
+# fill it, and open ONE PR carrying:
+#
+#   - this entry,
+#   - the mapping, at knowledge/_phoenix/<event>.yaml,
+#   - the registry mintings the new values need (each with its own warrant),
+#   - the leaf rewrites, produced by the engine and never by hand:
+#         node payload/engine/phoenix.js <event> --root <dir>            # dry run
+#         node payload/engine/phoenix.js <event> --root <dir> --apply    # write
+#
+# The mapping file STAYS in the store after the event. It is what lets the
+# structural validator confirm that every edition above 1 was sanctioned by an
+# event, reading only the working tree — a governance rule checkable solely by
+# reading git history is a rule that is not checked.
+#
+# The two rules this entry exists to evidence:
+#
+#   THE MAPPING IS LEAF-GRANULAR. A class-level rename cannot express a SPLIT —
+#   when one class's material divides across two successors, only a per-leaf
+#   table can say which leaf went where, and the `why` on each row is the
+#   substance a reviewer reads.
+#
+#   IDENTITY DOES NOT MOVE. Accession ids are untouched, so every citation into
+#   these leaves stays valid across the event. If a proposal requires renaming
+#   or reissuing an id, it is not a phoenix event.
+#
+# The `id` and `date` placeholders below are DELIBERATELY not valid, so this
+# file fails validation until a steward fills them — pasting the template
+# unedited must never produce a Decisions entry, or a bulk rewrite would end up
+# carrying a rationale nobody wrote. Every other field is real: fill those two
+# and the entry validates.
+schema-version: 1
+entries:
+  - id: D-YYYY-MM-DD-phoenix-example-split
+    title: "Phoenix: <what splits, merges or moves> (edition <n>)"
+    # `governance` — an event changes how the Store is filed, not how the engine
+    # works.
+    category: governance
+    status: proposed
+    date: "YYYY-MM-DD"
+    deciders: [<steward>]
+    # THE DRIFT. Name the material whose classification stopped matching it, and
+    # say how you noticed. "The tree would be tidier" is the case this refuses:
+    # a re-taxonomy costs every reader their memory of where things live, so the
+    # warrant is that the CURRENT shape actively misfiles material — two kinds of
+    # thing under one class that no longer share a reader, a class nobody looks
+    # in, a name that stopped meaning what it says.
+    context: >-
+      <Which leaves are filed where, and why that filing no longer serves the
+      people reading them.>
+    # What moves where, and — if this is a split — why no class-level rule could
+    # express it. Name the event id whose mapping carries the per-leaf rows.
+    decision: >-
+      <Split/merge/move <old> into <new>. Apply as phoenix event P-NNN, whose
+      mapping (knowledge/_phoenix/P-NNN.yaml) records where each leaf went and
+      why.>
+    # Say the edition bump out loud, and say what did NOT change: an event that
+    # quietly moved identity would break every citation into the subtree, and
+    # stating the invariant here is how a reviewer knows to check it.
+    consequences: >-
+      <Each moved leaf's edition goes <n-1> -> <n>. No accession id changes, so
+      every citation into these leaves stays valid and nothing that cites them
+      needs editing. Leaves carried forward keep their edition — they were
+      considered and deliberately left alone.>
+    supersedes: []
+    # The leaves this event touched. The same accessions are valid before AND
+    # after — that is the property being demonstrated, not a coincidence.
+    relates-to:
+      leaves: []

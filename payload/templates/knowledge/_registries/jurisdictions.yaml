@@ -1,0 +1,20 @@
+# The jurisdictions registry — where a knowledge leaf's claim holds.
+#
+# Ships EMPTY; each value is minted by literary warrant (material must exist to
+# fill it) with a Decisions entry recording the minting. See
+# protocol/registry-warrant.md.
+#
+# Flat vocabulary. Value shape: lowercase kebab. Which granularity a project
+# needs — country, region, market, internal business unit — is the project's own
+# to decide and record; the engine holds no opinion.
+#
+#   values:
+#     - value: us
+#       gloss: United States.
+#       warrant: 362.1 states US-only settlement windows.
+#       decision: D-014
+#       minted: "2026-07-07"
+schema-version: 1
+store: knowledge
+registry: jurisdictions
+values: []

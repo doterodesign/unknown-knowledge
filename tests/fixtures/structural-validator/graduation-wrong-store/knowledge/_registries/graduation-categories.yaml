@@ -1,0 +1,29 @@
+# PLANTED: graduation-table-store-mismatch. The table's contents are
+# well-formed and it declares `store: decisions` — which its schema requires —
+# but the file physically sits under knowledge/_registries/. Every store loads
+# `_registries/`, so this passes its schema and would otherwise index under a
+# key that contradicts its own path, with a steward following that key opening
+# a different store's directory.
+schema-version: 1
+store: decisions
+table: graduation-categories
+categories:
+  - category: alias-additions
+    eligibility: eligible
+    threshold: 3
+    gloss: Adding an alias to an existing concept.
+    warrant: >-
+      Mechanical: the edit is checkable by reading it against the concept it
+      names, and a run of correct ones is evidence about the next one.
+    decision: D-201
+    declared: "2026-07-07"
+  - category: authority-assignments
+    eligibility: gated
+    gloss: Assigning an authority tier to a citation.
+    warrant: >-
+      Judgment: the tier records how far a source can be trusted, which is a
+      claim about the world rather than about the store. Being right N times
+      running says the assigner was careful, not that the N+1th source needs no
+      reading.
+    decision: D-201
+    declared: "2026-07-07"

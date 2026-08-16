@@ -2,20 +2,29 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:knowledge-leaf",
   "title": "Knowledge leaf front matter (PRD §3.2)",
-  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5). Notation is immutable once any reference cites it; moves happen by new leaf + class-elsewhere redirect, never by renaming in place (§3.5). Cross-reference resolution and tree-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013).",
+  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5) — v2-shape leaves stamp schema-version: 2 (UCS-1147). Every leaf carries an opaque accession id (id: L-NNNNNN), minted at PR time and never reused: it is the leaf's identity, what the loader indexes by, and the ONLY shape a citation of a leaf may take. The dotted `notation` is demoted to an optional legacy display label that nothing treats as identity (UCS-1147, retiring the dual-shape citation contract UCS-1144 opened). Because identity is opaque rather than positional, a leaf file may be moved — between prefix shards, between directories — without invalidating a single citation: position on disk carries no meaning. Cross-reference resolution and catalog-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013), with one sanctioned exception: frontmatter v2 RETIRED the free-prose `description` field (UCS-1149). A leaf now opens its body with a topic sentence and display prose is DERIVED from it, so the one-line summary can never drift from the content it summarizes. Under additionalProperties:false a leaf still carrying `description` fails as an unknown property — a deliberate break, and the major release D-021 defines for exactly this.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema-version", "notation", "domain", "heading", "citations"],
+  "required": ["schema-version", "id", "domain", "heading", "citations"],
   "properties": {
     "schema-version": { "type": "integer", "minimum": 1 },
+    "id": {
+      "$ref": "#/$defs/accession",
+      "description": "Accession id — opaque, minted at PR time, never reused, never positional (L-NNNNNN). REQUIRED: it is the leaf's identity, the key the loader indexes by, and the only spelling any record may cite this leaf as (UCS-1147). A leaf without one has no identity, so its absence is a missing-required finding and the remedy is to assign one."
+    },
     "notation": {
       "$ref": "#/$defs/notation",
-      "description": "Positional within the per-project tree (e.g. \"362.1\"). Quote it — unquoted it parses as a number."
+      "description": "OPTIONAL LEGACY display label — the leaf's old position in the per-project tree (e.g. \"362.1\"), kept so a reader who knows the tree still recognizes the leaf. It is NOT an identity: nothing indexes by it, no citation resolves through it, and moving the leaf's file does not invalidate it. Still validated by pattern when present, because a malformed label is a defect even though nothing resolves through it. Quote it — unquoted it parses as a number."
     },
-    "domain": { "type": "string" },
-    "division": { "type": "string" },
+    "domain": {
+      "type": "string",
+      "description": "LEGACY navigational domain — a free string naming the tree branch this leaf files under, paired with `division` and mirrored in the notation spine (§3.2). Ungoverned: nothing checks it against a vocabulary. Distinct from `facets.domain`, which is the REGISTRY-GOVERNED subject path (UCS-1148) whose every segment must be minted. The two coexist while v2 lands; UCS-1149 settles which survives."
+    },
+    "division": {
+      "type": "string",
+      "description": "Legacy navigational subdivision under `domain`, ungoverned in the same way. See the note on `domain`."
+    },
     "heading": { "type": "string" },
-    "description": { "type": "string" },
     "notes": {
       "type": "array",
       "items": { "$ref": "#/$defs/note" },
@@ -27,13 +36,13 @@
       "properties": {
         "class-elsewhere": {
           "type": "array",
-          "items": { "$ref": "#/$defs/notation" },
-          "description": "Redirects — must resolve."
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "Redirects — must resolve. Cite the target leaf by its accession id (L-NNNNNN)."
         },
         "see-also": {
           "type": "array",
-          "items": { "$ref": "#/$defs/notation" },
-          "description": "Related context — must resolve."
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "Related context — must resolve. Cite the target leaf by its accession id (L-NNNNNN)."
         },
         "including": {
           "type": "array",
@@ -48,12 +57,115 @@
       "items": { "$ref": "#/$defs/citation" },
       "description": "REQUIRED — an unsourced claim is not promotable."
     },
+    "facets": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Governed facets: values drawn from the store's registries (UCS-1148). Membership is a structural-validator check, never a schema enum — the vocabulary is minted by literary warrant under steward review, so it grows by a registry edit plus a Decisions entry rather than by an engine release.",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Hierarchical domain path from the domains registry, '/'-joined. Valid only when EVERY segment is minted — a child cannot hang off an unminted parent. This is the GOVERNED subject path, not the legacy top-level `domain` free string: membership here is a structural-validator check against knowledge/_registries/domains.yaml, and the top level of that registry is open (a new class is a registry edit plus a Decisions entry)."
+        },
+        "form": {
+          "type": "string",
+          "description": "What KIND of knowledge this leaf is — reference, recipe, runbook, constraint (UCS-1149). Flat value from the form registry. Ships EMPTY like domains: which forms a project recognizes is a judgement about its own material, so the vocabulary is minted by warrant rather than shipped as an enum."
+        },
+        "anchor": {
+          "type": "string",
+          "description": "The truth anchor this leaf's claim answers to — artifact, world, or team (D-003). Flat value from the anchor registry. That vocabulary is FIXED by the kit rather than chosen per project — the three anchors are the kit's own architecture, and a project minting a fourth would be describing a store this engine does not have — but the registry still ships EMPTY, because every value must cite a Decisions entry that resolves and a seeded repo's decisions store starts empty (D-001). The bootstrap interview mints the three with an entry of the project's own; the registry template's header names them."
+        },
+        "stage": {
+          "type": "string",
+          "description": "Where this leaf sits in its promotion lifecycle — draft until a moderator promotes it, verified once they have (UCS-1149). Flat value from the stage registry: draft, proposed, verified. That vocabulary is FIXED by the kit rather than chosen per project, because the same values drive the shared pre-promotion predicate (isPrePromotionStatus) — a project that renamed them would have a resolver downrank and a preflight verdict disagreeing about which leaves are provisional — but the registry still ships EMPTY, since every value must cite a Decisions entry that resolves and a seeded repo's decisions store starts empty (D-001). A draft or proposed leaf is downranked in resolver output and verdicted unknown by preflight, through that one predicate. There is deliberately no deprecated stage yet: no leaf surface implements the demotion the concept lifecycle gives that word, so the term would govern nothing."
+        }
+      }
+    },
+    "verified": {
+      "$ref": "#/$defs/isoDate",
+      "description": "When this leaf's claim was last checked against its citations — the Time facet's date half (UCS-1150). TOP-LEVEL, alongside `volatility`, not under `facets`: a facet is a governed classification of what the leaf IS, drawn from a registry, while this is a governance fact about the record's own upkeep. Paired with `volatility` to produce a pinned trusted/stale verdict, computed ONLY against an injected `--today` — the engine never reads the wall clock (D-012), and without an injected date the check reports itself skipped rather than passing silently. Same calendar-date pattern as every other date in this schema; a date matching the pattern but naming no real day (2026-02-30) is a structural-validator finding, because an age measured from a day that does not exist is a number nobody's calendar agrees with."
+    },
+    "volatility": {
+      "enum": ["static", "stable", "volatile"],
+      "description": "How fast this leaf's subject moves — the Time facet's rate half (UCS-1150). Governs when the leaf stales: `static` never, `stable` after 365 days, `volatile` after 90, measured from `verified`. A SCHEMA ENUM rather than a registry, which is the opposite of how form/anchor/stage are governed and deliberately so: those registries hold values the engine only compares, so a project may mint its own, whereas each value here is a KEY INTO A PINNED NUMERIC TABLE in engine/lib/time-verdicts.js. A project that minted a fourth class by registry edit would produce leaves with no threshold at all — a governed field silently ungoverned, which is the failure class this engine exists to prevent. Extending the vocabulary means shipping a threshold for it, so it is an engine release with a Decisions entry, and the schema is where that is said. ABSENT means the leaf is EXEMPT from time governance, not that it defaults to a class: the facet arrived in v2 and stores are mid-migration, so defaulting would stale every un-migrated leaf in the store at once on the first run that passed --today. Exempt is reported as its own verdict class, never as `trusted` — a leaf nothing governs has not passed a check."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Who wrote this leaf and with which authoring skill (UCS-1149). Recorded, never judged: no registry governs it, because an author name and a skill version are facts about how the entry came to exist rather than governed vocabulary. Round-trips untouched through resolver and validator output.",
+      "properties": {
+        "author": {
+          "type": "string",
+          "description": "Who authored the entry — a human steward or the agent that drafted it."
+        },
+        "skill-version": {
+          "type": "string",
+          "description": "The version of the authoring skill that produced the entry, so a systematic drafting defect can be traced to the vintage that introduced it."
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Verbs from the operations registry — what this leaf lets a reader DO."
+    },
+    "applies": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Where this leaf's claim holds.",
+      "properties": {
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Values from the jurisdictions registry."
+        }
+      }
+    },
+    "concepts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conceptRef" },
+      "description": "Ontology concepts this leaf is knowledge ABOUT (UCS-1151). The edge lives leaf-side because deciding what a leaf is about is curatorial, and the leaf is what sits under the human write gate. It is derived BIDIRECTIONALLY at load: the loader builds concept -> leaves from these declarations, so resolving a concept surfaces its declaring leaves structurally, with no dependence on whether the leaf's `terms` happen to spell the concept's term. Targets must resolve — an unresolvable id is the ordinary unresolved-ref finding, declared in the ref-field table like every other typed edge."
+    },
+    "paths": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Repo-relative file or directory paths this leaf governs (UCS-1151). NOT an id space: these name the working tree, so they are checked against the filesystem as a missing-path finding — the same mechanism concept source-of-truth pointers already ride — rather than through the ref graph, which only knows how to ask whether an ID resolves. Each entry must name something INSIDE this repo that exists: a path resolving outside the repo root (`../elsewhere`, or an absolute path) is refused, because a store may only point at its own repo and an escaping pointer would be judged against a file the store has no claim on. So is a path naming the repo root itself — a pointer at everything attributes nothing. Reverse lookup (resolve --paths) joins over these alongside concept pointers, so the files in a diff surface the knowledge that governs them before an edit."
+    },
+    "relates": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Typed leaf-to-leaf edges (UCS-1151). Four kinds, each a distinct claim about how two leaves stand to one another, and each a declared row in the ref-field table targeting the leaf space. The resolver expands exactly ONE hop over these from any hit, labeled by kind, so a hit carries its structural neighborhood without a second lookup. Targets are leaf refs, which since UCS-1147 means accession ids and nothing else: the dotted notation is a legacy display label and no longer resolves.",
+      "properties": {
+        "depends-on": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "This leaf's claim is only usable once the target's is — a prerequisite, not a suggestion."
+        },
+        "see-also": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "Related context worth reading alongside. The weakest of the four: no dependency, no conflict."
+        },
+        "contradicts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "The two leaves make claims that cannot both hold. Recorded rather than resolved — surfacing the conflict is what lets a human settle it, and a store that hid it would let a reader cite either one unaware."
+        },
+        "supersedes": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/leafRef" },
+          "description": "This leaf replaces the target's claim. Distinct from contradicts: the disagreement is already settled, and this leaf is the settlement."
+        }
+      }
+    },
     "terms": { "type": "array", "items": { "type": "string" } },
     "edition": { "type": "integer", "minimum": 1 },
     "contributors": { "type": "array", "items": { "type": "string" } }
   },
   "$defs": {
     "notation": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+    "accession": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
+    "leafRef": { "type": "string", "pattern": "^L-[0-9]{6}$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "note": {
       "type": "object",
@@ -71,7 +183,11 @@
       "required": ["source"],
       "properties": {
         "source": { "type": "string" },
-        "accessed": { "$ref": "#/$defs/isoDate" }
+        "accessed": { "$ref": "#/$defs/isoDate" },
+        "authority": {
+          "type": "string",
+          "description": "The source's authority tier, from the authority-tiers registry (UCS-1148). A tier is a governed value, not an enum: which tiers a project recognizes is its own to mint."
+        }
       }
     }
   }

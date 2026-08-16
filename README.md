@@ -55,7 +55,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Seven command-line surfaces. JavaScript with JSDoc types, zero build step, one
+Ten command-line surfaces. JavaScript with JSDoc types, zero build step, one
 dependency (D-022).
 
 | Command | Answers |
@@ -67,6 +67,9 @@ dependency (D-022).
 | `survey-map.js` | what is in this repo, and what could not be surveyed? |
 | `audit.js` | what looks like knowledge but was never written down? |
 | `log-entry.js` | append a finding, miss or gap — never by hand-editing YAML |
+| `ingest.js` | normalize a document (md, txt, html, pdf) to one intermediate representation |
+| `phoenix.js` | apply a phoenix event: re-file a drifted subtree in bulk, in full or not at all |
+| `derive.js` | regenerate the derived layer: plural browse trees, call numbers, resolution index |
 
 ### Exit codes are a contract
 
@@ -99,6 +102,35 @@ shipped CI default.
   its inputs.
 - **Nothing ships by omission** (D-007). An explicit manifest lists every file
   `init` seeds; a file it does not name is never copied.
+
+## Hooks — the protocol, enforced mechanically
+
+Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs the blocking
+validator before a commit exists, and `reverse-lookup` runs the `--paths`
+lookup over your staged diff, so the knowledge governing the files you touched
+surfaces without anyone remembering to ask. Each is a thin wrapper — it invokes
+one engine command and exits with its code, unchanged — and neither reads a
+bypass variable, because a hook with an off switch enforces nothing.
+
+They **seed but do not install**: `init` never writes `.git/`, so wiring them is
+your act, not the kit's. Git runs a hook only if it is executable, and the copy
+engine seeds bytes rather than modes — so set the bit when you wire it:
+
+```sh
+chmod +x unknown-knowledge/hooks/*
+ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
+ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
+```
+
+Note the second symlink's name. Git runs a hook only if its filename is one of
+the events git fires, and `reverse-lookup` is not one of them —
+`prepare-commit-msg` runs after the index is staged and before the message
+editor opens, which is when attribution is still actionable. (Git passes that
+hook the message file and source as arguments; the script ignores them and
+reads the staged diff itself.) The same rule bites harder under
+`core.hooksPath` pointed at the seeded directory: git looks there for
+event-named files only, so `reverse-lookup` would sit beside `pre-commit` and
+never fire. Under that wiring, call it explicitly from your `pre-commit`.
 
 ## Seeded once, then owned
 

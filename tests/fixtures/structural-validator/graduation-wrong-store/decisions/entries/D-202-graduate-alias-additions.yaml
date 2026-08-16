@@ -1,0 +1,26 @@
+schema-version: 1
+entries:
+  - id: D-202
+    title: Graduate alias additions to sampling
+    category: trust
+    status: accepted
+    date: "2026-07-08"
+    deciders: [dimitri]
+    context: >-
+      Alias additions have run four consecutive reflect cycles approved without
+      modification. The count is the moderator's, read from reflect's per-item
+      outcomes; nothing in the engine computes it.
+    decision: >-
+      Graduate alias-additions from full inspection to sampling at one in four.
+      Citation spot-checks continue at this level, as at every level.
+    consequences: >-
+      Alias additions are no longer read on every change. Any defect found in
+      this category revokes the graduation automatically.
+    supersedes: []
+    graduation:
+      action: graduate
+      category: alias-additions
+      observed-cycles: 4
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0
