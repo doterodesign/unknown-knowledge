@@ -28,6 +28,86 @@
  */
 
 /**
+ * The body of an anchored pattern — what it matches, without its ^ and $.
+ *
+ * Only `union` below uses it, and only so a union can be COMPOSED from the
+ * grammars it accepts instead of restating them. A union that restated its
+ * members would be exactly the defect this module exists to remove, one level
+ * up: three spellings of the notation grammar, two of which drift silently.
+ *
+ * REFUSES a pattern that is not anchored at both ends, rather than stripping
+ * what it finds. Both failure modes are silent and neither is detectable
+ * downstream: an unanchored member composes into a union with a hole in the
+ * middle (`^(a|b)$` where `b` was `b` and not `^b$` accepts nothing new, but
+ * `^(a|.*x)$` would), and a member ending in an ESCAPED `\$` — a literal
+ * dollar sign, not an anchor — would have that character silently eaten,
+ * widening the union to match strings the member itself rejects. A grammar
+ * module whose composition step can quietly widen a pattern is worse than no
+ * composition at all, so a malformed member is an engine failure at load.
+ *
+ * @param {string} pattern an anchored pattern source
+ * @returns {string} the same pattern with its anchors stripped
+ * @throws {TypeError} if the pattern is not anchored at both ends
+ */
+function body(pattern) {
+  // A trailing `$` is an anchor only if it is not itself escaped. Count the
+  // backslashes immediately before it: an even number (including zero) leaves
+  // the `$` live, an odd number escapes it into a literal dollar sign.
+  const escapes = /(\\*)\$$/.exec(pattern);
+  const anchored = pattern.startsWith('^') && escapes !== null && escapes[1].length % 2 === 0;
+  if (!anchored) {
+    throw new TypeError(
+      `id grammar pattern must be anchored at both ends to compose into a union, got ${JSON.stringify(pattern)}`,
+    );
+  }
+  return pattern.slice(1, -1);
+}
+
+/**
+ * An anchored alternation over other grammars' patterns, with the hints joined
+ * the way a finding should read them.
+ *
+ * Each alternative is parenthesized before joining: `a|b` and `c` must compose
+ * to `^((a|b)|c)$`, never `^(a|b|c)$` — same language here, but not in general,
+ * and a union that is only accidentally right is a trap for the next member.
+ *
+ * @param {Array<{ pattern: string, hint: string }>} members grammars to accept
+ * @param {string} conjunction how the hints read when joined ('or')
+ * @returns {{ pattern: string, hint: string }} the composed grammar
+ */
+const union = (members, conjunction) => Object.freeze({
+  pattern: `^(${members.map((m) => `(${body(m.pattern)})`).join('|')})$`,
+  hint: members.map((m) => m.hint).join(` ${conjunction} `),
+});
+
+const ontology = Object.freeze({
+  pattern: '^K-[0-9]+$',
+  hint: 'K-NNN',
+});
+
+const knowledge = Object.freeze({
+  pattern: '^[0-9]+(\\.[0-9]+)*$',
+  hint: 'dotted notation, e.g. "362.1"',
+});
+
+const decisions = Object.freeze({
+  pattern: '^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$',
+  hint: 'D-NNN or provisional D-YYYY-MM-DD-slug',
+});
+
+/**
+ * A leaf's accession id (UCS-1144) — opaque, minted at PR time, never reused,
+ * never positional. Six digits is the mint width the K-/D- conventions imply
+ * read at library scale; it is FIXED, unlike K-NNN, because an accession
+ * carries no structure to grow into: L-000001 and L-1 would be two spellings
+ * of one identity, and "never reused" cannot survive two spellings.
+ */
+const accessions = Object.freeze({
+  pattern: '^L-[0-9]{6}$',
+  hint: 'L-NNNNNN',
+});
+
+/**
  * Store → the id grammar its ids obey (§3.5).
  *
  * `pattern` is an anchored JSON-Schema-flavored regex source; `hint` is the
@@ -37,18 +117,20 @@
  * @type {Readonly<Record<string, { pattern: string, hint: string }>>}
  */
 export const ID_GRAMMARS = Object.freeze({
-  ontology: Object.freeze({
-    pattern: '^K-[0-9]+$',
-    hint: 'K-NNN',
-  }),
-  knowledge: Object.freeze({
-    pattern: '^[0-9]+(\\.[0-9]+)*$',
-    hint: 'dotted notation, e.g. "362.1"',
-  }),
-  decisions: Object.freeze({
-    pattern: '^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$',
-    hint: 'D-NNN or provisional D-YYYY-MM-DD-slug',
-  }),
+  ontology,
+  knowledge,
+  decisions,
+  accessions,
+  /**
+   * What a CITATION of a leaf may look like — either shape, for as long as
+   * both are legal (UCS-1144's expand phase). Distinct from `accessions` and
+   * `knowledge`, which each say what one id space MINTS: a leaf mints exactly
+   * one identity, but a reference to it may spell either, so the minting
+   * grammars stay strict while this one widens. When the migrate batches
+   * finish and notation is retired, this narrows to `accessions` alone and
+   * every consumer follows, because they all read it from here.
+   */
+  'leaf-ref': union([accessions, knowledge], 'or'),
 });
 
 /**
@@ -65,10 +147,20 @@ export const ID_GRAMMARS = Object.freeze({
  * ontology/decisions ids reach the schemas through conceptRef/decisionRef and
  * are not part of the leaf-notation seam this ticket settles.
  *
+ * The two leaf entries are the whole shape of UCS-1144's expand phase, and the
+ * reason they are separate defs. `notation` is what a leaf MINTS as its
+ * positional id, and it stays dotted-only. `leafRef` is what a record may
+ * CITE a leaf as, and it accepts either shape while both are legal. They were
+ * one def before this ticket, which is precisely why widening citations would
+ * otherwise have widened leaf notation itself — letting a leaf mint `L-000001`
+ * into the `notation` field and quietly hold two identities at once.
+ *
  * @type {Readonly<Record<string, string>>}
  */
 export const SCHEMA_DEFS = Object.freeze({
   knowledge: 'notation',
+  'leaf-ref': 'leafRef',
+  accessions: 'accession',
 });
 
 /**

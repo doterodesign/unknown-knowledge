@@ -1,0 +1,15 @@
+schema-version: 1
+entries:
+  - id: D-301
+    title: Mint accession ids for leaves
+    category: architecture
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: Positional notation cannot survive a leaf moving.
+    decision: Leaves carry an opaque accession id; notation stays for navigation.
+    consequences: Both citation forms resolve while the store migrates.
+    supersedes: []
+    superseded-by: []
+    # relates-to.leaves cites one leaf by accession and one by notation.
+    relates-to: { concepts: [K-510], leaves: [L-000101, "700.2"], decisions: [] }

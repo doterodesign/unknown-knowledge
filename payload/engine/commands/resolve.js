@@ -30,6 +30,12 @@
  * knowledge-catalog descent, PRD §4), and confusable-with surfaced with each
  * referenced concept's term so disambiguation needs no second lookup.
  *
+ * Each knowledge entry point publishes both leaf ids: `id`, the accession
+ * (L-NNNNNN) when the leaf has been minted one and null when it has not, and
+ * `notation`, its position in the tree (UCS-1144). Two fields because they
+ * answer two questions — which leaf this is, and where it sits — and once
+ * accessions are minted those stop being the same string.
+ *
  * --paths mode — reverse lookup over the loader's pointer index: "which
  * concepts point at these files". A path matches a pointer when equal to it or
  * nested under a FOLDER pointer (§3.1). Folder-ness is read from the
@@ -57,7 +63,7 @@
 import process from 'node:process';
 import { statSync } from 'node:fs';
 import { join, posix } from 'node:path';
-import { healthSummary, loadStores, recordId, storeHealth } from '../lib/load-stores.js';
+import { healthSummary, loadStores, storeHealth } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { UsageError, parseArgs as parseFlags, rethrowIfBug } from '../lib/cli.js';
@@ -123,11 +129,41 @@ function knowledgeEntryPoints(model, record) {
   for (const entry of model.leaves.values()) {
     const { file, record: leaf } = entry;
     if (strings(leaf.terms).some((t) => names.has(norm(t)))) {
-      // `notation` is this command's PUBLISHED field name (§4), so it is
-      // spelled here on purpose; the VALUE is read through the loader's
-      // neutral identity key, which is what an id-space change moves
-      // (UCS-1142). Wire name and storage field are two different decisions.
-      out.push({ notation: recordId(entry), heading: leaf.heading ?? null, file });
+      // `notation` and `id` are this command's PUBLISHED field names (§4), so
+      // they are spelled here on purpose; the VALUES come from the loader's
+      // indexed entry, which is what an id-space change moves (UCS-1142).
+      // Wire name and storage field are two different decisions.
+      //
+      // `id` is the accession, EXPLICITLY null for a leaf that has not been
+      // minted one (UCS-1144) rather than omitted. Omission would make the key
+      // set vary leaf by leaf, so a store mid-migration would emit two
+      // different result shapes and every consumer would need a presence check
+      // to tell "no accession" from "old engine". A stable key whose value is
+      // null says the one thing that is true: this leaf has no accession yet.
+      //
+      // Placed before `notation` because it is the identity once minting
+      // completes; JSON.stringify preserves insertion order, so this fixes the
+      // field's position in the byte-stable output for good.
+      //
+      // `notation` stays the leaf's NOTATION, not its identity: once a leaf
+      // mints an accession those stop being the same string, and a published
+      // field that silently changed meaning would break every consumer
+      // reading it as a tree position. Identity moves to `id`; `notation`
+      // keeps saying what it always said.
+      // Both ids are published as STRING-OR-NULL, tested with `typeof` rather
+      // than `??`: `??` only catches null/undefined, so an unquoted YAML
+      // `id: 12345` — a number, not an accession — would travel into the JSON
+      // as a number and break the field's published type for every consumer.
+      // The schema already rejects that leaf, but the resolver never gates on
+      // store health (a lookup runs on whatever loaded, §4), so it is the one
+      // surface that can be asked to publish an id no check has approved.
+      // Same `typeof` test the loader and the orphan check use.
+      out.push({
+        id: typeof entry.id === 'string' ? entry.id : null,
+        notation: typeof entry.notation === 'string' ? entry.notation : null,
+        heading: leaf.heading ?? null,
+        file,
+      });
     }
   }
   return out; // model.leaves is already sorted by leaf id
@@ -313,7 +349,13 @@ function renderQuery(payload) {
     }
     if (r.knowledge.length) {
       lines.push('  knowledge entry points:');
-      for (const k of r.knowledge) lines.push(`    ${k.notation}  ${k.heading}  (${k.file})`);
+      // The accession leads when there is one — it is the leaf's identity —
+      // with the notation still shown, since that is what the tree and every
+      // not-yet-migrated citation spell. An unminted leaf reads exactly as it
+      // did before (UCS-1144).
+      for (const k of r.knowledge) {
+        lines.push(`    ${k.id ? `${k.id}  ` : ''}${k.notation}  ${k.heading}  (${k.file})`);
+      }
     }
     lines.push('');
   }

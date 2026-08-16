@@ -42,7 +42,7 @@
       "description": "Sideways typed refs to concepts and leaves; never embedded content across store lines (PRD §3).",
       "properties": {
         "concepts": { "type": "array", "items": { "$ref": "#/$defs/conceptRef" } },
-        "leaves": { "type": "array", "items": { "$ref": "#/$defs/notation" } },
+        "leaves": { "type": "array", "items": { "$ref": "#/$defs/leafRef" } },
         "decisions": { "type": "array", "items": { "$ref": "#/$defs/decisionRef" } }
       }
     }
@@ -53,7 +53,7 @@
       "type": "string",
       "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$"
     },
-    "notation": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
+    "leafRef": { "type": "string", "pattern": "^((L-[0-9]{6})|([0-9]+(\\.[0-9]+)*))$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "storeFile": {
       "type": "object",

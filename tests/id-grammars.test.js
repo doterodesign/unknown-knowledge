@@ -110,8 +110,10 @@ test('adding an id space touches the grammar module and nothing else', () => {
   }
 
   // Consumers reach the grammar by lookup, never by a hardcoded branch — so an
-  // unknown space is a loud TypeError, never a silently unchecked id.
-  assert.throws(() => idPattern('accessions'), /unknown id space "accessions"/);
+  // unknown space is a loud TypeError, never a silently unchecked id. This
+  // used to name "accessions", which UCS-1144 then added: the space landed by
+  // editing this module alone, which is the property under test.
+  assert.throws(() => idPattern('editions'), /unknown id space "editions"/);
 
   // A space added to the map needs no schema duplication to be enforced: the
   // binding is driven by SCHEMA_DEFS, a data lookup over the same keys.

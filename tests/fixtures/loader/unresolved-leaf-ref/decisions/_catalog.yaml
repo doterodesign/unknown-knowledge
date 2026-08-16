@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-301
+    title: Dangling leaf refs of both shapes
+    file: entries/D-301-dangling.yaml
