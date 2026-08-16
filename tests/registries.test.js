@@ -22,9 +22,11 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
 import {
-  REGISTRY_DIR, STORES, STORE_DESCRIPTORS, loadStores,
+  REGISTRY_DIR, STORES, STORE_DESCRIPTORS, assertReadersResolve, loadStores,
 } from '../payload/engine/lib/load-stores.js';
-import { CHECKS, FACET_REGISTRIES } from '../payload/engine/commands/validate.js';
+import {
+  CHECKS, FACET_REGISTRIES, GOVERNED_COLLECTIONS, assertGovernedKinds,
+} from '../payload/engine/commands/validate.js';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -431,6 +433,55 @@ test('a whitespace-only warrant is refused — the field must carry actual mater
     assert.match(r.stderr, /pattern-mismatch/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('governed KINDS are declared too — the checker hardcodes no kind/collection pair', () => {
+  // Both tables are read together, so a second governed record kind (UCS-1149)
+  // is two table entries rather than an edit to the walker.
+  assert.deepEqual(Object.keys(GOVERNED_COLLECTIONS), Object.keys(FACET_REGISTRIES),
+    'every facet-governed kind must name the model collection its records live in');
+  assert.equal(GOVERNED_COLLECTIONS['knowledge-leaf'], 'leaves');
+});
+
+test('a facet table naming a kind with no collection is refused at load', () => {
+  // Such a row would look governed in the table and be checked in no store —
+  // a facet governed by nothing, which is the failure class the engine exists
+  // to prevent. Refused as an engine failure, never a silent pass.
+  assert.throws(
+    () => assertGovernedKinds({ ...FACET_REGISTRIES, 'ontology-concept': [] }),
+    /maps to no model collection/,
+  );
+  assert.doesNotThrow(() => assertGovernedKinds(FACET_REGISTRIES));
+});
+
+test('a descriptor naming a reader that does not exist is refused at load', () => {
+  // A store whose reader never resolves loads ZERO records and says nothing,
+  // which is indistinguishable from an empty store.
+  assert.throws(
+    () => assertReadersResolve({ knowledge: { reader: 'noSuchReader' } }),
+    /does not exist/,
+  );
+  assert.doesNotThrow(() => assertReadersResolve(STORE_DESCRIPTORS));
+  // The knowledge store's bespoke leaf reader is named in the TABLE, so the
+  // load loop asks each store how it is read rather than knowing one is special.
+  assert.equal(STORE_DESCRIPTORS.knowledge.reader, 'loadLeafFiles');
+  assert.equal(STORE_DESCRIPTORS.knowledge.records, null);
+  for (const store of ['ontology', 'decisions']) {
+    assert.equal(STORE_DESCRIPTORS[store].reader, undefined, `${store} is a plain walk`);
+  }
+});
+
+test('a registry decision ref is store-qualified, like the registry key itself', () => {
+  // `refs` is a published, from-sorted model field: two identically named
+  // registries in different stores must not share an edge origin.
+  const model = loadStores(CLEAN);
+  const edges = model.refs.filter((r) => r.type === 'registry.decision');
+  assert.ok(edges.length > 0, 'the clean store cites decisions from its registries');
+  for (const edge of edges) {
+    assert.match(edge.from, /^knowledge\/(domains|operations|jurisdictions|authority-tiers)\//,
+      `edge origin must carry the store: ${edge.from}`);
+    assert.equal(edge.resolved, true);
   }
 });
 

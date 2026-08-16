@@ -299,6 +299,51 @@ export const FACET_REGISTRIES = Object.freeze({
   ]),
 });
 
+/**
+ * Which model collection each governed record kind is indexed in.
+ *
+ * The one place the checker learns that `knowledge-leaf` records live in
+ * `model.leaves`. Without it the kind and the collection were spelled at two
+ * call sites apiece, so a second governed kind — which UCS-1149 brings — would
+ * have meant editing the walker rather than the tables it reads.
+ *
+ * Keyed by the same kind strings FACET_REGISTRIES uses, so the two tables are
+ * read together and a kind declared in one but missing from the other is
+ * refused at load rather than silently unchecked (assertGovernedKinds).
+ *
+ * @type {Readonly<Record<string, string>>}
+ */
+export const GOVERNED_COLLECTIONS = Object.freeze({
+  'knowledge-leaf': 'leaves',
+});
+
+/**
+ * Refuse a facet table naming a kind whose records the checker cannot reach —
+ * an engine failure at load, never a silent pass.
+ *
+ * A row declared for a kind with no collection would govern nothing: the
+ * facet would look governed in the table and be unchecked in every store,
+ * which is the failure class this engine exists to prevent (PRD §5).
+ *
+ * @param {Record<string, unknown>} table the facet declaration table
+ * @throws {Error} if a declared kind has no model collection
+ */
+export function assertGovernedKinds(table) {
+  for (const kind of Object.keys(table)) {
+    if (!GOVERNED_COLLECTIONS[kind]) {
+      throw new Error(
+        `facet table declares governed kind "${kind}", which maps to no model collection — `
+        + 'its rows would look governed and be checked in no store; add it to GOVERNED_COLLECTIONS',
+      );
+    }
+  }
+}
+
+// Checked as this module loads: a facet governed by nothing is a defect in the
+// kit itself, and must surface the moment it is introduced rather than as a
+// store that quietly passes checks it never ran.
+assertGovernedKinds(FACET_REGISTRIES);
+
 /** Follow a dotted path into a record; undefined if any segment is missing. */
 function valueAtPath(record, field) {
   let node = record;
@@ -416,57 +461,73 @@ function judgeValue(registry, registryKey, value) {
 /**
  * Every governed facet value is minted in its registry (UCS-1148).
  *
- * Generic over FACET_REGISTRIES: this function knows how to walk a declared
- * path and how to judge a value, and nothing about which facets exist. That is
- * the seam UCS-1149 extends by declaration.
+ * Generic over FACET_REGISTRIES and GOVERNED_COLLECTIONS: this function knows
+ * how to walk a declared path and how to judge a value, and nothing about which
+ * kinds or facets exist. That is the seam UCS-1149 extends by declaration —
+ * a second governed record kind is two table entries, not an edit here.
  */
 function checkRegistryMembership(model, push) {
-  const rows = FACET_REGISTRIES['knowledge-leaf'];
-  // Shape first, once per registry: a registry whose shape disagrees with the
-  // facet it governs is judging the wrong question, so the disagreement is
-  // reported against the registry file rather than against every leaf that
-  // drew from it.
-  for (const { registry: registryKey, hierarchical } of rows) {
-    const registry = model.registries.get(registryKey);
-    if (!registry) continue; // absence is the per-value missing-registry finding
-    const mismatch = registryShapeMismatch(registry, hierarchical, registryKey);
-    if (mismatch) {
-      push({
-        severity: 'error', code: mismatch.code, id: registryKey,
-        file: registry.file, path: 'hierarchical', message: mismatch.message,
-      });
+  // Shape first, once per registry rather than once per record: a registry
+  // whose shape disagrees with the facet it governs is judging the wrong
+  // question, so the disagreement is reported against the registry file rather
+  // than against every record that drew from it. De-duplicated across kinds,
+  // since two kinds may legitimately draw on one registry.
+  const shapeChecked = new Set();
+  for (const rows of Object.values(FACET_REGISTRIES)) {
+    for (const { registry: registryKey, hierarchical } of rows) {
+      if (shapeChecked.has(registryKey)) continue;
+      shapeChecked.add(registryKey);
+      const registry = model.registries.get(registryKey);
+      if (!registry) continue; // absence is the per-value missing-registry finding
+      const mismatch = registryShapeMismatch(registry, hierarchical, registryKey);
+      if (mismatch) {
+        push({
+          severity: 'error', code: mismatch.code, id: registryKey,
+          file: registry.file, path: 'hierarchical', message: mismatch.message,
+        });
+      }
     }
   }
-  for (const leaf of model.leaves.values()) {
-    const { file, record } = leaf;
-    const id = recordId(leaf);
-    for (const { within, field, each, registry: registryKey } of rows) {
-      const registry = model.registries.get(registryKey);
-      // A row may sit inside a repeated sub-record (citations[]); declaring the
-      // container once keeps the table free of per-index rows.
-      const hosts = within
-        ? (Array.isArray(valueAtPath(record, within))
-          ? valueAtPath(record, within).map((host, i) => [host, `${within}[${i}]`])
-          : [])
-        : [[record, '']];
-      for (const [host, hostPath] of hosts) {
-        if (!isObject(host)) continue;
-        const raw = valueAtPath(host, field);
-        // Non-strings are already diagnosed by KK-02's schema check; a second
-        // complaint here would double-report one defect.
-        const values = each
-          ? (Array.isArray(raw) ? raw.map((v, i) => [v, `${field}[${i}]`]) : [])
-          : [[raw, field]];
-        for (const [value, valuePath] of values) {
-          if (typeof value !== 'string') continue;
-          const verdict = judgeValue(registry, registryKey, value);
-          if (!verdict) continue;
-          push({
-            severity: 'error', code: verdict.code, id, file,
-            path: hostPath ? `${hostPath}.${valuePath}` : valuePath,
-            message: verdict.message,
-          });
-        }
+  for (const [kind, rows] of Object.entries(FACET_REGISTRIES)) {
+    // Non-null by construction: assertGovernedKinds refused the table at load
+    // if any declared kind lacked a collection.
+    for (const entry of model[GOVERNED_COLLECTIONS[kind]].values()) {
+      checkOneRecord(model, push, entry, rows);
+    }
+  }
+}
+
+/** Judge one record's governed facets against the rows its kind declares. */
+function checkOneRecord(model, push, entry, rows) {
+  const { file, record } = entry;
+  const id = recordId(entry);
+  for (const { within, field, each, registry: registryKey } of rows) {
+    const registry = model.registries.get(registryKey);
+    // A row may sit inside a repeated sub-record (citations[]); declaring the
+    // container once keeps the table free of per-index rows.
+    const container = within ? valueAtPath(record, within) : null;
+    const hosts = within
+      ? (Array.isArray(container)
+        ? container.map((host, i) => [host, `${within}[${i}]`])
+        : [])
+      : [[record, '']];
+    for (const [host, hostPath] of hosts) {
+      if (!isObject(host)) continue;
+      const raw = valueAtPath(host, field);
+      // Non-strings are already diagnosed by KK-02's schema check; a second
+      // complaint here would double-report one defect.
+      const values = each
+        ? (Array.isArray(raw) ? raw.map((v, i) => [v, `${field}[${i}]`]) : [])
+        : [[raw, field]];
+      for (const [value, valuePath] of values) {
+        if (typeof value !== 'string') continue;
+        const verdict = judgeValue(registry, registryKey, value);
+        if (!verdict) continue;
+        push({
+          severity: 'error', code: verdict.code, id, file,
+          path: hostPath ? `${hostPath}.${valuePath}` : valuePath,
+          message: verdict.message,
+        });
       }
     }
   }

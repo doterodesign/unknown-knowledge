@@ -121,7 +121,7 @@ or `store` disagreeing with the file's own path (`registry-name-mismatch`,
 (`unresolved-ref`). None of these can be settled by the engine: picking a winner
 by file order would be a governance decision nobody made.
 
-Three engine conducts are worth stating outright, because each is the difference
+Four engine conducts are worth stating outright, because each is the difference
 between a governed vocabulary and a decorative one:
 
 **Every value cites a decision, and the citation is checked.** `decision` is a

@@ -305,6 +305,9 @@ const REGISTRY_EXTENSION = '.yaml';
  *   records     how the record files are found and read, or null for a store
  *               whose records are loaded by a bespoke reader (knowledge leaves
  *               are front matter + body, which is a parser, not a descriptor)
+ *   reader      names that bespoke reader in BESPOKE_READERS, for a store with
+ *               no `records` shape — so "how is this store read" stays a fact
+ *               in the table rather than a branch in the load loop
  *     subdir      where under the store the record files live
  *     kind        the KK-02 record kind each file validates as
  *     space       the id space the records index into
@@ -332,9 +335,12 @@ export const STORE_DESCRIPTORS = Object.freeze({
   knowledge: Object.freeze({
     dir: 'knowledge',
     // Leaves are YAML front matter plus a markdown body — a parse shape, not a
-    // walk shape, so `loadLeafFiles` stays its own reader. The descriptor still
-    // owns everything ABOUT the store that is data (rules, registries).
+    // walk shape, so no `records` descriptor can express them. `reader` names
+    // the bespoke loader instead, which keeps the branch in the TABLE rather
+    // than in the load loop: the loop asks each store how it is read and never
+    // learns that one store is special.
     records: null,
+    reader: 'loadLeafFiles',
     rules: true,
     registries: true,
   }),
@@ -750,7 +756,10 @@ function loadRegistryFiles(ctx, store) {
       // machinery as every other cross-store citation.
       if (typeof entry.decision === 'string') {
         ctx.refs.push({
-          from: `${name}/${entry.value}`,
+          // Store-qualified, matching the `<store>/<name>` registry key: `refs`
+          // is a published, `from`-sorted model field, so two identically named
+          // registries in different stores must not share an edge origin.
+          from: `${store}/${name}/${entry.value}`,
           type: 'registry.decision',
           to: entry.decision,
           file,
@@ -891,6 +900,43 @@ function loadLeafFiles(ctx) {
   }
 }
 
+/**
+ * The bespoke record readers a descriptor may name, by name (UCS-1148).
+ *
+ * A store whose records are not a walk-and-parse shape names its reader in the
+ * descriptor rather than being special-cased in the load loop. The indirection
+ * through a name exists because the descriptor table is declared above these
+ * functions: holding the function itself would be a forward reference into a
+ * frozen const, and reordering the module to avoid it would put the store shape
+ * table below the machinery that reads it.
+ *
+ * @type {Readonly<Record<string, (ctx: object, store: string) => void>>}
+ */
+const BESPOKE_READERS = Object.freeze({
+  loadLeafFiles: (ctx) => loadLeafFiles(ctx),
+});
+
+/**
+ * Refuse a descriptor naming a reader that does not exist — an engine failure
+ * at load, never a silent pass. A store whose reader never resolves would load
+ * ZERO records and report nothing, which reads exactly like an empty store.
+ *
+ * @param {Record<string, { reader?: string }>} descriptors
+ * @throws {Error} if a named reader is not in BESPOKE_READERS
+ */
+export function assertReadersResolve(descriptors) {
+  for (const [store, descriptor] of Object.entries(descriptors)) {
+    if (descriptor.reader && !BESPOKE_READERS[descriptor.reader]) {
+      throw new Error(
+        `store "${store}" names reader "${descriptor.reader}", which does not exist — `
+        + 'its records would silently fail to load and the store would read as empty',
+      );
+    }
+  }
+}
+
+assertReadersResolve(STORE_DESCRIPTORS);
+
 /** Pointer index: source-of-truth path → concept ids (KK-06 reverse lookup). */
 function buildPointers(ctx) {
   const pointers = new Map();
@@ -975,9 +1021,9 @@ export function loadStores(root) {
   // vocabulary it draws from is complete.
   for (const store of STORES) {
     if (!ctx.stores[store].present) continue;
-    const { records } = STORE_DESCRIPTORS[store];
+    const { records, reader } = STORE_DESCRIPTORS[store];
     if (records) loadEntriesFiles(ctx, store, records);
-    else if (store === 'knowledge') loadLeafFiles(ctx);
+    else if (reader) BESPOKE_READERS[reader](ctx, store);
   }
 
   const pointers = buildPointers(ctx);
