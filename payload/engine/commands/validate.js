@@ -33,6 +33,28 @@
  *   ref-cycle         a decision supersedes chain that loops (§3.3 chains
  *                     must be acyclic; supersedes/superseded-by mirror pairs
  *                     are legitimate, so only supersedes edges are walked)
+ *   unregistered-value  a governed facet value absent from its registry
+ *                     (UCS-1148). Registry membership cannot be a schema enum:
+ *                     the vocabulary is minted by literary warrant under
+ *                     steward review, so it lives in a governed file that
+ *                     grows without an engine release
+ *   unminted-segment  a hierarchical domain path with an unminted segment —
+ *                     the finding names the SEGMENT, which is the edit the
+ *                     author can actually make
+ *   suppressed-value  a value the registry lists as REJECTED. Suppression is
+ *                     durable and visible: a refused term must not read as a
+ *                     typo, and must not be quietly re-minted
+ *   missing-registry  a record cites a governed facet whose registry the store
+ *                     does not carry. Registry absence surfaces HERE, at the
+ *                     point a value actually needs judging — a store that
+ *                     governs nothing is complete, but a value checked against
+ *                     a registry that never loaded is a check that never ran
+ *   registry-shape-mismatch
+ *                     a registry's hierarchical flag disagrees with the shape
+ *                     the facet it governs requires. Reported once, against the
+ *                     registry file: a domains registry missing its
+ *                     `hierarchical: true` would judge whole paths as opaque
+ *                     strings, silently disabling the segment rule at exit 0
  *
  * Exit codes (PRD §5, lib/exit-codes.js): 0 clean, 1 findings (any
  * error-severity finding), 2 engine failure. Loader error-severity
@@ -69,7 +91,9 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
   'id-range', 'id-shape', 'index-drift', 'missing-citation',
-  'missing-path', 'orphan', 'ref-cycle',
+  'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
+  'registry-shape-mismatch', 'suppressed-value', 'unminted-segment',
+  'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -237,6 +261,322 @@ function checkOrphans(model, push) {
   }
 }
 
+// ------------------------------------------- registry membership (UCS-1148)
+
+/**
+ * Which governed vocabulary each facet field draws from (UCS-1148).
+ *
+ * A DECLARATION, in the same spirit as the loader's REF_FIELDS: "this field's
+ * values must be minted in that registry" is a fact about the store shape, and
+ * facts about the store shape belong in a table every surface reads. Adding a
+ * governed facet is adding a row — there is no per-facet branch in the checker
+ * to extend, which is what lets frontmatter v2 (UCS-1149) declare the rest of
+ * its facets here rather than growing a second membership code path.
+ *
+ * Each row:
+ *   field     a path of object keys into the record, dotted. The path may end
+ *             at a single string or at an ARRAY of strings; `each` says which
+ *   each      true when the field holds an array, so every member is checked
+ *             and the finding path carries the index the author can point at
+ *   registry  "<store>/<name>" — the registry key, matching the loader's index
+ *   within    an optional path prefix, so a field nested inside a repeated
+ *             sub-record (a citation) is declared once rather than per index
+ *   hierarchical
+ *             the registry SHAPE this facet requires. Declared, and checked
+ *             against the registry's own flag: see registryShapeMismatch
+ *
+ * Frozen all the way down: a mutated row would silently redirect a facet at a
+ * different vocabulary, which is a governed store quietly ungoverned.
+ *
+ * @type {Readonly<Record<string, ReadonlyArray<Readonly<object>>>>}
+ */
+export const FACET_REGISTRIES = Object.freeze({
+  'knowledge-leaf': Object.freeze([
+    Object.freeze({ field: 'facets.domain', registry: 'knowledge/domains', hierarchical: true }),
+    Object.freeze({ field: 'operations', each: true, registry: 'knowledge/operations', hierarchical: false }),
+    Object.freeze({ field: 'applies.jurisdictions', each: true, registry: 'knowledge/jurisdictions', hierarchical: false }),
+    Object.freeze({ within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers', hierarchical: false }),
+  ]),
+});
+
+/**
+ * Which model collection each governed record kind is indexed in.
+ *
+ * The one place the checker learns that `knowledge-leaf` records live in
+ * `model.leaves`. Without it the kind and the collection were spelled at two
+ * call sites apiece, so a second governed kind — which UCS-1149 brings — would
+ * have meant editing the walker rather than the tables it reads.
+ *
+ * Keyed by the same kind strings FACET_REGISTRIES uses, so the two tables are
+ * read together and a kind declared in one but missing from the other is
+ * refused at load rather than silently unchecked (assertGovernedKinds).
+ *
+ * @type {Readonly<Record<string, string>>}
+ */
+export const GOVERNED_COLLECTIONS = Object.freeze({
+  'knowledge-leaf': 'leaves',
+});
+
+/**
+ * Refuse a facet table naming a kind whose records the checker cannot reach —
+ * an engine failure at load, never a silent pass.
+ *
+ * A row declared for a kind with no collection would govern nothing: the
+ * facet would look governed in the table and be unchecked in every store,
+ * which is the failure class this engine exists to prevent (PRD §5).
+ *
+ * @param {Record<string, unknown>} table the facet declaration table
+ * @throws {Error} if a declared kind has no model collection
+ */
+export function assertGovernedKinds(table) {
+  for (const kind of Object.keys(table)) {
+    if (!GOVERNED_COLLECTIONS[kind]) {
+      throw new Error(
+        `facet table declares governed kind "${kind}", which maps to no model collection — `
+        + 'its rows would look governed and be checked in no store; add it to GOVERNED_COLLECTIONS',
+      );
+    }
+  }
+}
+
+/**
+ * Refuse a facet table whose rows disagree about one registry's SHAPE — an
+ * engine failure at load, never a silent pass.
+ *
+ * The shape check runs once per registry, because a mismatch is a fact about
+ * the registry rather than about any record that drew from it. That
+ * de-duplication is only sound while every row naming a registry agrees about
+ * its shape: if two rows disagreed, the first one seen would settle the
+ * question and the second would be checked against a shape it never asked for
+ * — a facet silently governed by the wrong rule, which is the exact failure
+ * `registry-shape-mismatch` exists to catch one level down.
+ *
+ * The contradiction cannot be resolved here either. One registry is either
+ * hierarchical or flat; two facets needing it both ways need two registries,
+ * and picking a winner by declaration order would be an arbitrary answer to a
+ * question the table asked wrongly.
+ *
+ * @param {Record<string, ReadonlyArray<{ registry: string, hierarchical?: boolean }>>} table
+ * @throws {Error} if two rows name one registry with different shapes
+ */
+export function assertConsistentRegistryShapes(table) {
+  const expected = new Map(); // registry key -> { hierarchical, kind, field }
+  for (const [kind, rows] of Object.entries(table)) {
+    for (const row of rows) {
+      const previous = expected.get(row.registry);
+      if (previous === undefined) {
+        expected.set(row.registry, { hierarchical: row.hierarchical, kind, field: row.field });
+      } else if (previous.hierarchical !== row.hierarchical) {
+        throw new Error(
+          `facet table declares registry "${row.registry}" as both hierarchical=${previous.hierarchical} `
+          + `(${previous.kind}.${previous.field}) and hierarchical=${row.hierarchical} (${kind}.${row.field}) — `
+          + 'one registry has one shape, so one of these facets would be governed by a rule it never asked for; '
+          + 'a facet needing the other shape needs its own registry',
+        );
+      }
+    }
+  }
+}
+
+// Both checked as this module loads: a facet governed by nothing, or governed
+// against a shape another row settled, is a defect in the kit itself. Each must
+// surface the moment it is introduced rather than as a store that quietly
+// passes checks it never ran.
+assertGovernedKinds(FACET_REGISTRIES);
+assertConsistentRegistryShapes(FACET_REGISTRIES);
+
+/** Follow a dotted path into a record; undefined if any segment is missing. */
+function valueAtPath(record, field) {
+  let node = record;
+  for (const segment of field.split('.')) {
+    if (!isObject(node)) return undefined;
+    node = node[segment];
+  }
+  return node;
+}
+
+/**
+ * The registry SHAPE a facet requires, checked against the shape the registry
+ * declares — a silent disagreement here disables the rule it governs.
+ *
+ * `facets.domain` is hierarchical: its whole membership rule is that every
+ * segment of a path is minted. That rule lives behind `registry.hierarchical`,
+ * so a domains registry that lost its `hierarchical: true` line would judge a
+ * two-segment path as one opaque string and pass it the moment that exact
+ * string appeared in the file — the segment rule switched off by an omission,
+ * at exit 0, with nothing said. The converse is as bad: a flat registry
+ * declaring itself hierarchical would split values on '/' and demand parents
+ * nobody meant to mint.
+ *
+ * Neither direction is a defect the value-level checks can see, because both
+ * produce a coherent-looking verdict about the wrong question. So the shape is
+ * declared on both sides and the disagreement is the finding: reported ONCE per
+ * registry, against the registry file, because the registry is what must change
+ * — reporting it per value would bury one edit under a finding for every leaf.
+ *
+ * @param {object} registry the loaded registry
+ * @param {boolean|undefined} expected the shape the declaration requires
+ * @returns {{ code: string, message: string }|null}
+ */
+function registryShapeMismatch(registry, expected, registryKey) {
+  if (expected === undefined || registry.hierarchical === expected) return null;
+  return {
+    code: 'registry-shape-mismatch',
+    message: expected
+      ? `the "${registryKey}" registry must be hierarchical — the facet it governs is a '/'-joined path whose every segment must be minted, and a flat registry would judge the whole path as one opaque string, silently disabling that rule. Add "hierarchical: true" to ${registry.file}`
+      : `the "${registryKey}" registry declares itself hierarchical, but the facet it governs is a flat value — path splitting would demand parent values nobody minted. Remove "hierarchical: true" from ${registry.file}`,
+  };
+}
+
+/**
+ * Judge one facet value against its registry — the whole membership rule.
+ *
+ * Returns the finding this value earns, or null when it is legitimately
+ * minted. Four outcomes, and each one names both the value and the registry,
+ * because a finding that says only "unknown value" leaves the author guessing
+ * which of four vocabularies to go read:
+ *
+ *   - the registry did not load at all → `missing-registry`. This is where
+ *     registry ABSENCE surfaces, and it surfaces HERE rather than at load
+ *     because absence is only meaningful once a record actually claims a
+ *     governed value. A store that governs nothing is complete; a store whose
+ *     leaf cites a domain with no domains registry is a check that never ran.
+ *   - the value is minted → clean.
+ *   - the value is SUPPRESSED → `suppressed-value`, quoting the refusal. A
+ *     term that was considered and rejected must not read as a typo: the
+ *     author needs to know the vocabulary decision already went against them.
+ *   - a hierarchical path with an unminted segment → `unminted-segment`,
+ *     naming the SEGMENT rather than the whole path. "trading/derivatives/swaps
+ *     is not in the registry" sends an author looking for the wrong edit; the
+ *     finding they can act on is which parent is missing.
+ *   - otherwise → `unregistered-value`.
+ *
+ * @param {object} registry the loaded registry, or undefined if absent
+ * @param {string} registryKey the "<store>/<name>" the row declared
+ * @param {string} value the facet value as the record spells it
+ * @returns {{ code: string, message: string }|null}
+ */
+function judgeValue(registry, registryKey, value) {
+  if (!registry) {
+    return {
+      code: 'missing-registry',
+      message: `value "${value}" is governed by the "${registryKey}" registry, which the store does not carry — the vocabulary this value must be minted in never loaded, so its membership was never checked (a check that never ran is a blocking defect, PRD §5)`,
+    };
+  }
+  const where = `the "${registryKey}" registry (${registry.file})`;
+  if (registry.suppressed.has(value)) {
+    return {
+      code: 'suppressed-value',
+      message: `value "${value}" is SUPPRESSED in ${where} — this term was proposed and refused, and a suppression is durable: re-minting it is a registry edit with its own Decisions entry, never a quiet reuse`,
+    };
+  }
+  if (registry.hierarchical) {
+    // Every segment above a child must itself be minted: a hierarchy where a
+    // child may hang off an unminted parent is not a hierarchy, it is a set of
+    // strings that happen to contain slashes.
+    const segments = value.split('/');
+    for (let i = 0; i < segments.length; i += 1) {
+      const path = segments.slice(0, i + 1).join('/');
+      if (registry.suppressed.has(path)) {
+        return {
+          code: 'suppressed-value',
+          message: `value "${value}" descends from "${path}", which is SUPPRESSED in ${where} — a refused class mints no children`,
+        };
+      }
+      if (!registry.minted.has(path)) {
+        return {
+          code: 'unminted-segment',
+          message: `value "${value}" is invalid: the segment "${path}" is not minted in ${where} — every segment of a hierarchical path must be minted before a child may hang off it, and each minting is a registry edit plus a Decisions entry (literary warrant: material must exist to fill it)`,
+        };
+      }
+    }
+    return null;
+  }
+  if (registry.minted.has(value)) return null;
+  return {
+    code: 'unregistered-value',
+    message: `value "${value}" is not minted in ${where} — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string`,
+  };
+}
+
+/**
+ * Every governed facet value is minted in its registry (UCS-1148).
+ *
+ * Generic over FACET_REGISTRIES and GOVERNED_COLLECTIONS: this function knows
+ * how to walk a declared path and how to judge a value, and nothing about which
+ * kinds or facets exist. That is the seam UCS-1149 extends by declaration —
+ * a second governed record kind is two table entries, not an edit here.
+ */
+function checkRegistryMembership(model, push) {
+  // Shape first, once per registry rather than once per record: a registry
+  // whose shape disagrees with the facet it governs is judging the wrong
+  // question, so the disagreement is reported against the registry file rather
+  // than against every record that drew from it. De-duplicated across kinds,
+  // since two kinds may legitimately draw on one registry — sound because
+  // assertConsistentRegistryShapes refused at load any table whose rows
+  // disagree about a registry's shape, so whichever row is seen first here
+  // speaks for all of them.
+  const shapeChecked = new Set();
+  for (const rows of Object.values(FACET_REGISTRIES)) {
+    for (const { registry: registryKey, hierarchical } of rows) {
+      if (shapeChecked.has(registryKey)) continue;
+      shapeChecked.add(registryKey);
+      const registry = model.registries.get(registryKey);
+      if (!registry) continue; // absence is the per-value missing-registry finding
+      const mismatch = registryShapeMismatch(registry, hierarchical, registryKey);
+      if (mismatch) {
+        push({
+          severity: 'error', code: mismatch.code, id: registryKey,
+          file: registry.file, path: 'hierarchical', message: mismatch.message,
+        });
+      }
+    }
+  }
+  for (const [kind, rows] of Object.entries(FACET_REGISTRIES)) {
+    // Non-null by construction: assertGovernedKinds refused the table at load
+    // if any declared kind lacked a collection.
+    for (const entry of model[GOVERNED_COLLECTIONS[kind]].values()) {
+      checkOneRecord(model, push, entry, rows);
+    }
+  }
+}
+
+/** Judge one record's governed facets against the rows its kind declares. */
+function checkOneRecord(model, push, entry, rows) {
+  const { file, record } = entry;
+  const id = recordId(entry);
+  for (const { within, field, each, registry: registryKey } of rows) {
+    const registry = model.registries.get(registryKey);
+    // A row may sit inside a repeated sub-record (citations[]); declaring the
+    // container once keeps the table free of per-index rows.
+    const container = within ? valueAtPath(record, within) : null;
+    const hosts = within
+      ? (Array.isArray(container)
+        ? container.map((host, i) => [host, `${within}[${i}]`])
+        : [])
+      : [[record, '']];
+    for (const [host, hostPath] of hosts) {
+      if (!isObject(host)) continue;
+      const raw = valueAtPath(host, field);
+      // Non-strings are already diagnosed by KK-02's schema check; a second
+      // complaint here would double-report one defect.
+      const values = each
+        ? (Array.isArray(raw) ? raw.map((v, i) => [v, `${field}[${i}]`]) : [])
+        : [[raw, field]];
+      for (const [value, valuePath] of values) {
+        if (typeof value !== 'string') continue;
+        const verdict = judgeValue(registry, registryKey, value);
+        if (!verdict) continue;
+        push({
+          severity: 'error', code: verdict.code, id, file,
+          path: hostPath ? `${hostPath}.${valuePath}` : valuePath,
+          message: verdict.message,
+        });
+      }
+    }
+  }
+}
+
 /** Leaf citations must carry a non-empty source (§3.2). */
 function checkCitations(model, push) {
   for (const leaf of model.leaves.values()) {
@@ -308,6 +648,7 @@ export function runChecks(model, repoRoot = model.root) {
   checkCatalogs(model, push);
   checkConcepts(model, push, repoRoot);
   checkOrphans(model, push);
+  checkRegistryMembership(model, push);
   checkCitations(model, push);
   checkDecisionCycles(model, push);
   findings.sort((a, b) =>

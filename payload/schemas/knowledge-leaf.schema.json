@@ -16,8 +16,14 @@
       "$ref": "#/$defs/notation",
       "description": "Positional within the per-project tree (e.g. \"362.1\"). Quote it — unquoted it parses as a number."
     },
-    "domain": { "type": "string" },
-    "division": { "type": "string" },
+    "domain": {
+      "type": "string",
+      "description": "LEGACY navigational domain — a free string naming the tree branch this leaf files under, paired with `division` and mirrored in the notation spine (§3.2). Ungoverned: nothing checks it against a vocabulary. Distinct from `facets.domain`, which is the REGISTRY-GOVERNED subject path (UCS-1148) whose every segment must be minted. The two coexist while v2 lands; UCS-1149 settles which survives."
+    },
+    "division": {
+      "type": "string",
+      "description": "Legacy navigational subdivision under `domain`, ungoverned in the same way. See the note on `domain`."
+    },
     "heading": { "type": "string" },
     "description": { "type": "string" },
     "notes": {
@@ -52,6 +58,34 @@
       "items": { "$ref": "#/$defs/citation" },
       "description": "REQUIRED — an unsourced claim is not promotable."
     },
+    "facets": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Governed facets: values drawn from the store's registries (UCS-1148). Membership is a structural-validator check, never a schema enum — the vocabulary is minted by literary warrant under steward review, so it grows by a registry edit plus a Decisions entry rather than by an engine release.",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "Hierarchical domain path from the domains registry, '/'-joined. Valid only when EVERY segment is minted — a child cannot hang off an unminted parent. This is the GOVERNED subject path, not the legacy top-level `domain` free string: membership here is a structural-validator check against knowledge/_registries/domains.yaml, and the top level of that registry is open (a new class is a registry edit plus a Decisions entry)."
+        }
+      }
+    },
+    "operations": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Verbs from the operations registry — what this leaf lets a reader DO."
+    },
+    "applies": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Where this leaf's claim holds.",
+      "properties": {
+        "jurisdictions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Values from the jurisdictions registry."
+        }
+      }
+    },
     "terms": { "type": "array", "items": { "type": "string" } },
     "edition": { "type": "integer", "minimum": 1 },
     "contributors": { "type": "array", "items": { "type": "string" } }
@@ -77,7 +111,11 @@
       "required": ["source"],
       "properties": {
         "source": { "type": "string" },
-        "accessed": { "$ref": "#/$defs/isoDate" }
+        "accessed": { "$ref": "#/$defs/isoDate" },
+        "authority": {
+          "type": "string",
+          "description": "The source's authority tier, from the authority-tiers registry (UCS-1148). A tier is a governed value, not an enum: which tiers a project recognizes is its own to mint."
+        }
       }
     }
   }

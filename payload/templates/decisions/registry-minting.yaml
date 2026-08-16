@@ -1,0 +1,58 @@
+# Decisions-entry template — minting or suppressing a registry value (UCS-1148).
+#
+# Every registry edit is a governed act with a written rationale. Copy this file
+# to decisions/entries/<id>-<slug>.yaml, fill it, and open ONE PR carrying the
+# entry, the registry edit that cites it, and the material that supplied the
+# warrant. Conduct in full: protocol/registry-warrant.md.
+#
+# Draft with a provisional date-suffixed id (D-YYYY-MM-DD-slug) and
+# `status: proposed`; the steward assigns the final D-NNN at acceptance (§3.5).
+# Agents draft; humans approve.
+#
+# The one rule this entry exists to evidence:
+#   A VALUE IS MINTED ONLY WHEN MATERIAL EXISTS TO FILL IT (literary warrant).
+#   If `context` cannot name material that exists NOW, the value is not ready.
+#
+# The `id` and `date` placeholders below are DELIBERATELY not valid, so this
+# file fails validation until a steward fills them — pasting the template
+# unedited must never produce a Decisions entry, or a registry value would end
+# up carrying a warrant nobody wrote. (Same conduct as the audit's `K-XXX`
+# drafts.) Every other field is real: fill those two and the entry validates.
+schema-version: 1
+entries:
+  - id: D-YYYY-MM-DD-mint-example-domain
+    title: Mint <value> in the <registry> registry
+    # `governance` — a registry edit changes what the Store may say, not how the
+    # engine works.
+    category: governance
+    status: proposed
+    date: "YYYY-MM-DD"
+    deciders: [<steward>]
+    # THE WARRANT. Name the material that exists and needs this value: the
+    # leaves, documents, or body of work with nowhere to sit. "We will need it
+    # later" is the case the rule refuses — speculative shelving invites authors
+    # to file knowledge under a heading nobody chose deliberately.
+    context: >-
+      <Which material exists, and why no minted value fits it. For a
+      hierarchical domain, say why it belongs at this level rather than under an
+      existing class.>
+    # What is being minted, at which level, and in which registry. For a
+    # hierarchical path, mint every segment: a child may not hang off an
+    # unminted parent.
+    decision: >-
+      Mint <value> in <registry>. <For a new top-level domain class: this is a
+      registry edit plus this entry — the top level is open, so no schema or
+      engine change is involved.>
+    # For a SUPPRESSION, keep the same shape and say what was refused and why.
+    # The value stays listed with `status: suppressed` rather than being
+    # deleted, so the refusal is durable and the term cannot be quietly
+    # re-minted. Deleting it would lose the decision and invite the same
+    # proposal again with no memory of how it went.
+    consequences: >-
+      <What this obliges: leaves to reclassify, siblings this now sits beside,
+      or — on a suppression — where the material should go instead.>
+    supersedes: []
+    # A re-minting REVERSES an earlier suppression: name that decision here and
+    # say in `context` why the refusal no longer holds.
+    relates-to:
+      leaves: []
