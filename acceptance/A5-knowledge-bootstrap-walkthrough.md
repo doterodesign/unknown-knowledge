@@ -235,6 +235,8 @@ node "$KIT/engine/resolve.js" --paths Sources/Sportsbook/Sport.swift,Sources/Pay
 ```
 resolve --paths -> 2 paths
 
+time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
+
 Sources/Payments/Providers.swift
   no concepts point at this path
 
@@ -331,7 +333,7 @@ node "$KIT/engine/validate-values.js" --root .
 
 ```
 structural validate -> 0 findings — structurally clean
-checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 ```
 
 ```

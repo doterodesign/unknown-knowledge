@@ -208,12 +208,15 @@ grep -rl '^trigger: quarantine' unknown-knowledge/logs/findings 2>/dev/null
 ## Verdicts
 | step | command | exit | reading |
 |---|---|---|---|
-| structure | validate.js | 0 | clean (checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle) |
+| structure | validate.js | 1 | 2 findings to report, not a broken store — the store loads clean, so every check ran (checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value) |
 | values | validate-values.js | 2 | CHECK NEVER RAN on K-113, K-115, K-116 (out-of-envelope); 3 findings on the rest |
 | reverse audit | audit.js --today 2026-07-09 | 0 | advisory — 4 proposals for the steward, never a gate |
 
 ## Structural findings
-none
+- unregistered-value: L-000100 `applies.jurisdictions[0]` — "uk-gc" is not minted
+  in the knowledge/jurisdictions registry
+- unregistered-value: L-000100 `facets.form` — "walkthrough" is not minted in the
+  knowledge/form registry
 
 ## Value findings
 - HARD ERROR out-of-envelope: K-113, K-115, K-116 — the check never ran on these
