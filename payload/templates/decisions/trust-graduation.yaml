@@ -1,0 +1,93 @@
+# Decisions-entry template — graduating a change category (UCS-1155).
+#
+# A graduation narrows moderation on ONE CHANGE CATEGORY from 100% inspection to
+# sampling. Copy this file to decisions/entries/<id>-<slug>.yaml, fill it, and
+# open ONE PR carrying the entry and — if the category is not yet declared — the
+# row that declares it in decisions/_registries/graduation-categories.yaml.
+#
+# Autonomy is PER CATEGORY, never per leaf. "L-000117 has been right ten times"
+# is not evidence about anything: the eleventh leaf is a different claim by a
+# different author. "Alias additions have been approved unmodified ten cycles
+# running" is evidence about a class of edit, which is why the category is the
+# unit and why a graduation names one.
+#
+# WHAT THE ENGINE CHECKS, AND WHAT IT DOES NOT. It checks that this entry is
+# well-formed, that the category it names is declared in the table, and that the
+# category is not permanently gated. It does NOT compute the approved-unmodified
+# count and does not decide whether the threshold was met — v1's analytics are
+# MANUAL. `observed-cycles` below is YOUR record of what you counted, written
+# down so a reviewer can weigh the judgment; no code asserts it. Do not read a
+# green validator as agreement that the bar was cleared.
+#
+# The two rules this entry exists to evidence:
+#
+#   REVOCATION IS AUTOMATIC ON ANY DEFECT. A single defect found in a graduated
+#   category revokes it — not "a serious defect", not "a pattern of defects".
+#   The whole warrant for sampling is that this class of change stopped
+#   producing surprises, and one surprise is the evidence that it has not.
+#   Record the revocation with templates/decisions/trust-revocation.yaml.
+#
+#   CITATION SPOT-CHECKS SURVIVE EVERY GRADUATION. The sampling plan keeps
+#   citation spot-checks at every trust level, including the most graduated. A
+#   citation is a claim about the world that the store cannot check for itself,
+#   so no streak of clean mechanical edits is evidence that the citations are
+#   sound — those are different questions, and graduation only ever answers the
+#   first.
+#
+# The `id` and `date` placeholders below are DELIBERATELY not valid, so this
+# file fails validation until a steward fills them — pasting the template
+# unedited must never produce a Decisions entry, or moderation would narrow on a
+# rationale nobody wrote. Every other field is real: fill those two and the
+# entry validates.
+schema-version: 1
+entries:
+  - id: D-YYYY-MM-DD-graduate-example-category
+    title: "Graduate <category> to sampling"
+    # `trust` — this entry moves the system's own trust boundary, which is what
+    # the third store governs (PRD §3: rationale, ADR-style records, trust
+    # graduations).
+    category: trust
+    status: proposed
+    date: "YYYY-MM-DD"
+    deciders: [<steward>]
+    # THE EVIDENCE. Name the category, the count of consecutive approved-
+    # unmodified cycles you observed, and where you read it (reflect records
+    # per-item approval outcomes by category — that is the observable basis).
+    # "It feels safe by now" is the case this refuses: the count is what makes
+    # the judgment reviewable by someone who was not in the room.
+    context: >-
+      <Which category, how many consecutive approved-unmodified cycles it has
+      run, and where those cycles are recorded. Note anything that would make
+      the streak misleading — a quiet period with few changes is not the same
+      evidence as a busy one.>
+    # What narrows, and to what. Say the sampling rate plainly: "graduated" is
+    # not a synonym for "unreviewed", and the entry should say what inspection
+    # remains.
+    decision: >-
+      <Graduate <category> from full inspection to sampling at <rate>. Citation
+      spot-checks continue at this level, as at every level.>
+    # Say the revocation trigger out loud. A reader six months from now needs to
+    # know that this narrowing is conditional and how it ends.
+    consequences: >-
+      <What is no longer inspected on every change, and what still is. Any
+      defect found in this category revokes this graduation automatically —
+      recorded as its own entry, returning the category to full inspection.>
+    supersedes: []
+    # The typed block the validator reads. `category` must name a row in
+    # decisions/_registries/graduation-categories.yaml, and that row must not be
+    # permanently gated — a gated category cannot graduate however strong the
+    # streak, because the gate is about the KIND of judgment the change needs.
+    graduation:
+      action: graduate
+      category: <category-name>
+      # Your manual count. Recorded, not computed (see above).
+      observed-cycles: 0
+    # Who wrote this entry and with which skill revision. Not decoration: if a
+    # graduation later proves to have been drafted by a bad skill vintage, this
+    # is what makes every entry from that vintage findable rather than guessed
+    # at.
+    provenance:
+      author: <steward-or-agent>
+      skill-version: <skill@version>
+    relates-to:
+      decisions: []

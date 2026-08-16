@@ -61,6 +61,18 @@
  *                     point a value actually needs judging — a store that
  *                     governs nothing is complete, but a value checked against
  *                     a registry that never loaded is a check that never ran
+ *   missing-graduation-table
+ *                     a graduation/revocation entry in a store carrying no
+ *                     category table (UCS-1155). Absence surfaces where it can
+ *                     mean something — at the entry that needed the table
+ *   undeclared-category
+ *                     a graduation/revocation naming a category the table does
+ *                     not declare. Autonomy is per CATEGORY, so one nobody
+ *                     scoped has no written extent
+ *   gated-category-graduation
+ *                     a graduation for a PERMANENTLY GATED category — the
+ *                     refusal the mechanism exists for. Revocation of a gated
+ *                     category is fine: it only ever narrows autonomy
  *   registry-shape-mismatch
  *                     a registry's hierarchical flag disagrees with the shape
  *                     the facet it governs requires. Reported once, against the
@@ -111,10 +123,12 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
-  'id-range', 'id-shape', 'index-drift', 'malformed-verified', 'missing-authority',
-  'missing-citation', 'missing-path', 'missing-registry', 'missing-verified',
-  'orphan', 'ref-cycle', 'registry-shape-mismatch', 'suppressed-value',
-  'unaccounted-edition', 'unminted-segment', 'unregistered-value',
+  'gated-category-graduation', 'id-range', 'id-shape', 'index-drift',
+  'malformed-verified', 'missing-authority', 'missing-citation',
+  'missing-graduation-table', 'missing-path', 'missing-registry',
+  'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
+  'suppressed-value', 'unaccounted-edition', 'undeclared-category',
+  'unminted-segment', 'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -940,6 +954,86 @@ function checkEditions(model, push) {
   }
 }
 
+/**
+ * Every graduation or revocation entry is held against the category table
+ * (UCS-1155).
+ *
+ * This is the machine-checkable half of trust graduation, and it is worth being
+ * precise about which half that is. The engine does NOT compute approved-
+ * unmodified counts, does not decide whether a threshold was met, and does not
+ * grant or withdraw autonomy: v1's analytics are MANUAL, and the moderator
+ * judges the recorded counts themselves (steward-guide.md). What is checked is
+ * that the recorded artifacts are well-formed and consistent with the governed
+ * table — which is exactly the part a human reviewer cannot reliably do by eye
+ * across a growing decisions store.
+ *
+ * Three findings, because three different things are wrong:
+ *
+ *   missing-graduation-table
+ *              an entry moves the trust boundary in a store carrying no
+ *              category table at all. Absence surfaces HERE, at the point a
+ *              record actually needs the table, for the same reason
+ *              `missing-registry` does: a store that governs nothing is
+ *              complete, but a graduation judged against a table that never
+ *              loaded is a check that never ran (PRD §5).
+ *   undeclared-category
+ *              the entry names a category the table does not declare. Autonomy
+ *              is per category, so a graduation for a category nobody scoped is
+ *              autonomy with no declared extent — nothing says what class of
+ *              change it covers, and nothing could later revoke it by name.
+ *   gated-category-graduation
+ *              a graduation for a PERMANENTLY GATED category. This is the one
+ *              the whole mechanism exists to refuse: the gated list is where
+ *              judgment lives (new domain classes, contradicts/supersedes
+ *              edges, authority assignments, anything citation-bearing), and a
+ *              judgment call does not become mechanical by having been made
+ *              correctly N times. Revoking a gated category is NOT a finding —
+ *              a revocation only ever narrows autonomy, and refusing to record
+ *              one would be refusing the safe direction.
+ */
+function checkGraduations(model, push) {
+  // One table per store, keyed "<store>/<name>"; decisions is where graduation
+  // is governed (the change process is the team's truth anchor, D-003).
+  const tables = [...model.graduations.values()];
+  for (const entry of model.decisions.values()) {
+    const { file, record } = entry;
+    const graduation = record.graduation;
+    if (!isObject(graduation)) continue; // an ordinary decision carries no block
+    const { action, category } = graduation;
+    // A non-string category or unknown action is a schema defect KK-02 already
+    // reported; judging it again here would double-report one mistake.
+    if (typeof category !== 'string' || (action !== 'graduate' && action !== 'revoke')) continue;
+    if (!tables.length) {
+      push({
+        severity: 'error', code: 'missing-graduation-table', id: recordId(entry), file,
+        path: 'graduation.category',
+        message: `entry ${action}s the category "${category}", but the store carries no graduation category table — the table that declares which categories may graduate never loaded, so this entry's category was never checked (a check that never ran is a blocking defect, PRD §5)`,
+      });
+      continue;
+    }
+    const row = tables.map((t) => t.categories.get(category)).find(Boolean);
+    if (!row) {
+      const table = tables[0];
+      push({
+        severity: 'error', code: 'undeclared-category', id: recordId(entry), file,
+        path: 'graduation.category',
+        message: `category "${category}" is not declared in the graduation category table (${table.file}) — autonomy is granted per CATEGORY, so a ${action} naming an undeclared one has no scope anyone wrote down; declare the category with its eligibility and warrant, or correct the name`,
+      });
+      continue;
+    }
+    // A revocation only ever narrows autonomy, so it is legitimate against any
+    // declared category — including a gated one, where it is a no-op that
+    // records a defect was found. Only GRADUATION is refused.
+    if (action === 'graduate' && row.eligibility === 'gated') {
+      push({
+        severity: 'error', code: 'gated-category-graduation', id: recordId(entry), file,
+        path: 'graduation.category',
+        message: `category "${category}" is PERMANENTLY GATED in ${row.file} and cannot graduate — the table's warrant for gating it is the standing answer, and a judgment call does not become mechanical by having been made correctly ${typeof graduation['observed-cycles'] === 'number' ? graduation['observed-cycles'] : 'N'} times; changing that is a table edit with its own Decisions entry, never a graduation against the table as it stands`,
+      });
+    }
+  }
+}
+
 function checkDecisionCycles(model, push) {
   const seen = new Set(); // canonical cycle keys — each loop reported once
   const color = new Map(); // 0/undefined = white, 1 = on stack, 2 = done
@@ -998,10 +1092,51 @@ export function runChecks(model, repoRoot = model.root) {
   checkCitations(model, push);
   checkVerifiedDates(model, push);
   checkEditions(model, push);
+  checkGraduations(model, push);
   checkDecisionCycles(model, push);
   findings.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code) || compare(a.id, b.id));
   return findings;
+}
+
+/**
+ * Decision-entry provenance, published so a defect is traceable (UCS-1155).
+ *
+ * The point of recording an author and a skill version is being able to ask the
+ * question backwards. When a graduated category turns out to be producing bad
+ * changes, "which entries did that skill revision write?" is the question that
+ * bounds the damage — and it is unanswerable if provenance is only ever stored
+ * and never surfaced. So the validator publishes it for every entry that
+ * carries it, and a bad skill revision becomes traceable like any other defect
+ * rather than a thing someone has to remember.
+ *
+ * Entries WITHOUT provenance are omitted rather than listed as nulls. The field
+ * is optional — the whole installed base predates it (D-001: no update channel,
+ * so seeded stores keep what they have) — and a list padded with an entry for
+ * every un-migrated record would bury the ones that can actually be traced.
+ *
+ * Stable-sorted by id and free of timestamps, like every other part of this
+ * payload, so it stays baseline-diffable (D-012).
+ *
+ * @param {object} model the loaded store model
+ * @returns {Array<{id: string, file: string, author: string|null, 'skill-version': string|null}>}
+ */
+function decisionProvenance(model) {
+  const rows = [];
+  for (const entry of model.decisions.values()) {
+    const provenance = entry.record?.provenance;
+    if (!isObject(provenance)) continue;
+    const author = typeof provenance.author === 'string' ? provenance.author : null;
+    const skillVersion = typeof provenance['skill-version'] === 'string'
+      ? provenance['skill-version']
+      : null;
+    // A provenance block carrying neither field records nothing; publishing it
+    // would advertise traceability the entry does not actually have.
+    if (author === null && skillVersion === null) continue;
+    rows.push({ id: recordId(entry), file: entry.file, author, 'skill-version': skillVersion });
+  }
+  rows.sort((a, b) => compare(a.id, b.id));
+  return rows;
 }
 
 // ------------------------------------------------------------- CLI plumbing
@@ -1036,6 +1171,15 @@ function render(payload) {
     lines.push(`store health: ${health.errors} error(s), ${health.warnings} warning(s) — loader warnings do not block; errors would have (exit 2)`, '');
   }
   if (payload.concepts) lines.push(`filtered to concepts: ${payload.concepts.join(', ')}`, '');
+  // Provenance is traceability, so it is printed where a human reading a
+  // failing run can see it — not only in the JSON a machine parses.
+  if (payload.provenance.length) {
+    lines.push('decision provenance (author / skill version):');
+    for (const p of payload.provenance) {
+      lines.push(`    ${p.id}  ${p.author ?? '—'}  ${p['skill-version'] ?? '—'}`);
+    }
+    lines.push('');
+  }
   for (const f of payload.findings) {
     lines.push(`${f.severity}  ${f.code}  ${f.id}  ${f.file}  ${f.path}`, `    ${f.message}`);
   }
@@ -1096,6 +1240,7 @@ export function main(argv) {
     const payload = {
       checks: CHECKS,
       ...(opts.concepts ? { concepts: opts.concepts } : {}),
+      provenance: decisionProvenance(model),
       'store-health': healthSummary(storeHealth(model)),
       counts: {
         errors: findings.filter((f) => f.severity === 'error').length,

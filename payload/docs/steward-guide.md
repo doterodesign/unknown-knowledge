@@ -150,14 +150,89 @@ Keep the corroboration math honest by knowing what the log is not:
   Corroboration tolerates a lossy denominator — treat finding counts as
   signal, never as census.
 
-## Trust graduation — what reflect measures
+## Trust graduation — narrowing inspection, and un-narrowing it
 
-Autonomy is graduated per change-category, never global, and never assumed
-(the gate rules in `protocol/AGENTS.md`). The observable basis is what
-reflect already records: **per-item approval outcomes by category**
-(approved / approved-with-modification / rejected). When a category — say,
-alias additions — runs N consecutive approved-without-modification cycles,
-graduating it is a decision you record as a `decisions/` entry of category
-`trust`; others ("SSOT repoints") stay gated forever. The current kit ships
-the schema and this documented path; no mutation is autonomous until a
-recorded decision says so.
+Autonomy is graduated per change-category, never global, never per leaf, and
+never assumed (the gate rules in `protocol/AGENTS.md`). The category is the
+unit because it is the only thing evidence can be about: "this leaf has been
+right ten times" says nothing about the eleventh leaf, which is a different
+claim by a different author, whereas "alias additions have been approved
+unmodified ten cycles running" is evidence about a class of edit.
+
+The observable basis is what reflect already records: **per-item approval
+outcomes by category** (approved / approved-with-modification / rejected).
+
+### The category table
+
+`decisions/_registries/graduation-categories.yaml` declares every change
+category and its eligibility. It is filed under `decisions/` because
+graduation governs the change *process* — the team's truth anchor (D-003) —
+not the knowledge itself. Two shapes:
+
+- **`eligible`**, with a threshold **N**: mechanical categories, where the
+  edit is checkable by reading it and a clean run is evidence about the next
+  one. Alias additions, verified bumps, `paths` edges, see-also links.
+- **`gated`**, permanently: judgment categories. New domain classes,
+  contradicts/supersedes edges, authority assignments, and **anything
+  citation-bearing**. These never graduate, however long the streak — the
+  streak answers a different question than the one they ask. A correct
+  authority assignment ten times over says the assigner has been careful, not
+  that the eleventh source's trustworthiness can go unread.
+
+Every row carries a warrant and cites a Decisions entry, like any registry
+value. A malformed table is a hard error (exit 2), not a finding: graduation
+checks judged against a table the engine could not read are checks that never
+ran.
+
+### v1 analytics are MANUAL — the engine does not compute the counts
+
+State this plainly to anyone reading a green validator: **the engine does not
+compute approved-unmodified counts and never decides whether a threshold was
+met.** It checks that the entry is well-formed, that its category is declared,
+and that the category is not gated. *You* count the cycles and judge them
+against N. The `observed-cycles` field is your written record of that count,
+kept so a reviewer can weigh the judgment — no code asserts it. A clean
+validation run is not agreement that a graduation was earned.
+
+### Recording one
+
+Copy `templates/decisions/trust-graduation.yaml`, and record the graduation as
+a `decisions/` entry of category `trust`. The entry carries a typed
+`graduation:` block naming the category and your observed count.
+
+```
+node unknown-knowledge/engine/validate.js --root .
+```
+
+### Revocation is automatic on ANY defect
+
+**Any defect found in a graduated category revokes it.** Not "a serious
+defect", not "a pattern of defects" — one is enough, and the response is
+mechanical so it cannot be argued down. The warrant for sampling a category
+was that it had stopped producing surprises; one surprise is the evidence that
+it has not. Record it with `templates/decisions/trust-revocation.yaml`; the
+category returns to full inspection and its streak restarts at zero.
+
+Revoking is deliberately the cheapest entry in the store to write. Narrowing
+inspection takes a counted streak and a written rationale; restoring it takes
+noticing one defect. If revoking were as laborious as graduating, the
+laborious thing would quietly not get done and the boundary would only ever
+move one way. Revoking is always allowed — including for a gated category,
+where it is a no-op that records the standing position. Only *graduating* a
+gated category is refused.
+
+### Citation spot-checks stay in the sampling plan at every trust level
+
+Whatever a category has earned, **citation spot-checks continue at every trust
+level**, including the most graduated. A citation is a claim about the world
+that the store cannot check for itself; no streak of clean mechanical edits is
+evidence that the citations are sound. Graduation only ever answers the
+mechanical question.
+
+### Provenance — tracing a bad skill revision
+
+Entries carry `provenance` (`author`, `skill-version`), and the validator
+surfaces it in both JSON and human output. When a defect turns out to come
+from a bad skill vintage rather than a bad judgment, this is what makes every
+entry that vintage wrote findable rather than guessed at — a bad skill
+revision is traceable like any other defect.

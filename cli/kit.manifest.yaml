@@ -62,6 +62,13 @@ unconditional:
     # (UCS-1154): a bulk re-taxonomy is a governed act, and this is the shape of
     # the rationale that sanctions the edition bump it carries.
     - { from: templates/decisions/phoenix-event.yaml, to: templates/decisions/phoenix-event.yaml }
+    # The Decisions-entry templates a steward copies to move the trust boundary
+    # (UCS-1155): graduating a change category from full inspection to sampling,
+    # and revoking that graduation. Both ship, and the pair is the point —
+    # revocation must be no harder to reach for than graduation, or the boundary
+    # would only ever move one way.
+    - { from: templates/decisions/trust-graduation.yaml, to: templates/decisions/trust-graduation.yaml }
+    - { from: templates/decisions/trust-revocation.yaml, to: templates/decisions/trust-revocation.yaml }
     # Stack-agnostic fixture authoring guide: ships even with no stack
     # selected — a config-only client authoring its first pack starts here.
     - { from: extractor-fixtures/README.md, to: engine/tests/fixtures/README.md }
@@ -103,6 +110,14 @@ unconditional:
     - { from: templates/knowledge/_registries/form.yaml, to: knowledge/_registries/form.yaml }
     - { from: templates/knowledge/_registries/anchor.yaml, to: knowledge/_registries/anchor.yaml }
     - { from: templates/knowledge/_registries/stage.yaml, to: knowledge/_registries/stage.yaml }
+    # The trust graduation category table (UCS-1155). Filed under decisions/
+    # because graduation governs the change PROCESS, not the knowledge — the
+    # truth anchor is the team (D-003). Seeded empty for the usual reason (every
+    # row cites a decision that must resolve) plus one of its own: whether a
+    # class of change is mechanical enough to sample is a judgment about THIS
+    # project's material, and shipping it pre-made would be the kit deciding how
+    # much someone else's work gets read.
+    - { from: templates/decisions/_registries/graduation-categories.yaml, to: decisions/_registries/graduation-categories.yaml }
   docs:
     # Client-facing docs (KK-24). The seeded README lands at the kit-dir
     # root; the guides land under docs/.

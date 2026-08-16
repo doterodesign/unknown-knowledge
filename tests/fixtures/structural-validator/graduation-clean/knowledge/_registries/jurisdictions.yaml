@@ -1,0 +1,15 @@
+# Structural-validator fixture (UCS-1148) — the jurisdictions registry.
+schema-version: 1
+store: knowledge
+registry: jurisdictions
+values:
+  - value: us
+    gloss: United States.
+    warrant: 600.1 states US-only servicing intervals.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: eu
+    gloss: European Union.
+    warrant: 600.1 states an EU variant of the same interval.
+    decision: D-201
+    minted: "2026-07-07"

@@ -1,0 +1,12 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-201
+    title: One gadget store
+    file: entries/D-201-gadget-store.yaml
+  - id: D-205
+    title: Graduate authority assignments to sampling
+    file: entries/D-205-graduate-gated-category.yaml
+  - id: D-206
+    title: Graduate see-also links to sampling
+    file: entries/D-206-graduate-undeclared-category.yaml

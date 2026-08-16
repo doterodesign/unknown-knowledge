@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:graduation-categories",
+  "title": "Trust graduation category table (decisions/_registries/graduation-categories.yaml)",
+  "description": "The governed table declaring which CHANGE CATEGORIES may ever graduate from full inspection to sampling, and which are permanently gated (PRD §2 'autonomy earned per category', UCS-1155). Autonomy is per category and never per leaf: a category is the unit because a mechanical change class (alias additions, verified bumps, paths edges, see-also links) can accumulate evidence about ITSELF, while an individual record cannot — one leaf approved ten times says nothing about the eleventh leaf. Two eligibilities, and the split is the whole mechanism: `eligible` categories name an integer threshold N of approved-unmodified cycles after which a steward MAY graduate them, and `gated` categories (new domain classes, contradicts/supersedes edges, authority assignments, anything citation-bearing) can never graduate at all — a judgment call does not become mechanical by being made correctly N times. Graduating an eligible category and revoking any graduation are both Decisions entries carrying the typed `graduation:` block (decision-entry.schema.json); the validator holds those entries against this table, so an entry naming a category absent here, or graduating a gated one, is a finding rather than a silent pass. v1 DOES NOT COMPUTE the approved-unmodified counts: the threshold is what the moderator judges the recorded counts against by hand, and the analytics stay manual (steward-guide.md). This schema governs the table file itself. Schema evolution is additive-only (§3.5, D-013).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema-version", "store", "table", "categories"],
+  "properties": {
+    "schema-version": { "type": "integer", "minimum": 1 },
+    "store": {
+      "enum": ["decisions"],
+      "description": "Always `decisions`. The table governs the change PROCESS — who may write without full inspection — which is the team's truth anchor (D-003), not the artifact's or the world's. A graduation table filed under knowledge/ would be claiming the world decides how this repo is reviewed."
+    },
+    "table": {
+      "type": "string",
+      "description": "The table's name — must equal the file's basename, so the file a finding names is the table it names (a loader check, mirroring registries)."
+    },
+    "categories": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/category" },
+      "description": "The declared change categories. Order is the steward's; the engine compares as a set."
+    }
+  },
+  "$defs": {
+    "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "decisionRef": { "type": "string", "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$" },
+    "category": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["category", "eligibility", "warrant", "decision"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "The change category's name: lowercase kebab, e.g. `alias-additions`. Names a CLASS OF EDIT, never a record — 'alias additions' is a category, 'L-000117' is not."
+        },
+        "eligibility": {
+          "enum": ["eligible", "gated"],
+          "description": "`eligible` — this category MAY graduate once its threshold of approved-unmodified cycles is met and a steward records the graduation. `gated` — permanently gated: it may never graduate, whatever the evidence. The distinction is mechanical-versus-judgment, not easy-versus-hard: an alias addition is checkable by looking at it, while an authority assignment encodes how far a source can be trusted, and being right about that N times running is not evidence that the N+1th needs no reading."
+        },
+        "threshold": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "N — the consecutive approved-unmodified cycles this category must accumulate before a steward may graduate it. REQUIRED for an `eligible` category and REFUSED for a `gated` one; both halves of that rule are the loader's (a `graduation-threshold-shape` diagnostic), because this engine's schema subset has no conditional keyword and a rule stated in a keyword nothing enforces is contract drift wearing the appearance of a check. An eligible category with no threshold would be graduation-eligible against no bar at all."
+        },
+        "gloss": {
+          "type": "string",
+          "description": "What edits fall in this category — prose is navigation, never the fact."
+        },
+        "warrant": {
+          "type": "string",
+          "pattern": "\\S",
+          "description": "Why this category carries this eligibility. For a `gated` category this is the substance: name what judgment the edit requires that no streak of correct instances removes. Must carry actual text, not whitespace."
+        },
+        "decision": {
+          "$ref": "#/$defs/decisionRef",
+          "description": "REQUIRED — the Decisions entry that declared this row (§3.3). The table governs the trust boundary, so a row nobody signed is exactly the ungoverned autonomy the mechanism exists to prevent. Resolved like any other cross-store ref: an id naming no decision is an unresolved-ref error."
+        },
+        "declared": { "$ref": "#/$defs/isoDate" }
+      }
+    }
+  }
+}

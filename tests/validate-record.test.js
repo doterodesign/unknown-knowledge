@@ -19,12 +19,12 @@ function codesAt(result, path) {
 test('the kinds cover §3.1–3.4 records, the navigational grammar, and the §4 scope file', () => {
   // KK-02 shipped the first six; KK-13 added the sibling logs (miss, gap),
   // KK-25 the survey scope, UCS-1148 the governed vocabulary registries,
-  // UCS-1154 the phoenix event mappings — additive-only evolution
-  // (§3.5, D-013).
+  // UCS-1154 the phoenix event mappings, UCS-1155 the trust graduation
+  // category table — additive-only evolution (§3.5, D-013).
   assert.deepEqual([...KINDS].sort(), [
-    'catalog', 'decision-entry', 'finding', 'gap', 'knowledge-leaf',
-    'miss', 'ontology-concept', 'phoenix-event', 'registry', 'rules',
-    'survey-scope',
+    'catalog', 'decision-entry', 'finding', 'gap', 'graduation-categories',
+    'knowledge-leaf', 'miss', 'ontology-concept', 'phoenix-event', 'registry',
+    'rules', 'survey-scope',
   ]);
 });
 

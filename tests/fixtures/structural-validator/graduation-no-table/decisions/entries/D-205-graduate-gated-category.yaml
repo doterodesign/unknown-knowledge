@@ -1,0 +1,23 @@
+# PLANTED: gated-category-graduation. `authority-assignments` is declared
+# `gated` in the table, and a graduation of it must be refused however long the
+# streak — the refusal the whole mechanism exists for.
+schema-version: 1
+entries:
+  - id: D-205
+    title: Graduate authority assignments to sampling
+    category: trust
+    status: proposed
+    date: "2026-07-11"
+    deciders: [dimitri]
+    context: >-
+      Authority assignments have run nine cycles approved without modification.
+    decision: Graduate authority-assignments to sampling at one in three.
+    consequences: Authority tiers would no longer be read on every citation.
+    supersedes: []
+    graduation:
+      action: graduate
+      category: authority-assignments
+      observed-cycles: 9
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0

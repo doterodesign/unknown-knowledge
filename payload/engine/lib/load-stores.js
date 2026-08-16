@@ -14,7 +14,10 @@
  *                                                             matter + markdown body)
  *   decisions/  _catalog.yaml  entries/*.yaml                (decision records)
  *   <store>/    _registries/*.yaml                          (governed vocabularies,
- *                                                            UCS-1148 — optional)
+ *                                                            UCS-1148 — optional;
+ *                                                            also the trust
+ *                                                            graduation category
+ *                                                            table, UCS-1155)
  *
  * Which files a store carries is DATA, not control flow: STORE_DESCRIPTORS
  * below is the table, so a registry is a declared file class rather than a
@@ -43,6 +46,14 @@
  *                               // structural-validator check (KK-05), never a
  *                               // schema enum — the vocabulary grows by steward
  *                               // review, not by an engine release
+ *     graduations: Map "<store>/<table>" ->
+ *                  { table, store, file, categories:Map name->row },
+ *                               // trust graduation category tables (UCS-1155):
+ *                               // which change categories may graduate from
+ *                               // full inspection to sampling and which are
+ *                               // permanently gated. Autonomy is per CATEGORY,
+ *                               // never per leaf, so this table is what a
+ *                               // graduation or revocation entry is held against
  *     phoenix:   Map "<store>/<event>" ->
  *                  { event, store, file, decision, scope, rows:Map id->row },
  *                               // retained phoenix event mappings (UCS-1154):
@@ -207,6 +218,9 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'duplicate-registry-value',
   'phoenix-name-mismatch',
   'duplicate-phoenix-row',
+  'graduation-table-name-mismatch',
+  'duplicate-graduation-category',
+  'graduation-threshold-shape',
 ]);
 
 /**
@@ -250,11 +264,17 @@ function deepFreezeTable(table) {
  * `model.refs`, quoted in the unresolved-ref message), so it always reads as
  * the dotted path an author would find in their own file.
  *
+ * A row may set `scalar: true` for a field holding ONE id rather than a list
+ * (UCS-1155's `graduation.revokes`). It is declared rather than inferred from
+ * the value's runtime type: sniffing would silently accept `supersedes: D-001`
+ * — a field whose contract is a list — and index it as a working edge, turning
+ * a shape error into a reference that appears to resolve.
+ *
  * Frozen all the way down (rows, and any array-form path): the table is a
  * declaration every surface reads, so a consumer that could mutate a row would
  * be rewriting the cross-reference graph out from under the loader.
  *
- * @type {Readonly<Record<string, ReadonlyArray<{ field: string|string[], space: string }>>>}
+ * @type {Readonly<Record<string, ReadonlyArray<{ field: string|string[], space: string, scalar?: boolean }>>>}
  */
 export const REF_FIELDS = deepFreezeTable({
   'ontology-concept': [
@@ -285,6 +305,12 @@ export const REF_FIELDS = deepFreezeTable({
     { field: 'relates-to.concepts', space: 'concepts' },
     { field: 'relates-to.leaves', space: 'leaves' },
     { field: 'relates-to.decisions', space: 'decisions' },
+    // A revocation names the graduation it withdraws (UCS-1155) — ONE id, so
+    // the row is `scalar`. Declared here rather than checked bespokely, so a
+    // revocation citing no real graduation is the same `unresolved-ref` error
+    // it would be anywhere else, and the withdrawal stays connected in the
+    // record to the thing it withdrew.
+    { field: 'graduation.revokes', space: 'decisions', scalar: true },
   ],
 });
 
@@ -369,6 +395,30 @@ const REGISTRY_EXTENSION = '.yaml';
  */
 export const PHOENIX_DIR = '_phoenix';
 const PHOENIX_EXTENSION = '.yaml';
+
+/**
+ * The trust graduation category table's file class (UCS-1155).
+ *
+ * It lives in `_registries/` rather than a directory of its own, and that is a
+ * deliberate reading of what it IS: a governed table declaring a closed
+ * vocabulary — the change categories autonomy may ever be scoped to — with a
+ * warrant and a Decisions entry per row, which is precisely a registry's shape.
+ * A second directory would have split one governance idea across two file
+ * classes for no gain a steward can see.
+ *
+ * It is a distinct KIND inside that directory because it answers a different
+ * question. A vocabulary registry says which values a facet may take; this
+ * table says how much INSPECTION a class of change gets, and carries an
+ * eligibility and a threshold no registry row has. Loading it as a registry
+ * would have meant either bending the registry schema to hold graduation
+ * fields, or letting the table pass unvalidated — so the file class is shared
+ * and the schema is not, keyed off the document's own `table` key.
+ *
+ * The table is filed under DECISIONS because graduation governs the change
+ * process rather than the knowledge: the truth anchor is the team (D-003).
+ */
+export const GRADUATION_TABLE_KEY = 'table';
+const GRADUATION_EXTENSION = '.yaml';
 
 /**
  * Per-store file-class descriptors (UCS-1148) — what a store IS, as data.
@@ -622,12 +672,26 @@ function valueAtPath(record, segments) {
  */
 export function refEdges(rows, record, { from, file, basePath = '' }) {
   const edges = [];
-  for (const { field, space } of rows) {
+  for (const { field, space, scalar } of rows) {
     const segments = fieldSegments(field);
-    const list = valueAtPath(record, segments);
-    if (!Array.isArray(list)) continue;
+    const value = valueAtPath(record, segments);
     const type = pathLabel(segments);
-    list.forEach((to, i) => {
+    // A `scalar` row holds ONE id rather than a list. Declared on the row, not
+    // sniffed from the value: inferring "array means list, string means scalar"
+    // would silently accept `supersedes: D-001` — a field whose whole contract
+    // is a list — and index it as a resolvable edge, so a shape error would
+    // read as a working reference (KK-02 diagnoses the wrong type instead).
+    if (scalar) {
+      if (typeof value !== 'string') continue; // absent, or a wrong-type KK-02 diagnosed
+      edges.push({
+        from, type, to: value, file,
+        path: basePath ? `${basePath}.${type}` : type,
+        space,
+      });
+      continue;
+    }
+    if (!Array.isArray(value)) continue;
+    value.forEach((to, i) => {
       if (typeof to !== 'string') return; // wrong-type already diagnosed
       const path = basePath ? `${basePath}.${type}[${i}]` : `${type}[${i}]`;
       edges.push({ from, type, to, file, path, space });
@@ -660,7 +724,16 @@ function readText(ctx, file) {
   }
 }
 
-/** One pipeline for every store meta file: read → parse → validate → assign. */
+/**
+ * One pipeline for every store meta file: read → parse → validate → assign.
+ *
+ * `kind` may be a function of the PARSED document rather than a fixed string,
+ * for a directory holding more than one kind (`_registries/` carries both the
+ * vocabulary registries and the trust graduation category table, UCS-1155).
+ * Dispatching inside the pipeline keeps one read and one parse: a caller that
+ * peeked at the file first to choose a kind would read every registry twice and
+ * could diagnose a parse error twice with it.
+ */
 function loadMetaFile(ctx, file, kind, { onMissing, onParsed } = {}) {
   const text = readText(ctx, file);
   if (text === null) {
@@ -669,8 +742,9 @@ function loadMetaFile(ctx, file, kind, { onMissing, onParsed } = {}) {
   }
   const parsed = parseYaml(ctx, file, text);
   if (!parsed) return null;
-  const valid = validateInto(ctx, kind, file, parsed.doc);
-  onParsed?.(parsed.doc, valid);
+  const resolvedKind = typeof kind === 'function' ? kind(parsed.doc) : kind;
+  const valid = validateInto(ctx, resolvedKind, file, parsed.doc);
+  onParsed?.(parsed.doc, valid, resolvedKind);
   return valid ? parsed.doc : null;
 }
 
@@ -732,8 +806,23 @@ function loadRegistryFiles(ctx, store) {
   for (const file of listFiles(ctx, dir, REGISTRY_EXTENSION, false, { skipUnderscore: false })) {
     const name = file.slice(dir.length + 1, -REGISTRY_EXTENSION.length);
     ctx.stores[store].files.push(file);
-    const doc = loadMetaFile(ctx, file, 'registry');
+    // The graduation category table shares this directory and is a different
+    // KIND (see GRADUATION_TABLE_KEY). Dispatch on the document's own `table:`
+    // key rather than on the filename, so the table is recognized by what it
+    // says it is: keying off a reserved basename would mean a steward who
+    // renamed the file got it silently validated as a registry, and every
+    // graduation row would then read as an unknown-property defect pointing at
+    // the wrong schema entirely.
+    let isTable = false;
+    const doc = loadMetaFile(ctx, file, (parsed) => {
+      isTable = isObject(parsed) && typeof parsed[GRADUATION_TABLE_KEY] === 'string';
+      return isTable ? 'graduation-categories' : 'registry';
+    });
     if (doc === null) continue; // parse-error or schema defect already diagnosed
+    if (isTable) {
+      loadGraduationTable(ctx, store, file, name, doc);
+      continue;
+    }
     // A registry whose declared name disagrees with its filename would make
     // every membership finding cite a file that does not answer to the name it
     // quotes. Refusing here keeps "the registry a finding names" and "the file
@@ -823,6 +912,108 @@ function loadRegistryFiles(ctx, store) {
     }
     ctx.registries.set(`${store}/${name}`, registry);
   }
+}
+
+/**
+ * Index one trust graduation category table (UCS-1155).
+ *
+ * The table declares which change CATEGORIES may graduate from full inspection
+ * to sampling and which are permanently gated. Autonomy is per category and
+ * never per leaf, so the table is the only thing that can answer "may this
+ * class of change graduate at all" — and a graduation Decisions entry naming a
+ * category absent from it is a validator finding rather than a silent pass.
+ *
+ * Three defects are refused HERE rather than downstream, because each one makes
+ * the table unable to answer the question it exists for:
+ *
+ *   graduation-table-name-mismatch
+ *              the declared `table` disagrees with the filename, so a finding
+ *              naming the table would cite a file no steward can open under
+ *              that name — the same rule registries and phoenix events keep.
+ *   duplicate-graduation-category
+ *              one category declared twice. Which row governs would then be
+ *              decided by file order: two rows can carry different
+ *              eligibilities, so a category could be both graduation-eligible
+ *              and permanently gated, and the engine would pick one by
+ *              accident. That is a governance decision nobody made.
+ *   graduation-threshold-shape
+ *              an `eligible` row with no threshold, or a `gated` row carrying
+ *              one. The schema cannot state this — the engine's keyword subset
+ *              has no conditional — and a rule stated in a keyword nothing
+ *              enforces is contract drift wearing the appearance of a check.
+ *              An eligible category with no threshold is eligible against no
+ *              bar at all; a gated one with a threshold advertises a bar that
+ *              can never be met, which reads as an oversight either way.
+ *
+ * Each row's `decision` rides the ordinary ref graph exactly as a registry
+ * minting's does, so a row citing no real decision is the same `unresolved-ref`
+ * error it would be anywhere else: autonomy nobody signed is the ungoverned
+ * drift this whole mechanism exists to prevent.
+ *
+ * @param {object} ctx the in-flight load context
+ * @param {string} store the store directory carrying the table
+ * @param {string} file the table's root-relative path
+ * @param {string} name the table's basename
+ * @param {object} doc the parsed, schema-valid table
+ */
+function loadGraduationTable(ctx, store, file, name, doc) {
+  if (doc[GRADUATION_TABLE_KEY] !== name) {
+    ctx.diagnostics.push({
+      severity: 'error', code: 'graduation-table-name-mismatch', file, path: GRADUATION_TABLE_KEY,
+      message: `graduation table declares name "${doc[GRADUATION_TABLE_KEY]}" but lives at ${file} — a finding that names a table must name the file a steward opens`,
+    });
+    return;
+  }
+  const categories = new Map();
+  for (const [i, row] of doc.categories.entries()) {
+    if (!isObject(row) || typeof row.category !== 'string') continue; // KK-02 diagnosed the shape
+    if (categories.has(row.category)) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'duplicate-graduation-category', file, path: `categories[${i}].category`,
+        message: `category "${row.category}" is declared twice — one row per category, or the table states two eligibilities for one class of change and the engine would pick by file order`,
+      });
+      continue;
+    }
+    // The conditional the schema subset cannot express, checked where it can
+    // name the row an author must edit.
+    const hasThreshold = Number.isInteger(row.threshold);
+    if (row.eligibility === 'eligible' && !hasThreshold) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'graduation-threshold-shape', file, path: `categories[${i}].threshold`,
+        message: `category "${row.category}" is graduation-eligible but declares no threshold — N is the bar a steward judges the recorded approved-unmodified count against, and an eligible category without one is eligible against nothing`,
+      });
+      continue;
+    }
+    if (row.eligibility === 'gated' && hasThreshold) {
+      ctx.diagnostics.push({
+        severity: 'error', code: 'graduation-threshold-shape', file, path: `categories[${i}].threshold`,
+        message: `category "${row.category}" is permanently gated but declares a threshold of ${row.threshold} — a gated category can never graduate, so a bar that can never be met reads as an eligibility somebody forgot to set`,
+      });
+      continue;
+    }
+    categories.set(row.category, {
+      category: row.category,
+      eligibility: row.eligibility,
+      threshold: hasThreshold ? row.threshold : null,
+      warrant: row.warrant,
+      decision: row.decision,
+      file,
+      index: i,
+    });
+    // The row's warrant rides the ordinary ref graph, exactly as a registry
+    // minting's does.
+    if (typeof row.decision === 'string') {
+      ctx.refs.push({
+        from: `${store}/${name}/${row.category}`,
+        type: 'graduation.decision',
+        to: row.decision,
+        file,
+        path: `categories[${i}].decision`,
+        space: 'decisions',
+      });
+    }
+  }
+  ctx.graduations.set(`${store}/${name}`, { table: name, store, file, categories });
 }
 
 /**
@@ -1134,6 +1325,7 @@ export function loadStores(root) {
     leaves: new Map(),
     decisions: new Map(),
     registries: new Map(),
+    graduations: new Map(),
     phoenix: new Map(),
     refs: [],
     diagnostics: [],
@@ -1177,6 +1369,7 @@ export function loadStores(root) {
     leaves: sortedMap(ctx.leaves),
     decisions: sortedMap(ctx.decisions),
     registries: sortedMap(ctx.registries),
+    graduations: sortedMap(ctx.graduations),
     phoenix: sortedMap(ctx.phoenix),
     pointers,
     leavesByConcept,

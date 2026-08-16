@@ -1,0 +1,26 @@
+schema-version: 1
+entries:
+  - id: D-203
+    title: Revoke sampling for alias additions
+    category: trust
+    status: accepted
+    date: "2026-07-09"
+    deciders: [dimitri]
+    context: >-
+      A spot-check found an alias pointing at a concept it does not name. One
+      defect is the trigger; no severity judgment is made.
+    decision: >-
+      Revoke the graduation of alias-additions. The category returns to full
+      inspection immediately and its streak restarts at zero.
+    consequences: >-
+      Alias additions are read on every change again. Entries drafted by the
+      implicated skill revision are findable through entry provenance.
+    supersedes: []
+    graduation:
+      action: revoke
+      category: alias-additions
+      revokes: D-202
+      defect: alias pointed at a concept it does not name
+    provenance:
+      author: dimitri
+      skill-version: knowledge-reflect@1.4.0
