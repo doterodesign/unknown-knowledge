@@ -55,9 +55,15 @@ dates are recorded at release time, never retroactively.
   applier and the validator agree without either consulting the other; the
   second is the rationale a split's whole review rests on.
 - A write that fails part-way through `--apply` exits 2 and names every file it
-  had already written, in order, so the revert is mechanical. Exit 2 rather
+  may have changed, in order, flagging the one the write threw on —
+  `writeFileSync` can truncate a file and then fail, so the file whose write did
+  not complete is the likeliest of all of them to need reverting. Exit 2 rather
   than 1, because the event did not finish and exit 1 would claim a clean
   refusal with nothing written.
+- A steward's trailing `# comment` on a rewritten line is carried across,
+  alignment included, rather than deleted with the value it annotates. A line
+  whose value could hide a `#` inside quotes is refused at the gate instead of
+  guessed at.
 - `validate.js` gains `unaccounted-edition`: a leaf's edition must EQUAL
   `1 + the retained phoenix events that moved it`. An equality rather than a
   floor, so a hand-typed number, an edition that lags its event, and a mapping

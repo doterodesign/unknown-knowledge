@@ -57,8 +57,9 @@ export const FIRST_EDITION = 1;
  * a clean result names what it checked rather than only what it found.
  */
 export const CHECKS = Object.freeze([
-  'edition-conflict', 'facet-unminted', 'noop-row', 'scope-unaccounted',
-  'unexplained-move', 'unknown-leaf', 'unreadable-leaf', 'unrewritable-leaf',
+  'edition-conflict', 'facet-unminted', 'noop-row', 'out-of-scope-row',
+  'scope-unaccounted', 'unexplained-move', 'unknown-leaf', 'unreadable-leaf',
+  'unrewritable-leaf',
 ]);
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -139,6 +140,33 @@ export function leavesInScope(model, scope) {
  * @param {string} value the facet value to write
  * @returns {string} the value, quoted only if it would not survive unquoted
  */
+/**
+ * Split a scalar line's value from its trailing comment (UCS-1154).
+ *
+ * A steward's ` # ∈ registry (Personality)` note is authored content, and
+ * replacing the text after the colon wholesale deletes it — a silent loss in a
+ * diff that otherwise advertises itself as two lines. So the comment is carried
+ * across the rewrite.
+ *
+ * The split is refused, not guessed, when the old value contains a quote
+ * character. A `#` inside a quoted string is not a comment, and telling the two
+ * apart needs a YAML scanner rather than an index search; a wrong guess would
+ * either truncate a value at a legitimate `#` or paste half a string into a
+ * comment. Every value this engine writes is a plain registry term, so refusing
+ * here costs nothing real and keeps the rewriter honest about what it can read.
+ *
+ * @param {string} rest the text after `key:`, including leading space
+ * @returns {{ comment: string }|null} the trailing comment (with its spacing),
+ *   or null if the line cannot be split safely
+ */
+export function trailingComment(rest) {
+  const hash = rest.indexOf('#');
+  if (hash === -1) return { comment: '' };
+  // A quote anywhere before the hash means the hash may be inside a string.
+  if (/["']/.test(rest.slice(0, hash))) return null;
+  return { comment: rest.slice(hash).replace(/\s+$/, '') };
+}
+
 export function yamlScalar(value) {
   let roundTripped;
   try {
@@ -223,7 +251,13 @@ export function rewriteScalarLine(text, path, value) {
       // A scalar sits on its own line. A nested block or a value this function
       // cannot see the end of is refused, not overwritten.
       if (rest.trim() === '') return null;
-      lines[i] = `${indent}${key}: ${value}`;
+      // A steward's trailing note is authored content; carry it across rather
+      // than deleting it. A line whose comment cannot be told from its value is
+      // refused, not guessed at.
+      const split = trailingComment(rest);
+      if (!split) return null;
+      const spacing = split.comment ? rest.slice(0, rest.indexOf('#')).match(/\s*$/)[0] : '';
+      lines[i] = `${indent}${key}: ${value}${spacing}${split.comment}`;
       return lines.join('\n');
     }
     // Descend: the next segment must be nested under this key.
@@ -317,8 +351,13 @@ export function planEvent(model, event) {
     // 1, and still no write — re-applying would bump the edition a second time
     // for a move that happened once.
     const applied = value === row.to;
+    // A DIFFERENT defect from `unknown-leaf`, and so a different code: that one
+    // is a row naming a leaf nobody can open (a typo, or a mapping written
+    // against a store that no longer exists); this one is a row reaching past
+    // the scope the event declared. A consumer filtering on the code should be
+    // able to tell a typo from an overreach without reading the prose.
     push({
-      severity: 'error', code: 'unknown-leaf', id, file, path: `leaves[${row.index}].id`,
+      severity: 'error', code: 'out-of-scope-row', id, file, path: `leaves[${row.index}].id`,
       message: applied
         ? `event ${event.event} maps "${id}" to ${scope.facet}: ${row.to}, where it already sits — this event appears to have been applied already, and re-applying it would bump the edition a second time for a move that happened once`
         : `event ${event.event} maps "${id}", whose ${scope.facet} is ${JSON.stringify(value ?? null)} — outside the declared scope (${scope.values.join(', ')}), so the event would touch more than it declares`,
@@ -496,7 +535,7 @@ function mintingVerdict(registry, key, value) {
  * then write" are two functions, so no future edit can interleave a write into
  * the checking loop without deleting this seam first.
  *
- * `written` accumulates the files this call has actually put on disk, IN ORDER,
+ * `touched` accumulates the files this call may have changed on disk, IN ORDER,
  * and it is the caller's — not this function's. The gate makes a mid-loop
  * failure improbable (every leaf was read and probed moments earlier), not
  * impossible: a disk can fill and a file can lose its permissions between the
@@ -505,17 +544,25 @@ function mintingVerdict(registry, key, value) {
  * propagates and the caller can name exactly which files to revert. An array
  * the caller owns is what makes that list survive the exception.
  *
+ * The file is recorded BEFORE it is written, not after. `writeFileSync` is not
+ * atomic — it can truncate a file and then fail partway through the contents —
+ * so a file whose write threw may still be damaged. Recording it only on
+ * success would leave the one file most likely to need reverting off the list
+ * the caller prints. Over-reporting a file that turned out untouched costs a
+ * reviewer one `git checkout`; under-reporting a truncated leaf costs them the
+ * leaf.
+ *
  * @param {string} root the store root the rewrites are relative to
  * @param {Array<{ file: string, after: string }>} rewrites
- * @param {string[]} [written] collects the files written, for the caller's report
- * @throws {Error} whatever the filesystem threw, after recording what was written
+ * @param {string[]} [touched] collects the files that may have changed, for the caller
+ * @throws {Error} whatever the filesystem threw, after recording what it touched
  */
-export function applyRewrites(root, rewrites, written = []) {
+export function applyRewrites(root, rewrites, touched = []) {
   for (const rewrite of rewrites) {
+    touched.push(rewrite.file);
     writeFileSync(join(root, rewrite.file), rewrite.after);
-    written.push(rewrite.file);
   }
-  return written;
+  return touched;
 }
 
 /**

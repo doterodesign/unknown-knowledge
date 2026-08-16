@@ -40,8 +40,20 @@ allowed to change.
 
 ## The split
 
-L-000117 and L-000213 both leave `sportsbook/odds-feed` and arrive at
-`feeds/ingest`; L-000133 leaves `sportsbook/settlement` and arrives at
-`feeds/settlement`. No class-level rename can express that — the predecessor
-class divides across two successors — which is why the mapping is leaf-granular
-and why each row carries a `why` a reviewer reads.
+All three leaves start under ONE predecessor, `sportsbook/odds-feed`, and they
+do not all end up in the same place:
+
+| leaf | | successor |
+| --- | --- | --- |
+| L-000117 — provider quirks | → | `feeds/ingest` |
+| L-000213 — ingest latency budget | → | `feeds/ingest` |
+| L-000133 — banker's rounding at settlement | → | `feeds/settlement` |
+
+That is what makes this a split rather than a rename, and it is the reason the
+mapping has to be leaf-granular. A class-level rule could say "odds-feed becomes
+feeds/ingest" and would be right about two of these leaves and wrong about the
+third. Nothing about the class itself distinguishes them — L-000133 is
+settlement material that was filed under odds-feed because it arrived with a
+feed integration, which is exactly the drift the event exists to fix. Only a
+per-accession row can carry that judgment, and only the row's `why` can explain
+it to the next reader.

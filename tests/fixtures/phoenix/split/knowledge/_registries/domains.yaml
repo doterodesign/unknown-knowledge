@@ -6,6 +6,10 @@
 # the predecessor stays listed until the event that retires it has landed.
 # Suppressing `sportsbook/odds-feed` here would refuse the very leaves the
 # event is about to move off it.
+#
+# All three leaves sit under `sportsbook/odds-feed`, which is what makes P-001
+# a genuine SPLIT rather than a rename: one predecessor, two successors, and
+# only the mapping's rows can say which leaf goes to which.
 schema-version: 1
 store: knowledge
 registry: domains
@@ -18,12 +22,10 @@ values:
     minted: "2026-08-16"
   - value: sportsbook/odds-feed
     gloss: Odds ingestion and the providers that supply it.
-    warrant: L-000117 states provider quirks; L-000213 states the latency budget.
-    decision: D-401
-    minted: "2026-08-16"
-  - value: sportsbook/settlement
-    gloss: Settling priced markets once an event finishes.
-    warrant: L-000133 states the rounding rule applied at settlement.
+    warrant: >-
+      L-000117 states provider quirks, L-000213 the latency budget, and
+      L-000133 the settlement rounding rule that arrived with a feed
+      integration — the drift D-420 splits apart.
     decision: D-401
     minted: "2026-08-16"
   - value: feeds
@@ -41,6 +43,6 @@ values:
     minted: "2026-08-17"
   - value: feeds/settlement
     gloss: Turning settled feed data into settled markets.
-    warrant: L-000133 (banker's rounding at settlement).
+    warrant: L-000133 (banker's rounding at settlement), split out of odds-feed.
     decision: D-420
     minted: "2026-08-17"

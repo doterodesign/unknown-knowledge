@@ -8,7 +8,8 @@
 #
 # The engine must name L-000213 and refuse the WHOLE event — the other two rows
 # are perfectly good and must still not be written, because a partial apply is
-# the one outcome worse than doing nothing.
+# the one outcome worse than doing nothing. (The surviving rows still express
+# the split: L-000117 to ingest, L-000133 to settlement, from one predecessor.)
 schema-version: 1
 event: P-001
 title: Split odds-feed into feeds/ingest and feeds/settlement
@@ -18,7 +19,6 @@ scope:
   facet: facets.domain
   values:
     - sportsbook/odds-feed
-    - sportsbook/settlement
 leaves:
   - id: L-000117
     to: feeds/ingest
@@ -26,6 +26,6 @@ leaves:
   - id: L-000133
     to: feeds/settlement
     why: >-
-      Merged: the rounding rule is settlement material, and the warrant no
-      longer supports a sportsbook-specific settlement class beside the
-      feed-side one.
+      The other side of the split: rounding is applied when a market settles,
+      long after ingest is done. It was filed under odds-feed only because it
+      arrived with a feed integration, which is the misfiling this event fixes.

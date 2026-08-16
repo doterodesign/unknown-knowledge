@@ -73,8 +73,12 @@ function citationBlock(text) {
   const lines = text.split('\n');
   const start = lines.indexOf('citations:');
   assert.notEqual(start, -1, 'fixture leaf has no citations block');
+  // Bounded at the closing fence: past it is the body, where a prose line could
+  // end the block early or drag arbitrary text into the comparison.
+  const fence = lines.indexOf('---', 1);
+  assert.ok(fence > start, 'citations must sit inside the front matter');
   const out = [lines[start]];
-  for (let i = start + 1; i < lines.length; i += 1) {
+  for (let i = start + 1; i < fence; i += 1) {
     if (/^[A-Za-z]/.test(lines[i])) break; // a new top-level field ends the block
     out.push(lines[i]);
   }
@@ -158,17 +162,24 @@ test('the ONLY frontmatter lines that change are edition and the scoped facet', 
 
 // ------------------------------------------------------- the split (AC2)
 
-test('a split is expressible and applied: one class divides across two successors', (t) => {
+test('a split is expressible and applied: ONE class divides across two successors', (t) => {
   const root = scratch(t, 'split');
+  // Every leaf starts under one predecessor. That is what makes this a split
+  // rather than a rename, and it is the whole justification for a per-leaf
+  // mapping — assert it here so the fixture cannot quietly stop being one.
+  const predecessors = new Set(Object.values(LEAF_FILES).map((f) => facetDomain(read(root, f))));
+  assert.deepEqual([...predecessors], ['sportsbook/odds-feed'], 'the fixture must be a SPLIT, not a rename');
+
   runJson(0, 'P-001', '--root', root, '--apply');
 
-  // Both leaves came from `sportsbook/odds-feed`; only a leaf-granular mapping
-  // can send them to different places, which is why the mapping is per-leaf.
+  // ...and they do not all land in the same place. A class-level rule could
+  // say "odds-feed becomes feeds/ingest" and be right about two of these and
+  // wrong about the third; only the rows carry that judgment.
   assert.equal(facetDomain(read(root, LEAF_FILES['L-000117'])), 'feeds/ingest');
   assert.equal(facetDomain(read(root, LEAF_FILES['L-000213'])), 'feeds/ingest');
-  // And the merge half: a different predecessor arrives at one of the same
-  // successors.
   assert.equal(facetDomain(read(root, LEAF_FILES['L-000133'])), 'feeds/settlement');
+  const successors = new Set(Object.values(LEAF_FILES).map((f) => facetDomain(read(root, f))));
+  assert.equal(successors.size, 2, 'one predecessor must branch to two successors');
 });
 
 test('the split is reported per leaf, with the predecessor each came from', (t) => {
@@ -176,9 +187,12 @@ test('the split is reported per leaf, with the predecessor each came from', (t) 
   const out = runJson(0, 'P-001', '--root', root);
   assert.deepEqual(out.rewrites.map((r) => [r.id, r.from, r.to, r.edition]), [
     ['L-000117', 'sportsbook/odds-feed', 'feeds/ingest', 2],
-    ['L-000133', 'sportsbook/settlement', 'feeds/settlement', 2],
+    ['L-000133', 'sportsbook/odds-feed', 'feeds/settlement', 2],
     ['L-000213', 'sportsbook/odds-feed', 'feeds/ingest', 2],
   ]);
+  // One `from`, two `to`: the shape of a split, read off the engine's own report.
+  assert.equal(new Set(out.rewrites.map((r) => r.from)).size, 1);
+  assert.equal(new Set(out.rewrites.map((r) => r.to)).size, 2);
 });
 
 test('a store that has been through a phoenix event still validates clean', (t) => {
@@ -277,7 +291,7 @@ test('a no-op row is REFUSED — "to" present must mean moved', (t) => {
   const root = scratch(t, 'split');
   const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
   writeFileSync(mapping, readFileSync(mapping, 'utf8')
-    .replace('    to: feeds/settlement\n', '    to: sportsbook/settlement\n'));
+    .replace('    to: feeds/settlement\n', '    to: sportsbook/odds-feed\n'));
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'noop-row');
@@ -308,6 +322,11 @@ test('re-running an applied event is refused, and says it looks already applied'
   runJson(0, 'P-001', '--root', root, '--apply');
   const out = runJson(1, 'P-001', '--root', root);
   for (const f of out.findings) {
+    // Its own code, distinct from `unknown-leaf`: a row reaching past the
+    // declared scope is a different defect from a row naming a leaf that does
+    // not exist, and a consumer filtering on codes must be able to tell them
+    // apart without reading prose.
+    assert.equal(f.code, 'out-of-scope-row');
     assert.match(f.message, /appears to have been applied already/);
     assert.match(f.message, /bump the edition a second time/);
   }
@@ -315,6 +334,22 @@ test('re-running an applied event is refused, and says it looks already applied'
   const before = Object.fromEntries(Object.entries(LEAF_FILES).map(([id, f]) => [id, read(root, f)]));
   assert.equal(run('P-001', '--root', root, '--apply').status, 1);
   for (const [id, f] of Object.entries(LEAF_FILES)) assert.equal(read(root, f), before[id], id);
+});
+
+test('a row reaching past the declared scope is out-of-scope-row, not unknown-leaf', (t) => {
+  // A real leaf, outside the scope, and NOT where the row would send it — a
+  // genuine overreach rather than a re-run. The event would touch more than it
+  // declares, and the scope is the reviewable claim.
+  const root = scratch(t, 'split');
+  const leaf = join(root, LEAF_FILES['L-000133']);
+  writeFileSync(leaf, readFileSync(leaf, 'utf8')
+    .replace('  domain: sportsbook/odds-feed', '  domain: sportsbook'));
+
+  const out = runJson(1, 'P-001', '--root', root, '--apply');
+  const found = out.findings.filter((f) => f.id === 'L-000133');
+  assert.equal(found[0].code, 'out-of-scope-row');
+  assert.match(found[0].message, /outside the declared scope/);
+  assert.doesNotMatch(found[0].message, /applied already/);
 });
 
 test('two events that each moved a leaf sanction edition 3', (t) => {
@@ -495,17 +530,26 @@ test('a write that fails mid-apply exits 2 and names every file already written'
   // Restore before the scratch dir is removed; `after` hooks run last-first, so
   // this one runs before scratch's rmSync, but tolerate either order.
   t.after(() => { try { chmodSync(blocked, 0o644); } catch { /* already removed */ } });
-  if (accessible(blocked)) return; // running as root: permissions are advisory
+  if (accessible(blocked)) {
+    // Skipped AND said so: a check that quietly returns is indistinguishable
+    // from one that passed.
+    t.skip('running as root — a read-only file is still writable, so the failure cannot be staged');
+    return;
+  }
 
   const r = run('P-001', '--root', root, '--apply');
   assert.equal(r.status, 2, `expected the never-finished code, got ${r.status}: ${r.stdout}`);
   assert.match(r.stderr, /FAILED PART-WAY THROUGH/);
-  assert.match(r.stderr, /2 file\(s\) were written before the failure/);
+  // All three, including the one the write threw on: writeFileSync can truncate
+  // and then fail, so the file whose write did not complete may still be
+  // damaged — and it is the likeliest of them to need reverting.
+  assert.match(r.stderr, /revert these 3 file\(s\)/);
   assert.match(r.stderr, /117\.1-odds-feed-provider-quirks\.md/);
   assert.match(r.stderr, /133\.1-bankers-rounding-at-settlement\.md/);
-  assert.doesNotMatch(r.stderr, /213\.1-live-betting-latency-budget\.md\n.*written/,
-    'the file that failed is not reported as written');
-  // The blocked leaf is genuinely untouched.
+  assert.match(r.stderr, /213\.1-live-betting-latency-budget\.md {3}<- the write failed here/);
+  // In this particular failure mode the open() was refused outright, so the
+  // blocked leaf is in fact intact — the report is deliberately conservative
+  // rather than wrong.
   assert.equal(readFileSync(blocked, 'utf8'), readFileSync(join(SPLIT, LEAF_FILES['L-000213']), 'utf8'));
 });
 
@@ -588,6 +632,28 @@ test('the rewriter reads the document own indent step, not an assumed one', () =
   const after = rewriteLeaf(text, 'facets.domain', 'moved', 2);
   assert.match(after, /^ {4}domain: moved$/m);
   assert.match(after, /^ {4}form: b$/m);
+});
+
+test("a steward's trailing comment survives the rewrite, alignment included", () => {
+  // The prototype's own leaf annotates these very lines (`# ∈ registry
+  // (Personality)`, `# bumped only by phoenix events`). Replacing the text
+  // after the colon wholesale deleted them — authored content lost inside a
+  // diff that advertises itself as two lines.
+  const text = '---\nedition: 1  # bumped only by phoenix events\nfacets:\n'
+    + '  domain: sportsbook/odds-feed    # ∈ registry (Personality)\n---\n\nbody\n';
+  const after = rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2);
+  assert.match(after, /^edition: 2 {2}# bumped only by phoenix events$/m);
+  assert.match(after, /^ {2}domain: feeds\/ingest {4}# ∈ registry \(Personality\)$/m);
+});
+
+test('a line whose value could hide a "#" is refused, not guessed at', () => {
+  // A `#` inside a quoted string is not a comment, and telling them apart needs
+  // a YAML scanner. Refusing costs nothing — every value this engine writes is
+  // a plain registry term.
+  const text = '---\nedition: 1\nfacets:\n  domain: "a # b"\n---\n\nbody\n';
+  assert.equal(rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2), null);
+  assert.equal(rewriteFailure(text, 'facets.domain'), 'facets.domain',
+    'and it is caught at the GATE, before anything is written');
 });
 
 // ------------------------------------------------- YAML round-trip safety
@@ -673,5 +739,5 @@ test('the event carries its decision, so the diff points at the governance that 
   const out = runJson(0, 'P-001', '--root', SPLIT);
   assert.equal(out.decision, 'D-420');
   assert.equal(out.mapping, 'knowledge/_phoenix/P-001.yaml');
-  assert.deepEqual(out.scope.values, ['sportsbook/odds-feed', 'sportsbook/settlement']);
+  assert.deepEqual(out.scope.values, ['sportsbook/odds-feed']);
 });

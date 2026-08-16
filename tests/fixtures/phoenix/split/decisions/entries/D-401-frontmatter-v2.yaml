@@ -8,8 +8,8 @@ entries:
     deciders: [dimitri]
     context: >
       The v2 leaf record draws every classification field from a registry.
-      This fixture's material — odds-feed references and two settlement-side
-      constraints — supplies the warrant for each value minted below.
+      This fixture's material — an odds-feed reference and two constraints
+      filed alongside it — supplies the warrant for each value minted below.
     decision: >
       Mint the domain, form, anchor, stage, operations, and authority-tier
       values this store's leaves actually use.
