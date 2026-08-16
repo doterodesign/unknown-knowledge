@@ -43,6 +43,12 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const engine = (cli) => join(root, 'payload', 'engine', cli);
 const fixture = (app) => join(root, 'fixtures', app);
 const FIXTURES = ['swift-app', 'ts-app'];
+// UCS-1159's isolated plant stores. Deliberately NOT in FIXTURES: those are
+// whole app fixtures that must load clean and are cold-run by A1's init
+// checks, whereas these are knowledge-only stores that each fail to LOAD by
+// design — one planted defect apiece, asserted at exit 2. They are listed
+// here so the D-007 leakage sweep covers their names too.
+const PLANT_STORES = ['plant-duplicate-accession', 'plant-unresolved-relates'];
 
 function run(cli, ...args) {
   const r = spawnSync(process.execPath, [engine(cli), ...args], { encoding: 'utf8' });
@@ -165,9 +171,12 @@ criterion('A1', A1_SELECTIONS.map((stacks) => [
         `acceptance-fixture/kit-test leakage: ${rel}`);
     }
     // Belt-and-suspenders on the seeded tree itself: no acceptance-fixture
-    // markers landed (FIXTURE.md, the fixture apps' names).
+    // markers landed (FIXTURE.md, the fixture apps' names, and UCS-1159's
+    // plant-store names — a client repo must never receive a store that is
+    // planted to fail loading).
+    const leakMarkers = new RegExp(`(swift|ts)-app|${PLANT_STORES.join('|')}`);
     for (const rel of walkSeed(seedRoot)) {
-      assert.ok(!/(^|\/)FIXTURE\.md$/.test(rel) && !/(swift|ts)-app/.test(rel),
+      assert.ok(!/(^|\/)FIXTURE\.md$/.test(rel) && !leakMarkers.test(rel),
         `acceptance-fixture artifact in seed: ${rel}`);
     }
 
@@ -330,6 +339,79 @@ criterion('A3', [
       '--concepts', 'K-170');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code]), [['K-170', 'wrong-pointer']]);
+  }],
+
+  // ---------------------------------------------- UCS-1159: the five v2 plants
+  // The frontmatter-v2 half of "drift is caught": five deliberate plants, each
+  // asserted as its own golden, per the expected-finding table in
+  // fixtures/ts-app/FIXTURE.md. One invocation per plant is not incidental —
+  // it is what keeps a plant from masking another, and for the two
+  // loader-level plants it is the ONLY way to observe them, since a store that
+  // fails to load reports its diagnostic and nothing else.
+  //
+  // Both registry-membership plants share the code `unregistered-value`, so
+  // the assertions pin `path` too: the code alone does not discriminate them.
+  ['UCS-1159 plant 1/5 — stale volatile leaf: L-000200 is `volatile`, verified 2026-01-05, so at --today 2026-08-16 it is 223 days past the 90-day limit → preflight `stale` verdict, exit 1 (never the wall clock)', () => {
+    const out = runJson('preflight.js', 1, '--root', fixture('ts-app'), '--json',
+      '--leaves', 'L-000200', '--today', '2026-08-16');
+    assert.equal(out.counts.stale, 1);
+    assert.equal(out.counts.quarantined + out.counts.unknown, 0);
+    const [leaf] = out['leaf-verdicts'];
+    assert.equal(leaf.leaf, 'L-000200');
+    assert.equal(leaf.verdict, 'stale');
+    assert.equal(leaf.time.volatility, 'volatile');
+    assert.equal(leaf.time.limit, 90);
+    assert.equal(leaf.time.stale, true);
+  }],
+  ['UCS-1159 plant 1/5 control — the SAME run at a --today inside the window returns the leaf to `trusted`: the plant is the date arithmetic, not a broken record', () => {
+    const out = runJson('preflight.js', 0, '--root', fixture('ts-app'), '--json',
+      '--leaves', 'L-000200', '--today', '2026-02-01');
+    assert.equal(out.counts.stale, 0);
+    assert.equal(out['leaf-verdicts'][0].verdict, 'trusted');
+  }],
+  ['UCS-1159 plants 2/5 + 4/5 — jurisdiction mismatch (`applies.jurisdictions[0]` = uk-gc, registry empty) and unregistered facet value (`facets.form` = walkthrough): exactly two `unregistered-value` findings, exit 1, store still LOADS clean', () => {
+    const out = runJson('validate.js', 1, '--root', fixture('ts-app'), '--json');
+    // The soft plants are value defects, not load defects: the store must stay
+    // healthy or the fixture-store pin test (and these findings) would vanish.
+    assert.deepEqual(out['store-health'], { ok: true, errors: 0, warnings: 0 });
+    assert.deepEqual(out.findings.map((f) => [f.code, f.id, f.path]), [
+      ['unregistered-value', 'L-000100', 'applies.jurisdictions[0]'],
+      ['unregistered-value', 'L-000100', 'facets.form'],
+    ]);
+  }],
+  ['UCS-1159 plant 5/5 — duplicate accession: two well-formed leaves mint L-000100, so the loader refuses the later mint → exactly one `duplicate-id`, exit 2, in its OWN store (a load failure reports nothing else)', () => {
+    const r = run('validate.js', '--root', fixture('plant-duplicate-accession'), '--json');
+    assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
+    const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
+    assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
+    assert.match(lines[0], /^\s+duplicate-id\s+knowledge\/product\/100\.2-onboarding-a-new-sport\.md\s+id\s/);
+    assert.match(lines[0], /id "L-000100" is already minted in knowledge\/product\/100\.1-adding-a-new-sport\.md/);
+  }],
+  ['UCS-1159 plant 3/5 — unresolvable relates ref: a well-formed `relates.see-also` cites L-000999, which nothing mints → exactly one `unresolved-ref`, exit 2, in its OWN store', () => {
+    const r = run('validate.js', '--root', fixture('plant-unresolved-relates'), '--json');
+    assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
+    const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
+    assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
+    assert.match(lines[0], /^\s+unresolved-ref\s+knowledge\/product\/100\.1-adding-a-new-sport\.md\s+relates\.see-also\[0\]\s/);
+    assert.match(lines[0], /relates\.see-also ref "L-000999" does not resolve/);
+  }],
+  ['UCS-1159 invariant — no plant masks another: each plant store carries exactly ONE defect, and the main store\'s three plants are all observable in the same pair of runs (the reason the two loader-fatal plants live in isolated roots)', () => {
+    // Each isolated root reports its own plant and nothing else — proven by the
+    // one-diagnostic assertions above. Here we pin the complement: the main
+    // store's plants never degrade its load, so they can never hide each other.
+    const out = runJson('validate.js', 1, '--root', fixture('ts-app'), '--json');
+    assert.equal(out['store-health'].ok, true, 'a loader-fatal plant in the main store would mask the others');
+    assert.equal(out.findings.length, 2, 'both registry plants observable in one run');
+    const both = runJson('preflight.js', 1, '--root', fixture('ts-app'), '--json',
+      '--leaves', 'L-000100,L-000200', '--today', '2026-08-16');
+    // The stale plant sits on its own leaf, so it neither hides nor is hidden
+    // by the registry plants: one run shows BOTH, and shows them as different
+    // verdicts — L-000100 quarantined for its two registry findings, L-000200
+    // stale for its age. Distinct leaves, distinct verdicts, one invocation.
+    assert.deepEqual(both['leaf-verdicts'].map((v) => [v.leaf, v.verdict]),
+      [['L-000100', 'quarantined'], ['L-000200', 'stale']]);
+    assert.equal(both.counts.quarantined, 1);
+    assert.equal(both.counts.stale, 1);
   }],
 ]);
 

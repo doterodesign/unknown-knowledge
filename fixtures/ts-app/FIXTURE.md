@@ -5,10 +5,14 @@ Synthetic sportsbook-flavored TS/JS codebase with its own three stores.
 needs to typecheck or build (D-002); syntactically plausible is the bar.
 
 The fixture's knowledge store lives at `unknown-knowledge/` (the §9.1 target
-layout, same as the Swift fixture) and loads clean: `ok: true`, zero
-diagnostics, via `payload/engine/lib/load-stores.js`. Descriptor `source`
-paths and `source-of-truth` pointers are relative to `fixtures/ts-app/` (the
-repo the stores describe), not to the store root.
+layout, same as the Swift fixture) and **loads** clean: `ok: true`, zero
+diagnostics, via `payload/engine/lib/load-stores.js`. Loading clean is not the
+same as validating clean — the store carries planted findings by design
+(`validate.js` exits 1 on it, per the UCS-1159 table below), and that
+distinction is load-bearing: a store that failed to LOAD would abort every
+check before any planted case could be observed. Descriptor `source` paths and
+`source-of-truth` pointers are relative to `fixtures/ts-app/` (the repo the
+stores describe), not to the store root.
 
 KK-16's A2/A3 acceptance assertions are written against the tables below.
 Every planted case is deliberate; if you "fix" one, you break the harness.
@@ -42,6 +46,69 @@ Kind coverage (every TS-relevant MVP kind, §5.1): `ts-const-array` (.ts and
 | source-value-missing | K-104 (`:147`) | `src/types/withdrawal.ts:4` (`WithdrawalMethod`) | Source has ach, wire, paypal, **crypto**; descriptor claims only ach, wire, paypal → **`source-value-missing`** for `crypto`, and only `crypto` |
 | wrong-pointer | K-108 (`:161`) | descriptor names `src/registry/sports.ts:5`; true home is `src/registry/locales.ts:5` | ALL claimed values (en-US, es-MX, pt-BR) missing from a real, parseable file → the **wrong-pointer (all-values-missing) signature**, distinguished from ordinary drift |
 
+## Frontmatter v2 — the five planted cases (UCS-1159)
+
+The A3 table above is the *ontology-side* drift (concept `enumerates` vs. TS
+sources). This table is its knowledge-side counterpart: five deliberate plants
+in the **frontmatter v2** record, each producing exactly one tabulated finding
+at the engine CLI seam, each asserted as its own golden in `acceptance/run.js`
+(§A3). Anchors are `file:line`, 1-based, relative to the listed root.
+
+| # | Case | Target | Anchor (file:line) | Expected finding | Root |
+|---|---|---|---|---|---|
+| 1 | stale volatile leaf | `L-000200` | `unknown-knowledge/knowledge/product/100.2-cashing-out-a-bet.md:16-17` (`volatility: volatile`, `verified: "2026-01-05"`) | `preflight.js --leaves L-000200 --today 2026-08-16` → leaf verdict **`stale`**, `counts.stale: 1`, **exit 1**. 223 days vs. the 90-day `volatile` limit. At `--today 2026-02-01` the same leaf is `trusted` — the plant is the date arithmetic, never the wall clock | `fixtures/ts-app` |
+| 2 | jurisdiction mismatch | `L-000100` | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:15` (`jurisdictions: [uk-gc]`) | `validate.js` → **`unregistered-value`** at path **`applies.jurisdictions[0]`**, **exit 1**. The registry is deliberately empty (`_registries/jurisdictions.yaml:8`), so no jurisdiction is minted | `fixtures/ts-app` |
+| 3 | unresolvable relates ref | `L-000100` (plant store) | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:21` (`see-also: [L-000999]`) | `validate.js` → **`unresolved-ref`** at path **`relates.see-also[0]`**, **exit 2**, and *nothing else* — a store that fails to load reports its diagnostic alone | `fixtures/plant-unresolved-relates` |
+| 4 | unregistered facet value | `L-000100` | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:10` (`form: walkthrough`) | `validate.js` → **`unregistered-value`** at path **`facets.form`**, **exit 1**. Only `recipe` is minted (`_registries/form.yaml:8`) | `fixtures/ts-app` |
+| 5 | duplicate accession ID | `L-000100` (twice) | `unknown-knowledge/knowledge/product/100.2-onboarding-a-new-sport.md:3` (`id: L-000100`) | `validate.js` → **`duplicate-id`** at path **`id`**, **exit 2**, and *nothing else*. The later mint loses: it never enters the index, and its edges never enter the ref graph | `fixtures/plant-duplicate-accession` |
+
+Cases 2 and 4 share the code `unregistered-value` and are distinguished **only
+by `path`** — the acceptance assertions pin the path for exactly that reason.
+
+### Harness invariants
+
+- **Every plant is deliberate.** Fixing one breaks the harness. Each has a
+  golden in `acceptance/run.js` §A3.
+- **Drift is planted in VALUES, never in SHAPE.** Every record above is
+  schema-valid and well-formed, so no case hides behind a malformed-descriptor
+  hard error. This holds for the two loader-fatal plants too, and that is the
+  subtle part: two *well-formed* leaves claiming one accession (case 5), and a
+  *well-formed* typed edge carrying a syntactically valid accession that names
+  no leaf (case 3), are defects of **meaning**, not of shape. Nothing is
+  malformed; nothing hides. The loader diagnostic IS the expected finding.
+- **No plant masks another.** Cases 3 and 5 are loader-fatal: they set
+  `model.ok = false`, and every engine surface then reports that diagnostic and
+  abandons the run, so any plant sharing their store would be swallowed
+  (verified empirically — the two `unregistered-value` findings vanish entirely
+  when a `duplicate-id` is added to the same store). No engine flag scopes past
+  loader health: `validate.js` takes no `--leaves`, and `preflight --leaves` on
+  an unrelated clean leaf still degrades to `store-verdict: unknown`. **That is
+  why cases 3 and 5 live in their own minimal roots** — one planted defect
+  apiece, observed in isolation, which is what "golden per plant" requires.
+- **The main store stays loadable.** Cases 1, 2 and 4 are value-level, so
+  `fixtures/ts-app` keeps `store-health: { ok: true, errors: 0 }` and the
+  fixture-store pin test (`tests/fixture-ts-store.test.js` — store loads with
+  zero diagnostics, every pointer resolves) stays green **unchanged** around
+  the plants. A store that failed to load would abort every check before any
+  drift was observed.
+- **Dates are injected, never read.** Case 1 is the only date-sensitive plant
+  and is always exercised with an explicit `--today` (D-012).
+
+### The plant stores
+
+`fixtures/plant-duplicate-accession/` and `fixtures/plant-unresolved-relates/`
+are minimal knowledge-only stores: catalog, rules, the seven registries, one
+self-contained `D-101` that mints them, and the one or two leaves the plant
+needs. They are **not** app fixtures — they carry no source tree, are not in
+`acceptance/run.js`'s `FIXTURES` list (whose loops assume a whole app that
+loads clean and is cold-run by A1), and each **fails to load by design**. Their
+`D-101` is self-contained rather than copied from `ts-app`: the `ts-app` entry
+relates to `K-101`/`L-000100`, and those refs would not resolve in a store with
+no ontology, adding `unresolved-ref` noise that would pollute the single
+tabulated plant. They appear in `PLANT_STORES` so the D-007 leakage sweep
+covers their names — a client repo must never be seeded with a store that is
+planted to fail.
+
 ## §5.1 — out-of-envelope anchors (expected: extractor HARD-ERRORS, exit 2 semantics — never a partial value set)
 
 | Case | Concept | Anchor (file:line) | Sentinel | Wrong-parse trap |
@@ -72,12 +139,20 @@ asserts is *hard error, never a silently wrong value set*.
 - `unknown-knowledge/ontology/classes/100-product.yaml` — 16 concepts
   K-101..K-116, every `enumerates.source` names a listed `source-of-truth`
   entry (§3.5).
-- `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md` — one
-  cited leaf, carrying the full frontmatter v2 record (UCS-1149): all four
-  governed facets, a registry-minted operation, an empty `applies.jurisdictions`
-  (universal), a tiered citation, and `provenance`. Its body opens with a topic
-  sentence, which is what display surfaces derive a one-liner from now that
-  `description` is retired.
+- `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md` — a cited
+  leaf carrying the full frontmatter v2 record (UCS-1149): all four governed
+  facets, a registry-minted operation, a tiered citation, and `provenance`. It
+  hosts UCS-1159 plants **2** (`applies.jurisdictions: [uk-gc]`) and **4**
+  (`facets.form: walkthrough`). Its body opens with a topic sentence, which is
+  what display surfaces derive a one-liner from now that `description` is
+  retired.
+- `unknown-knowledge/knowledge/product/100.2-cashing-out-a-bet.md` — a second
+  v2 leaf (`L-000200`) carrying the Time facet (UCS-1150) and a resolving
+  `relates.see-also` edge back to `L-000100`. It hosts UCS-1159 plant **1**
+  (stale volatile). It sits on its own leaf deliberately: the stale plant and
+  the registry plants must be separately observable in one preflight run
+  (`L-000100` quarantined, `L-000200` stale), which is what proves neither
+  masks the other.
 - `unknown-knowledge/knowledge/_registries/*.yaml` — the seven governed
   vocabularies (domains, form, anchor, stage, operations, jurisdictions,
   authority-tiers). Every minted value cites D-101, and the warrants show the
@@ -94,10 +169,14 @@ asserts is *hard error, never a silently wrong value set*.
     shared pre-promotion predicate reads exactly these spellings, so they are
     load-bearing on engine behaviour rather than on any one leaf.
 
-  `jurisdictions` is deliberately EMPTY: the store's one leaf claims
-  universally (`applies.jurisdictions: []`), so no jurisdiction has warrant.
-  No `deprecated` stage is minted — no leaf surface implements the demotion
-  that word carries in the concept lifecycle.
+  `jurisdictions` is deliberately EMPTY, and stays that way: `L-000200` claims
+  universally (`applies.jurisdictions: []`), and `L-000100`'s `uk-gc` is
+  UCS-1159 plant 2 — a claim with no minted vocabulary behind it, which is
+  precisely the finding that plant exists to raise. Minting `uk-gc` here would
+  silence it. No `deprecated` stage is minted — no leaf surface implements the
+  demotion that word carries in the concept lifecycle. `form` mints only
+  `recipe` for the same reason: `walkthrough` is plant 4, not an omission.
+  `operations` mints `add-sport` and `cash-out-bet`, one per leaf.
 - `unknown-knowledge/decisions/entries/D-101-sports-registry-const-array.yaml`
   — referenced by K-101's `rationale` and relating back to K-101 / leaf 100.1,
   and cited by every registry value as the minting decision.

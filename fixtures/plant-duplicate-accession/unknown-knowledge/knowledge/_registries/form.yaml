@@ -1,0 +1,12 @@
+# Acceptance-fixture store (KK-15) — the form registry (UCS-1149).
+# Only the form the store's one leaf actually needs is minted: a value minted
+# ahead of its material is speculative shelving.
+schema-version: 1
+store: knowledge
+registry: form
+values:
+  - value: recipe
+    gloss: The ordered steps for performing a task.
+    warrant: 100.1 is the step list for onboarding a sport.
+    decision: D-101
+    minted: "2026-07-08"

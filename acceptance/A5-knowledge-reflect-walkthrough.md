@@ -290,7 +290,7 @@ node "$KIT/engine/validate-values.js" --concepts K-110 --root .
 
 ```
 structural validate -> 0 findings — structurally clean
-checks run: id-range, id-shape, index-drift, missing-citation, missing-path, orphan, ref-cycle
+checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
 filtered to concepts: K-110
 ```
@@ -435,7 +435,7 @@ node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-01-00000
 }
 ```
 
-- [ ] `logs/findings/` still holds exactly six fragments — re-open, not
+- [ ] `logs/findings/` still holds exactly nine fragments — re-open, not
   duplicate.
 
 ## Done

@@ -1,0 +1,18 @@
+# Acceptance-fixture store (KK-15) — the hierarchical domains registry.
+# Minted from the material that exists: 100.1 documents the sport-registry
+# recipe and needs a home (UCS-1148/1149).
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: product
+    gloss: Product-facing behaviour of the sportsbook app.
+    warrant: 100.1 documents a product recipe and needs a top-level home.
+    decision: D-101
+    minted: "2026-07-08"
+  - value: product/sportsbook
+    gloss: The sportsbook vertical specifically.
+    warrant: 100.1 is sportsbook-specific — the sport registry is not shared with casino.
+    decision: D-101
+    minted: "2026-07-08"

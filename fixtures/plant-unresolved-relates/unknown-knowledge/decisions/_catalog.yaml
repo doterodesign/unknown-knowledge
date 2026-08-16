@@ -1,0 +1,7 @@
+# Plant store (UCS-1159) — unresolvable relates ref.
+schema-version: 1
+store: decisions
+entries:
+  - id: D-101
+    title: Governed vocabularies are registry-minted
+    file: entries/D-101-governed-vocabularies.yaml

@@ -15,6 +15,33 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Acceptance fixture v2 — the five planted cases with an expected-finding table
+  (UCS-1159): the frontmatter-v2 counterpart to the ontology-side drift the
+  fixtures already carried. `fixtures/ts-app` gains a second v2 leaf
+  (`L-000200`, Time facet plus a resolving typed edge) and hosts three
+  value-level plants: a stale volatile leaf (preflight `stale` at exit 1, always
+  under an injected `--today`), a jurisdiction mismatch, and an unregistered
+  facet value. The last two both emit `unregistered-value` and are told apart
+  **only by `path`**, so the goldens pin the path. Two plants — a duplicate
+  accession ID and an unresolvable `relates` ref — are loader-fatal: they set
+  `model.ok = false`, after which every engine surface reports that diagnostic
+  and abandons the run, so anything sharing their store is swallowed (verified:
+  adding a `duplicate-id` to the main store makes both `unregistered-value`
+  findings vanish, and no flag scopes past loader health). They therefore live
+  in their own minimal roots — `fixtures/plant-duplicate-accession/` and
+  `fixtures/plant-unresolved-relates/` — one defect apiece, asserted in
+  isolation at exit 2. This honors "drift in values, never in shape" rather than
+  bending it: both are WELL-FORMED records whose *meaning* is defective (two
+  valid leaves claiming one accession; a valid edge citing an accession nothing
+  mints), so nothing hides behind a malformed descriptor and the loader
+  diagnostic IS the expected finding. The main store keeps only value-level
+  plants, so it still loads clean and the fixture-store pin test stays green
+  unchanged. Inventory and the five-row expected-finding table (case, target,
+  anchor `file:line`, expected finding, root) live in `fixtures/ts-app/FIXTURE.md`,
+  with the harness invariants stated alongside; `acceptance/run.js` §A3 asserts
+  one golden per plant plus a `--today` control and an explicit
+  "no plant masks another" check.
+
 - Residue and document candidates as fragment-based findings (UCS-1160): the
   loop that turns misses into tomorrow's deterministic edges. Both flow through
   the EXISTING `log-entry.js` surface — one file per finding, so the concurrent
