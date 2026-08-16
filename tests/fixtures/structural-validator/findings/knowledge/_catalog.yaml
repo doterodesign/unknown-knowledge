@@ -3,9 +3,9 @@
 schema-version: 1
 store: knowledge
 entries:
-  - id: "500.1"
+  - id: L-000501
     title: Widget care
     file: widgets/500.1-widget-care.md
-  - id: "500.2"
+  - id: L-000502
     title: Drifted row
     file: widgets/500.1-widget-care.md

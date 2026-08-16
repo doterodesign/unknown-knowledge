@@ -100,7 +100,7 @@ test('registries are governed META, never records: the leaf walk cannot see them
   // `_rules.yaml`, so the naming grammar does the separating and there is no
   // exception list to keep in sync. Two leaves loaded; the four registry
   // files did not become leaves, nor a skipped-file warning.
-  assert.deepEqual([...model.leaves.keys()], ['600.1', '600.2']);
+  assert.deepEqual([...model.leaves.keys()], ['L-000601', 'L-000602']);
   assert.deepEqual(model.diagnostics, []);
 });
 
@@ -186,12 +186,12 @@ test('a store with NO registries and NO governed facets stays clean — governan
 test('every membership finding names both the value and its registry (golden)', () => {
   const payload = runJson(1, FINDINGS);
   assert.deepEqual(triples(payload), [
-    ['unregistered-value', '600.1', 'applies.jurisdictions[1]'],
-    ['unregistered-value', '600.1', 'citations[0].authority'],
-    ['unregistered-value', '600.1', 'operations[1]'],
-    ['unminted-segment', '600.2', 'facets.domain'],
-    ['unminted-segment', '600.3', 'facets.domain'],
-    ['suppressed-value', '600.4', 'facets.domain'],
+    ['unregistered-value', 'L-000601', 'applies.jurisdictions[1]'],
+    ['unregistered-value', 'L-000601', 'citations[0].authority'],
+    ['unregistered-value', 'L-000601', 'operations[1]'],
+    ['unminted-segment', 'L-000602', 'facets.domain'],
+    ['unminted-segment', 'L-000603', 'facets.domain'],
+    ['suppressed-value', 'L-000604', 'facets.domain'],
   ]);
   for (const f of payload.findings) {
     assert.match(f.message, /knowledge\/(domains|operations|jurisdictions|authority-tiers)/,
@@ -212,13 +212,13 @@ test('hierarchical domains: a child is valid only if EVERY segment is minted', (
   const payload = runJson(1, FINDINGS);
   // An unminted TOP segment: the finding names `sprockets`, not the whole
   // path — the segment is the registry edit the author can actually make.
-  const parent = payload.findings.find((x) => x.id === '600.2');
+  const parent = payload.findings.find((x) => x.id === 'L-000602');
   assert.equal(parent.code, 'unminted-segment');
   assert.match(parent.message, /the segment "sprockets" is not minted/);
   assert.match(parent.message, /"sprockets\/care"/, 'the offending value is named too');
 
   // A minted parent with an unminted child: the missing segment is the child.
-  const child = payload.findings.find((x) => x.id === '600.3');
+  const child = payload.findings.find((x) => x.id === 'L-000603');
   assert.equal(child.code, 'unminted-segment');
   assert.match(child.message, /the segment "widgets\/packaging" is not minted/);
 

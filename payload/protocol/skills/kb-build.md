@@ -57,7 +57,9 @@ this order:
   so keep it, bump `edition`, and append a `revision` note in step 3.
 - **The spine names a home** (a domain + division that owns the topic) →
   a new leaf there: mint the next free notation under that division —
-  `knowledge/_catalog.yaml` is the register of taken notations. Where the
+  the leaf files under `knowledge/` are the register of taken notations
+  (each leaf publishes its own; catalog rows name leaves by accession, so
+  they no longer double as that register). Where the
   classification was contestable (the item could plausibly file under two
   divisions), record the call as a `class-here` note on the leaf, and put a
   `class-elsewhere` redirect on the leaf where sessions will keep looking —
@@ -105,6 +107,11 @@ The frontmatter shape is `schemas/knowledge-leaf.schema.json` — the single
 source of truth; the validator enforces it in step 5. The governance calls
 this skill makes on top of the schema:
 
+- **`id`** — the accession (`L-NNNNNN`): opaque, minted at PR time, never
+  reused, never positional. Mint one on every new leaf. It is the leaf's
+  identity and what the loader indexes by, so it is also what other leaves
+  and the catalog cite. Unlike the notation it says nothing about where the
+  leaf sits, which is why a reclassification leaves it untouched.
 - **`notation`** — quoted (`"110.1"` — unquoted it parses as a number).
   Published notation is immutable: a move is a new leaf plus a
   `class-elsewhere` redirect from the old one, never a rename in place
@@ -115,9 +122,11 @@ this skill makes on top of the schema:
   flagged the classification as contestable. On revision, bump `edition`
   alongside the new `revision` note.
 - **`cross-references`** — `class-elsewhere` and `see-also` must resolve to
-  notations the catalog declares; `including` is standing room — candidate
-  topics parked under the heading, not authoritative, never citable as
-  fact.
+  leaves the catalog declares. Cite the target's accession id (`L-NNNNNN`);
+  a notation still resolves, so stores mid-migration keep loading, but new
+  references should be written in accession form.
+  `including` is standing room — candidate topics parked under the heading,
+  not authoritative, never citable as fact.
 - **`facets`** — the classification block, and every value must be minted in
   its registry (`knowledge/_registries/`): `domain` (the hierarchical subject
   path — every segment minted), `form` (what KIND of knowledge this is),
@@ -164,8 +173,8 @@ this skill makes on top of the schema:
   human can settle it), and `supersedes` (this leaf replaces the target's
   claim — the disagreement is already settled). A resolver hit carries its
   neighborhood one hop out, labeled by kind, so these are what an agent reads
-  next. Targets are leaf refs — an accession or a notation — and each must
-  resolve.
+  next. Targets are leaf refs and each must resolve: cite the target's
+  accession, as with `cross-references`.
 - **`provenance`** — optional `author` and `skill-version`, so a systematic
   drafting defect can be traced to the vintage that introduced it.
 - **Body** — the markdown below the frontmatter is the content; each claim
@@ -184,18 +193,21 @@ this skill makes on top of the schema:
   heading, all list, all code — so the failure mode to avoid is opening with
   a bare list or a code block, not writing a fragment.
 
-**Done when** every cross-reference resolves to an existing notation (or
+**Done when** every cross-reference resolves to a leaf the catalog declares (or
 was removed, with the removal noted in the revision note), every step-2
 citation appears in the frontmatter with a tier, every governed facet value
 is minted, and the body opens with a topic sentence.
 
 ### 4. INDEX — the catalog row
 
-Add the row to `knowledge/_catalog.yaml`: `id` (the quoted notation),
-`title` (the heading, kept in sync on revision), `file` (the leaf path
-relative to `knowledge/`). **Done when** every leaf file under `knowledge/`
-has exactly one catalog row naming it, and every row names a real leaf —
-the validator's `index-drift` and `orphan` checks verify precisely this.
+Add the row to `knowledge/_catalog.yaml`: `id` (the leaf's accession id,
+`L-NNNNNN` — the same value as its `id` field), `title` (the heading, kept in
+sync on revision), `file` (the leaf path relative to `knowledge/`). A row
+naming an older leaf by its quoted notation still resolves, so a store part-way
+through migration keeps loading; write new rows in accession form.
+**Done when** every leaf file under `knowledge/` has exactly one catalog row
+naming it, and every row names a real leaf — the validator's `index-drift` and
+`orphan` checks verify precisely this.
 
 ### 5. VALIDATE — green, then the human gate
 
