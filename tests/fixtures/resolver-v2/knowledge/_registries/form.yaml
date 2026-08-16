@@ -1,0 +1,20 @@
+# Query-decomposition fixture (UCS-1152) — the form registry.
+schema-version: 1
+store: knowledge
+registry: form
+values:
+  - value: recipe
+    gloss: A procedure to follow, start to finish.
+    warrant: L-000102 is the sport-registration procedure.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: constraint
+    gloss: A rule the system must not violate.
+    warrant: L-000140 and L-000190 both state rules that bind.
+    decision: D-201
+    minted: "2026-07-07"
+  - value: runbook
+    gloss: A checklist worked through when an event occurs.
+    warrant: L-000213 is the pre-launch checklist.
+    decision: D-201
+    minted: "2026-07-07"

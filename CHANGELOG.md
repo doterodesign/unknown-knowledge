@@ -15,6 +15,45 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Query decomposition (UCS-1152): `resolve` now decomposes the query itself
+  against the governed vocabularies rather than matching text against concepts
+  alone. Three axes, three vocabularies, no guessing — verb joins the
+  `knowledge/operations` registry, noun joins concept terms and aliases, place
+  joins `knowledge/jurisdictions`. A verb-shaped ask ("add a sport") therefore
+  reaches the leaves that DECLARED the operation without needing a noun to hang
+  them on.
+- Leaves are now FIRST-CLASS SCORED RESULTS in a `leaves` section, not only
+  attachments to a concept's `knowledge` list. Each carries the `signals` that
+  scored it, so `sum(signals[].score)` equals the published `score` and a
+  ranking is reproducible from the output rather than asserted. The scoring
+  table itself ships in the payload under `scoring`, so a consumer reproducing
+  a ranking never vendors a copy that goes stale.
+- Scope exclusion with reasons: a leaf whose `applies.jurisdictions` excludes
+  the query's jurisdiction is published under `exclusions` with the reason —
+  excluded, never silently absent. "No knowledge about this" and "the knowledge
+  is for another jurisdiction" demand opposite conduct from a reader, and a
+  filtered-away leaf makes the two indistinguishable. An empty `applies` is
+  universal and never excluded; an unscoped query excludes nothing.
+- Near-miss reporting: a vocabulary entry that shares tokens with the query but
+  did not clear the match threshold is reported with the overlap that carried
+  it — the answer that was nearly right, which is what a reader needs most when
+  the right one is missing.
+- Residue: the unconsumed non-stopword tokens, emitted with the
+  `resolved-context` that DID resolve, so a retrieval-miss finding localizes the
+  gap precisely. The stopword list is pinned and shipped in the engine
+  (`lib/decomposition.js`), never configurable per run — residue is a
+  governance signal, and a per-store list would make "unresolved" mean something
+  different in every repo.
+- Zero resolution carries its fallback `conduct` IN THE PAYLOAD, not only on the
+  human surface: exit 0 with an explicit empty result is machine-distinguishable
+  from a failure, and an agent reading JSON is told what to do next rather than
+  left to infer it from empty arrays.
+- Scoring extracted into `payload/engine/lib/scoring.js` as an explicit
+  signal→score table, done BEFORE the new signals were added. Concept rungs
+  (100/80/60/50/40, −30 draft downrank) keep their numbers and never add up;
+  leaf structured joins (operation 3, concept 2, term 1) DO add up, because a
+  leaf reached by two independent joins is more strongly the answer than one
+  reached by either alone.
 - Typed edges (UCS-1151): leaves gain three edge families, giving structural
   neighborhood without term luck. `concepts` (leaf → ontology concept),
   `paths` (leaf → repo tree), and `relates` (`depends-on` / `see-also` /

@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-201
+    title: Sportsbook governed vocabularies
+    file: entries/D-201-sportsbook-vocabularies.yaml
