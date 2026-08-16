@@ -55,7 +55,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Nine command-line surfaces. JavaScript with JSDoc types, zero build step, one
+Ten command-line surfaces. JavaScript with JSDoc types, zero build step, one
 dependency (D-022).
 
 | Command | Answers |
@@ -69,6 +69,7 @@ dependency (D-022).
 | `log-entry.js` | append a finding, miss or gap — never by hand-editing YAML |
 | `ingest.js` | normalize a document (md, txt, html, pdf) to one intermediate representation |
 | `phoenix.js` | apply a phoenix event: re-file a drifted subtree in bulk, in full or not at all |
+| `derive.js` | regenerate the derived layer: plural browse trees, call numbers, resolution index |
 
 ### Exit codes are a contract
 

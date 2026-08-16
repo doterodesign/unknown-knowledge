@@ -1,0 +1,29 @@
+---
+schema-version: 2
+id: L-000117
+edition: 1
+domain: sportsbook
+heading: Odds feed provider quirks
+facets:
+  domain: sportsbook/odds-feed
+  form: reference
+  anchor: world
+  stage: verified
+operations: [onboard-provider]
+applies:
+  jurisdictions: []
+verified: "2026-08-01"
+volatility: volatile
+terms: [odds feed, provider]
+citations:
+  - source: OddsCo API v3 §4.2
+    accessed: "2026-08-01"
+    authority: vendor-doc
+provenance:
+  author: dimitri
+  skill-version: kb-build@2.0.0
+---
+
+OddsCo suspends markets roughly ninety seconds before an event locks. Treat
+`suspended` as distinct from `settled`: a suspended market reopens, a settled
+one never does, and conflating them double-pays the same bet.

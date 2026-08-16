@@ -12,10 +12,10 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. Nine command-line surfaces —
+**Engine** — The vendored deterministic code. Ten command-line surfaces —
 structural validator, value validator, preflight, resolver, survey map, reverse
-audit, log-entry helper, document ingest, phoenix events — over a store loader,
-an extractor library, and a format-adapter library.
+audit, log-entry helper, document ingest, phoenix events, derived layer — over a
+store loader, an extractor library, and a format-adapter library.
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
 not decide what to do about them (D-011).
@@ -111,6 +111,30 @@ any defect in a graduated category revokes it automatically, and citation
 spot-checks remain in the sampling plan at every trust level. The mechanism and
 its validation ship in v1; the **analytics stay manual** — the moderator judges
 the recorded approved-unmodified counts, and the engine never computes them.
+
+**Derived layer** — Everything discovery-shaped, regenerated from the flat store
+and disposable by construction: plural **browse trees**, **synthesized call
+numbers**, and a **resolution index**, written under `knowledge/derived/` by the
+`derive` surface. Nothing authored lives here and nothing reads it back — the
+loader skips the directory by name — so deleting it loses nothing, and a
+round-trip test proves regeneration is byte-identical. It is also the only place
+**embedding recall** may ever live: a declared slot, consulted only after the
+deterministic layer is exhausted, producing proposals that are neither citable
+nor persistable without a human gate. The slot and the gate ship; the
+implementation is deliberately out of scope.
+
+**Browse tree** — One generated projection of the flat store along one axis
+(`domain-first` for stewards, `form-first` for agents). Plural on purpose: the
+accession inversion removed the cost of filing a leaf in the wrong place, so no
+single ordering has to be the right one. Stale and draft leaves are **annotated
+and sorted last, never hidden** — omitting them would report an empty shelf
+where the truth is a rotted one.
+
+**Call number** — A synthesized display string naming a leaf's position in one
+browse tree (`SPO/ODD/REF·L-000117`). It is **never an identity**: no id grammar
+accepts one, no citation resolves through one, and it differs between axes
+because it describes a position rather than a record. The accession it contains
+is the citable half.
 
 **Stack** — A language/config ecosystem the extractor library covers (Swift,
 TS/JS, config). Selected at init (auto-detected, confirmable); drives which

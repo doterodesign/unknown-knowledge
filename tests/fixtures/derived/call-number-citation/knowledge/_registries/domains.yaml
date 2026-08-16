@@ -1,0 +1,36 @@
+# Derived-layer fixture (UCS-1158) — the domains registry.
+#
+# Two top-level classes with children, deliberately: a browse tree over one
+# domain would not prove that nodes stable-sort against each other, and the
+# domain-first and form-first axes only visibly differ when more than one
+# domain shares a form.
+schema-version: 1
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: sportsbook
+    gloss: The sportsbook vertical.
+    warrant: L-000117, L-000133 and L-000213 all document sportsbook material.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: sportsbook/odds-feed
+    gloss: Odds ingestion and the providers that supply it.
+    warrant: L-000117 states provider quirks, L-000213 the latency budget, L-000133 the settlement rounding rule.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: payments
+    gloss: Moving money in and out of the platform.
+    warrant: L-000162, L-000171 and L-000228 all document payments material.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: payments/withdrawals
+    gloss: Paying money out, and the checks that gate it.
+    warrant: L-000162 states the KYC threshold, L-000171 the dispute playbook.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: payments/fx
+    gloss: Currency handling and its precision rules.
+    warrant: L-000228 states the minor-unit table settlement depends on.
+    decision: D-401
+    minted: "2026-08-16"

@@ -66,6 +66,10 @@ const EMITS_FINDINGS = new Set([
   // A refused mapping: the store or the mapping has defects its author fixes,
   // which is the findings case. Nothing is written on that path (UCS-1154).
   'payload/engine/phoenix.js',
+  // A derived layer that differs from what the store projects — missing, stale,
+  // or carrying a file no axis generates. The check RAN; regenerating with
+  // --write is the fix (UCS-1158).
+  'payload/engine/derive.js',
 ]);
 
 /** The command module behind a surface's entry shim. */
