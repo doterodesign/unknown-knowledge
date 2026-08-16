@@ -86,7 +86,7 @@ import { isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import {
-  LEAF_ACCESSION_FIELD, LEAF_ID_FIELD, LEAF_PATHS_FIELD, healthSummary, loadStores,
+  LEAF_ACCESSION_FIELD, LEAF_PATHS_FIELD, healthSummary, loadStores,
   normalizeConceptIds, recordId, storeHealth,
 } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
@@ -225,11 +225,12 @@ function realpathOrNull(path) {
  * The id grammar each store's CATALOG rows are judged by.
  *
  * Usually the store's own space — a catalog row names an id that store mints.
- * Knowledge is the exception while accessions expand (UCS-1144): a row points
- * at a leaf, and a pointer may spell its target either way, so knowledge rows
- * are judged by the citation grammar. Declared here rather than branched on in
- * the loop, so the exception is a table entry that disappears when notation
- * retires, not an `if (store === 'knowledge')` somebody has to find.
+ * Knowledge stays a distinct entry after UCS-1147 narrowed citations, because a
+ * knowledge row is still a POINTER rather than a mint: it is the store's own
+ * citation of its leaves, so it is judged by the citation grammar, and its
+ * finding carries the citation grammar's hint — the one that names the
+ * accession migration. The two grammars accept the same strings today; the
+ * table is what keeps the distinction available when they diverge.
  */
 const CATALOG_ID_SPACE = Object.freeze({
   decisions: 'decisions',
@@ -240,10 +241,10 @@ const CATALOG_ID_SPACE = Object.freeze({
 /** Catalog rows: id grammar (id-shape) + row↔file agreement (index-drift). */
 function checkCatalogs(model, push) {
   // What each loaded file actually contains — the fact the index must match.
-  // A leaf is recorded under every spelling it answers to, because a row that
-  // names an accessioned leaf by its notation points at exactly the right file
-  // and must not read as drift (UCS-1144): both forms are legal citations, and
-  // the catalog is the store's own citation of its leaves.
+  // One id per record now that a leaf answers to one spelling (UCS-1147); the
+  // alternate-spelling pass the expand phase needed here left with the alias
+  // index, so a row naming a leaf by its retired notation reads as the
+  // id-shape finding it is rather than resolving to the file.
   const idsByFile = new Map();
   const addTo = (file, id) => {
     if (typeof file !== 'string' || typeof id !== 'string') return;
@@ -253,19 +254,16 @@ function checkCatalogs(model, push) {
   for (const records of [model.concepts, model.decisions, model.leaves]) {
     for (const entry of records.values()) addTo(entry.file, recordId(entry));
   }
-  for (const [alias, identity] of model.leafAliases) {
-    addTo(model.leaves.get(identity)?.file, alias);
-  }
 
   for (const store of ['decisions', 'knowledge', 'ontology']) {
     const catalog = model.stores[store].catalog;
     if (!isObject(catalog) || !Array.isArray(catalog.entries)) continue; // absent/invalid: loader diagnosed
     // A catalog row is a POINTER at a leaf, not a leaf, so it is judged by the
-    // citation grammar rather than the minting one: a row may name the leaf it
-    // points at by accession or by notation, exactly as a cross-reference may
-    // (UCS-1144). Agreement with the pointed-at file is checked below, and
-    // that check is what actually ties the row to a leaf — the grammar only
-    // decides whether the row names something of a shape a leaf could have.
+    // citation grammar rather than the minting one: a row names its leaf the
+    // way a cross-reference does, which since UCS-1147 means by accession.
+    // Agreement with the pointed-at file is checked below, and that check is
+    // what actually ties the row to a leaf — the grammar only decides whether
+    // the row names something of a shape a leaf could have.
     const space = CATALOG_ID_SPACE[store];
     const grammar = ID_GRAMMARS[space];
     const pattern = idPattern(space);
@@ -396,24 +394,13 @@ function checkOrphans(model, push) {
   // The third element derives the FINDING path — which field of the record the
   // reported id was read from — not how this check GETS at the id: identity
   // comes through recordId(), so a leaf id space change never reaches this
-  // loop (UCS-1142). A leaf reports whichever field its identity came from, so
-  // the author is pointed at the line they would actually edit (UCS-1144).
+  // loop (UCS-1142). A leaf's identity is its accession, so that is the field
+  // an orphan finding points the author at (UCS-1147).
   const spaces = [
     ['ontology', model.concepts, () => 'id'],
-    // `typeof`, not truthiness — the same test the loader used to decide which
-    // field the identity came from. A non-string `id` (a YAML-coerced number,
-    // say) is not an accession there, so it must not be named as one here: the
-    // two must agree about which line an author is pointed at.
-    ['knowledge', model.leaves, (e) => (typeof e.id === 'string' ? LEAF_ACCESSION_FIELD : LEAF_ID_FIELD)],
+    ['knowledge', model.leaves, () => LEAF_ACCESSION_FIELD],
     ['decisions', model.decisions, () => 'id'],
   ];
-  // A leaf is declared when the catalog names it by EITHER legal spelling
-  // (UCS-1144). The catalog is a citation of the leaf, so a row that still
-  // names a since-accessioned leaf by its notation reaches it — which is the
-  // whole point of keeping both forms legal while the migrate batches run.
-  for (const [alias, identity] of model.leafAliases) {
-    if (declared.knowledge.has(alias)) declared.knowledge.add(identity);
-  }
   for (const [store, records, idPath] of spaces) {
     if (!model.stores[store].catalog) continue; // no catalog loaded: loader diagnosed
     for (const [id, entry] of records) {

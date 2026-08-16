@@ -37,7 +37,7 @@ Two `--root` conventions, stated once (same as AGENTS.md):
 5. VALIDATE  structural validator green, then the human gate
 ```
 
-### 1. CLASSIFY — one target notation
+### 1. CLASSIFY — one subject home
 
 Enter through the store's navigational grammar (AGENTS.md): read
 `knowledge/_catalog.yaml`, then `knowledge/_rules.yaml` — the
@@ -53,25 +53,27 @@ it names before deciding placement (the map is never the fact). Decide, in
 this order:
 
 - **An existing leaf already covers the item** → this run is a *revision*
-  of that leaf, not a new one: its notation is immutable once cited (§3.5),
-  so keep it, bump `edition`, and append a `revision` note in step 3.
+  of that leaf, not a new one: its accession is its identity and never
+  changes (§3.5), so keep it, bump `edition`, and append a `revision` note
+  in step 3.
 - **The spine names a home** (a domain + division that owns the topic) →
-  a new leaf there: mint the next free notation under that division —
-  the leaf files under `knowledge/` are the register of taken notations
-  (each leaf publishes its own; catalog rows name leaves by accession, so
-  they no longer double as that register). Where the
-  classification was contestable (the item could plausibly file under two
-  divisions), record the call as a `class-here` note on the leaf, and put a
-  `class-elsewhere` redirect on the leaf where sessions will keep looking —
-  the content lives in exactly one place; the redirect is a signpost, and
-  it must resolve.
+  a new leaf, classified there. Classification is now a `facets.domain`
+  value, not a slot: mint a fresh accession for the leaf (step 3) and let
+  the subject path say what it is about. Nothing has to be looked up to
+  find "the next free" anything — an accession is opaque and drawn from a
+  sequence, so two authors classifying into one domain never contend for a
+  number. Where the classification was contestable (the item could
+  plausibly file under two divisions), record the call as a `class-here`
+  note on the leaf, and put a `class-elsewhere` redirect on the leaf where
+  sessions will keep looking — the content lives in exactly one place; the
+  redirect is a signpost, and it must resolve.
 - **The spine has no home for it** → the spine is the human's (it came from
   the bootstrap interview): hand the item back with the domains you
   considered and ask whether `knowledge/_rules.yaml` should grow — never
   invent a domain or division silently.
 
-**Done when** exactly one of the three outcomes holds: one target notation
-minted for a new leaf, one existing leaf identified for revision, or the
+**Done when** exactly one of the three outcomes holds: one subject home
+settled for a new leaf, one existing leaf identified for revision, or the
 item handed back for a spine decision. Two plausible homes you cannot
 separate is the third outcome, not a coin flip.
 
@@ -95,11 +97,11 @@ node unknown-knowledge/engine/log-entry.js create --log gaps --date 2026-07-09 \
   --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf 100.1","consulted":{"leaves":["L-000100"]}}'
 ```
 
-`--date` is injected, never wall-clock; the summary carries notations,
+`--date` is injected, never wall-clock; the summary carries leaf ids,
 concept IDs, and file paths only — never verbatim user text or secrets
-(§3.4). `consulted.leaves` cites each leaf by its accession id — the
-identity that survives the leaf being renumbered — while the summary
-names the notation, which is how a reader navigates to it.
+(§3.4). `consulted.leaves` cites each leaf by its accession id — the only
+spelling that resolves — and the summary should name that same id, so a
+reader can look up what the entry consulted.
 **Done when** zero uncited claims remain in the draft. If citing
 and dropping empties the item, park what remains and end the run here — a
 parked item is a recorded demand signal, not a failure.
@@ -111,23 +113,29 @@ source of truth; the validator enforces it in step 5. The governance calls
 this skill makes on top of the schema:
 
 - **`id`** — the accession (`L-NNNNNN`): opaque, minted at PR time, never
-  reused, never positional. Mint one on every new leaf. It is the leaf's
-  identity and what the loader indexes by, so it is also what other leaves
-  and the catalog cite. Unlike the notation it says nothing about where the
-  leaf sits, which is why a reclassification leaves it untouched.
-- **`notation`** — quoted (`"110.1"` — unquoted it parses as a number).
-  Published notation is immutable: a move is a new leaf plus a
+  reused, never positional. **Required on every leaf.** It is the leaf's
+  identity, what the loader indexes by, and the only spelling other leaves,
+  the catalog, decisions and log fragments may cite it as. Because it says
+  nothing about where the leaf sits, a reclassification — or a move to a
+  different directory — leaves it untouched and breaks no citation.
+- **`notation`** — OPTIONAL, and legacy. A quoted dotted label (`"110.1"` —
+  unquoted it parses as a number) recording where the leaf sat in an older
+  tree, kept only so a reader who knows that tree still recognizes the leaf.
+  It is not an identity: nothing indexes by it and no citation resolves
+  through it. New leaves need not carry one. Reclassifying a leaf is an
+  edit to `facets.domain`, not a new leaf: a move is a new leaf plus a
   `class-elsewhere` redirect from the old one, never a rename in place
-  (§3.5).
+  (§3.5), only when the CONTENT is genuinely being replaced rather than
+  refiled.
 - **`notes`** — every leaf carries a `scope` note (what it covers and
   pointedly does not) and every write appends a `revision` note with
   `date` (initial entry, or what changed); add `class-here` when step 1
   flagged the classification as contestable. On revision, bump `edition`
   alongside the new `revision` note.
 - **`cross-references`** — `class-elsewhere` and `see-also` must resolve to
-  leaves the catalog declares. Cite the target's accession id (`L-NNNNNN`);
-  a notation still resolves, so stores mid-migration keep loading, but new
-  references should be written in accession form.
+  leaves the catalog declares. Cite the target's accession id (`L-NNNNNN`),
+  which is the only legal spelling: a dotted notation is refused by the
+  validator with a finding naming this migration.
   `including` is standing room — candidate topics parked under the heading,
   not authoritative, never citable as fact.
 - **`facets`** — the classification block, and every value must be minted in
@@ -177,7 +185,7 @@ this skill makes on top of the schema:
   claim — the disagreement is already settled). A resolver hit carries its
   neighborhood one hop out, labeled by kind, so these are what an agent reads
   next. Targets are leaf refs and each must resolve: cite the target's
-  accession, as with `cross-references`.
+  accession, as with `cross-references`. A notation is refused here too.
 - **`provenance`** — optional `author` and `skill-version`, so a systematic
   drafting defect can be traced to the vintage that introduced it.
 - **Body** — the markdown below the frontmatter is the content; each claim
@@ -204,10 +212,17 @@ is minted, and the body opens with a topic sentence.
 ### 4. INDEX — the catalog row
 
 Add the row to `knowledge/_catalog.yaml`: `id` (the leaf's accession id,
-`L-NNNNNN` — the same value as its `id` field), `title` (the heading, kept in
-sync on revision), `file` (the leaf path relative to `knowledge/`). A row
-naming an older leaf by its quoted notation still resolves, so a store part-way
-through migration keeps loading; write new rows in accession form.
+`L-NNNNNN` — the same value as its `id` field, and the only legal spelling),
+`title` (the heading, kept in sync on revision), `file` (the leaf path
+relative to `knowledge/`).
+
+Leaf files are sharded by accession prefix — `knowledge/<L-NN>/<accession>-<slug>.md`,
+where the prefix is `L-` plus the first two digits of the accession's numeric
+part (`L-000101` files under `knowledge/L-00/`). The shard is a fanout device
+for directory size and **carries no meaning**: it makes no claim about the
+leaf's subject, and nothing reads it. A leaf may therefore be moved between
+shard directories freely — update that row's `file` field and nothing else,
+because no citation names a directory.
 **Done when** every leaf file under `knowledge/` has exactly one catalog row
 naming it, and every row names a real leaf — the validator's `index-drift` and
 `orphan` checks verify precisely this.

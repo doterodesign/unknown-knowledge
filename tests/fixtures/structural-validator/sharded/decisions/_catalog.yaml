@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-302
+    title: Shard the knowledge store by accession-id prefix
+    file: entries/D-302-prefix-sharding.yaml

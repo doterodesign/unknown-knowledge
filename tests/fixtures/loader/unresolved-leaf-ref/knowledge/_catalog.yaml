@@ -1,5 +1,5 @@
-# Both leaf-ref shapes must be resolvable AND refusable: a dangling accession
-# and a dangling notation are each an unresolved-ref error (UCS-1144).
+# Leaf refs must be resolvable AND refusable: every dangling accession is its
+# own unresolved-ref error (UCS-1147).
 schema-version: 1
 store: knowledge
 entries:

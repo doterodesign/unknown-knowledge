@@ -1,6 +1,6 @@
 schema-version: 1
 store: knowledge
 entries:
-  - id: "362.1"
+  - id: L-000362
     title: ACH settlement windows
     file: regulation/362.1-ach-settlement-windows.md

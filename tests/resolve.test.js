@@ -109,12 +109,14 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   assert.equal(method.summary, 'A way a user pays money in.');
   assert.deepEqual(method['source-of-truth'], ['src/payments/methods/registry.ts']);
   assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Payout method' }]);
-  // The golden for a notation-only store under UCS-1144, extended by the
-  // frontmatter v2 fields (UCS-1149). Every added key is present and may be
-  // null rather than coming and going: a consumer reads ONE result shape
-  // whether or not the store has started minting accessions or declaring
-  // stages. `excerpt` is derived from the body's topic sentence — the retired
-  // `description` field is not read, because it no longer exists.
+  // The golden for one published knowledge entry point, extended over several
+  // tickets. `id` is the leaf's ACCESSION: this fixture's leaves were unminted
+  // and published `id: null` under UCS-1144's expand phase, and UCS-1147 made
+  // the accession required, so a null here would now mean a defective store
+  // rather than an unmigrated one. Every other added key stays present-and-
+  // possibly-null so a consumer reads ONE result shape regardless of what the
+  // store declares. `excerpt` is derived from the body's topic sentence — the
+  // retired `description` field is not read, because it no longer exists.
   // Extended again by typed edges (UCS-1151): `via` names which join reached
   // the leaf, and `relates` carries its one-hop neighborhood with every declared
   // kind present as a stable key — empty here, because this fixture leaf
@@ -122,7 +124,7 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   assert.deepEqual(method.knowledge, [
     {
       via: 'terms',
-      id: null,
+      id: 'L-000411',
       notation: '410.2',
       heading: 'Accepted payment instruments',
       stage: 'draft',
@@ -161,7 +163,7 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
   assert.deepEqual(settlement.knowledge, [
     {
       via: 'terms',
-      id: null,
+      id: 'L-000410',
       notation: '410.1',
       heading: 'Card settlement windows',
       stage: 'verified',

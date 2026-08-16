@@ -27,67 +27,24 @@
  * no schema edit, no second copy (tests/id-grammars.test.js pins that).
  */
 
-/**
- * The body of an anchored pattern — what it matches, without its ^ and $.
- *
- * Only `union` below uses it, and only so a union can be COMPOSED from the
- * grammars it accepts instead of restating them. A union that restated its
- * members would be exactly the defect this module exists to remove, one level
- * up: three spellings of the notation grammar, two of which drift silently.
- *
- * REFUSES a pattern that is not anchored at both ends, rather than stripping
- * what it finds. Both failure modes are silent and neither is detectable
- * downstream: an unanchored member composes into a union with a hole in the
- * middle (`^(a|b)$` where `b` was `b` and not `^b$` accepts nothing new, but
- * `^(a|.*x)$` would), and a member ending in an ESCAPED `\$` — a literal
- * dollar sign, not an anchor — would have that character silently eaten,
- * widening the union to match strings the member itself rejects. A grammar
- * module whose composition step can quietly widen a pattern is worse than no
- * composition at all, so a malformed member is an engine failure at load.
- *
- * @param {string} pattern an anchored pattern source
- * @returns {string} the same pattern with its anchors stripped
- * @throws {TypeError} if the pattern is not anchored at both ends
- */
-function body(pattern) {
-  // A trailing `$` is an anchor only if it is not itself escaped. Count the
-  // backslashes immediately before it: an even number (including zero) leaves
-  // the `$` live, an odd number escapes it into a literal dollar sign.
-  const escapes = /(\\*)\$$/.exec(pattern);
-  const anchored = pattern.startsWith('^') && escapes !== null && escapes[1].length % 2 === 0;
-  if (!anchored) {
-    throw new TypeError(
-      `id grammar pattern must be anchored at both ends to compose into a union, got ${JSON.stringify(pattern)}`,
-    );
-  }
-  return pattern.slice(1, -1);
-}
-
-/**
- * An anchored alternation over other grammars' patterns, with the hints joined
- * the way a finding should read them.
- *
- * Each alternative is parenthesized before joining: `a|b` and `c` must compose
- * to `^((a|b)|c)$`, never `^(a|b|c)$` — same language here, but not in general,
- * and a union that is only accidentally right is a trap for the next member.
- *
- * @param {Array<{ pattern: string, hint: string }>} members grammars to accept
- * @param {string} conjunction how the hints read when joined ('or')
- * @returns {{ pattern: string, hint: string }} the composed grammar
- */
-const union = (members, conjunction) => Object.freeze({
-  pattern: `^(${members.map((m) => `(${body(m.pattern)})`).join('|')})$`,
-  hint: members.map((m) => m.hint).join(` ${conjunction} `),
-});
-
 const ontology = Object.freeze({
   pattern: '^K-[0-9]+$',
   hint: 'K-NNN',
 });
 
+/**
+ * The LEGACY dotted notation (UCS-1147) — a leaf's optional display label.
+ *
+ * Still a grammar, because the field is still validated when present: a
+ * malformed notation is a defect whether or not anything treats it as
+ * identity. What it is no longer is an id space anything RESOLVES through —
+ * `leaf-ref` does not accept it, and no leaf is indexed by it. The hint says
+ * "legacy" out loud, so a finding quoting it cannot read as an invitation to
+ * cite this way.
+ */
 const knowledge = Object.freeze({
   pattern: '^[0-9]+(\\.[0-9]+)*$',
-  hint: 'dotted notation, e.g. "362.1"',
+  hint: 'legacy dotted notation, e.g. "362.1"',
 });
 
 const decisions = Object.freeze({
@@ -101,11 +58,32 @@ const decisions = Object.freeze({
  * read at library scale; it is FIXED, unlike K-NNN, because an accession
  * carries no structure to grow into: L-000001 and L-1 would be two spellings
  * of one identity, and "never reused" cannot survive two spellings.
+ *
+ * Since UCS-1147 this is a leaf's REQUIRED identity and the only shape a
+ * citation of a leaf may take.
  */
 const accessions = Object.freeze({
   pattern: '^L-[0-9]{6}$',
-  hint: 'L-NNNNNN',
+  // Says what to write AND why the field is there, because the reader of this
+  // hint is most often an author whose leaf predates the contract: the
+  // `missing-required` on a leaf's `id` quotes it, and "L-NNNNNN" alone would
+  // tell them the shape of a field without saying that it is now the leaf's
+  // identity or that assigning one is the migration.
+  hint: 'an accession id of the form L-NNNNNN — every leaf mints one as its identity (UCS-1147)',
 });
+
+/**
+ * What a finding says to an author who cited a leaf the retired way.
+ *
+ * Lives beside the grammars because it is the human half of the same fact: the
+ * pattern says which spellings are legal, and this says what to do about the
+ * one that no longer is. Both travel together into every message that quotes
+ * them, for the reason this module exists — a hint that drifted from its
+ * pattern would send an author to the wrong edit.
+ */
+export const ACCESSION_MIGRATION_HINT =
+  'the leaf\'s accession id (L-NNNNNN); the dotted notation is a legacy display '
+  + 'label and no longer resolves as a citation';
 
 /**
  * Store → the id grammar its ids obey (§3.5).
@@ -122,15 +100,27 @@ export const ID_GRAMMARS = Object.freeze({
   decisions,
   accessions,
   /**
-   * What a CITATION of a leaf may look like — either shape, for as long as
-   * both are legal (UCS-1144's expand phase). Distinct from `accessions` and
-   * `knowledge`, which each say what one id space MINTS: a leaf mints exactly
-   * one identity, but a reference to it may spell either, so the minting
-   * grammars stay strict while this one widens. When the migrate batches
-   * finish and notation is retired, this narrows to `accessions` alone and
-   * every consumer follows, because they all read it from here.
+   * What a CITATION of a leaf may look like: an accession, and nothing else
+   * (UCS-1147's contract phase).
+   *
+   * It was a UNION of accession and notation while both spellings were legal
+   * (UCS-1144's expand phase), and it narrowed here exactly as that ticket
+   * predicted — the migrate batches (UCS-1145, UCS-1146) rewrote every
+   * notation-form citation first, so narrowing breaks nothing that was left.
+   *
+   * It stays a named entry rather than collapsing into `accessions` at every
+   * call site, and that is deliberate: `accessions` says what a leaf MINTS and
+   * `leaf-ref` says what a record may CITE. Those are two claims that happen to
+   * coincide today, and consumers read them by name for the same reason they
+   * always did — the day they diverge again is a change to this table, not a
+   * sweep through the surfaces that judge citations. The `hint` differs for
+   * that reason too: a citation finding names the migration, a minting finding
+   * names the shape.
    */
-  'leaf-ref': union([accessions, knowledge], 'or'),
+  'leaf-ref': Object.freeze({
+    pattern: accessions.pattern,
+    hint: ACCESSION_MIGRATION_HINT,
+  }),
 });
 
 /**
@@ -147,13 +137,15 @@ export const ID_GRAMMARS = Object.freeze({
  * ontology/decisions ids reach the schemas through conceptRef/decisionRef and
  * are not part of the leaf-notation seam this ticket settles.
  *
- * The two leaf entries are the whole shape of UCS-1144's expand phase, and the
- * reason they are separate defs. `notation` is what a leaf MINTS as its
- * positional id, and it stays dotted-only. `leafRef` is what a record may
- * CITE a leaf as, and it accepts either shape while both are legal. They were
- * one def before this ticket, which is precisely why widening citations would
- * otherwise have widened leaf notation itself — letting a leaf mint `L-000001`
- * into the `notation` field and quietly hold two identities at once.
+ * The three leaf entries stay three defs after UCS-1147 narrowed citations to
+ * accessions, and the reason is what they each say rather than what they each
+ * match. `accession` is a leaf's identity — required, and what `leafRef` cites.
+ * `notation` is the optional LEGACY display label, still dotted-only and still
+ * validated when present, because a malformed label is a defect even though
+ * nothing resolves through it. `leafRef` and `accession` carry the same pattern
+ * today; collapsing them would lose the distinction between what a leaf mints
+ * and what a record may cite, which is exactly the distinction that let the
+ * expand phase widen citations without ever widening leaf notation itself.
  *
  * @type {Readonly<Record<string, string>>}
  */

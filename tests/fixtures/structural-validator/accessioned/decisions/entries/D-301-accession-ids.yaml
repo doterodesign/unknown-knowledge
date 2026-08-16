@@ -11,5 +11,5 @@ entries:
     consequences: Both citation forms resolve while the store migrates.
     supersedes: []
     superseded-by: []
-    # relates-to.leaves cites one leaf by accession and one by notation.
-    relates-to: { concepts: [K-510], leaves: [L-000101, "700.2"], decisions: [] }
+    # relates-to.leaves cites both leaves by accession.
+    relates-to: { concepts: [K-510], leaves: [L-000101, L-000102], decisions: [] }

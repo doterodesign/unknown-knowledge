@@ -112,19 +112,29 @@ function withStore(fn) {
     mkdirSync(join(root, 'src', 'verticals', 'sportsbook', 'sports'), { recursive: true });
     writeFileSync(join(root, 'src', 'verticals', 'sportsbook', 'sports', 'registry.ts'), '// fixture anchor\n');
     mkdirSync(join(root, 'src', 'verticals', 'sportsbook', 'bet-slip'), { recursive: true });
-    // 362.1 already exists and is catalog-declared; this rewrites it to carry
-    // the nested `relates` map. `depends-on` names a notation no store mints.
+    // L-000362 already exists and is catalog-declared; this rewrites it to
+    // carry the nested `relates` map. `depends-on` names an accession no store
+    // mints, so the edge — once declared — has nowhere to resolve.
+    //
+    // Everything here is spelled the one legal way (UCS-1147): the leaf carries
+    // its required `id`, `see-also` names its sibling by accession, and the
+    // dangling target is a well-formed accession rather than the notation
+    // "999.9" it used to be. That matters for the CONTROL run specifically —
+    // its whole claim is a clean exit 0, and a leaf with a missing identity or
+    // a notation-form citation would fail it for reasons that have nothing to
+    // do with whether the edge was declared.
     writeFileSync(join(root, 'knowledge', 'regulation', '362.1-ach-settlement-windows.md'), [
       '---',
-      'schema-version: 1',
+      'schema-version: 2',
+      'id: L-000362',
       'notation: "362.1"',
       'domain: regulation',
       'heading: ACH settlement windows',
       'cross-references:',
-      '  see-also: ["362.2"]',
+      '  see-also: [L-000363]',
       'meta:',
       '  relates:',
-      '    depends-on: ["999.9"]',
+      '    depends-on: [L-000999]',
       'citations:',
       '  - source: NACHA operating rules 2026',
       '---',
@@ -149,7 +159,7 @@ test('an undeclared nested edge is invisible — the control', () => {
   // CLI failure would prove nothing about the declaration.
   assert.equal(before.status, 0, `expected a clean control validation: ${output}`);
   assert.equal(output.includes('unresolved-ref'), false, `an undeclared field must not produce an edge: ${output}`);
-  assert.equal(output.includes('999.9'), false, 'the dangling target is not referenced by anything');
+  assert.equal(output.includes('L-000999'), false, 'the dangling target is not referenced by anything');
 });
 
 test('one declaration makes the new typed edge real, surfacing at the CLI seam', () => {
@@ -162,7 +172,7 @@ test('one declaration makes the new typed edge real, surfacing at the CLI seam',
   // that never ran is a blocking defect), which is the unchanged seam.
   assert.equal(after.status, 2, `expected the loader-error gate: ${output}`);
   assert.match(output, /unresolved-ref/);
-  assert.match(output, /"999\.9" does not resolve to any knowledge entry or catalog-declared id/);
+  assert.match(output, /"L-000999" does not resolve to any knowledge entry or catalog-declared id/);
 
   // The finding names the edge by its declared path, so an author is pointed
   // at the exact member they wrote — three levels down, index included.
