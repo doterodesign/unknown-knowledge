@@ -17,20 +17,39 @@
 # Agents draft; humans approve.
 #
 # The two rules this entry exists to evidence:
-#   ONE FINDING IS A DATA POINT, THREE ARE A PATTERN. `evidence` must name at
-#   least three DISTINCT fragments before a mint reaches the gate. A single
-#   unresolved token is noise; the same token unresolved across three sessions
-#   is a vocabulary the store is missing.
+#   ONE FINDING IS A DATA POINT, THREE ARE A PATTERN. `context` must name at
+#   least three DISTINCT fragments before a mint reaches the gate. "Distinct"
+#   is defined once, in protocol/skills/knowledge-reflect.md under Minting
+#   conduct ("What three distinct fragments means") — read it there rather
+#   than inferring it here. The short of it: it counts independent resolution
+#   events, not files, so three logs from ONE session are one data point.
 #   A VALUE IS MINTED ONLY ON LITERARY WARRANT. If `context` cannot name
 #   material that exists NOW, the value is not ready — corroboration says the
 #   word keeps coming up, warrant says there is something for it to hold.
 #
-# The `id` and `date` placeholders below are DELIBERATELY not valid, so this
-# file fails validation until a steward fills them — pasting the template
-# unedited must never produce a Decisions entry, or a vocabulary value would end
-# up carrying a warrant nobody wrote. (Same conduct as registry-minting.yaml and
-# the audit's `K-XXX` drafts.) Every other field is real: fill those two and the
-# entry validates.
+# WHAT THE VALIDATOR CATCHES, AND WHAT ONLY A READER CATCHES.
+#
+# MACHINE-REFUSED — the `id` and `date` placeholders below are DELIBERATELY not
+# valid (`YYYY` is not four digits), so pasting this file unedited fails
+# validation and never produces a Decisions entry. (Same conduct as
+# registry-minting.yaml and the audit's `K-XXX` drafts.)
+#
+# GREEN BUT STILL A PLACEHOLDER — filling those two makes the file VALIDATE,
+# and these five fields still hold <angle-bracket> text that no validator
+# judges, because they are free prose the schema deliberately leaves open:
+#
+#   title         "Mint <value> in the <registry> registry ..."
+#   deciders      ["<steward>"]
+#   context       "<Which material exists, and why no minted value fits it ...>"
+#   decision      "Mint <value> in <registry>. ..."
+#   consequences  "<What this obliges ...>"
+#
+# A green validation on this file means "the shape is right", NEVER "the
+# rationale is written". Those five are caught by the human at the gate or not
+# at all — which is the honest state of affairs, not an oversight: patterning
+# them would constrain every real Decisions entry in the store, and a validator
+# cannot tell a written warrant from a plausible-looking sentence anyway.
+# Replace every <angle-bracket> before this entry goes to the gate.
 schema-version: 1
 entries:
   - id: D-YYYY-MM-DD-mint-example-from-reflect
@@ -45,12 +64,15 @@ entries:
     # exists and needs this value, AND the findings that kept landing on it.
     # Reflect's own recommendation list is not evidence — the fragments are.
     # "We will need it later" is the case the warrant rule refuses; "it came up
-    # once" is the case the corroboration rule refuses.
+    # once" — and "it came up three times in one sitting" — are the cases the
+    # corroboration rule refuses.
     context: >-
-      <Which material exists, and why no minted value fits it. Then: how many
-      DISTINCT fragments corroborate it, over which dates, and what resolved
-      alongside the unresolved term (the findings' `resolved-context`) — that is
-      what localizes the gap. For a document candidate, name the section the
+      <Which material exists, and why no minted value fits it. Then: which
+      DISTINCT fragments corroborate it (name the paths), over which sessions
+      and dates — distinctness counts independent resolution events, not files
+      — and what resolved alongside the unresolved term (the findings'
+      `resolved-context`), which is what localizes the gap. For a document
+      candidate, name the section the
       findings' `section` locators point at and say what reading it confirmed:
       a candidate is a claim about the map until someone opens the source.>
     # What is being minted, at which level, and in which vocabulary. For a

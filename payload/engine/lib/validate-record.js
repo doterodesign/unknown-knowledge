@@ -62,6 +62,7 @@ export const ERROR_CODES = Object.freeze([
   'duplicate-enumerates-value',
   'enumerates-source-not-listed',
   'lifecycle-field-mismatch',
+  'locator-shape',
 ]);
 
 /**
@@ -378,10 +379,54 @@ function lifecycleConventions(record, basePath, errors) {
   }
 }
 
+/**
+ * A document candidate's `section` locator addresses ONE coordinate system
+ * (UCS-1160). `lib/coverage.js` emits `{line, endLine}` for line-addressed
+ * sources and `{page, object}` for page-addressed ones (pdf) — never both,
+ * because a section does not have a line number AND a page number in the same
+ * document. So the finding fragment must carry exactly one:
+ *   - NEITHER is an underspecified locator — "somewhere in this document" is
+ *     the coordinate-free claim the locator exists to replace, and reflect
+ *     would have to re-read the document it was meant to avoid opening.
+ *   - BOTH is contradictory — two coordinate systems disagreeing about where
+ *     the section is, with nothing to say which one a reader should trust.
+ *
+ * This is a CONVENTION rather than a schema keyword because the JSON Schema
+ * subset this module interprets (SUPPORTED_KEYWORDS) has no conditionals —
+ * no `oneOf`, `anyOf`, `allOf`, or `not`. Writing one into the schema would
+ * add a keyword nothing enforces, which is silent contract drift: the schema
+ * would promise a rule no validator checks. The rule lives here, where finding
+ * records are already judged, and the schema's description says so.
+ */
+function locatorConventions(record, basePath, errors) {
+  if (!isPlainObject(record) || !isPlainObject(record.section)) return;
+  const { section } = record;
+  const hasLine = Object.hasOwn(section, 'line');
+  const hasPage = Object.hasOwn(section, 'page');
+  if (hasLine === hasPage) {
+    errors.push({
+      path: joinPath(basePath, 'section'),
+      code: 'locator-shape',
+      message: hasLine
+        ? 'a section locator addresses one coordinate system: line (line-addressed sources) or page (pdf), never both — coverage emits exactly one (UCS-1160)'
+        : 'a section locator needs a coordinate: line for line-addressed sources, page for pdf — a locator with neither cannot open the section it addresses (UCS-1160)',
+    });
+  }
+}
+
+/**
+ * Findings carry the lifecycle every log fragment carries, plus the locator
+ * shape only they can have (a miss/gap has no `section`).
+ */
+function findingConventions(record, basePath, errors) {
+  lifecycleConventions(record, basePath, errors);
+  locatorConventions(record, basePath, errors);
+}
+
 /** Record-local convention checks, keyed by kind (one lookup, both entry points). */
 const CONVENTIONS = Object.freeze({
   'ontology-concept': conceptConventions,
-  finding: lifecycleConventions,
+  finding: findingConventions,
   miss: lifecycleConventions,
   gap: lifecycleConventions,
 });

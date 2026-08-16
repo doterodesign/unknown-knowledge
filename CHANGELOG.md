@@ -22,7 +22,11 @@ dates are recorded at release time, never retroactively.
   context it fell out of. `finding.schema.json` gains three additive fields:
   `residue` (the unresolved terms), `resolved-context` (what DID resolve in the
   same ask), and `section` (a document candidate's locator: document, heading
-  address, line or page). A bare unresolved token is a finding nobody can act
+  address, line or page). A locator addresses EXACTLY ONE coordinate system —
+  neither is underspecified, both is contradictory — enforced as the
+  `locator-shape` validator convention rather than a schema keyword, because
+  the engine's JSON Schema subset has no conditionals and an unenforced keyword
+  is silent contract drift. A bare unresolved token is a finding nobody can act
   on; `lacrosse` unresolved in an ask that resolved `add-sport` localizes the
   gap precisely enough that the minting decision writes itself.
 - The reflect skill's minting conduct: four mintable vocabularies (terms,

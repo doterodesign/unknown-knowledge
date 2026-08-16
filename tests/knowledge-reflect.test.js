@@ -108,6 +108,22 @@ test('the corroboration rule is stated as human judgment the engine never counts
   assert.match(doc, /no CLI reports a corroboration\s+score/);
 });
 
+test('"three distinct fragments" is defined ONCE, and counts events rather than files', () => {
+  // The threshold is only as good as its unit. Three fragments logged by one
+  // session about one ask is one data point wearing three filenames — letting
+  // it clear the bar would let a single session vote three times.
+  assert.match(doc, /### What "three distinct fragments" means/);
+  assert.match(doc, /\*\*independent resolution\s+events, not files\.\*\*/);
+  // The case ruled out, and the case admitted, both stated.
+  assert.match(doc, /That is \*\*one\*\* data point wearing three\s+filenames/);
+  assert.match(doc, /Each date in `occurrences` is a\s+genuinely separate occasion/);
+  // Defined once: the evidence standard points at the definition instead of
+  // restating it, so the two cannot drift.
+  assert.match(doc, /defined in full under Minting conduct below/);
+  // Exactly one section defines it — a second definition is drift by construction.
+  assert.equal((doc.match(/### What "three distinct fragments" means/g) ?? []).length, 1);
+});
+
 test('minting conduct: literary warrant with evidence attached, one Decisions entry per mint', () => {
   // The four mintable vocabularies the loop produces.
   for (const vocabulary of ['terms', 'aliases', 'operations', 'domain classes']) {

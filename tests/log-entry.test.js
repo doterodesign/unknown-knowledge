@@ -10,7 +10,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
-import { validateRecord } from '../payload/engine/lib/validate-record.js';
+import { validateRecord, SUPPORTED_KEYWORDS, ERROR_CODES } from '../payload/engine/lib/validate-record.js';
 import {
   LOGS, LEGAL_TRANSITIONS, createEntry, transitionStatus,
 } from '../payload/engine/lib/log-entry.js';
@@ -521,6 +521,56 @@ test('UCS-1160: a section locator is line- OR page-addressed, and its shape is c
     assert.equal(bad.status, 2, why);
     assert.match(bad.stderr, /does not validate against finding\.schema\.json/, why);
   }
+});
+
+test('UCS-1160: a locator addresses EXACTLY ONE coordinate system — neither and both are refused', () => {
+  // `lib/coverage.js` emits {line, endLine} for line-addressed sources and
+  // {page, object} for pdf, never both. NEITHER is an underspecified locator —
+  // "somewhere in this document" is the coordinate-free claim the locator
+  // exists to replace. BOTH is contradictory: two coordinate systems
+  // disagreeing about where the section is, with nothing to say which one a
+  // reader should trust.
+  //
+  // Enforced as the `locator-shape` CONVENTION in validate-record.js rather
+  // than a schema keyword: the engine's JSON Schema subset (SUPPORTED_KEYWORDS)
+  // has no oneOf/anyOf/allOf/not, so writing a conditional into the schema
+  // would add a keyword nothing enforces — silent contract drift.
+  const root = tmpRoot();
+  const withSection = (section) => runCli([
+    'create', '--log', 'findings', '--date', '2026-08-16',
+    '--entry', JSON.stringify({ ...CANDIDATE_FINDING, section }),
+  ], root);
+
+  const neither = withSection({ document: 'docs/rules.md', address: 'Bet types' });
+  assert.equal(neither.status, 2, 'a locator with no coordinate is refused');
+  assert.match(neither.stderr, /locator-shape/);
+  assert.match(neither.stderr, /a locator with neither cannot open the section it addresses/);
+
+  const both = withSection({ document: 'docs/rules.md', address: 'Bet types', line: 42, page: 7 });
+  assert.equal(both.status, 2, 'a locator with two coordinate systems is refused');
+  assert.match(both.stderr, /locator-shape/);
+  assert.match(both.stderr, /never both/);
+
+  // And exactly one of each still passes — the rule refuses the two broken
+  // shapes without narrowing the two real ones.
+  assert.equal(withSection({ document: 'docs/rules.md', address: 'Bet types', line: 42 }).status, 0);
+  assert.equal(withSection({ document: 'docs/handbook.pdf', address: 'Settlement', page: 7 }).status, 0);
+});
+
+test('UCS-1160: the locator rule is a convention because the schema subset has no conditionals', () => {
+  // The reason this is not a schema keyword, pinned so a later edit does not
+  // "fix" it by pasting a oneOf that nothing enforces.
+  for (const keyword of ['oneOf', 'anyOf', 'allOf', 'not']) {
+    assert.ok(!SUPPORTED_KEYWORDS.includes(keyword),
+      `${keyword} is not interpreted — a schema using it would be unenforced`);
+  }
+  assert.ok(ERROR_CODES.includes('locator-shape'), 'the convention emits a declared code');
+  // The schema says where the rule actually lives, so a reader of the schema
+  // alone is not misled into thinking line/page are independently optional.
+  const schema = JSON.parse(readFileSync(join(repoRoot, 'payload', 'schemas', 'finding.schema.json'), 'utf8'));
+  const description = schema.properties.section.description;
+  assert.match(description, /EXACTLY ONE of line\/page/);
+  assert.match(description, /enforced by the VALIDATOR as the `locator-shape` convention/);
 });
 
 test('CLI: accepts --flag=value spelling and hard-errors on unknown flags', () => {

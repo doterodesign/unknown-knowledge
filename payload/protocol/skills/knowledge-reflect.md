@@ -23,8 +23,10 @@ pruned fragments, the stamp — travels together as **one reflect PR**
 
 Any gated change requires multiple corroborating findings — **one
 correction is a data point, three are a pattern**. The threshold is three
-distinct fragments (distinct sessions/dates; a re-opened entry's
-`occurrences` dates each count). Single-occurrence noise never reaches the
+distinct fragments — distinct meaning **independent resolution events, not
+files** (defined in full under Minting conduct below; a re-opened entry's
+`occurrences` dates each count, three logs from one session do not).
+Single-occurrence noise never reaches the
 review queue, or the humans stop trusting it and the graduation path dies
 before it starts. Two hard qualifiers:
 
@@ -67,6 +69,29 @@ A corroborated residue cluster is evidence the store has no word for
 something the material keeps naming. Minting that word is the loop's whole
 point, and it is a governed act. Four vocabularies can be minted from
 reflect: **terms**, **aliases**, **operations**, and **domain classes**.
+
+### What "three distinct fragments" means
+
+The evidence standard counts **independent resolution events, not files.**
+Three fragments are distinct when each records a *separate occasion on which
+the store failed to resolve the thing* — which in practice means a different
+session, or the same session on a different date.
+
+The case this rules out: one session that hit `lacrosse` three times in a
+row and logged three fragments. That is **one** data point wearing three
+filenames. Nothing was independently corroborated — the same agent, the same
+ask, the same unresolved token — and minting from it would let a single
+session vote three times. Cluster them as one.
+
+The case it admits: a re-opened entry. Each date in `occurrences` is a
+genuinely separate occasion (the issue fired again, later, after someone
+thought it was closed), so each counts. Same for the same term surfacing as
+query residue in one session and as a document candidate in another — two
+occasions, two data points.
+
+When in doubt, ask what the fragment is evidence *of*. A file is evidence
+that someone pressed enter; an occasion is evidence that the store has a
+hole. The threshold counts holes.
 
 Three rules bind every one of them:
 

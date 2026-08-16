@@ -156,16 +156,129 @@ All green at the reporting commit:
 - `npm run lint` — 204 files, 0 failures
 - `npm run acceptance` — OK, all asserted criteria (A1-A4, A6); A5 manual by design
 
+## Review round 1 (CodeRabbit on PR #66) — 3 accepted, 2 declined
+
+### Accepted 1: the section locator must address exactly one coordinate system
+
+CodeRabbit was right that a locator with NEITHER `line` nor `page` is
+underspecified and one with BOTH is contradictory — `lib/coverage.js` emits
+`{line, endLine}` for line-addressed sources and `{page, object}` for pdf,
+never both. But its suggested fix used `allOf`/`anyOf`/`not`, and
+`SUPPORTED_KEYWORDS` in `validate-record.js` interprets none of those:
+
+```js
+'$schema', '$id', '$defs', '$ref', 'title', 'description',
+'type', 'required', 'properties', 'additionalProperties',
+'items', 'enum', 'pattern', 'minItems', 'minimum',
+```
+
+Pasting the suggestion would have written a keyword into the schema that
+nothing enforces — the schema promising a rule no validator checks, which is
+exactly the silent contract drift `tests/store-schemas.test.js` exists to
+prevent.
+
+Enforced instead as a **convention** in `validate-record.js`, where finding
+records are already judged (`CONVENTIONS`, alongside the precedent
+`lifecycleConventions`). New `locator-shape` code in `ERROR_CODES`; `finding`
+now runs `findingConventions` (lifecycle + locator), while `miss`/`gap` keep
+plain `lifecycleConventions` since they have no `section`. The schema's
+`section` description states the rule AND says it is validator-enforced
+because the subset has no conditionals, so a reader of the schema alone is not
+misled into thinking `line`/`page` are independently optional.
+
+Verified empirically at the CLI seam — both invalid shapes exit 2 with
+distinct messages, both valid shapes exit 0:
+
+```
+NEITHER: section: locator-shape — a section locator needs a coordinate: line for
+         line-addressed sources, page for pdf — a locator with neither cannot
+         open the section it addresses (UCS-1160)                        EXIT=2
+BOTH:    section: locator-shape — a section locator addresses one coordinate
+         system: line (line-addressed sources) or page (pdf), never both —
+         coverage emits exactly one (UCS-1160)                           EXIT=2
+LINE ONLY / PAGE ONLY                                                    EXIT=0
+```
+
+A test also pins the *reason* it is a convention (asserting the four
+conditional keywords are absent from `SUPPORTED_KEYWORDS`), so a later edit
+cannot "fix" this by pasting a `oneOf` that nothing enforces.
+
+### Accepted 2: template placeholder honesty — my own comment was false
+
+CodeRabbit wanted every sentinel invalid until steward-authored. That is
+impossible by design for prose fields: `title`, `deciders`, `context`,
+`decision`, and `consequences` are free text with no pattern, and constraining
+them in `decision-entry.schema.json` would constrain **every real Decisions
+entry in the store**, not just this template.
+
+But the finding had a true core, and it was my error: my comment said *"Every
+other field is real: fill those two and the entry validates."* That is false.
+Measured, rather than assumed:
+
+```
+after filling id+date: []          <- VALIDATES CLEAN
+fields still holding placeholder text:
+  title, deciders, context, decision, consequences
+```
+
+Five fields validate green while still holding `<angle-bracket>` prose. The
+fix is the honest inventory, applying this ticket's own UCS-1155 lesson to its
+own template: the comment now splits **MACHINE-REFUSED** (`id`, `date`) from
+**GREEN BUT STILL A PLACEHOLDER** (the five, listed by name), and states that
+a green validation means "the shape is right", never "the rationale is
+written".
+
+I checked whether any green placeholder could cheaply become machine-refused
+without touching the shared schema. One could: `supersedes` is `decisionRef`-typed,
+so a placeholder there fires `pattern-mismatch`. I did **not** take it —
+`supersedes: []` is the correct value for most mints, so forcing a placeholder
+would make every non-superseding mint proposal fail. A guard that cries wolf on
+the common case is worse than the honest inventory.
+
+The test pins the inventory by *deriving* it (filter the filled entry for
+`<`-bearing values) and asserting it equals the documented five, so a sixth
+green placeholder or a newly-patterned field breaks the test rather than
+silently making the comment wrong again.
+
+### Accepted 3: "distinct" defined once, precisely
+
+Three wordings existed ("at least three DISTINCT fragments", "across three
+sessions", "distinct sessions/dates") and none said whether three fragments
+from ONE session count. Per my own stated intent, they do not.
+
+Definition now lives in exactly one place — a `### What "three distinct
+fragments" means` section under Minting conduct — and says the threshold
+counts **independent resolution events, not files**. The case ruled out (one
+session logging `lacrosse` three times is "one data point wearing three
+filenames", which would let a single session vote three times) and the case
+admitted (`occurrences` dates; the same term as query residue in one session
+and a document candidate in another) are both stated. The evidence standard
+and the template now *point at* that definition instead of paraphrasing it,
+and a test asserts the section appears exactly once — a second definition is
+drift by construction.
+
+Also corrected while there: the template said "`evidence` must name at least
+three distinct fragments", but the template has no `evidence` field. It is
+`context`.
+
+### Declined: fence language tags
+
+A5 has 35 untagged fences to 1 tagged; the file convention is untagged. We
+match the file rather than lint it — the same call made twice before on the
+steward guide. Reasoning recorded in the PR comment.
+
 ## Notes for whoever picks this up next
 
 - **The branch checkout failed exactly as the ticket warned.** `git checkout -b`
   under the sandbox created the ref but left HEAD on `faceted-store-v2`
   ("could not lock config file"). Recovery was a plain `git checkout <branch>`
   unsandboxed. Always verify with `git branch --show-current` before committing.
-- **Docs-assertion regexes must tolerate the markdown line wrap.** Three
-  assertions failed on first run purely because the phrase they matched spans a
-  newline in the 72-column prose. Use `\s+` at the wrap point rather than
-  reflowing the prose to suit the test.
+- **Docs-assertion regexes must tolerate the line wrap — this bit me in BOTH
+  rounds.** Three assertions failed this way on the first pass and three more
+  during review, every time because the phrase spans a newline in the
+  72-column prose (and in YAML comments, a `# ` prefix too). Write `\s+#?\s*`
+  at any point where a phrase might wrap, from the start. Never reflow the
+  prose to suit the test — that is the test dictating the document.
 - **`validateRecord` vs `validateStoreFile`** is a real trap for template
   assertions — the first validates one entry, the second the file wrapper.
   Template goldens want the second.
