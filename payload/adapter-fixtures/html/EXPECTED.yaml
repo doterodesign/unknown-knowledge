@@ -1,0 +1,47 @@
+# Expected IR for sample.html — the html@1 adapter (UCS-1153).
+#
+# Locators are 1-based inclusive line numbers, derived from the byte offsets of
+# each element's open and close tags.
+#
+# What this pair pins: <script> and <style> bodies NEVER reach the IR (they are
+# code and presentation, and feeding CSS to a lexicon would manufacture matches
+# from selectors) — note that the sample's style block contains the word
+# "settled" and its script contains it too, yet neither appears below; inline
+# markup inside a block is stripped to text; the five XML entities decode
+# (&amp; -> &, &lt;not&gt; -> <not>); a <p> nested inside an <li> closes the
+# list item, so the item is emitted once, not twice; <pre> keeps its newlines;
+# and table cells are joined with the same " | " separator the md adapter uses,
+# so a table row means the same thing whatever format it arrived in.
+#
+# D-014: this adapter never executes anything. No DOM is built, no script runs,
+# no resource is fetched. The document is bytes.
+format: html
+file: sample.html
+adapter: "html@1"
+hash: "fnv1a64:45be4eb42d42b172"
+blocks:
+  - kind: heading
+    level: 1
+    text: "Odds feed onboarding"
+    locator: { line: 11, endLine: 11 }
+  - kind: paragraph
+    text: "The provider must expose a websocket endpoint and a REST fallback. Latency budget is 400ms & measured end-to-end."
+    locator: { line: 13, endLine: 14 }
+  - kind: list-item
+    text: "Websocket endpoint, TLS only"
+    locator: { line: 22, endLine: 22 }
+  - kind: paragraph
+    text: "REST fallback for replay"
+    locator: { line: 23, endLine: 23 }
+  - kind: code
+    text: "provider:\n  name: oddsco\n  timeout-ms: 400"
+    locator: { line: 26, endLine: 28 }
+  - kind: table-row
+    text: "Field | Meaning"
+    locator: { line: 31, endLine: 31 }
+  - kind: table-row
+    text: "suspended | market locked, <not> settled"
+    locator: { line: 32, endLine: 32 }
+  - kind: paragraph
+    text: "Page the trading desk when the feed suspends for more than ninety seconds."
+    locator: { line: 35, endLine: 36 }

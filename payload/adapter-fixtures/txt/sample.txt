@@ -1,0 +1,18 @@
+Odds feed onboarding
+
+Adapter fixture — plain text. Plain text carries no marked-up structure, so
+every block is a paragraph: the adapter invents no headings and no code, and
+this sample is shaped to tempt it into doing both.
+
+    This line is indented four spaces. A markdown adapter would call it code.
+    The txt adapter calls it prose, because plain text has no code fences and
+    guessing would manufacture structure the document never had.
+
+PROVIDER REQUIREMENTS
+
+The line above is shouting, and a heuristic adapter would promote it to a
+heading. It stays a paragraph. Degraded structure, identical process — the
+coverage map is bounded by content richness, and this is the honest floor.
+
+Latency budget is four hundred milliseconds end-to-end, measured from ingest
+to price.
