@@ -126,6 +126,10 @@ const flatten = (text) => text.replace(/\s+/g, ' ').trim();
 
 // ------------------------------------------------------------------ markdown
 
+/** Closing fences, by opening marker. Fixed patterns, compiled once. */
+const CLOSING_BACKTICK_FENCE = /^\s*`{3,}\s*$/;
+const CLOSING_TILDE_FENCE = /^\s*~{3,}\s*$/;
+
 /**
  * `md@1` — CommonMark-subset structure: ATX headings, fenced code, list items,
  * table rows, paragraphs. Locator: `{ line, endLine }`, 1-based inclusive,
@@ -170,12 +174,14 @@ function adaptMarkdown(text) {
     const fence = /^\s*(```+|~~~+)(.*)$/.exec(line);
     if (fence) {
       flushParagraph();
-      const marker = fence[1][0];
+      // The two closing patterns are fixed, so they are built once at module
+      // load rather than recompiled for every line of every fenced block.
+      const closing = fence[1][0] === '`' ? CLOSING_BACKTICK_FENCE : CLOSING_TILDE_FENCE;
       const body = [];
       let j = i + 1;
       let closed = false;
       for (; j < lines.length; j += 1) {
-        if (new RegExp(`^\\s*${marker}{3,}\\s*$`).test(lines[j])) { closed = true; break; }
+        if (closing.test(lines[j])) { closed = true; break; }
         body.push(lines[j]);
       }
       if (!closed) {
@@ -304,10 +310,19 @@ function decodeEntities(text, context) {
  * and close tags.
  *
  * Envelope: the block elements in HTML_BLOCK_TAGS, whose text content becomes
- * one block each. Nested block elements close their parent (a `<p>` inside a
- * `<li>` is read as the list item's text). Content of script/style/head is
- * dropped entirely — it is code and metadata, never document prose, and
- * feeding it to a lexicon would manufacture matches from CSS selectors.
+ * one block each. Content of script/style/head is dropped entirely — it is
+ * code and metadata, never document prose, and feeding it to a lexicon would
+ * manufacture matches from CSS selectors.
+ *
+ * NESTING: CHILD KIND WINS. A block element opening inside another closes its
+ * parent, and the text belongs to the innermost element — so `<li><p>x</p></li>`
+ * emits ONE block of kind `paragraph`, not `list-item`. The block IS a
+ * paragraph; its list membership is outline structure, and the IR flattens
+ * outline structure by design (the md adapter flattens list nesting the same
+ * way). Emitting the parent's kind would mean choosing an ancestor's label for
+ * text it does not directly contain, and with arbitrary nesting there is no
+ * principled stopping point up that chain. A list item whose text is direct
+ * (`<li>x</li>`) still emits `list-item` — the common case is unaffected.
  *
  * D-014, restated for the format most likely to carry it: this adapter NEVER
  * executes anything. `<script>` bodies are discarded as text; no DOM is built;
@@ -318,11 +333,22 @@ function decodeEntities(text, context) {
  */
 function adaptHtml(text) {
   const source = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  // Line number for a byte offset, computed once by prefix scan.
+
+  // Newline offsets ONCE, then binary search per lookup. Rescanning from the
+  // start for every locator is O(document x blocks) — quadratic on exactly the
+  // large documents this seam exists to handle.
+  const newlines = [];
+  for (let i = source.indexOf('\n'); i !== -1; i = source.indexOf('\n', i + 1)) newlines.push(i);
+  /** 1-based line containing `offset`: 1 + how many newlines precede it. */
   const lineAt = (offset) => {
-    let line = 1;
-    for (let i = 0; i < offset && i < source.length; i += 1) if (source[i] === '\n') line += 1;
-    return line;
+    let low = 0;
+    let high = newlines.length;
+    while (low < high) {
+      const mid = (low + high) >> 1;
+      if (newlines[mid] < offset) low = mid + 1;
+      else high = mid;
+    }
+    return low + 1;
   };
 
   const blocks = [];
@@ -339,12 +365,20 @@ function adaptHtml(text) {
     const celled = frame.kind === 'table-row'
       ? raw.replace(/<\/t[dh]>\s*<t[dh][^>]*>/gi, ' | ')
       : raw;
-    // Strip any nested inline markup: the IR carries text, not markup.
-    const stripped = celled.replace(/<[^>]*>/g, ' ');
-    const decoded = decodeEntities(stripped, `<${frame.tag}> at line ${lineAt(frame.tagStart)}`);
+    // Strip any nested inline markup: the IR carries text, not markup. The
+    // space keeps `a<br>b` from fusing into "ab"; in CODE it would instead
+    // introduce indentation the source never had, so a code block strips the
+    // tag outright and its whitespace stays byte-exact.
+    const stripped = frame.kind === 'code'
+      ? celled.replace(/<[^>]*>/g, '')
+      : celled.replace(/<[^>]*>/g, ' ');
+    const openLine = lineAt(frame.tagStart);
+    const decoded = decodeEntities(stripped, `<${frame.tag}> at line ${openLine}`);
+    // Code keeps its interior whitespace — it is content — so only the
+    // surrounding blank lines the markup introduced come off.
     const body = frame.kind === 'code' ? decoded.replace(/^\n+|\s+$/g, '') : flatten(decoded);
     if (body === '') return;
-    const b = block(frame.kind, body, { line: lineAt(frame.tagStart), endLine: lineAt(closeAt) });
+    const b = block(frame.kind, body, { line: openLine, endLine: lineAt(closeAt) });
     if (frame.kind === 'heading' && /^h[1-6]$/.test(frame.tag)) b.level = Number(frame.tag[1]);
     blocks.push(b);
   };
@@ -733,7 +767,7 @@ export function adapterFor(path) {
  *
  * @param {string} path the submission's path, for dispatch and provenance
  * @param {Buffer} bytes the submission's bytes
- * @returns {{ adapter: string, source: string, hash: string, blocks: object[] }}
+ * @returns {{ adapter: string, hash: string, blocks: object[] }}
  */
 export function adapt(path, bytes) {
   const adapter = adapterFor(path);

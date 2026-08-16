@@ -14,9 +14,19 @@
  *            and a hex `<...>` string.
  *
  * Regenerate: node scripts/make-pdf-fixture.js
- * The build is deterministic — same script, byte-identical PDF — and the test
- * suite pins the committed bytes against EXPECTED.yaml, so a regeneration that
- * changed the document would fail loudly rather than drift.
+ *
+ * THE COMMITTED sample.pdf IS THE FIXTURE, not this script's output. Page 2 is
+ * Flate-compressed, and `deflateSync` may emit different (equally valid) bytes
+ * across zlib versions, so a regeneration on another machine can produce a PDF
+ * that differs byte-wise while decoding identically. That is why the bytes are
+ * committed and EXPECTED.yaml pins their hash: this script is PROVENANCE — it
+ * documents how the sample was authored and makes it reviewable — while the
+ * tests always read the committed file. If a regeneration does change the
+ * bytes, the hash assertion fails loudly and the pair must be updated together
+ * and re-reviewed, rather than drifting silently.
+ *
+ * (The adapter itself is fully deterministic either way: it INFLATES, and the
+ * same compressed bytes always inflate to the same content.)
  */
 import { deflateSync } from 'node:zlib';
 import { writeFileSync } from 'node:fs';

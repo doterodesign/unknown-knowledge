@@ -120,7 +120,18 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
   for (const surface of SURFACES) {
     const r = run(dir, surface, '--root', fixture);
     assertNeverFindings(r, surface, 'with js-yaml absent');
-    if (surface === 'ingest.js') continue; // loads cleanly; refuses on its own grammar
+    if (surface === 'ingest.js') {
+      // ingest reaches no YAML, so it LOADS here rather than failing to. That
+      // is asserted positively rather than skipped: it must still exit 2, and
+      // it must do so by reaching its own flag grammar (`--root` is not a flag
+      // it takes) — proving the engine came up, which is the opposite of the
+      // other surfaces' outcome and would otherwise go unverified.
+      assert.doesNotMatch(r.stderr, /the engine could not be loaded/,
+        'ingest has no YAML dependency, so a missing js-yaml must not stop it loading');
+      assert.match(r.stderr, /unknown flag --root/,
+        'ingest must have loaded far enough to parse flags');
+      continue;
+    }
     assert.match(r.stderr, /internal failure — the engine could not be loaded/);
     assert.match(r.stderr, /Cannot find package|ERR_MODULE_NOT_FOUND/);
   }

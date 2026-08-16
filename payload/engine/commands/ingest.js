@@ -60,7 +60,11 @@ function printHuman(ir, document) {
     page === undefined
       ? `L${line}${endLine !== line ? `-${endLine}` : ''}`
       : `p${page}#${object}`;
-  const width = Math.max(...ir.blocks.map((b) => locate(b.locator).length));
+  // Folded, not spread: `Math.max(...blocks.map(…))` passes one argument per
+  // block, and a long document would exceed the engine's argument limit and
+  // throw — a crash on the happy path, from formatting alone.
+  let width = 0;
+  for (const b of ir.blocks) width = Math.max(width, locate(b.locator).length);
   const lines = [
     `${document}: ${ir.blocks.length} block(s) via ${ir.adapter} (${ir.hash})`,
     ...ir.blocks.map((b) => {

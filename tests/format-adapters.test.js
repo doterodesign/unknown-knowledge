@@ -268,6 +268,31 @@ test('the adapters never touch the filesystem — the caller owns the one read',
   assert.doesNotMatch(source, /node:fs|readFileSync|writeFileSync/, 'adapters take bytes, not paths');
 });
 
+test('html nesting: the CHILD kind wins, and a direct list item is still a list-item', () => {
+  // `<li><p>x</p></li>` is ONE block, and it is a paragraph: the block IS a
+  // paragraph, and its list membership is outline structure the IR flattens.
+  // Emitting the parent's kind would mean labeling text with an ancestor that
+  // does not directly contain it, with no principled stopping point upward.
+  const ir = adapt('x.html', Buffer.from('<ul><li><p>nested</p></li><li>direct</li></ul>'));
+  assert.deepEqual(ir.blocks.map((b) => [b.kind, b.text]), [
+    ['paragraph', 'nested'],
+    ['list-item', 'direct'],
+  ]);
+});
+
+test('html code blocks keep their whitespace byte-exact — stripping a tag adds no indentation', () => {
+  // Inline markup elsewhere becomes a space so `a<br>b` does not fuse into
+  // "ab"; inside <pre> that same space would be indentation the source never
+  // had, and whitespace is content in code.
+  const plain = adapt('x.html', Buffer.from('<pre>line one\n  indented</pre>'));
+  const wrapped = adapt('x.html', Buffer.from('<pre><code>line one\n  indented</code></pre>'));
+  assert.equal(plain.blocks[0].text, 'line one\n  indented');
+  assert.equal(wrapped.blocks[0].text, 'line one\n  indented',
+    'a <code> wrapper must not introduce a leading space');
+  assert.equal(adapt('x.html', Buffer.from('<p>a<br>b</p>')).blocks[0].text, 'a b',
+    'outside code, a stripped tag still separates words');
+});
+
 test('html: script and style bodies never reach the IR — a lexicon must not match on CSS or JS', () => {
   const html = Buffer.from([
     '<html><head><style>h1 { content: "poison"; }</style></head><body>',
