@@ -16,14 +16,18 @@
  *   id-range          concept id outside the class file's declared range: the
  *                     numeric filename prefix N declares [N, N+99] (§3.5 ids
  *                     are minted within class ranges, leaving gaps)
- *   missing-path      a declared pointer into the working tree that is not
- *                     there — a concept source-of-truth path, or a knowledge
- *                     leaf `paths` entry (UCS-1151). One code, because it is
- *                     one defect class: the truth anchor is the artifact (§3.1)
- *                     and the artifact is gone. Deprecated concepts demote to
- *                     warning (§3.5 — the source-deletion escape hatch); draft
- *                     and proposed stay blocking, and leaves have no demotion
- *                     at all: structural checks always apply
+ *   missing-path      a declared pointer that does not name a real thing inside
+ *                     this repo — a concept source-of-truth path, or a
+ *                     knowledge leaf `paths` entry (UCS-1151). Three shapes,
+ *                     one code, because from the store's side they are one
+ *                     defect class: the pointer is absent, it ESCAPES the repo
+ *                     root (`../elsewhere`, or an absolute path), or it names
+ *                     the repo ROOT itself — a pointer at everything attributes
+ *                     nothing. Deprecated concepts demote an ABSENT pointer to
+ *                     warning (§3.5 — the source-deletion escape hatch) but
+ *                     never an escaping or root one: that hatch is for a path
+ *                     that used to exist, not for a claim the store was never
+ *                     entitled to make. Leaves have no demotion at all
  *   index-drift       catalog/tree index inconsistency: a row naming a file
  *                     that was not loaded, or naming a file that does not
  *                     contain the row's id. The documented pending marker
@@ -74,7 +78,7 @@
  * (shared comparator), no timestamps — baseline-diffable (D-012).
  */
 import { statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { isAbsolute, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import {
@@ -105,6 +109,62 @@ const PENDING_MARKER = 'pending-import';
 
 const isObject = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
 const strings = (v) => (Array.isArray(v) ? v.filter((x) => typeof x === 'string') : []);
+
+/**
+ * Judge one declared pointer into the working tree — the single reader of
+ * "does this path exist, and is it even ours to ask about".
+ *
+ * Both pointer families ride this: concept `source-of-truth` and leaf `paths`.
+ * They had the same defect independently, which is the argument for one
+ * function rather than two call sites that happen to agree today.
+ *
+ * CONTAINMENT is checked before existence, and that order is the whole point.
+ * `join(repoRoot, p)` happily resolves `../sibling` to a directory OUTSIDE the
+ * repo, and `/etc/passwd` to `<repoRoot>/etc/passwd`. A pointer that escapes
+ * would then be judged against a file the store has no claim on: an escaping
+ * path that happens to exist on the author's machine passes silently, and the
+ * same store fails on a machine where it does not. A check whose verdict
+ * depends on what sits OUTSIDE the repo is not a check — the store is the unit
+ * that gets committed, reviewed and shipped, so a pointer that leaves it is
+ * refused on its shape rather than tested against the filesystem.
+ *
+ * The repo ROOT itself is refused too, for a reason the resolver already
+ * settled from the other side: `--paths .` is a usage error there ("name the
+ * files or directories the change touched"), because a pointer at everything
+ * attributes nothing. A leaf declaring `paths: ["."]` makes that same empty
+ * claim, and it is worse than useless — it would match every path ever queried,
+ * putting one leaf in front of every developer regardless of what they touched.
+ * Refusing it is the same judgement, applied where the claim is authored.
+ *
+ * @param {string} repoRoot the repo root pointers resolve against
+ * @param {string} p the pointer as the record spells it
+ * @returns {'escapes'|'root'|'missing'|null} the defect, or null if it is fine
+ */
+/**
+ * What each pointer defect says, per family — one message per defect, taking
+ * the family's own noun so a concept and a leaf each read naturally.
+ *
+ * All three ride the `missing-path` code, because they are one defect class
+ * from the store's side: a declared pointer that does not name a real thing
+ * inside this repo. The MESSAGE is what distinguishes them, and it has to,
+ * since the three send an author to three different edits — restore the file,
+ * bring the path inside the repo, or name something narrower than everything.
+ */
+const POINTER_MESSAGES = Object.freeze({
+  missing: (p, noun) => `${noun} "${p}" does not exist in the working tree — the truth anchor is the artifact (§3.1)`,
+  escapes: (p, noun) => `${noun} "${p}" resolves outside the repo root — a store may only point at its own repo, and a pointer that escapes would be judged against a file this store has no claim on (passing or failing by what happens to sit outside it)`,
+  root: (p, noun) => `${noun} "${p}" names the repo root — a pointer at everything attributes nothing, and it would match every path ever queried; name the files or directories this actually governs`,
+});
+
+function pointerDefect(repoRoot, p) {
+  const target = resolve(repoRoot, p);
+  const rel = relative(resolve(repoRoot), target);
+  if (rel === '') return 'root';
+  // `..` at the front means the target climbed out; an absolute `rel` means it
+  // landed on a different volume entirely. Either way it is not ours to judge.
+  if (rel.startsWith('..') || isAbsolute(rel)) return 'escapes';
+  return statSync(target, { throwIfNoEntry: false }) ? null : 'missing';
+}
 
 // -------------------------------------------------------------- the checks
 
@@ -211,12 +271,18 @@ function checkConcepts(model, push, repoRoot) {
     // escape hatch that lets a source-deletion PR land without dead-ending.
     const severity = record.status === 'deprecated' ? 'warning' : 'error';
     strings(record['source-of-truth']).forEach((p, i) => {
-      if (!statSync(join(repoRoot, p), { throwIfNoEntry: false })) {
-        push({
-          severity, code: 'missing-path', id, file, path: `source-of-truth[${i}]`,
-          message: `source-of-truth path "${p}" does not exist in the working tree — the truth anchor is the artifact (§3.1)`,
-        });
-      }
+      const defect = pointerDefect(repoRoot, p);
+      if (!defect) return;
+      push({
+        // A pointer that ESCAPES the repo, or names the root, stays
+        // error-severity even for a deprecated concept. The §3.5 demotion is
+        // an escape hatch for a path that USED to exist and was deleted — it
+        // says nothing about a pointer that was never the store's to make, and
+        // demoting a malformed claim would let it ship under a warning.
+        severity: defect === 'missing' ? severity : 'error',
+        code: 'missing-path', id, file, path: `source-of-truth[${i}]`,
+        message: POINTER_MESSAGES[defect](p, 'source-of-truth path'),
+      });
     });
   }
 }
@@ -253,13 +319,13 @@ function checkLeafPaths(model, push, repoRoot) {
   for (const entry of model.leaves.values()) {
     const { file, record } = entry;
     strings(record[LEAF_PATHS_FIELD]).forEach((p, i) => {
-      if (!statSync(join(repoRoot, p), { throwIfNoEntry: false })) {
-        push({
-          severity: 'error', code: 'missing-path', id: recordId(entry), file,
-          path: `${LEAF_PATHS_FIELD}[${i}]`,
-          message: `path "${p}" does not exist in the working tree — a leaf's paths name the repo tree it governs, and a pointer at nothing governs nothing (UCS-1151)`,
-        });
-      }
+      const defect = pointerDefect(repoRoot, p);
+      if (!defect) return;
+      push({
+        severity: 'error', code: 'missing-path', id: recordId(entry), file,
+        path: `${LEAF_PATHS_FIELD}[${i}]`,
+        message: POINTER_MESSAGES[defect](p, 'path'),
+      });
     });
   }
 }

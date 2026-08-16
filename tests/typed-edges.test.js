@@ -27,6 +27,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import {
+  cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
@@ -137,6 +141,149 @@ test('golden: an unresolvable paths target is a missing-path finding at the vali
   // escape hatch), nothing about a leaf's promotion stage licenses a dangling
   // pointer, so this stays blocking.
   assert.equal(payload.counts.errors, 1);
+});
+
+// ------------------------ pointers may only name things inside THIS repo
+
+/**
+ * Copy the clean fixture into a temp dir, rewrite one pointer list, and run the
+ * validator against it — with a real file sitting OUTSIDE the copied repo, so
+ * an escaping pointer would resolve to something that genuinely exists.
+ *
+ * That file is the whole point of the harness. Without it an escaping pointer
+ * would fail as `missing` and the test would pass for the wrong reason,
+ * proving nothing about containment.
+ */
+function withEscapeStore(rewrite, fn) {
+  const dir = mkdtempSync(join(tmpdir(), 'uk-1151-escape-'));
+  try {
+    const repo = join(dir, 'repo');
+    cpSync(CLEAN, repo, { recursive: true });
+    mkdirSync(join(dir, 'outside'), { recursive: true });
+    writeFileSync(join(dir, 'outside', 'secret.ts'), '// outside the repo\n');
+    const leaf = join(repo, 'knowledge/library/501.1-result-ordering.md');
+    writeFileSync(leaf, rewrite(readFileSync(leaf, 'utf8')));
+    return fn(repo);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+test('a leaf path that escapes the repo root is a finding, even when the target exists', () => {
+  // `join(repoRoot, p)` resolves `../outside/secret.ts` to a real file OUTSIDE
+  // the repo. Judged on existence alone it passes — so the store's verdict
+  // would depend on what sits outside it, passing on the author's machine and
+  // failing on a machine where that file is absent. A check whose answer comes
+  // from outside the unit under review is not a check.
+  const payload = withEscapeStore(
+    (text) => text.replace('  - src/retrieval', '  - ../outside/secret.ts'),
+    (repo) => json('validate.js', 1, '--root', repo),
+  );
+  assert.deepEqual(
+    payload.findings.map((f) => [f.code, f.severity, f.path]),
+    [['missing-path', 'error', 'paths[0]']],
+  );
+  assert.match(payload.findings[0].message, /resolves outside the repo root/);
+});
+
+test('an absolute leaf path is refused the same way — it is not repo-relative', () => {
+  // `/etc/passwd` joins to `<repoRoot>/etc/passwd`, which is a different claim
+  // than the author wrote. Paths are repo-relative (§9.1); an absolute one is
+  // refused rather than silently reinterpreted.
+  const payload = withEscapeStore(
+    (text) => text.replace('  - src/retrieval', '  - /etc/passwd'),
+    (repo) => json('validate.js', 1, '--root', repo),
+  );
+  assert.deepEqual(payload.findings.map((f) => f.code), ['missing-path']);
+  assert.match(payload.findings[0].message, /resolves outside the repo root/);
+});
+
+test('a leaf path naming the repo root is refused — a pointer at everything attributes nothing', () => {
+  // `.` normalizes to the empty path, which the reverse lookup cannot act on:
+  // it would either match nothing (a silent no-op) or match everything (one
+  // leaf in front of every developer regardless of what they touched). Neither
+  // is a claim worth having, so it is refused where it is authored. The
+  // resolver's `--paths` input side already refuses the same shape.
+  const payload = withEscapeStore(
+    (text) => text.replace('  - src/retrieval', '  - "."'),
+    (repo) => json('validate.js', 1, '--root', repo),
+  );
+  assert.deepEqual(payload.findings.map((f) => f.code), ['missing-path']);
+  assert.match(payload.findings[0].message, /names the repo root/);
+
+  // ...and the resolver does not act on such a pointer either, since it never
+  // gates on store health (§4) and so can be pointed at an unvalidated store.
+  // Under-report rather than false-attribute: §3.1's costlier-error direction.
+  const resolved = withEscapeStore(
+    (text) => text.replace('  - src/retrieval', '  - "."'),
+    (repo) => JSON.parse(spawnSync(
+      process.execPath,
+      [join(root, 'payload/engine/resolve.js'), '--paths', 'src/index/build.ts', '--root', repo, '--json'],
+      { encoding: 'utf8' },
+    ).stdout),
+  );
+  assert.equal(
+    resolved.paths[0].knowledge.some((k) => k.id === 'L-000501' && k.via === 'direct'), false,
+    'a root pointer must not attribute its leaf to every path',
+  );
+});
+
+test('concept source-of-truth pointers are held to the same containment rule', () => {
+  // The two pointer families had the same hole independently, which is why the
+  // containment test lives in ONE function both of them call. A leaf's paths
+  // and a concept's source-of-truth are the same kind of claim about the same
+  // repo, so they must not be judged by two different rules.
+  const dir = mkdtempSync(join(tmpdir(), 'uk-1151-ssot-'));
+  try {
+    const repo = join(dir, 'repo');
+    cpSync(CLEAN, repo, { recursive: true });
+    mkdirSync(join(dir, 'outside'), { recursive: true });
+    writeFileSync(join(dir, 'outside', 'secret.ts'), '// outside the repo\n');
+    const classes = join(repo, 'ontology/classes/200-retrieval.yaml');
+    writeFileSync(classes, readFileSync(classes, 'utf8')
+      .replace('source-of-truth: [src/index/build.ts]', 'source-of-truth: [../outside/secret.ts]'));
+    const payload = json('validate.js', 1, '--root', repo);
+    assert.deepEqual(
+      payload.findings.map((f) => [f.code, f.id, f.path]),
+      [['missing-path', 'K-202', 'source-of-truth[0]']],
+    );
+    assert.match(payload.findings[0].message, /resolves outside the repo root/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('a DEPRECATED concept does not demote an escaping pointer to a warning', () => {
+  // §3.5 demotes a deprecated concept's missing-path to a warning: the
+  // source-deletion escape hatch, so a PR that deletes an artifact can land
+  // without dead-ending. That hatch is about a path that USED to exist. It says
+  // nothing about a pointer that was never this store's to make, and demoting
+  // one would let a malformed claim ship under a warning at exit 0.
+  const dir = mkdtempSync(join(tmpdir(), 'uk-1151-dep-'));
+  try {
+    const repo = join(dir, 'repo');
+    cpSync(CLEAN, repo, { recursive: true });
+    mkdirSync(join(dir, 'outside'), { recursive: true });
+    writeFileSync(join(dir, 'outside', 'secret.ts'), '// outside the repo\n');
+    const classes = join(repo, 'ontology/classes/200-retrieval.yaml');
+    writeFileSync(classes, readFileSync(classes, 'utf8').replace(
+      '    source-of-truth: [src/index/build.ts]\n    status: active',
+      '    source-of-truth: [../outside/secret.ts, src/gone.ts]\n    status: deprecated',
+    ));
+    const payload = json('validate.js', 1, '--root', repo);
+    assert.deepEqual(
+      payload.findings.map((f) => [f.severity, f.path]),
+      [
+        // The escaping pointer stays blocking...
+        ['error', 'source-of-truth[0]'],
+        // ...while an ordinarily absent one still demotes, so the hatch it
+        // exists for is untouched.
+        ['warning', 'source-of-truth[1]'],
+      ],
+    );
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });
 
 // ------------- AC2: the leaf<->concept edge is derived bidirectionally at load
@@ -307,12 +454,27 @@ test('neighbors resolve under either legal citation spelling', () => {
   // a second-class lookup — and the neighborhood publishes the leaf's identity
   // regardless of how the citation happened to spell it.
   const model = loadStores(CLEAN);
+  // The setup: the citation is spelled as a NOTATION, the target carries an
+  // ACCESSION, and the two are the same leaf.
+  assert.deepEqual(model.leaves.get('L-000502').record[RELATES_FIELD]['depends-on'], ['501.3']);
   assert.equal(model.leaves.get('L-000503').notation, '501.3');
-  const payload = json('resolve.js', 0, '--paths', 'src/retrieval/rank.ts', '--root', CLEAN);
-  // Reached through the chain's middle leaf, published by accession.
-  const middle = model.leaves.get('L-000502');
-  assert.equal(middle.record[RELATES_FIELD]['depends-on'][0], '501.3', 'cited by notation');
-  assert.ok(payload.paths[0].knowledge.length, 'the lookup answered');
+
+  // The claim, asserted where it is actually observable: the middle leaf's
+  // PUBLISHED neighborhood resolves that notation to the accessioned leaf and
+  // emits its identity, not the spelling the citation happened to use. The
+  // middle leaf reaches the resolver as a one-hop neighbor of L-000501, so this
+  // also pins that a neighbor is published by identity at any position.
+  const [head] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'K-201');
+  assert.deepEqual(head[RELATES_FIELD]['depends-on'], [{
+    id: 'L-000502',
+    notation: '501.2',
+    heading: 'Score computation',
+    file: 'knowledge/library/501.2-score-computation.md',
+  }]);
+  // And the notation-cited leaf resolves to its accession wherever it is
+  // published in its own right — here as a direct hit's neighbor would be, via
+  // the loader's alias index rather than a second id lookup.
+  assert.equal(model.leafAliases.get('501.3'), 'L-000503');
 });
 
 test('every leaf the resolver publishes carries a neighborhood, in both modes', () => {

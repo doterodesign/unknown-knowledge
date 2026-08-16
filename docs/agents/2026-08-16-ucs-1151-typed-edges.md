@@ -105,8 +105,46 @@ keeps a reader from assuming the stronger.
 call sites spelling the object out would be three chances for the stable-key-
 may-be-null fields to be published one way in one mode and another in the next.
 
+## Review follow-up (CodeRabbit on PR #55)
+
+Two MAJORs, both verified real before fixing, plus one trivial.
+
+**Pointer containment (both families).** `join(repoRoot, p)` resolves
+`../sibling` to a real directory outside the repo and `/etc/passwd` to
+`<repoRoot>/etc/passwd`. Judged on existence alone, an escaping pointer that
+happens to exist on the author's machine passed clean — so the store's verdict
+depended on what sat *outside* it. Reproduced end to end on both `paths` and
+concept `source-of-truth`; the hole was in the concept check too, predating
+this ticket. Fixed with one shared `pointerDefect(repoRoot, p)` that checks
+containment *before* existence, since two call sites that merely agree today
+is how the two families drifted into the same bug independently.
+
+Deliberate carve-out: §3.5's deprecation demotion applies only to an ABSENT
+pointer. It exists so a source-deletion PR can land without dead-ending, which
+says nothing about a pointer the store was never entitled to make — demoting
+one would let a malformed claim ship under a warning at exit 0. Pinned.
+
+**Root pointer (`paths: ["."]`).** Confirmed: it validated clean (the root
+exists) while `governs` normalized it to `''` and matched nothing, so the
+leaf's own `direct` claim silently did nothing. Chose enforcement over
+match-everything, and the precedent decided it: `resolve --paths .` is already
+a usage error on the *input* side ("name the files or directories the change
+touched"). A declared `.` is the same empty claim from the authoring side, and
+matching everything would put one leaf in front of every developer regardless
+of what they touched — the false-attribution direction §3.1 calls the costlier
+error. The resolver now skips an empty pointer explicitly rather than by
+accident, because it never gates on store health and so can be pointed at an
+unvalidated store.
+
+All three defect shapes ride `missing-path` — one code, three messages, since
+they send an author to three different edits.
+
+**Trivial:** the citation-spelling test asserted a generic
+`knowledge.length > 0`. Now asserts the published neighborhood resolves the
+notation-spelled citation to the accessioned leaf's identity.
+
 ## Gates
 
-- `npm test` — 713 pass, 0 fail (baseline 696 + 17 new).
+- `npm test` — 718 pass, 0 fail (baseline 696 + 22 new).
 - `npm run lint` — 179 files, 0 failures.
 - `npm run acceptance` — OK, all asserted criteria (A1–A4, A6) pass.

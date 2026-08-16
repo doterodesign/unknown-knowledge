@@ -25,6 +25,21 @@ dates are recorded at release time, never retroactively.
   the path-existence treatment instead: a leaf path that is not in the working
   tree is a `missing-path` finding — the same code a concept's dead
   source-of-truth pointer earns, because it is the same defect.
+
+### Fixed
+
+- Declared pointers into the working tree are now checked for CONTAINMENT
+  before existence, in both families (concept `source-of-truth` and the new
+  leaf `paths`). A pointer resolving outside the repo root — `../elsewhere`,
+  or an absolute path — used to be judged against whatever sat there, so a
+  store passed or failed on what existed OUTSIDE it: clean on the author's
+  machine, broken on a machine without that file. It is now a `missing-path`
+  finding on its shape. A pointer naming the repo root is refused for the
+  matching reason: it attributes to everything, which attributes nothing, and
+  `resolve --paths` already refused the same shape as an input. A deprecated
+  concept still demotes an ABSENT pointer to a warning (§3.5's source-deletion
+  hatch) but never an escaping or root one — that hatch is for a path that used
+  to exist, not for a claim the store was never entitled to make.
 - The leaf↔concept edge is derived BIDIRECTIONALLY at load
   (`model.leavesByConcept`). It is authored once, leaf-side, because deciding
   what a leaf is about is curatorial work under the human write gate — and

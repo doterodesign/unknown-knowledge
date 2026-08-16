@@ -151,8 +151,11 @@ this skill makes on top of the schema:
 - **`paths`** — the repo-relative files or directories this leaf governs. A
   directory covers its subtree. This is what makes the leaf surface in
   `resolve --paths`, so the files in a diff surface the knowledge that governs
-  them BEFORE the edit. Every path must exist in the working tree; a path
-  pointing at nothing governs nothing, and it is a blocking finding.
+  them BEFORE the edit. Every path must name something that exists INSIDE this
+  repo: a path pointing at nothing governs nothing, one that escapes the repo
+  root (`../elsewhere`, or an absolute path) is not this store's to claim, and
+  `.` — the repo root — attributes nothing by attributing to everything. All
+  three are blocking findings.
 - **`relates`** — typed leaf-to-leaf edges, and the type carries the meaning,
   so choose it rather than defaulting to `see-also`:
   `depends-on` (this leaf's claim is only usable once the target's is),

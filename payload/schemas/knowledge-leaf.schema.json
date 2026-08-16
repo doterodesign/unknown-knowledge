@@ -120,7 +120,7 @@
     "paths": {
       "type": "array",
       "items": { "type": "string" },
-      "description": "Repo-relative file or directory paths this leaf governs (UCS-1151). NOT an id space: these name the working tree, so existence is checked against the filesystem as a missing-path finding — the same mechanism concept source-of-truth pointers already ride — rather than through the ref graph, which only knows how to ask whether an ID resolves. Reverse lookup (resolve --paths) joins over these alongside concept pointers, so the files in a diff surface the knowledge that governs them before an edit."
+      "description": "Repo-relative file or directory paths this leaf governs (UCS-1151). NOT an id space: these name the working tree, so they are checked against the filesystem as a missing-path finding — the same mechanism concept source-of-truth pointers already ride — rather than through the ref graph, which only knows how to ask whether an ID resolves. Each entry must name something INSIDE this repo that exists: a path resolving outside the repo root (`../elsewhere`, or an absolute path) is refused, because a store may only point at its own repo and an escaping pointer would be judged against a file the store has no claim on. So is a path naming the repo root itself — a pointer at everything attributes nothing. Reverse lookup (resolve --paths) joins over these alongside concept pointers, so the files in a diff surface the knowledge that governs them before an edit."
     },
     "relates": {
       "type": "object",

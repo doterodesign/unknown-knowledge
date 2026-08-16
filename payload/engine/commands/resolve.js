@@ -549,9 +549,23 @@ function resolvePaths(model, rawPaths, repoRoot) {
   // whole lookup rather than re-walked per path: --paths already crosses every
   // pointer with every path, and a diff is routinely hundreds of paths.
   const leafPointers = leafPathIndex(model);
-  /** Does this declared pointer govern this path — exactly, or by nesting? */
+  /**
+   * Does this declared pointer govern this path — exactly, or by nesting?
+   *
+   * A pointer that normalizes to EMPTY names the repo root, and it is skipped
+   * rather than treated as a folder that nests over everything. The structural
+   * validator refuses such a pointer outright (`missing-path`: a pointer at
+   * everything attributes nothing), so this branch only runs against a store
+   * that has not been validated — and the resolver deliberately never gates on
+   * store health (§4), so it is reachable. Matching every path here would put
+   * one leaf in front of every developer regardless of what they touched,
+   * which is the false-attribution direction §3.1 already calls the costlier
+   * error. Skipping keeps the residual gap on the under-reporting side, and
+   * the validator is where the author is told to fix it.
+   */
   const governs = (pointer, path) => {
     const p = normPath(repoRoot, pointer);
+    if (p === '') return false;
     return path === p || (isFolderPointer(p) && path.startsWith(`${p}/`));
   };
   return paths.map((path) => {
