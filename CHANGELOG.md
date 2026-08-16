@@ -28,6 +28,12 @@ dates are recorded at release time, never retroactively.
   in any store that carries an authority-tiers registry. The tier is what
   ranks a source against a conflicting one, so an untiered citation reads as
   complete while opting out of conflict resolution.
+- The stage vocabulary is `draft`, `proposed`, `verified` — three values, not
+  four. There is deliberately no `deprecated` stage: the concept lifecycle gives
+  that word real semantics (§3.5 demotes its findings to warnings) and no leaf
+  surface implements the match, so the term would rank a retired leaf above a
+  draft one and read as `trusted`. Retiring a leaf lands with its semantics in a
+  later ticket.
 - `preflight --leaves <ids>`: leaf-facing verdicts, counted and gated
   alongside concept verdicts. A `stage: draft` leaf verdicts `unknown` and
   is downranked in resolver output through the SAME `isPrePromotionStatus`

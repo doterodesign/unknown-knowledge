@@ -20,6 +20,15 @@
 # A leaf at `draft` or `proposed` is downranked in resolver output and verdicted
 # `unknown` by preflight. Those are the same leaf, judged once.
 #
+# THREE VALUES, NOT FOUR. There is deliberately no `deprecated` stage yet. The
+# concept lifecycle has one, and it carries real semantics there (§3.5 demotes a
+# deprecated concept's pointer and value findings to warnings) — but no leaf
+# surface implements the matching demotion. A `deprecated` value minted here
+# with nothing behind it would rank a retired leaf ABOVE a draft one and let
+# preflight verdict it `trusted`, which is worse than not offering the term:
+# a vocabulary that looks governed and governs nothing. Retiring a leaf is a
+# later ticket, and it lands with its semantics or not at all.
+#
 # Flat vocabulary. Value shape: lowercase kebab. Mint exactly these:
 #
 #   values:
@@ -36,11 +45,6 @@
 #     - value: verified
 #       gloss: A moderator promoted it — the citations were checked and hold.
 #       warrant: <the first leaf a moderator promoted>
-#       decision: <your entry adopting the lifecycle>
-#       minted: "2026-07-07"
-#     - value: deprecated
-#       gloss: Superseded or no longer true, kept because references still cite it.
-#       warrant: <the first leaf retired without deletion — notation is immutable, §3.5>
 #       decision: <your entry adopting the lifecycle>
 #       minted: "2026-07-07"
 schema-version: 1

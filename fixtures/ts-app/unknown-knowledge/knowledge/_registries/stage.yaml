@@ -21,8 +21,6 @@ values:
     warrant: 100.1 is promoted; its citation was checked back to the source file.
     decision: D-101
     minted: "2026-07-08"
-  - value: deprecated
-    gloss: Superseded or no longer true, kept because references still cite it.
-    warrant: Notation is immutable once referenced (§3.5), so a retired leaf is marked rather than deleted.
-    decision: D-101
-    minted: "2026-07-08"
+# No `deprecated` stage: no leaf surface implements the demotion the concept
+# lifecycle gives that word, so the term would govern nothing. A later ticket
+# mints it with its semantics.

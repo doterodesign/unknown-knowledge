@@ -207,18 +207,27 @@ function computeLeafVerdicts(model, ids, repoRoot) {
  */
 function degradeAllLeaves(model, ids) {
   const errors = storeHealth(model).errorCount;
-  return ids.map((id) => {
-    // An id that resolves to nothing keeps the caller's spelling: on a store
-    // this broken the leaf may simply have failed to load, and echoing back
-    // what was asked for is more honest than inventing an identity.
+  // De-duplicated by IDENTITY, like selectLeaves: naming one leaf by both its
+  // accession and its notation is one leaf, and emitting two verdict rows for
+  // it would have a caller reconciling two answers about a single record. An
+  // id that resolves to nothing keys on the caller's spelling instead — on a
+  // store this broken the leaf may simply have failed to load, so echoing back
+  // what was asked for is more honest than inventing an identity, and two
+  // distinct unresolved ids stay two rows.
+  const seen = new Set();
+  const out = [];
+  for (const id of ids) {
     const identity = leafIdentityOf(model, id) ?? id;
-    return {
+    if (seen.has(identity)) continue;
+    seen.add(identity);
+    out.push({
       leaf: identity, stage: leafStage(model.leaves.get(identity)?.record), verdict: 'unknown',
       reason: `store-wide failure: the loader reported ${errors} error(s) — no check ran for any leaf (single health model, PRD §4)`,
       'next-action': NEXT_ACTIONS['unknown-store'],
       evidence: [],
-    };
-  }).sort((a, b) => compare(a.leaf, b.leaf));
+    });
+  }
+  return out.sort((a, b) => compare(a.leaf, b.leaf));
 }
 
 /** Store-wide failure: no check ran — every requested verdict is unknown. */

@@ -23,8 +23,4 @@ values:
     warrant: L-000117 is promoted; its vendor citation was checked.
     decision: D-401
     minted: "2026-08-16"
-  - value: deprecated
-    gloss: Superseded or no longer true, kept because references still cite it.
-    warrant: Notation is immutable once referenced (§3.5), so retirement marks rather than deletes.
-    decision: D-401
-    minted: "2026-08-16"
+# No `deprecated` stage — see the clean fixture's stage.yaml for why.

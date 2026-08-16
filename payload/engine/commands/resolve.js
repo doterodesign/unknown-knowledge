@@ -109,34 +109,40 @@ const STATUS_DOWNRANK = 30; // draft/proposed (§3.5); floor 1 — a match still
  * extractor that guesses wrong is worse than a plain one that occasionally
  * returns a long line:
  *
- *   - Leading blank lines and markdown structure are skipped. Fixture and
- *     template leaves carry no H1 (the frontmatter `heading` is the title), but
- *     a client's leaf may, and a heading is not a topic sentence.
- *   - The first PARAGRAPH is what gets read, with its internal newlines
- *     collapsed to single spaces: bodies are hard-wrapped, so a sentence
- *     routinely spans two lines and a line-based reader would truncate it.
+ *   - Markdown structure is skipped LINE BY LINE, not block by block. That is
+ *     the whole subtlety: structure in markdown is a property of a line, and a
+ *     heading needs no blank line after it, so `# Title\nThe real opening.` is
+ *     one block whose first line is a heading and whose second is the prose.
+ *     Discarding the block would blank the excerpt for a perfectly ordinary
+ *     body; discarding just the heading line finds the sentence underneath.
+ *   - Prose then runs to the next blank line or structural line, with internal
+ *     newlines collapsed to single spaces: bodies are hard-wrapped, so a
+ *     sentence routinely spans two lines and a line-based reader would truncate
+ *     it mid-clause.
  *   - A sentence ends at `.`/`!`/`?` followed by whitespace or end-of-text.
  *     `§4.2` and `v3.` do not end a sentence mid-token, which is why the
  *     following character must be whitespace rather than anything at all.
- *   - A paragraph with no terminator IS the excerpt — a body whose opening line
- *     is a fragment still has display prose, and returning null there would
- *     silently blank the surface rather than show what the author wrote.
+ *   - Prose with no terminator IS the excerpt — a body whose opening line is a
+ *     fragment still has display prose, and returning null there would silently
+ *     blank the surface rather than show what the author wrote.
  *
  * @param {string|undefined} body the markdown below the front matter
  * @returns {string|null}
  */
 export function firstSentence(body) {
   if (typeof body !== 'string') return null;
-  const paragraph = body
-    .split(/\n\s*\n/)
-    .map((block) => block.trim())
-    // Markdown structure is not prose: skip headings, list items, quotes, and
-    // fenced code until an actual paragraph turns up.
-    .find((block) => block !== '' && !/^(#{1,6}\s|[-*+]\s|\d+[.)]\s|>\s|```|\|)/.test(block));
-  if (!paragraph) return null;
-  const flat = paragraph.replace(/\s+/g, ' ').trim();
-  const end = flat.search(/[.!?](\s|$)/);
-  return end === -1 ? flat : flat.slice(0, end + 1);
+  // Headings, list items, ordered items, block quotes, fences, and table rows.
+  const structural = /^(#{1,6}\s|[-*+]\s|\d+[.)]\s|>\s|```|\|)/;
+  const lines = body.split('\n').map((line) => line.trim());
+  const start = lines.findIndex((line) => line !== '' && !structural.test(line));
+  if (start === -1) return null;
+  // Run to the first blank or structural line: prose that bumps into a list is
+  // still prose, and swallowing the list into the excerpt would show markup.
+  let end = start;
+  while (end < lines.length && lines[end] !== '' && !structural.test(lines[end])) end += 1;
+  const flat = lines.slice(start, end).join(' ').replace(/\s+/g, ' ').trim();
+  const stop = flat.search(/[.!?](\s|$)/);
+  return stop === -1 ? flat : flat.slice(0, stop + 1);
 }
 
 const norm = (s) => s.toLowerCase().replace(/\s+/g, ' ').trim();

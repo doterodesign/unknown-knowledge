@@ -1,8 +1,12 @@
-# Frontmatter v2 fixture (UCS-1149) — the jurisdictions registry.
+# Frontmatter v2 fixture (UCS-1149) — the jurisdictions registry, EMPTY on
+# purpose and not for the reason the clean fixture's copy is empty.
 #
-# Both leaves here claim universally (`applies.jurisdictions: []`), so nothing
-# has warrant yet. An EMPTY registry is not a missing one: it is a vocabulary
-# nothing has needed, and empty `jurisdictions` means universal, not unchecked.
+# Here the registry is empty while 900.1 claims `applies.jurisdictions:
+# [nj-dge]`, so that value is unregistered and earns a finding. Empty means
+# "nothing minted", never "anything goes": a jurisdiction nobody minted is not
+# a jurisdiction this store recognizes. (An empty `jurisdictions` LIST on a
+# leaf is the separate, legitimate claim that the knowledge holds universally —
+# which is what the clean fixture demonstrates.)
 schema-version: 1
 store: knowledge
 registry: jurisdictions

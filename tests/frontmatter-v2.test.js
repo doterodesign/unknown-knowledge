@@ -218,26 +218,82 @@ test('a degraded store reports the SAME leaf name and stage a healthy one would'
     assert.deepEqual(degraded['leaf-verdicts'].map((v) => [v.leaf, v.stage, v.verdict]), [
       ['L-000213', 'draft', 'unknown'],
     ]);
+
+    // And it de-duplicates by identity like the healthy path: one leaf named
+    // both ways is ONE verdict, not two rows a caller has to reconcile.
+    const both = json('preflight.js', 2, '--leaves', '213.1,L-000213', '--root', dir);
+    assert.deepEqual(both['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
+
+    // An id that resolves to nothing keeps the caller's spelling — on a store
+    // this broken the leaf may simply have failed to load — and two distinct
+    // unresolved ids stay two rows rather than collapsing into one.
+    const missing = json('preflight.js', 2, '--leaves', 'L-000900,L-000901', '--root', dir);
+    assert.deepEqual(missing['leaf-verdicts'].map((v) => [v.leaf, v.stage]), [
+      ['L-000900', null], ['L-000901', null],
+    ]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
 });
 
-test('a BLANK governed value is one finding, not two — absence owns the path', () => {
-  // `authority: ""` is an omission wearing a string. Membership has nothing to
-  // say about it, so the membership walk skips it and the `missing-authority`
-  // check that owns absence reports alone. Two findings on one path would send
-  // an author looking for a second edit that does not exist.
-  const dir = mkdtempSync(join(tmpdir(), 'uk-v2-blank-'));
+/** Edit the clean fixture in a temp copy and validate it. */
+function withEditedLeaf(replacements, expectStatus, assertions) {
+  const dir = mkdtempSync(join(tmpdir(), 'uk-v2-edit-'));
   try {
     cpSync(CLEAN, dir, { recursive: true });
     const leaf = join(dir, 'knowledge/sportsbook/117.1-odds-feed-provider-quirks.md');
-    writeFileSync(leaf, readFileSync(leaf, 'utf8').replace('authority: vendor-doc', 'authority: ""'));
-    const payload = json('validate.js', 1, '--root', dir);
-    assert.deepEqual(pairs(payload), [['missing-authority', 'citations[0].authority']]);
+    let text = readFileSync(leaf, 'utf8');
+    for (const [from, to] of replacements) {
+      assert.ok(text.includes(from), `fixture no longer contains ${JSON.stringify(from)}`);
+      text = text.replace(from, to);
+    }
+    writeFileSync(leaf, text);
+    assertions(json('validate.js', expectStatus, '--root', dir), dir);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+}
+
+test('a blank value on a field whose absence IS owned is one finding, not two', () => {
+  // `authority: ""` is an omission wearing a string, and `missing-authority`
+  // owns that field's absence (declared as `blankOwnedBy`). So membership
+  // defers and the owning check reports alone — two findings on one path would
+  // send an author looking for a second edit that does not exist.
+  withEditedLeaf([['authority: vendor-doc', 'authority: ""']], 1, (payload) => {
+    assert.deepEqual(pairs(payload), [['missing-authority', 'citations[0].authority']]);
+  });
+});
+
+test('a blank governed FACET is a finding — an empty string never passes silently', () => {
+  // The other half, and the one that matters more. No check owns the absence
+  // of `facets.stage` or `facets.form`, so deferring a blank there would let an
+  // empty string ungovern a governed field at exit 0 — a check that never ran
+  // wearing a clean verdict (PRD §5). Whitespace-only is the same defect
+  // wearing a wider disguise.
+  withEditedLeaf([
+    ['stage: verified', 'stage: ""'],
+    ['form: reference', 'form: "   "'],
+  ], 1, (payload) => {
+    assert.deepEqual(pairs(payload).sort(), [
+      ['unregistered-value', 'facets.form'],
+      ['unregistered-value', 'facets.stage'],
+    ]);
+  });
+});
+
+test('only fields with an owning absence check may defer a blank', () => {
+  // The declaration behind the asymmetry above. `blankOwnedBy` is a fact about
+  // a field, so it lives in the table with the rest of them — and every value
+  // it names must be a check this validator actually runs, or a field would
+  // defer its blanks to a check that never reports.
+  for (const row of FACET_REGISTRIES['knowledge-leaf']) {
+    if (!row.blankOwnedBy) continue;
+    assert.ok(CHECKS.includes(row.blankOwnedBy),
+      `${row.field} defers blanks to ${row.blankOwnedBy}, which is not a check class`);
+  }
+  const deferring = FACET_REGISTRIES['knowledge-leaf']
+    .filter((r) => r.blankOwnedBy).map((r) => r.field);
+  assert.deepEqual(deferring, ['authority'], 'only citations[].authority has an owning check today');
 });
 
 test('a --concepts-only run is byte-identical to before: no leaf surface appears', () => {
@@ -296,6 +352,16 @@ test('the excerpt deriver is literal about what a first sentence is', () => {
   // Markdown structure is not prose: headings, lists, quotes, and fences are
   // skipped until an actual paragraph turns up.
   assert.equal(firstSentence('# Title\n\n- a list item\n\nThe real opening. More.'), 'The real opening.');
+  // Structure is skipped LINE by line, not block by block. A heading needs no
+  // blank line after it, so `# Title\nProse` is ONE block whose first line is
+  // structural — discarding the block would blank the excerpt for an entirely
+  // ordinary body. Same for prose following a list item or a quote.
+  assert.equal(firstSentence('# Title\nThe real opening. More.'), 'The real opening.');
+  assert.equal(firstSentence('- item\nProse after list.'), 'Prose after list.');
+  assert.equal(firstSentence('> quote\nProse after quote.'), 'Prose after quote.');
+  // And prose stops AT structure rather than swallowing it, so an excerpt never
+  // shows markup.
+  assert.equal(firstSentence('Prose here\n- then a list item'), 'Prose here');
   // A paragraph with no terminator IS the excerpt: returning null would blank
   // the surface rather than show what the author wrote.
   assert.equal(firstSentence('no terminator here'), 'no terminator here');
@@ -406,11 +472,41 @@ test('the kit-fixed vocabularies are documented in the templates that seed empty
 
   const stage = read('stage');
   assert.match(stage, /isPrePromotionStatus/, 'the stage values are load-bearing on a named predicate');
-  for (const value of ['draft', 'proposed', 'verified', 'deprecated']) {
-    assert.match(stage, new RegExp(value));
+  for (const value of ['draft', 'proposed', 'verified']) {
+    assert.match(stage, new RegExp(`- value: ${value}`));
   }
+  // THREE values, not four. A `deprecated` stage is deliberately NOT offered:
+  // the concept lifecycle gives that word real semantics (§3.5 demotes its
+  // findings to warnings) and no leaf surface implements the match, so minting
+  // it here would rank a retired leaf above a draft one and read as `trusted` —
+  // a vocabulary that looks governed and governs nothing. The template must say
+  // so, rather than leaving the omission to be read as an oversight.
+  assert.doesNotMatch(stage, /- value: deprecated/, 'no deprecated stage is offered');
+  assert.match(stage, /THREE VALUES, NOT FOUR/, 'the omission is stated, not silent');
 
   // form is the opposite case and must NOT claim to be fixed: which forms a
   // project recognizes is a judgement about its own material, like domains.
   assert.match(read('form'), /Ships EMPTY/);
+});
+
+test('no shipped stage registry mints a value with no runtime semantics', () => {
+  // The guard behind the decision above, over every stage registry in the repo:
+  // a stage value is only legitimate if some surface acts on it. `draft` and
+  // `proposed` drive the downrank/unknown-verdict path; `verified` is the
+  // promoted state that path contrasts against. `deprecated` drives nothing.
+  const stageRegistries = [
+    'payload/templates/knowledge/_registries/stage.yaml',
+    'tests/fixtures/structural-validator/frontmatter-v2/knowledge/_registries/stage.yaml',
+    'tests/fixtures/structural-validator/frontmatter-v2-findings/knowledge/_registries/stage.yaml',
+    'fixtures/ts-app/unknown-knowledge/knowledge/_registries/stage.yaml',
+  ];
+  for (const rel of stageRegistries) {
+    const doc = load(readFileSync(join(root, rel), 'utf8'));
+    const minted = (doc.values ?? []).map((v) => v.value);
+    assert.deepEqual(
+      minted.filter((v) => !['draft', 'proposed', 'verified'].includes(v)),
+      [],
+      `${rel} mints a stage no surface acts on`,
+    );
+  }
 });

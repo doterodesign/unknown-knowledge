@@ -284,6 +284,12 @@ function checkOrphans(model, push) {
  *   hierarchical
  *             the registry SHAPE this facet requires. Declared, and checked
  *             against the registry's own flag: see registryShapeMismatch
+ *   blankOwnedBy
+ *             the check that owns this field's ABSENCE, when one exists. A
+ *             blank value is then that check's to report and membership defers,
+ *             so one omission earns one finding. Absent means membership judges
+ *             blanks itself — the safe default, since a field whose emptiness
+ *             nobody checks would otherwise pass governed-but-unchecked
  *
  * Frozen all the way down: a mutated row would silently redirect a facet at a
  * different vocabulary, which is a governed store quietly ungoverned.
@@ -301,7 +307,14 @@ export const FACET_REGISTRIES = Object.freeze({
     Object.freeze({ field: 'facets.stage', registry: 'knowledge/stage', hierarchical: false }),
     Object.freeze({ field: 'operations', each: true, registry: 'knowledge/operations', hierarchical: false }),
     Object.freeze({ field: 'applies.jurisdictions', each: true, registry: 'knowledge/jurisdictions', hierarchical: false }),
-    Object.freeze({ within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers', hierarchical: false }),
+    // `blankOwnedBy` names the check that OWNS this field's absence. Only
+    // `authority` has one (`missing-authority`), so only `authority` may leave
+    // a blank value to it; every other governed field judges a blank itself as
+    // an unregistered value, because otherwise `stage: ""` would pass silently.
+    Object.freeze({
+      within: 'citations', field: 'authority', registry: 'knowledge/authority-tiers',
+      hierarchical: false, blankOwnedBy: 'missing-authority',
+    }),
   ]),
 });
 
@@ -551,7 +564,7 @@ function checkRegistryMembership(model, push) {
 function checkOneRecord(model, push, entry, rows) {
   const { file, record } = entry;
   const id = recordId(entry);
-  for (const { within, field, each, registry: registryKey } of rows) {
+  for (const { within, field, each, registry: registryKey, blankOwnedBy } of rows) {
     const registry = model.registries.get(registryKey);
     // A row may sit inside a repeated sub-record (citations[]); declaring the
     // container once keeps the table free of per-index rows.
@@ -571,14 +584,18 @@ function checkOneRecord(model, push, entry, rows) {
         : [[raw, field]];
       for (const [value, valuePath] of values) {
         if (typeof value !== 'string') continue;
-        // A BLANK value is an omission wearing a string, and it is judged as
-        // one: the field was left empty, not filled with a term the registry
-        // happens not to carry. Membership has nothing to say about it, and
-        // saying `unregistered-value ""` anyway would put a second finding on
-        // a path that already carries the one an author can act on — the
-        // `missing-*` check that owns absence for that field. Same principle
-        // as the non-string skip above: one defect, one finding.
-        if (value.trim() === '') continue;
+        // A BLANK value is deferred ONLY when another check owns this field's
+        // absence — declared as `blankOwnedBy`, which today is just
+        // `citations[].authority` and its `missing-authority` check. There,
+        // reporting `unregistered-value ""` too would put a second finding on a
+        // path that already carries the one an author can act on.
+        //
+        // Everywhere else a blank is judged HERE, and that asymmetry is the
+        // point: no check owns `facets.stage: ""`, so skipping it would make an
+        // empty governed facet pass silently at exit 0 — a governed field
+        // ungoverned by an empty string, which is worse than double-reporting.
+        // The registry does not mint "", so it falls out as unregistered.
+        if (value.trim() === '' && blankOwnedBy) continue;
         const verdict = judgeValue(registry, registryKey, value);
         if (!verdict) continue;
         push({

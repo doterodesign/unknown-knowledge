@@ -23,8 +23,7 @@ values:
     warrant: L-000117 is promoted; its vendor citation was checked.
     decision: D-401
     minted: "2026-08-16"
-  - value: deprecated
-    gloss: Superseded or no longer true, kept because references still cite it.
-    warrant: Notation is immutable once referenced (§3.5), so retirement marks rather than deletes.
-    decision: D-401
-    minted: "2026-08-16"
+# No `deprecated` stage: the concept lifecycle has one with real semantics
+# (§3.5 demotes its findings to warnings), but no leaf surface implements the
+# matching demotion, so the term would rank a retired leaf above a draft one and
+# read as `trusted`. Retiring a leaf is a later ticket, with its semantics.
