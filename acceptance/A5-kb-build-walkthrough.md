@@ -275,8 +275,9 @@ calendar days (citation: Nacha rules, above).
   identity: what the loader indexes by, and the only spelling anything may
   cite this leaf as. Because it says nothing about where the leaf sits,
   moving the file out of `L-00/` later breaks no citation.
-- [ ] `stage: draft` — the entry enters at draft stage, which is where the
-  moderation pipeline picks it up. The agent does not promote its own work.
+- [ ] `facets.stage` is `draft` — the entry enters at draft stage, which is
+  where the moderation pipeline picks it up. The agent does not promote its
+  own work.
 - [ ] **Judgment fill — prose body**: the body is written, not generated,
   and each claim reads back to a listed citation. Note the opening line:
   there is no `description` field (retired in v2), so that first sentence is
@@ -366,9 +367,12 @@ fix every error-severity finding before merging — this validator is blocking-g
 ## The hooks — the same gates, run mechanically
 
 The two checks above are the ones the seeded hooks run, so a repo that
-wired them enforces this step whether or not the agent remembered it. To
-watch that happen on the fixture (which has no vendored engine, so link the
-kit's in first):
+wired them enforces this step whether or not the agent remembered it. This
+section runs them directly with `sh` to watch what they do; in a real repo
+they are wired through `.git/hooks/` with **event-named** symlinks
+(`pre-commit`, and `prepare-commit-msg` for the reverse lookup — git runs a
+hook only if its filename names an event it fires). To watch that happen on
+the fixture (which has no vendored engine, so link the kit's in first):
 
 ```sh
 mkdir -p unknown-knowledge/hooks
@@ -431,9 +435,28 @@ git reset -q && sh unknown-knowledge/hooks/reverse-lookup; echo "exit $?"
 exit 0
 ```
 
+- [ ] An empty diff and a FAILED read are different things, and only one of
+  them is a clean result. Run the hook where git cannot answer (any
+  directory outside a repository) and it exits **2** — the lookup never
+  ran — rather than reading as "nothing to attribute":
+
+```sh
+# From a directory that is not a git repository. git prints its own usage
+# to stderr first; the hook's own line is the last of it.
+sh "$KIT/hooks/reverse-lookup" 2>/tmp/rl-err >/dev/null; echo "exit $?"
+tail -1 /tmp/rl-err
+```
+
+```
+exit 2
+reverse-lookup: git diff failed — the staged paths could not be read, so the lookup never ran
+```
+
 - [ ] Negative check: neither hook computes a verdict, filters a finding, or
   reads a switch that would let it pass. Each invokes one engine command and
   exits with its code — which is why testing the command IS testing the hook.
+  The one code either hook authors itself is that exit 2, for the one thing
+  the engine cannot report: its own input never being read.
 
 ## Done
 

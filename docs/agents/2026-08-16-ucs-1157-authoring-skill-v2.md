@@ -224,6 +224,115 @@ No engine command was added, so nothing touched the count pins.
 CONTEXT.md's identical claim is (still) not pinned by anything — noted as a
 latent gap, not fixed here, because fixing it is not this ticket's surface.
 
+## Post-review fixes (CodeRabbit on PR #68)
+
+Four fixes landed after review; three findings were declined with reasoning
+posted on the PR.
+
+### FIX 1 — the reverse-lookup hook could pass silently (the real one)
+
+Original line:
+
+```sh
+PATHS=$(git diff --cached --name-only --diff-filter=ACMR | paste -sd, -)
+[ -z "$PATHS" ] && exit 0
+```
+
+**A pipeline's exit status is its LAST stage's.** If `git diff` failed,
+`paste` still succeeded, `PATHS` came back empty, and the hook exited 0 —
+reporting "nothing to attribute" for a lookup that never ran. That is
+precisely the silent pass the engine's exit-2 contract exists to prevent,
+committed by the artifact whose whole thesis is refusing them. It was mine,
+and the review caught it.
+
+Fixed by separating capture from join and reading git's status:
+
+```sh
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR) || {
+  echo "reverse-lookup: git diff failed — the staged paths could not be read, so the lookup never ran" >&2
+  exit 2
+}
+[ -z "$STAGED" ] && exit 0
+PATHS=$(printf '%s' "$STAGED" | paste -sd, -)
+```
+
+Verified by running the hook outside a git repository: **exit 2** with the
+stderr line, where the old form gave exit 0.
+
+Two test consequences worth knowing:
+
+- **The thinness ceiling moved 8 → 12 executable lines.** Refusing to pass
+  silently costs lines; checking a status and reporting the failure is three
+  lines a hook that swallowed it would not spend. Those lines are the
+  opposite of a hook growing behavior.
+- **The "never authors an exit code" pin had to be split.** The hook may not
+  author a *verdict* (0 or 1 standing in for what the engine said), but
+  `exit 2` is the one code it must author, for the one thing the engine
+  cannot report: its own input never being read. The pin now forbids
+  `exit 1` and a bare `exit 0` line, and permits the exit-2 never-ran signal.
+
+A new static pin, `never lets a failed command read as a clean one`, walks
+the executable lines and asserts that any `VAR=$(git …)` capture both checks
+its status (`||`) and does not pipe within the same assignment. Static, per
+this file's philosophy — still no behavior seam.
+
+### FIX 2 — `stage` was spelled unqualified in DRAFT
+
+`knowledge-leaf.schema.json` has no top-level `stage`; it nests under
+`facets` alongside `domain`, `form`, `anchor` (verified against the schema).
+The DRAFT bullet and its completion criterion now say `facets.stage`, as does
+the walkthrough's checklist item. The FACET table row and the walkthrough's
+facet list were already context-qualified and left alone. Pinned both ways:
+`facets.stage` must appear, and a top-level `- **\`stage\`**` bullet must not.
+
+### FIX 3 — the reverse-lookup hook needed an event-named wiring
+
+The original wiring comment ("a pre-commit companion, a post-checkout hook,
+or run it by hand") left a trap: **git runs a hook only if its filename is
+one of the events git fires**, and `reverse-lookup` is not one. Under
+`core.hooksPath` pointed at the seeded directory this is worse than useless —
+the file sits next to `pre-commit` looking wired and never fires.
+
+Concrete wiring now documented in the hook, the README, and the walkthrough:
+
+```sh
+ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
+```
+
+`prepare-commit-msg` runs after the index is staged and before the message
+editor opens, which is when attribution is still actionable. Git passes it
+the message file and source as arguments; the script ignores them and reads
+the staged diff itself. Under `core.hooksPath` wiring, call it explicitly
+from `pre-commit` instead. Script behavior unchanged.
+
+### FIX 4 — FACET's enforcement pointer is pinned
+
+The step-delegation test asserted FACET against `/_registries\//` only. The
+registries **are** the step's delegation surface (no engine command performs
+faceting), but the section also names the mechanism that enforces the fill at
+step 5, and that pointer could have silently dropped out. Added
+`assert.match(sections.FACET, /unregistered-value/)`.
+
+### Declined, with reasoning
+
+- **"Unresolved cross-references should be exit 1, not 2"** — wrong for this
+  engine. `unresolved-ref` is loader error severity (`load-stores.js` ref
+  table), which sets `model.ok = false` → exit 2, and UCS-1159's
+  `fixtures/plant-unresolved-relates` pins exit 2 empirically. The doc
+  describes actual behavior; changing the behavior is not this ticket.
+- **"Comma-delimited PATHS breaks filenames containing commas"** — real, and
+  a **latent gap worth its own ticket**. Comma-joining is
+  `resolve.js --paths`' own documented CLI contract (`--paths <file1,file2>`,
+  single-arg comma-split), so a thin hook must use it; re-encoding paths or
+  adding an input shape is an engine-interface change outside UCS-1157.
+  Candidate follow-up: a newline-delimited stdin input shape for `--paths`,
+  which would also lift the argv length ceiling on very large diffs.
+- **"Add an engine-owned accession-allocation command"** — scope creep. This
+  ticket adds no engine command by design (the count pins are untouched);
+  collisions are already refused deterministically by the `duplicate-id` hard
+  error at validate, and allocation happens inside the human-gated one-PR
+  flow. A mint-next-accession command is a v-next candidate.
+
 ## Traps for whoever picks this up next
 
 1. **`git checkout -b` fails under the sandbox** ("could not lock config
@@ -238,3 +347,15 @@ latent gap, not fixed here, because fixing it is not this ticket's surface.
    do X" assertion. See Decision 5.
 4. **Emphasis markers count as wrap hazards**, not just whitespace. See the
    lineage trap above.
+5. **`cmd | join` reports the JOIN's exit status, not the command's.** In any
+   shell wrapper meant to refuse silent passes, capture first and check the
+   status before piping. This bit the reverse-lookup hook (FIX 1 above) in a
+   file written specifically to prevent silent passes — the pattern is easy
+   to write and invisible on a green run, because the failure mode only
+   appears when the upstream command fails.
+6. **Writing a doc block by hand invites the same defect it documents.** My
+   first draft of the walkthrough's git-failure block used
+   `… | tail -1; echo "exit ${PIPESTATUS[0]}"` — which masked the exit code
+   through a pipe (and `PIPESTATUS` is not portable to `sh`). Running the
+   block caught it. Every documented command must be *run as written*, not
+   just plausibly correct.

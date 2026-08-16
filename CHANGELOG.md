@@ -24,10 +24,18 @@ dates are recorded at release time, never retroactively.
   off switch enforces nothing. They are explicitly **not a test seam** — the
   tested surface is the wrapped command, and the wiring is reviewed the way
   the per-IDE wrappers are (`tests/hooks.test.js` pins thinness, exit-code
-  propagation, and the absence of a bypass; it deliberately tests no hook
-  behavior, because there is none to test). They **seed but do not install**:
+  propagation, the absence of a bypass, and that no command whose output a
+  hook depends on has its exit status swallowed by a pipeline; it
+  deliberately tests no hook behavior, because there is none to test). The
+  one code a hook authors itself is `exit 2`, for the one thing the engine
+  cannot report: its own input never being read — a failed `git diff` is not
+  an empty diff, and must never read as one. They **seed but do not install**:
   `init` never writes `.git/`, so the kit ships the gate and the client hangs
-  it — the same boundary CI wiring keeps (D-006).
+  it — the same boundary CI wiring keeps (D-006). Wire them with
+  **event-named** symlinks (`pre-commit`, and `prepare-commit-msg` for the
+  reverse lookup): git runs a hook only if its filename names an event git
+  fires, which bites hardest under `core.hooksPath` pointed at the seeded
+  directory, where a non-event-named file looks wired and never runs.
 
 ### Changed
 

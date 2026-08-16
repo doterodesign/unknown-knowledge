@@ -190,9 +190,9 @@ this skill makes on top of the schema:
   it says nothing about where the leaf sits, refiling the leaf later leaves
   it untouched and breaks no citation. A collision is a hard error at step 5,
   never a silently shared identity.
-- **`stage`** — start at **`draft`**. Every agent-authored entry enters at
-  draft stage; this is not a courtesy, it is where the moderation pipeline
-  picks the leaf up. A draft leaf is downranked in resolver output and
+- **`facets.stage`** — start at **`draft`**. Every agent-authored entry
+  enters at draft stage; this is not a courtesy, it is where the moderation
+  pipeline picks the leaf up. A draft leaf is downranked in resolver output and
   verdicted `unknown` by preflight, which is correct and not a defect:
   nothing has certified it yet. Promotion is a moderator's act after the
   citations are checked, never the author's.
@@ -268,7 +268,7 @@ nothing reads it. `validate.js`'s `index-drift` and `orphan` checks are what
 verify the row against the file — do not audit that pairing by eye.
 
 **Done when** the leaf file and its catalog row both exist, the body opens
-with a topic sentence, `stage` is `draft`, and every value in the
+with a topic sentence, `facets.stage` is `draft`, and every value in the
 frontmatter came from step 2 or step 3.
 
 ### 5. VALIDATE — green, then the human gate

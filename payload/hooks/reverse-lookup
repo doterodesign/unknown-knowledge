@@ -18,9 +18,20 @@
 # tests/typed-edges.test.js) — this file adds no behavior to test, and the
 # wiring is reviewed like the per-IDE wrappers.
 #
-# Wire it as a pre-commit companion, a post-checkout hook, or run it by
-# hand before writing a commit message — the seeded artifact is the
-# script; wiring it into .git/ is the client's own act.
+# Wire it with an EVENT-NAMED symlink — git runs a hook only if its
+# filename is one of the events git fires, and `reverse-lookup` is not one
+# of them. That matters most under `core.hooksPath` pointed at the seeded
+# directory: git looks there for event names only, so this file would sit
+# next to `pre-commit` and never fire. Give it an event:
+#
+#   ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
+#
+# (`prepare-commit-msg` runs after the index is staged and before the
+# message editor opens, which is when attribution is still actionable. Git
+# passes it the message file and source as arguments; this script ignores
+# them and reads the staged diff itself.) Under `core.hooksPath` wiring,
+# call it explicitly from your `pre-commit` instead. Either way, wiring it
+# into git is the client's own act — the seeded artifact is the script.
 #
 # Exit codes are the engine's, propagated verbatim (PRD §5):
 #   0 — the lookup ran (including a zero-hit lookup, which is a real
@@ -33,13 +44,23 @@
 # With no staged changes there is nothing to attribute, so the hook exits
 # 0 without invoking the engine — `--paths` with an empty list is a usage
 # error (exit 2), and an empty diff is not a failure.
+#
+# git's own status is checked BEFORE the join. In a pipeline the shell
+# reports the LAST command's status, so `git diff | paste` would report
+# paste's success even when git failed — leaving PATHS empty and the hook
+# exiting 0 on a lookup that never ran. That is the silent pass this whole
+# design refuses, so the two steps are separate and git's code is read.
 set -u
 
 KIT_DIR="${KIT_DIR:-unknown-knowledge}"
 UK_ROOT="${UK_ROOT:-.}"
 
-PATHS=$(git diff --cached --name-only --diff-filter=ACMR | paste -sd, -)
-[ -z "$PATHS" ] && exit 0
+STAGED=$(git diff --cached --name-only --diff-filter=ACMR) || {
+  echo "reverse-lookup: git diff failed — the staged paths could not be read, so the lookup never ran" >&2
+  exit 2
+}
+[ -z "$STAGED" ] && exit 0
+PATHS=$(printf '%s' "$STAGED" | paste -sd, -)
 
 node "$UK_ROOT/$KIT_DIR/engine/resolve.js" --paths "$PATHS" --root "$UK_ROOT"
 exit $?

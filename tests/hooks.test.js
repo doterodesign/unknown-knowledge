@@ -63,8 +63,32 @@ for (const [name, { cli, purpose }] of Object.entries(HOOKS)) {
     // A generous ceiling that still refuses a hook that grew a brain. The
     // per-IDE wrapper pin uses the same shape (< 25 lines, "must stay a
     // THIN pointer"); this is its executable-line equivalent.
-    assert.ok(lines.length <= 8,
+    //
+    // The ceiling is 12 rather than 8 because refusing to pass silently
+    // costs lines: checking a command's exit status and reporting the
+    // failure is three lines that a hook swallowing the status would not
+    // spend. Those lines are the opposite of a hook growing behavior —
+    // they are what keeps its ONE decision (did the input read?) honest.
+    assert.ok(lines.length <= 12,
       `${name} has ${lines.length} executable lines — a hook this size has behavior of its own, and behavior of its own is untested behavior:\n${lines.join('\n')}`);
+  });
+
+  test(`${name}: never lets a failed command read as a clean one`, () => {
+    // Static, per this file's philosophy: no behavior test, just a check
+    // that every command whose output the hook DEPENDS ON has its status
+    // read. A pipeline reports its LAST stage's status, so a `cmd | join`
+    // that fails at `cmd` reports success, and the hook proceeds on empty
+    // input — the exact silent pass the engine's exit-2 contract exists to
+    // prevent. Assert the two never share a line.
+    for (const line of lines) {
+      if (!/^[A-Z_]+=\$\(git /.test(line)) continue;
+      // Strip the `||` guard before looking for a pipe, so the guard that
+      // makes the line safe is not mistaken for the hazard it prevents.
+      assert.doesNotMatch(line.replace(/\|\|.*$/, ''), /\|/,
+        `${name} pipes git's output in the same assignment that captures it — the shell would report the pipeline's LAST status, masking a git failure as an empty result:\n  ${line}`);
+      assert.match(line, /\|\|/,
+        `${name} captures git output without checking git's exit status — a failed read must exit 2 (the lookup never ran), never 0:\n  ${line}`);
+    }
   });
 
   test(`${name}: propagates the engine's exit code UNCHANGED`, () => {
@@ -76,7 +100,13 @@ for (const [name, { cli, purpose }] of Object.entries(HOOKS)) {
     const body = lines.join('\n');
     assert.doesNotMatch(body, /\|\|\s*true/, 'a hook that ORs to true is a hook that cannot fail');
     assert.doesNotMatch(body, /\|\|\s*exit 0/, 'a hook that falls back to 0 swallows the finding');
-    assert.doesNotMatch(body, /exit [12]\b/, 'the hook never authors an exit code; it forwards one');
+    // The hook never authors a VERDICT — no self-made 0 or 1 standing in for
+    // what the engine said. `exit 2` is the one code it may author, and only
+    // for the one thing the engine cannot report: its own input never being
+    // read. That is the same "a check that never ran" signal the engine
+    // spells 2, kept honest rather than downgraded to an empty success.
+    assert.doesNotMatch(body, /exit 1\b/, 'the hook never authors a finding verdict; it forwards one');
+    assert.doesNotMatch(body, /^exit 0$/m, 'the hook never authors a clean verdict; it forwards one');
   });
 
   test(`${name}: has NO BYPASS — no switch makes it pass`, () => {
@@ -116,7 +146,9 @@ test('reverse-lookup asks the engine which leaves govern the staged paths', () =
   assert.match(src, /git diff --cached --name-only/);
   // An empty diff is not a failure — and `--paths` with an empty list is a
   // usage error (exit 2), so the hook must not invoke the engine with one.
-  assert.match(src, /\[ -z "\$PATHS" \] && exit 0/);
+  assert.match(src, /\[ -z "\$STAGED" \] && exit 0/);
+  // A git failure is a different thing from an empty diff, and exits 2.
+  assert.match(src, /exit 2/);
 });
 
 test('the manifest seeds hooks WITHOUT installing them — init never writes .git/', () => {

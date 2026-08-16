@@ -119,7 +119,18 @@ engine seeds bytes rather than modes — so set the bit when you wire it:
 ```sh
 chmod +x unknown-knowledge/hooks/*
 ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
+ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
 ```
+
+Note the second symlink's name. Git runs a hook only if its filename is one of
+the events git fires, and `reverse-lookup` is not one of them —
+`prepare-commit-msg` runs after the index is staged and before the message
+editor opens, which is when attribution is still actionable. (Git passes that
+hook the message file and source as arguments; the script ignores them and
+reads the staged diff itself.) The same rule bites harder under
+`core.hooksPath` pointed at the seeded directory: git looks there for
+event-named files only, so `reverse-lookup` would sit beside `pre-commit` and
+never fire. Under that wiring, call it explicitly from your `pre-commit`.
 
 ## Seeded once, then owned
 

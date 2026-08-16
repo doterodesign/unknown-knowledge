@@ -82,6 +82,11 @@ test('every mechanical step names the engine command that performs it', () => {
   assert.match(sections.CLASSIFY, /engine\/resolve\.js/);
   assert.match(sections.CITE, /engine\/log-entry\.js/);
   assert.match(sections.FACET, /_registries\//);
+  // FACET's delegation surface is the registries themselves — no engine
+  // command performs faceting — so the section must also name the mechanism
+  // that ENFORCES the fill at step 5. Without that pointer the step reads as
+  // a request for restraint rather than a gate.
+  assert.match(sections.FACET, /unregistered-value/);
   assert.match(sections.DRAFT, /validate\.js/);
   assert.match(sections.VALIDATE, /engine\/validate\.js/);
 });
@@ -102,7 +107,14 @@ test('FACET fills the governed facets from the registries, and never invents a v
 
 test('entries enter at DRAFT stage — where the moderation pipeline picks them up', () => {
   assert.match(doc, /start at \*\*`draft`\*\*/);
-  assert.match(doc, /Every agent-authored entry enters at\s+draft stage/);
+  assert.match(doc, /Every agent-authored entry\s+enters at draft stage/);
+  // Spelled `facets.stage`, because that is where the schema nests it —
+  // knowledge-leaf.schema.json has no top-level `stage`, and an unqualified
+  // field name in the DRAFT walkthrough is a frontmatter an agent would
+  // write wrong.
+  assert.match(doc, /\*\*`facets\.stage`\*\*/);
+  assert.doesNotMatch(doc, /^- \*\*`stage`\*\*/m,
+    'the DRAFT bullet must name the field as the schema nests it (facets.stage)');
   // And promotion is never the author's act.
   assert.match(doc, /never the author's/);
 });
