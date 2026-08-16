@@ -14,6 +14,17 @@ categories:
       names, and a run of correct ones is evidence about the next one.
     decision: D-201
     declared: "2026-07-07"
+  # Declared so the wrong-CATEGORY revocation (D-211) isolates that defect
+  # rather than compounding it with an undeclared-category finding.
+  - category: verified-bumps
+    eligibility: eligible
+    threshold: 4
+    gloss: Bumping a leaf's verified date after re-reading its source.
+    warrant: >-
+      Mechanical: the edit is checkable against the source it claims to have
+      re-read.
+    decision: D-201
+    declared: "2026-07-07"
   - category: authority-assignments
     eligibility: gated
     gloss: Assigning an authority tier to a citation.

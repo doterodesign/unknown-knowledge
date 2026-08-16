@@ -2,12 +2,12 @@
 
 > Implementation findings, written on branch
 > `ucs-1155-trust-graduation-category-table-provenance-checks` (base
-> `faceted-store-v2` @ 8e11a4f). Gates green: `npm test` 928 pass / 0 fail,
+> `faceted-store-v2` @ 8e11a4f). Gates green: `npm test` 932 pass / 0 fail,
 > `npm run lint` 197 files / 0 failures, `npm run acceptance` OK (A1–A4, A6
 > pass; A5 manual by design).
 >
-> Updated after the first review round — see "Review round 1" at the end for the
-> three checks added and the one finding declined with reasoning.
+> Updated after two review rounds — see "Review round 1" and "Review round 2"
+> at the end for the checks added and the findings declined with reasoning.
 
 ## Erratum in the ticket: the wrong prototype was cited
 
@@ -80,17 +80,18 @@ pointing at the wrong schema entirely).
 The brief left this to "the established judgment". I applied the loader's
 existing rule: a table the loader cannot *trust* means the graduation checks
 never ran, and a check that never ran is a blocking defect, never a silent pass.
-So the three table defects are **loader diagnostics** (error severity → exit 2),
+So the four table defects are **loader diagnostics** (error severity → exit 2),
 while defects in *entries* — which an author can fix without the table being in
 question — are **findings** (exit 1). Verified across the fixtures: malformed
 exits 2, findings exits 1, clean exits 0.
 
-Three defects are refused at load, each because it leaves the table unable to
+Four defects are refused at load, each because it leaves the table unable to
 answer the question it exists for:
 
 | diagnostic | what it catches | why it cannot be downstream |
 |---|---|---|
 | `graduation-table-name-mismatch` | declared `table` ≠ filename | a finding naming the table would cite a file no steward can open under that name |
+| `graduation-table-store-mismatch` | declared `store` ≠ the directory it sits in | every store loads `_registries/`, so a table can land under `knowledge/` declaring `decisions` and pass its schema; it would index under a key contradicting its own path (added in review round 1) |
 | `duplicate-graduation-category` | one category declared twice | two rows can carry *different eligibilities*, so a category could be both eligible and gated and the engine would pick by file order |
 | `graduation-threshold-shape` | `eligible` with no threshold, or `gated` with one | eligible against no bar at all; or a bar that can never be met, which reads as an eligibility someone forgot to set |
 
@@ -204,7 +205,7 @@ v1; designed for in the schema", which this ticket makes false.
 - `CHANGELOG.md` — Unreleased/Added
 
 **Tests / fixtures**
-- `tests/trust-graduation.test.js` (new, 29 tests across A1–A4)
+- `tests/trust-graduation.test.js` (new, 33 tests across A1–A4)
 - `tests/fixtures/structural-validator/graduation-{clean,findings,malformed,no-table,wrong-store}/`
 - `tests/validate.test.js`, `tests/validate-record.test.js` — pinned lists extended
 
@@ -290,6 +291,104 @@ that fixture has no table at all, which is its entire point.
 - **MD041 first-line-heading on six fixture leaves** — no markdownlint in the
   repo; frontmatter `heading` is the leaf title by convention, and adding a body
   H1 would change `firstSentence` excerpts and the golden output that pins them.
+
+## Review round 2
+
+Eleven findings; two majors and four smaller items accepted, two declines
+recycled from round 1.
+
+### Accepted — `revokes` is checked for WHAT it names, not just that it resolves
+
+Round 1 closed the *omitted*-`revokes` case and left the *present* one open. A
+string `revokes` only rode the ref graph, which asks whether the id exists —
+and every id it resolves is equally a real decision, so an existence check
+cannot tell a graduation from an unrelated ADR. A revocation could cite a
+random architecture entry, or a graduation of a **different category**, and
+validate clean while recording the withdrawal of something never granted.
+
+Now, when `revokes` resolves to a loaded entry, the target must carry a
+graduation block, with action `graduate`, for the revoking entry's own
+category. Folded into `disconnected-revocation` with three distinct messages
+rather than split into new codes: they are one defect class (this revocation's
+link to its graduation is wrong) and an author fixes them the same way. An
+**unresolved** id is deliberately skipped — that is the ref graph's
+`unresolved-ref`, and a second finding would double-report one typo. There is a
+test asserting exactly that non-duplication.
+
+### Accepted — `graduation-field-shape`: action-specific fields
+
+The schema described rules nothing enforced. Now enforced in `checkGraduations`
+per the no-conditional-keyword precedent, one code for the family with a
+message per field:
+
+- **`graduate` requires `observed-cycles`.** This is the one that matters most
+  for the ticket's stance: v1 computes nothing, so the recorded count is the
+  *entire* reviewable basis of the judgment. A grant with no written count is
+  precisely the unreviewable decision the manual-analytics position depends on
+  not existing — a reader cannot ask whether the bar was met, because nobody
+  wrote down what was counted.
+- **`graduate` refuses `revokes` and `defect`** — withdrawal vocabulary on an
+  entry moving the other direction, usually copy-paste from the revocation
+  template.
+- **`revoke` requires `defect`** — revocation is automatic *on a defect*, so a
+  revocation naming none says trust was withdrawn for no stated reason, and the
+  next graduation of that category has nothing to have fixed.
+
+`observed-cycles` is deliberately **not** refused on a revoke: meaningless there
+rather than contradictory, and refusing a harmless field costs an author an edit
+for nothing. The three schema descriptions now say validator-enforced.
+
+### Accepted — my round-1 template comment was wrong, verified empirically
+
+The review flagged that `<category-name>` should fail the schema pattern rather
+than surface as `undeclared-category`. I tested it rather than reasoning about
+it: installed each template as a real entry with only `id` and `date` filled,
+and ran the validator. The reviewer is right, and the round-1 comment I wrote
+was wrong:
+
+```
+pattern-mismatch  entries[0].graduation.category  "<category-name>" does not match ^[a-z0-9]+(-[a-z0-9]+)*$
+```
+
+Exit **2**, a loader hard error — the store fails to load, so the graduation
+checks never run at all. The revocation template additionally fails on
+`revokes: D-NNN`, which does not match the decision-ref pattern either (so my
+round-1 note that it "produces an unresolved ref" was also incomplete: it
+produces a pattern-mismatch *and* an unresolved-ref).
+
+Both comments now state the verified behavior and draw the distinction that
+actually matters: pattern-checked fields fail loudly at exit 2, while the
+**prose** fields (context, decision, consequences, defect) are free strings that
+validate green while saying nothing true. Those are the dangerous placeholders,
+and the only check on them is a reader.
+
+### Accepted — `graduation-table-name-mismatch` was pinned but never exercised
+
+Correct: it appeared only in the diagnostics enum assertion. Now behaviorally
+tested by renaming the file in a temp copy and asserting the diagnostic, its
+file and path, that the store gates, and that the table is indexed under
+*neither* spelling.
+
+### Accepted — the stale-comment sweep (third occurrence of this class)
+
+Swept every file in all five fixtures rather than fixing the named one. Found
+the `registry.ts` SSOT comment saying "the clean fixture's K-410 pointer" in all
+five copies, and a stale D-204 header in `graduation-wrong-store` describing
+behavior that fixture never reaches (it exits 2 before any entry-level check
+runs). The UCS-1148 registry headers were checked and left alone — those files
+genuinely are unmodified copies, so the attribution is accurate.
+
+### Accepted — loader-diagnostic count
+
+"Three loader diagnostics" was stale after round 1 added the store mismatch.
+Corrected to four, with the row added to the table above.
+
+### Declined (recycled)
+
+Both were already declined in round 1 and the reasoning is unchanged: the
+steward-guide fence tag (the file's fences are untagged throughout) and the
+MD041 fixture headings (no markdownlint in the repo; frontmatter `heading` is
+the title, and a body H1 would change `firstSentence` excerpts).
 
 ## Note for whoever picks up the next ticket
 

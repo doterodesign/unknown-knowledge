@@ -29,11 +29,21 @@
 # file fails validation until a steward fills them — pasting the template
 # unedited must never produce a Decisions entry.
 #
-# Those two are what the SCHEMA rejects, but they are not the whole edit. Every
-# <angle-bracket> placeholder must be replaced before this entry says anything
-# true, and the validator cannot tell you so: `<category-name>` is a
-# well-formed string, so an unfilled one reads as an undeclared category rather
-# than as an unfinished template. The full inventory:
+# Those two are not the whole edit. Every <angle-bracket> placeholder must be
+# replaced before this entry says anything true, and how each unfilled one
+# fails differs — which is worth knowing, because the finding you get is not
+# always the mistake you made:
+#
+#   - `graduation.category` is pattern-checked (lowercase kebab) and
+#     `graduation.revokes` is pattern-checked (D-NNN), so leaving either
+#     unfilled is a KK-02 `pattern-mismatch` at EXIT 2. The store fails to load
+#     rather than validating with findings, so the graduation checks never run.
+#   - the PROSE fields (context, decision, consequences, title, deciders,
+#     defect, provenance) are free strings. Nothing rejects them, so an
+#     unfilled one validates green while saying nothing true. Those are the
+#     dangerous ones: the only check on them is a reader.
+#
+# The full inventory:
 #
 #   id                    the provisional D-YYYY-MM-DD-<slug> (schema-rejected)
 #   date                  the real date (schema-rejected)

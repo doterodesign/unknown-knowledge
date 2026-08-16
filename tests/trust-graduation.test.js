@@ -17,7 +17,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
 import { loadStores, DIAGNOSTIC_CODES } from '../payload/engine/lib/load-stores.js';
@@ -104,6 +106,33 @@ test('A1: the four table defects are declared loader diagnostics', () => {
   }
 });
 
+test('A1: a table whose declared name disagrees with its filename is a hard error', () => {
+  // Renaming the FILE without renaming the declaration: a finding that names
+  // the table would then cite a file no steward can open under that name.
+  // Mutated in a temp copy rather than as a fixture, because the defect is one
+  // line and a whole fixture store would obscure that.
+  const dir = mkdtempSync(join(tmpdir(), 'graduation-name-'));
+  try {
+    cpSync(fixture('graduation-clean'), dir, { recursive: true });
+    const registries = join(dir, 'decisions', '_registries');
+    renameSync(
+      join(registries, 'graduation-categories.yaml'),
+      join(registries, 'categories.yaml'),
+    );
+    const model = loadStores(dir);
+    const mismatch = model.diagnostics.filter((d) => d.code === 'graduation-table-name-mismatch');
+    assert.equal(mismatch.length, 1);
+    assert.equal(mismatch[0].file, 'decisions/_registries/categories.yaml');
+    assert.equal(mismatch[0].path, 'table');
+    assert.match(mismatch[0].message, /the file a steward opens/);
+    assert.equal(model.ok, false, 'an untrustworthy table gates the run');
+    // Refused rather than indexed under either spelling.
+    assert.equal(model.graduations.size, 0);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('A1: a table filed under the wrong store is a hard error, not a silent index', () => {
   // Every store loads `_registries/`, so a table can physically land under
   // knowledge/ while declaring `store: decisions` and still pass its schema.
@@ -133,7 +162,58 @@ test('A2: every entry-level graduation defect is a finding, and only those', () 
     ['undeclared-category', 'D-206', 'graduation.category'],
     ['graduation-not-trust-category', 'D-207', 'category'],
     ['disconnected-revocation', 'D-208', 'graduation.revokes'],
+    ['graduation-field-shape', 'D-209', 'graduation.defect'],
+    ['graduation-field-shape', 'D-209', 'graduation.observed-cycles'],
+    ['graduation-field-shape', 'D-210', 'graduation.defect'],
+    ['disconnected-revocation', 'D-210', 'graduation.revokes'],
+    ['disconnected-revocation', 'D-211', 'graduation.revokes'],
   ]);
+});
+
+test('A2: a `revokes` that resolves is still checked for WHAT it names', () => {
+  // The ref graph only asks whether the id exists, and every id it resolves is
+  // equally a real decision — so an existence check cannot tell a graduation
+  // from an unrelated ADR. Two variants, one code, distinct messages.
+  const out = runJson(1, '--root', fixture('graduation-findings'));
+  const byId = (id) => out.findings.find(
+    (f) => f.id === id && f.code === 'disconnected-revocation').message;
+  // D-201 is an ordinary architecture ADR with no graduation block.
+  assert.match(byId('D-210'), /names D-201, which is not a graduation/);
+  assert.match(byId('D-210'), /carries no graduation block at all/);
+  // D-207 IS a graduation — of a different category.
+  assert.match(byId('D-211'), /graduates "alias-additions"/);
+  assert.match(byId('D-211'), /withdraw a grant made for its OWN category/);
+});
+
+test('A2: an unresolved `revokes` stays the ref graph\'s finding, not double-reported', () => {
+  // A typo'd id is `unresolved-ref` from the loader. Reporting it again as a
+  // disconnected revocation would put two findings on one mistake.
+  const dir = mkdtempSync(join(tmpdir(), 'graduation-unresolved-'));
+  try {
+    cpSync(fixture('graduation-clean'), dir, { recursive: true });
+    const target = join(dir, 'decisions', 'entries', 'D-203-revoke-alias-additions.yaml');
+    writeFileSync(target, readFileSync(target, 'utf8').replace('revokes: D-202', 'revokes: D-999'));
+    const model = loadStores(dir);
+    const unresolved = model.diagnostics.filter((d) => d.code === 'unresolved-ref');
+    assert.equal(unresolved.length, 1, 'the loader reports the dangling id');
+    assert.match(unresolved[0].path, /graduation\.revokes/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('A2: action-specific fields are enforced where the schema can only describe them', () => {
+  const out = runJson(1, '--root', fixture('graduation-findings'));
+  const shape = out.findings.filter((f) => f.code === 'graduation-field-shape');
+  const byPath = (id, path) => shape.find((f) => f.id === id && f.path === path).message;
+  // A graduation with no recorded count is the unreviewable judgment the
+  // manual-analytics stance depends on not existing.
+  assert.match(byPath('D-209', 'graduation.observed-cycles'), /v1 computes no counts/);
+  assert.match(byPath('D-209', 'graduation.observed-cycles'), /analytics are manual by design/);
+  // Withdrawal vocabulary on a grant.
+  assert.match(byPath('D-209', 'graduation.defect'), /describes a WITHDRAWAL/);
+  // A revocation with no defect names no trigger.
+  assert.match(byPath('D-210', 'graduation.defect'), /revocation is automatic ON A DEFECT/);
 });
 
 test('A2: an entry that moves the trust boundary must be filed under category `trust`', () => {
@@ -211,7 +291,7 @@ test('A2: a revocation names the graduation it withdraws, resolved as an ordinar
 test('A2: every graduation check is declared in CHECKS', () => {
   for (const code of [
     'gated-category-graduation', 'undeclared-category', 'missing-graduation-table',
-    'graduation-not-trust-category', 'disconnected-revocation',
+    'graduation-not-trust-category', 'disconnected-revocation', 'graduation-field-shape',
   ]) {
     assert.ok(CHECKS.includes(code), `${code} must be reported as a check class`);
   }
@@ -249,8 +329,13 @@ test('A3: provenance makes a bad skill revision traceable across entries', () =>
   // two vintages, so the answer must discriminate.
   const out = runJson(1, '--root', fixture('graduation-findings'));
   const byVersion = (v) => out.provenance.filter((p) => p['skill-version'] === v).map((p) => p.id);
+  // The 1.3.0 vintage wrote exactly one entry; asserting that exactly, and the
+  // rest only by discrimination, keeps this test about traceability rather
+  // than about how many entries the fixture happens to carry.
   assert.deepEqual(byVersion('knowledge-reflect@1.3.0'), ['D-206']);
-  assert.deepEqual(byVersion('knowledge-reflect@1.4.0'), ['D-205', 'D-207', 'D-208']);
+  const later = byVersion('knowledge-reflect@1.4.0');
+  assert.ok(later.length > 1, 'the other vintage wrote the rest');
+  assert.ok(!later.includes('D-206'), 'and the two vintages do not overlap');
 });
 
 test('A3: provenance is surfaced in the human renderer too, not only in JSON', () => {

@@ -124,7 +124,8 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
   'disconnected-revocation', 'gated-category-graduation',
-  'graduation-not-trust-category', 'id-range', 'id-shape', 'index-drift',
+  'graduation-field-shape', 'graduation-not-trust-category',
+  'id-range', 'id-shape', 'index-drift',
   'malformed-verified', 'missing-authority', 'missing-citation',
   'missing-graduation-table', 'missing-path', 'missing-registry',
   'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
@@ -998,11 +999,78 @@ function checkEditions(model, push) {
  *              elsewhere moves that boundary invisibly to anyone auditing it
  *              by category, which is how a steward reads the store
  *   disconnected-revocation
- *              a revocation that names no `revokes` WHILE a graduation for the
- *              same category stands. The store then asserts both with nothing
- *              linking them. Omission is clean when no graduation exists — the
- *              standing-position case has nothing to point at
+ *              a revocation whose link to the graduation it withdraws is
+ *              missing or wrong: it names no `revokes` WHILE a graduation for
+ *              the same category stands, or its `revokes` names an entry that
+ *              is not a graduation, or one that graduates a DIFFERENT category.
+ *              Omission is clean when no graduation exists — the
+ *              standing-position case has nothing to point at — and an
+ *              unresolved id is the ref graph's to report
+ *   graduation-field-shape
+ *              the block's fields disagree with its own action: a graduation
+ *              with no `observed-cycles` (the only record of what was counted,
+ *              since v1 computes nothing) or carrying withdrawal fields, or a
+ *              revocation naming no `defect` (the automatic trigger)
  */
+/**
+ * Which `graduation:` fields each action requires and which it refuses.
+ *
+ * The schema states these in prose because it cannot state them in keywords —
+ * there is no conditional in the subset this engine interprets. Enforcing them
+ * here is what keeps that prose from being decoration.
+ *
+ * Each rule earns its place:
+ *
+ *   graduate REQUIRES `observed-cycles` — the recorded count is the entire
+ *     reviewable basis of the judgment. v1 computes nothing, so a graduation
+ *     with no written count is exactly the unreviewable decision the manual-
+ *     analytics stance depends on NOT existing: a reader cannot ask whether the
+ *     bar was met, because nobody wrote down what was counted.
+ *   graduate REFUSES `revokes` and `defect` — both describe a withdrawal. On a
+ *     grant they are either copy-paste from the revocation template or a
+ *     confusion about which direction the entry moves, and each would leave a
+ *     grant carrying the vocabulary of its own reversal.
+ *   revoke REQUIRES `defect` — revocation is automatic ON A DEFECT, so the
+ *     defect is the trigger. A revocation that names none records that trust
+ *     was withdrawn for no stated reason, and the next graduation of that
+ *     category has nothing to have fixed.
+ *
+ * `observed-cycles` is deliberately NOT refused on a revoke: it is meaningless
+ * there rather than contradictory, and refusing a harmless field would cost an
+ * author an edit for nothing.
+ *
+ * @param {object} graduation the typed block
+ * @param {'graduate'|'revoke'} action the block's own action
+ * @returns {Array<{field: string, message: string}>}
+ */
+function graduationShapeDefects(graduation, action) {
+  const defects = [];
+  if (action === 'graduate') {
+    if (!Number.isInteger(graduation['observed-cycles'])) {
+      defects.push({
+        field: 'observed-cycles',
+        message: 'graduation records no "observed-cycles" — v1 computes no counts, so this number is the ONLY record of what the moderator judged against the category\'s threshold; without it the graduation cannot be reviewed by anyone who was not in the room (UCS-1155: the analytics are manual by design)',
+      });
+    }
+    for (const field of ['revokes', 'defect']) {
+      if (graduation[field] !== undefined) {
+        defects.push({
+          field,
+          message: `graduation carries "${field}", which describes a WITHDRAWAL of autonomy — this entry grants it. Remove the field, or change "action" to revoke if the entry was meant to withdraw a graduation`,
+        });
+      }
+    }
+    return defects;
+  }
+  if (typeof graduation.defect !== 'string' || graduation.defect.trim() === '') {
+    defects.push({
+      field: 'defect',
+      message: 'revocation names no "defect" — revocation is automatic ON A DEFECT, so the defect is the trigger and the substance both; without it the record says trust was withdrawn for no stated reason, and the next graduation of this category has nothing to have fixed',
+    });
+  }
+  return defects;
+}
+
 function checkGraduations(model, push) {
   // One table per store, keyed "<store>/<name>"; decisions is where graduation
   // is governed (the change process is the team's truth anchor, D-003).
@@ -1038,6 +1106,19 @@ function checkGraduations(model, push) {
         severity: 'error', code: 'graduation-not-trust-category', id: recordId(entry), file,
         path: 'category',
         message: `entry carries a graduation block but is filed under category "${record.category}" — an entry that moves the trust boundary is a "trust" decision (PRD §3: the third store governs changes to the system's own trust boundary), and one filed elsewhere is invisible to anyone auditing that boundary by category`,
+      });
+    }
+    // Which fields belong to which action. The schema describes these rules in
+    // prose and cannot enforce them — its keyword subset has no conditional —
+    // and a rule stated where nothing enforces it is contract drift wearing the
+    // appearance of a check. One code for the family, like the loader's
+    // `graduation-threshold-shape`, with a message per field: they are one
+    // defect class (this block's fields disagree with its own action) and an
+    // author fixes them the same way.
+    for (const defect of graduationShapeDefects(graduation, action)) {
+      push({
+        severity: 'error', code: 'graduation-field-shape', id: recordId(entry), file,
+        path: `graduation.${defect.field}`, message: defect.message,
       });
     }
     if (!tables.length) {
@@ -1088,6 +1169,36 @@ function checkGraduations(model, push) {
           path: 'graduation.revokes',
           message: `revocation of "${category}" names no graduation, but ${granted} graduates that category — the withdrawal and the thing withdrawn must stay connected in the record, or a reader cannot tell whether ${granted} still stands; name it in "revokes"`,
         });
+      }
+    }
+    // A PRESENT `revokes` must name an actual graduation OF THIS CATEGORY.
+    // Existence alone is what the ref graph checks, and existence is not the
+    // claim: `revokes` asserts "this entry withdraws that grant", so a
+    // revocation pointing at an ordinary ADR, or at a graduation of some other
+    // category, records a withdrawal of something that was never granted —
+    // clean-looking, and false. The ref graph cannot see this because every id
+    // it resolves is equally a real decision.
+    //
+    // An UNRESOLVED id is skipped: that is the ref graph's `unresolved-ref` to
+    // report, and adding a second finding would double-report one typo.
+    if (action === 'revoke' && typeof graduation.revokes === 'string') {
+      const target = model.decisions.get(graduation.revokes);
+      if (target !== undefined) {
+        const targetBlock = target.record.graduation;
+        const targetIsGraduation = isObject(targetBlock) && targetBlock.action === 'graduate';
+        if (!targetIsGraduation) {
+          push({
+            severity: 'error', code: 'disconnected-revocation', id: recordId(entry), file,
+            path: 'graduation.revokes',
+            message: `"revokes" names ${graduation.revokes}, which is not a graduation — a revocation withdraws a grant of autonomy, so it must name the entry that granted it; ${graduation.revokes} ${isObject(targetBlock) ? 'is itself a revocation' : 'carries no graduation block at all'}`,
+          });
+        } else if (targetBlock.category !== category) {
+          push({
+            severity: 'error', code: 'disconnected-revocation', id: recordId(entry), file,
+            path: 'graduation.revokes',
+            message: `this entry revokes "${category}" but "revokes" names ${graduation.revokes}, which graduates "${targetBlock.category}" — a revocation must withdraw a grant made for its OWN category, or it records the withdrawal of something that was never granted while leaving the real graduation standing`,
+          });
+        }
       }
     }
   }

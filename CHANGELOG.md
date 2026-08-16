@@ -33,14 +33,18 @@ dates are recorded at release time, never retroactively.
 - Graduations and revocations are ordinary Decisions entries of category `trust`
   carrying a typed `graduation:` block, extended conservatively onto the
   existing schema rather than forked into a new record kind: a graduation IS an
-  ADR. Five new structural checks hold them against the table —
+  ADR. Six new structural checks hold them against the table —
   `gated-category-graduation`, `undeclared-category`, `missing-graduation-table`,
   `graduation-not-trust-category` (an entry that moves the trust boundary while
   filed under another decision category is invisible to anyone auditing that
-  boundary by category), and `disconnected-revocation` (a revocation naming no
-  `revokes` while a graduation for the same category stands leaves the store
-  asserting both with nothing linking them; omission stays clean when no
-  graduation exists, which is the standing-position case) — plus four loader
+  boundary by category), `disconnected-revocation` (a revocation whose link to
+  the graduation it withdraws is missing or wrong — naming none while one
+  stands, or naming an entry that is not a graduation or graduates a different
+  category; resolution alone cannot tell a grant from an unrelated ADR), and
+  `graduation-field-shape` (the block's fields disagreeing with its own action:
+  a grant with no recorded `observed-cycles`, the only written record of what
+  was counted since v1 computes nothing, or carrying withdrawal fields; a
+  revocation naming no `defect`, its automatic trigger) — plus four loader
   diagnostics for the table's own defects (`graduation-table-name-mismatch`,
   `graduation-table-store-mismatch`, `duplicate-graduation-category`,
   `graduation-threshold-shape`). Revoking is always allowed, including for a

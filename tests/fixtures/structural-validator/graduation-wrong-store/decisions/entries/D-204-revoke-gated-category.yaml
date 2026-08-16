@@ -1,7 +1,7 @@
-# A revocation naming a PERMANENTLY GATED category is legitimate and must stay
-# clean: revocation only ever narrows autonomy. Graduating the same category is
-# the finding (see the graduation-findings fixture) — the asymmetry is the
-# point, so both directions are exercised against one gated row.
+# Carried over from graduation-clean so this fixture is otherwise identical to
+# it. Nothing here is exercised: the misfiled category table makes the store
+# fail to load (exit 2), so no entry-level check ever runs against this entry.
+# It is present only so the store shape is realistic.
 schema-version: 1
 entries:
   - id: D-204

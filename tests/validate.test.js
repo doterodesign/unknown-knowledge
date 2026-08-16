@@ -37,7 +37,8 @@ test('clean store: exit 0, zero findings, every check class reported as run', ()
   assert.equal(out['store-health'].ok, true);
   assert.deepEqual(out.checks, [
     'disconnected-revocation', 'gated-category-graduation',
-    'graduation-not-trust-category', 'id-range', 'id-shape', 'index-drift',
+    'graduation-field-shape', 'graduation-not-trust-category',
+    'id-range', 'id-shape', 'index-drift',
     'malformed-verified', 'missing-authority', 'missing-citation',
     'missing-graduation-table', 'missing-path', 'missing-registry',
     'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
