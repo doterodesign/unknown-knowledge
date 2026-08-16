@@ -7,7 +7,7 @@
  * policy the client owns (KK-20, D-011).
  *
  *   node payload/engine/preflight.js [--concepts <ids>] [--leaves <ids>] [--json]
- *                                    [--root <dir>] [--log --today <YYYY-MM-DD>]
+ *                                    [--root <dir>] [--today <YYYY-MM-DD>] [--log]
  *
  * `--leaves` is the LEAF-facing surface (UCS-1149), and it exists because
  * frontmatter v2 gave leaves a promotion stage. A `stage: draft` leaf must
@@ -25,15 +25,31 @@
  *                error-severity findings or hard errors attributable to the
  *                concept — do not rely on it until the evidence is fixed
  *   unknown      the checks could not certify anything: draft/proposed status
- *                (§3.5: structural checks only, value checks skipped) or a
+ *                (§3.5: structural checks only, value checks skipped), a leaf
+ *                under time governance whose freshness could not be computed
+ *                (UCS-1150 — no `verified` date, or no injected --today), or a
  *                store-wide failure (loader error-severity diagnostics), which
  *                degrades ALL requested verdicts to unknown — no check ran
+ *   stale        LEAVES ONLY (UCS-1150): the leaf's age exceeds the pinned
+ *                limit for its volatility class — 365 days for `stable`, 90 for
+ *                `volatile`; `static` never stales. Its own class rather than a
+ *                mapping onto the others, because nothing about a stale leaf is
+ *                broken (quarantined) and its checks DID run and returned a
+ *                definite answer (unknown). The action is re-verification
+ *                against the cited sources, which neither of those would say.
  *
- * Exit codes (PRD §5, lib/exit-codes.js): 0 = all trusted, 1 = quarantines
- * present, 2 = engine failure / check-never-ran. Any unknown verdict gates at
- * 2 — a check that never ran is a blocking defect, never a silent pass; only
- * an all-trusted run may read as clean. An id --concepts names that the
- * ontology does not carry is exit 2 for the same reason: a verdict on a typo
+ * `--today <YYYY-MM-DD>` is what time verdicts are measured against; the engine
+ * never reads the wall clock (D-012). Without it, a time-governed leaf verdicts
+ * unknown rather than trusted, and the `time-check` line in the output says the
+ * check was skipped — a check that never ran is never a silent pass.
+ *
+ * Exit codes (PRD §5, lib/exit-codes.js): 0 = all trusted, 1 = quarantines or
+ * stale verdicts present, 2 = engine failure / check-never-ran. Any unknown
+ * verdict gates at 2 — a check that never ran is a blocking defect, never a
+ * silent pass; only an all-trusted run may read as clean. A stale verdict gates
+ * at 1 rather than 2, because the check ran: rotted knowledge is a finding to
+ * fix, not a broken engine. An id --concepts names that the ontology does not
+ * carry is exit 2 for the same reason a never-run check is: a verdict on a typo
  * must never read as anything.
  *
  * Empty or omitted --concepts = store-health-only validation: the run exits
@@ -66,8 +82,11 @@ import { createEntry } from '../lib/log-entry.js';
 import { runChecks } from './validate.js';
 import { validateValues } from './validate-values.js';
 import { isCalendarDate } from '../lib/iso-date.js';
+// The Time facet (UCS-1150) — the same verdict function the resolver ranks on,
+// so a leaf demoted stale there is never verdicted trusted here.
+import { TIME_VERDICTS, timeCheckStatus, timeVerdict } from '../lib/time-verdicts.js';
 
-export const USAGE = 'usage: node payload/engine/preflight.js [--concepts <ids>] [--leaves <ids>] [--json] [--root <dir>] [--log --today <YYYY-MM-DD>]';
+export const USAGE = 'usage: node payload/engine/preflight.js [--concepts <ids>] [--leaves <ids>] [--json] [--root <dir>] [--today <YYYY-MM-DD>] [--log]';
 
 /** finding.schema.json conceptRef — `consulted` only carries conforming ids. */
 const CONCEPT_REF = /^K-[0-9]+$/;
@@ -79,6 +98,15 @@ const NEXT_ACTIONS = Object.freeze({
   'unknown-status': 'do not rely on the enumerated values — only structural checks ran (§3.5); promote the concept to active to make its checks blocking-grade, or verify against the source-of-truth directly',
   'unknown-stage': 'do not rely on this leaf — a pre-promotion stage means no moderator has verified its citations (UCS-1149); read the cited sources directly, or have the leaf promoted to a verified stage',
   'unknown-store': 'repair the store first (fix the loader error diagnostics), then re-run preflight — no check ran for this concept, and a check that never ran is a blocking defect, never a silent pass (PRD §5)',
+  // The Time facet (UCS-1150). A stale leaf is not broken and its checks did
+  // run — the action is re-verification against the sources, which is a
+  // steward's job rather than a repair.
+  stale: 're-verify this leaf against its cited sources and update its `verified` date, or treat the claim as unverified — the knowledge is past the pinned freshness limit for its volatility class, so nothing currently vouches for it (UCS-1150)',
+  // A leaf that asked to be governed by time and gave nothing to measure from.
+  // Its verdict can only ever be `undated`, so the fix is the missing field.
+  'unknown-undated': 'add the `verified` date this leaf is missing — it declares a volatility class, so it is under time governance, but its age cannot be computed and its freshness can never be certified (UCS-1150); the validator reports the same omission as a missing-verified finding',
+  // No --today was injected, so no freshness verdict was computed at all.
+  'unknown-skipped': 'pass --today <YYYY-MM-DD> to compute time verdicts — this leaf declares a volatility class but nothing measured its age this run, and a check that never ran is never a silent pass (PRD §5, D-012)',
 });
 
 // ---------------------------------------------------------- verdict joining
@@ -159,12 +187,14 @@ function computeVerdicts(model, ids, repoRoot) {
  * matched by the same string the validator names it by, not by a second guess
  * at its id space.
  */
-function computeLeafVerdicts(model, ids, repoRoot) {
+function computeLeafVerdicts(model, ids, repoRoot, today) {
   const structural = runChecks(model, repoRoot);
 
   return selectLeaves(model, ids).map((entry) => {
     const id = entry.identity;
     const stage = leafStage(entry.record);
+    const time = timeVerdict(entry.record, today);
+    const base = { leaf: id, stage, time };
     const evidence = structural
       .filter((f) => f.id === id && f.severity === 'error')
       .map(({ code, file, path, message }) => ({ check: 'structural', code, severity: 'error', file, path, message }))
@@ -172,7 +202,7 @@ function computeLeafVerdicts(model, ids, repoRoot) {
 
     if (evidence.length) {
       return {
-        leaf: id, stage, verdict: 'quarantined',
+        ...base, verdict: 'quarantined',
         reason: `${evidence.length} error-severity check result(s) attributable to this leaf — see evidence`,
         'next-action': NEXT_ACTIONS.quarantined,
         evidence,
@@ -180,14 +210,48 @@ function computeLeafVerdicts(model, ids, repoRoot) {
     }
     if (isPrePromotionStatus(stage)) {
       return {
-        leaf: id, stage, verdict: 'unknown',
+        ...base, verdict: 'unknown',
         reason: `stage "${stage}" — this leaf is pre-promotion, so no moderator has certified its citations and nothing vouches for the claim`,
         'next-action': NEXT_ACTIONS['unknown-stage'],
         evidence,
       };
     }
+    // The Time facet (UCS-1150). Asked AFTER stage, because a leaf that no
+    // moderator has promoted is unverified for a reason that outranks its age:
+    // re-dating a draft would not make it trusted. A promoted leaf, though, is
+    // exactly the one whose freshness is the remaining question.
+    //
+    // `stale` is its OWN verdict class rather than a mapping onto `unknown` or
+    // `quarantined`, and the choice is the ticket's ("trusted/stale verdicts").
+    // The existing three each mean something a stale leaf is not: nothing about
+    // it is broken (quarantined), and its checks did run and returned a
+    // definite answer (unknown). Folding it into either would tell a steward to
+    // do the wrong thing — repair evidence that is fine, or pass a flag they
+    // already passed — and would make the leaf-verdicts surface dishonest about
+    // what it computed. It gates like the others: only trusted reads as clean.
+    if (time.stale) {
+      return {
+        ...base, verdict: 'stale',
+        reason: time.reason,
+        'next-action': NEXT_ACTIONS.stale,
+        evidence,
+      };
+    }
+    // A leaf under time governance whose freshness could not be computed is
+    // NOT trusted. Two ways that happens, and they need different actions: the
+    // leaf is missing its date (`undated`), or this run never injected one
+    // (`skipped`). Both are unknown-class — a check that never ran is never a
+    // silent pass — and each says which fix applies.
+    if (time.verdict === TIME_VERDICTS.UNDATED || time.verdict === TIME_VERDICTS.SKIPPED) {
+      return {
+        ...base, verdict: 'unknown',
+        reason: time.reason,
+        'next-action': NEXT_ACTIONS[`unknown-${time.verdict}`],
+        evidence,
+      };
+    }
     return {
-      leaf: id, stage, verdict: 'trusted',
+      ...base, verdict: 'trusted',
       reason: 'every attributable check ran clean this run',
       'next-action': NEXT_ACTIONS.trusted,
       evidence,
@@ -205,7 +269,7 @@ function computeLeafVerdicts(model, ids, repoRoot) {
  * same leaf wearing two names depending on a condition that has nothing to do
  * with what it is called.
  */
-function degradeAllLeaves(model, ids) {
+function degradeAllLeaves(model, ids, today) {
   const errors = storeHealth(model).errorCount;
   // De-duplicated by IDENTITY, like selectLeaves: naming one leaf by both its
   // accession and its notation is one leaf, and emitting two verdict rows for
@@ -220,8 +284,14 @@ function degradeAllLeaves(model, ids) {
     const identity = leafIdentityOf(model, id) ?? id;
     if (seen.has(identity)) continue;
     seen.add(identity);
+    const record = model.leaves.get(identity)?.record;
     out.push({
-      leaf: identity, stage: leafStage(model.leaves.get(identity)?.record), verdict: 'unknown',
+      leaf: identity, stage: leafStage(record),
+      // The time verdict travels on the degraded path too, computed from
+      // whatever loaded. A key that vanished on a broken store would make a
+      // consumer's presence check mean two things at once.
+      time: timeVerdict(record, today),
+      verdict: 'unknown',
       reason: `store-wide failure: the loader reported ${errors} error(s) — no check ran for any leaf (single health model, PRD §4)`,
       'next-action': NEXT_ACTIONS['unknown-store'],
       evidence: [],
@@ -316,9 +386,14 @@ function renderHuman(payload) {
     ].filter(Boolean).join(' + ');
     lines.push(
       `preflight: ${subjects} — ${counts.trusted} trusted, `
-      + `${counts.quarantined} quarantined, ${counts.unknown} unknown (store verdict ${payload['store-verdict']})`,
+      + `${counts.quarantined} quarantined, ${counts.stale} stale, ${counts.unknown} unknown `
+      + `(store verdict ${payload['store-verdict']})`,
     );
   }
+  // Whether time verdicts ran at all — printed whenever leaves were asked
+  // about, computed or not. A skipped check that said nothing would read
+  // exactly like a check that passed (PRD §5).
+  if (payload['time-check']) lines.push(`time check: ${payload['time-check']}`);
   for (const d of payload['store-errors'] ?? []) {
     lines.push(`  store error ${d.code}  ${d.file}${d.path ? `  ${d.path}` : ''}`, `    ${d.message}`);
   }
@@ -330,7 +405,11 @@ function renderHuman(payload) {
     lines.push(`  next: ${v['next-action']}`);
   }
   for (const v of leafVerdicts) {
-    lines.push('', `${v.verdict.toUpperCase()}  ${v.leaf}${v.stage ? `  (stage: ${v.stage})` : ''}`, `  ${v.reason}`);
+    // The time verdict rides the subject line beside the stage: both are
+    // properties of the leaf a reader judges it by, and a stale leaf must say
+    // so where its verdict is read rather than only in the tally.
+    const time = v.time ? `  (time: ${v.time.verdict}${v.time.volatility ? `, ${v.time.volatility}` : ''}${v.time.age === null ? '' : `, ${v.time.age}d`})` : '';
+    lines.push('', `${v.verdict.toUpperCase()}  ${v.leaf}${v.stage ? `  (stage: ${v.stage})` : ''}${time}`, `  ${v.reason}`);
     for (const e of v.evidence) {
       lines.push(`  error ${e.code}  ${e.file}  ${e.path}`);
     }
@@ -390,8 +469,8 @@ export function main(argv) {
     }
     if (wantLeaves) {
       leafVerdicts = model.ok
-        ? computeLeafVerdicts(model, opts.leaves, opts.root)
-        : degradeAllLeaves(model, opts.leaves);
+        ? computeLeafVerdicts(model, opts.leaves, opts.root, opts.today)
+        : degradeAllLeaves(model, opts.leaves, opts.today);
     }
 
     // Counted TOGETHER, over both verdict lists. Splitting the counts would let
@@ -402,6 +481,10 @@ export function main(argv) {
       trusted: all.filter((v) => v.verdict === 'trusted').length,
       quarantined: all.filter((v) => v.verdict === 'quarantined').length,
       unknown: all.filter((v) => v.verdict === 'unknown').length,
+      // Counted separately (UCS-1150) so a stale leaf is visible in the tally
+      // rather than absorbed into a class that means something else. `ok`
+      // below still requires trusted === all.length, so a stale leaf gates.
+      stale: all.filter((v) => v.verdict === 'stale').length,
     };
     const logged = opts.log ? logQuarantines(model.root, verdicts, opts.today) : null;
 
@@ -423,7 +506,12 @@ export function main(argv) {
       verdicts,
       // Present only when leaves were asked about, for the same reason `mode`
       // still says `concepts`: a --concepts-only run's JSON is unchanged.
-      ...(wantLeaves ? { 'leaf-verdicts': leafVerdicts } : {}),
+      // `time-check` rides the same condition — leaves are the only records the
+      // time facet governs, so a concepts-only run has no time check to report
+      // and inventing one would answer a question nobody asked. When leaves
+      // ARE asked about, it is always present: a run that computed no freshness
+      // verdicts must never look like one that checked and found them fresh.
+      ...(wantLeaves ? { 'time-check': timeCheckStatus(opts.today), 'leaf-verdicts': leafVerdicts } : {}),
       ...(logged ? { logged } : {}),
     };
 
@@ -435,6 +523,11 @@ export function main(argv) {
     // its checks never ran, and that is a blocking defect, never exit 0.
     if (storeHealthOnly) return storeVerdict === 'trusted' ? EXIT_CODES.CLEAN : EXIT_CODES.FAILURE;
     if (storeVerdict !== 'trusted' || counts.unknown > 0) return EXIT_CODES.FAILURE;
-    return counts.quarantined > 0 ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
+    // A stale verdict gates at 1, alongside quarantine, and NOT at 2 (UCS-1150).
+    // The distinction is the one the exit contract already draws: 2 means a
+    // check never ran, and the time check ran — it returned a definite answer
+    // a steward can act on. Rotted knowledge is a finding to fix, not a broken
+    // engine, and only an all-trusted run still reads as clean.
+    return counts.quarantined > 0 || counts.stale > 0 ? EXIT_CODES.FINDINGS : EXIT_CODES.CLEAN;
   }
 }

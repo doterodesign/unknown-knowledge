@@ -97,15 +97,20 @@ import { compare } from '../lib/validate-record.js';
 // same source the record-level schema patterns bind to — so a catalog row and
 // the record it points at can never be judged by two different grammars.
 import { ID_GRAMMARS, idPattern } from '../lib/id-grammars.js';
+// The Time facet's field spellings and pinned thresholds (UCS-1150), read from
+// the one module that owns them — the validator's presence check and every
+// surface's staleness verdict must agree about which fields those are.
+import { VERIFIED_FIELD, VOLATILITY_LIMITS, leafVolatility } from '../lib/time-verdicts.js';
+import { isCalendarDate } from '../lib/iso-date.js';
 
 export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <dir>] [--concepts <ids>]';
 
 /** Every check class this validator runs, sorted — reported on every run. */
 export const CHECKS = Object.freeze([
-  'id-range', 'id-shape', 'index-drift', 'missing-authority', 'missing-citation',
-  'missing-path', 'missing-registry', 'orphan', 'ref-cycle',
-  'registry-shape-mismatch', 'suppressed-value', 'unminted-segment',
-  'unregistered-value',
+  'id-range', 'id-shape', 'index-drift', 'malformed-verified', 'missing-authority',
+  'missing-citation', 'missing-path', 'missing-registry', 'missing-verified',
+  'orphan', 'ref-cycle', 'registry-shape-mismatch', 'suppressed-value',
+  'unminted-segment', 'unregistered-value',
 ]);
 
 /** The §3 documented mid-import marker a catalog row carries instead of a file. */
@@ -832,6 +837,85 @@ function checkCitations(model, push) {
   }
 }
 
+/**
+ * The Time facet's presence check (UCS-1150) — a leaf under time governance
+ * must carry a usable `verified` date.
+ *
+ * This is the validator's whole share of the time facet, and it is deliberately
+ * DATE-FREE: it asks whether the leaf can be judged, never whether it is stale.
+ * Staleness needs an injected `today` and belongs to the surfaces that project
+ * verdicts; asking it here would put a wall-clock-dependent finding into the
+ * baseline finding set, and diffing that set against a baseline is exactly what
+ * D-012 protects. So this check's output is identical on every run forever,
+ * whatever day it is.
+ *
+ * Two findings, because two different things are wrong:
+ *
+ *   missing-verified    a leaf declaring a NON-STATIC volatility with no
+ *                       `verified` date. It has asked to be governed by time
+ *                       and given nothing to measure from, so its verdict can
+ *                       only ever be `undated` — a leaf that can never be
+ *                       trusted and never be stale, sitting in the store
+ *                       looking governed.
+ *   malformed-verified  a date that matches the schema's pattern but names no
+ *                       real day. `2026-02-30` is shaped like a date and rolls
+ *                       forward to March 2nd under `Date.parse`, so an age
+ *                       measured from it is off by two days with nothing said —
+ *                       the defect `isCalendarDate` was written for (UCS-957).
+ *                       The schema checks the shape; the calendar is checked
+ *                       here, where the finding can name the file and field.
+ *
+ * A STATIC leaf with no date is CLEAN, and that asymmetry is the point. Static
+ * knowledge never stales, so a date on it would measure an age nothing consumes
+ * — demanding one would be demanding a field with no reader, which is how a
+ * store fills up with ritual metadata nobody maintains. A static leaf that DOES
+ * carry a date still has it checked for the calendar: an author who wrote one
+ * meant it, and a malformed one is a mistake whether or not anything measures
+ * from it.
+ *
+ * A leaf declaring NO volatility is clean too — absent means exempt from time
+ * governance (see the schema), so there is nothing to be missing. That is what
+ * keeps a store mid-migration from failing validation on every un-migrated leaf
+ * the day this ticket lands.
+ */
+function checkVerifiedDates(model, push) {
+  for (const leaf of model.leaves.values()) {
+    const { file, record } = leaf;
+    // Read through the module's own reader rather than testing membership here.
+    // A second spelling of "is this a known class" is a second chance to get it
+    // wrong — `volatility in VOLATILITY_LIMITS` would answer TRUE for inherited
+    // names like `toString`, and this check would then demand a date from a
+    // class that has no threshold. One reader, one answer.
+    //
+    // Null covers both a non-string volatility and an unknown class. Either is
+    // a schema defect already reported, and judging the date on top of it would
+    // be a second finding for one mistake.
+    const volatility = leafVolatility(record);
+    if (volatility === null) continue;
+    const verified = record[VERIFIED_FIELD];
+
+    if (verified === undefined) {
+      // Static never stales, so it needs no date to measure from.
+      if (volatility === 'static') continue;
+      push({
+        severity: 'error', code: 'missing-verified', id: recordId(leaf), file,
+        path: VERIFIED_FIELD,
+        message: `${volatility} knowledge carries no "${VERIFIED_FIELD}" date — it stales after ${VOLATILITY_LIMITS[volatility]} days and nothing records when it was last checked, so its freshness can never be computed (UCS-1150)`,
+      });
+      continue;
+    }
+    // A non-string date is a schema defect (KK-02) — do not double-report.
+    if (typeof verified !== 'string') continue;
+    if (!isCalendarDate(verified)) {
+      push({
+        severity: 'error', code: 'malformed-verified', id: recordId(leaf), file,
+        path: VERIFIED_FIELD,
+        message: `"${VERIFIED_FIELD}: ${verified}" is not a real calendar date — an age measured from a day that does not exist is a number no calendar agrees with (YYYY-MM-DD, UCS-957)`,
+      });
+    }
+  }
+}
+
 /** Decision supersedes chains must be acyclic (§3.3). One finding per cycle. */
 function checkDecisionCycles(model, push) {
   const seen = new Set(); // canonical cycle keys — each loop reported once
@@ -889,6 +973,7 @@ export function runChecks(model, repoRoot = model.root) {
   checkOrphans(model, push);
   checkRegistryMembership(model, push);
   checkCitations(model, push);
+  checkVerifiedDates(model, push);
   checkDecisionCycles(model, push);
   findings.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code) || compare(a.id, b.id));

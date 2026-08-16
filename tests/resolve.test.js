@@ -129,6 +129,22 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
       excerpt: 'Which instruments a regulator allows for pay-in is settled per jurisdiction.',
       provenance: null,
       downranked: true,
+      // Extended again by the Time facet (UCS-1150). `demotions` names every
+      // demotion that fired with its reason — the stage one here, since this
+      // leaf is draft and declares no volatility. A bare `downranked: true`
+      // would say a leaf was demoted without saying why, and a demotion a
+      // reader cannot explain is one they cannot act on.
+      demotions: [
+        {
+          reason: 'stage',
+          detail: 'stage "draft" is pre-promotion — no moderator has certified this leaf\'s citations (UCS-1149)',
+        },
+      ],
+      time: {
+        volatility: null, verified: null, age: null, limit: null, stale: false,
+        verdict: 'exempt',
+        reason: 'no volatility declared — this leaf is not under time governance, so no freshness verdict applies (UCS-1150)',
+      },
       file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
@@ -154,6 +170,17 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
       // no judgement to apply and passing it through unchanged is the contract.
       provenance: { author: 'dimitri', 'skill-version': 'kb-build@2.0.0' },
       downranked: false,
+      // No demotion fired, so the list is empty — a stable key, not an absent
+      // one (UCS-1150).
+      demotions: [],
+      // This leaf declares no volatility, so the Time facet does not govern it:
+      // `exempt`, which is deliberately NOT `trusted`. A leaf nothing governs
+      // has not passed a check.
+      time: {
+        volatility: null, verified: null, age: null, limit: null, stale: false,
+        verdict: 'exempt',
+        reason: 'no volatility declared — this leaf is not under time governance, so no freshness verdict applies (UCS-1150)',
+      },
       file: 'knowledge/payments/410.1-card-settlement-windows.md',
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],

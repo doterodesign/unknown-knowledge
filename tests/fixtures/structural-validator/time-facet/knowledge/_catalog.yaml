@@ -1,0 +1,38 @@
+# Time facet fixture (UCS-1150) — every verdict class the facet can produce,
+# pinned against an injected today of 2026-08-16.
+#
+#   L-000301  stable,   365 days old  -> trusted  (exactly at the limit)
+#   L-000302  stable,   366 days old  -> stale    (one day past it)
+#   L-000303  volatile,  90 days old  -> trusted  (exactly at the limit)
+#   L-000304  volatile,  91 days old  -> stale    (one day past it)
+#   L-000305  static,   ~16 years old -> trusted  (static never stales)
+#   L-000306  static,    no date      -> trusted, and validates clean
+#   L-000307  no volatility           -> exempt, and validates clean
+#
+# The two pairs are the boundary goldens: each limit is pinned from BOTH sides,
+# because "more than a year old" and "a year or more old" differ by exactly one
+# day and nothing in the phrase says which.
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000301
+    title: Stable knowledge verified exactly at the limit
+    file: freshness/301.1-stable-at-the-limit.md
+  - id: L-000302
+    title: Stable knowledge verified one day past the limit
+    file: freshness/302.1-stable-past-the-limit.md
+  - id: L-000303
+    title: Volatile knowledge verified exactly at the limit
+    file: freshness/303.1-volatile-at-the-limit.md
+  - id: L-000304
+    title: Volatile knowledge verified one day past the limit
+    file: freshness/304.1-volatile-past-the-limit.md
+  - id: L-000305
+    title: Static knowledge verified long ago
+    file: freshness/305.1-static-ancient.md
+  - id: L-000306
+    title: Static knowledge carrying no verified date
+    file: freshness/306.1-static-undated.md
+  - id: L-000307
+    title: Knowledge declaring no volatility class
+    file: freshness/307.1-exempt-no-volatility.md

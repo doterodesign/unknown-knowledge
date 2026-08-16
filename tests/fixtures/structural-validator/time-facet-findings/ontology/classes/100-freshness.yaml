@@ -1,0 +1,8 @@
+schema-version: 1
+entries:
+  - id: K-102
+    term: Freshness boundary
+    class: 100-freshness
+    summary: Where knowledge stops being fresh and starts being stale.
+    source-of-truth: [src/freshness.ts]
+    status: active
