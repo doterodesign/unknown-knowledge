@@ -82,22 +82,46 @@ function parseArgs(argv) {
 }
 
 /**
+ * ENOENT is the ONLY read failure that means "this is not there".
+ *
+ * Every other errno means the engine could not LOOK: EACCES (no permission),
+ * EIO (the disk failed), EMFILE (out of descriptors), ENOTDIR (something on the
+ * path is a file). Reading any of those as an empty layer would let `--check`
+ * report the layer cleanly regenerable when nothing was actually examined —
+ * the silent pass the exit-code contract exists to prevent (PRD §5). A check
+ * that never ran is a blocking defect, so those rethrow and surface as exit 2.
+ *
+ * ENOTDIR is deliberately on the ERROR side of that line. If `knowledge/derived`
+ * exists as a FILE, the layer is not absent — it is corrupted, and `--write`
+ * would have to delete a file the engine never created. Reporting that as
+ * `derived-missing` would tell an author to regenerate, when what they need to
+ * know is that something is squatting on the directory's name.
+ *
+ * @param {unknown} error a caught filesystem error
+ * @returns {boolean} whether it means the path simply does not exist
+ */
+const isAbsent = (error) => error?.code === 'ENOENT';
+
+/**
  * Every file currently under the derived directory, relative to the store root.
  *
- * Missing directory reads as no files, not as an error: the layer being absent
+ * A missing directory reads as no files, not as an error: the layer being absent
  * is the ordinary state of a fresh clone (it is engine output), and it is the
- * exact state the round-trip test creates on purpose.
+ * exact state the round-trip test creates on purpose. Every OTHER failure
+ * rethrows — see `isAbsent`.
  *
  * @param {string} root the store root
  * @returns {string[]} sorted relative paths
+ * @throws when the directory exists but could not be read
  */
 function existingArtifacts(root) {
   const dir = join(root, 'knowledge', DERIVED_DIR);
   let entries;
   try {
     entries = readdirSync(dir, { withFileTypes: true, recursive: true });
-  } catch {
-    return [];
+  } catch (error) {
+    if (isAbsent(error)) return [];
+    throw error;
   }
   return entries
     .filter((e) => e.isFile())
@@ -130,7 +154,12 @@ function checkArtifacts(root, artifacts) {
     let actual;
     try {
       actual = readFileSync(join(root, artifact.path), 'utf8');
-    } catch {
+    } catch (error) {
+      // Same rule as `existingArtifacts`: only ENOENT is a missing artifact.
+      // An unreadable file is not an absent one, and calling it `derived-missing`
+      // would send an author to regenerate a layer whose real problem is that
+      // the engine could not read it.
+      if (!isAbsent(error)) throw error;
       findings.push({
         severity: 'error',
         code: 'derived-missing',
@@ -262,7 +291,22 @@ export function main(argv) {
       return EXIT_CODES.FAILURE;
     }
   } else {
-    findings = checkArtifacts(model.root, artifacts);
+    try {
+      findings = checkArtifacts(model.root, artifacts);
+    } catch (error) {
+      rethrowIfBug(error); // a bug is not a refusal — the harness prints its stack
+      // The engine could not READ the layer — a permission, I/O, or ENOTDIR
+      // failure, never a merely absent directory (that returns cleanly, and is
+      // the ordinary state of a fresh clone). Exit 2, never 1: nothing was
+      // compared, so there are no findings to report, and an agent reading 1
+      // would conclude the layer had been checked and found wanting.
+      process.stderr.write(
+        `derive: the derived layer could not be READ, so nothing was checked\n`
+        + `  ${error.message}\n`
+        + `  this is not a stale layer — the engine never got to look; fix the path and re-run\n`,
+      );
+      return EXIT_CODES.FAILURE;
+    }
   }
 
   // Counted off the same predicate the trees annotate with, so the summary

@@ -1,4 +1,4 @@
-# Frontmatter v2 fixture (UCS-1149) — the citation authority tiers.
+# Derived-layer fixture (UCS-1158) — the citation authority tiers.
 #
 # The tier records HOW FAR a cited source can be trusted: without it a
 # regulator's text and a hallway conversation read identically. That is why a
@@ -9,13 +9,20 @@
 # ranking arrives with the resolution pipeline (UCS-1152). Recording the tier
 # now is what makes that possible: a tier nobody wrote down cannot be ranked
 # retroactively.
+#
+# Every warrant below names the leaves that ACTUALLY carry the value. The engine
+# does not verify warrant prose — it is the steward's written reason, checked by
+# review — so a copied warrant that names the wrong leaf is exactly the drift
+# that survives every automated gate.
 schema-version: 1
 store: knowledge
 registry: authority-tiers
 values:
   - value: vendor-doc
     gloss: The vendor's own published documentation.
-    warrant: L-000117 cites the OddsCo API reference.
+    warrant: >-
+      L-000117 cites the OddsCo API reference, and L-000171 the PSP's own
+      dispute guide.
     decision: D-401
     minted: "2026-08-16"
   - value: interview
@@ -23,13 +30,16 @@ values:
     warrant: L-000213 rests on a trading-team interview.
     decision: D-401
     minted: "2026-08-16"
-  - value: internal
-    gloss: Our own written control, handbook or runbook.
-    warrant: L-000133 cites the finance controls handbook.
-    decision: D-401
-    minted: "2026-08-16"
   - value: regulator
     gloss: A regulator's own published text — the highest tier.
-    warrant: L-000133, L-000162 and L-000228 each rest on published regulatory or standards text.
+    warrant: >-
+      L-000133 cites a regulator handbook, L-000162 a compliance matrix, and
+      L-000228 the ISO 4217 minor-unit standard.
     decision: D-401
     minted: "2026-08-16"
+# No `internal` tier. It was minted here by an earlier copy of this fixture whose
+# warrant named L-000133 as citing a finance controls handbook — but L-000133
+# cites a regulator handbook and carries `regulator`, so no leaf in this store
+# has ever used `internal`. A registry value with no material to fill it is
+# precisely what literary warrant forbids (UCS-1148), so it is removed rather
+# than re-justified: the honest fix for an unwarranted value is to drop it.

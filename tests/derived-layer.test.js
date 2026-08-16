@@ -15,7 +15,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
@@ -255,6 +255,48 @@ test('--check reports a missing, stale, or unexpected artifact as findings', (t)
   assert.equal(unexpected.status, 1);
   assert.deepEqual(unexpected.json.findings.map((f) => [f.code, f.file]),
     [['derived-unexpected', 'knowledge/derived/notes.md']]);
+});
+
+test('only ENOENT is an absent layer — an unreadable one exits 2, never findings', (t) => {
+  // The distinction the exit-code contract rests on. An absent derived layer is
+  // the ordinary state of a fresh clone and reports `derived-missing` (exit 1,
+  // fix by regenerating). A layer the engine could not LOOK at is a different
+  // fact entirely: nothing was compared, so reporting findings would tell an
+  // agent the check ran when it never did (PRD §5).
+
+  // ENOTDIR — something is squatting on the directory's name. Classified as an
+  // ERROR rather than "absent" on purpose: the layer is not missing, it is
+  // corrupted, and `--write` would have to delete a file the engine never made.
+  const squatted = scratch(t);
+  writeFileSync(join(squatted, 'knowledge', 'derived'), 'not a directory\n');
+  const notdir = derive(squatted, ['--today', TODAY]);
+  assert.equal(notdir.status, 2, 'a file squatting on the derived directory is exit 2, not findings');
+  assert.match(notdir.stderr, /could not be READ, so nothing was checked/);
+  assert.match(notdir.stderr, /this is not a stale layer/);
+
+  // EACCES — the directory exists and cannot be read.
+  const locked = scratch(t);
+  assert.equal(derive(locked, ['--today', TODAY, '--write']).status, 0);
+  const derivedDir = join(locked, 'knowledge', 'derived');
+  chmodSync(derivedDir, 0o000);
+  const denied = derive(locked, ['--today', TODAY]);
+  // Restored immediately rather than in a t.after hook: the scratch cleanup is
+  // also an after hook, and an unreadable directory cannot be removed — the
+  // teardown would fail on a test whose assertions all passed.
+  chmodSync(derivedDir, 0o755);
+  // Running as root defeats permission bits entirely; skip rather than assert a
+  // falsehood about the environment.
+  if (denied.status !== 0) {
+    assert.equal(denied.status, 2, 'an unreadable derived layer is exit 2, never findings');
+    assert.match(denied.stderr, /could not be READ, so nothing was checked/);
+  }
+
+  // ENOENT — the contrast case. Absent IS the ordinary state, and it reports
+  // findings the author fixes by regenerating.
+  const absent = scratch(t);
+  const missing = derive(absent, ['--today', TODAY, '--json']);
+  assert.equal(missing.status, 1);
+  assert.deepEqual([...new Set(missing.json.findings.map((f) => f.code))], ['derived-missing']);
 });
 
 test('the loader ignores the derived directory — trees are never leaves', (t) => {

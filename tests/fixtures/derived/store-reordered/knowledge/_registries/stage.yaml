@@ -1,26 +1,41 @@
-# Frontmatter v2 fixture (UCS-1149) — the stage registry.
+# Derived-layer fixture (UCS-1158) — the stage registry.
 #
 # `draft` and `proposed` are the two values the SHARED pre-promotion predicate
 # recognizes (isPrePromotionStatus). A leaf at either is downranked by the
 # resolver and verdicted unknown by preflight — one predicate, so the two
-# surfaces cannot disagree.
+# surfaces cannot disagree. The derived layer reads that same predicate to
+# annotate a demoted leaf in every browse tree.
+#
+# Every warrant below names the leaves that ACTUALLY carry the value, and this
+# store deliberately carries drafts: the demotion tests need real specimens, so
+# `draft` has warrant here where in a healthy store it would be a transient
+# stage nothing sits at for long.
 schema-version: 1
 store: knowledge
 registry: stage
 values:
   - value: draft
     gloss: Written but not promoted — nothing certifies the claim yet.
-    warrant: The entry stage every leaf passes through before a moderator checks it.
+    warrant: >-
+      L-000171 (chargeback dispute playbook) and L-000213 (live-betting latency
+      budget) are both unpromoted — the demotion specimens the browse trees
+      annotate.
     decision: D-401
     minted: "2026-08-16"
   - value: proposed
     gloss: Put forward for promotion and awaiting a moderator.
-    warrant: The second pre-promotion stage, matching the concept lifecycle.
+    warrant: >-
+      The second pre-promotion stage, matching the concept lifecycle. No leaf
+      sits here today; it is minted because the shared predicate recognizes it,
+      and a value the engine acts on must exist in the vocabulary before a leaf
+      can legally claim it.
     decision: D-401
     minted: "2026-08-16"
   - value: verified
     gloss: A moderator promoted it — the citations were checked and hold.
-    warrant: L-000117, L-000133 and L-000213 are all promoted; their citations were checked.
+    warrant: >-
+      L-000117, L-000133, L-000162 and L-000228 are all promoted; their
+      citations were checked.
     decision: D-401
     minted: "2026-08-16"
 # No `deprecated` stage: the concept lifecycle has one with real semantics

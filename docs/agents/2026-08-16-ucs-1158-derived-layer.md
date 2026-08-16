@@ -232,7 +232,93 @@ paths and are content rather than order — are set aside.
   it, rather than flattening up a level and looking correctly classified. Pinned
   by a test, since a v1-shaped store is entirely in this state mid-migration.
 
+## Review round 1 (CodeRabbit on d42daa5) — 2 accepted, 1 declined
+
+### Accepted 1: registry warrants contradicted their own store (all three fixtures)
+
+CodeRabbit flagged `_registries/stage.yaml`: the `verified` warrant claimed
+"L-000117, L-000133 and L-000213 are all promoted", but **L-000213 is
+`stage: draft`** — one of the two demotion specimens the browse-tree tests need.
+The warrant was inherited from the phoenix fixture I copied, where it was true.
+
+Because this was the third ticket where a copied warrant contradicted its store,
+I wrote a script that re-derives *which leaves actually carry each registry
+value* from the leaf frontmatter and checks every accession named in every
+warrant against it, across all three fixture copies. That found a **second**
+contradiction CodeRabbit did not flag:
+
+> `authority-tiers.internal` claimed "L-000133 cites the finance controls
+> handbook" — but L-000133 cites a regulator handbook and carries
+> `authority: regulator`. **No leaf in the fixture used `internal` at all.**
+
+An unused registry value is exactly what literary warrant forbids (UCS-1148), so
+the honest fix was to **delete the value**, not re-justify it. A comment records
+why it went, so a later reader does not re-mint it.
+
+Fixes, applied identically to `store`, `store-reordered`, and
+`call-number-citation` (md5-verified identical):
+
+- `stage.verified` now names L-000117, L-000133, L-000162, L-000228 — the four
+  leaves that are actually promoted.
+- `stage.draft` now names its real specimens (L-000171, L-000213) instead of
+  generic prose, and says why this fixture deliberately carries drafts.
+- `stage.proposed` keeps no accession and now says out loud that no leaf sits
+  there, and why it is minted anyway (the shared predicate recognizes it). This
+  matches the pre-existing phoenix fixture, where `proposed` is likewise
+  declared-unused — precedent, not a new exception.
+- `authority-tiers.internal` removed; `vendor-doc` now also names L-000171.
+
+**No golden regeneration was needed** and this was verified rather than assumed:
+registry warrants are store metadata that never feed the trees, and regenerating
+produced byte-identical artifacts.
+
+### Accepted 2: bare `catch` swallowed every read failure as "no derived layer"
+
+`existingArtifacts` caught *all* `readdirSync` errors and returned `[]`. An
+EACCES or EIO therefore read as a healthy empty state, and `--check` would report
+the layer cleanly regenerable when the engine never actually looked — the silent
+pass the exit-code contract exists to prevent (PRD §5). The sibling `readFileSync`
+in `checkArtifacts` had the identical pattern, and would have mislabelled an
+unreadable file as `derived-missing`, sending an author to regenerate a layer
+whose real problem was that it could not be read.
+
+Both now route through one predicate:
+
+```js
+const isAbsent = (error) => error?.code === 'ENOENT';
+```
+
+**ENOTDIR is deliberately on the ERROR side of that line**, and the choice is
+pinned by a test. If `knowledge/derived` exists as a *file*, the layer is not
+absent — it is corrupted, and `--write` would have to delete a file the engine
+never created. Reporting `derived-missing` would tell an author to regenerate
+when what they need to know is that something is squatting on the directory name.
+
+The `checkArtifacts` call in `main` is now wrapped so a rethrown filesystem error
+becomes an actionable exit-2 refusal rather than a raw stack. It exited 2 either
+way (`runCli` guarantees that), but the message was the difference between "the
+engine never got to look" and an unexplained trace.
+
+Verified empirically for all three errnos: ENOTDIR → exit 2, EACCES → exit 2,
+ENOENT → exit 1 with `derived-missing` (unchanged). The EACCES branch skips its
+assertion when running as root, where permission bits do not apply.
+
+One test-hygiene note: the permission restore happens inline rather than in a
+`t.after` hook, because the scratch-directory cleanup is also an after hook and
+an unreadable directory cannot be removed — the teardown would have failed a test
+whose assertions all passed.
+
+### Declined: MD041 (no H1 in the chargeback-dispute-playbook fixture)
+
+Standing justification for this repo: there is no markdownlint in the toolchain,
+frontmatter `heading` is the leaf's title by design, and adding a body H1 would
+change the `firstSentence` excerpt every leaf publishes. Noted in a PR comment.
+
 ## Gates
 
-`npm test` 958 pass / 0 fail · `npm run lint` 204 files, 0 failures ·
-`npm run acceptance` OK (A1–A4, A6; A5 manual by design).
+Round 1: `npm test` 958 pass / 0 fail · `npm run lint` 204 files, 0 failures ·
+`npm run acceptance` OK.
+
+After review fixes: `npm test` **959 pass / 0 fail** · `npm run lint` **204
+files, 0 failures** · `npm run acceptance` **OK** (A1–A4, A6; A5 manual by
+design).
