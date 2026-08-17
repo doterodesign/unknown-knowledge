@@ -24,20 +24,17 @@ and one leaf goes the OTHER way because it was misfiled.**
 | L-000213 | Primitive render budget | `design-system/primitives` | the render budget is spent mounting one primitive; goes WITH 117 |
 | L-000133 | Empty-state pattern guidance | `design-system/patterns` | **the misfiled leaf** — composition guidance that shipped alongside a component, so it landed under `components`, but it is really a pattern. This is the leaf that goes the OTHER way and the drift the event fixes. |
 
-## Domain / vocabulary mapping
+## Domain / vocabulary of the new world
 
-- `sportsbook` -> `design-system`
-- `sportsbook/odds-feed` (predecessor) -> `design-system/components`
-- `feeds/ingest` (successor) -> `design-system/primitives`
-- `feeds/settlement` (successor) -> `design-system/patterns`
-- operations: `onboard-provider` -> `add-primitive`; `settle-bet` -> `compose-pattern`
-- concept K-102 "Odds feed" -> "Component"
-- src export `LATENCY_BUDGET_MS` -> `RENDER_BUDGET_MS` (path `src/feed/latency.ts`
-  and file `ontology/classes/100-feed.yaml` kept as topic-neutral structural
-  names, consistent with the parent's handling of the sibling `derived/` cluster)
-- citation sources reworded: `OddsCo API v3 §4.2` -> `Component Kit API v3 §4.2`;
-  `Finance controls handbook §7.1` -> `Accessibility spec §7.1`;
-  `Trading team interview` -> `Platform team interview`
+- Predecessor `design-system/components`; successors `design-system/primitives`
+  and `design-system/patterns`.
+- Operations: `add-primitive`, `compose-pattern`.
+- Concept K-102 is "Component".
+- The src export is `RENDER_BUDGET_MS` (path `src/feed/latency.ts` and file
+  `ontology/classes/100-feed.yaml` are topic-neutral structural names, kept as
+  they are, consistent with the sibling `derived/` cluster).
+- Citation sources are design-world: `Component Kit API v3 §4.2`,
+  `Accessibility spec §7.1`, `Platform team interview`.
 
 ## The four fixture variants (distinguishing defects preserved)
 

@@ -13,6 +13,21 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+### Changed
+
+- Acceptance fixture world: design-studio domain, new fixture vintage. The
+  acceptance and test fixtures (both app fixtures, the plant stores, the
+  resolver/derived/phoenix/validator scenario stores, the payload extractor
+  and adapter samples, and the A5 walkthroughs) now model a product-design
+  studio — a design-tool web app and its iOS companion, over domains like
+  `design-system/components`, `design-system/tokens`, `brand/identity`,
+  `engineering/frontend`. Every fixture keeps its semantic role: the planted
+  detection cases keep their exact codes and paths, the phoenix split keeps
+  its leaf-granular one-goes-the-other-way story, and call numbers are
+  regenerated from the new domain segments rather than hand-edited. Per D-021
+  this is a new fixture vintage; engine behavior and the init payload contract
+  are unchanged.
+
 ### Removed
 
 - Root-level prototype and planning artifacts (`PRD.html`,
@@ -141,7 +156,7 @@ and future seeds.
   `locator-shape` validator convention rather than a schema keyword, because
   the engine's JSON Schema subset has no conditionals and an unenforced keyword
   is silent contract drift. A bare unresolved token is a finding nobody can act
-  on; `lacrosse` unresolved in an ask that resolved `add-sport` localizes the
+  on; `stencil` unresolved in an ask that resolved `add-token` localizes the
   gap precisely enough that the minting decision writes itself.
 - The reflect skill's minting conduct: four mintable vocabularies (terms,
   aliases, operations, domain classes), each minted only on **literary warrant
@@ -343,7 +358,7 @@ and future seeds.
   against the governed vocabularies rather than matching text against concepts
   alone. Three axes, three vocabularies, no guessing — verb joins the
   `knowledge/operations` registry, noun joins concept terms and aliases, place
-  joins `knowledge/jurisdictions`. A verb-shaped ask ("add a sport") therefore
+  joins `knowledge/jurisdictions`. A verb-shaped ask ("add a token") therefore
   reaches the leaves that DECLARED the operation without needing a noun to hang
   them on.
 - Leaves are now FIRST-CLASS SCORED RESULTS in a `leaves` section, not only

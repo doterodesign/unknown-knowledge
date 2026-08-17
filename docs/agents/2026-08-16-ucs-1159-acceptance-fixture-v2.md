@@ -92,7 +92,7 @@ Adding `relates: { see-also: [L-000999] }` to `L-000100`:
 ```
 node payload/engine/validate.js --root <copy> --json   →   EXIT 2
 validate: the store loader reported 1 error(s) — structural checks never ran
-  unresolved-ref  …/100.1-adding-a-new-sport.md  relates.see-also[0]
+  unresolved-ref  …/100.1-adding-a-new-export-format.md  relates.see-also[0]
 ```
 
 `unresolved-ref` is emitted by the **loader**, not the validator —
@@ -209,11 +209,11 @@ main store keeps only value-level plants.
 ## 7. What was built
 
 **Main store — `fixtures/ts-app` (three value-level plants, still loads clean):**
-- `L-000100` (`knowledge/product/100.1-adding-a-new-sport.md`) carries plant 2
+- `L-000100` (`knowledge/product/100.1-adding-a-new-export-format.md`) carries plant 2
   (`applies.jurisdictions: [uk-gc]`, line 15) and plant 4
   (`facets.form: walkthrough`, line 10). Both emit `unregistered-value` at
   exit 1, distinguished only by `path`.
-- `L-000200` (`knowledge/product/100.2-cashing-out-a-bet.md`, NEW) carries
+- `L-000200` (`knowledge/product/100.2-deprecating-a-library-release.md`, NEW) carries
   plant 1: `volatility: volatile` + `verified: "2026-01-05"` (lines 16-17),
   which at `--today 2026-08-16` is 223 days past the 90-day limit → preflight
   `stale`, exit 1. It also carries a *resolving* `relates.see-also` edge to
@@ -221,7 +221,7 @@ main store keeps only value-level plants.
   The stale plant sits on its own leaf deliberately: one preflight run then
   shows `L-000100` quarantined AND `L-000200` stale, which is the positive
   demonstration that neither masks the other.
-- `_registries/operations.yaml` mints `cash-out-bet` for the new leaf.
+- `_registries/operations.yaml` mints `deprecate-release` for the new leaf.
   `jurisdictions` stays empty and `form` mints only `recipe` — minting either
   claimed value would silence a plant.
 

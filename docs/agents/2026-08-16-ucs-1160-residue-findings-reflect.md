@@ -63,14 +63,14 @@ schema-version: 1
 date: '2026-08-16'
 status: open
 trigger: retrieval-miss
-summary: 'document candidate: parlay in docs/betting-rules.md'
+summary: 'document candidate: marquee in docs/theming-rules.md'
 residue:
-  - parlay
+  - marquee
 resolved-context:
   - K-110
 section:
-  document: docs/betting-rules.md
-  address: Bet types
+  document: docs/theming-rules.md
+  address: Theme types
   line: 42
 ```
 
@@ -249,7 +249,7 @@ from ONE session count. Per my own stated intent, they do not.
 Definition now lives in exactly one place — a `### What "three distinct
 fragments" means` section under Minting conduct — and says the threshold
 counts **independent resolution events, not files**. The case ruled out (one
-session logging `lacrosse` three times is "one data point wearing three
+session logging `stencil` three times is "one data point wearing three
 filenames", which would let a single session vote three times) and the case
 admitted (`occurrences` dates; the same term as query residue in one session
 and a document candidate in another) are both stated. The evidence standard

@@ -12,12 +12,12 @@ against concepts alone.
 
 | axis | vocabulary | example |
 |---|---|---|
-| verb | `knowledge/operations` registry (minted values) | "add a sport" → `add-sport` |
-| noun | concept terms and aliases | "sport" → `K-101` |
-| place | `knowledge/jurisdictions` registry | "new jersey" → `new-jersey` |
+| verb | `knowledge/operations` registry (minted values) | "add a token" → `add-token` |
+| noun | concept terms and aliases | "token" → `K-101` |
+| place | `knowledge/jurisdictions` registry | "eu eaa" → `eu-eaa` |
 
 A verb-shaped ask reaches the leaves that DECLARED the operation, with no noun
-guessing. That is what makes "add a sport" resolvable at all: before this
+guessing. That is what makes "add a token" resolvable at all: before this
 ticket a leaf could only surface as an attachment to a concept result, so an
 ask that named a verb and no noun had nothing to hang its answer on.
 
@@ -59,12 +59,12 @@ sorts unpredictably AND serializes to JSON as `null`.
 ### Threshold and near-miss semantics
 
 Match = every word of a vocabulary phrase is present in the query, each
-consuming a DISTINCT token (so "sport sport" cannot satisfy a two-word phrase
+consuming a DISTINCT token (so "token token" cannot satisfy a two-word phrase
 from one token). Word equality is exact or a single trailing `s`
-(`sport` ~ `sports`) and nothing else — no stemmer, no edit distance, no
+(`token` ~ `tokens`) and nothing else — no stemmer, no edit distance, no
 synonym expansion. Deliberate floor: aliases are the governed, warranted
 mechanism for "these words mean the same thing", and a stemmer joining
-`sporting` to `sport` would be an ungoverned vocabulary decision made by a regex.
+`tooling` to `tool` would be an ungoverned vocabulary decision made by a regex.
 
 Near-miss = the same test relaxed from every-word to any-word, over entries
 that did NOT match, reported with the overlapping tokens. Swept across all
@@ -73,7 +73,7 @@ can. Suppressed registry values are never swept: a suppressed value is
 accounted for, which is a different fact from never having heard of it.
 
 Registry values contribute two spellings — the identifier as written
-(`add-sport`) and with separators opened into spaces (`add sport`). That is
+(`add-token`) and with separators opened into spaces (`add token`). That is
 reading the identifier's own internal structure, which the author put there to
 be legible, not fuzzy matching.
 
@@ -94,7 +94,7 @@ handful of process words that appear in asks without narrowing them
 ("process", "launch"). It holds NO domain vocabulary: a store that stopworded
 its own vocabulary would report clean resolution for asks it never understood.
 Over-inclusion is the dangerous direction, so the list errs short. A test
-asserts no domain word (`sport`, `bet`, `settlement`, `jersey`, `malta`,
+asserts no domain word (`token`, `theme`, `export`, `eaa`, `stencil`,
 `registry`, `withdrawal`) is ever in it.
 
 ### Exclusion output shape
@@ -103,8 +103,8 @@ Fields: `id`, `notation`, `heading`, `file`, `applies`, `asked`, `reason`.
 
 A leaf is excluded when it declares jurisdictions and the query named a
 jurisdiction not among them. Published in its own `exclusions` section, never
-dropped: "no knowledge about settling bets in Malta" and "the knowledge about
-settling bets is New-Jersey-only" demand opposite conduct from a reader, and a
+dropped: "no knowledge about theming tokens for us-ca" and "the knowledge about
+theming tokens is eu-eaa-only" demand opposite conduct from a reader, and a
 filtered-away leaf makes them indistinguishable.
 
 - Empty `applies` = UNIVERSAL, never excluded. The distinction between
@@ -113,7 +113,7 @@ filtered-away leaf makes them indistinguishable.
   no jurisdiction meant.
 - A query naming no jurisdiction excludes nothing — with no scope asserted
   there is nothing to be outside of.
-- Symmetric: scoping to `new-jersey` excludes the Malta leaf, proving the rule
+- Symmetric: scoping to `eu-eaa` excludes the CA leaf, proving the rule
   is a join and not a pinned special case.
 
 ### How leaves became first-class while keeping compat
@@ -158,10 +158,9 @@ published, still scored, still explains itself.
   `MATCH_SCORES`/`score` replaced by the extracted table.
 
 ### Fixture (new scenario store, no pinned scenario mutated)
-- `tests/fixtures/resolver-v2/` — sports-themed, mirroring the prototype
-  session. 7 registries (operations with a suppressed `void-bet` and an
-  undeclared `retire-sport`; jurisdictions `new-jersey`/`malta`; domains, form,
-  anchor, stage, authority-tiers), 2 concepts (K-101 Sport, K-103 Bet status),
+- `tests/fixtures/resolver-v2/` — a design-system token/theming scenario. 7 registries (operations with a suppressed `archive-theme` and an
+  undeclared `retire-token`; jurisdictions `eu-eaa`/`us-ca`; domains, form,
+  anchor, stage, authority-tiers), 2 concepts (K-101 Token, K-103 Theme status),
   5 leaves, 1 decision, 2 `src/` files. Passes the structural validator with
   0 findings.
 
@@ -190,7 +189,7 @@ Nine findings. Six fixed, three declined.
 **`phraseHit` distinctness was by VALUE, not by occurrence.** `used.includes(token)`
 compared token text, so `tokens.find` kept returning the same first occurrence and
 rejecting it as already-used. A query genuinely supplying two occurrences of a word
-failed to satisfy a phrase needing two: `phraseHit(['sport','sport'], ['sport','sport'])`
+failed to satisfy a phrase needing two: `phraseHit(['token','token'], ['token','token'])`
 returned `null`. Now tracked by index with a `Set`, which fixes both directions at once —
 two occurrences satisfy two words, and one occurrence can never satisfy two.
 
@@ -205,11 +204,11 @@ authoring order looks perfectly sorted as long as the author typed it in order.
 ### Fixed — fixture honesty
 
 - `operations.yaml`: three warrants cited `600.1` for operations it has nothing to do
-  with. `settle-bet` now cites `610.1`/`600.2`/`600.3`, `void-bet` cites `600.2`, and
-  `retire-sport` cites `600.4` (which now declares it).
-- `100-sportsbook.yaml`: K-103 ("the lifecycle state a placed bet is in") pointed at
-  `src/settlement/rounding.ts`, a rounding helper with no bet lifecycle in it. Added
-  `src/types/bet-status.ts` defining the status union and repointed.
+  with. `export-theme` now cites `610.1`/`600.2`/`600.3`, `archive-theme` cites `600.2`, and
+  `retire-token` cites `600.4` (which now declares it).
+- `100-design-system.yaml`: K-103 ("the lifecycle state a published theme is in") pointed at
+  `src/theming/rounding.ts`, a rounding helper with no theme lifecycle in it. Added
+  `src/types/theme-status.ts` defining the status union and repointed.
 - `600.1`: the body instructed updating "the K-101 concept's enumerated values", but
   K-101 has no `enumerates` descriptor — the leaf told a reader to edit a field that does
   not exist. Reworded to what the fixture actually supports.
@@ -229,7 +228,7 @@ authoring order looks perfectly sorted as long as the author typed it in order.
 
 ## Note for follow-up
 
-Jurisdiction registry values are spelled as the PLACE (`new-jersey`, `malta`)
+Jurisdiction registry values are spelled as the PLACE (`eu-eaa`, `us-ca`)
 rather than the regulator acronym (`nj-dge`, `mga`), because a registry value is
 joined by its own text and its opened-out spelling. A vocabulary meant to be
 joined against human asks has to be spelled in the words humans use. If
