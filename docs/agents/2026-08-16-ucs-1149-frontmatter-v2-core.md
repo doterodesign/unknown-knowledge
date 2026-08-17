@@ -44,7 +44,7 @@ them ahead of the ticket that owns them.
   (verified + draft), seven registries, validates exit 0 with zero findings.
 - `tests/fixtures/structural-validator/frontmatter-v2-findings/` (new) — one leaf violating
   every governed field; exactly seven findings.
-- `tests/fixtures/resolver/store/knowledge/payments/410.{1,2}-*.md` — v2 records; 410.2 is now
+- `tests/fixtures/resolver/store/knowledge/design-system/410.{1,2}-*.md` — v2 records; 410.2 is now
   `stage: draft`, giving the resolver suite a natural downrank case.
 - `tests/fixtures/loader/healthy/.../362.1-*.md` — `description` removed.
 - `fixtures/ts-app/unknown-knowledge/knowledge/_registries/*.yaml` (new, 7 files) +

@@ -18,8 +18,8 @@ Scope: fixture DATA only (`tests/fixtures/**`, `fixtures/**`). No `.js` file tou
 | `tests/fixtures/loader/healthy` | `knowledge/engineering/362.1-preview-deploy-windows.md` | `L-000362` |
 | `tests/fixtures/loader/healthy` | `knowledge/engineering/362.2-production-deploy-windows.md` | `L-000363` |
 | `tests/fixtures/loader/unresolved-ref` | `knowledge/engineering/362.1-preview-deploy-windows.md` | `L-000362` |
-| `tests/fixtures/resolver/store` | `knowledge/payments/410.1-card-settlement-windows.md` | `L-000410` |
-| `tests/fixtures/resolver/store` | `knowledge/payments/410.2-accepted-payment-instruments.md` | `L-000411` |
+| `tests/fixtures/resolver/store` | `knowledge/design-system/410.1-export-format-windows.md` | `L-000410` |
+| `tests/fixtures/resolver/store` | `knowledge/design-system/410.2-supported-asset-kinds.md` | `L-000411` |
 
 Numbering follows each store's existing notation family (362.x -> L-000362/363, 410.x -> L-000410/411)
 and is unique within its store. No other fixture leaf lacked an `id`.
@@ -63,8 +63,8 @@ state every store lands in once the migration is done.
 - `knowledge/_catalog.yaml` — row `"362.1"` -> `L-000362`.
 
 ### 3. `tests/fixtures/resolver/store/`
-- `knowledge/payments/410.1-card-settlement-windows.md` — added `id: L-000410`; schema-version 1 -> 2.
-- `knowledge/payments/410.2-accepted-payment-instruments.md` — added `id: L-000411`; schema-version 1 -> 2.
+- `knowledge/design-system/410.1-export-format-windows.md` — added `id: L-000410`; schema-version 1 -> 2.
+- `knowledge/design-system/410.2-supported-asset-kinds.md` — added `id: L-000411`; schema-version 1 -> 2.
 - `knowledge/_catalog.yaml` — rows `"410.1"` -> `L-000410`, `"410.2"` -> `L-000411`.
 
 ### 4. `tests/fixtures/structural-validator/accessioned/`

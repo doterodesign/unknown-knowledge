@@ -502,7 +502,7 @@ test('UCS-1160: a section locator is line- OR page-addressed, and its shape is c
     'create', '--log', 'findings', '--date', '2026-08-16',
     '--entry', JSON.stringify({
       ...CANDIDATE_FINDING,
-      section: { document: 'docs/handbook.pdf', address: 'Settlement', page: 7 },
+      section: { document: 'docs/handbook.pdf', address: 'Theme lifecycle', page: 7 },
     }),
   ], root);
   assert.equal(page.status, 0, page.stderr);
@@ -554,7 +554,7 @@ test('UCS-1160: a locator addresses EXACTLY ONE coordinate system — neither an
   // And exactly one of each still passes — the rule refuses the two broken
   // shapes without narrowing the two real ones.
   assert.equal(withSection({ document: 'docs/rules.md', address: 'Theme types', line: 42 }).status, 0);
-  assert.equal(withSection({ document: 'docs/handbook.pdf', address: 'Settlement', page: 7 }).status, 0);
+  assert.equal(withSection({ document: 'docs/handbook.pdf', address: 'Theme lifecycle', page: 7 }).status, 0);
 });
 
 test('UCS-1160: the locator rule is a convention because the schema subset has no conditionals', () => {

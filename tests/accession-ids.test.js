@@ -450,7 +450,7 @@ test('the published leaf id is ALWAYS the accession, and notation is never ident
   for (const [root, query] of [
     [ACCESSIONED, 'widget'],
     [SHARDED, 'Widget'],
-    [fixture('resolver/store'), 'settlement'],
+    [fixture('resolver/store'), 'export'],
   ]) {
     const out = JSON.parse(runCli('resolve.js', query, '--root', root, '--json').stdout);
     const published = [

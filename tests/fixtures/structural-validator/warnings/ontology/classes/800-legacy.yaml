@@ -3,8 +3,8 @@
 schema-version: 1
 entries:
   - id: K-800
-    term: Legacy ledger
+    term: Legacy audit log
     class: 800-legacy
     summary: Deprecated concept whose source file was legitimately deleted.
-    source-of-truth: [src/legacy/ledger.ts]
+    source-of-truth: [src/legacy/audit-log.ts]
     status: deprecated

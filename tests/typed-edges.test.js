@@ -394,7 +394,7 @@ test('the textual join still fires, and the structural claim wins a tie', () => 
   // is not removed, it is joined by a stronger one. Proven on the pinned
   // resolver fixture, whose leaves declare no concepts at all.
   const legacy = entryPoints(
-    json('resolve.js', 0, 'settlement', '--root', join(root, 'tests/fixtures/resolver/store')),
+    json('resolve.js', 0, 'export', '--root', join(root, 'tests/fixtures/resolver/store')),
     'K-120',
   );
   assert.deepEqual(legacy.map((k) => k.via), ['terms']);

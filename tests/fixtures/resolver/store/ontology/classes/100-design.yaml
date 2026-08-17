@@ -4,34 +4,34 @@
 schema-version: 1
 entries:
   - id: K-100
-    term: Payment method
-    class: 100-payments
-    summary: A way a user pays money in.
-    aliases: [payment instrument, tender]
-    source-of-truth: [src/payments/methods/registry.ts]
+    term: Asset source
+    class: 100-design
+    summary: A place raw graphics are imported from.
+    aliases: [asset variant, swatch]
+    source-of-truth: [src/design/assets/registry.ts]
     confusable-with: [K-110]
     status: active
   - id: K-110
-    term: Payout method
-    class: 100-payments
-    summary: A way the platform sends money out.
-    source-of-truth: [src/payments/payouts]
+    term: Asset target
+    class: 100-design
+    summary: A place rendered graphics are written to.
+    source-of-truth: [src/design/targets]
     confusable-with: [K-100]
     status: active
   - id: K-120
-    term: Settlement
-    class: 100-payments
-    summary: Movement of funds between banks after capture.
-    source-of-truth: [src/payments/settlement.ts]
+    term: Export
+    class: 100-design
+    summary: Rendering artboards to a shareable file after layout.
+    source-of-truth: [src/design/export.ts]
     status: active
   - id: K-130
-    term: Settlement window
-    class: 100-payments
-    summary: The cutoff after which a batch posts the next day.
+    term: Export preset
+    class: 100-design
+    summary: The saved dimensions and scale a batch renders at.
     status: draft
   - id: K-140
-    term: Ledger
-    class: 100-payments
-    summary: Legacy double-entry ledger retained for settlement audits.
-    source-of-truth: [src/ledger]
+    term: Palette
+    class: 100-design
+    summary: Legacy colour table retained for export audits.
+    source-of-truth: [src/palette]
     status: deprecated

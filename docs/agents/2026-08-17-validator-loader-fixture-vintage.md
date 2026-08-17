@@ -54,9 +54,9 @@ numeric prefix (e.g. `362.1-…`, `900.1-…`); only the slug changed.
   (add-token / export-theme / eu-eaa / us-ca). Candidate-salience roles kept:
   `**Provisional Token Ladder**` (emphasis), `Quiet Period` (title-case),
   the redundant weekly export report, and the dense quarterly review.
-- **resolver/** (v1: on-disk, store): left as-is — its payments/api content
-  carries no banned vocabulary and reads coherently as studio billing/API
-  material. See "role preserved" note below.
+- **resolver/** (v1: on-disk): reads coherently as studio API material and
+  carries no old-topic vocabulary; the v1 `store` sub-fixture was re-themed to
+  a design-system export scoring ladder in a follow-up pass.
 
 ## Test files updated (assertions realigned in lockstep)
 

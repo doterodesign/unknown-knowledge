@@ -26,5 +26,5 @@ the client may take to show it.
 
 ## Theme lifecycle
 
-Theme status transitions feed the **Transition Ledger**, which nothing in the
+Theme status transitions feed the **Transition Log**, which nothing in the
 store describes yet.

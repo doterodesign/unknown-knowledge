@@ -83,6 +83,16 @@ companion, and the design-system/engineering/brand knowledge behind them.
   one of its two words; "theme lifecycle" plays the role the old single-overlap
   query did (matches K-103 by alias, near-misses `export-theme` on "theme").
 
+### One retained billing surface (judgment call)
+
+The Swift fixture keeps `Sources/Payments/Providers.swift` (in-app billing
+providers, e.g. Stripe/Adyen) as its computed-array "unextractable" miss
+specimen. In-app billing is a client-neutral surface any SaaS design tool's
+mobile app carries, and the file holds no sports-betting or gambling
+vocabulary. The shipped skill-doc example that referenced this path was
+changed to a neutral `Sources/Integrations/Providers.swift` so the payload
+carries no fixture-specific path.
+
 ### Structural filenames kept
 
 A few fixture paths are topic-neutral structural names and were left as-is to

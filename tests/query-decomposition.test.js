@@ -646,7 +646,7 @@ test('a store governing no operations resolves no verbs and still runs', () => {
   // Registry absence is the whole installed base (UCS-1148). The lookup must
   // run and report honestly, never demand a file the store never opted into.
   const legacy = fixture('resolver/store');
-  const payload = json('resolve.js', 0, 'settlement', '--root', legacy, '--today', TODAY);
+  const payload = json('resolve.js', 0, 'export', '--root', legacy, '--today', TODAY);
   assert.deepEqual(payload.decomposition.operations, []);
   assert.deepEqual(payload.decomposition.jurisdictions, []);
   // And concepts still resolve, so the pre-registry store is fully usable.

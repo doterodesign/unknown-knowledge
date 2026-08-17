@@ -3,5 +3,5 @@ schema-version: 1
 store: ontology
 entries:
   - id: K-800
-    title: Legacy ledger
+    title: Legacy audit log
     file: classes/800-legacy.yaml

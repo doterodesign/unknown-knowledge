@@ -170,7 +170,7 @@ derivation) — become miss entries, **one fragment each**, via the helper
 ```
 node unknown-knowledge/engine/log-entry.js create --log misses --date 2026-07-08 \
   --root unknown-knowledge \
-  --entry '{"path":"Sources/Payments/Providers.swift","shape":"computed Swift array: static let all = core + regional (concatenation, no literal value set); swift-const-array is out of envelope"}'
+  --entry '{"path":"Sources/Integrations/Providers.swift","shape":"computed Swift array: static let all = core + regional (concatenation, no literal value set); swift-const-array is out of envelope"}'
 ```
 
 `shape` carries paths and structure only — never file contents verbatim

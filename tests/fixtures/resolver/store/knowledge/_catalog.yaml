@@ -2,8 +2,8 @@ schema-version: 1
 store: knowledge
 entries:
   - id: L-000410
-    title: Card settlement windows
-    file: payments/410.1-card-settlement-windows.md
+    title: Export format windows
+    file: design-system/410.1-export-format-windows.md
   - id: L-000411
-    title: Accepted payment instruments
-    file: payments/410.2-accepted-payment-instruments.md
+    title: Supported asset kinds
+    file: design-system/410.2-supported-asset-kinds.md

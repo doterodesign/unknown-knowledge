@@ -485,7 +485,7 @@ test('provenance validates and round-trips into resolver output untouched (golde
       'carried verbatim — no registry governs provenance, so there is no judgement to apply');
   }
   // Absent provenance publishes null, never an omitted key: one result shape.
-  const other = json('resolve.js', 0, 'payment', 'method',
+  const other = json('resolve.js', 0, 'asset', 'variant',
     '--root', join(root, 'tests/fixtures/resolver/store'));
   assert.equal(other.results[0].knowledge[0].provenance, null);
 });
