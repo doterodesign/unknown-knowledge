@@ -17,9 +17,9 @@ dates are recorded at release time, never retroactively.
 
 - Root-level prototype and planning artifacts (`PRD.html`,
   `ORCHESTRATION.md`, and the reference-prototype HTML pages). None were
-  part of the init payload (D-007) or wired to the engine; the executable
-  surfaces — tests, `npm run acceptance`, and the payload — are unchanged.
-  Doc and comment references to the removed files were updated in place;
+  part of the init payload (D-007) or wired to the engine; runtime behavior
+  and the init payload are unchanged. Doc, test, and comment references to
+  the removed files were updated in place;
   historical records (`decisions/`, `docs/agents/`, `logs/`) keep their
   original citations.
 

@@ -3,7 +3,7 @@
 // the descriptor example stay consistent with each other, with the shipped
 // ontology-concept schema, and with the walkthrough recorded in the template
 // README. Exercising the template against a real live anchor remains the
-// documented MANUAL walkthrough in that README (honest seam, PRD §5.2:
+// documented MANUAL walkthrough in that README (honest seam;
 // walkthrough-tested, never faked as CI).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
