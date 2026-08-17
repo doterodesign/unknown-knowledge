@@ -6,9 +6,9 @@
  * along three axes, each joining a DIFFERENT governed vocabulary, and none of
  * them guessing:
  *
- *   verb  -> the `knowledge/operations` registry   ("add a sport" -> add-sport)
- *   noun  -> concept terms and aliases             ("sport"       -> K-101)
- *   place -> the `knowledge/jurisdictions` registry ("new jersey" -> new-jersey)
+ *   verb  -> the `knowledge/operations` registry   ("add a tool"  -> add-tool)
+ *   noun  -> concept terms and aliases             ("tool"        -> K-101)
+ *   place -> the `knowledge/jurisdictions` registry ("eu eaa"     -> eu-eaa)
  *
  * What makes this the deterministic core rather than a search box is that every
  * axis lands in a MINTED vocabulary value. The operations registry says which
@@ -35,12 +35,12 @@
  *
  * MATCH SEMANTICS. A vocabulary entry matches when EVERY word of its phrase is
  * present in the query, each consuming a distinct token. Distinctness matters:
- * "sport sport" must not satisfy a two-word phrase from one token. Words match
- * with a naive singular/plural fold (`sport` ~ `sports`) and nothing else — no
+ * "tool tool" must not satisfy a two-word phrase from one token. Words match
+ * with a naive singular/plural fold (`tool` ~ `tools`) and nothing else — no
  * stemmer, no edit distance, no synonym expansion. That is a deliberate floor,
  * not an unfinished feature: aliases are the governed, warranted mechanism for
- * "these words mean the same thing", and a stemmer that quietly joined `sporting`
- * to `sport` would be an ungoverned vocabulary decision made by a regex.
+ * "these words mean the same thing", and a stemmer that quietly joined `tooling`
+ * to `tool` would be an ungoverned vocabulary decision made by a regex.
  *
  * NEAR-MISS is the same test relaxed from every-word to any-word, over entries
  * that did NOT match. It reports the overlap, so a reader sees which word
@@ -82,9 +82,9 @@ export const STOPWORDS = Object.freeze(new Set([
  * Split a query into tokens.
  *
  * The character class keeps `/`, `.`, `_` and `-` INSIDE a token, so
- * `src/registry/sports.ts` survives as one token rather than shattering into
- * five. That is what lets the resolver notice a path-shaped ask; splitting it
- * first would destroy the only evidence that it was one.
+ * `src/registry/export-formats.ts` survives as one token rather than
+ * shattering into five. That is what lets the resolver notice a path-shaped
+ * ask; splitting it first would destroy the only evidence that it was one.
  *
  * @param {string} query the raw query text
  * @returns {string[]} lowercased tokens, in query order, duplicates kept
@@ -103,7 +103,7 @@ export const tokenize = (query) => (String(query).toLowerCase().match(/[a-z0-9./
  */
 export const sameWord = (token, word) => token === word || token === `${word}s` || `${token}s` === word;
 
-/** Split a vocabulary phrase ("new jersey", "Market type") into its words. */
+/** Split a vocabulary phrase ("eu eaa", "Blend mode") into its words. */
 export const phraseWords = (phrase) => String(phrase).toLowerCase().split(/\s+/).filter(Boolean);
 
 /**
@@ -115,7 +115,7 @@ export const phraseWords = (phrase) => String(phrase).toLowerCase().split(/\s+/)
  *
  * Distinctness is tracked by INDEX, not by token text, and that is the whole
  * subtlety. A query can legitimately repeat a word, and two occurrences of
- * "sport" are two things the user typed — matching them by value would let the
+ * "tool" are two things the user typed — matching them by value would let the
  * first occurrence be found again and rejected as already-used, so a phrase
  * needing two would fail against a query that actually supplied two. Indexing
  * also forecloses the opposite error: one occurrence can never satisfy two
@@ -203,9 +203,9 @@ export function suppressedValues(model, key) {
  * The phrases a registry value answers to.
  *
  * A minted value is an identifier, and identifiers are written for machines:
- * `add-sport`, `new-jersey`. So a value contributes TWO phrases — the value itself
+ * `add-tool`, `eu-eaa`. So a value contributes TWO phrases — the value itself
  * as one word, and the value with its separators opened into spaces, which is
- * what a human types. "add sport" reaching `add-sport` is not fuzzy matching;
+ * what a human types. "add tool" reaching `add-tool` is not fuzzy matching;
  * it is reading the identifier's own internal structure, which the author put
  * there precisely to be legible.
  *

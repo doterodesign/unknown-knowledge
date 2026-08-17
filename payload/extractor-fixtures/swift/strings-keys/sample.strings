@@ -6,10 +6,10 @@
 
 /* Account */
 "account.title" = "Your account";
-"account.balance" = "Balance = deposits - withdrawals"; /* '=' inside the value */
+"account.plan" = "Plan = seats x tier"; /* '=' inside the value */
 
 // "account.legacy" = "Old copy"; — commented-out pair, not a key
 
-/* Betting */
-"bet.confirm" = "Tap \"Confirm\" to place"; // escaped quotes in the value
-"bet.cancel" = "Cancel"; "bet.retry" = "Retry"; // two entries on one line
+/* Editor */
+"editor.confirm" = "Tap \"Insert\" to confirm"; // escaped quotes in the value
+"editor.cancel" = "Cancel"; "editor.retry" = "Retry"; // two entries on one line

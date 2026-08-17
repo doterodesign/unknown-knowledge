@@ -152,7 +152,7 @@ does not get "simplified" until it passes — the anchor goes to MISS.
 anchor, reverse-look it up —
 
 ```
-node unknown-knowledge/engine/resolve.js --paths Sources/Sportsbook/Sport.swift --root .
+node unknown-knowledge/engine/resolve.js --paths Sources/Canvas/CanvasTool.swift --root .
 ```
 
 If a concept's pointer already covers the path (folder pointers match

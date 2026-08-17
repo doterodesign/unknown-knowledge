@@ -5,4 +5,4 @@
 # JSON-catalog side is exercised by the kit's acceptance fixtures).
 kind: strings-keys
 file: sample.strings
-values: [account.title, account.balance, bet.confirm, bet.cancel, bet.retry]
+values: [account.title, account.plan, editor.confirm, editor.cancel, editor.retry]

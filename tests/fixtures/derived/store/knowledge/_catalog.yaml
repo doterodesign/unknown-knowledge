@@ -2,20 +2,20 @@ schema-version: 1
 store: knowledge
 entries:
   - id: L-000117
-    title: Odds feed provider quirks
-    file: sportsbook/odds-feed-provider-quirks.md
+    title: Icon component sizing quirks
+    file: design-system/icon-component-sizing-quirks.md
   - id: L-000133
-    title: Banker's rounding at settlement
-    file: sportsbook/bankers-rounding-at-settlement.md
+    title: Contrast ratios at token export
+    file: design-system/contrast-ratios-at-token-export.md
   - id: L-000162
-    title: Withdrawal KYC thresholds
-    file: payments/withdrawal-kyc-thresholds.md
+    title: Bundle-size budget thresholds
+    file: engineering/bundle-size-budget-thresholds.md
   - id: L-000171
-    title: Chargeback dispute playbook
-    file: payments/chargeback-dispute-playbook.md
+    title: Visual regression triage playbook
+    file: engineering/visual-regression-triage-playbook.md
   - id: L-000213
-    title: Live-betting latency budget
-    file: sportsbook/live-betting-latency-budget.md
+    title: Component render budget
+    file: design-system/component-render-budget.md
   - id: L-000228
-    title: Currency rounding table
-    file: payments/currency-rounding-table.md
+    title: Brand color token table
+    file: brand/brand-color-token-table.md

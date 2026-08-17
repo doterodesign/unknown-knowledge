@@ -2,23 +2,23 @@
 schema-version: 2
 id: L-000117
 edition: 1
-domain: sportsbook
-heading: Odds feed provider quirks
+domain: design-system
+heading: Icon component sizing quirks
 facets:
-  domain: sportsbook/odds-feed
+  domain: design-system/components
   form: reference
   anchor: world
   stage: verified
-operations: [onboard-provider]
+operations: [add-component]
 applies:
   jurisdictions: []
 verified: "2026-08-01"
 volatility: volatile
-terms: [odds feed, provider]
+terms: [icon, component]
 relates:
-  see-also: ["SPO/ODD/CON·L-000133"]
+  see-also: ["DES/COM/CON·L-000133"]
 citations:
-  - source: OddsCo API v3 §4.2
+  - source: Component Kit API v3 §4.2
     accessed: "2026-08-01"
     authority: vendor-doc
 provenance:

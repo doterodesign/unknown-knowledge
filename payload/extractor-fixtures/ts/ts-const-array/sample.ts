@@ -3,11 +3,11 @@
 // declaration shape, not file type). Adversarial-but-extractable: multi-line,
 // trailing comma, line + block comments between members, mixed quote styles,
 // `as const`. Pair: EXPECTED.yaml.
-export const SUPPORTED_SPORTS = [
-  'nfl', // american football
-  "nba",
-  'mlb', /* baseball */
-  'soccer',
+export const EXPORT_FORMATS = [
+  'png', // raster default
+  "svg",
+  'jpg', /* legacy raster */
+  'webp',
 ] as const;
 
-export type Sport = (typeof SUPPORTED_SPORTS)[number];
+export type ExportFormat = (typeof EXPORT_FORMATS)[number];

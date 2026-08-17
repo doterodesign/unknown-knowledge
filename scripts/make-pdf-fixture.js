@@ -34,21 +34,21 @@ import { fileURLToPath } from 'node:url';
 
 const page1 = `BT
 /F1 18 Tf 72 720 Td
-(Odds feed onboarding) Tj
+(Font licensing onboarding) Tj
 /F1 11 Tf 0 -28 Td
-[(The provider must expose a websocket endpoint ) -200 (and a REST fallback.)] TJ
+[(The foundry must expose a CDN endpoint ) -200 (and a self-hosted fallback.)] TJ
 0 -16 Td
-(Latency budget is 400ms \\(end-to-end\\), measured from ingest to price.) Tj
+(Render budget is 400ms \\(end-to-end\\), measured from request to paint.) Tj
 0 -16 Td
-(Suspended \\050not settled\\051 is a distinct state.) Tj
+(Pending \\050not granted\\051 is a distinct state.) Tj
 ET
 `;
 
 const page2 = `BT
 /F1 11 Tf 72 720 Td 16 TL
 (Escalation) '
-(Page the trading desk when the feed suspends for more than ninety seconds.) '
-<50726F76696465722063726564656E7469616C73206172652073616E64626F7865642E> Tj
+(Page the design-ops rotation when the CDN degrades for more than ninety seconds.) '
+<466F756E6472792063726564656E7469616C73206172652073616E64626F7865642E> Tj
 ET
 `;
 

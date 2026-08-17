@@ -3,5 +3,5 @@ schema-version: 1
 store: ontology
 entries:
   - id: K-102
-    title: Odds feed
+    title: Component
     file: classes/100-feed.yaml

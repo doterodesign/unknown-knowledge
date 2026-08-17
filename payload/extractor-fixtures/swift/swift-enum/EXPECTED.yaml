@@ -3,6 +3,6 @@
 # cases count; the switch arms and the decoy sibling enum never do.
 kind: swift-enum
 file: sample.swift
-symbol: PayoutSpeed
+symbol: RenderQuality
 emit: case-name
-values: [instant, sameDay, standard, batched, deferred]
+values: [preview, balanced, high, draft, print]

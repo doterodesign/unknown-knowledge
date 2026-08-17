@@ -2,5 +2,5 @@
 # appliesTo array's members and the JSX inline literal must not leak in.
 kind: ts-object-keys
 file: sample.tsx
-symbol: PROMOTIONS
-values: [welcome-bonus, reload, odds-boost, referral]
+symbol: PANELS
+values: [layers-panel, inspector, assets-panel, comments]

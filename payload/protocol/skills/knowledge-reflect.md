@@ -48,8 +48,8 @@ Sessions append two kinds of finding that exist to be minted from
 - **Residue** — from `resolve`'s `decomposition.residue`: the non-stopword
   tokens no join consumed. Each fragment carries `resolved-context`, the
   operations, concept ids, and jurisdictions that *did* resolve in the same
-  ask. A bare unresolved token is a finding nobody can act on; `lacrosse`
-  unresolved in an ask that resolved `add-sport` and `new-jersey` localizes
+  ask. A bare unresolved token is a finding nobody can act on; `stencil`
+  unresolved in an ask that resolved `add-tool` and `eu-eaa` localizes
   the gap precisely enough that the minting decision writes itself.
 - **Document candidates** — from `resolve --doc`'s ranked
   `candidates-ranked`: the document's own residue. Each fragment adds a
@@ -77,7 +77,7 @@ Three fragments are distinct when each records a *separate occasion on which
 the store failed to resolve the thing* — which in practice means a different
 session, or the same session on a different date.
 
-The case this rules out: one session that hit `lacrosse` three times in a
+The case this rules out: one session that hit `stencil` three times in a
 row and logged three fragments. That is **one** data point wearing three
 filenames. Nothing was independently corroborated — the same agent, the same
 ask, the same unresolved token — and minting from it would let a single
@@ -169,7 +169,7 @@ trigger kind. A path-only fragment joins a concept cluster via the reverse
 lookup:
 
 ```
-node unknown-knowledge/engine/resolve.js --paths Sources/Sportsbook/Sport.swift --root .
+node unknown-knowledge/engine/resolve.js --paths Sources/Canvas/CanvasTool.swift --root .
 ```
 
 Completion criterion: **every swept open fragment is in exactly one

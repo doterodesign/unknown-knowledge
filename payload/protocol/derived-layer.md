@@ -10,7 +10,7 @@ set of leaves, written into one directory, and thrown away without loss.
 ```
 knowledge/
 ├── _registries/          # governed vocabularies — AUTHORED
-├── sportsbook/…          # leaves — AUTHORED
+├── design-system/…       # leaves — AUTHORED
 └── derived/              # engine output — DISPOSABLE
     ├── index.json                 # the resolution index
     ├── tree.domain-form.md        # browse tree, steward ordering

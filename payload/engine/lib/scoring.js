@@ -61,7 +61,7 @@ export const CONCEPT_SIGNALS = Object.freeze({
 export const LEAF_SIGNALS = Object.freeze({
   // The leaf declares the operation the query's verb resolved to. The strongest
   // join in the table because it needed no noun guessing: the registry turned
-  // "add a sport" into `add-sport`, and the leaf had already declared it.
+  // "add a tool" into `add-tool`, and the leaf had already declared it.
   operation: 3,
   // The leaf declares the concept the query's noun resolved to — the structural
   // edge from UCS-1151, a curatorial claim that survives the concept being

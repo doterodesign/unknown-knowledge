@@ -18,9 +18,9 @@
  * citations block cannot change even if this module has a bug.
  *
  * THE MAPPING IS LEAF-GRANULAR, because a class-level rule cannot express a
- * SPLIT. When `sportsbook/odds-feed` divides into `feeds/ingest` and
- * `feeds/settlement`, no rename rule says which leaf went where — only a
- * per-accession table can, and the `why` on each row is the whole substance of
+ * SPLIT. When `design-system/components` divides into `design-system/primitives`
+ * and `design-system/patterns`, no rename rule says which leaf went where — only
+ * a per-accession table can, and the `why` on each row is the whole substance of
  * the review.
  *
  * IT IS ALL-OR-NOTHING. Every check runs against the whole mapping BEFORE a
@@ -84,8 +84,8 @@ export function valueAt(record, path) {
  * Does `value` fall inside a scope value?
  *
  * For a hierarchical facet a scope value claims its whole subtree, so
- * `sportsbook` claims `sportsbook/odds-feed`. Segment-wise rather than by
- * prefix string: `sportsbook-legacy` starts with `sportsbook` and is a
+ * `design-system` claims `design-system/components`. Segment-wise rather than by
+ * prefix string: `design-system-legacy` starts with `design-system` and is a
  * different class, and claiming it would silently widen the event's blast
  * radius past what the steward wrote down.
  *

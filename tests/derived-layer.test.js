@@ -71,7 +71,7 @@ test('generation produces browse trees along two axes from one flat store', (t) 
   // domain-first tree opens on a domain node, the form-first one on a form.
   const domainFirst = derivedFile(root, 'tree.domain-form.md');
   const formFirst = derivedFile(root, 'tree.form-domain.md');
-  assert.match(domainFirst, /^- \*\*payments\/\*\* \(3\)$/m);
+  assert.match(domainFirst, /^- \*\*design-system\/\*\* \(3\)$/m);
   assert.match(formFirst, /^- \*\*constraint\/\*\* \(3\)$/m);
   assert.notEqual(domainFirst, formFirst, 'two axes are two trees, not one tree twice');
 
@@ -98,26 +98,27 @@ test('the golden domain-first tree — the whole artifact, byte for byte', (t) =
 Call numbers are synthesized display strings for this projection only. They
 are NOT identities: cite the accession id (L-NNNNNN), never a call number.
 
-- **payments/** (3)
-  - **fx/** (1)
+- **brand/** (1)
+  - **identity/** (1)
     - **reference/** (1)
-      - \`PAY/FX/REF·L-000228\` Currency rounding table
-  - **withdrawals/** (2)
+      - \`BRA/IDE/REF·L-000228\` Brand color token table
+- **design-system/** (3)
+  - **components/** (3)
+    - **constraint/** (2)
+      - \`DES/COM/CON·L-000133\` Contrast ratios at token export
+      - \`DES/COM/CON·L-000213\` Component render budget — **demoted** (stage)
+        - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)
+    - **reference/** (1)
+      - \`DES/COM/REF·L-000117\` Icon component sizing quirks
+- **engineering/** (2)
+  - **frontend/** (2)
     - **constraint/** (1)
-      - \`PAY/WIT/CON·L-000162\` Withdrawal KYC thresholds — **demoted** (time)
+      - \`ENG/FRO/CON·L-000162\` Bundle-size budget thresholds — **demoted** (time)
         - time: verified 223 day(s) ago, past the 90-day limit for volatile knowledge — re-verify against the cited sources, or treat the claim as unverified (UCS-1150)
     - **runbook/** (1)
-      - \`PAY/WIT/RUN·L-000171\` Chargeback dispute playbook — **demoted** (stage, time)
+      - \`ENG/FRO/RUN·L-000171\` Visual regression triage playbook — **demoted** (stage, time)
         - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)
         - time: verified 154 day(s) ago, past the 90-day limit for volatile knowledge — re-verify against the cited sources, or treat the claim as unverified (UCS-1150)
-- **sportsbook/** (3)
-  - **odds-feed/** (3)
-    - **constraint/** (2)
-      - \`SPO/ODD/CON·L-000133\` Banker's rounding at settlement
-      - \`SPO/ODD/CON·L-000213\` Live-betting latency budget — **demoted** (stage)
-        - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)
-    - **reference/** (1)
-      - \`SPO/ODD/REF·L-000117\` Odds feed provider quirks
 `);
 });
 
@@ -153,13 +154,13 @@ test('call numbers are synthesized into the trees, one per axis', (t) => {
 
   // The SAME leaf carries a different call number in each tree, because a call
   // number describes a POSITION in a projection and that leaf holds two.
-  assert.match(derivedFile(root, 'tree.domain-form.md'), /`SPO\/ODD\/REF·L-000117`/);
-  assert.match(derivedFile(root, 'tree.form-domain.md'), /`REF\/SPO\/ODD·L-000117`/);
+  assert.match(derivedFile(root, 'tree.domain-form.md'), /`DES\/COM\/REF·L-000117`/);
+  assert.match(derivedFile(root, 'tree.form-domain.md'), /`REF\/DES\/COM·L-000117`/);
 
   const index = JSON.parse(derivedFile(root, 'index.json'));
   const leaf = index.leaves.find((l) => l.id === 'L-000117');
-  assert.equal(leaf.positions['domain-form']['call-number'], 'SPO/ODD/REF·L-000117');
-  assert.equal(leaf.positions['form-domain']['call-number'], 'REF/SPO/ODD·L-000117');
+  assert.equal(leaf.positions['domain-form']['call-number'], 'DES/COM/REF·L-000117');
+  assert.equal(leaf.positions['form-domain']['call-number'], 'REF/DES/COM·L-000117');
 });
 
 test('no call number is an id in ANY id space — checked against every grammar', (t) => {
@@ -324,10 +325,10 @@ test('stale and draft leaves are annotated in the trees, never hidden', (t) => {
   for (const axis of AXES) {
     const tree = derivedFile(root, `tree.${axis.key}.md`);
     // Present, and marked.
-    assert.match(tree, /`[^`]*L-000213` Live-betting latency budget — \*\*demoted\*\* \(stage\)/);
-    assert.match(tree, /`[^`]*L-000162` Withdrawal KYC thresholds — \*\*demoted\*\* \(time\)/);
+    assert.match(tree, /`[^`]*L-000213` Component render budget — \*\*demoted\*\* \(stage\)/);
+    assert.match(tree, /`[^`]*L-000162` Bundle-size budget thresholds — \*\*demoted\*\* \(time\)/);
     // Both demotions accumulate — neither absorbs the other.
-    assert.match(tree, /`[^`]*L-000171` Chargeback dispute playbook — \*\*demoted\*\* \(stage, time\)/);
+    assert.match(tree, /`[^`]*L-000171` Visual regression triage playbook — \*\*demoted\*\* \(stage, time\)/);
     // The REASON travels with the mark: a demotion is never silent.
     assert.match(tree, /stage "draft" is pre-promotion/);
     assert.match(tree, /past the 90-day limit for volatile knowledge/);
@@ -339,7 +340,7 @@ test('demoted leaves sort last within their node but stay in it', (t) => {
   assert.equal(derive(root, ['--today', TODAY, '--write']).status, 0);
   const tree = derivedFile(root, 'tree.domain-form.md');
 
-  // Inside sportsbook/odds-feed/constraint: the promoted L-000133 precedes the
+  // Inside design-system/components/constraint: the promoted L-000133 precedes the
   // draft L-000213, and BOTH are in that node. Demotion reorders; it never
   // refiles and never omits.
   const constraintNode = tree.slice(tree.indexOf('**constraint/** (2)'));
@@ -359,9 +360,9 @@ test('without --today, staleness is skipped and SAID — never a silent pass', (
   assert.match(tree, /- time verdicts: skipped — pass --today YYYY-MM-DD to enable/);
   // The stale-only leaf is NOT marked stale, because nothing measured it — and
   // the header says why rather than letting it read as fresh.
-  assert.doesNotMatch(tree, /L-000162` Withdrawal KYC thresholds — \*\*demoted\*\*/);
+  assert.doesNotMatch(tree, /L-000162` Bundle-size budget thresholds — \*\*demoted\*\*/);
   // Stage demotion needs no date, so it still applies.
-  assert.match(tree, /L-000213` Live-betting latency budget — \*\*demoted\*\* \(stage\)/);
+  assert.match(tree, /L-000213` Component render budget — \*\*demoted\*\* \(stage\)/);
 
   const index = JSON.parse(derivedFile(root, 'index.json'));
   const stale = index.leaves.find((l) => l.id === 'L-000162');
@@ -374,7 +375,7 @@ test('a leaf declaring no facets files under unclassified, visibly', (t) => {
   // Strip the whole facets block from one leaf — the mid-migration state a
   // store in v1 is entirely in, and the one where a projection is most tempted
   // to guess.
-  const leafPath = join(root, 'knowledge', 'payments', 'currency-rounding-table.md');
+  const leafPath = join(root, 'knowledge', 'brand', 'brand-color-token-table.md');
   writeFileSync(leafPath, readFileSync(leafPath, 'utf8').replace(/facets:\n(?: {2}.*\n)+/, ''));
 
   assert.equal(derive(root, ['--today', TODAY, '--write']).status, 0);
@@ -383,7 +384,7 @@ test('a leaf declaring no facets files under unclassified, visibly', (t) => {
   // Filed where a steward will SEE it, rather than flattening up a level into
   // the domain node and looking correctly classified.
   assert.match(tree, /- \*\*unclassified\/\*\* \(1\)/);
-  assert.match(tree, /`UNC\/UNC·L-000228` Currency rounding table/);
+  assert.match(tree, /`UNC\/UNC·L-000228` Brand color token table/);
   // Still one leaf per tree: an unclassified leaf is projected, never dropped.
   assert.match(tree, /- leaves: 6$/m);
 });

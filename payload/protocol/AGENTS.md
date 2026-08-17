@@ -82,7 +82,7 @@ and the citable half is the accession inside it. See
 ### 1. RESOLVE — request terms → concepts
 
 ```
-node unknown-knowledge/engine/resolve.js "sport" --json --root .
+node unknown-knowledge/engine/resolve.js "export format" --json --root .
 ```
 
 Query terms are positional (joined into one query); results come scored with
@@ -124,7 +124,7 @@ follow `class-elsewhere` redirects. Never substitute a summary, an
 Do the work. Before committing, reverse-look-up every file you changed:
 
 ```
-node unknown-knowledge/engine/resolve.js --paths src/registry/sports.ts,src/types/currency.ts --json --root .
+node unknown-knowledge/engine/resolve.js --paths src/registry/export-formats.ts,src/types/color-space.ts --json --root .
 ```
 
 This lists every concept whose pointer covers a changed path (folder pointers
@@ -209,7 +209,7 @@ Append with the helper — `--date` is mandatory and injected, never wall-clock:
 ```
 node unknown-knowledge/engine/log-entry.js create --log findings --date 2026-07-08 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"correction: K-101 src/registry/sports.ts","consulted":{"concepts":["K-101"]}}'
+  --entry '{"trigger":"correction","summary":"correction: K-101 src/registry/export-formats.ts","consulted":{"concepts":["K-101"]}}'
 ```
 
 Each finding's `consulted:` refs ARE the consultation trail. Sibling logs,
