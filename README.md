@@ -141,8 +141,8 @@ can read it, and you can change it — it is JavaScript, not a binary.
 The seed stamps the kit version into `unknown-knowledge/kit.manifest.yaml`. That
 stamp is a **birth certificate, not a dependency pin**: it records the schema
 revision, extractor-kind set and fixture vintage the seed was born with. It
-never implies an update channel — upgrading an existing seed is deferred
-(PRD §11.1).
+never implies an update channel — upgrading an existing seed is deferred by
+design.
 
 ## Versioning
 
@@ -158,7 +158,6 @@ Changelog form).
 - [CONTEXT.md](CONTEXT.md) — the domain glossary. Start here.
 - [decisions/](decisions/) — the kit records its own decisions, in the same
   format it asks you to use. It eats its own cooking.
-- [PRD.html](PRD.html) — the full product definition.
 - [docs/publishing.md](docs/publishing.md) — release and supply-chain process
   (npm provenance, 2FA).
 

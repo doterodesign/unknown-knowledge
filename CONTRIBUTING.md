@@ -2,9 +2,8 @@
 
 Thanks for contributing. The kit is Apache-2.0 (see LICENSE); by submitting
 a contribution you agree it is licensed under the same terms (Apache-2.0
-§5). The product definition is [PRD.html](PRD.html); the domain glossary is
-[CONTEXT.md](CONTEXT.md); the kit records its own decisions in
-[decisions/](decisions/).
+§5). The domain glossary is [CONTEXT.md](CONTEXT.md); the kit records its own
+decisions in [decisions/](decisions/).
 
 ## Community extractor kinds — the gate
 

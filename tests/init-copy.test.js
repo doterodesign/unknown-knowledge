@@ -206,7 +206,7 @@ test('engine REFUSES manifest entries that escape payload/ or name fixtures/test
   const attacks = [
     ['from: ../fixtures/ts-app', 'traversal into acceptance fixtures'],
     ['from: ../tests', 'traversal into kit tests'],
-    ['from: ../PRD.html', 'traversal to the kit root'],
+    ['from: ../CONTEXT.md', 'traversal to the kit root'],
     [`from: ${JSON.stringify(join(kitRoot, 'fixtures/ts-app'))}`, 'absolute path'],
     ['from: engine/../../fixtures/ts-app', 'embedded ..'],
     ['from: ./engine', 'dot segment'],

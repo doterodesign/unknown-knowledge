@@ -1,4 +1,4 @@
-# One entry per file; schema per PRD.html §3.3.
+# One entry per file; schema per payload/schemas/decision-entry.schema.json.
 schema-version: 1
 entries:
   - id: D-302

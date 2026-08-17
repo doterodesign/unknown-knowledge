@@ -31,10 +31,9 @@
  * INDEPENDENT questions — does it declare this operation, this concept, does
  * its term text match — and independent evidence accumulates.
  *
- * The leaf weights (3/2/1) are the prototype's, carried over unchanged: the
- * bash-driven session in search-experience-prototype.html is the executable
- * intent for this ticket, and its ordering is the behavior the goldens mirror.
- * The ordering they encode is the defensible part — a DECLARED operation is
+ * The leaf weights (3/2/1) are pinned: their ordering is the behavior the
+ * goldens mirror, and the ordering they encode is the defensible part — a
+ * DECLARED operation is
  * the strongest join (the leaf's author named the verb this ask is about), a
  * declared concept edge is next (curatorial, survives a rename), and term text
  * is weakest (it is exactly as reliable as two authors choosing the same
