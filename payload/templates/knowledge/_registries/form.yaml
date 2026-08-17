@@ -14,12 +14,12 @@
 #   values:
 #     - value: reference
 #       gloss: States how something is, for lookup.
-#       warrant: 362.1 states the ACH settlement windows themselves.
+#       warrant: 362.1 states the component sizing rules themselves.
 #       decision: D-014
 #       minted: "2026-07-07"
 #     - value: recipe
 #       gloss: The ordered steps for performing a task.
-#       warrant: 100.1 is the step list for onboarding a sport.
+#       warrant: 100.1 is the step list for adding an export format.
 #       decision: D-014
 #       minted: "2026-07-07"
 #     - value: runbook
@@ -29,7 +29,7 @@
 #       minted: "2026-07-07"
 #     - value: constraint
 #       gloss: A rule the system must not violate.
-#       warrant: 133.1 states the settlement rounding rule.
+#       warrant: 133.1 states the token rounding rule.
 #       decision: D-014
 #       minted: "2026-07-07"
 schema-version: 1

@@ -4,12 +4,12 @@
 schema-version: 1
 entries:
   - id: K-100
-    term: Sport
+    term: Icon
     class: 100-registries
-    summary: A sport vertical the product serves.
+    summary: An icon the product's icon set ships.
     source-of-truth: [src/registry.txt]
     status: active
     enumerates:
       - kind: test-lines
         source: src/registry.txt
-        values: [nfl, nba]
+        values: [grid, list]

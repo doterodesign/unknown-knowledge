@@ -4,17 +4,17 @@ schema-version: 1
 store: knowledge
 entries:
   - id: L-000102
-    title: Adding a new sport
-    file: sportsbook/600.1-adding-a-new-sport.md
+    title: Adding a new token
+    file: design-system/600.1-adding-a-new-token.md
   - id: L-000140
-    title: Void-bet refund basis
-    file: sportsbook/600.2-void-bet-refund-basis.md
+    title: Archived-theme fallback basis
+    file: design-system/600.2-archived-theme-fallback-basis.md
   - id: L-000190
-    title: RTP disclosure before wager
-    file: sportsbook/600.3-rtp-disclosure.md
+    title: Contrast disclosure before publish
+    file: design-system/600.3-contrast-disclosure.md
   - id: L-000213
-    title: Sport launch checklist
-    file: sportsbook/600.4-sport-launch-checklist.md
+    title: Token launch checklist
+    file: design-system/600.4-token-launch-checklist.md
   - id: L-000133
-    title: Settlement rounding rules
-    file: payments/610.1-settlement-rounding.md
+    title: Theme export rounding rules
+    file: engineering/610.1-theme-export-rounding.md

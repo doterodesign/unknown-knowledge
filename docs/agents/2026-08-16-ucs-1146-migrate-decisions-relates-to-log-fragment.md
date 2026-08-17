@@ -9,12 +9,12 @@ leaf/catalog batch). Data migration only — no engine change.
 
 | File | Field | Rewrite |
 |---|---|---|
-| `fixtures/ts-app/unknown-knowledge/decisions/entries/D-101-sports-registry-const-array.yaml` | `relates-to.leaves[0]` | `"100.1"` → `L-000100` (existing accession) |
+| `fixtures/ts-app/unknown-knowledge/decisions/entries/D-101-export-format-registry-const-array.yaml` | `relates-to.leaves[0]` | `"100.1"` → `L-000100` (existing accession) |
 | `payload/protocol/skills/kb-build.md` | gap example `consulted.leaves` | `"100.1"` → `"L-000100"` |
 | `acceptance/A5-kb-build-walkthrough.md` | gap command + pasted output `consulted.leaves` | `"100.1"` → `"L-000100"` |
 
 `L-000100` is the accession UCS-1145 already minted on
-`fixtures/ts-app/unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md`
+`fixtures/ts-app/unknown-knowledge/knowledge/product/100.1-adding-a-new-export-format.md`
 (`id: L-000100`, `notation: "100.1"`), and the row the ts-app knowledge catalog
 already carries. **No new id was minted anywhere in this batch.**
 

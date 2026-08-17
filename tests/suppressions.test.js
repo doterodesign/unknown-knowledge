@@ -28,7 +28,7 @@ import {
 } from '../payload/engine/lib/suppressions.js';
 
 const entry = (over = {}) => ({
-  term: 'markets', sourcePath: 'src/markets.ts', reason: 'not a concept', date: '2026-07-09', ...over,
+  term: 'panels', sourcePath: 'src/panels.ts', reason: 'not a concept', date: '2026-07-09', ...over,
 });
 
 /** A kit root holding the given suppressions.yaml text (or none at all). */
@@ -42,9 +42,9 @@ function kitRoot(t, text) {
 // ------------------------------------------- identity travels with the finding
 
 test('a finding carries the identity that would silence it', () => {
-  const finding = suppressibleBy({ code: 'unmatched-anchor', path: 'src/markets.ts' },
-    { term: 'markets', sourcePath: 'src/markets.ts' });
-  assert.deepEqual(finding[SUPPRESSION_IDENTITY], { term: 'markets', sourcePath: 'src/markets.ts' });
+  const finding = suppressibleBy({ code: 'unmatched-anchor', path: 'src/panels.ts' },
+    { term: 'panels', sourcePath: 'src/panels.ts' });
+  assert.deepEqual(finding[SUPPRESSION_IDENTITY], { term: 'panels', sourcePath: 'src/panels.ts' });
   assert.equal(finding.code, 'unmatched-anchor', 'the finding is otherwise untouched');
 });
 
@@ -110,13 +110,13 @@ test('the audit stamps every finding it builds, and derives no identity itself',
 // -------------------------------------------------- exact match, and only that
 
 test('an entry suppresses a finding only when BOTH fields match exactly', () => {
-  const finding = suppressibleBy({ code: 'unmatched-anchor' }, { term: 'markets', sourcePath: 'src/markets.ts' });
+  const finding = suppressibleBy({ code: 'unmatched-anchor' }, { term: 'panels', sourcePath: 'src/panels.ts' });
   const cases = [
     [entry(), 1, 'both fields equal'],
-    [entry({ term: 'market' }), 0, 'term differs'],
-    [entry({ sourcePath: 'src/Markets.ts' }), 0, 'path differs by case'],
-    [entry({ sourcePath: 'src/markets.ts ' }), 0, 'path differs by trailing space'],
-    [entry({ term: 'markets*' }), 0, 'no globs — a pattern is not a match (§11.1)'],
+    [entry({ term: 'panel' }), 0, 'term differs'],
+    [entry({ sourcePath: 'src/Panels.ts' }), 0, 'path differs by case'],
+    [entry({ sourcePath: 'src/panels.ts ' }), 0, 'path differs by trailing space'],
+    [entry({ term: 'panels*' }), 0, 'no globs — a pattern is not a match (§11.1)'],
   ];
   for (const [e, expectSuppressed, why] of cases) {
     const { kept, suppressed } = partitionBySuppression([finding], [e]);
@@ -165,7 +165,7 @@ test('unparseable YAML warns and suppresses nothing — never an engine failure'
 });
 
 test('a document that is not a list warns and suppresses nothing', (t) => {
-  const { entries, warnings } = loadSuppressions(kitRoot(t, 'term: markets\n'));
+  const { entries, warnings } = loadSuppressions(kitRoot(t, 'term: panels\n'));
   assert.deepEqual(entries, []);
   assert.match(warnings[0], /must be a YAML list/);
 });

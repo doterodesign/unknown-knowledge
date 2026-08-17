@@ -17,31 +17,34 @@
 # no resource is fetched. The document is bytes.
 format: html
 file: sample.html
-adapter: "html@1"
-hash: "fnv1a64:45be4eb42d42b172"
+adapter: html@1
+hash: fnv1a64:062e49c39e1bf5c1
 blocks:
   - kind: heading
     level: 1
-    text: "Odds feed onboarding"
-    locator: { line: 11, endLine: 11 }
+    text: Font licensing onboarding
+    locator: {line: 11, endLine: 11}
   - kind: paragraph
-    text: "The provider must expose a websocket endpoint and a REST fallback. Latency budget is 400ms & measured end-to-end."
-    locator: { line: 13, endLine: 14 }
+    text: The foundry must expose a CDN endpoint and a self-hosted fallback. Render budget is 400ms & measured end-to-end.
+    locator: {line: 13, endLine: 14}
   - kind: list-item
-    text: "Websocket endpoint, TLS only"
-    locator: { line: 22, endLine: 22 }
+    text: CDN endpoint, TLS only
+    locator: {line: 22, endLine: 22}
   - kind: paragraph
-    text: "REST fallback for replay"
-    locator: { line: 23, endLine: 23 }
+    text: Self-hosted fallback for offline
+    locator: {line: 23, endLine: 23}
   - kind: code
-    text: "provider:\n  name: oddsco\n  timeout-ms: 400"
-    locator: { line: 26, endLine: 28 }
+    text: |-
+      foundry:
+        name: typeco
+        timeout-ms: 400
+    locator: {line: 26, endLine: 28}
   - kind: table-row
-    text: "Field | Meaning"
-    locator: { line: 31, endLine: 31 }
+    text: Field | Meaning
+    locator: {line: 31, endLine: 31}
   - kind: table-row
-    text: "suspended | market locked, <not> settled"
-    locator: { line: 32, endLine: 32 }
+    text: pending | license requested, <not> granted
+    locator: {line: 32, endLine: 32}
   - kind: paragraph
-    text: "Page the trading desk when the feed suspends for more than ninety seconds."
-    locator: { line: 35, endLine: 36 }
+    text: Page the design-ops rotation when the CDN degrades for more than ninety seconds.
+    locator: {line: 35, endLine: 36}

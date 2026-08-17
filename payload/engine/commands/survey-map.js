@@ -234,7 +234,7 @@ export function buildSurveyMap(root) {
 
   // Anchor candidates: content sniffs plus the structural dir-modules shapes —
   // sibling FILES sharing one extension, or per-module SUBFOLDERS (the PRD's
-  // canonical modules/nfl/, modules/nba/, modules/mlb/ layout).
+  // canonical modules/editor/, modules/prototyping/, modules/whiteboard/ layout).
   const candidates = [];
   for (const path of surveyed) {
     for (const kind of sniffKinds(root, path)) candidates.push({ kind, path });

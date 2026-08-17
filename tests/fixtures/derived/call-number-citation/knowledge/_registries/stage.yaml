@@ -17,7 +17,7 @@ values:
   - value: draft
     gloss: Written but not promoted — nothing certifies the claim yet.
     warrant: >-
-      L-000171 (chargeback dispute playbook) and L-000213 (live-betting latency
+      L-000171 (visual regression triage playbook) and L-000213 (component render
       budget) are both unpromoted — the demotion specimens the browse trees
       annotate.
     decision: D-401

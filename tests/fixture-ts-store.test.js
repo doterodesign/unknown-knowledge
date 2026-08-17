@@ -78,16 +78,16 @@ test('K-108 wrong-pointer: no claimed value appears anywhere in the pointed file
 });
 
 test("K-102 drift: the claimed-but-absent value never appears lexically in the source", () => {
-  // K-102 claims one extra market type that the anchored file lacks. The
+  // K-102 claims one extra blend mode that the anchored file lacks. The
   // value-not-in-source signature must hold at grep level: if the source
   // file named the value even in a comment, lexical detectors would see it
   // as present and report a false all-clear.
   const { record } = model.concepts.get('K-102');
   const [desc] = record.enumerates;
   const body = readFileSync(join(fixtureRoot, desc.source), 'utf8').toLowerCase();
-  assert.ok(desc.values.includes('futures'), 'K-102 must still claim the planted drift value');
+  assert.ok(desc.values.includes('luminosity'), 'K-102 must still claim the planted drift value');
   assert.ok(
-    !body.includes('futures'),
+    !body.includes('luminosity'),
     `the planted drift value must not appear lexically in ${desc.source}`,
   );
 });

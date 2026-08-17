@@ -6,7 +6,7 @@ registry: anchor
 values:
   - value: artifact
     gloss: The repo decides. The claim is checkable against code, config, or schema.
-    warrant: L-000102's registry key is checkable in src/registry/sports.ts.
+    warrant: L-000102's registry key is checkable in src/registry/tokens.ts.
     decision: D-201
     minted: "2026-07-07"
   - value: world

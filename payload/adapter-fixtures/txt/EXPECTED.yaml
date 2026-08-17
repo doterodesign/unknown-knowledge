@@ -8,24 +8,24 @@
 # coverage map that the document never had.
 format: txt
 file: sample.txt
-adapter: "txt@1"
-hash: "fnv1a64:bc232fec6104854c"
+adapter: txt@1
+hash: fnv1a64:4c921cb8fa2f2059
 blocks:
   - kind: paragraph
-    text: "Odds feed onboarding"
-    locator: { line: 1, endLine: 1 }
+    text: Font licensing onboarding
+    locator: {line: 1, endLine: 1}
   - kind: paragraph
-    text: "Adapter fixture — plain text. Plain text carries no marked-up structure, so every block is a paragraph: the adapter invents no headings and no code, and this sample is shaped to tempt it into doing both."
-    locator: { line: 3, endLine: 5 }
+    text: 'Adapter fixture — plain text. Plain text carries no marked-up structure, so every block is a paragraph: the adapter invents no headings and no code, and this sample is shaped to tempt it into doing both.'
+    locator: {line: 3, endLine: 5}
   - kind: paragraph
-    text: "This line is indented four spaces. A markdown adapter would call it code. The txt adapter calls it prose, because plain text has no code fences and guessing would manufacture structure the document never had."
-    locator: { line: 7, endLine: 9 }
+    text: This line is indented four spaces. A markdown adapter would call it code. The txt adapter calls it prose, because plain text has no code fences and guessing would manufacture structure the document never had.
+    locator: {line: 7, endLine: 9}
   - kind: paragraph
-    text: "PROVIDER REQUIREMENTS"
-    locator: { line: 11, endLine: 11 }
+    text: FOUNDRY REQUIREMENTS
+    locator: {line: 11, endLine: 11}
   - kind: paragraph
-    text: "The line above is shouting, and a heuristic adapter would promote it to a heading. It stays a paragraph. Degraded structure, identical process — the coverage map is bounded by content richness, and this is the honest floor."
-    locator: { line: 13, endLine: 15 }
+    text: The line above is shouting, and a heuristic adapter would promote it to a heading. It stays a paragraph. Degraded structure, identical process — the coverage map is bounded by content richness, and this is the honest floor.
+    locator: {line: 13, endLine: 15}
   - kind: paragraph
-    text: "Latency budget is four hundred milliseconds end-to-end, measured from ingest to price."
-    locator: { line: 17, endLine: 18 }
+    text: Render budget is four hundred milliseconds end-to-end, measured from request to paint.
+    locator: {line: 17, endLine: 18}

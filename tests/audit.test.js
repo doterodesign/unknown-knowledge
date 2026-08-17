@@ -43,15 +43,15 @@ function plantRepo(name, files) {
   return repo;
 }
 
-const ANCHOR_TS = "export const SPORTS = ['nfl', 'nba'];\n";
+const ANCHOR_TS = "export const ICONS = ['grid', 'list'];\n";
 const STORE_MIN = {
   'unknown-knowledge/ontology/_catalog.yaml':
-    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Sport\n    file: classes/100-core.yaml\n',
+    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Icon\n    file: classes/100-core.yaml\n',
   'unknown-knowledge/ontology/_rules.yaml': 'schema-version: 1\nstore: ontology\nrules: []\n',
   'unknown-knowledge/ontology/classes/100-core.yaml':
     'schema-version: 1\nentries:\n'
-    + '  - id: K-100\n    term: Sport\n    class: 100-core\n'
-    + '    summary: Bettable sports.\n    source-of-truth: [src/sports.ts]\n'
+    + '  - id: K-100\n    term: Icon\n    class: 100-core\n'
+    + '    summary: Product icons.\n    source-of-truth: [src/icons.ts]\n'
     + '    status: active\n    last-verified: "2026-01-10"\n',
 };
 
@@ -71,8 +71,8 @@ test('ts-app fixture: audit rediscovers the wrong-pointer true home as an unmatc
 test('ts-app fixture: pointed-at anchors are matched, never findings', () => {
   const out = runJson(tsApp, 0);
   const paths = out.findings.map((f) => f.path);
-  // K-101 points at sports.ts; K-110's folder identity covers src/verticals/**.
-  assert.ok(!paths.includes('src/registry/sports.ts'), `sports.ts is pointed at by K-101: ${paths}`);
+  // K-101 points at export-formats.ts; K-110's folder identity covers src/verticals/**.
+  assert.ok(!paths.includes('src/registry/export-formats.ts'), `export-formats.ts is pointed at by K-101: ${paths}`);
   assert.ok(!paths.some((p) => p?.startsWith('src/verticals/')), `src/verticals is K-110 folder identity: ${paths}`);
 });
 
@@ -159,21 +159,21 @@ test('unknown flags and positional arguments are usage errors (exit 2)', () => {
 test('survey-scope.yaml excluded areas produce zero findings — never rescanned', () => {
   const repo = plantRepo('scope', {
     ...STORE_MIN,
-    'src/sports.ts': ANCHOR_TS,
-    'src/markets.ts': "export const MARKETS = ['spread'];\n",
-    'legacy/old-registry.ts': "export const SPORTS = ['xfl'];\n",
+    'src/icons.ts': ANCHOR_TS,
+    'src/panels.ts': "export const PANELS = ['inspector'];\n",
+    'legacy/old-registry.ts': "export const ICONS = ['archived'];\n",
     'survey-scope.yaml': 'schema-version: 1\ninclude: [src, unknown-knowledge]\nexclude: [legacy]\n',
   });
   const out = runJson(repo, 0);
   const paths = out.findings.map((f) => f.path);
-  assert.ok(paths.includes('src/markets.ts'), `unpointed in-scope anchor must surface: ${paths}`);
+  assert.ok(paths.includes('src/panels.ts'), `unpointed in-scope anchor must surface: ${paths}`);
   assert.ok(!paths.some((p) => p?.startsWith('legacy/')), `excluded area leaked into findings: ${paths}`);
 });
 
 test('a malformed survey-scope.yaml is an engine failure (exit 2), never a silently ignored boundary', () => {
   const repo = plantRepo('badscope', {
     ...STORE_MIN,
-    'src/sports.ts': ANCHOR_TS,
+    'src/icons.ts': ANCHOR_TS,
     'survey-scope.yaml': 'schema-version: 1\ninclude: "src"\n',
   });
   const r = run('--root', repo, '--json');
@@ -189,16 +189,16 @@ test('an unhealthy store is an engine failure (exit 2) — matching against brok
       'schema-version: 1\nentries:\n'
       + '  - id: K-100\n    term: Duplicate\n    class: 900-dupe\n'
       + '    summary: Same id minted twice.\n    status: active\n',
-    'src/sports.ts': ANCHOR_TS,
+    'src/icons.ts': ANCHOR_TS,
   });
   const r = run('--root', repo, '--json');
   assert.equal(r.status, 2, r.stdout);
 });
 
 test('a repo with no stores at all still audits — everything is a proposal', () => {
-  const repo = plantRepo('bare', { 'src/sports.ts': ANCHOR_TS });
+  const repo = plantRepo('bare', { 'src/icons.ts': ANCHOR_TS });
   const out = runJson(repo, 0);
-  assert.ok(out.findings.some((f) => f.code === 'unmatched-anchor' && f.path === 'src/sports.ts'));
+  assert.ok(out.findings.some((f) => f.code === 'unmatched-anchor' && f.path === 'src/icons.ts'));
 });
 
 // UCS-934. This test used to assert that the root store wins and the nested
@@ -214,7 +214,7 @@ test('a seeded kit dir alongside root-level stores is ambiguous: the audit refus
     'ontology/_catalog.yaml': STORE_MIN['unknown-knowledge/ontology/_catalog.yaml'],
     'ontology/_rules.yaml': STORE_MIN['unknown-knowledge/ontology/_rules.yaml'],
     'ontology/classes/100-core.yaml': STORE_MIN['unknown-knowledge/ontology/classes/100-core.yaml'],
-    'src/sports.ts': ANCHOR_TS,
+    'src/icons.ts': ANCHOR_TS,
     // …plus a leftover nested kit dir. Which store is authoritative?
     'unknown-knowledge/ontology/classes/100-old.yaml': 'schema-version: 1\nentries: []\n',
   });
@@ -226,7 +226,7 @@ test('a seeded kit dir alongside root-level stores is ambiguous: the audit refus
 });
 
 test('a seeded kit dir alone is the Kit; the audit never proposes concepts for it', () => {
-  const repo = plantRepo('seeded-only', { ...STORE_MIN, 'src/sports.ts': ANCHOR_TS });
+  const repo = plantRepo('seeded-only', { ...STORE_MIN, 'src/icons.ts': ANCHOR_TS });
   const out = runJson(repo, 0);
   assert.ok(
     !out.findings.some((f) => f.path?.startsWith('unknown-knowledge')),
@@ -235,7 +235,7 @@ test('a seeded kit dir alone is the Kit; the audit never proposes concepts for i
 });
 
 test('fully mapped repo, nothing stale: exit 0 with zero findings', () => {
-  const repo = plantRepo('clean', { ...STORE_MIN, 'src/sports.ts': ANCHOR_TS });
+  const repo = plantRepo('clean', { ...STORE_MIN, 'src/icons.ts': ANCHOR_TS });
   const out = runJson(repo, 0, '--today', '2026-01-20');
   assert.deepEqual(out.findings, []);
 });

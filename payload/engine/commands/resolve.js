@@ -124,9 +124,9 @@
  * governed vocabularies, and says what did not join. Three axes, three
  * vocabularies, and none of them guessing:
  *
- *   verb  -> the `knowledge/operations` registry     "add a sport" -> add-sport
- *   noun  -> concept terms and aliases               "sport"       -> K-101
- *   place -> the `knowledge/jurisdictions` registry  "new jersey"  -> new-jersey
+ *   verb  -> the `knowledge/operations` registry     "add a token" -> add-token
+ *   noun  -> concept terms and aliases               "token"       -> K-101
+ *   place -> the `knowledge/jurisdictions` registry  "eu eaa"      -> eu-eaa
  *
  * Four sections join the payload, every one a STABLE key that may be empty:
  *
@@ -138,7 +138,7 @@
  *   leaves         leaves as FIRST-CLASS SCORED RESULTS, each carrying the
  *                  signals that scored it. Before this ticket a leaf could only
  *                  appear as an attachment to a concept, which made an entire
- *                  class of correct answer unreachable: "add a sport" resolves a
+ *                  class of correct answer unreachable: "add a token" resolves a
  *                  VERB, and the leaf declaring that operation is the answer
  *                  whether or not any concept matched
  *   exclusions     leaves the query's scope excluded, each with its REASON —
@@ -154,8 +154,8 @@
  * SCOPE EXCLUSION is the criterion that most needs saying out loud: a leaf
  * whose `applies.jurisdictions` is non-empty and excludes the query's
  * jurisdiction is published in `exclusions` with the reason, never dropped.
- * "No knowledge about settling bets in Malta" and "the knowledge about settling
- * bets is New-Jersey-only" demand opposite conduct, and a filtered-away leaf
+ * "No knowledge about theming tokens for us-ca" and "the knowledge about theming
+ * tokens is eu-eaa-only" demand opposite conduct, and a filtered-away leaf
  * makes them indistinguishable. An empty `applies` is UNIVERSAL and never
  * excluded; a query naming no jurisdiction excludes nothing.
  *
@@ -660,11 +660,11 @@ function decompose(model, query, queryWords, tokens) {
   //
   //   ladder  `matchConcept` — the pre-1152 whole-query ladder that produces
   //           the published concept `score`. It is deliberately strict: it
-  //           tests the query AS A WHOLE against a term, so "add a sport" does
-  //           NOT reach "Sport", and the concept result list stays exactly what
+  //           tests the query AS A WHOLE against a term, so "add a token" does
+  //           NOT reach "Token", and the concept result list stays exactly what
   //           consumers already rank on.
   //   phrase  the token-level phrase test — does the concept's name appear IN
-  //           the ask at all? "add a sport" does contain "sport", and the leaf
+  //           the ask at all? "add a token" does contain "token", and the leaf
   //           declaring K-101 is a correct answer to it.
   //
   // Before this ticket only the ladder existed, so a concept the ask genuinely
@@ -719,8 +719,8 @@ function nearMisses(model, tokens, operations, concepts, jurisdictions) {
     const already = matchedValues(hits);
     for (const value of mintedValues(model, key)) {
       if (already.has(value)) continue;
-      // The widest spelling decides the overlap: `add-sport` opened into
-      // ["add","sport"] shares a token with "sport" that the closed spelling
+      // The widest spelling decides the overlap: `add-token` opened into
+      // ["add","token"] shares a token with "token" that the closed spelling
       // never would, and reporting the narrower answer would hide the miss.
       let overlap = [];
       for (const { words: phrase } of valuePhrases(value)) {
@@ -755,7 +755,7 @@ function nearMisses(model, tokens, operations, concepts, jurisdictions) {
  *
  * Before this ticket a leaf could only appear as an attachment to a concept
  * result, which made an entire class of correct answer unreachable: "add a
- * sport" resolves a VERB, and the leaf declaring that operation is the answer
+ * token" resolves a VERB, and the leaf declaring that operation is the answer
  * whether or not any concept matched. Hanging it off a concept meant either
  * guessing a noun to hang it on or losing it.
  *
@@ -841,8 +841,8 @@ function scoreLeaves(model, decomposition, today) {
  * A leaf is EXCLUDED when it declares jurisdictions and the query named a
  * jurisdiction that is not among them. It is excluded WITH ITS REASON and
  * published in its own section — never silently absent, which is the acceptance
- * criterion and the whole point. "No knowledge about settling bets in Malta"
- * and "the knowledge about settling bets is New-Jersey-only" demand opposite
+ * criterion and the whole point. "No knowledge about theming tokens for us-ca"
+ * and "the knowledge about theming tokens is eu-eaa-only" demand opposite
  * conduct from a reader, and a filtered-away leaf makes them indistinguishable.
  *
  * A leaf declaring NO jurisdictions is universal and never excluded — see
@@ -974,7 +974,7 @@ function resolveQuery(model, terms, today) {
     // The decomposition itself, published (UCS-1152) — which vocabulary each
     // axis of the ask landed in, and what did not land anywhere. This is the
     // section that makes the resolution auditable: a reader can see that "add a
-    // sport" resolved a VERB through the operations registry rather than
+    // token" resolved a VERB through the operations registry rather than
     // guessing at a noun.
     decomposition: {
       tokens,
@@ -989,8 +989,8 @@ function resolveQuery(model, terms, today) {
       // The resolved context a residue finding is logged ALONGSIDE (UCS-1152).
       // The acceptance criterion is that residue is emitted "with the resolved
       // context attached" — a bare unresolved token is a finding nobody can act
-      // on, while "`lacrosse` was unresolved in an ask that DID resolve
-      // add-sport and new-jersey" localizes the gap precisely enough that the
+      // on, while "`stencil` was unresolved in an ask that DID resolve
+      // add-token and eu-eaa" localizes the gap precisely enough that the
       // minting decision writes itself.
       'resolved-context': [
         ...decomposition.operations.map((o) => o.value),
@@ -1463,7 +1463,7 @@ const renderTimeCheck = (payload, lines) => lines.push(`time check: ${payload['t
  * The decomposition block, for the human surface (UCS-1152).
  *
  * Printed BEFORE the results, because it is what the results follow from: a
- * reader who sees "verb: add-sport" first understands why leaves about sports
+ * reader who sees "verb: add-token" first understands why leaves about token
  * registries came back for an ask that named no concept. Only non-empty axes
  * print — except residue and exclusions, which print their absence explicitly
  * elsewhere, since "nothing was unresolved" is a claim worth making out loud.

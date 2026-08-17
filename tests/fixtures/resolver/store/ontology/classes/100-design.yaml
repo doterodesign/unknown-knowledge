@@ -1,0 +1,37 @@
+# Resolver scoring ladder fixture (KK-06). Exercises: exact term, exact alias,
+# prefix/word match in term, summary match, confusable-with pairs, draft
+# downranking, deprecated flagging, file vs folder source-of-truth pointers.
+schema-version: 1
+entries:
+  - id: K-100
+    term: Asset source
+    class: 100-design
+    summary: A place raw graphics are imported from.
+    aliases: [asset variant, swatch]
+    source-of-truth: [src/design/assets/registry.ts]
+    confusable-with: [K-110]
+    status: active
+  - id: K-110
+    term: Asset target
+    class: 100-design
+    summary: A place rendered graphics are written to.
+    source-of-truth: [src/design/targets]
+    confusable-with: [K-100]
+    status: active
+  - id: K-120
+    term: Export
+    class: 100-design
+    summary: Rendering artboards to a shareable file after layout.
+    source-of-truth: [src/design/export.ts]
+    status: active
+  - id: K-130
+    term: Export preset
+    class: 100-design
+    summary: The saved dimensions and scale a batch renders at.
+    status: draft
+  - id: K-140
+    term: Palette
+    class: 100-design
+    summary: Legacy colour table retained for export audits.
+    source-of-truth: [src/palette]
+    status: deprecated

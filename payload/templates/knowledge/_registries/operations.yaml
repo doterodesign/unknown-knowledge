@@ -8,8 +8,8 @@
 #
 #   values:
 #     - value: reconcile
-#       gloss: Match a settlement batch against the ledger.
-#       warrant: 362.1 documents the reconciliation procedure.
+#       gloss: Export a component set to a published package.
+#       warrant: 362.1 documents the export procedure.
 #       decision: D-014
 #       minted: "2026-07-07"
 schema-version: 1

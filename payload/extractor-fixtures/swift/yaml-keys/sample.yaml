@@ -4,11 +4,11 @@
 # into the top-level set, and a quoted "on" key — YAML 1.2 loads it as the
 # string "on" (the 1.1 boolean coercion this kind coerce-refuses never
 # fires here). Pair: EXPECTED.yaml.
-service: wallet
+service: renderer
 
 # Nested block: `region` / `retries` are NOT top-level keys.
-defaults: &wallet-defaults
-  region: us-nj
+defaults: &renderer-defaults
+  region: us-east
   retries: 3
 
 limits:
@@ -16,8 +16,8 @@ limits:
   - weekly
 
 fallback:
-  <<: *wallet-defaults
+  <<: *renderer-defaults
   retries: 5
 
 "on":
-  deposit: notify
+  export: notify

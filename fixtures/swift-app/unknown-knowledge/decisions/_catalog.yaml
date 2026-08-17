@@ -3,5 +3,5 @@ schema-version: 1
 store: decisions
 entries:
   - id: D-001
-    title: Sports are registered as a raw-value Swift enum
-    file: entries/D-001-sport-enum-registry.yaml
+    title: Canvas tools are registered as a raw-value Swift enum
+    file: entries/D-001-canvas-tool-enum-registry.yaml

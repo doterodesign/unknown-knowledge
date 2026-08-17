@@ -4,4 +4,4 @@
 kind: json-map-keys
 file: sample.json
 symbol: config.flags
-values: [live-betting, cash-out, same-game-parlay]
+values: [multiplayer-cursors, version-history, component-variants]

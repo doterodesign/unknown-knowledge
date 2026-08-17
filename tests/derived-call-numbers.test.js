@@ -27,7 +27,7 @@ const fixture = join(repoRoot, 'tests', 'fixtures', 'derived', 'call-number-cita
 
 test('a citation-shaped field carrying a call number is a FINDING', () => {
   // The planted case: L-000117's `relates.see-also` cites the call number
-  // `SPO/ODD/CON·L-000133` instead of the accession `L-000133`.
+  // `DES/COM/CON·L-000133` instead of the accession `L-000133`.
   const model = loadStores(fixture);
   assert.equal(model.ok, false, 'the store must not load clean with a call number cited');
 
@@ -61,7 +61,7 @@ test('the validator reports it rather than passing — through the CLI seam', ()
   // never a silent pass.
   assert.equal(r.status, 2);
   assert.match(r.stderr, /pattern-mismatch/);
-  assert.match(r.stderr, /SPO\/ODD\/CON·L-000133/);
+  assert.match(r.stderr, /DES\/COM\/CON·L-000133/);
   assert.match(r.stderr, /structural checks never ran/);
 });
 
@@ -71,8 +71,8 @@ test('every id space refuses every call number shape the engine can synthesize',
   // a NEW id space that accepted middle dots fails the day it is added rather
   // than the first time somebody cites a shelf label.
   const paths = [
-    ['sportsbook', 'odds-feed', 'reference'],
-    ['payments', 'fx'],
+    ['design-system', 'components', 'reference'],
+    ['brand', 'identity'],
     ['unclassified'],
     [],
     ['123', '456'], // a numeric facet path — the shape closest to a dotted notation

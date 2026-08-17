@@ -42,26 +42,26 @@ function plantRepo(name, files) {
 
 const STORE_MIN = {
   'unknown-knowledge/ontology/_catalog.yaml':
-    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Sport\n    file: classes/100-core.yaml\n',
+    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Icon\n    file: classes/100-core.yaml\n',
   'unknown-knowledge/ontology/_rules.yaml': 'schema-version: 1\nstore: ontology\nrules: []\n',
   'unknown-knowledge/ontology/classes/100-core.yaml':
     'schema-version: 1\nentries:\n'
-    + '  - id: K-100\n    term: Sport\n    class: 100-core\n'
-    + '    summary: Bettable sports.\n    source-of-truth: [src/sports.ts]\n'
+    + '  - id: K-100\n    term: Icon\n    class: 100-core\n'
+    + '    summary: Product icons.\n    source-of-truth: [src/icons.ts]\n'
     + '    status: active\n    last-verified: "2026-01-10"\n',
 };
 
 // Two unpointed anchors so every scenario has both a suppressed and a
 // surviving finding to assert against.
 const ANCHORS = {
-  'src/sports.ts': "export const SPORTS = ['nfl', 'nba'];\n",
-  'src/markets.ts': "export const MARKETS = ['spread'];\n",
+  'src/icons.ts': "export const ICONS = ['grid', 'list'];\n",
+  'src/panels.ts': "export const PANELS = ['inspector'];\n",
   'src/locales.ts': "export const LOCALES = ['en', 'de'];\n",
 };
 
-const SUPPRESS_MARKETS =
-  '- term: markets\n'
-  + '  sourcePath: src/markets.ts\n'
+const SUPPRESS_PANELS =
+  '- term: panels\n'
+  + '  sourcePath: src/panels.ts\n'
   + '  reason: vendored table, owned upstream\n'
   + '  date: "2026-07-01"\n';
 
@@ -70,11 +70,11 @@ const SUPPRESS_MARKETS =
 test('a planted suppression filters its finding: gone from findings, counted, listed in full under suppressions', () => {
   const repo = plantRepo('basic', {
     ...STORE_MIN, ...ANCHORS,
-    'unknown-knowledge/suppressions.yaml': SUPPRESS_MARKETS,
+    'unknown-knowledge/suppressions.yaml': SUPPRESS_PANELS,
   });
   const out = runJson(repo, 0);
   const paths = out.findings.map((f) => f.path);
-  assert.ok(!paths.includes('src/markets.ts'), `suppressed finding leaked: ${paths}`);
+  assert.ok(!paths.includes('src/panels.ts'), `suppressed finding leaked: ${paths}`);
   assert.ok(paths.includes('src/locales.ts'), `unsuppressed finding must survive: ${paths}`);
   assert.equal(out.counts.suppressed, 1);
   assert.equal(out.counts.findings, out.findings.length);
@@ -82,7 +82,7 @@ test('a planted suppression filters its finding: gone from findings, counted, li
   assert.equal(out.suppressions.suppressed.length, 1);
   const sup = out.suppressions.suppressed[0];
   assert.equal(sup.code, 'unmatched-anchor');
-  assert.equal(sup.path, 'src/markets.ts');
+  assert.equal(sup.path, 'src/panels.ts');
   assert.ok(sup.draft, 'suppressed findings keep their drafted proposal');
   assert.deepEqual(out.suppressions.warnings, []);
 });
@@ -90,12 +90,12 @@ test('a planted suppression filters its finding: gone from findings, counted, li
 test('human output shows the suppressed count, not the suppressed drafts', () => {
   const repo = plantRepo('human', {
     ...STORE_MIN, ...ANCHORS,
-    'unknown-knowledge/suppressions.yaml': SUPPRESS_MARKETS,
+    'unknown-knowledge/suppressions.yaml': SUPPRESS_PANELS,
   });
   const r = run('--root', repo);
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /1 suppressed \(suppressions\.yaml\)/);
-  assert.doesNotMatch(r.stdout, /src\/markets\.ts/);
+  assert.doesNotMatch(r.stdout, /src\/panels\.ts/);
 });
 
 test('exact match only: a near-miss sourcePath (or term) suppresses nothing — no patterns in v1', () => {
@@ -103,20 +103,20 @@ test('exact match only: a near-miss sourcePath (or term) suppresses nothing — 
     ...STORE_MIN, ...ANCHORS,
     'unknown-knowledge/suppressions.yaml':
       // Wrong path for the term, and a glob that must be treated literally.
-      '- term: markets\n  sourcePath: src/market.ts\n  reason: typo\n  date: "2026-07-01"\n'
+      '- term: panels\n  sourcePath: src/panel.ts\n  reason: typo\n  date: "2026-07-01"\n'
       + '- term: locales\n  sourcePath: src/*.ts\n  reason: glob attempt\n  date: "2026-07-01"\n',
   });
   const out = runJson(repo, 0);
   assert.equal(out.counts.suppressed, 0);
   const paths = out.findings.map((f) => f.path);
-  assert.ok(paths.includes('src/markets.ts') && paths.includes('src/locales.ts'), paths);
+  assert.ok(paths.includes('src/panels.ts') && paths.includes('src/locales.ts'), paths);
 });
 
 test('unmatched-anchor identity is term AND path together — right path with wrong term does not match', () => {
   const repo = plantRepo('termcheck', {
     ...STORE_MIN, ...ANCHORS,
     'unknown-knowledge/suppressions.yaml':
-      '- term: renamed-concept\n  sourcePath: src/markets.ts\n  reason: stale after rename\n  date: "2026-07-01"\n',
+      '- term: renamed-concept\n  sourcePath: src/panels.ts\n  reason: stale after rename\n  date: "2026-07-01"\n',
   });
   const out = runJson(repo, 0);
   assert.equal(out.counts.suppressed, 0, 'a suppression whose term no longer matches must stop suppressing');
@@ -136,8 +136,8 @@ test('stale-last-verified findings suppress by concept id in BOTH fields (a conc
 test('--fail-on-findings honors suppression: a fully suppressed run exits 0', () => {
   const repo = plantRepo('failflag', {
     ...STORE_MIN,
-    'src/markets.ts': ANCHORS['src/markets.ts'],
-    'unknown-knowledge/suppressions.yaml': SUPPRESS_MARKETS,
+    'src/panels.ts': ANCHORS['src/panels.ts'],
+    'unknown-knowledge/suppressions.yaml': SUPPRESS_PANELS,
   });
   const r = run('--root', repo, '--json', '--fail-on-findings');
   assert.equal(r.status, 0, r.stdout);
@@ -150,13 +150,13 @@ test('a malformed entry warns AND its finding resurfaces — never silently supp
   const repo = plantRepo('badentry', {
     ...STORE_MIN, ...ANCHORS,
     'unknown-knowledge/suppressions.yaml':
-      // Missing `reason` — would otherwise exactly match src/markets.ts.
-      '- term: markets\n  sourcePath: src/markets.ts\n  date: "2026-07-01"\n',
+      // Missing `reason` — would otherwise exactly match src/panels.ts.
+      '- term: panels\n  sourcePath: src/panels.ts\n  date: "2026-07-01"\n',
   });
   const out = runJson(repo, 0);
   assert.equal(out.suppressions.warnings.length, 1);
   assert.match(out.suppressions.warnings[0], /entry 1 ignored/);
-  assert.ok(out.findings.some((f) => f.path === 'src/markets.ts'), 'the finding must resurface (fails open)');
+  assert.ok(out.findings.some((f) => f.path === 'src/panels.ts'), 'the finding must resurface (fails open)');
   assert.equal(out.counts.suppressed, 0);
   // The warning also reaches human eyes.
   const human = run('--root', repo);
@@ -167,29 +167,29 @@ test('v1 entries are strict: an unknown field (e.g. a pattern/expiry knob) is ma
   const repo = plantRepo('strict', {
     ...STORE_MIN, ...ANCHORS,
     'unknown-knowledge/suppressions.yaml':
-      '- term: markets\n  sourcePath: src/markets.ts\n  reason: r\n  date: "2026-07-01"\n  expires: "2027-01-01"\n',
+      '- term: panels\n  sourcePath: src/panels.ts\n  reason: r\n  date: "2026-07-01"\n  expires: "2027-01-01"\n',
   });
   const out = runJson(repo, 0);
   assert.match(out.suppressions.warnings[0] ?? '', /unknown field.*expires/);
-  assert.ok(out.findings.some((f) => f.path === 'src/markets.ts'));
+  assert.ok(out.findings.some((f) => f.path === 'src/panels.ts'));
 });
 
 test('one malformed entry never poisons the others: valid siblings still suppress', () => {
   const repo = plantRepo('mixed', {
     ...STORE_MIN, ...ANCHORS,
     'unknown-knowledge/suppressions.yaml':
-      '- not a mapping\n' + SUPPRESS_MARKETS,
+      '- not a mapping\n' + SUPPRESS_PANELS,
   });
   const out = runJson(repo, 0);
   assert.equal(out.suppressions.warnings.length, 1);
   assert.equal(out.counts.suppressed, 1);
-  assert.ok(!out.findings.some((f) => f.path === 'src/markets.ts'));
+  assert.ok(!out.findings.some((f) => f.path === 'src/panels.ts'));
 });
 
 test('a whole-file failure (unparseable YAML / wrong shape) warns and fails open — NEVER exit 2', () => {
   for (const [name, content] of [
     ['unparseable', 'term: [unclosed\n'],
-    ['notalist', 'suppressions:\n  - term: markets\n'],
+    ['notalist', 'suppressions:\n  - term: panels\n'],
   ]) {
     const repo = plantRepo(name, {
       ...STORE_MIN, ...ANCHORS,
@@ -198,7 +198,7 @@ test('a whole-file failure (unparseable YAML / wrong shape) warns and fails open
     const out = runJson(repo, 0); // advisory-side: never an engine failure
     assert.equal(out.suppressions.warnings.length, 1, name);
     assert.match(out.suppressions.warnings[0], /fails open/, name);
-    assert.ok(out.findings.some((f) => f.path === 'src/markets.ts'), `${name}: findings must resurface`);
+    assert.ok(out.findings.some((f) => f.path === 'src/panels.ts'), `${name}: findings must resurface`);
   }
 });
 
@@ -217,7 +217,7 @@ test('stores-at-root layout: suppressions.yaml sits at the root beside survey-sc
     'ontology/_rules.yaml': STORE_MIN['unknown-knowledge/ontology/_rules.yaml'],
     'ontology/classes/100-core.yaml': STORE_MIN['unknown-knowledge/ontology/classes/100-core.yaml'],
     ...ANCHORS,
-    'suppressions.yaml': SUPPRESS_MARKETS,
+    'suppressions.yaml': SUPPRESS_PANELS,
   });
   const out = runJson(repo, 0);
   assert.equal(out.counts.suppressed, 1);
@@ -227,7 +227,7 @@ test('stores-at-root layout: suppressions.yaml sits at the root beside survey-sc
 test('identical tree with suppressions → byte-identical JSON (D-012: stable sort, no wall clock)', () => {
   const repo = plantRepo('diffable', {
     ...STORE_MIN, ...ANCHORS,
-    'unknown-knowledge/suppressions.yaml': SUPPRESS_MARKETS,
+    'unknown-knowledge/suppressions.yaml': SUPPRESS_PANELS,
   });
   const first = run('--root', repo, '--json');
   const second = run('--root', repo, '--json');

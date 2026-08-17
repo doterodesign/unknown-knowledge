@@ -1,5 +1,5 @@
 {
-  "live-betting": true,
-  "cash-out": false,
-  "same-game-parlay": { "max-legs": 10 }
+  "multiplayer-cursors": true,
+  "version-history": false,
+  "component-variants": { "max-variants": 10 }
 }

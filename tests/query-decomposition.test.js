@@ -6,7 +6,7 @@
  *
  *  1. A VERB-SHAPED ask joins the operations registry and reaches the leaves
  *     that declared the operation, with NO noun guessing. Broken, the resolver
- *     silently falls back to term matching and "add a sport" returns whatever
+ *     silently falls back to term matching and "add a token" returns whatever
  *     happens to say the word — a plausible answer with no join behind it,
  *     which is the failure mode hardest to notice from the outside.
  *  2. SCOPE EXCLUSION is published with its reason. Broken, an out-of-scope
@@ -79,22 +79,22 @@ function leaf(payload, id) {
 // ------------------------------------------- AC1: the verb-shaped ask (golden)
 
 test('golden: a verb-shaped ask joins the operations registry, no noun guessing', () => {
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
 
   // The VERB axis landed in a minted registry value. `matched` names the
-  // spelling that carried it — "add sport" is the identifier `add-sport` with
+  // spelling that carried it — "add token" is the identifier `add-token` with
   // its separator opened, which is reading the identifier's own structure, not
   // fuzzy matching.
   assert.deepEqual(payload.decomposition.operations, [
-    { value: 'add-sport', matched: 'add sport', tokens: ['add', 'sport'] },
+    { value: 'add-token', matched: 'add token', tokens: ['add', 'token'] },
   ]);
 
   // The NOUN axis joined the ontology independently. `match` is null because
-  // the pre-1152 whole-query ladder does NOT consider "add a sport" a query for
-  // the concept "Sport" — the phrase test reached it, and the two joins are
+  // the pre-1152 whole-query ladder does NOT consider "add a token" a query for
+  // the concept "Token" — the phrase test reached it, and the two joins are
   // deliberately kept apart so the published concept ranking is untouched.
   assert.deepEqual(payload.decomposition.concepts, [
-    { id: 'K-101', term: 'Sport', match: null, tokens: ['sport'] },
+    { id: 'K-101', term: 'Token', match: null, tokens: ['token'] },
   ]);
 
   // No place was named, so no scope is asserted and nothing can be out of it.
@@ -108,24 +108,24 @@ test('golden: a verb-shaped ask joins the operations registry, no noun guessing'
   assert.deepEqual(
     payload.leaves.map((l) => [l.id, l.score, l.signals.map((s) => `${s.signal}:${s.via}`)]),
     [
-      ['L-000102', 6, ['operation:add-sport', 'concept:K-101', 'term:sport']],
-      ['L-000213', 4, ['operation:add-sport', 'term:sport']],
+      ['L-000102', 6, ['operation:add-token', 'concept:K-101', 'term:token']],
+      ['L-000213', 4, ['operation:add-token', 'term:token']],
     ],
   );
 
-  // The whole ask resolved: "a" is a stopword, "add" and "sport" were both
+  // The whole ask resolved: "a" is a stopword, "add" and "token" were both
   // consumed by joins. Residue is empty, and the store is entitled to say so.
   assert.deepEqual(payload.decomposition.residue, []);
 });
 
 test('the operation join is STRUCTURAL — it reaches a leaf whose text never says the verb', () => {
-  // Fixture invariant: L-000213 declares `add-sport` but its `terms` do not
+  // Fixture invariant: L-000213 declares `add-token` but its `terms` do not
   // contain the word "add". If a future fixture edit added it, this test would
   // pass for the wrong reason — so the invariant is asserted, not assumed.
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
   const checklist = leaf(payload, 'L-000213');
   assert.ok(
-    checklist.signals.some((s) => s.signal === 'operation' && s.via === 'add-sport'),
+    checklist.signals.some((s) => s.signal === 'operation' && s.via === 'add-token'),
     'L-000213 must be reached by its declared operation',
   );
   assert.ok(
@@ -135,32 +135,32 @@ test('the operation join is STRUCTURAL — it reaches a leaf whose text never sa
 });
 
 test('only the operation the ask NAMED scores, not every operation a leaf declares', () => {
-  // L-000213 declares both `add-sport` and `retire-sport`. An ask that names
+  // L-000213 declares both `add-token` and `retire-token`. An ask that names
   // one must score it on that one alone — crediting a leaf for every verb it
   // happens to declare would make the score a property of the leaf rather than
   // of the match, and two leaves with different declared breadth would rank by
   // how much they claim instead of by how well they answer.
-  const retiring = resolve('retire a sport');
-  assert.deepEqual(retiring.decomposition.operations.map((o) => o.value), ['retire-sport']);
+  const retiring = resolve('retire a token');
+  assert.deepEqual(retiring.decomposition.operations.map((o) => o.value), ['retire-token']);
   assert.deepEqual(
     leaf(retiring, 'L-000213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
-    ['retire-sport'],
+    ['retire-token'],
   );
 
-  const adding = resolve('add a sport');
+  const adding = resolve('add a token');
   assert.deepEqual(
     leaf(adding, 'L-000213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
-    ['add-sport'],
+    ['add-token'],
   );
 });
 
 test('a SUPPRESSED registry value never joins an ask', () => {
-  // `void-bet` is suppressed — a value a steward explicitly refused. Joining it
+  // `archive-theme` is suppressed — a value a steward explicitly refused. Joining it
   // would resolve a query through vocabulary the store has disowned.
-  const payload = resolve('void a bet');
+  const payload = resolve('archive a theme');
   assert.deepEqual(payload.decomposition.operations, []);
   assert.ok(
-    !payload.decomposition['near-miss'].some((m) => m.id === 'void-bet'),
+    !payload.decomposition['near-miss'].some((m) => m.id === 'archive-theme'),
     'a suppressed value is not minted vocabulary and is not swept for near-misses',
   );
 });
@@ -168,31 +168,31 @@ test('a SUPPRESSED registry value never joins an ask', () => {
 // --------------------------------------- AC2: scope exclusion, with reasons
 
 test('golden: a jurisdiction-scoped ask excludes non-applicable leaves WITH the reason', () => {
-  const payload = resolve('settle bets in malta');
+  const payload = resolve('export themes in us ca');
 
   assert.deepEqual(payload.decomposition.jurisdictions, [
-    { value: 'malta', matched: 'malta', tokens: ['malta'] },
+    { value: 'us-ca', matched: 'us ca', tokens: ['us', 'ca'] },
   ]);
 
-  // The New-Jersey leaf is EXCLUDED — present in the payload, named, with the
+  // The EU leaf is EXCLUDED — present in the payload, named, with the
   // reason that explains it. This is the criterion in full: excluded, never
   // silently absent.
   assert.deepEqual(payload.exclusions, [
     {
       id: 'L-000140',
       notation: '600.2',
-      heading: 'Void-bet refund basis',
-      file: 'knowledge/sportsbook/600.2-void-bet-refund-basis.md',
-      applies: ['new-jersey'],
-      asked: ['malta'],
-      reason: 'declares applies.jurisdictions [new-jersey] — the query is scoped to [malta], which this leaf does not cover (UCS-1152)',
+      heading: 'Archived-theme fallback basis',
+      file: 'knowledge/design-system/600.2-archived-theme-fallback-basis.md',
+      applies: ['eu-eaa'],
+      asked: ['us-ca'],
+      reason: 'declares applies.jurisdictions [eu-eaa] — the query is scoped to [us-ca], which this leaf does not cover (UCS-1152)',
     },
   ]);
 
   // And it is genuinely out of the result set, not merely annotated.
   assert.ok(!payload.leaves.some((l) => l.id === 'L-000140'));
 
-  // The Malta leaf is kept, and so is the leaf declaring NO jurisdictions:
+  // The CA leaf is kept, and so is the leaf declaring NO jurisdictions:
   // empty `applies` is universal, never excluded.
   assert.deepEqual(payload.leaves.map((l) => l.id), ['L-000133', 'L-000190']);
   assert.deepEqual(leaf(payload, 'L-000133').applies, []);
@@ -201,15 +201,15 @@ test('golden: a jurisdiction-scoped ask excludes non-applicable leaves WITH the 
 test('the exclusion is symmetric — scoping the other way excludes the other leaf', () => {
   // The mirror case, which is what proves the rule is a JOIN and not a pinned
   // special case for one jurisdiction.
-  const payload = resolve('settle bets in new jersey');
+  const payload = resolve('export themes in eu eaa');
   assert.deepEqual(payload.exclusions.map((x) => [x.id, x.applies, x.asked]), [
-    ['L-000190', ['malta'], ['new-jersey']],
+    ['L-000190', ['us-ca'], ['eu-eaa']],
   ]);
   assert.deepEqual(payload.leaves.map((l) => l.id), ['L-000133', 'L-000140']);
 });
 
 test('an unscoped ask excludes nothing — with no scope asserted there is nothing to be outside of', () => {
-  const payload = resolve('settle a bet');
+  const payload = resolve('export a theme');
   assert.deepEqual(payload.decomposition.jurisdictions, []);
   assert.deepEqual(payload.exclusions, []);
   // Both jurisdiction-bearing leaves are present when no scope was named.
@@ -222,7 +222,7 @@ test('golden: every published score is reproducible from its own signals', () =>
   // The invariant that makes ranking auditable rather than asserted. Checked
   // across every leaf of every query in the fixture, so a new signal that
   // forgets to publish itself fails here rather than in a reader's judgement.
-  for (const query of ['add a sport', 'settle bets in malta', 'settle a bet', 'sport registry']) {
+  for (const query of ['add a token', 'export themes in us ca', 'export a theme', 'token registry']) {
     const payload = resolve(query);
     for (const l of payload.leaves) {
       const sum = l.signals.reduce((total, s) => total + s.score, 0);
@@ -235,7 +235,7 @@ test('golden: every published score is reproducible from its own signals', () =>
 });
 
 test('the payload carries the scoring table it was ranked with', () => {
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
   // Derived from the module, never restated: a hard-coded copy here would pass
   // while the engine and the published table drifted apart.
   assert.deepEqual(payload.scoring.leaf, { ...LEAF_SIGNALS });
@@ -246,7 +246,7 @@ test('the payload carries the scoring table it was ranked with', () => {
 });
 
 test('golden: time-verdict and draft-stage demotions both apply, each with its reason', () => {
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
   const checklist = leaf(payload, 'L-000213');
 
   // Both demotions fired on one leaf, and each is named. A leaf that is draft
@@ -267,7 +267,7 @@ test('golden: time-verdict and draft-stage demotions both apply, each with its r
 });
 
 test('a demoted leaf is never filtered — it is still published, scored, and explained', () => {
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
   const checklist = leaf(payload, 'L-000213');
   assert.equal(checklist.score, 4, 'a demoted leaf keeps its score');
   assert.ok(checklist.signals.length, 'a demoted leaf still shows its joins');
@@ -275,27 +275,27 @@ test('a demoted leaf is never filtered — it is still published, scored, and ex
 });
 
 test('golden: near-misses are reported with the overlap that carried them', () => {
-  // "sport registry" names the concept K-101 outright. Both sport OPERATIONS
-  // share the token "sport" without being asked for — neither ask said "add" or
+  // "token registry" names the concept K-101 outright. Both token OPERATIONS
+  // share the token "token" without being asked for — neither ask said "add" or
   // "retire" — so both are near-misses, reported with the token that carried
-  // them. K-103 "Bet status" shares nothing and must be absent: near-miss is a
+  // them. K-103 "Theme status" shares nothing and must be absent: near-miss is a
   // report of near-relevance, not a list of everything in the store.
-  const payload = resolve('sport registry');
+  const payload = resolve('token registry');
   assert.deepEqual(payload.decomposition['near-miss'], [
-    { kind: 'operation', id: 'add-sport', overlap: ['sport'] },
-    { kind: 'operation', id: 'retire-sport', overlap: ['sport'] },
+    { kind: 'operation', id: 'add-token', overlap: ['token'] },
+    { kind: 'operation', id: 'retire-token', overlap: ['token'] },
   ]);
   assert.ok(!payload.decomposition['near-miss'].some((m) => m.id === 'K-103'));
 });
 
 test('a near-miss reports a verb the ask nearly named', () => {
-  // "bet settlement" MATCHES K-103 through its alias "bet" — so the concept is
-  // a hit, not a near-miss, which is the distinction being drawn here. The
-  // operation `settle-bet` needs both its words and got one, so it near-misses
+  // "theme lifecycle" MATCHES K-103 through its alias "theme" — so the concept
+  // is a hit, not a near-miss, which is the distinction being drawn here. The
+  // operation `export-theme` needs both its words and got one, so it near-misses
   // on the token that overlapped.
-  const payload = resolve('bet settlement');
+  const payload = resolve('theme lifecycle');
   assert.deepEqual(payload.decomposition['near-miss'], [
-    { kind: 'operation', id: 'settle-bet', overlap: ['bet'] },
+    { kind: 'operation', id: 'export-theme', overlap: ['theme'] },
   ]);
   // The matched concept is where a match belongs, and is not double-reported.
   assert.deepEqual(payload.decomposition.concepts.map((c) => c.id), ['K-103']);
@@ -305,17 +305,17 @@ test('a near-miss reports a verb the ask nearly named', () => {
 // ----------------------------------------------- AC4: residue (golden)
 
 test('golden: residue is exactly the unconsumed non-stopword tokens, with resolved context', () => {
-  const payload = resolve('add a new sport (lacrosse) for the new jersey launch');
+  const payload = resolve('add a token (stencil) for the eu eaa launch');
 
-  // "lacrosse" is the novelty — the one word the store genuinely does not know.
-  // "a", "for", "the" and "launch" are stopwords; "add"/"sport" went to the
-  // verb and noun joins; "new"/"jersey" went to the place join. What is left is
+  // "stencil" is the novelty — the one word the store genuinely does not know.
+  // "a", "for", "the" and "launch" are stopwords; "add"/"token" went to the
+  // verb and noun joins; "eu"/"eaa" went to the place join. What is left is
   // precisely the gap.
-  assert.deepEqual(payload.decomposition.residue, ['lacrosse']);
+  assert.deepEqual(payload.decomposition.residue, ['stencil']);
 
   // And it arrives with the context that DID resolve, which is what makes the
   // finding actionable: an unresolved token alone localizes nothing.
-  assert.deepEqual(payload.decomposition['resolved-context'], ['add-sport', 'K-101', 'new-jersey']);
+  assert.deepEqual(payload.decomposition['resolved-context'], ['add-token', 'K-101', 'eu-eaa']);
 
   // The ask still resolved on its resolved fraction — residue is a report, not
   // a failure, and the leaves it did reach are still ranked.
@@ -323,34 +323,34 @@ test('golden: residue is exactly the unconsumed non-stopword tokens, with resolv
 });
 
 test('stopwords never appear in residue, and domain words always can', () => {
-  const payload = resolve('how should we process the withdrawal');
+  const payload = resolve('how should we wire the telemetry');
   for (const token of payload.decomposition.residue) {
     assert.ok(!STOPWORDS.has(token), `stopword "${token}" leaked into residue`);
   }
-  // "withdrawal" is not vocabulary this store governs, and it is emphatically
+  // "telemetry" is not vocabulary this store governs, and it is emphatically
   // not a stopword: it must be reported, or the store never learns it is missing.
-  assert.ok(payload.decomposition.residue.includes('withdrawal'));
+  assert.ok(payload.decomposition.residue.includes('telemetry'));
 });
 
 test('a token consumed by ANY join is not residue', () => {
   // Each axis in turn, so a regression that stops one join from recording its
   // consumption is caught rather than masked by the other two.
-  assert.ok(!resolve('add a sport').decomposition.residue.includes('add'), 'verb join consumes');
-  assert.ok(!resolve('sport registry').decomposition.residue.includes('sport'), 'noun join consumes');
-  assert.ok(!resolve('settle bets in malta').decomposition.residue.includes('malta'), 'place join consumes');
+  assert.ok(!resolve('add a token').decomposition.residue.includes('add'), 'verb join consumes');
+  assert.ok(!resolve('token registry').decomposition.residue.includes('token'), 'noun join consumes');
+  assert.ok(!resolve('export themes in us ca').decomposition.residue.includes('us-ca'), 'place join consumes');
   // And a leaf's own `terms` text is a join like any other.
-  assert.ok(!resolve('sport registry').decomposition.residue.includes('registry'), 'term join consumes');
+  assert.ok(!resolve('token registry').decomposition.residue.includes('registry'), 'term join consumes');
 });
 
 test('a repeated unresolved token is one residue entry', () => {
-  const payload = resolve('lacrosse lacrosse');
-  assert.deepEqual(payload.decomposition.residue, ['lacrosse']);
+  const payload = resolve('stencil stencil');
+  assert.deepEqual(payload.decomposition.residue, ['stencil']);
 });
 
 // ------------------------------------------- AC5: zero resolution (golden)
 
 test('golden: zero resolution exits 0 with an explicit empty result and fallback conduct', () => {
-  const payload = resolve('prediction markets liquidity');
+  const payload = resolve('augmented reality mockups');
 
   // Explicitly empty, every section present. A consumer never needs a presence
   // check to tell "nothing matched" from "this engine predates the section".
@@ -362,7 +362,7 @@ test('golden: zero resolution exits 0 with an explicit empty result and fallback
   assert.deepEqual(payload.decomposition.jurisdictions, []);
 
   // The whole ask is residue, which is the honest report.
-  assert.deepEqual(payload.decomposition.residue, ['prediction', 'markets', 'liquidity']);
+  assert.deepEqual(payload.decomposition.residue, ['augmented', 'reality', 'mockups']);
   assert.deepEqual(payload.decomposition['resolved-context'], []);
 
   // The conduct is IN THE PAYLOAD — machine-distinguishable from a failure,
@@ -376,13 +376,13 @@ test('golden: zero resolution exits 0 with an explicit empty result and fallback
 test('conduct is present ONLY on a zero resolution', () => {
   // A payload that resolved something must not carry fallback conduct: an agent
   // that saw it on every run would learn to ignore it.
-  assert.equal(Object.hasOwn(resolve('add a sport'), 'conduct'), false);
-  assert.equal(Object.hasOwn(resolve('prediction markets'), 'conduct'), true);
+  assert.equal(Object.hasOwn(resolve('add a token'), 'conduct'), false);
+  assert.equal(Object.hasOwn(resolve('augmented reality'), 'conduct'), true);
 });
 
 test('zero resolution is exit 0, and a lookup that never ran is exit 2', () => {
   // The exit contract's whole point: 0 means the lookup RAN, hits or none.
-  const empty = runCli('resolve.js', 'prediction markets liquidity', '--root', STORE, '--json');
+  const empty = runCli('resolve.js', 'augmented reality mockups', '--root', STORE, '--json');
   assert.equal(empty.status, 0);
 
   // A usage failure is 2, never 1, and never a clean empty result.
@@ -395,35 +395,35 @@ test('zero resolution is exit 0, and a lookup that never ran is exit 2', () => {
 });
 
 test('the human surface states zero resolution and its conduct, never silence', () => {
-  const r = runCli('resolve.js', 'prediction markets liquidity', '--root', STORE, '--today', TODAY);
+  const r = runCli('resolve.js', 'augmented reality mockups', '--root', STORE, '--today', TODAY);
   assert.equal(r.status, 0);
   assert.match(r.stdout, /zero resolution is a normal outcome/);
-  assert.match(r.stdout, /residue \(unresolved\): prediction, markets, liquidity/);
+  assert.match(r.stdout, /residue \(unresolved\): augmented, reality, mockups/);
 });
 
 // ------------------------------------------------------ the human surface
 
 test('the human surface shows the decomposition, the signals, and the exclusion reason', () => {
-  const r = runCli('resolve.js', 'settle bets in malta', '--root', STORE, '--today', TODAY);
+  const r = runCli('resolve.js', 'export themes in us ca', '--root', STORE, '--today', TODAY);
   assert.equal(r.status, 0);
-  assert.match(r.stdout, /verb {2}-> operations: settle-bet/);
-  assert.match(r.stdout, /place -> jurisdictions: malta/);
+  assert.match(r.stdout, /verb {2}-> operations: export-theme/);
+  assert.match(r.stdout, /place -> jurisdictions: us-ca/);
   assert.match(r.stdout, /excluded by scope:/);
   assert.match(r.stdout, /L-000140/);
-  assert.match(r.stdout, /the query is scoped to \[malta\]/);
+  assert.match(r.stdout, /the query is scoped to \[us-ca\]/);
   // The signals print, so the ranking is checkable on the human surface too.
-  assert.match(r.stdout, /signals: operation:settle-bet \+3/);
+  assert.match(r.stdout, /signals: operation:export-theme \+3/);
 });
 
 test('"residue: none" is stated out loud when the whole ask resolved', () => {
-  const r = runCli('resolve.js', 'add a sport', '--root', STORE, '--today', TODAY);
+  const r = runCli('resolve.js', 'add a token', '--root', STORE, '--today', TODAY);
   assert.match(r.stdout, /residue: none/);
 });
 
 // -------------------------------------------------------------- determinism
 
 test('output is byte-identical across runs, with no wall-clock leak (D-012)', () => {
-  for (const query of ['add a new sport for the new jersey launch', 'settle bets in malta', 'prediction markets']) {
+  for (const query of ['add a token for the eu eaa launch', 'export themes in us ca', 'augmented reality']) {
     const a = runCli('resolve.js', query, '--root', STORE, '--today', TODAY, '--json');
     const b = runCli('resolve.js', query, '--root', STORE, '--today', TODAY, '--json');
     assert.equal(a.stdout, b.stdout, `"${query}" is not byte-stable`);
@@ -447,16 +447,16 @@ test('golden: output is independent of the order a store was AUTHORED in', () =>
   // FULL payload equality, not a projection — every section at once, so a new
   // section cannot be added later without inheriting the guarantee.
   for (const query of [
-    'add a sport',
-    'retire a sport',
-    'settle bets in malta',
-    'settle bets in new jersey',
-    'sport registry',
-    'add a new sport (lacrosse) for the new jersey launch',
-    'settle a bet',
-    'bet settlement',
-    'sport',
-    'prediction markets liquidity',
+    'add a token',
+    'retire a token',
+    'export themes in us ca',
+    'export themes in eu eaa',
+    'token registry',
+    'add a token (stencil) for the eu eaa launch',
+    'export a theme',
+    'theme lifecycle',
+    'token',
+    'augmented reality mockups',
   ]) {
     const ordered = json('resolve.js', 0, query, '--root', STORE, '--today', TODAY);
     const reordered = json('resolve.js', 0, query, '--root', REORDERED, '--today', TODAY);
@@ -468,8 +468,8 @@ test('golden: output is independent of the order a store was AUTHORED in', () =>
 
   // --paths mode takes the same guarantee: it publishes leaves too.
   assert.deepEqual(
-    json('resolve.js', 0, '--paths', 'src/registry/sports.ts,src/settlement/rounding.ts', '--root', REORDERED, '--today', TODAY),
-    json('resolve.js', 0, '--paths', 'src/registry/sports.ts,src/settlement/rounding.ts', '--root', STORE, '--today', TODAY),
+    json('resolve.js', 0, '--paths', 'src/registry/tokens.ts,src/theming/rounding.ts', '--root', REORDERED, '--today', TODAY),
+    json('resolve.js', 0, '--paths', 'src/registry/tokens.ts,src/theming/rounding.ts', '--root', STORE, '--today', TODAY),
   );
 });
 
@@ -479,7 +479,7 @@ test('the reordered twin is genuinely reordered — the test would be vacuous ot
   const read = (store, file) => readFileSync(join(store, file), 'utf8');
   for (const [file, field] of [
     ['knowledge/_catalog.yaml', /- id: (L-\d+)/g],
-    ['ontology/classes/100-sportsbook.yaml', /- id: (K-\d+)/g],
+    ['ontology/classes/100-design-system.yaml', /- id: (K-\d+)/g],
     ['knowledge/_registries/operations.yaml', /- value: ([a-z-]+)/g],
     ['knowledge/_registries/jurisdictions.yaml', /- value: ([a-z-]+)/g],
   ]) {
@@ -495,26 +495,26 @@ test('the reordered twin is genuinely reordered — the test would be vacuous ot
   }
   // And the within-record arrays differ too, which is what caught the signals leak.
   assert.notEqual(
-    read(REORDERED, 'knowledge/sportsbook/600.4-sport-launch-checklist.md').match(/^operations: .*$/m)[0],
-    read(STORE, 'knowledge/sportsbook/600.4-sport-launch-checklist.md').match(/^operations: .*$/m)[0],
+    read(REORDERED, 'knowledge/design-system/600.4-token-launch-checklist.md').match(/^operations: .*$/m)[0],
+    read(STORE, 'knowledge/design-system/600.4-token-launch-checklist.md').match(/^operations: .*$/m)[0],
   );
 });
 
 test('a leaf publishes its declared arrays sorted, not as authored', () => {
   // The direct statement of the fix, so a regression names itself rather than
   // showing up as an opaque payload diff.
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
   const checklist = leaf(payload, 'L-000213');
-  // Authored `[retire-sport, add-sport]` in the reordered twin and
-  // `[add-sport, retire-sport]` here; both publish the sorted form.
-  assert.deepEqual(checklist.operations, ['add-sport', 'retire-sport']);
+  // Authored `[retire-token, add-token]` in the reordered twin and
+  // `[add-token, retire-token]` here; both publish the sorted form.
+  assert.deepEqual(checklist.operations, ['add-token', 'retire-token']);
   // Signals are sorted within each weight class — here one operation and one
   // term, so the class ordering (operation before term) is what shows.
-  assert.deepEqual(checklist.signals.map((s) => s.via), ['add-sport', 'sport']);
+  assert.deepEqual(checklist.signals.map((s) => s.via), ['add-token', 'token']);
 });
 
 test('within one demotion class and score, leaves tie-break by id ascending', () => {
-  const payload = resolve('settle a bet');
+  const payload = resolve('theme');
   const tied = payload.leaves.filter((l) => !l.downranked && l.score === payload.leaves[0].score);
   assert.ok(tied.length > 1, 'the fixture must produce a tie for this ordering test to mean anything');
   assert.deepEqual(tied.map((l) => l.id), [...tied.map((l) => l.id)].sort());
@@ -524,23 +524,23 @@ test('within one demotion class and score, leaves tie-break by id ascending', ()
 
 test('concept results keep their pre-1152 shape and scores', () => {
   // The extension promise: leaves became first-class WITHOUT renegotiating the
-  // concept ranking consumers already read. "sport" is a whole-query ladder
+  // concept ranking consumers already read. "token" is a whole-query ladder
   // match, so it produces a concept result exactly as it did before.
-  const payload = resolve('sport');
-  const sport = payload.results.find((r) => r.id === 'K-101');
-  assert.ok(sport, 'K-101 must still resolve as a concept result');
-  assert.equal(sport.score, 100);
-  assert.equal(sport.match, 'exact-term');
+  const payload = resolve('token');
+  const token = payload.results.find((r) => r.id === 'K-101');
+  assert.ok(token, 'K-101 must still resolve as a concept result');
+  assert.equal(token.score, 100);
+  assert.equal(token.match, 'exact-term');
   // The concept-attached knowledge list is untouched and still published.
-  assert.ok(Array.isArray(sport.knowledge));
-  assert.ok(sport.knowledge.some((k) => k.id === 'L-000102'));
+  assert.ok(Array.isArray(token.knowledge));
+  assert.ok(token.knowledge.some((k) => k.id === 'L-000102'));
 });
 
 test('a concept reached only by the phrase test gets no invented score', () => {
   // It appears in the decomposition (the ask named it) but NOT in results (the
   // ladder did not rank it). Inventing a rung would add concepts the pre-1152
   // engine never returned.
-  const payload = resolve('add a sport');
+  const payload = resolve('add a token');
   assert.deepEqual(payload.decomposition.concepts.map((c) => c.id), ['K-101']);
   assert.deepEqual(payload.results, []);
 });
@@ -548,11 +548,11 @@ test('a concept reached only by the phrase test gets no invented score', () => {
 test('--paths mode is unaffected by query decomposition', () => {
   // A different mode entirely, and it must not have grown a decomposition
   // section or lost its shape.
-  const payload = json('resolve.js', 0, '--paths', 'src/registry/sports.ts', '--root', STORE, '--today', TODAY);
+  const payload = json('resolve.js', 0, '--paths', 'src/registry/tokens.ts', '--root', STORE, '--today', TODAY);
   assert.equal(payload.mode, 'paths');
   assert.equal(Object.hasOwn(payload, 'decomposition'), false);
   assert.deepEqual(payload.paths.map((p) => [p.path, p.knowledge.map((k) => k.id)]), [
-    ['src/registry/sports.ts', ['L-000102']],
+    ['src/registry/tokens.ts', ['L-000102']],
   ]);
 });
 
@@ -560,16 +560,16 @@ test('--paths mode is unaffected by query decomposition', () => {
 
 test('tokenize keeps path-shaped tokens whole', () => {
   // Splitting on "/" first would destroy the only evidence an ask was a path.
-  assert.deepEqual(tokenize('src/registry/sports.ts'), ['src/registry/sports.ts']);
-  assert.deepEqual(tokenize('Add a NEW sport!'), ['add', 'a', 'new', 'sport']);
+  assert.deepEqual(tokenize('src/registry/tokens.ts'), ['src/registry/tokens.ts']);
+  assert.deepEqual(tokenize('Add a NEW token!'), ['add', 'a', 'new', 'token']);
 });
 
 test('phraseHit requires every word and consumes DISTINCT tokens', () => {
-  assert.deepEqual(phraseHit(['new', 'jersey'], ['new', 'jersey']), ['new', 'jersey']);
-  assert.equal(phraseHit(['new', 'jersey'], ['jersey']), null, 'a missing word fails the phrase');
+  assert.deepEqual(phraseHit(['eu', 'eaa'], ['eu', 'eaa']), ['eu', 'eaa']);
+  assert.equal(phraseHit(['eu', 'eaa'], ['eaa']), null, 'a missing word fails the phrase');
   // The singular/plural fold, and nothing beyond it.
-  assert.deepEqual(phraseHit(['bet'], ['bets']), ['bets']);
-  assert.equal(phraseHit(['sport'], ['sporting']), null, 'no stemming — aliases are the governed mechanism');
+  assert.deepEqual(phraseHit(['token'], ['tokens']), ['tokens']);
+  assert.equal(phraseHit(['token'], ['tokenized']), null, 'no stemming — aliases are the governed mechanism');
   assert.equal(phraseHit([], ['anything']), null, 'an empty phrase matches nothing, never everything');
 });
 
@@ -581,47 +581,47 @@ test('phraseHit tracks distinctness by OCCURRENCE, not by token text', () => {
 
   // Under-matching direction — a query that genuinely supplies two occurrences
   // must satisfy a phrase that needs two. This returned null before the fix.
-  assert.deepEqual(phraseHit(['sport', 'sport'], ['sport', 'sport']), ['sport', 'sport']);
+  assert.deepEqual(phraseHit(['token', 'token'], ['token', 'token']), ['token', 'token']);
   assert.deepEqual(phraseHit(['new', 'new'], ['new', 'new']), ['new', 'new']);
 
   // Over-matching direction — ONE occurrence must never satisfy two words.
-  assert.equal(phraseHit(['sport', 'sport'], ['sport']), null);
+  assert.equal(phraseHit(['token', 'token'], ['token']), null);
 
   // Two occurrences that differ only by the plural fold are still two
   // occurrences, and each may be taken once.
-  assert.deepEqual(phraseHit(['bet', 'bet'], ['bet', 'bets']), ['bet', 'bets']);
+  assert.deepEqual(phraseHit(['token', 'token'], ['token', 'tokens']), ['token', 'tokens']);
 
   // A duplicated query token does not break an ordinary single-word phrase.
-  assert.deepEqual(phraseHit(['sport'], ['sport', 'sport']), ['sport']);
+  assert.deepEqual(phraseHit(['token'], ['token', 'token']), ['token']);
 });
 
 test('a repeated word in a query still resolves its vocabulary end-to-end', () => {
   // The CLI-level consequence, so the fix is pinned at the seam and not only in
   // the unit. A stuttered ask resolves exactly as the clean one does.
-  const stuttered = resolve('add add a sport');
-  assert.deepEqual(stuttered.decomposition.operations.map((o) => o.value), ['add-sport']);
+  const stuttered = resolve('add add a token');
+  assert.deepEqual(stuttered.decomposition.operations.map((o) => o.value), ['add-token']);
   assert.deepEqual(stuttered.decomposition.residue, [], 'the duplicate is consumed, not left as residue');
 });
 
 test('phraseOverlap is the match test relaxed to any-word', () => {
-  assert.deepEqual(phraseOverlap(['bet', 'status'], ['bet', 'settlement']), ['bet']);
-  assert.deepEqual(phraseOverlap(['bet', 'status'], ['unrelated']), []);
+  assert.deepEqual(phraseOverlap(['theme', 'status'], ['theme', 'export']), ['theme']);
+  assert.deepEqual(phraseOverlap(['theme', 'status'], ['unrelated']), []);
 });
 
 test('valuePhrases reads an identifier its own way and opened out', () => {
-  assert.deepEqual(valuePhrases('add-sport'), [
-    { spelling: 'add-sport', words: ['add-sport'] },
-    { spelling: 'add sport', words: ['add', 'sport'] },
+  assert.deepEqual(valuePhrases('add-token'), [
+    { spelling: 'add-token', words: ['add-token'] },
+    { spelling: 'add token', words: ['add', 'token'] },
   ]);
   // A single-word value contributes one phrase, not a duplicate.
-  assert.deepEqual(valuePhrases('malta'), [{ spelling: 'malta', words: ['malta'] }]);
+  assert.deepEqual(valuePhrases('stencil'), [{ spelling: 'stencil', words: ['stencil'] }]);
 });
 
 test('leafScore totals the table and keeps the working', () => {
   const { score, signals } = leafScore([
-    { signal: 'operation', via: 'add-sport' },
+    { signal: 'operation', via: 'add-token' },
     { signal: 'concept', via: 'K-101' },
-    { signal: 'term', via: 'sport' },
+    { signal: 'term', via: 'token' },
   ]);
   assert.equal(score, 6);
   assert.deepEqual(signals.map((s) => s.score), [3, 2, 1]);
@@ -634,7 +634,7 @@ test('the stopword list is pinned, minimal, and holds no domain vocabulary', () 
   // Provenance: copied verbatim from the prototype's STOP set. It must stay
   // small, and it must never swallow a word the store might need to report.
   assert.ok(STOPWORDS.has('the') && STOPWORDS.has('a') && STOPWORDS.has('for'));
-  for (const domain of ['sport', 'bet', 'settlement', 'jersey', 'malta', 'registry', 'withdrawal']) {
+  for (const domain of ['token', 'theme', 'export', 'eaa', 'stencil', 'registry', 'telemetry']) {
     assert.ok(!STOPWORDS.has(domain), `"${domain}" is domain vocabulary and must never be stopworded`);
   }
   assert.ok(STOPWORDS.size < 40, 'the stopword list is minimal by design');
@@ -646,7 +646,7 @@ test('a store governing no operations resolves no verbs and still runs', () => {
   // Registry absence is the whole installed base (UCS-1148). The lookup must
   // run and report honestly, never demand a file the store never opted into.
   const legacy = fixture('resolver/store');
-  const payload = json('resolve.js', 0, 'settlement', '--root', legacy, '--today', TODAY);
+  const payload = json('resolve.js', 0, 'export', '--root', legacy, '--today', TODAY);
   assert.deepEqual(payload.decomposition.operations, []);
   assert.deepEqual(payload.decomposition.jurisdictions, []);
   // And concepts still resolve, so the pre-registry store is fully usable.

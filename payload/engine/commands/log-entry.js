@@ -4,7 +4,7 @@
  * hand-editing YAML.
  *
  *   node engine/log-entry.js create --log findings --date 2026-07-08 \
- *     --entry '{"trigger":"correction","summary":"K-210 stale per src/sports.ts"}'
+ *     --entry '{"trigger":"correction","summary":"K-210 stale per src/tokens.ts"}'
  *
  *   node engine/log-entry.js transition --file logs/findings/2026-07-08-a3f2b9c4.yaml \
  *     --to proposed --date 2026-07-09 [--reason "..."]

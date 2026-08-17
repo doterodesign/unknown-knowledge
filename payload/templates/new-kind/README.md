@@ -72,9 +72,9 @@ $ node parser.example.js fixture/sample.list
   "kind": "line-list",
   "file": "fixture/sample.list",
   "values": [
-    "nfl",
-    "nba",
-    "mlb"
+    "png",
+    "svg",
+    "pdf"
   ]
 }
 ```
@@ -89,8 +89,8 @@ $ node parser.example.js fixture/demo-anchor.list
   "kind": "line-list",
   "file": "fixture/demo-anchor.list",
   "values": [
-    "soccer",
-    "tennis"
+    "grid",
+    "stack"
   ]
 }
 ```

@@ -35,10 +35,10 @@ test('engineCommands: quoted engine path and multi-word positional query survive
 });
 
 test('engineCommands: quoted positional tokens are unwrapped, non-command lines skipped', () => {
-  const md = '```sh\n# a comment, not a command\nnode $KIT/engine/resolve.js "sport type" --json\necho not-an-engine-command\n```\n';
+  const md = '```sh\n# a comment, not a command\nnode $KIT/engine/resolve.js "export format" --json\necho not-an-engine-command\n```\n';
   const commands = engineCommands(md);
   assert.equal(commands.length, 1);
-  assert.deepEqual(commands[0].positionals, ['sport', 'type']);
+  assert.deepEqual(commands[0].positionals, ['export', 'format']);
   assert.deepEqual(commands[0].flags, ['--json']);
 });
 

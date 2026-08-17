@@ -57,24 +57,24 @@ test('the D-009 pair round-trips: listDirectory + dir-modules extract EXACTLY th
 // --------------------------------------------------------- 3. the option matrix
 
 const LISTING = [
-  dir('sportsbook'), dir('casino'), dir('poker'),
-  file('README.md'), file('home.route.ts'), file('bets.route.ts'), file('routes.test.ts'),
+  dir('editor'), dir('prototyping'), dir('whiteboard'),
+  file('README.md'), file('home.route.ts'), file('files.route.ts'), file('routes.test.ts'),
 ];
 
 test('plain (no options): the SUBDIRECTORY facet — files beside the module folders are scenery', () => {
-  assert.deepEqual(extract(LISTING, d()), ['casino', 'poker', 'sportsbook']);
+  assert.deepEqual(extract(LISTING, d()), ['editor', 'prototyping', 'whiteboard']);
 });
 
 test('pattern only: the FILE facet — matching file names as-is, subdirectories excluded', () => {
   assert.deepEqual(
     extract(LISTING, d({ pattern: '*.route.ts' })),
-    ['bets.route.ts', 'home.route.ts'],
+    ['files.route.ts', 'home.route.ts'],
   );
   // A subdirectory whose name matches the pattern is still not a file.
   const trap = [...LISTING, dir('decoy.route.ts')];
   assert.deepEqual(
     extract(trap, d({ pattern: '*.route.ts' })),
-    ['bets.route.ts', 'home.route.ts'],
+    ['files.route.ts', 'home.route.ts'],
   );
 });
 
@@ -86,7 +86,7 @@ test('strip only: subdirectory names with the suffix removed (the asset-catalog 
 test('pattern+strip: matching file names with the suffix removed (file-based routing)', () => {
   assert.deepEqual(
     extract(LISTING, d({ pattern: '*.route.ts', strip: '.route.ts' })),
-    ['bets', 'home'],
+    ['files', 'home'],
   );
 });
 

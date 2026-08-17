@@ -5,19 +5,19 @@
 // ({{ color: ... }}) OUTSIDE the anchored symbol's span — it must not match.
 // Adversarial-but-extractable: quoted dashed keys, bare keys, nested object
 // and nested array values. Pair: EXPECTED.yaml.
-export const PROMOTIONS = {
-  'welcome-bonus': { maxCents: 50000 },
-  reload: { maxCents: 10000 },
-  "odds-boost": {
-    appliesTo: ['nfl', 'nba'], // nested array — not top-level keys
+export const PANELS = {
+  'layers-panel': { defaultWidth: 240 },
+  inspector: { defaultWidth: 280 },
+  "assets-panel": {
+    appliesTo: ['editor', 'whiteboard'], // nested array — not top-level keys
   },
-  referral: { maxCents: 2500 },
+  comments: { defaultWidth: 320 },
 };
 
-export function PromoTag({ kind }: { kind: keyof typeof PROMOTIONS }) {
+export function PanelTag({ id }: { id: keyof typeof PANELS }) {
   return (
-    <span className="promo-tag" style={{ color: '#1db954' }}>
-      {kind}
+    <span className="panel-tag" style={{ color: '#1db954' }}>
+      {id}
     </span>
   );
 }

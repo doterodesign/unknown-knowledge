@@ -15,7 +15,7 @@ registry: authority-tiers
 values:
   - value: vendor-doc
     gloss: The vendor's own published documentation.
-    warrant: L-000117 cites the OddsCo API reference.
+    warrant: L-000117 cites the Component Kit API reference.
     decision: D-401
     minted: "2026-08-16"
   - value: interview

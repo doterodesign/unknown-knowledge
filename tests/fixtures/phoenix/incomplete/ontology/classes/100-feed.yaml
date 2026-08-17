@@ -1,8 +1,8 @@
 schema-version: 1
 entries:
   - id: K-102
-    term: Odds feed
+    term: Component
     class: 100-feed
-    summary: The provider stream prices are ingested from.
+    summary: The building block a primitive or pattern is composed from.
     source-of-truth: [src/feed/latency.ts]
     status: active

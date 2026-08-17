@@ -3,18 +3,18 @@ schema-version: 1
 store: knowledge
 registry: operations
 values:
-  - value: onboard-provider
-    gloss: Bring a new odds-feed provider into the ingest pipeline.
-    warrant: L-000117 documents what onboarding a provider must account for.
+  - value: add-component
+    gloss: Add a new component to the shared library.
+    warrant: L-000117 documents what adding a component must account for.
     decision: D-401
     minted: "2026-08-16"
-  - value: settle-bet
-    gloss: Settle a priced market once its event finishes.
-    warrant: L-000133 states the rounding rule settlement applies.
+  - value: export-tokens
+    gloss: Resolve and export the design tokens a theme publishes.
+    warrant: L-000133 states the contrast rule token export applies.
     decision: D-401
     minted: "2026-08-16"
-  - value: process-withdrawal
-    gloss: Pay money out to a customer, and run the checks that gate it.
-    warrant: L-000162 states the KYC threshold and L-000171 the dispute procedure.
+  - value: ship-frontend
+    gloss: Release the web client, and run the checks that gate it.
+    warrant: L-000162 states the size budget and L-000171 the regression procedure.
     decision: D-401
     minted: "2026-08-16"

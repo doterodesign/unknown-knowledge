@@ -1,29 +1,29 @@
 # Query-decomposition fixture (UCS-1152) — the jurisdictions registry, the
 # PLACE vocabulary the query's place axis joins through.
 #
-# The New-Jersey-vs-Malta case from the prototype session lives here. Both are
-# minted, and the acceptance criterion is what happens when an ask names one:
-# a leaf declaring the OTHER is excluded WITH ITS REASON, never silently absent.
+# The EU-vs-California case lives here. Both are minted, and the acceptance
+# criterion is what happens when an ask names one: a leaf declaring the OTHER is
+# excluded WITH ITS REASON, never silently absent.
 #
-# The values are spelled as the PLACE, not as the regulator's acronym, and that
+# The values are spelled as the PLACE, not as the statute's acronym, and that
 # is a deliberate fixture choice rather than an arbitrary one. A registry value
 # is joined by its own text — the identifier as written, and the identifier with
-# its separators opened into spaces — so `new-jersey` is reached by an ask that
-# says "new jersey" while `nj-dge` would only be reached by one that says
-# "nj dge". A vocabulary meant to be joined against human asks has to be spelled
-# in the words humans use; per-value alias lists are a registry feature this
-# ticket does not introduce.
+# its separators opened into spaces — so `eu-eaa` is reached by an ask that
+# says "eu eaa" while `eaa-2025` would only be reached by one that says
+# "eaa 2025". A vocabulary meant to be joined against human asks has to be
+# spelled in the words humans use; per-value alias lists are a registry feature
+# this ticket does not introduce.
 schema-version: 1
 store: knowledge
 registry: jurisdictions
 values:
-  - value: new-jersey
-    gloss: New Jersey, regulated by the Division of Gaming Enforcement.
-    warrant: 600.2 states the New Jersey void-refund constraint.
+  - value: eu-eaa
+    gloss: The EU EEA, governed by the European Accessibility Act.
+    warrant: 600.2 states the EU archived-theme fallback constraint.
     decision: D-201
     minted: "2026-07-07"
-  - value: malta
-    gloss: Malta, regulated by the Malta Gaming Authority.
-    warrant: 600.3 states the Malta RTP disclosure constraint.
+  - value: us-ca
+    gloss: California, governed by its state accessibility statute.
+    warrant: 600.3 states the US-CA contrast disclosure constraint.
     decision: D-201
     minted: "2026-07-07"

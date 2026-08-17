@@ -9,13 +9,13 @@ payload (D-007).
 ```sh
 node payload/engine/validate.js --root fixtures/plant-unresolved-relates --json
 # exit 2, exactly one diagnostic:
-#   unresolved-ref  knowledge/product/100.1-adding-a-new-sport.md  relates.see-also[0]
+#   unresolved-ref  knowledge/product/100.1-adding-a-new-export-format.md  relates.see-also[0]
 #   relates.see-also ref "L-000999" does not resolve to any knowledge entry or catalog-declared id
 ```
 
 | Case | Target | Anchor (file:line) | Expected finding |
 |---|---|---|---|
-| unresolvable relates ref | `L-000100`'s `see-also` edge | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:21` | `unresolved-ref` at path `relates.see-also[0]`, **exit 2**, and nothing else |
+| unresolvable relates ref | `L-000100`'s `see-also` edge | `unknown-knowledge/knowledge/product/100.1-adding-a-new-export-format.md:21` | `unresolved-ref` at path `relates.see-also[0]`, **exit 2**, and nothing else |
 
 ## Why this store exists at all
 

@@ -4,13 +4,13 @@ store: knowledge
 registry: domains
 hierarchical: true
 values:
-  - value: sportsbook
-    gloss: The sportsbook vertical.
-    warrant: L-000117 and L-000213 both document sportsbook material.
+  - value: design-system
+    gloss: The shared design system.
+    warrant: L-000901 documents design-system material (its facet values are the planted findings).
     decision: D-401
     minted: "2026-08-16"
-  - value: sportsbook/odds-feed
-    gloss: Odds ingestion and the providers that supply it.
-    warrant: L-000117 states provider quirks; L-000213 states the latency budget.
+  - value: design-system/components
+    gloss: The component library and the rules its parts obey.
+    warrant: The one minted child segment — the leaf's design-system/motion is the planted unminted-segment finding.
     decision: D-401
     minted: "2026-08-16"

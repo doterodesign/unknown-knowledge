@@ -722,7 +722,7 @@ function yamlKeys(text) {
 
 /**
  * `yaml-map-keys` — keys of the mapping at the descriptor's dotted `symbol:`
- * path (e.g. `symbol: flags.betting`). Facet: key strings.
+ * path (e.g. `symbol: flags.canvas`). Facet: key strings.
  */
 function yamlMapKeys(text, descriptor) {
   const symbol = requireSymbol(descriptor, 'yaml-map-keys');
@@ -851,13 +851,13 @@ function patternToRegExp(pattern) {
 /**
  * `dir-modules` — directory-listing extraction (PRD §5.1): the value set is
  * NAMES IN A DIRECTORY, for anchors whose members are one file or subfolder
- * each (asset catalogs, per-sport modules, file-based routing). A directory
+ * each (asset catalogs, per-vertical modules, file-based routing). A directory
  * kind: `{ reads: 'directory', extract(entries, descriptor) }` — see the
  * dispatch-seam note in the module header.
  *
  * Facet (pinned by `pattern:` presence, §3.5):
  *   - no `pattern` — the SUBDIRECTORY names (folder-identity modules:
- *     src/verticals → sportsbook, casino, poker). Plain files in the listing
+ *     src/verticals → editor, prototyping, whiteboard). Plain files in the listing
  *     are not part of the facet (a README beside module folders is scenery).
  *   - with `pattern` — the FILE names matching the pattern (file-identity
  *     modules: routes/*.route.ts → home.route.ts, …). Subdirectories are not

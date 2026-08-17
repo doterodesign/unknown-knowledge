@@ -95,12 +95,12 @@ const tempDir = (t) => {
 
 test('one entry point accepts all three input shapes', () => {
   // A query.
-  const q = runCli('add a new sport', '--root', STORE, '--today', TODAY, '--json');
+  const q = runCli('add a new token', '--root', STORE, '--today', TODAY, '--json');
   assert.equal(q.status, 0);
   assert.equal(JSON.parse(q.stdout).mode, 'query');
 
   // Repo paths.
-  const p = runCli('--paths', 'src/registry/sports.ts', '--root', STORE, '--today', TODAY, '--json');
+  const p = runCli('--paths', 'src/registry/tokens.ts', '--root', STORE, '--today', TODAY, '--json');
   assert.equal(p.status, 0);
   assert.equal(JSON.parse(p.stdout).mode, 'paths');
 
@@ -114,7 +114,7 @@ test('GOLDEN: a query and its equivalent one-block document produce IDENTICAL jo
   // The size-invariance claim, made falsifiable. A query is processed as a
   // one-block document through the same `joinText`, so these must agree on
   // every axis AND on the scores — not merely overlap.
-  const text = 'add a new sport for the new jersey launch';
+  const text = 'add a new token for the eu eaa launch';
   const dir = tempDir(t);
   const doc = join(dir, 'one-block.txt');
   writeFileSync(doc, text);
@@ -197,13 +197,13 @@ test('GOLDEN: the coverage map has the prototype\'s shape', () => {
     assert.ok(hit['scope-mismatch'] === null || typeof hit['scope-mismatch'] === 'string');
   }
 
-  // The Malta leaf is reached by a document scoped to New Jersey, and the
+  // The US-CA leaf is reached by a document scoped to the EU EAA, and the
   // mismatch is FLAGGED rather than the leaf being filtered away: "this
-  // constraint is for another regulator" is a finding, not an absence.
-  const malta = map.gather.find((g) => g.id === 'L-000190');
-  assert.ok(malta, 'the out-of-scope leaf is still published');
-  assert.match(malta['scope-mismatch'], /malta/);
-  assert.match(malta['scope-mismatch'], /new-jersey/);
+  // constraint is for another jurisdiction" is a finding, not an absence.
+  const outOfScope = map.gather.find((g) => g.id === 'L-000190');
+  assert.ok(outOfScope, 'the out-of-scope leaf is still published');
+  assert.match(outOfScope['scope-mismatch'], /us-ca/);
+  assert.match(outOfScope['scope-mismatch'], /eu-eaa/);
 
   // Time verdicts travel from the shared verdict module, demotions and all.
   const stale = map.gather.find((g) => g.id === 'L-000213');
@@ -279,10 +279,10 @@ test('GOLDEN: salience — emphasis, Title-Case, and size-stepped repetition', (
   const map = coverage(join(DOCS, 'launch-plan.md'));
   const byTerm = new Map(map['candidates-ranked'].map((c) => [c.term, c]));
 
-  // EMPHASIS: `**Provisional Market Ladder**` is marked up by the author, and
+  // EMPHASIS: `**Provisional Token Ladder**` is marked up by the author, and
   // the markers survive `adapt()` (md@1 flattens whitespace, never markup), so
   // no adapter change was needed to see them.
-  const emphasized = byTerm.get('provisional market ladder');
+  const emphasized = byTerm.get('provisional token ladder');
   assert.ok(emphasized, 'the emphasized phrase is a candidate');
   assert.ok(emphasized.signatures.includes('emphasis'), 'and it is attributed to the emphasis signature');
 
@@ -332,11 +332,11 @@ test('known vocabulary, stopwords, and code blocks are SUBTRACTED from candidate
   writeFileSync(doc, [
     '# Subtraction check',
     '',
-    // `sport` and `settlement` are governed leaf terms; `Sport` is a concept
+    // `token` and `rounding` are governed leaf terms; `Token` is a concept
     // term. A phrase built only from known words is a recombination, not new
     // vocabulary — the store can already reach it.
-    'The **Sport Settlement** pairing is entirely known vocabulary.',
-    'Sport sport sport sport sport settlement settlement settlement settlement.',
+    'The **Token Rounding** pairing is entirely known vocabulary.',
+    'Token token token token token rounding rounding rounding rounding rounding.',
     '',
     // Stopwords never become candidates however often they appear.
     'The the the the the of of of of of with with with with with.',
@@ -350,7 +350,7 @@ test('known vocabulary, stopwords, and code blocks are SUBTRACTED from candidate
 
   const map = coverage(doc);
   const terms = map['candidates-ranked'].map((c) => c.term);
-  assert.ok(!terms.includes('sport settlement'), 'a phrase of only known words is not new vocabulary');
+  assert.ok(!terms.includes('token rounding'), 'a phrase of only known words is not new vocabulary');
   assert.ok(!terms.some((t) => ['the', 'of', 'with'].includes(t)), 'stopwords are never candidates');
   assert.ok(!terms.includes('widget'), 'code-block content is not scanned as prose');
   assert.ok(!terms.includes('widget factory'), 'nor are Title-Case phrases inside code');
@@ -372,7 +372,7 @@ test('two sections sharing a heading stay DISTINCT — an address is a label, no
     'The **Alpha Beta Gamma** term appears here.',
     '',
     '## Other',
-    'Filler about sport registry.',
+    'Filler about token registry.',
     '',
     '## Details',
     'The **Delta Epsilon Zeta** term appears here.',
@@ -665,11 +665,11 @@ test('an unreadable document exits 2 — a map that never ran is a failure', (t)
 });
 
 test('the three input shapes are alternatives — two at once is a usage error', () => {
-  const both = runCli('--doc', join(DOCS, 'launch-plan.md'), 'add a sport', '--root', STORE);
+  const both = runCli('--doc', join(DOCS, 'launch-plan.md'), 'add a token', '--root', STORE);
   assert.equal(both.status, 2);
   assert.match(both.stderr, /exactly one input shape/);
 
-  const docAndPaths = runCli('--doc', join(DOCS, 'launch-plan.md'), '--paths', 'src/registry/sports.ts', '--root', STORE);
+  const docAndPaths = runCli('--doc', join(DOCS, 'launch-plan.md'), '--paths', 'src/registry/tokens.ts', '--root', STORE);
   assert.equal(docAndPaths.status, 2);
   assert.match(docAndPaths.stderr, /exactly one input shape/);
 });
@@ -696,9 +696,9 @@ test('a txt document degrades structure but not process', (t) => {
   const dir = tempDir(t);
   const doc = join(dir, 'plain.txt');
   writeFileSync(doc, [
-    'We plan to add a new sport for the new jersey launch.',
+    'We plan to add a new token for the eu eaa launch.',
     '',
-    'Settlement rounding is unchanged this quarter.',
+    'Theme export rounding is unchanged this quarter.',
   ].join('\n'));
 
   const map = coverage(doc);
@@ -706,6 +706,6 @@ test('a txt document degrades structure but not process', (t) => {
   assert.equal(map.sections.length, 1, 'no headings: one section, never invented windows');
   assert.equal(map.sections[0].section, PREAMBLE_ADDRESS);
   // The joins still fire — the process is identical.
-  assert.ok(map.sections[0].joins.operations.includes('add-sport'));
+  assert.ok(map.sections[0].joins.operations.includes('add-token'));
   assert.ok(map.gather.length > 0);
 });

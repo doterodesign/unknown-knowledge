@@ -5,22 +5,22 @@
 schema-version: 1
 entries:
   - id: K-100
-    term: Sport
+    term: Icon
     class: 100-registries
-    summary: A sport vertical the product serves.
+    summary: An icon the product's icon set ships.
     source-of-truth: [src/missing.txt]
     status: active
     enumerates:
       - kind: test-lines
         source: src/missing.txt
-        values: [nfl]
+        values: [grid]
   - id: K-110
-    term: Currency
+    term: Color token
     class: 100-registries
-    summary: A settlement currency.
+    summary: A base color token.
     source-of-truth: [src/envelope.txt]
     status: active
     enumerates:
       - kind: test-lines
         source: src/envelope.txt
-        values: [usd]
+        values: [srgb]

@@ -200,8 +200,8 @@ export function sectionsOf(blocks) {
  *
  * CODE BLOCKS ARE EXCLUDED. A fenced block is content no lexicon should
  * tokenize as prose (the IR kinds exist to make exactly this distinction):
- * a code sample naming a variable `sport` is not the document discussing
- * sports, and counting it would join governed vocabulary to a symbol that
+ * a code sample naming a variable `token` is not the document discussing
+ * tokens, and counting it would join governed vocabulary to a symbol that
  * happens to share a name. The block is still IN the section — its lines are
  * inside the locator's range, so a reader who opens the section sees it.
  */
@@ -297,7 +297,7 @@ const EMPHASIS = /(\*\*|__)(?=\S)(.+?)(?<=\S)\1|(?<![\w*])(\*|_)(?=\S)([^*_]+?)(
  *
  * Deliberately conservative. Words joined by an internal lowercase connector
  * ("Bank of England") are NOT matched, because relaxing that far also matches
- * an ordinary sentence opening followed by a proper noun ("The Malta rule"),
+ * an ordinary sentence opening followed by a proper noun ("The Figma rule"),
  * and a candidate list padded with sentence openings is one a steward stops
  * reading. Under-matching leaves a term uncaptured, which the repetition
  * signature usually catches anyway; over-matching poisons the whole list.
@@ -395,15 +395,15 @@ const isConcentrated = (count, sections) => count > sections;
 /**
  * The naive singular fold, matching `sameWord` in lib/decomposition.js.
  *
- * Candidates are counted in the SAME morphology the joins use, so "sports" and
- * "sport" are one candidate exactly as they are one join. A candidate list that
+ * Candidates are counted in the SAME morphology the joins use, so "tokens" and
+ * "token" are one candidate exactly as they are one join. A candidate list that
  * folded differently from the matcher would report a term as unknown while the
  * matcher was already joining it.
  *
  * `ss` is the one exception, and it is here because the candidates are READ BY
  * A HUMAN in a way the matcher's tokens are not. Trailing-s stripping turns
  * "basis" into "basi" and "status" into "statu", so a steward deciding whether
- * to mint "Refund Basis Register" would be shown "refund basi register" — a
+ * to mint "Design Basis Register" would be shown "design basi register" — a
  * misspelling of the thing they are being asked to approve. The matcher can
  * afford the mangling because both sides of a comparison fold identically and
  * nobody reads the result; a minting proposal cannot. Words ending in `ss` are
@@ -428,7 +428,7 @@ const foldPhrase = (phrase) => String(phrase)
  * This is the "known" filter the ticket demands be subtracted from candidates,
  * and it is deliberately WORD-level rather than phrase-level. A candidate is
  * only interesting if the store cannot already express it, and a phrase built
- * entirely from words the store governs ("sport registry") is a recombination
+ * entirely from words the store governs ("token registry") is a recombination
  * of known vocabulary rather than new vocabulary — the store can already reach
  * it, and proposing it for minting would ask a steward to approve a synonym for
  * something already minted.
@@ -484,7 +484,7 @@ function extractCandidates(sections, known, threshold) {
     if (!term) return;
     const words = term.split(' ');
     // A phrase that was only a determiner plus one word is a sentence opening
-    // ("The Malta rule"), not a multi-word term. The two-word floor is applied
+    // ("The Figma rule"), not a multi-word term. The two-word floor is applied
     // AFTER stripping, so it means two words of actual term.
     if (words.length < 2) return;
     // Fully-known phrases are recombinations, not new vocabulary.
@@ -779,8 +779,8 @@ export function buildCoverageMap({ document, ir, model, joinSection, suppression
  *
  * SCOPE MISMATCH is flagged rather than filtered. A leaf whose declared
  * jurisdictions do not include any jurisdiction the DOCUMENT named is still
- * published, carrying a flag that says so: a document about a Malta launch that
- * joins a New-Jersey-only constraint has found something its author needs to
+ * published, carrying a flag that says so: a document about a us-ca launch that
+ * joins an eu-eaa-only constraint has found something its author needs to
  * see — either the constraint travels or the document has a gap — and silently
  * dropping it would answer both questions with the same silence. This is the
  * document-scale reading of the same rule `applyScope` applies to a query, and

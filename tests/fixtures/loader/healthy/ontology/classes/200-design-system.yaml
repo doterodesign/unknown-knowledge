@@ -1,0 +1,27 @@
+# Class file per PRD §3.1 — two concepts exercising refs, pointers, enumerates.
+schema-version: 1
+entries:
+  - id: K-210
+    term: Design token
+    class: 200-design-system
+    summary: A named value in the design system's shared token set.
+    aliases: [token]
+    source-of-truth: [src/design-system/tokens/registry.ts]
+    owned-by: design-system
+    used-by: [K-220]
+    confusable-with: []
+    rationale: [D-004]
+    status: active
+    last-verified: "2026-07-07"
+    enumerates:
+      - kind: ts-const-array
+        source: src/design-system/tokens/registry.ts
+        symbol: CORE_TOKENS
+        values: [color, spacing, radius]
+  - id: K-220
+    term: Component set
+    class: 200-design-system
+    summary: The staged components a designer is about to publish.
+    source-of-truth: [src/design-system/component-set]
+    confusable-with: [K-210]
+    status: active

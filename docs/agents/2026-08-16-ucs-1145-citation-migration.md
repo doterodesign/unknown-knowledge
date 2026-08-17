@@ -65,11 +65,11 @@ cannot join by sitting in the right directory.
 
 | Path | Why exempt |
 |---|---|
-| `tests/fixtures/loader/unresolved-ref/knowledge/regulation/362.1-ach-settlement-windows.md` | Plants a see-also at `"999.9"`, which no leaf carries. `load-stores.test.js` pins the literal `"999.9"` in the unresolved-ref message and dangling-edge list. |
+| `tests/fixtures/loader/unresolved-ref/knowledge/engineering/362.1-preview-deploy-windows.md` | Plants a see-also at `"999.9"`, which no leaf carries. `load-stores.test.js` pins the literal `"999.9"` in the unresolved-ref message and dangling-edge list. |
 | `tests/fixtures/loader/unresolved-ref/knowledge/_catalog.yaml` | Catalog of the above; migrating the row alone makes the store internally inconsistent. |
 | `tests/fixtures/loader/unresolved-leaf-ref/knowledge/widgets/700.1-widget-registry.md` | Cites one dangling accession and one dangling notation. `accession-ids.test.js` asserts BOTH shapes dangle. |
 | `tests/fixtures/structural-validator/typed-edges/knowledge/library/501.2-score-computation.md` | `relates.depends-on` cites 501.3 by notation while 501.3 carries an accession — pins the leaf-ref union (UCS-1151). |
-| `tests/fixtures/loader/healthy/knowledge/regulation/362.1-ach-settlement-windows.md` | The notation-only specimen (see scope correction). |
+| `tests/fixtures/loader/healthy/knowledge/engineering/362.1-preview-deploy-windows.md` | The notation-only specimen (see scope correction). |
 | `tests/fixtures/loader/healthy/knowledge/_catalog.yaml` | Catalog of the notation-only specimen. |
 | `tests/fixtures/resolver/store/knowledge/_catalog.yaml` | Catalog of the notation-only resolver store; the `id: null` golden requires unminted leaves. |
 | `tests/fixtures/structural-validator/accessioned/knowledge/widgets/700.1-widget-registry.md` | Cites its sibling by notation while carrying an accession — the mixed-store proof. |

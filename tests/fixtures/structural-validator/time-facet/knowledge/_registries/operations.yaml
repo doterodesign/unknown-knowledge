@@ -3,8 +3,8 @@ schema-version: 1
 store: knowledge
 registry: operations
 values:
-  - value: onboard-provider
-    gloss: Bring a new odds-feed provider into the ingest pipeline.
-    warrant: L-000117 documents what onboarding a provider must account for.
+  - value: add-component
+    gloss: Add a new component to the shared library.
+    warrant: L-000117 documents what adding a component must account for.
     decision: D-401
     minted: "2026-08-16"

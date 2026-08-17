@@ -12,8 +12,8 @@ values:
     decision: D-401
     minted: "2026-08-16"
   - value: world
-    gloss: An outside authority decides — a regulator, a vendor, a standard.
-    warrant: L-000117's claim is settled by the vendor's own API documentation.
+    gloss: An outside authority decides — a standards body, a vendor, a spec.
+    warrant: L-000117's claim is settled by the component kit's own API documentation.
     decision: D-401
     minted: "2026-08-16"
   - value: team

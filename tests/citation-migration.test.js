@@ -80,8 +80,8 @@ const EXEMPT = new Map([
     + 'below recognises a notation, and a malformed id trips the same test.',
   ],
   [
-    'tests/fixtures/derived/call-number-citation/knowledge/sportsbook/odds-feed-provider-quirks.md',
-    'Its relates.see-also carries "SPO/ODD/CON·L-000133" — a SYNTHESIZED CALL NUMBER '
+    'tests/fixtures/derived/call-number-citation/knowledge/design-system/icon-component-sizing-quirks.md',
+    'Its relates.see-also carries "DES/COM/CON·L-000133" — a SYNTHESIZED CALL NUMBER '
     + '(UCS-1158), which is a display string generated for one browse-tree projection '
     + 'and never an identity. This is not a retired spelling being kept alive: it is a '
     + 'shape that was never citable, planted so derived-call-numbers.test.js can prove '

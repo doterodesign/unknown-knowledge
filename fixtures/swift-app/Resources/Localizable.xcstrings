@@ -1,14 +1,14 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "cta.deposit" : {
+    "cta.share" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Deposit" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Share" } }
       }
     },
-    "cta.withdraw" : {
+    "cta.export" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Withdraw" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Export" } }
       }
     },
     "legal.disclaimer" : {
@@ -17,9 +17,9 @@
         "en" : { "stringUnit" : { "state" : "translated", "value" : "See \"strings\" : terms apply." } }
       }
     },
-    "promo.100-bonus" : {
+    "promo.100-templates" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "100% deposit match" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "100 free templates" } }
       }
     }
   },

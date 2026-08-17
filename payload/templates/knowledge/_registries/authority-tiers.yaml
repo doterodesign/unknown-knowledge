@@ -18,12 +18,12 @@
 #   values:
 #     - value: primary
 #       gloss: The issuing body's own published text.
-#       warrant: 362.1 cites the NACHA operating rules, the issuer's own text.
+#       warrant: 362.1 cites the Component Kit API reference, the vendor's own text.
 #       decision: D-014
 #       minted: "2026-07-07"
 #     - value: secondary
 #       gloss: Commentary on a primary source.
-#       warrant: 362.2 cites a trade summary of those rules.
+#       warrant: 362.2 cites a community summary of those rules.
 #       decision: D-014
 #       minted: "2026-07-07"
 schema-version: 1

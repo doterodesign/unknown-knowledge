@@ -1,0 +1,33 @@
+schema-version: 1
+entries:
+  - id: D-420
+    title: "Phoenix: split components into primitives/patterns (edition 2)"
+    category: governance
+    status: accepted
+    date: "2026-08-17"
+    deciders: [dimitri]
+    context: >
+      `design-system/components` accumulated two kinds of material that no
+      longer share a reader: how a single control is built (focus-ring spec,
+      render budget) and how several are composed (empty-state guidance). The
+      composition material landed there because it shipped alongside a
+      component, not because anyone judged it to be component-level knowledge.
+      Someone looking for the empty-state pattern had to know it was filed under
+      components, and someone building a primitive read past composition advice
+      to reach it. The class had drifted from the material it holds — the case a
+      phoenix event exists for.
+    decision: >
+      Split `design-system/components` into `design-system/primitives` and
+      `design-system/patterns`. Apply it as phoenix event P-001, whose
+      leaf-granular mapping (knowledge/_phoenix/P-001.yaml) records where each
+      leaf went and why. A class-level rename could not express this: one
+      predecessor's leaves divide across two successors, so no rule over the
+      class says which leaf goes where — only a per-accession table does.
+    consequences: >
+      Each moved leaf's edition goes 1 -> 2. No accession id changes, so every
+      citation into these leaves stays valid across the event and nothing that
+      cites them needs editing — the whole point of keying identity to the
+      accession rather than to the shelf.
+    supersedes: []
+    relates-to:
+      leaves: [L-000117, L-000133, L-000213]

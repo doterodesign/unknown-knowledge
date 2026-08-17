@@ -152,7 +152,7 @@ does not get "simplified" until it passes — the anchor goes to MISS.
 anchor, reverse-look it up —
 
 ```
-node unknown-knowledge/engine/resolve.js --paths Sources/Sportsbook/Sport.swift --root .
+node unknown-knowledge/engine/resolve.js --paths Sources/Canvas/CanvasTool.swift --root .
 ```
 
 If a concept's pointer already covers the path (folder pointers match
@@ -170,7 +170,7 @@ derivation) — become miss entries, **one fragment each**, via the helper
 ```
 node unknown-knowledge/engine/log-entry.js create --log misses --date 2026-07-08 \
   --root unknown-knowledge \
-  --entry '{"path":"Sources/Payments/Providers.swift","shape":"computed Swift array: static let all = core + regional (concatenation, no literal value set); swift-const-array is out of envelope"}'
+  --entry '{"path":"Sources/Integrations/Providers.swift","shape":"computed Swift array: static let all = core + regional (concatenation, no literal value set); swift-const-array is out of envelope"}'
 ```
 
 `shape` carries paths and structure only — never file contents verbatim

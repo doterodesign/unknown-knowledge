@@ -6,25 +6,25 @@ and says one thing.
 
 ## Registry
 
-We add a sport this quarter. The **Cold Start Window** covers the first days a
-market is live with thin liquidity.
+We add a token this quarter. The **Cold Start Window** covers the first days a
+token is live before its usage stabilizes.
 
-## Settlement
+## Export
 
-Settlement rounding is unchanged. The **Rounding Drift Audit** reconciles the
-book monthly.
+Theme export rounding is unchanged. The **Rounding Drift Audit** reconciles the
+published themes monthly.
 
-## New Jersey
+## EU EAA
 
-Void-bet refunds under the New Jersey rule. The **Refund Basis Register**
+Archived-theme fallback under the EU EAA rule. The **Fallback Basis Register**
 tracks every exception.
 
-## Malta
+## California
 
-Return-to-player disclosure for Malta. The **Disclosure Latency Budget** caps
-how long the client may take to show it.
+Contrast disclosure for US CA. The **Disclosure Latency Budget** caps how long
+the client may take to show it.
 
-## Bet lifecycle
+## Theme lifecycle
 
-Bet status transitions feed the **Transition Ledger**, which nothing in the
+Theme status transitions feed the **Transition Log**, which nothing in the
 store describes yet.

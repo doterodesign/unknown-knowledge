@@ -2,16 +2,16 @@
 // kinds describe declaration shape, not file type). The JSX below contains
 // inline object literals ({{ color: ... }}) the extractor must NOT match:
 // only the named exported symbol's span counts. Concept K-107.
-import type { BetStatus } from '../types/bet-status';
+import type { ReleaseStatus } from '../types/release-status';
 
 export const STATUS_COLORS = {
-  open: '#2d7ff9',
-  settled: '#1db954',
-  voided: '#8a8f98',
-  'cashed-out': '#f5a623',
+  draft: '#8a8f98',
+  'in-review': '#2d7ff9',
+  published: '#1db954',
+  deprecated: '#f5a623',
 };
 
-export function StatusBadge({ status }: { status: BetStatus }) {
+export function StatusBadge({ status }: { status: ReleaseStatus }) {
   return (
     <span className="status-badge" style={{ color: STATUS_COLORS[status] }}>
       {status}

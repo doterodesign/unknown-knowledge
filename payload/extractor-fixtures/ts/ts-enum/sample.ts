@@ -3,9 +3,9 @@
 // pair pins `emit: names`, so the expected set is the uppercase names, not
 // the lowercase raw values. Adversarial-but-extractable: string initializers,
 // mixed quotes, interleaved comment, trailing comma. Pair: EXPECTED.yaml.
-export enum Currency {
-  USD = 'usd',
-  EUR = "eur", // euro zone
-  GBP = 'gbp',
-  CAD = 'cad',
+export enum ColorSpace {
+  SRGB = 'srgb',
+  P3 = "display-p3", // wide gamut
+  LAB = 'lab',
+  LCH = 'lch',
 }

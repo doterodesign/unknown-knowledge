@@ -30,18 +30,18 @@ function runJson(...args) {
 // ------------------------------------------------- scoring ladder (A4)
 
 test('exact term match scores 100 and ranks first', () => {
-  const out = runJson('settlement');
+  const out = runJson('export');
   assert.equal(out.mode, 'query');
-  assert.equal(out.query, 'settlement');
+  assert.equal(out.query, 'export');
   const first = out.results[0];
   assert.equal(first.id, 'K-120');
-  assert.equal(first.term, 'Settlement');
+  assert.equal(first.term, 'Export');
   assert.equal(first.score, 100);
   assert.equal(first.match, 'exact-term');
 });
 
 test('exact alias match scores 80', () => {
-  const out = runJson('tender');
+  const out = runJson('swatch');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
     [['K-100', 80, 'exact-alias']],
@@ -49,7 +49,7 @@ test('exact alias match scores 80', () => {
 });
 
 test('prefix/word match in term scores 60; score ties break by id asc', () => {
-  const out = runJson('method');
+  const out = runJson('asset');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
     [['K-100', 60, 'term-match'], ['K-110', 60, 'term-match']],
@@ -57,9 +57,9 @@ test('prefix/word match in term scores 60; score ties break by id asc', () => {
 });
 
 test('alias prefix/word match scores 50 — aliases get the same rung treatment as terms', () => {
-  // K-100 has alias "payment instrument"; a partial alias query must resolve
+  // K-100 has alias "asset variant"; a partial alias query must resolve
   // (aliases are the synonyms recorded to cure retrieval-struggle findings).
-  const out = runJson('instrument');
+  const out = runJson('variant');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
     [['K-100', 50, 'alias-match']],
@@ -67,7 +67,7 @@ test('alias prefix/word match scores 50 — aliases get the same rung treatment 
 });
 
 test('summary word match scores 40', () => {
-  const out = runJson('banks');
+  const out = runJson('artboards');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
     [['K-120', 40, 'summary-match']],
@@ -75,14 +75,14 @@ test('summary word match scores 40', () => {
 });
 
 test('matching is case-insensitive; multi-word query terms join into one query', () => {
-  const out = runJson('PAYMENT', 'Instrument');
-  assert.equal(out.query, 'payment instrument');
+  const out = runJson('ASSET', 'Variant');
+  assert.equal(out.query, 'asset variant');
   assert.equal(out.results[0].id, 'K-100');
   assert.equal(out.results[0].match, 'exact-alias');
 });
 
 test('one ranked list: exact > summary > downranked prefix (§3.5)', () => {
-  const out = runJson('settlement');
+  const out = runJson('export');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match, r.status]),
     [
@@ -94,7 +94,7 @@ test('one ranked list: exact > summary > downranked prefix (§3.5)', () => {
 });
 
 test('draft/proposed concepts are downranked by 30, floored at 1 (§3.5)', () => {
-  const windows = runJson('settlement', 'window');
+  const windows = runJson('export', 'preset');
   const draft = windows.results.find((r) => r.id === 'K-130');
   assert.equal(draft.match, 'exact-term');
   assert.equal(draft.score, 70, 'exact-term 100 - 30 draft downrank');
@@ -103,12 +103,12 @@ test('draft/proposed concepts are downranked by 30, floored at 1 (§3.5)', () =>
 // --------------------------------- what results carry (PRD §4 resolver row)
 
 test('results carry SSOT pointers, confusable-with, and knowledge entry points', () => {
-  const out = runJson('payment', 'method');
+  const out = runJson('asset', 'source');
   const method = out.results[0];
   assert.equal(method.id, 'K-100');
-  assert.equal(method.summary, 'A way a user pays money in.');
-  assert.deepEqual(method['source-of-truth'], ['src/payments/methods/registry.ts']);
-  assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Payout method' }]);
+  assert.equal(method.summary, 'A place raw graphics are imported from.');
+  assert.deepEqual(method['source-of-truth'], ['src/design/assets/registry.ts']);
+  assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Asset target' }]);
   // The golden for one published knowledge entry point, extended over several
   // tickets. `id` is the leaf's ACCESSION: this fixture's leaves were unminted
   // and published `id: null` under UCS-1144's expand phase, and UCS-1147 made
@@ -126,9 +126,9 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
       via: 'terms',
       id: 'L-000411',
       notation: '410.2',
-      heading: 'Accepted payment instruments',
+      heading: 'Supported asset kinds',
       stage: 'draft',
-      excerpt: 'Which instruments a regulator allows for pay-in is settled per jurisdiction.',
+      excerpt: 'Which kinds an editor accepts for import is decided per surface.',
       provenance: null,
       downranked: true,
       // Extended again by the Time facet (UCS-1150). `demotions` names every
@@ -147,7 +147,7 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
         verdict: 'exempt',
         reason: 'no volatility declared — this leaf is not under time governance, so no freshness verdict applies (UCS-1150)',
       },
-      file: 'knowledge/payments/410.2-accepted-payment-instruments.md',
+      file: 'knowledge/design-system/410.2-supported-asset-kinds.md',
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
       },
@@ -159,15 +159,15 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
   // The resolver half of the draft-stage contract (UCS-1149). 410.1 is
   // verified and carries provenance; 410.2 is draft and carries none. Each is
   // pinned through the concept whose terms reach it.
-  const settlement = runJson('settlement').results.find((r) => r.id === 'K-120');
-  assert.deepEqual(settlement.knowledge, [
+  const exported = runJson('export').results.find((r) => r.id === 'K-120');
+  assert.deepEqual(exported.knowledge, [
     {
       via: 'terms',
       id: 'L-000410',
       notation: '410.1',
-      heading: 'Card settlement windows',
+      heading: 'Export format windows',
       stage: 'verified',
-      excerpt: 'Card networks settle captured funds in fixed windows.',
+      excerpt: 'Renderers flush exported artboards in fixed windows.',
       // Carried verbatim: no registry governs provenance, so the resolver has
       // no judgement to apply and passing it through unchanged is the contract.
       provenance: { author: 'dimitri', 'skill-version': 'kb-build@2.0.0' },
@@ -183,7 +183,7 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
         verdict: 'exempt',
         reason: 'no volatility declared — this leaf is not under time governance, so no freshness verdict applies (UCS-1150)',
       },
-      file: 'knowledge/payments/410.1-card-settlement-windows.md',
+      file: 'knowledge/design-system/410.1-export-format-windows.md',
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
       },
@@ -193,49 +193,49 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
   // The draft leaf still SURFACES — a demotion, never a filter: a draft leaf is
   // the best answer when it is the only answer, and hiding it would send the
   // reader off to invent one.
-  const instruments = runJson('payment', 'instrument').results.find((r) => r.id === 'K-100');
+  const instruments = runJson('asset', 'variant').results.find((r) => r.id === 'K-100');
   assert.equal(instruments.knowledge[0].downranked, true);
   assert.equal(instruments.knowledge[0].stage, 'draft');
 
   // The human surface says WHY the leaf sits where it does, and shows the
   // derived excerpt where display prose used to come from `description`.
-  const human = run('settlement', '--root', store);
+  const human = run('export', '--root', store);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /Card networks settle captured funds in fixed windows\./);
-  const drafty = run('payment', 'instrument', '--root', store);
+  assert.match(human.stdout, /Renderers flush exported artboards in fixed windows\./);
+  const drafty = run('asset', 'variant', '--root', store);
   assert.match(drafty.stdout, /\[draft — downranked\]/);
 });
 
 test('knowledge entry points come from leaf terms naming the concept term or alias', () => {
-  const out = runJson('settlement');
-  const settlement = out.results.find((r) => r.id === 'K-120');
-  assert.deepEqual(settlement.knowledge.map((k) => k.notation), ['410.1']);
-  const ledger = out.results.find((r) => r.id === 'K-140');
-  assert.deepEqual(ledger.knowledge, []);
+  const out = runJson('export');
+  const exported = out.results.find((r) => r.id === 'K-120');
+  assert.deepEqual(exported.knowledge.map((k) => k.notation), ['410.1']);
+  const palette = out.results.find((r) => r.id === 'K-140');
+  assert.deepEqual(palette.knowledge, []);
 });
 
 test('deprecated concepts are surfaced flagged, in JSON and human output (§3.5)', () => {
-  const json = runJson('ledger');
+  const json = runJson('palette');
   assert.equal(json.results[0].status, 'deprecated');
-  const human = run('ledger', '--root', store);
+  const human = run('palette', '--root', store);
   assert.equal(human.status, 0);
   assert.match(human.stdout, /K-140/);
   assert.match(human.stdout, /\[deprecated\]/);
 });
 
 test('confusable-with warning is prominent in human output', () => {
-  const human = run('payment', 'method', '--root', store);
+  const human = run('asset', 'source', '--root', store);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /confusable-with: K-110 "Payout method"/);
+  assert.match(human.stdout, /confusable-with: K-110 "Asset target"/);
 });
 
 test('human output is readable: id, term, score, pointers, entry points', () => {
-  const human = run('settlement', '--root', store);
+  const human = run('export', '--root', store);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /resolve "settlement" -> 3 concepts/);
-  assert.match(human.stdout, /K-120 {2}Settlement {2}\[active\] {2}score 100 \(exact-term\)/);
-  assert.match(human.stdout, /source-of-truth:\n {4}src\/payments\/settlement\.ts/);
-  assert.match(human.stdout, /410\.1 {2}Card settlement windows/);
+  assert.match(human.stdout, /resolve "export" -> 3 concepts/);
+  assert.match(human.stdout, /K-120 {2}Export {2}\[active\] {2}score 100 \(exact-term\)/);
+  assert.match(human.stdout, /source-of-truth:\n {4}src\/design\/export\.ts/);
+  assert.match(human.stdout, /410\.1 {2}Export format windows/);
 });
 
 // --------------------------------------------- zero resolution (PRD §7)
@@ -253,7 +253,7 @@ test('zero-hit query is a normal outcome: exit 0, explicit empty result', () => 
 // ------------------------------------- --paths reverse lookup (ACT step)
 
 test('--paths: exact file pointer maps back to its concept', () => {
-  const out = runJson('--paths', 'src/payments/settlement.ts');
+  const out = runJson('--paths', 'src/design/export.ts');
   assert.equal(out.mode, 'paths');
   // `knowledge` joins the result shape in UCS-1151 — the leaves governing this
   // path. Empty here: this fixture's leaves declare neither `paths` nor
@@ -261,9 +261,9 @@ test('--paths: exact file pointer maps back to its concept', () => {
   // is the compatibility claim worth pinning alongside the new field.
   assert.deepEqual(out.paths, [
     {
-      path: 'src/payments/settlement.ts',
+      path: 'src/design/export.ts',
       concepts: [
-        { id: 'K-120', term: 'Settlement', status: 'active', pointer: 'src/payments/settlement.ts' },
+        { id: 'K-120', term: 'Export', status: 'active', pointer: 'src/design/export.ts' },
       ],
       knowledge: [],
     },
@@ -271,46 +271,46 @@ test('--paths: exact file pointer maps back to its concept', () => {
 });
 
 test('--paths: a file under a folder pointer matches that concept', () => {
-  const out = runJson('--paths', 'src/payments/payouts/stripe.ts');
+  const out = runJson('--paths', 'src/design/targets/stripe.ts');
   assert.deepEqual(out.paths[0].concepts, [
-    { id: 'K-110', term: 'Payout method', status: 'active', pointer: 'src/payments/payouts' },
+    { id: 'K-110', term: 'Asset target', status: 'active', pointer: 'src/design/targets' },
   ]);
 });
 
 test('--paths: concepts carry status — a deprecated concept surfaces flagged', () => {
-  const out = runJson('--paths', 'src/ledger/entries.ts');
+  const out = runJson('--paths', 'src/palette/entries.ts');
   assert.deepEqual(out.paths[0].concepts, [
-    { id: 'K-140', term: 'Ledger', status: 'deprecated', pointer: 'src/ledger' },
+    { id: 'K-140', term: 'Palette', status: 'deprecated', pointer: 'src/palette' },
   ]);
-  const human = run('--paths', 'src/ledger/entries.ts', '--root', store);
+  const human = run('--paths', 'src/palette/entries.ts', '--root', store);
   assert.equal(human.status, 0);
   assert.match(human.stdout, /K-140.*\[deprecated\]/);
 });
 
 test('--paths: nesting applies only to folder pointers, never file pointers', () => {
-  // src/payments/settlement.ts is a FILE pointer; a path "under" it cannot exist.
-  const out = runJson('--paths', 'src/payments/settlement.ts/anything.ts');
+  // src/design/export.ts is a FILE pointer; a path "under" it cannot exist.
+  const out = runJson('--paths', 'src/design/export.ts/anything.ts');
   assert.deepEqual(out.paths, [
-    { path: 'src/payments/settlement.ts/anything.ts', concepts: [], knowledge: [] },
+    { path: 'src/design/export.ts/anything.ts', concepts: [], knowledge: [] },
   ]);
 });
 
 test('--paths: paths are normalized — .., //, internal ./, backslashes, absolute', () => {
   // `..` must attribute to the file pointer (K-120), not the folder it detoured through.
-  const dotdot = runJson('--paths', 'src/payments/payouts/../settlement.ts');
-  assert.equal(dotdot.paths[0].path, 'src/payments/settlement.ts');
+  const dotdot = runJson('--paths', 'src/design/targets/../export.ts');
+  assert.equal(dotdot.paths[0].path, 'src/design/export.ts');
   assert.deepEqual(dotdot.paths[0].concepts.map((c) => c.id), ['K-120']);
 
-  const doubled = runJson('--paths', 'src//payments/./settlement.ts');
-  assert.equal(doubled.paths[0].path, 'src/payments/settlement.ts');
+  const doubled = runJson('--paths', 'src//design/./export.ts');
+  assert.equal(doubled.paths[0].path, 'src/design/export.ts');
   assert.deepEqual(doubled.paths[0].concepts.map((c) => c.id), ['K-120']);
 
-  const backslashed = runJson('--paths', 'src\\payments\\settlement.ts');
-  assert.equal(backslashed.paths[0].path, 'src/payments/settlement.ts');
+  const backslashed = runJson('--paths', 'src\\design\\export.ts');
+  assert.equal(backslashed.paths[0].path, 'src/design/export.ts');
   assert.deepEqual(backslashed.paths[0].concepts.map((c) => c.id), ['K-120']);
 
-  const absolute = runJson('--paths', `${store}/src/payments/settlement.ts`);
-  assert.equal(absolute.paths[0].path, 'src/payments/settlement.ts');
+  const absolute = runJson('--paths', `${store}/src/design/export.ts`);
+  assert.equal(absolute.paths[0].path, 'src/design/export.ts');
   assert.deepEqual(absolute.paths[0].concepts.map((c) => c.id), ['K-120']);
 });
 
@@ -325,10 +325,10 @@ test('--paths: unmatched path is a normal outcome — empty concepts, exit 0', (
 test('--paths: comma-separated list; output deduped and sorted by path asc', () => {
   const out = runJson(
     '--paths',
-    'src/unmapped/thing.ts,./src/payments/settlement.ts,src/payments/settlement.ts',
+    'src/unmapped/thing.ts,./src/design/export.ts,src/design/export.ts',
   );
   assert.deepEqual(out.paths.map((p) => p.path), [
-    'src/payments/settlement.ts',
+    'src/design/export.ts',
     'src/unmapped/thing.ts',
   ]);
   assert.equal(out.paths[0].concepts[0].id, 'K-120');
@@ -337,8 +337,8 @@ test('--paths: comma-separated list; output deduped and sorted by path asc', () 
 // ------------------------------------------- determinism & store health
 
 test('JSON output is deterministic: two runs are byte-identical, no timestamps', () => {
-  const a = run('settlement', '--root', store, '--json');
-  const b = run('settlement', '--root', store, '--json');
+  const a = run('export', '--root', store, '--json');
+  const b = run('export', '--root', store, '--json');
   assert.equal(a.stdout, b.stdout);
   assert.doesNotMatch(a.stdout, /\d{4}-\d{2}-\d{2}T/);
 });
@@ -353,13 +353,13 @@ test('warning-only health is surfaced in human mode too', () => {
 });
 
 test('unhealthy store still resolves; health surfaced, not fatal (one health model)', () => {
-  const r = run('sport', '--root', brokenStore, '--json');
+  const r = run('design token', '--root', brokenStore, '--json');
   assert.equal(r.status, 0);
   const out = JSON.parse(r.stdout);
   assert.equal(out['store-health'].ok, false);
   assert.ok(out['store-health'].errors > 0);
   assert.equal(out.results[0].id, 'K-210');
-  const human = run('sport', '--root', brokenStore);
+  const human = run('design token', '--root', brokenStore);
   assert.match(human.stdout, /store health: /);
 });
 
@@ -393,19 +393,19 @@ test('empty/comma-only --paths exits 2 — a lookup that never ran is a failure'
 });
 
 test('--flag=value equals-forms are accepted for --root and --paths', () => {
-  const query = run('settlement', `--root=${store}`, '--json');
+  const query = run('export', `--root=${store}`, '--json');
   assert.equal(query.status, 0, query.stderr);
   assert.equal(JSON.parse(query.stdout).results[0].id, 'K-120');
-  const paths = run('--paths=src/payments/settlement.ts,src/unmapped/x.ts', `--root=${store}`, '--json');
+  const paths = run('--paths=src/design/export.ts,src/unmapped/x.ts', `--root=${store}`, '--json');
   assert.equal(paths.status, 0, paths.stderr);
   assert.deepEqual(JSON.parse(paths.stdout).paths.map((p) => p.path), [
-    'src/payments/settlement.ts',
+    'src/design/export.ts',
     'src/unmapped/x.ts',
   ]);
 });
 
 test('unreadable root exits 2 — a lookup that never ran is a failure, not a miss', () => {
-  const r = run('settlement', '--root', `${store}/does-not-exist`);
+  const r = run('export', '--root', `${store}/does-not-exist`);
   assert.equal(r.status, 2);
   assert.match(r.stderr, /resolve: /);
 });
@@ -437,9 +437,9 @@ test('--paths: a real FILE pointer still never nests — no false attribution', 
 
 test('--paths: a pointer absent from disk falls back to the name — a deleted directory still attributes', () => {
   // The `store` fixture's pointers are notional (nothing on disk), which is
-  // exactly the diff-names-deleted-paths case: `src/payments/payouts` has no
+  // exactly the diff-names-deleted-paths case: `src/design/targets` has no
   // extension, so it still nests, and the deletion reaches its concept.
-  const out = runJson('--paths', 'src/payments/payouts/stripe.ts');
+  const out = runJson('--paths', 'src/design/targets/stripe.ts');
   assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['K-110']);
 });
 
@@ -457,7 +457,7 @@ test('--root= and --paths= are as valueless as their space forms — never a sil
 
 test('--paths: an entry naming the repo root is a usage error, never silently dropped', () => {
   // `src/x.ts,.` used to drop the "." and answer about one path, not two.
-  const r = run('--paths', 'src/payments/payouts,.', '--root', store);
+  const r = run('--paths', 'src/design/targets,.', '--root', store);
   assert.equal(r.status, 2, r.stdout);
   assert.match(r.stderr, /name the repo root/);
   // `src/..` normalizes to the root the same way.

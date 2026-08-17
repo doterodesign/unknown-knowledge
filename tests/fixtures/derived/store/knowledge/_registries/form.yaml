@@ -8,7 +8,7 @@ registry: form
 values:
   - value: reference
     gloss: States how something is, for lookup.
-    warrant: L-000117 states the provider's behaviour for lookup; L-000228 the minor-unit table.
+    warrant: L-000117 states the component's behaviour for lookup; L-000228 the color token table.
     decision: D-401
     minted: "2026-08-16"
   - value: constraint
@@ -18,6 +18,6 @@ values:
     minted: "2026-08-16"
   - value: runbook
     gloss: An ordered procedure for handling a situation.
-    warrant: L-000171 is the procedure for a chargeback dispute.
+    warrant: L-000171 is the procedure for a visual regression.
     decision: D-401
     minted: "2026-08-16"

@@ -1,0 +1,17 @@
+schema-version: 1
+entries:
+  - id: D-201
+    title: Design-system governed vocabularies
+    category: governance
+    status: accepted
+    date: "2026-07-07"
+    deciders: [dimitri]
+    context: >
+      Query decomposition joins a verb against the operations registry, a noun
+      against the ontology, and a place against the jurisdictions registry.
+      Each value below is minted because a leaf in this store declares it.
+    decision: >
+      Mint the operations, jurisdictions, domain, form, anchor, stage, and
+      authority-tier values this store's leaves use. Suppress archive-theme: the
+      stewards refused the term, and a suppressed value must never join an ask.
+    supersedes: []

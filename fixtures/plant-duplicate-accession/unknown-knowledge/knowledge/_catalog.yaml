@@ -8,8 +8,8 @@ schema-version: 1
 store: knowledge
 entries:
   - id: L-000100
-    title: Adding a new sport
-    file: product/100.1-adding-a-new-sport.md
+    title: Adding a new export format
+    file: product/100.1-adding-a-new-export-format.md
   - id: L-000100
-    title: Onboarding a new sport
-    file: product/100.2-onboarding-a-new-sport.md
+    title: Registering a new export format
+    file: product/100.2-registering-a-new-export-format.md

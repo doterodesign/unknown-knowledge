@@ -10,6 +10,6 @@ values:
     minted: "2026-08-16"
   - value: constraint
     gloss: A rule the system must not violate.
-    warrant: L-000213 states a latency budget the system must hold.
+    warrant: L-000213 states a render budget the system must hold.
     decision: D-401
     minted: "2026-08-16"

@@ -14,7 +14,7 @@
  * there are useful orderings, because a projection commits to nothing.
  *
  * The two shipped axes are not arbitrary. A steward asks "what do we know about
- * odds feeds?" and wants DOMAIN first, form second — subject matter is how a
+ * design tokens?" and wants DOMAIN first, form second — subject matter is how a
  * person holds a library in their head. An agent asks "what are the constraints
  * here?" and wants FORM first: it is looking for a kind of thing to act on, and
  * the domain narrows it afterwards. Those are two genuinely different reading
@@ -217,7 +217,7 @@ export function projectLeaf(entry, axis, today) {
  *
  * DEMOTED LEAVES SORT LAST WITHIN THEIR NODE, and that is the only way demotion
  * changes the tree's shape. They are not moved to another node, not collapsed,
- * and not omitted — a steward browsing `sportsbook/odds-feed` sees every leaf
+ * and not omitted — a steward browsing `design-system/components` sees every leaf
  * filed there, with the rotted ones at the bottom wearing their reason. Sorting
  * them out of the way is a reading aid; hiding them would be a lie about what
  * the store contains.

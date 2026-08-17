@@ -24,37 +24,37 @@ export KIT="$PWD/payload"            # engine lives here in the KIT repo;
 rm -rf /tmp/a5-audit && cp -R fixtures/ts-app /tmp/a5-audit && cd /tmp/a5-audit
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-02 \
   --root unknown-knowledge --suffix aaaa0001 \
-  --entry '{"trigger":"quarantine","summary":"preflight quarantined K-108 (wrong-pointer): proceeded degraded, gathered from src/registry/sports.ts directly","consulted":{"concepts":["K-108"]}}'
+  --entry '{"trigger":"quarantine","summary":"preflight quarantined K-108 (wrong-pointer): proceeded degraded, gathered from src/registry/export-formats.ts directly","consulted":{"concepts":["K-108"]}}'
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-05 \
   --root unknown-knowledge --suffix aaaa0002 \
-  --entry '{"trigger":"correction","summary":"correction: K-102 claims futures; src/registry/markets.ts does not carry it","consulted":{"concepts":["K-102"]}}'
+  --entry '{"trigger":"correction","summary":"correction: K-102 claims luminosity; src/registry/blend-modes.ts does not carry it","consulted":{"concepts":["K-102"]}}'
 node "$KIT/engine/log-entry.js" create --log misses --date 2026-07-01 \
   --root unknown-knowledge --suffix aaaa0003 \
-  --entry '{"path":"src/registry/leagues.ts","shape":"spread-composed const array (ALL_LEAGUES = [...A, ...B]); ts-const-array is out of envelope"}'
-cat > unknown-knowledge/decisions/entries/D-2026-04-02-loyalty-tier-source.yaml <<'EOF'
-# One entry per file (D-010); schema per PRD §3.3.
+  --entry '{"path":"src/registry/export-presets.ts","shape":"spread-composed const array (ALL_PRESETS = [...A, ...B]); ts-const-array is out of envelope"}'
+cat > unknown-knowledge/decisions/entries/D-2026-04-02-plan-tier-source.yaml <<'EOF'
+# One entry per file (D-010); schema per payload/schemas/decision-entry.schema.json.
 schema-version: 1
 entries:
-  - id: D-2026-04-02-loyalty-tier-source
-    title: Loyalty tiers move to a typed registry
+  - id: D-2026-04-02-plan-tier-source
+    title: Plan tiers move to a typed registry
     category: architecture
     status: proposed
     date: "2026-04-02"
     deciders: [steward-rotation]
     context: >
-      loyalty-tiers.js is untyped and duplicated by marketing config.
+      plan-tiers.js is untyped and duplicated by marketing config.
     decision: >
       Reify tiers as a typed const array the extractor can read.
     consequences: >
       One lexically checkable home; K-1xx concept to follow.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-101], leaves: [], decisions: [D-101] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-101] }
 EOF
 cat >> unknown-knowledge/decisions/_catalog.yaml <<'EOF'
-  - id: D-2026-04-02-loyalty-tier-source
-    title: Loyalty tiers move to a typed registry
-    file: entries/D-2026-04-02-loyalty-tier-source.yaml
+  - id: D-2026-04-02-plan-tier-source
+    title: Plan tiers move to a typed registry
+    file: entries/D-2026-04-02-plan-tier-source.yaml
 EOF
 git init -q . && git add -A
 ```
@@ -82,9 +82,9 @@ node "$KIT/engine/validate.js" --root .
 structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
 checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
-    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  applies.jurisdictions[0]
+    value "eu-eaa" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  facets.form
     value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 
 fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
@@ -103,21 +103,21 @@ node "$KIT/engine/validate-values.js" --root .
 ```
 validate-values: 16 concept(s) checked, 0 skipped (draft/proposed), 3 findings, 3 hard errors
 
-HARD ERROR out-of-envelope  K-113  (source: src/registry/leagues.ts)
-  "ALL_LEAGUES" spreads another array ("...") — the full member set is not lexically knowable; extracting the literal members would be a confident wrong parse (PRD §5.1)
+HARD ERROR out-of-envelope  K-113  (source: src/registry/export-presets.ts)
+  "ALL_PRESETS" spreads another array ("...") — the full member set is not lexically knowable; extracting the literal members would be a confident wrong parse (PRD §5.1)
 HARD ERROR out-of-envelope  K-115  (source: src/registry/experiments.ts)
   EXPERIMENTS: template literal interpolation ("${") — the value is not lexically knowable; a confident wrong parse is a false all-clear (PRD §5.1)
 HARD ERROR out-of-envelope  K-116  (source: src/types/index.ts)
-  "BetStatus" is not declared in this file — it is (or may be) re-exported from another module, and ts-union parses lexically, single-file only (PRD §5.1): resolving the chain is out of the envelope
+  "ReleaseStatus" is not declared in this file — it is (or may be) re-exported from another module, and ts-union parses lexically, single-file only (PRD §5.1): resolving the chain is out of the envelope
 
 the check never ran on the entries above — fix the descriptors/store first (PRD §4: a malformed descriptor is a hard error, never skipped)
 
-FINDING value-not-in-source  K-102  "futures"  (source: src/registry/markets.ts)
-  claimed value "futures" is not in "src/registry/markets.ts" (byte-exact, case-sensitive, §3.5)
-FINDING source-value-missing  K-104  "crypto"  (source: src/types/withdrawal.ts)
-  source value "crypto" in "src/types/withdrawal.ts" is not claimed by the descriptor
-FINDING wrong-pointer  K-108  (source: src/registry/sports.ts)
-  all 3 claimed value(s) are missing from "src/registry/sports.ts" — the file exists and parses (5 value(s) extracted), so the descriptor points at the wrong place
+FINDING value-not-in-source  K-102  "luminosity"  (source: src/registry/blend-modes.ts)
+  claimed value "luminosity" is not in "src/registry/blend-modes.ts" (byte-exact, case-sensitive, §3.5)
+FINDING source-value-missing  K-104  "video"  (source: src/types/asset-kind.ts)
+  source value "video" in "src/types/asset-kind.ts" is not claimed by the descriptor
+FINDING wrong-pointer  K-108  (source: src/registry/export-formats.ts)
+  all 3 claimed value(s) are missing from "src/registry/export-formats.ts" — the file exists and parses (5 value(s) extracted), so the descriptor points at the wrong place
 ```
 
 ## 3. REVERSE — advisory (never blocking)
@@ -130,7 +130,7 @@ node "$KIT/engine/audit.js" --root . --today 2026-07-09
   itself skipped). Exit 0; header lines:
 
 ```
-audit (advisory — proposals for human review, never a gate): 41 candidate(s), 16 matched, 4 findings
+audit (advisory — proposals for human review, never a gate): 48 candidate(s), 16 matched, 4 findings
 scope: unscoped (no confirmed survey-scope.yaml)
 stale check: checked against --today 2026-07-09 (stale after 90 day(s))
 ```
@@ -165,7 +165,7 @@ stale check: checked against --today 2026-07-09 (stale after 90 day(s))
 | decision | status | age (days) | flag |
 |---|---|---|---|
 | D-101 | accepted | 1 | — |
-| D-2026-04-02-loyalty-tier-source | proposed | 98 | **aging proposed** (> 30 days); provisional id — the steward never minted a final D-NNN |
+| D-2026-04-02-plan-tier-source | proposed | 98 | **aging proposed** (> 30 days); provisional id — the steward never minted a final D-NNN |
 
 ## 6. HEARTBEAT — seeded state, graceful absence
 
@@ -213,16 +213,16 @@ grep -rl '^trigger: quarantine' unknown-knowledge/logs/findings 2>/dev/null
 | reverse audit | audit.js --today 2026-07-09 | 0 | advisory — 4 proposals for the steward, never a gate |
 
 ## Structural findings
-- unregistered-value: L-000100 `applies.jurisdictions[0]` — "uk-gc" is not minted
+- unregistered-value: L-000100 `applies.jurisdictions[0]` — "eu-eaa" is not minted
   in the knowledge/jurisdictions registry
 - unregistered-value: L-000100 `facets.form` — "walkthrough" is not minted in the
   knowledge/form registry
 
 ## Value findings
 - HARD ERROR out-of-envelope: K-113, K-115, K-116 — the check never ran on these
-- value-not-in-source: K-102 "futures" (src/registry/markets.ts)
-- source-value-missing: K-104 "crypto" (src/types/withdrawal.ts)
-- wrong-pointer: K-108 (src/registry/sports.ts)
+- value-not-in-source: K-102 "luminosity" (src/registry/blend-modes.ts)
+- source-value-missing: K-104 "video" (src/types/asset-kind.ts)
+- wrong-pointer: K-108 (src/registry/export-formats.ts)
 
 ## Reverse audit proposals (advisory — never blocking)
 - unmatched-anchor: src, src/registry, src/registry/locales.ts, src/types
@@ -237,7 +237,7 @@ grep -rl '^trigger: quarantine' unknown-knowledge/logs/findings 2>/dev/null
 
 ## Decisions lifecycle
 - orphaned relates-to: none
-- aging proposed: D-2026-04-02-loyalty-tier-source (98 days; provisional id never minted)
+- aging proposed: D-2026-04-02-plan-tier-source (98 days; provisional id never minted)
 - aging accepted: none
 
 ## Heartbeat

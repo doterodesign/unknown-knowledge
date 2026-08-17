@@ -5,7 +5,7 @@ registry: form
 values:
   - value: reference
     gloss: States how something is, for lookup.
-    warrant: L-000117 states the provider's behaviour for lookup.
+    warrant: L-000117 states the component's sizing behaviour for lookup.
     decision: D-401
     minted: "2026-08-16"
   - value: constraint

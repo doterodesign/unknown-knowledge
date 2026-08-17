@@ -313,13 +313,13 @@ criterion('A2', [
 // with no concept and the reverse; CI asserts the correct finding kind fires
 // in each direction; wrong-pointer (all-values-missing) signature detected."
 criterion('A3', [
-  ['ts-app: exactly the three tabulated findings — value-not-in-source (K-102 "futures"), source-value-missing (K-104 "crypto"), wrong-pointer (K-108) — exit 1', () => {
+  ['ts-app: exactly the three tabulated findings — value-not-in-source (K-102 "luminosity"), source-value-missing (K-104 "video"), wrong-pointer (K-108) — exit 1', () => {
     const out = runJson('validate-values.js', 1, '--root', fixture('ts-app'), '--json',
       '--concepts', 'K-102,K-104,K-108');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code, f.value ?? null]), [
-      ['K-102', 'value-not-in-source', 'futures'],
-      ['K-104', 'source-value-missing', 'crypto'],
+      ['K-102', 'value-not-in-source', 'luminosity'],
+      ['K-104', 'source-value-missing', 'video'],
       ['K-108', 'wrong-pointer', null],
     ]);
   }],
@@ -328,10 +328,10 @@ criterion('A3', [
       '--concepts', 'K-110,K-150,K-160');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code, f.value ?? null]), [
-      ['K-110', 'source-value-missing', 'tennis'],
-      ['K-110', 'value-not-in-source', 'cricket'],
+      ['K-110', 'source-value-missing', 'comment'],
+      ['K-110', 'value-not-in-source', 'eyedropper'],
       ['K-150', 'source-value-missing', '2027-preview'],
-      ['K-160', 'value-not-in-source', 'cta.transfer'],
+      ['K-160', 'value-not-in-source', 'cta.publish'],
     ]);
   }],
   ['swift-app: wrong-pointer signature (K-170: all claimed values missing from a real, parseable file) — one finding, no cascade', () => {
@@ -369,7 +369,7 @@ criterion('A3', [
     assert.equal(out.counts.stale, 0);
     assert.equal(out['leaf-verdicts'][0].verdict, 'trusted');
   }],
-  ['UCS-1159 plants 2/5 + 4/5 — jurisdiction mismatch (`applies.jurisdictions[0]` = uk-gc, registry empty) and unregistered facet value (`facets.form` = walkthrough): exactly two `unregistered-value` findings, exit 1, store still LOADS clean', () => {
+  ['UCS-1159 plants 2/5 + 4/5 — jurisdiction mismatch (`applies.jurisdictions[0]` = eu-eaa, registry empty) and unregistered facet value (`facets.form` = walkthrough): exactly two `unregistered-value` findings, exit 1, store still LOADS clean', () => {
     const out = runJson('validate.js', 1, '--root', fixture('ts-app'), '--json');
     // The soft plants are value defects, not load defects: the store must stay
     // healthy or the fixture-store pin test (and these findings) would vanish.
@@ -384,15 +384,15 @@ criterion('A3', [
     assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
     assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
-    assert.match(lines[0], /^\s+duplicate-id\s+knowledge\/product\/100\.2-onboarding-a-new-sport\.md\s+id\s/);
-    assert.match(lines[0], /id "L-000100" is already minted in knowledge\/product\/100\.1-adding-a-new-sport\.md/);
+    assert.match(lines[0], /^\s+duplicate-id\s+knowledge\/product\/100.2-registering-a-new-export-format\.md\s+id\s/);
+    assert.match(lines[0], /id "L-000100" is already minted in knowledge\/product\/100.1-adding-a-new-export-format\.md/);
   }],
   ['UCS-1159 plant 3/5 — unresolvable relates ref: a well-formed `relates.see-also` cites L-000999, which nothing mints → exactly one `unresolved-ref`, exit 2, in its OWN store', () => {
     const r = run('validate.js', '--root', fixture('plant-unresolved-relates'), '--json');
     assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
     assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
-    assert.match(lines[0], /^\s+unresolved-ref\s+knowledge\/product\/100\.1-adding-a-new-sport\.md\s+relates\.see-also\[0\]\s/);
+    assert.match(lines[0], /^\s+unresolved-ref\s+knowledge\/product\/100.1-adding-a-new-export-format\.md\s+relates\.see-also\[0\]\s/);
     assert.match(lines[0], /relates\.see-also ref "L-000999" does not resolve/);
   }],
   ['UCS-1159 invariant — no plant masks another: each plant store carries exactly ONE defect, and the main store\'s three plants are all observable in the same pair of runs (the reason the two loader-fatal plants live in isolated roots)', () => {
@@ -419,8 +419,8 @@ criterion('A3', [
 // PRD §10 A4 — "Resolution works: fixture queries → expected ranked concepts;
 // confusable-with surfaced; CLI exit codes correct."
 const A4_QUERIES = {
-  'swift-app': { query: 'sport', top: 'K-110', confusable: 'K-130' },
-  'ts-app': { query: 'sport', top: 'K-101', confusable: 'K-113' },
+  'swift-app': { query: 'canvas tool', top: 'K-110', confusable: 'K-130' },
+  'ts-app': { query: 'export format', top: 'K-101', confusable: 'K-113' },
 };
 criterion('A4', FIXTURES.flatMap((app) => {
   const { query, top, confusable } = A4_QUERIES[app];
@@ -439,7 +439,7 @@ criterion('A4', FIXTURES.flatMap((app) => {
       assert.deepEqual(out.results, []);
     }],
     [`${app}: usage error (unknown flag) exits 2`, () => {
-      const r = run('resolve.js', 'sport', '--root', fixture(app), '--no-such-flag');
+      const r = run('resolve.js', 'export', '--root', fixture(app), '--no-such-flag');
       assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     }],
   ];
@@ -471,8 +471,8 @@ const PLANTED_ANCHORS = {
   // FIXTURE.md §1 (swift-app) / A2 table (ts-app): every planted anchor a
   // concept points at must appear in the survey-map candidate list.
   'swift-app': [
-    ['swift-enum', 'Sources/Sportsbook/Sport.swift'],
-    ['swift-const-array', 'Sources/Sportsbook/Markets.swift'],
+    ['swift-enum', 'Sources/Canvas/CanvasTool.swift'],
+    ['swift-const-array', 'Sources/Canvas/Actions.swift'],
     ['swift-const-array', 'Sources/Settings/Theme.swift'],
     ['yaml-keys', 'Config/app-config.yaml'],
     ['yaml-map-keys', 'Config/feature-flags.yaml'],
@@ -480,12 +480,12 @@ const PLANTED_ANCHORS = {
     ['strings-keys', 'Resources/Localizable.xcstrings'],
   ],
   'ts-app': [
-    ['ts-const-array', 'src/registry/sports.ts'],
-    ['ts-union', 'src/types/bet-status.ts'],
-    ['ts-enum', 'src/types/currency.ts'],
-    ['ts-object-keys', 'src/registry/promotions.ts'],
+    ['ts-const-array', 'src/registry/export-formats.ts'],
+    ['ts-union', 'src/types/release-status.ts'],
+    ['ts-enum', 'src/types/color-space.ts'],
+    ['ts-object-keys', 'src/registry/panels.ts'],
     ['ts-object-keys', 'src/components/StatusBadge.tsx'],
-    ['ts-const-array', 'src/registry/loyalty-tiers.js'],
+    ['ts-const-array', 'src/registry/plan-tiers.js'],
     ['json-keys', 'config/features.json'],
     ['json-map-keys', 'package.json'],
     ['dir-modules', 'src/verticals'],

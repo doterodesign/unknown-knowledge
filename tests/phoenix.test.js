@@ -28,9 +28,9 @@ const SPLIT = fixture('split');
 
 /** The three leaves the event touches, by the file each lives in. */
 const LEAF_FILES = {
-  'L-000117': 'knowledge/sportsbook/117.1-odds-feed-provider-quirks.md',
-  'L-000133': 'knowledge/sportsbook/133.1-bankers-rounding-at-settlement.md',
-  'L-000213': 'knowledge/sportsbook/213.1-live-betting-latency-budget.md',
+  'L-000117': 'knowledge/design-system/117.1-icon-button-focus-ring.md',
+  'L-000133': 'knowledge/design-system/133.1-empty-state-pattern.md',
+  'L-000213': 'knowledge/design-system/213.1-primitive-render-budget.md',
 };
 
 function run(...args) {
@@ -161,7 +161,7 @@ test('the ONLY frontmatter lines that change are edition and the scoped facet', 
     assert.match(beforeLines[changed[0]], /^edition: 1$/);
     assert.match(afterLines[changed[0]], /^edition: 2$/);
     assert.match(beforeLines[changed[1]], /^ {2}domain: /);
-    assert.match(afterLines[changed[1]], /^ {2}domain: feeds\//);
+    assert.match(afterLines[changed[1]], /^ {2}domain: design-system\/(primitives|patterns)/);
   }
 });
 
@@ -173,16 +173,16 @@ test('a split is expressible and applied: ONE class divides across two successor
   // rather than a rename, and it is the whole justification for a per-leaf
   // mapping — assert it here so the fixture cannot quietly stop being one.
   const predecessors = new Set(Object.values(LEAF_FILES).map((f) => facetDomain(read(root, f))));
-  assert.deepEqual([...predecessors], ['sportsbook/odds-feed'], 'the fixture must be a SPLIT, not a rename');
+  assert.deepEqual([...predecessors], ['design-system/components'], 'the fixture must be a SPLIT, not a rename');
 
   runJson(0, 'P-001', '--root', root, '--apply');
 
   // ...and they do not all land in the same place. A class-level rule could
-  // say "odds-feed becomes feeds/ingest" and be right about two of these and
+  // say "components becomes primitives" and be right about two of these and
   // wrong about the third; only the rows carry that judgment.
-  assert.equal(facetDomain(read(root, LEAF_FILES['L-000117'])), 'feeds/ingest');
-  assert.equal(facetDomain(read(root, LEAF_FILES['L-000213'])), 'feeds/ingest');
-  assert.equal(facetDomain(read(root, LEAF_FILES['L-000133'])), 'feeds/settlement');
+  assert.equal(facetDomain(read(root, LEAF_FILES['L-000117'])), 'design-system/primitives');
+  assert.equal(facetDomain(read(root, LEAF_FILES['L-000213'])), 'design-system/primitives');
+  assert.equal(facetDomain(read(root, LEAF_FILES['L-000133'])), 'design-system/patterns');
   const successors = new Set(Object.values(LEAF_FILES).map((f) => facetDomain(read(root, f))));
   assert.equal(successors.size, 2, 'one predecessor must branch to two successors');
 });
@@ -191,9 +191,9 @@ test('the split is reported per leaf, with the predecessor each came from', (t) 
   const root = scratch(t, 'split');
   const out = runJson(0, 'P-001', '--root', root);
   assert.deepEqual(out.rewrites.map((r) => [r.id, r.from, r.to, r.edition]), [
-    ['L-000117', 'sportsbook/odds-feed', 'feeds/ingest', 2],
-    ['L-000133', 'sportsbook/odds-feed', 'feeds/settlement', 2],
-    ['L-000213', 'sportsbook/odds-feed', 'feeds/ingest', 2],
+    ['L-000117', 'design-system/components', 'design-system/primitives', 2],
+    ['L-000133', 'design-system/components', 'design-system/patterns', 2],
+    ['L-000213', 'design-system/components', 'design-system/primitives', 2],
   ]);
   // One `from`, two `to`: the shape of a split, read off the engine's own report.
   assert.equal(new Set(out.rewrites.map((r) => r.from)).size, 1);
@@ -279,7 +279,7 @@ test('a refused mapping NEVER partially applies — not one byte, even under --a
 test('a moved-to value that is not minted is refused — an event does not invent vocabulary', (t) => {
   const root = scratch(t, 'split');
   const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
-  writeFileSync(mapping, readFileSync(mapping, 'utf8').replace('to: feeds/settlement', 'to: feeds/nowhere'));
+  writeFileSync(mapping, readFileSync(mapping, 'utf8').replace('to: design-system/patterns', 'to: design-system/nowhere'));
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'facet-unminted');
   assert.match(out.findings[0].message, /not minted/);
@@ -296,7 +296,7 @@ test('a no-op row is REFUSED — "to" present must mean moved', (t) => {
   const root = scratch(t, 'split');
   const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
   writeFileSync(mapping, readFileSync(mapping, 'utf8')
-    .replace('    to: feeds/settlement\n', '    to: sportsbook/odds-feed\n'));
+    .replace('    to: design-system/patterns\n', '    to: design-system/components\n'));
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'noop-row');
@@ -311,7 +311,7 @@ test('a move with no "why" is refused — a moved leaf carries its reason', (t) 
   const root = scratch(t, 'split');
   const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
   writeFileSync(mapping, readFileSync(mapping, 'utf8').replace(
-    '    why: Provider quirks are ingest material — they describe the wire, not the book.\n', ''));
+    '    why: A focus-ring spec is primitive material — it describes one control, not a composition.\n', ''));
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'unexplained-move');
@@ -348,7 +348,7 @@ test('a row reaching past the declared scope is out-of-scope-row, not unknown-le
   const root = scratch(t, 'split');
   const leaf = join(root, LEAF_FILES['L-000133']);
   writeFileSync(leaf, readFileSync(leaf, 'utf8')
-    .replace('  domain: sportsbook/odds-feed', '  domain: sportsbook'));
+    .replace('  domain: design-system/components', '  domain: design-system'));
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   const found = out.findings.filter((f) => f.id === 'L-000133');
@@ -365,14 +365,14 @@ test('two events that each moved a leaf sanction edition 3', (t) => {
   writeFileSync(join(root, 'knowledge/_phoenix/P-002.yaml'), [
     'schema-version: 1',
     'event: P-002',
-    'title: Move ingest material under a dedicated provider class',
+    'title: Move a primitive under a dedicated interaction class',
     'decision: D-420',
     'scope:',
     '  facet: facets.domain',
-    '  values: [feeds/ingest]',
+    '  values: [design-system/primitives]',
     'leaves:',
     '  - id: L-000117',
-    '    to: feeds/settlement',
+    '    to: design-system/patterns',
     '    why: A second governed move, to prove the edition counts events rather than capping at two.',
     '  - id: L-000213',
     '', // carried forward: in scope, considered, unmoved
@@ -393,7 +393,7 @@ test('a leaf can be explicitly carried forward: accounted for, unmoved, edition 
   // Drop the `to:` from L-000213's row — it stays in scope, and the steward
   // says so deliberately rather than by omission.
   writeFileSync(mapping, readFileSync(mapping, 'utf8').replace(
-    /  - id: L-000213\n    to: feeds\/ingest\n/,
+    /  - id: L-000213\n    to: design-system\/primitives\n/,
     '  - id: L-000213\n',
   ));
   const out = runJson(0, 'P-001', '--root', root, '--apply');
@@ -549,9 +549,9 @@ test('a write that fails mid-apply exits 2 and names every file already written'
   // and then fail, so the file whose write did not complete may still be
   // damaged — and it is the likeliest of them to need reverting.
   assert.match(r.stderr, /revert these 3 file\(s\)/);
-  assert.match(r.stderr, /117\.1-odds-feed-provider-quirks\.md/);
-  assert.match(r.stderr, /133\.1-bankers-rounding-at-settlement\.md/);
-  assert.match(r.stderr, /213\.1-live-betting-latency-budget\.md {3}<- the write failed here/);
+  assert.match(r.stderr, /117\.1-icon-button-focus-ring\.md/);
+  assert.match(r.stderr, /133\.1-empty-state-pattern\.md/);
+  assert.match(r.stderr, /213\.1-primitive-render-budget\.md {3}<- the write failed here/);
   // In this particular failure mode the open() was refused outright, so the
   // blocked leaf is in fact intact — the report is deliberately conservative
   // rather than wrong.
@@ -645,10 +645,10 @@ test("a steward's trailing comment survives the rewrite, alignment included", ()
   // after the colon wholesale deleted them — authored content lost inside a
   // diff that advertises itself as two lines.
   const text = '---\nedition: 1  # bumped only by phoenix events\nfacets:\n'
-    + '  domain: sportsbook/odds-feed    # ∈ registry (Personality)\n---\n\nbody\n';
-  const after = rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2);
+    + '  domain: design-system/components    # ∈ registry (Personality)\n---\n\nbody\n';
+  const after = rewriteLeaf(text, 'facets.domain', 'design-system/primitives', 2);
   assert.match(after, /^edition: 2 {2}# bumped only by phoenix events$/m);
-  assert.match(after, /^ {2}domain: feeds\/ingest {4}# ∈ registry \(Personality\)$/m);
+  assert.match(after, /^ {2}domain: design-system\/primitives {4}# ∈ registry \(Personality\)$/m);
 });
 
 test('a line whose value could hide a "#" is refused, not guessed at', () => {
@@ -656,7 +656,7 @@ test('a line whose value could hide a "#" is refused, not guessed at', () => {
   // a YAML scanner. Refusing costs nothing — every value this engine writes is
   // a plain registry term.
   const text = '---\nedition: 1\nfacets:\n  domain: "a # b"\n---\n\nbody\n';
-  assert.equal(rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2), null);
+  assert.equal(rewriteLeaf(text, 'facets.domain', 'design-system/primitives', 2), null);
   assert.equal(rewriteFailure(text, 'facets.domain'), 'facets.domain',
     'and it is caught at the GATE, before anything is written');
 });
@@ -678,8 +678,8 @@ test('a facet value YAML would reload as a number is quoted', () => {
 
 test('an ordinary facet value stays unquoted — the common diff is unremarkable', () => {
   const text = '---\nedition: 1\nfacets:\n  domain: a\n---\n\nbody\n';
-  assert.match(rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2), /^ {2}domain: feeds\/ingest$/m);
-  assert.match(rewriteLeaf(text, 'facets.domain', 'feeds/ingest', 2), /^edition: 2$/m);
+  assert.match(rewriteLeaf(text, 'facets.domain', 'design-system/primitives', 2), /^ {2}domain: design-system\/primitives$/m);
+  assert.match(rewriteLeaf(text, 'facets.domain', 'design-system/primitives', 2), /^edition: 2$/m);
 });
 
 test('an unrewritable leaf is a GATE finding, so no sibling leaf is written', (t) => {
@@ -761,5 +761,5 @@ test('the event carries its decision, so the diff points at the governance that 
   const out = runJson(0, 'P-001', '--root', SPLIT);
   assert.equal(out.decision, 'D-420');
   assert.equal(out.mapping, 'knowledge/_phoenix/P-001.yaml');
-  assert.deepEqual(out.scope.values, ['sportsbook/odds-feed']);
+  assert.deepEqual(out.scope.values, ['design-system/components']);
 });

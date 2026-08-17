@@ -19,27 +19,27 @@
 # showing operation, one block, one locator.
 format: pdf
 file: sample.pdf
-adapter: "pdf@1"
-hash: "fnv1a64:b0b66f569c906a34"
+adapter: pdf@1
+hash: fnv1a64:0a290a783b026774
 blocks:
   - kind: paragraph
-    text: "Odds feed onboarding"
-    locator: { page: 1, object: 1 }
+    text: Font licensing onboarding
+    locator: {page: 1, object: 1}
   - kind: paragraph
-    text: "The provider must expose a websocket endpoint and a REST fallback."
-    locator: { page: 1, object: 2 }
+    text: The foundry must expose a CDN endpoint and a self-hosted fallback.
+    locator: {page: 1, object: 2}
   - kind: paragraph
-    text: "Latency budget is 400ms (end-to-end), measured from ingest to price."
-    locator: { page: 1, object: 3 }
+    text: Render budget is 400ms (end-to-end), measured from request to paint.
+    locator: {page: 1, object: 3}
   - kind: paragraph
-    text: "Suspended (not settled) is a distinct state."
-    locator: { page: 1, object: 4 }
+    text: Pending (not granted) is a distinct state.
+    locator: {page: 1, object: 4}
   - kind: paragraph
-    text: "Escalation"
-    locator: { page: 2, object: 1 }
+    text: Escalation
+    locator: {page: 2, object: 1}
   - kind: paragraph
-    text: "Page the trading desk when the feed suspends for more than ninety seconds."
-    locator: { page: 2, object: 2 }
+    text: Page the design-ops rotation when the CDN degrades for more than ninety seconds.
+    locator: {page: 2, object: 2}
   - kind: paragraph
-    text: "Provider credentials are sandboxed."
-    locator: { page: 2, object: 3 }
+    text: Foundry credentials are sandboxed.
+    locator: {page: 2, object: 3}

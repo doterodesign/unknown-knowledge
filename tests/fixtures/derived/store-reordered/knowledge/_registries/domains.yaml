@@ -9,28 +9,33 @@ store: knowledge
 registry: domains
 hierarchical: true
 values:
-  - value: sportsbook
-    gloss: The sportsbook vertical.
-    warrant: L-000117, L-000133 and L-000213 all document sportsbook material.
+  - value: design-system
+    gloss: The shared design system.
+    warrant: L-000117, L-000133 and L-000213 all document design-system material.
     decision: D-401
     minted: "2026-08-16"
-  - value: sportsbook/odds-feed
-    gloss: Odds ingestion and the providers that supply it.
-    warrant: L-000117 states provider quirks, L-000213 the latency budget, L-000133 the settlement rounding rule.
+  - value: design-system/components
+    gloss: The component library and the rules its parts obey.
+    warrant: L-000117 states component sizing quirks, L-000213 the render budget, L-000133 the contrast rule at export.
     decision: D-401
     minted: "2026-08-16"
-  - value: payments
-    gloss: Moving money in and out of the platform.
-    warrant: L-000162, L-000171 and L-000228 all document payments material.
+  - value: engineering
+    gloss: Building and shipping the product's frontend.
+    warrant: L-000162 and L-000171 both document engineering material.
     decision: D-401
     minted: "2026-08-16"
-  - value: payments/withdrawals
-    gloss: Paying money out, and the checks that gate it.
-    warrant: L-000162 states the KYC threshold, L-000171 the dispute playbook.
+  - value: engineering/frontend
+    gloss: Shipping the web client, and the checks that gate a release.
+    warrant: L-000162 states the bundle-size budget, L-000171 the regression triage.
     decision: D-401
     minted: "2026-08-16"
-  - value: payments/fx
-    gloss: Currency handling and its precision rules.
-    warrant: L-000228 states the minor-unit table settlement depends on.
+  - value: brand
+    gloss: The brand system and its precision rules.
+    warrant: L-000228 states the color token table the design system depends on.
+    decision: D-401
+    minted: "2026-08-16"
+  - value: brand/identity
+    gloss: Brand color, type, and the tokens that carry them.
+    warrant: L-000228 states the brand color token table.
     decision: D-401
     minted: "2026-08-16"

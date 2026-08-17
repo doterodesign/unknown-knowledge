@@ -3,8 +3,8 @@ schema-version: 1
 store: knowledge
 registry: operations
 values:
-  - value: add-sport
-    gloss: Onboard a new sport into the sportsbook.
+  - value: add-export-format
+    gloss: Enter a new export format into the editor's registry.
     warrant: 100.1 is the procedure for exactly this operation.
     decision: D-101
     minted: "2026-07-08"

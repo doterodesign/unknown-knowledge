@@ -2,5 +2,5 @@
 # set — order here is presentation only).
 kind: ts-const-array
 file: sample.ts
-symbol: SUPPORTED_SPORTS
-values: [nfl, nba, mlb, soccer]
+symbol: EXPORT_FORMATS
+values: [png, svg, jpg, webp]
