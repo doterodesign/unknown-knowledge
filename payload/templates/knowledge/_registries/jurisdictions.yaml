@@ -11,7 +11,7 @@
 #   values:
 #     - value: us
 #       gloss: United States.
-#       warrant: 362.1 states US-only settlement windows.
+#       warrant: 362.1 states US-CA-only accessibility rules.
 #       decision: D-014
 #       minted: "2026-07-07"
 schema-version: 1

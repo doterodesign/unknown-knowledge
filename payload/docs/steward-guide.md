@@ -124,7 +124,7 @@ What to check when you review one:
   store exactly as it found it.
 - **Each row's `why` earns its move.** On a split this is the whole substance:
   the class-level rule cannot say why L-000117 went to ingest and its neighbour
-  went to settlement, so the rows have to.
+  went to patterns, so the rows have to.
 - **The diff is two lines per leaf.** `edition` and the one facet. If a leaf's
   citations, body, or `id` appear in the diff, something is wrong — the engine
   rewrites single frontmatter lines and copies every other byte through.
