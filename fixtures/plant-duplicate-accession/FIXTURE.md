@@ -9,13 +9,13 @@ payload (D-007).
 ```sh
 node payload/engine/validate.js --root fixtures/plant-duplicate-accession --json
 # exit 2, exactly one diagnostic:
-#   duplicate-id  knowledge/product/100.2-onboarding-a-new-sport.md  id
-#   id "L-000100" is already minted in knowledge/product/100.1-adding-a-new-sport.md
+#   duplicate-id  knowledge/product/100.2-registering-a-new-export-format.md  id
+#   id "L-000100" is already minted in knowledge/product/100.1-adding-a-new-export-format.md
 ```
 
 | Case | Target | Anchor (file:line) | Expected finding |
 |---|---|---|---|
-| duplicate accession ID | `L-000100`, minted twice | `unknown-knowledge/knowledge/product/100.2-onboarding-a-new-sport.md:3` | `duplicate-id` at path `id`, **exit 2**, and nothing else |
+| duplicate accession ID | `L-000100`, minted twice | `unknown-knowledge/knowledge/product/100.2-registering-a-new-export-format.md:3` | `duplicate-id` at path `id`, **exit 2**, and nothing else |
 
 ## Why this store exists at all
 

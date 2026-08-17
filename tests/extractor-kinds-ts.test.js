@@ -78,8 +78,8 @@ test('A3 planted drift: exactly the three tabulated findings, nothing else', () 
   assert.deepEqual(
     out.findings.map((f) => [f.concept, f.code, f.value ?? null]),
     [
-      ['K-102', 'value-not-in-source', 'futures'],
-      ['K-104', 'source-value-missing', 'crypto'],
+      ['K-102', 'value-not-in-source', 'luminosity'],
+      ['K-104', 'source-value-missing', 'video'],
       ['K-108', 'wrong-pointer', null],
     ],
   );
@@ -96,7 +96,7 @@ test('§5.1 out-of-envelope anchors HARD-ERROR (exit 2) — never a partial valu
     ['K-116', 'out-of-envelope'],
   ]);
   const messages = out['hard-errors'].map((e) => e.message);
-  assert.match(messages[0], /spread/i); // K-113: ...US_LEAGUES
+  assert.match(messages[0], /spread/i); // K-113: ...MOBILE_PRESETS
   assert.match(messages[2], /re-export/i); // K-116: barrel file
 });
 

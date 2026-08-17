@@ -1,6 +1,6 @@
 # fixtures/ts-app — TS/JS acceptance fixture (KK-15)
 
-Synthetic sportsbook-flavored TS/JS codebase with its own three stores.
+Synthetic design-tool-flavored TS/JS codebase with its own three stores.
 **Acceptance fixture only — never in the init payload (D-007).** The TS never
 needs to typecheck or build (D-002); syntactically plausible is the bar.
 
@@ -27,24 +27,24 @@ Kind coverage (every TS-relevant MVP kind, §5.1): `ts-const-array` (.ts and
 
 | Concept | Kind | Anchor (file:line) | Symbol | Expected value set | Notes |
 |---|---|---|---|---|---|
-| K-101 (`unknown-knowledge/ontology/classes/100-product.yaml:7`) | ts-const-array | `src/registry/sports.ts:5` | `SUPPORTED_SPORTS` | nfl, nba, mlb, nhl, soccer | Adversarial-but-extractable: multi-line, trailing comma, `//` and `/* */` comments between members, mixed quotes, `as const` |
-| K-103 (`:24`) | ts-union | `src/types/bet-status.ts:5` | `BetStatus` | open, settled, voided, cashed-out | Adversarial-but-extractable: leading-pipe multi-line union, interleaved comment |
-| K-105 (`:36`) | ts-enum | `src/types/currency.ts:6` | `Currency`, `emit: names` | USD, EUR, GBP, CAD | Adversarial-but-extractable: string initializers, mixed quotes, comment, trailing comma; `emit: names` pins the facet (§3.5 — raw values are lowercase) |
-| K-106 (`:49`) | ts-object-keys | `src/registry/promotions.ts:5` | `PROMOTIONS` | welcome-bonus, reload, odds-boost, referral | Adversarial-but-extractable: quoted dashed keys + bare keys, nested objects, nested array (`appliesTo`, line 9) whose members must NOT leak into the key set |
-| K-107 (`:61`) | ts-object-keys | `src/components/StatusBadge.tsx:7` | `STATUS_COLORS` | open, settled, voided, cashed-out | **.tsx extension** (§5.1: kinds describe shape, not file type); JSX inline `{{ color: ... }}` at line 16 must not match |
-| K-114 (`:121`) | ts-const-array | `src/registry/loyalty-tiers.js:4` | `LOYALTY_TIERS` | bronze, silver, gold, platinum | **plain .js extension** — TS kinds read JS too |
-| K-109 (`:74`) | json-keys | `config/features.json:1` | — | live-betting, cash-out, same-game-parlay | Top-level keys; boolean values must not coerce into the set |
+| K-101 (`unknown-knowledge/ontology/classes/100-product.yaml:7`) | ts-const-array | `src/registry/export-formats.ts:5` | `EXPORT_FORMATS` | png, svg, jpg, webp, pdf | Adversarial-but-extractable: multi-line, trailing comma, `//` and `/* */` comments between members, mixed quotes, `as const` |
+| K-103 (`:24`) | ts-union | `src/types/release-status.ts:5` | `ReleaseStatus` | draft, in-review, published, deprecated | Adversarial-but-extractable: leading-pipe multi-line union, interleaved comment |
+| K-105 (`:36`) | ts-enum | `src/types/color-space.ts:6` | `ColorSpace`, `emit: names` | SRGB, P3, LAB, LCH | Adversarial-but-extractable: string initializers, mixed quotes, comment, trailing comma; `emit: names` pins the facet (§3.5 — raw values are lowercase) |
+| K-106 (`:49`) | ts-object-keys | `src/registry/panels.ts:5` | `PANELS` | layers-panel, inspector, assets-panel, comments | Adversarial-but-extractable: quoted dashed keys + bare keys, nested objects, nested array (`appliesTo`, line 9) whose members must NOT leak into the key set |
+| K-107 (`:61`) | ts-object-keys | `src/components/StatusBadge.tsx:7` | `STATUS_COLORS` | draft, in-review, published, deprecated | **.tsx extension** (§5.1: kinds describe shape, not file type); JSX inline `{{ color: ... }}` at line 16 must not match |
+| K-114 (`:121`) | ts-const-array | `src/registry/plan-tiers.js:4` | `PLAN_TIERS` | free, pro, team, enterprise | **plain .js extension** — TS kinds read JS too |
+| K-109 (`:74`) | json-keys | `config/features.json:1` | — | multiplayer-cursors, version-history, component-variants | Top-level keys; boolean values must not coerce into the set |
 | K-112 (`:85`) | json-map-keys | `package.json:10` | `dependencies` | react, react-dom, zod | Keys under a dotted path; `scripts` keys (line 6) must not leak in |
-| K-110 (`:97`) | dir-modules | `src/verticals/` | — | sportsbook, casino, poker | Plain directory listing (no pattern: SUBFOLDER facet); folder-identity pointer paired with entry file `src/verticals/sportsbook/index.ts` (§3.1) |
-| K-111 (`:108`) | dir-modules | `src/routes/` | `pattern: *.route.ts`, `strip: .route.ts` | home, account, bets | Pattern pins the FILE facet, strip removes the suffix (KK-10); `src/routes/routes.test.ts` is excluded by the pattern |
+| K-110 (`:97`) | dir-modules | `src/verticals/` | — | editor, prototyping, whiteboard | Plain directory listing (no pattern: SUBFOLDER facet); folder-identity pointer paired with entry file `src/verticals/editor/index.ts` (§3.1) |
+| K-111 (`:108`) | dir-modules | `src/routes/` | `pattern: *.route.ts`, `strip: .route.ts` | home, account, files | Pattern pins the FILE facet, strip removes the suffix (KK-10); `src/routes/routes.test.ts` is excluded by the pattern |
 
 ## A3 — planted drift (expected: exactly these findings, no others)
 
 | Case | Concept | Anchor (file:line) | Expected finding |
 |---|---|---|---|
-| value-not-in-source | K-102 (`unknown-knowledge/ontology/classes/100-product.yaml:134`) | `src/registry/markets.ts:4` (`MARKET_TYPES`) | Descriptor claims `futures` (`100-product.yaml:146`); source has only moneyline, spread, totals, parlay → **`value-not-in-source`** for `futures`, and only `futures`. The claimed value appears NOWHERE in the source file, comments included — grep-level detectors must not be pacified lexically |
-| source-value-missing | K-104 (`:147`) | `src/types/withdrawal.ts:4` (`WithdrawalMethod`) | Source has ach, wire, paypal, **crypto**; descriptor claims only ach, wire, paypal → **`source-value-missing`** for `crypto`, and only `crypto` |
-| wrong-pointer | K-108 (`:161`) | descriptor names `src/registry/sports.ts:5`; true home is `src/registry/locales.ts:5` | ALL claimed values (en-US, es-MX, pt-BR) missing from a real, parseable file → the **wrong-pointer (all-values-missing) signature**, distinguished from ordinary drift |
+| value-not-in-source | K-102 (`unknown-knowledge/ontology/classes/100-product.yaml:134`) | `src/registry/blend-modes.ts:4` (`BLEND_MODES`) | Descriptor claims `luminosity` (`100-product.yaml:146`); source has only normal, multiply, screen, overlay → **`value-not-in-source`** for `luminosity`, and only `luminosity`. The claimed value appears NOWHERE in the source file, comments included — grep-level detectors must not be pacified lexically |
+| source-value-missing | K-104 (`:147`) | `src/types/asset-kind.ts:4` (`AssetKind`) | Source has icon, illustration, photo, **video**; descriptor claims only icon, illustration, photo → **`source-value-missing`** for `video`, and only `video` |
+| wrong-pointer | K-108 (`:161`) | descriptor names `src/registry/export-formats.ts:5`; true home is `src/registry/locales.ts:5` | ALL claimed values (en-US, es-MX, pt-BR) missing from a real, parseable file → the **wrong-pointer (all-values-missing) signature**, distinguished from ordinary drift |
 
 ## Frontmatter v2 — the five planted cases (UCS-1159)
 
@@ -56,11 +56,11 @@ at the engine CLI seam, each asserted as its own golden in `acceptance/run.js`
 
 | # | Case | Target | Anchor (file:line) | Expected finding | Root |
 |---|---|---|---|---|---|
-| 1 | stale volatile leaf | `L-000200` | `unknown-knowledge/knowledge/product/100.2-cashing-out-a-bet.md:16-17` (`volatility: volatile`, `verified: "2026-01-05"`) | `preflight.js --leaves L-000200 --today 2026-08-16` → leaf verdict **`stale`**, `counts.stale: 1`, **exit 1**. 223 days vs. the 90-day `volatile` limit. At `--today 2026-02-01` the same leaf is `trusted` — the plant is the date arithmetic, never the wall clock | `fixtures/ts-app` |
-| 2 | jurisdiction mismatch | `L-000100` | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:15` (`jurisdictions: [uk-gc]`) | `validate.js` → **`unregistered-value`** at path **`applies.jurisdictions[0]`**, **exit 1**. The registry is deliberately empty (`_registries/jurisdictions.yaml:8`), so no jurisdiction is minted | `fixtures/ts-app` |
-| 3 | unresolvable relates ref | `L-000100` (plant store) | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:21` (`see-also: [L-000999]`) | `validate.js` → **`unresolved-ref`** at path **`relates.see-also[0]`**, **exit 2**, and *nothing else* — a store that fails to load reports its diagnostic alone | `fixtures/plant-unresolved-relates` |
-| 4 | unregistered facet value | `L-000100` | `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md:10` (`form: walkthrough`) | `validate.js` → **`unregistered-value`** at path **`facets.form`**, **exit 1**. Only `recipe` is minted (`_registries/form.yaml:8`) | `fixtures/ts-app` |
-| 5 | duplicate accession ID | `L-000100` (twice) | `unknown-knowledge/knowledge/product/100.2-onboarding-a-new-sport.md:3` (`id: L-000100`) | `validate.js` → **`duplicate-id`** at path **`id`**, **exit 2**, and *nothing else*. The later mint loses: it never enters the index, and its edges never enter the ref graph | `fixtures/plant-duplicate-accession` |
+| 1 | stale volatile leaf | `L-000200` | `unknown-knowledge/knowledge/product/100.2-deprecating-a-library-release.md:16-17` (`volatility: volatile`, `verified: "2026-01-05"`) | `preflight.js --leaves L-000200 --today 2026-08-16` → leaf verdict **`stale`**, `counts.stale: 1`, **exit 1**. 223 days vs. the 90-day `volatile` limit. At `--today 2026-02-01` the same leaf is `trusted` — the plant is the date arithmetic, never the wall clock | `fixtures/ts-app` |
+| 2 | jurisdiction mismatch | `L-000100` | `unknown-knowledge/knowledge/product/100.1-adding-a-new-export-format.md:15` (`jurisdictions: [eu-eaa]`) | `validate.js` → **`unregistered-value`** at path **`applies.jurisdictions[0]`**, **exit 1**. The registry is deliberately empty (`_registries/jurisdictions.yaml:8`), so no jurisdiction is minted | `fixtures/ts-app` |
+| 3 | unresolvable relates ref | `L-000100` (plant store) | `unknown-knowledge/knowledge/product/100.1-adding-a-new-export-format.md:21` (`see-also: [L-000999]`) | `validate.js` → **`unresolved-ref`** at path **`relates.see-also[0]`**, **exit 2**, and *nothing else* — a store that fails to load reports its diagnostic alone | `fixtures/plant-unresolved-relates` |
+| 4 | unregistered facet value | `L-000100` | `unknown-knowledge/knowledge/product/100.1-adding-a-new-export-format.md:10` (`form: walkthrough`) | `validate.js` → **`unregistered-value`** at path **`facets.form`**, **exit 1**. Only `recipe` is minted (`_registries/form.yaml:8`) | `fixtures/ts-app` |
+| 5 | duplicate accession ID | `L-000100` (twice) | `unknown-knowledge/knowledge/product/100.2-registering-a-new-export-format.md:3` (`id: L-000100`) | `validate.js` → **`duplicate-id`** at path **`id`**, **exit 2**, and *nothing else*. The later mint loses: it never enters the index, and its edges never enter the ref graph | `fixtures/plant-duplicate-accession` |
 
 Cases 2 and 4 share the code `unregistered-value` and are distinguished **only
 by `path`** — the acceptance assertions pin the path for exactly that reason.
@@ -113,9 +113,9 @@ planted to fail.
 
 | Case | Concept | Anchor (file:line) | Sentinel | Wrong-parse trap |
 |---|---|---|---|---|
-| spread in const array | K-113 (`:174`) | `src/registry/leagues.ts:7` (`ALL_LEAGUES`) | `...US_LEAGUES` spread | Naively extracting the literals yields epl, laliga and silently misses 4 leagues — must hard-error instead |
-| computed object key | K-115 (`:187`) | `src/registry/experiments.ts:7` (`EXPERIMENTS`) | `` [`${NS}-new-bet-slip`] `` (line 8) | Key set is lexically unknowable; extracting only `quick-bet` is a confident wrong parse — must hard-error |
-| re-export barrel | K-116 (`:199`) | `src/types/index.ts:5-6` | `export *` / `export { ... } from` | `BetStatus` is not declared here; parsing is lexical and single-file — must hard-error, never follow the chain |
+| spread in const array | K-113 (`:174`) | `src/registry/export-presets.ts:7` (`ALL_PRESETS`) | `...MOBILE_PRESETS` spread | Naively extracting the literals yields web-2x, print and silently misses 4 presets — must hard-error instead |
+| computed object key | K-115 (`:187`) | `src/registry/experiments.ts:7` (`EXPERIMENTS`) | `` [`${NS}-new-toolbar`] `` (line 8) | Key set is lexically unknowable; extracting only `quick-insert` is a confident wrong parse — must hard-error |
+| re-export barrel | K-116 (`:199`) | `src/types/index.ts:5-6` | `export *` / `export { ... } from` | `ReleaseStatus` is not declared here; parsing is lexical and single-file — must hard-error, never follow the chain |
 
 These three double as miss-log material (unextractable anchors → extractor
 backlog, §6): finding kinds are per KK-07's dispatch, but the invariant KK-16
@@ -123,13 +123,13 @@ asserts is *hard error, never a silently wrong value set*.
 
 ## Adversarial-but-extractable inventory (§5.1 "not just unextractable ones")
 
-- `src/registry/sports.ts:5-11` — comments between array members, mixed
-  quotes, trailing comma, `as const`.
-- `src/types/bet-status.ts:5-10` — leading-pipe multi-line union with an
+- `src/registry/export-formats.ts:5-11` — comments between array members,
+  mixed quotes, trailing comma, `as const`.
+- `src/types/release-status.ts:5-10` — leading-pipe multi-line union with an
   interleaved `//` comment.
-- `src/types/currency.ts:6-11` — enum members with string initializers,
+- `src/types/color-space.ts:6-11` — enum members with string initializers,
   mixed quotes, comment, trailing comma (`emit: names`).
-- `src/registry/promotions.ts:5-12` — dashed quoted keys, nested object and
+- `src/registry/panels.ts:5-12` — dashed quoted keys, nested object and
   nested array values that must not pollute the top-level key set.
 - `src/components/StatusBadge.tsx:15-19` — JSX with inline object literals
   outside the anchored symbol's span.
@@ -139,28 +139,29 @@ asserts is *hard error, never a silently wrong value set*.
 - `unknown-knowledge/ontology/classes/100-product.yaml` — 16 concepts
   K-101..K-116, every `enumerates.source` names a listed `source-of-truth`
   entry (§3.5).
-- `unknown-knowledge/knowledge/product/100.1-adding-a-new-sport.md` — a cited
-  leaf carrying the full frontmatter v2 record (UCS-1149): all four governed
-  facets, a registry-minted operation, a tiered citation, and `provenance`. It
-  hosts UCS-1159 plants **2** (`applies.jurisdictions: [uk-gc]`) and **4**
-  (`facets.form: walkthrough`). Its body opens with a topic sentence, which is
-  what display surfaces derive a one-liner from now that `description` is
-  retired.
-- `unknown-knowledge/knowledge/product/100.2-cashing-out-a-bet.md` — a second
-  v2 leaf (`L-000200`) carrying the Time facet (UCS-1150) and a resolving
-  `relates.see-also` edge back to `L-000100`. It hosts UCS-1159 plant **1**
-  (stale volatile). It sits on its own leaf deliberately: the stale plant and
-  the registry plants must be separately observable in one preflight run
-  (`L-000100` quarantined, `L-000200` stale), which is what proves neither
-  masks the other.
+- `unknown-knowledge/knowledge/product/100.1-adding-a-new-export-format.md` —
+  a cited leaf carrying the full frontmatter v2 record (UCS-1149): all four
+  governed facets, a registry-minted operation, a tiered citation, and
+  `provenance`. It hosts UCS-1159 plants **2** (`applies.jurisdictions:
+  [eu-eaa]`) and **4** (`facets.form: walkthrough`). Its body opens with a
+  topic sentence, which is what display surfaces derive a one-liner from now
+  that `description` is retired.
+- `unknown-knowledge/knowledge/product/100.2-deprecating-a-library-release.md`
+  — a second v2 leaf (`L-000200`) carrying the Time facet (UCS-1150) and a
+  resolving `relates.see-also` edge back to `L-000100`. It hosts UCS-1159
+  plant **1** (stale volatile). It sits on its own leaf deliberately: the
+  stale plant and the registry plants must be separately observable in one
+  preflight run (`L-000100` quarantined, `L-000200` stale), which is what
+  proves neither masks the other.
 - `unknown-knowledge/knowledge/_registries/*.yaml` — the seven governed
   vocabularies (domains, form, anchor, stage, operations, jurisdictions,
   authority-tiers). Every minted value cites D-101, and the warrants show the
   three kinds of rationale a real store carries:
   - **material-based** (domains, form, operations, authority-tiers, plus
-    `anchor: artifact` and `stage: verified`) — the warrant names leaf 100.1,
-    which exists and needs the value. This is the ordinary case and the only
-    one literary warrant strictly demands.
+    `anchor: artifact` and `stage: verified`) — the warrant names a leaf that
+    exists and needs the value (100.1 for domains and operations; 100.2 for
+    `form: recipe`). This is the ordinary case and the only one literary
+    warrant strictly demands.
   - **fixed-vocabulary** (`anchor: world`, `anchor: team`) — minted with no
     leaf using them yet, because the three truth anchors are D-003's store
     model rather than a per-project choice; a store carrying only one of them
@@ -170,14 +171,14 @@ asserts is *hard error, never a silently wrong value set*.
     load-bearing on engine behaviour rather than on any one leaf.
 
   `jurisdictions` is deliberately EMPTY, and stays that way: `L-000200` claims
-  universally (`applies.jurisdictions: []`), and `L-000100`'s `uk-gc` is
+  universally (`applies.jurisdictions: []`), and `L-000100`'s `eu-eaa` is
   UCS-1159 plant 2 — a claim with no minted vocabulary behind it, which is
-  precisely the finding that plant exists to raise. Minting `uk-gc` here would
+  precisely the finding that plant exists to raise. Minting `eu-eaa` here would
   silence it. No `deprecated` stage is minted — no leaf surface implements the
   demotion that word carries in the concept lifecycle. `form` mints only
   `recipe` for the same reason: `walkthrough` is plant 4, not an omission.
-  `operations` mints `add-sport` and `cash-out-bet`, one per leaf.
-- `unknown-knowledge/decisions/entries/D-101-sports-registry-const-array.yaml`
+  `operations` mints `add-export-format` and `deprecate-release`, one per leaf.
+- `unknown-knowledge/decisions/entries/D-101-export-format-registry-const-array.yaml`
   — referenced by K-101's `rationale` and relating back to K-101 / leaf 100.1,
   and cited by every registry value as the minting decision.
 

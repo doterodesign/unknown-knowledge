@@ -3,22 +3,22 @@ schema-version: 1
 store: ontology
 entries:
   - id: K-101
-    title: Sport
+    title: Export format
     file: classes/100-product.yaml
   - id: K-102
-    title: Market type
+    title: Blend mode
     file: classes/100-product.yaml
   - id: K-103
-    title: Bet status
+    title: Release status
     file: classes/100-product.yaml
   - id: K-104
-    title: Withdrawal method
+    title: Asset kind
     file: classes/100-product.yaml
   - id: K-105
-    title: Currency
+    title: Color space
     file: classes/100-product.yaml
   - id: K-106
-    title: Promotion kind
+    title: Panel
     file: classes/100-product.yaml
   - id: K-107
     title: Status color
@@ -39,14 +39,14 @@ entries:
     title: App dependency
     file: classes/100-product.yaml
   - id: K-113
-    title: League
+    title: Export preset
     file: classes/100-product.yaml
   - id: K-114
-    title: Loyalty tier
+    title: Plan tier
     file: classes/100-product.yaml
   - id: K-115
     title: Experiment
     file: classes/100-product.yaml
   - id: K-116
-    title: Bet status barrel
+    title: Release status barrel
     file: classes/100-product.yaml

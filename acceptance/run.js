@@ -313,13 +313,13 @@ criterion('A2', [
 // with no concept and the reverse; CI asserts the correct finding kind fires
 // in each direction; wrong-pointer (all-values-missing) signature detected."
 criterion('A3', [
-  ['ts-app: exactly the three tabulated findings — value-not-in-source (K-102 "futures"), source-value-missing (K-104 "crypto"), wrong-pointer (K-108) — exit 1', () => {
+  ['ts-app: exactly the three tabulated findings — value-not-in-source (K-102 "luminosity"), source-value-missing (K-104 "video"), wrong-pointer (K-108) — exit 1', () => {
     const out = runJson('validate-values.js', 1, '--root', fixture('ts-app'), '--json',
       '--concepts', 'K-102,K-104,K-108');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code, f.value ?? null]), [
-      ['K-102', 'value-not-in-source', 'futures'],
-      ['K-104', 'source-value-missing', 'crypto'],
+      ['K-102', 'value-not-in-source', 'luminosity'],
+      ['K-104', 'source-value-missing', 'video'],
       ['K-108', 'wrong-pointer', null],
     ]);
   }],
@@ -384,15 +384,15 @@ criterion('A3', [
     assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
     assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
-    assert.match(lines[0], /^\s+duplicate-id\s+knowledge\/product\/100\.2-onboarding-a-new-sport\.md\s+id\s/);
-    assert.match(lines[0], /id "L-000100" is already minted in knowledge\/product\/100\.1-adding-a-new-sport\.md/);
+    assert.match(lines[0], /^\s+duplicate-id\s+knowledge\/product\/100.2-registering-a-new-export-format\.md\s+id\s/);
+    assert.match(lines[0], /id "L-000100" is already minted in knowledge\/product\/100.1-adding-a-new-export-format\.md/);
   }],
   ['UCS-1159 plant 3/5 — unresolvable relates ref: a well-formed `relates.see-also` cites L-000999, which nothing mints → exactly one `unresolved-ref`, exit 2, in its OWN store', () => {
     const r = run('validate.js', '--root', fixture('plant-unresolved-relates'), '--json');
     assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
     assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
-    assert.match(lines[0], /^\s+unresolved-ref\s+knowledge\/product\/100\.1-adding-a-new-sport\.md\s+relates\.see-also\[0\]\s/);
+    assert.match(lines[0], /^\s+unresolved-ref\s+knowledge\/product\/100.1-adding-a-new-export-format\.md\s+relates\.see-also\[0\]\s/);
     assert.match(lines[0], /relates\.see-also ref "L-000999" does not resolve/);
   }],
   ['UCS-1159 invariant — no plant masks another: each plant store carries exactly ONE defect, and the main store\'s three plants are all observable in the same pair of runs (the reason the two loader-fatal plants live in isolated roots)', () => {
@@ -420,7 +420,7 @@ criterion('A3', [
 // confusable-with surfaced; CLI exit codes correct."
 const A4_QUERIES = {
   'swift-app': { query: 'sport', top: 'K-110', confusable: 'K-130' },
-  'ts-app': { query: 'sport', top: 'K-101', confusable: 'K-113' },
+  'ts-app': { query: 'export format', top: 'K-101', confusable: 'K-113' },
 };
 criterion('A4', FIXTURES.flatMap((app) => {
   const { query, top, confusable } = A4_QUERIES[app];
@@ -480,12 +480,12 @@ const PLANTED_ANCHORS = {
     ['strings-keys', 'Resources/Localizable.xcstrings'],
   ],
   'ts-app': [
-    ['ts-const-array', 'src/registry/sports.ts'],
-    ['ts-union', 'src/types/bet-status.ts'],
-    ['ts-enum', 'src/types/currency.ts'],
-    ['ts-object-keys', 'src/registry/promotions.ts'],
+    ['ts-const-array', 'src/registry/export-formats.ts'],
+    ['ts-union', 'src/types/release-status.ts'],
+    ['ts-enum', 'src/types/color-space.ts'],
+    ['ts-object-keys', 'src/registry/panels.ts'],
     ['ts-object-keys', 'src/components/StatusBadge.tsx'],
-    ['ts-const-array', 'src/registry/loyalty-tiers.js'],
+    ['ts-const-array', 'src/registry/plan-tiers.js'],
     ['json-keys', 'config/features.json'],
     ['json-map-keys', 'package.json'],
     ['dir-modules', 'src/verticals'],

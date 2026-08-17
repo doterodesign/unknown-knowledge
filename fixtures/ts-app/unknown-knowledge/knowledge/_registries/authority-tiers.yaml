@@ -5,6 +5,6 @@ registry: authority-tiers
 values:
   - value: internal
     gloss: The team's own repo, docs, or working agreements.
-    warrant: 100.1 cites src/registry/sports.ts — the team's own source file.
+    warrant: 100.1 cites src/registry/export-formats.ts — the team's own source file.
     decision: D-101
     minted: "2026-07-08"

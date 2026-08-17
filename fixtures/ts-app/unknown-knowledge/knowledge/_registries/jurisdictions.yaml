@@ -1,7 +1,7 @@
 # Acceptance-fixture store (KK-15) — the jurisdictions registry.
-# Ships with no values: 100.1's claim is universal (`applies.jurisdictions: []`),
-# so no jurisdiction has warrant yet. An empty registry is not a missing one —
-# it is a vocabulary nothing has needed.
+# Ships with no values: 100.2's claim is universal (`applies.jurisdictions: []`),
+# and 100.1's `eu-eaa` is UCS-1159 plant 2 — a claim with no minted vocabulary
+# behind it. Minting an accessibility-law region here would silence that plant.
 schema-version: 1
 store: knowledge
 registry: jurisdictions

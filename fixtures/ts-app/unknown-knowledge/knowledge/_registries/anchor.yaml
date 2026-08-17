@@ -8,7 +8,7 @@ registry: anchor
 values:
   - value: artifact
     gloss: The repo decides. The claim is checkable against code, config, or schema.
-    warrant: 100.1's claim reads back to src/registry/sports.ts — the repo settles it.
+    warrant: 100.1's claim reads back to src/registry/export-formats.ts — the repo settles it.
     decision: D-101
     minted: "2026-07-08"
   - value: world

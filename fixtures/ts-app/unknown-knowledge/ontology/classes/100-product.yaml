@@ -5,12 +5,12 @@ schema-version: 1
 entries:
   # -- clean extractions (A2), adversarial-but-extractable formatting --------
   - id: K-101
-    term: Sport
+    term: Export format
     class: 100-product
-    summary: A bettable sport offered by the sportsbook vertical.
-    aliases: [sport type]
-    source-of-truth: [src/registry/sports.ts]
-    owned-by: sportsbook
+    summary: A file format the editor can export artboards to.
+    aliases: [export type]
+    source-of-truth: [src/registry/export-formats.ts]
+    owned-by: editor
     used-by: [K-102]
     confusable-with: [K-113]
     rationale: [D-101]
@@ -18,50 +18,50 @@ entries:
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-const-array
-        source: src/registry/sports.ts
-        symbol: SUPPORTED_SPORTS
-        values: [nfl, nba, mlb, nhl, soccer]
+        source: src/registry/export-formats.ts
+        symbol: EXPORT_FORMATS
+        values: [png, svg, jpg, webp, pdf]
   - id: K-103
-    term: Bet status
+    term: Release status
     class: 100-product
-    summary: Lifecycle state of a placed bet.
-    source-of-truth: [src/types/bet-status.ts]
+    summary: Lifecycle state of a design-library release.
+    source-of-truth: [src/types/release-status.ts]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-union
-        source: src/types/bet-status.ts
-        symbol: BetStatus
-        values: [open, settled, voided, cashed-out]
+        source: src/types/release-status.ts
+        symbol: ReleaseStatus
+        values: [draft, in-review, published, deprecated]
   - id: K-105
-    term: Currency
+    term: Color space
     class: 100-product
-    summary: Wallet currencies the app can denominate in.
-    source-of-truth: [src/types/currency.ts]
+    summary: Color spaces the canvas can render in.
+    source-of-truth: [src/types/color-space.ts]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-enum
-        source: src/types/currency.ts
-        symbol: Currency
+        source: src/types/color-space.ts
+        symbol: ColorSpace
         emit: names
-        values: [USD, EUR, GBP, CAD]
+        values: [SRGB, P3, LAB, LCH]
   - id: K-106
-    term: Promotion kind
+    term: Panel
     class: 100-product
-    summary: Promotion types the marketing engine can run.
-    source-of-truth: [src/registry/promotions.ts]
+    summary: Dockable workspace panels the editor shell can open.
+    source-of-truth: [src/registry/panels.ts]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-object-keys
-        source: src/registry/promotions.ts
-        symbol: PROMOTIONS
-        values: [welcome-bonus, reload, odds-boost, referral]
+        source: src/registry/panels.ts
+        symbol: PANELS
+        values: [layers-panel, inspector, assets-panel, comments]
   - id: K-107
     term: Status color
     class: 100-product
-    summary: Badge color assigned to each bet status (.tsx anchor).
+    summary: Badge color assigned to each release status (.tsx anchor).
     source-of-truth: [src/components/StatusBadge.tsx]
     used-by: [K-103]
     status: active
@@ -70,7 +70,7 @@ entries:
       - kind: ts-object-keys
         source: src/components/StatusBadge.tsx
         symbol: STATUS_COLORS
-        values: [open, settled, voided, cashed-out]
+        values: [draft, in-review, published, deprecated]
   - id: K-109
     term: Feature flag
     class: 100-product
@@ -81,7 +81,7 @@ entries:
     enumerates:
       - kind: json-keys
         source: config/features.json
-        values: [live-betting, cash-out, same-game-parlay]
+        values: [multiplayer-cursors, version-history, component-variants]
   - id: K-112
     term: App dependency
     class: 100-product
@@ -98,13 +98,13 @@ entries:
     term: Vertical
     class: 100-product
     summary: Product verticals, one module folder each (folder identity).
-    source-of-truth: [src/verticals, src/verticals/sportsbook/index.ts]
+    source-of-truth: [src/verticals, src/verticals/editor/index.ts]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: dir-modules
         source: src/verticals
-        values: [sportsbook, casino, poker]
+        values: [editor, prototyping, whiteboard]
   - id: K-111
     term: Route
     class: 100-product
@@ -117,73 +117,73 @@ entries:
         source: src/routes
         pattern: "*.route.ts"
         strip: .route.ts
-        values: [home, account, bets]
+        values: [home, account, files]
   - id: K-114
-    term: Loyalty tier
+    term: Plan tier
     class: 100-product
-    summary: Loyalty program tiers (plain .js anchor — TS kinds read JS too).
-    source-of-truth: [src/registry/loyalty-tiers.js]
+    summary: Subscription plan tiers (plain .js anchor — TS kinds read JS too).
+    source-of-truth: [src/registry/plan-tiers.js]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-const-array
-        source: src/registry/loyalty-tiers.js
-        symbol: LOYALTY_TIERS
-        values: [bronze, silver, gold, platinum]
+        source: src/registry/plan-tiers.js
+        symbol: PLAN_TIERS
+        values: [free, pro, team, enterprise]
   # -- planted bidirectional drift (A3) ---------------------------------------
   - id: K-102
-    term: Market type
+    term: Blend mode
     class: 100-product
-    summary: Bet market types. DRIFT — claims 'futures', absent from source.
-    source-of-truth: [src/registry/markets.ts]
+    summary: Layer blend modes. DRIFT — claims 'luminosity', absent from source.
+    source-of-truth: [src/registry/blend-modes.ts]
     used-by: [K-101]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-const-array
-        source: src/registry/markets.ts
-        symbol: MARKET_TYPES
-        values: [moneyline, spread, totals, parlay, futures]
+        source: src/registry/blend-modes.ts
+        symbol: BLEND_MODES
+        values: [normal, multiply, screen, overlay, luminosity]
   - id: K-104
-    term: Withdrawal method
+    term: Asset kind
     class: 100-product
-    summary: Payout rails. DRIFT — source also has 'crypto', unclaimed here.
-    source-of-truth: [src/types/withdrawal.ts]
+    summary: Library asset kinds. DRIFT — source also has 'video', unclaimed here.
+    source-of-truth: [src/types/asset-kind.ts]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-union
-        source: src/types/withdrawal.ts
-        symbol: WithdrawalMethod
-        values: [ach, wire, paypal]
+        source: src/types/asset-kind.ts
+        symbol: AssetKind
+        values: [icon, illustration, photo]
   # -- wrong-pointer signature (A3): every claimed value missing from a real
   #    parseable file; the true home is src/registry/locales.ts ---------------
   - id: K-108
     term: Locale
     class: 100-product
-    summary: Supported locales. WRONG POINTER — descriptor names sports.ts.
-    source-of-truth: [src/registry/sports.ts]
+    summary: Supported locales. WRONG POINTER — descriptor names export-formats.ts.
+    source-of-truth: [src/registry/export-formats.ts]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-const-array
-        source: src/registry/sports.ts
-        symbol: SUPPORTED_SPORTS
+        source: src/registry/export-formats.ts
+        symbol: EXPORT_FORMATS
         values: [en-US, es-MX, pt-BR]
   # -- out-of-envelope anchors (§5.1): extractor must HARD-ERROR --------------
   - id: K-113
-    term: League
+    term: Export preset
     class: 100-product
-    summary: Leagues across sports. UNEXTRACTABLE — spread in the array.
-    source-of-truth: [src/registry/leagues.ts]
+    summary: Export presets across surfaces. UNEXTRACTABLE — spread in the array.
+    source-of-truth: [src/registry/export-presets.ts]
     confusable-with: [K-101]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: ts-const-array
-        source: src/registry/leagues.ts
-        symbol: ALL_LEAGUES
-        values: [epl, laliga]
+        source: src/registry/export-presets.ts
+        symbol: ALL_PRESETS
+        values: [web-2x, print]
   - id: K-115
     term: Experiment
     class: 100-product
@@ -195,11 +195,11 @@ entries:
       - kind: ts-object-keys
         source: src/registry/experiments.ts
         symbol: EXPERIMENTS
-        values: [quick-bet]
+        values: [quick-insert]
   - id: K-116
-    term: Bet status barrel
+    term: Release status barrel
     class: 100-product
-    summary: Barrel re-export of BetStatus. UNEXTRACTABLE — re-export.
+    summary: Barrel re-export of ReleaseStatus. UNEXTRACTABLE — re-export.
     source-of-truth: [src/types/index.ts]
     confusable-with: [K-103]
     status: active
@@ -207,5 +207,5 @@ entries:
     enumerates:
       - kind: ts-union
         source: src/types/index.ts
-        symbol: BetStatus
-        values: [open, settled, voided, cashed-out]
+        symbol: ReleaseStatus
+        values: [draft, in-review, published, deprecated]
