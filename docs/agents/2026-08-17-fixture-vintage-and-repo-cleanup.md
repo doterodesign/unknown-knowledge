@@ -96,8 +96,8 @@ companion, and the design-system/engineering/brand knowledge behind them.
 The Swift fixture keeps `Sources/Payments/Providers.swift` (in-app billing
 providers, e.g. Stripe/Adyen) as its computed-array "unextractable" miss
 specimen. In-app billing is a client-neutral surface any SaaS design tool's
-mobile app carries, and the file holds no sports-betting or gambling
-vocabulary. The shipped skill-doc example that referenced this path was
+mobile app carries, and the file holds no old-topic vocabulary. The shipped
+skill-doc example that referenced this path was
 changed to a neutral `Sources/Integrations/Providers.swift` so the payload
 carries no fixture-specific path.
 
