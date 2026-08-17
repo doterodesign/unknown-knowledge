@@ -3,8 +3,8 @@ schema-version: 1
 store: ontology
 entries:
   - id: K-210
-    title: Sport
-    file: classes/200-sportsbook.yaml
+    title: Design token
+    file: classes/200-design-system.yaml
   - id: K-220
-    title: Bet slip
-    file: classes/200-sportsbook.yaml
+    title: Component set
+    file: classes/200-design-system.yaml

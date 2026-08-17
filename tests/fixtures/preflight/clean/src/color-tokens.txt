@@ -1,2 +1,2 @@
-usd
-eur
+srgb
+p3

@@ -62,13 +62,13 @@ anchor candidates: 22
   strings-keys       Resources/en.lproj/Localizable.strings
   dir-modules        Sources
   swift-enum         Sources/Analytics/Events.swift
+  swift-const-array  Sources/Canvas/Actions.swift
+  swift-enum         Sources/Canvas/Actions.swift
+  swift-enum         Sources/Canvas/CanvasTool.swift
   swift-const-array  Sources/Payments/Providers.swift
   swift-enum         Sources/Payments/Providers.swift
   swift-const-array  Sources/Settings/Theme.swift
   swift-enum         Sources/Settings/Theme.swift
-  swift-const-array  Sources/Sportsbook/Markets.swift
-  swift-enum         Sources/Sportsbook/Markets.swift
-  swift-enum         Sources/Sportsbook/Sport.swift
   dir-modules        unknown-knowledge
   yaml-keys          unknown-knowledge/decisions/_catalog.yaml
   yaml-keys          unknown-knowledge/knowledge/_catalog.yaml
@@ -99,7 +99,7 @@ nothing unsurveyed — the map saw every tracked path
   not two separate gates. Reasonable proposal for this fixture:
   include `Config`, `Resources`, `Sources`; exclude the kit dir
   `unknown-knowledge` (the map is never the territory) and root-level
-  files; classes `100-sportsbook` and `200-platform`.
+  files; classes `100-canvas` and `200-platform`.
 - [ ] Nothing was written before the human confirms.
 
 On confirmation the agent writes `survey-scope.yaml` at the repo root:
@@ -119,7 +119,7 @@ and the class spine into `unknown-knowledge/ontology/_rules.yaml`:
 schema-version: 1
 store: ontology
 rules:
-  - class: 100-sportsbook
+  - class: 100-canvas
     id-range: [K-100, K-199]
   - class: 200-platform
     id-range: [K-200, K-299]
@@ -148,60 +148,60 @@ anchor candidates: 16
 
 The agent walks the in-scope candidates and emits a deliberately small
 first batch ("an ontology born complete is born wrong"): a folder-identity
-concept for the vertical (rung 1) and both facets of the `Sport` enum
-(rung 2). It reads `Sources/Sportsbook/Sport.swift` to derive the values —
+concept for the vertical (rung 1) and both facets of the `CanvasTool` enum
+(rung 2). It reads `Sources/Canvas/CanvasTool.swift` to derive the values —
 never guessing from prose.
 
-`unknown-knowledge/ontology/classes/100-sportsbook.yaml`:
+`unknown-knowledge/ontology/classes/100-canvas.yaml`:
 
 ```yaml
 schema-version: 1
 entries:
   - id: K-100
-    term: Sportsbook
-    class: 100-sportsbook
-    summary: The sportsbook vertical — sports, markets, odds display.
-    source-of-truth: [Sources/Sportsbook]     # folder for IDENTITY (rung 1)
-    owned-by: sportsbook
+    term: Canvas
+    class: 100-canvas
+    summary: The canvas vertical — tools, actions, on-surface editing.
+    source-of-truth: [Sources/Canvas]     # folder for IDENTITY (rung 1)
+    owned-by: canvas
     status: active
     last-verified: "2026-07-08"
 
   - id: K-110
-    term: Sport
-    class: 100-sportsbook
-    summary: A bettable sport offered by the app (Swift case-name facet).
-    aliases: [sport type]
-    source-of-truth: [Sources/Sportsbook/Sport.swift]   # file for FACTS
-    owned-by: sportsbook
+    term: Canvas tool
+    class: 100-canvas
+    summary: A tool users can pick on the canvas (Swift case-name facet).
+    aliases: [tool type]
+    source-of-truth: [Sources/Canvas/CanvasTool.swift]   # file for FACTS
+    owned-by: canvas
     confusable-with: [K-120]
     status: active
     last-verified: "2026-07-08"
     enumerates:                               # rung 2: value agreement
       - kind: swift-enum
-        source: Sources/Sportsbook/Sport.swift
-        symbol: Sport
+        source: Sources/Canvas/CanvasTool.swift
+        symbol: CanvasTool
         emit: case-name
-        values: [football, basketball, baseball, iceHockey, soccer, tennis]
+        values: [select, frame, pen, textStyle, hand, comment]
 
   - id: K-120
-    term: Sport wire code
-    class: 100-sportsbook
-    summary: The upstream odds-feed code for a sport (raw-value facet).
-    source-of-truth: [Sources/Sportsbook/Sport.swift]
-    owned-by: sportsbook
+    term: Tool shortcut
+    class: 100-canvas
+    summary: The keyboard shortcut for a canvas tool (raw-value facet).
+    source-of-truth: [Sources/Canvas/CanvasTool.swift]
+    owned-by: canvas
     confusable-with: [K-110]
     status: active
     last-verified: "2026-07-08"
     enumerates:
       - kind: swift-enum
-        source: Sources/Sportsbook/Sport.swift
-        symbol: Sport
+        source: Sources/Canvas/CanvasTool.swift
+        symbol: CanvasTool
         emit: raw-value
-        values: [NFL, NBA, MLB, NHL, EPL, ATP]
+        values: [V, F, P, T, H, C]
 ```
 
 plus three catalog rows in `unknown-knowledge/ontology/_catalog.yaml`
-(`K-100`/`K-110`/`K-120` → `classes/100-sportsbook.yaml`).
+(`K-100`/`K-110`/`K-120` → `classes/100-canvas.yaml`).
 
 - [ ] Folder-vs-file rule honored: the vertical points at the folder, the
   value sets at the file.
@@ -209,16 +209,16 @@ plus three catalog rows in `unknown-knowledge/ontology/_catalog.yaml`
   exhaustively converted — skipping `Theme.swift`, config keys, and
   localization keys in the first batch is a normal outcome, not a gap.
 
-If the agent drafts a value the source does not carry (say `cricket`
-instead of `tennis`), the batch validation catches it — exit 1:
+If the agent drafts a value the source does not carry (say `eyedropper`
+instead of `comment`), the batch validation catches it — exit 1:
 
 ```
 validate-values: 1 concept(s) checked, 0 skipped (draft/proposed), 2 findings, 0 hard errors
 
-FINDING source-value-missing  K-110  "tennis"  (source: Sources/Sportsbook/Sport.swift)
-  source value "tennis" in "Sources/Sportsbook/Sport.swift" is not claimed by the descriptor
-FINDING value-not-in-source  K-110  "cricket"  (source: Sources/Sportsbook/Sport.swift)
-  claimed value "cricket" is not in "Sources/Sportsbook/Sport.swift" (byte-exact, case-sensitive, §3.5)
+FINDING source-value-missing  K-110  "comment"  (source: Sources/Canvas/CanvasTool.swift)
+  source value "comment" in "Sources/Canvas/CanvasTool.swift" is not claimed by the descriptor
+FINDING value-not-in-source  K-110  "eyedropper"  (source: Sources/Canvas/CanvasTool.swift)
+  claimed value "eyedropper" is not in "Sources/Canvas/CanvasTool.swift" (byte-exact, case-sensitive, §3.5)
 ```
 
 - [ ] The fix is re-reading the source, never bending the claim until the
@@ -227,7 +227,7 @@ FINDING value-not-in-source  K-110  "cricket"  (source: Sources/Sportsbook/Sport
 Idempotency probe (the resume rule) — before emitting for an anchor:
 
 ```sh
-node "$KIT/engine/resolve.js" --paths Sources/Sportsbook/Sport.swift,Sources/Payments/Providers.swift --root .
+node "$KIT/engine/resolve.js" --paths Sources/Canvas/CanvasTool.swift,Sources/Payments/Providers.swift --root .
 ```
 
 - [ ] Exit 0:
@@ -237,18 +237,18 @@ resolve --paths -> 2 paths
 
 time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
+Sources/Canvas/CanvasTool.swift
+  K-100  Canvas  [active]  (pointer: Sources/Canvas)
+  K-110  Canvas tool  [active]  (pointer: Sources/Canvas/CanvasTool.swift)
+  K-120  Tool shortcut  [active]  (pointer: Sources/Canvas/CanvasTool.swift)
+
 Sources/Payments/Providers.swift
   no concepts point at this path
-
-Sources/Sportsbook/Sport.swift
-  K-100  Sportsbook  [active]  (pointer: Sources/Sportsbook)
-  K-110  Sport  [active]  (pointer: Sources/Sportsbook/Sport.swift)
-  K-120  Sport wire code  [active]  (pointer: Sources/Sportsbook/Sport.swift)
 
 update every concept listed above in the same commit as the change (PRD §7 ACT)
 ```
 
-- [ ] A resumed session sees `Sport.swift` covered (note the folder pointer
+- [ ] A resumed session sees `CanvasTool.swift` covered (note the folder pointer
   matching the nested file too) and emits NO duplicate concept for it;
   `Providers.swift` reads `no concepts point at this path` — that anchor is
   still open (and goes to step 4, not to a concept: its value set is
@@ -293,8 +293,8 @@ node "$KIT/engine/log-entry.js" create --log misses --date 2026-07-08 \
 ## 5. INTERVIEW — the knowledge skeleton from the human
 
 - [ ] The agent asks the human for domains/divisions (seeded by the code
-  vocabulary: betting, payments, localization → e.g. domains `regulation`
-  and `product`), and writes the skeleton with governance notes into
+  vocabulary: canvas tools, theming, localization → e.g. domains
+  `design-system` and `product`), and writes the skeleton with governance notes into
   `unknown-knowledge/knowledge/_rules.yaml`:
 
 ```yaml
@@ -305,10 +305,10 @@ rules:
     text: Human-only; the kb-build skill is the sole write path. Leaves require citations.
   - rule: domains
     domains:
-      - domain: regulation
-        divisions: [licensing, settlement, responsible-gaming]
+      - domain: design-system
+        divisions: [tokens, components, theming]
       - domain: product
-        divisions: [betting-markets, promotions]
+        divisions: [editor, engineering]
 ```
 
 - [ ] Negative check: NO knowledge leaves were written — cited leaves land

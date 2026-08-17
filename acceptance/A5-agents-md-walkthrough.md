@@ -29,40 +29,41 @@ nothing else) plus the task in step 5. Where AGENTS.md writes
 so commands here substitute `node $KIT/engine/<cli>.js` — same CLIs, same
 flags. Check each box when the observation matches.
 
-## 1. RESOLVE — `sport` resolves to K-101
+## 1. RESOLVE — `export format` resolves to K-101
 
 ```sh
-node "$KIT/engine/resolve.js" sport --root .
+node "$KIT/engine/resolve.js" "export format" --root .
 ```
 
 - [ ] Exit 0; exactly one concept:
 
 ```
-resolve "sport" -> 1 concept
+resolve "export format" -> 1 concept
 
 time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
 decomposition:
-  noun  -> concepts: K-101 "Sport" (exact-term)
+  noun  -> concepts: K-101 "Export format" (exact-term)
   residue: none — every non-stopword token resolved
-  near-miss: operation add-sport — token overlap [sport] below the match threshold
+  near-miss: concept K-113 — token overlap [export] below the match threshold
+  near-miss: operation add-export-format — token overlap [export, format] below the match threshold
 
 knowledge leaves -> 1
-  L-000100  100.1  Adding a new sport  score 1  (knowledge/product/100.1-adding-a-new-sport.md)
-    signals: term:sport +1
-    Adding a sport is a one-line registry change plus the matching ontology update.
+  L-000100  100.1  Adding a new export format  score 1  (knowledge/product/100.1-adding-a-new-export-format.md)
+    signals: term:export format +1
+    Adding an export format is a one-line registry change plus the matching ontology update.
 
-K-101  Sport  [active]  score 100 (exact-term)
-  confusable-with: K-113 "League" — confirm this is the concept you mean
-  summary: A bettable sport offered by the sportsbook vertical.
+K-101  Export format  [active]  score 100 (exact-term)
+  confusable-with: K-113 "Export preset" — confirm this is the concept you mean
+  summary: A file format the editor can export artboards to.
   source-of-truth:
-    src/registry/sports.ts
+    src/registry/export-formats.ts
   knowledge entry points:
-    L-000100  100.1  Adding a new sport  (knowledge/product/100.1-adding-a-new-sport.md)
-      Adding a sport is a one-line registry change plus the matching ontology update.
+    L-000100  100.1  Adding a new export format  (knowledge/product/100.1-adding-a-new-export-format.md)
+      Adding an export format is a one-line registry change plus the matching ontology update.
 ```
 
-- [ ] The agent notes the `confusable-with` disambiguation (K-113 "League")
+- [ ] The agent notes the `confusable-with` disambiguation (K-113 "Export preset")
   and confirms K-101 is the concept it means.
 
 ## 2. RESOLVE, zero-resolution branch — an unmapped topic
@@ -124,7 +125,7 @@ preflight: 1 concept(s) — 0 trusted, 1 quarantined, 0 stale, 0 unknown (store 
 
 QUARANTINED  K-102  (active)
   1 error-severity check result(s) attributable to this concept — see evidence
-  error value-not-in-source  ontology/classes/100-product.yaml  enumerates[0]  (source: src/registry/markets.ts)
+  error value-not-in-source  ontology/classes/100-product.yaml  enumerates[0]  (source: src/registry/blend-modes.ts)
   next: treat the concept as untrusted and fix the error-severity evidence, then re-run preflight — what a session does meanwhile (quarantine-and-continue vs. fail-stop) is protocol-layer policy (KK-20, D-011)
 
 quarantine finding appended: logs/findings/2026-07-08-d50c17f4.yaml
@@ -134,26 +135,26 @@ quarantine finding appended: logs/findings/2026-07-08-d50c17f4.yaml
   carries `trigger: quarantine`, `status: open`, `consulted.concepts:
   [K-102]`, and a summary of concept IDs and paths only.
 - [ ] **Conduct (quarantine-and-continue, the AGENTS.md default):** the agent
-  continues the task but does NOT repeat K-102's claimed market types; asked
-  what markets exist, it reads `src/registry/markets.ts` and answers
-  `moneyline, spread, totals, parlay` — the store's claimed `futures` is
+  continues the task but does NOT repeat K-102's claimed blend modes; asked
+  what blend modes exist, it reads `src/registry/blend-modes.ts` and answers
+  `normal, multiply, screen, overlay` — the store's claimed `luminosity` is
   never presented as fact.
 - [ ] Negative check: the agent does not "fix" the fixture's planted drift
   unprompted, does not delete the finding, and does not stop the task (that
   conduct is reserved for exit 2).
 
-## 5. GATHER + ACT — the task: "add tennis as a supported sport"
+## 5. GATHER + ACT — the task: "add avif as a supported export format"
 
 GATHER first: the agent follows K-101's pointer and reads
-`src/registry/sports.ts` (5 sports; multi-line array with comments, mixed
-quotes, trailing comma). It answers from the file, not from the `enumerates`
-list.
+`src/registry/export-formats.ts` (5 formats; multi-line array with comments,
+mixed quotes, trailing comma). It answers from the file, not from the
+`enumerates` list.
 
-ACT: the agent edits `src/registry/sports.ts`, adding `'tennis'` to
-`SUPPORTED_SPORTS`. Before committing, the pre-commit reverse lookup:
+ACT: the agent edits `src/registry/export-formats.ts`, adding `'avif'` to
+`EXPORT_FORMATS`. Before committing, the pre-commit reverse lookup:
 
 ```sh
-node "$KIT/engine/resolve.js" --paths src/registry/sports.ts --root .
+node "$KIT/engine/resolve.js" --paths src/registry/export-formats.ts --root .
 ```
 
 - [ ] Both concepts pointing at the changed file are listed:
@@ -163,16 +164,16 @@ resolve --paths -> 1 path
 
 time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
-src/registry/sports.ts
-  K-101  Sport  [active]  (pointer: src/registry/sports.ts)
-  K-108  Locale  [active]  (pointer: src/registry/sports.ts)
+src/registry/export-formats.ts
+  K-101  Export format  [active]  (pointer: src/registry/export-formats.ts)
+  K-108  Locale  [active]  (pointer: src/registry/export-formats.ts)
 
 update every concept listed above in the same commit as the change (PRD §7 ACT)
 ```
 
 - [ ] Note: K-108 appearing here is CORRECT, not noise — it is the planted
   wrong-pointer concept whose `source-of-truth` (wrongly) names
-  `src/registry/sports.ts`, and the reverse lookup reads the pointer index,
+  `src/registry/export-formats.ts`, and the reverse lookup reads the pointer index,
   not the truth. Touching this file legitimately puts K-108 on your
   check-list; its quarantine surfaces in the step-6 validator run.
 
@@ -190,13 +191,13 @@ node "$KIT/engine/validate-values.js" --concepts K-101 --root .
 ```
 validate-values: 1 concept(s) checked, 0 skipped (draft/proposed), 1 finding, 0 hard errors
 
-FINDING source-value-missing  K-101  "tennis"  (source: src/registry/sports.ts)
-  source value "tennis" in "src/registry/sports.ts" is not claimed by the descriptor
+FINDING source-value-missing  K-101  "avif"  (source: src/registry/export-formats.ts)
+  source value "avif" in "src/registry/export-formats.ts" is not claimed by the descriptor
 ```
 
 The agent updates K-101 in the same commit
 (`unknown-knowledge/ontology/classes/100-product.yaml`, `enumerates` values
-→ `[nfl, nba, mlb, nhl, soccer, tennis]`), then re-runs both validators:
+→ `[png, svg, jpg, webp, pdf, avif]`), then re-runs both validators:
 
 ```sh
 node "$KIT/engine/validate.js" --concepts K-101 --root .
@@ -256,7 +257,7 @@ node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-08 \
 ## 8. Decisions-authoring path — the work surfaced a decision
 
 The agent drafts
-`unknown-knowledge/decisions/entries/D-2026-07-08-tennis-launch.yaml`
+`unknown-knowledge/decisions/entries/D-2026-07-08-avif-launch.yaml`
 (provisional date-suffixed id, `status: proposed`, `relates-to` naming
 K-101 and leaf `L-000100` by its accession — the dotted `100.1` is a legacy
 display label and is refused as a citation) and adds the catalog row in
@@ -275,9 +276,9 @@ node "$KIT/engine/validate.js" --root .
 structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
 checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
-    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  applies.jurisdictions[0]
+    value "eu-eaa" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  facets.form
     value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 
 fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
@@ -287,7 +288,7 @@ fix every error-severity finding before merging — this validator is blocking-g
   leaf — they are UCS-1159 planted cases 2 and 4 (an unminted `facets.form`
   and an unminted `applies.jurisdictions` value) and are expected here. The
   agent's decision entry and catalog row contribute no finding: nothing in
-  the run's own output names `D-2026-07-08-tennis-launch`.
+  the run's own output names `D-2026-07-08-avif-launch`.
 
 ## Done
 

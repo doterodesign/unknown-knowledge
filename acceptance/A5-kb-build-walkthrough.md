@@ -39,36 +39,36 @@ rules:
   - rule: domains
     domains:
       - domain: product
-        divisions: [sportsbook, payments]
+        divisions: [editor, engineering]
 EOF
 # Mint the governed facet values this item will need. A registry value is a
 # registry edit plus a Decisions entry, never the drafting agent's to invent
 # (step 3) — so the human mints them here, standing in for that review.
 cat >> unknown-knowledge/knowledge/_registries/domains.yaml <<'EOF'
-  - value: product/payments
-    gloss: The payments/payout surface — deposits, withdrawals, settlement.
-    warrant: The incoming ACH settlement item needs a home; the spine names payments.
+  - value: product/engineering
+    gloss: The engineering surface — build, export, and rendering pipelines.
+    warrant: The incoming SVG export item needs a home; the spine names engineering.
     decision: D-101
     minted: "2026-07-09"
 EOF
 cat >> unknown-knowledge/knowledge/_registries/form.yaml <<'EOF'
   - value: reference
     gloss: A statement of how something is, rather than steps to do it.
-    warrant: The ACH settlement item states a rule, it is not a procedure.
+    warrant: The SVG export item states a rule, it is not a procedure.
     decision: D-101
     minted: "2026-07-09"
 EOF
 cat >> unknown-knowledge/knowledge/_registries/operations.yaml <<'EOF'
-  - value: process-withdrawal
-    gloss: Move a customer payout through the withdrawal rails.
-    warrant: The ACH settlement item is what a reader consults to do exactly this.
+  - value: export-asset
+    gloss: Render a design asset out to a file format.
+    warrant: The SVG export item is what a reader consults to do exactly this.
     decision: D-101
     minted: "2026-07-09"
 EOF
 cat >> unknown-knowledge/knowledge/_registries/authority-tiers.yaml <<'EOF'
   - value: regulator
-    gloss: A rule-making body whose text is binding.
-    warrant: The ACH settlement item cites the Nacha Operating Rules.
+    gloss: A standards body whose text is binding.
+    warrant: The SVG export item cites the W3C SVG 2 Recommendation.
     decision: D-101
     minted: "2026-07-09"
 EOF
@@ -79,10 +79,10 @@ Give the agent `payload/protocol/skills/kb-build.md` (plus
 `payload/protocol/AGENTS.md`, which it operates under) and this incoming
 item, exactly:
 
-> Document our ACH withdrawal settlement windows: ACH withdrawals batch at
-> the processor's daily cutoff and settle the next banking day (Nacha
-> Operating Rules & Guidelines, 2025 ed., Subsection 3.1). Also note that
-> VIP withdrawals are instant — pretty sure that's true, no source though.
+> Document our SVG asset export precision: SVG exports round coordinates to
+> two decimal places at the viewBox scale (W3C SVG 2 Recommendation,
+> §7.11). Also note that icon exports are always lossless — pretty sure
+> that's true, no source though.
 
 Where the skill writes `node unknown-knowledge/engine/<cli>.js`, the
 fixture has no vendored engine, so commands here substitute
@@ -92,39 +92,39 @@ the observation matches.
 ## 1. CLASSIFY — one subject home
 
 The skill delegates this step to `resolve.js`. The agent enters through the
-catalog (two leaves, `L-000100` and `L-000200`, both sportsbook), reads the
+catalog (two leaves, `L-000100` and `L-000200`, both editor), reads the
 spine in `knowledge/_rules.yaml`, and asks the engine what already exists:
 
 ```sh
-node "$KIT/engine/resolve.js" "withdrawal" --root .
+node "$KIT/engine/resolve.js" "asset" --root .
 ```
 
 - [ ] Exit 0:
 
 ```
-resolve "withdrawal" -> 1 concept
+resolve "asset" -> 1 concept
 
 time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
 decomposition:
-  noun  -> concepts: K-104 "Withdrawal method" (term-match)
-  residue (unresolved): withdrawal  [resolved context: K-104]
-  near-miss: operation process-withdrawal — token overlap [withdrawal] below the match threshold
+  noun  -> concepts: K-104 "Asset kind" (term-match)
+  residue (unresolved): asset  [resolved context: K-104]
+  near-miss: operation export-asset — token overlap [asset] below the match threshold
 
-K-104  Withdrawal method  [active]  score 60 (term-match)
-  summary: Payout rails. DRIFT — source also has 'crypto', unclaimed here.
+K-104  Asset kind  [active]  score 60 (term-match)
+  summary: Library asset kinds. DRIFT — source also has 'video', unclaimed here.
   source-of-truth:
-    src/types/withdrawal.ts
+    src/types/asset-kind.ts
 ```
 
 - [ ] The agent reads the engine's answer rather than reproducing one: the
   `decomposition` names what joined, and the `residue` line is the store
   reporting where its own vocabulary ran out.
 - [ ] **Judgment fill — candidate confirmation**: the agent opens the leaves
-  `resolve` named before deciding placement. `L-000100` is sportsbook
-  onboarding, `L-000200` is bet cash-out — both `product/sportsbook`, so
-  neither covers settlement windows → new leaf, not a revision. The spine
-  names the subject home: `facets.domain` `product/payments`. This read is
+  `resolve` named before deciding placement. `L-000100` is export-format
+  onboarding, `L-000200` is release deprecation — both `product/editor`, so
+  neither covers export precision → new leaf, not a revision. The spine
+  names the subject home: `facets.domain` `product/engineering`. This read is
   the judgment; no command performs it.
 - [ ] The agent mints a fresh accession for the new leaf — `L-000110`.
   Nothing is looked up to find "the next free" anything: an accession is
@@ -139,10 +139,10 @@ K-104  Withdrawal method  [active]  score 60 (term-match)
 Two claims in the item:
 
 - [ ] **Judgment fill — candidate confirmation**: the settlement-window
-  claim carries a citation the agent followed (Nacha rules, `accessed`
+  claim carries a citation the agent followed (W3C SVG 2, `accessed`
   dated) → promotable. Confirming the source supports the claim *as written*
   is a read, not a lookup.
-- [ ] The "VIP withdrawals are instant" claim has no source — **an
+- [ ] The "icon exports are always lossless" claim has no source — **an
   unsourced claim is not promotable**: it is parked as a gap-log entry,
   never written into the leaf. The skill delegates the write to
   `log-entry.js`, the only write path into `logs/` (note `--root` is the KIT
@@ -151,7 +151,7 @@ Two claims in the item:
 ```sh
 node "$KIT/engine/log-entry.js" create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf L-000100, concept K-104","consulted":{"concepts":["K-104"],"leaves":["L-000100"]}}'
+  --entry '{"summary":"kb-build item not promotable: icon-export-lossless claim lacks any citation; nearest leaf L-000100, concept K-104","consulted":{"concepts":["K-104"],"leaves":["L-000100"]}}'
 ```
 
 - [ ] Exit 0; the helper prints the minted fragment (hex suffix varies):
@@ -164,7 +164,7 @@ node "$KIT/engine/log-entry.js" create --log gaps --date 2026-07-09 \
     "schema-version": 1,
     "date": "2026-07-09",
     "status": "open",
-    "summary": "kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf L-000100, concept K-104",
+    "summary": "kb-build item not promotable: icon-export-lossless claim lacks any citation; nearest leaf L-000100, concept K-104",
     "consulted": {
       "concepts": [
         "K-104"
@@ -194,12 +194,12 @@ grep -A1 '^  - value:' unknown-knowledge/knowledge/_registries/form.yaml | tail 
 ```
 
 - [ ] The four facets are filled from their registries — `domain`
-  (`product/payments`, `_registries/domains.yaml`), `form` (`reference`,
+  (`product/engineering`, `_registries/domains.yaml`), `form` (`reference`,
   `_registries/form.yaml`), `anchor` (`world`, `_registries/anchor.yaml`),
   `stage` (`draft`, `_registries/stage.yaml`) — plus `operations`
-  (`process-withdrawal`) and the citation's `authority` tier (`regulator`).
+  (`export-asset`) and the citation's `authority` tier (`regulator`).
 - [ ] `applies.jurisdictions` is left EMPTY, and the agent says why: empty
-  means universal, which is a claim, and ACH settlement timing is a US rail
+  means universal, which is a claim, and SVG export precision is a rendering
   rule the fixture's spine has no jurisdiction value for. Leaving it empty
   is a decision recorded, not a field skipped.
 - [ ] Negative check: the agent does NOT invent a facet value. The gate is
@@ -207,7 +207,7 @@ grep -A1 '^  - value:' unknown-knowledge/knowledge/_registries/form.yaml | tail 
   (say `settlement-note`) and step 5 refuses it by name:
 
 ```
-error  unregistered-value  L-000110  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  facets.form
+error  unregistered-value  L-000110  knowledge/L-00/L-000110-svg-asset-export-precision.md  facets.form
     value "settlement-note" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 ```
 
@@ -220,7 +220,7 @@ error  unregistered-value  L-000110  knowledge/L-00/L-000110-ach-withdrawal-sett
 ## 4. DRAFT — §3.2 governance frontmatter + body
 
 The agent writes
-`unknown-knowledge/knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md`
+`unknown-knowledge/knowledge/L-00/L-000110-svg-asset-export-precision.md`
 — the accession-prefix shard (`L-` plus the first two digits of `000110`),
 a fanout device that carries no meaning about the subject:
 
@@ -229,35 +229,35 @@ a fanout device that carries no meaning about the subject:
 schema-version: 2
 id: L-000110
 domain: product
-division: payments
-heading: ACH withdrawal settlement windows
+division: engineering
+heading: SVG asset export precision
 facets:
-  domain: product/payments
+  domain: product/engineering
   form: reference
   anchor: world
   stage: draft
-operations: [process-withdrawal]
+operations: [export-asset]
 applies:
   jurisdictions: []
 notes:
   - type: scope
-    text: Covers ACH rails only; card and crypto rails are separate items.
+    text: Covers SVG coordinate output only; PNG and PDF rasterization are separate items.
   - type: class-here
-    text: Settlement timing classes with the payout product surface, not
-      with sportsbook settlement (bet grading) — confirm before filing
-      grading material here.
+    text: Export precision classes with the engineering pipeline surface, not
+      with editor authoring (grid snapping) — confirm before filing snapping
+      material here.
   - type: revision
     date: "2026-07-09"
     text: Initial entry.
 cross-references:
   class-elsewhere: []
   see-also: [L-000100]
-  including: [same-day ACH eligibility, holiday calendars]
+  including: [decimal-precision overrides, viewBox scaling]
 citations:
-  - source: "Nacha Operating Rules & Guidelines, 2025 ed., Subsection 3.1 (ACH settlement schedule)"
+  - source: "W3C SVG 2 Recommendation, §7.11 (Coordinate precision and rounding)"
     accessed: "2026-07-09"
     authority: regulator
-terms: [ACH, withdrawal, settlement window, payout]
+terms: [SVG, export, precision, viewBox]
 edition: 1
 contributors: [walkthrough-agent]
 provenance:
@@ -265,10 +265,10 @@ provenance:
   skill-version: kb-build@2.0.0
 ---
 
-ACH withdrawals batch at the processor's daily cutoff and settle on the
-next banking day; same-day ACH applies only below the per-entry cap. The
-user-facing promise in the withdrawal flow must quote banking days, not
-calendar days (citation: Nacha rules, above).
+SVG exports round coordinates to two decimal places at the viewBox scale; the
+rounding is applied once, at emit, so nested transforms do not compound it. The
+user-facing export dialog must describe precision in viewBox units, not device
+pixels (citation: W3C SVG 2, above).
 ```
 
 - [ ] `id: L-000110` is present — it is REQUIRED, and it is the leaf's
@@ -284,7 +284,7 @@ calendar days (citation: Nacha rules, above).
   what any surface showing a one-liner will derive and display. It is
   written to read well out of context for that reason.
 - [ ] `scope` + `revision` (dated) notes present; `class-here` records the
-  contestable call from step 1; the parked VIP claim is NOT in the body;
+  contestable call from step 1; the parked icon-export claim is NOT in the body;
   every citation from step 2 is in the frontmatter with a tier.
 - [ ] Cross-reference honesty: `see-also: [L-000100]` cites the target's
   accession and resolves; the two `including` topics are standing room,
@@ -294,8 +294,8 @@ Then the catalog row, appended to `unknown-knowledge/knowledge/_catalog.yaml`:
 
 ```yaml
   - id: L-000110
-    title: ACH withdrawal settlement windows
-    file: L-00/L-000110-ach-withdrawal-settlement-windows.md
+    title: SVG asset export precision
+    file: L-00/L-000110-svg-asset-export-precision.md
 ```
 
 - [ ] The row's `id` is the same accession the leaf's `id` field carries —
@@ -323,11 +323,11 @@ testing:
 structural validate -> 3 finding(s) (3 error(s), 0 warning(s))
 checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
-error  orphan  L-000110  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  id
+error  orphan  L-000110  knowledge/L-00/L-000110-svg-asset-export-precision.md  id
     "L-000110" is not declared in knowledge/_catalog.yaml — unreachable through the store's navigational entry point (§3)
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
-    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  applies.jurisdictions[0]
+    value "eu-eaa" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  facets.form
     value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 
 fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
@@ -348,9 +348,9 @@ node "$KIT/engine/validate.js" --root .
 structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
 checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
-    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  applies.jurisdictions[0]
+    value "eu-eaa" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  facets.form
     value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 
 fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
@@ -391,9 +391,9 @@ sh unknown-knowledge/hooks/pre-commit
 structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
 checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
 
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  applies.jurisdictions[0]
-    value "uk-gc" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-sport.md  facets.form
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  applies.jurisdictions[0]
+    value "eu-eaa" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  facets.form
     value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 
 fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
@@ -402,7 +402,7 @@ fix every error-severity finding before merging — this validator is blocking-g
 Then the reverse lookup, over whatever is staged:
 
 ```sh
-git add unknown-knowledge/knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md src/types/withdrawal.ts
+git add unknown-knowledge/knowledge/L-00/L-000110-svg-asset-export-precision.md src/types/asset-kind.ts
 sh unknown-knowledge/hooks/reverse-lookup
 ```
 
@@ -414,10 +414,10 @@ resolve --paths -> 2 paths
 
 time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
-src/types/withdrawal.ts
-  K-104  Withdrawal method  [active]  (pointer: src/types/withdrawal.ts)
+src/types/asset-kind.ts
+  K-104  Asset kind  [active]  (pointer: src/types/asset-kind.ts)
 
-unknown-knowledge/knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md
+unknown-knowledge/knowledge/L-00/L-000110-svg-asset-export-precision.md
   no concepts point at this path
 
 update every concept listed above in the same commit as the change (PRD §7 ACT)

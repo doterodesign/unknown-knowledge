@@ -212,7 +212,7 @@ authoring order looks perfectly sorted as long as the author typed it in order.
 - `600.1`: the body instructed updating "the K-101 concept's enumerated values", but
   K-101 has no `enumerates` descriptor — the leaf told a reader to edit a field that does
   not exist. Reworded to what the fixture actually supports.
-- Stale `NJ-DGE`/`MGA` doc examples contradicting the place-not-regulator decision:
+- Stale regulator-acronym doc examples contradicting the place-not-regulator decision:
   four occurrences across `decomposition.js` and `resolve.js`, all corrected.
 
 ### Declined
@@ -229,7 +229,7 @@ authoring order looks perfectly sorted as long as the author typed it in order.
 ## Note for follow-up
 
 Jurisdiction registry values are spelled as the PLACE (`eu-eaa`, `us-ca`)
-rather than the regulator acronym (`nj-dge`, `mga`), because a registry value is
+rather than a regulator acronym, because a registry value is
 joined by its own text and its opened-out spelling. A vocabulary meant to be
 joined against human asks has to be spelled in the words humans use. If
 acronym-spelled values are wanted, registries need per-value alias lists — a

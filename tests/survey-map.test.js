@@ -70,9 +70,9 @@ plant('Locales/App.xcstrings',
   '{\n  "sourceLanguage" : "en",\n  "strings" : {\n    "editor.insert" : {}\n  },\n  "version" : "1.0"\n}\n');
 // Legacy UTF-16 .strings (BOM-marked): unsniffable as UTF-8 — candidate by extension.
 plant('Locales/legacy-utf16.strings', Buffer.from('\ufeff"editor.cancel" = "Cancel";\n', 'utf16le'));
-for (const m of ['nfl', 'nba', 'mlb']) plant(`modules/${m}.ts`, `export const id = '${m}';\n`);
-// PRD's canonical dir-modules layout: one SUBFOLDER per module (modules/nfl/, …).
-for (const m of ['nfl', 'nba', 'mlb']) plant(`modules2/${m}/index.ts`, `export const id = '${m}';\n`);
+for (const m of ['grid', 'list', 'search']) plant(`modules/${m}.ts`, `export const id = '${m}';\n`);
+// PRD's canonical dir-modules layout: one SUBFOLDER per module (modules/grid/, …).
+for (const m of ['grid', 'list', 'search']) plant(`modules2/${m}/index.ts`, `export const id = '${m}';\n`);
 // Denylisted-but-tracked: none of these may surface anywhere in the map.
 plant('node_modules/pkg/index.js', "export const TOKENS = { x: 1 };\n");
 plant('vendor/lib.js', "export const TOKENS = { x: 1 };\n");

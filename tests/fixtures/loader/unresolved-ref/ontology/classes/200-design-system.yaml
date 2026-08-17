@@ -2,8 +2,8 @@
 schema-version: 1
 entries:
   - id: K-210
-    term: Sport
-    class: 200-sportsbook
+    term: Design token
+    class: 200-design-system
     summary: References things that do not exist.
     used-by: [K-999]
     rationale: [D-777]

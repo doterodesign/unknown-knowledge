@@ -2,7 +2,7 @@
 schema-version: 1
 entries:
   - id: K-210
-    term: Sport
-    class: 200-sportsbook
+    term: Design token
+    class: 200-design-system
     summary: Minted on branch A.
     status: active

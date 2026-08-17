@@ -308,7 +308,7 @@ One test-hygiene note: the permission restore happens inline rather than in a
 an unreadable directory cannot be removed — the teardown would have failed a test
 whose assertions all passed.
 
-### Declined: MD041 (no H1 in the chargeback-dispute-playbook fixture)
+### Declined: MD041 (no H1 in the visual-regression-triage-playbook fixture)
 
 Standing justification for this repo: there is no markdownlint in the toolchain,
 frontmatter `heading` is the leaf's title by design, and adding a body H1 would

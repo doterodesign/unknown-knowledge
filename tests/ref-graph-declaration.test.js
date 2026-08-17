@@ -104,14 +104,14 @@ function withStore(fn) {
   const root = mkdtempSync(join(tmpdir(), 'ucs1143-store-'));
   try {
     cpSync(join(repoRoot, 'tests', 'fixtures', 'loader', 'healthy'), root, { recursive: true });
-    mkdirSync(join(root, 'knowledge', 'regulation'), { recursive: true });
+    mkdirSync(join(root, 'knowledge', 'engineering'), { recursive: true });
     // The fixture's concepts anchor to source-of-truth paths, which the
     // structural validator requires to exist in the working tree (§3.1).
     // Creating them is what lets the control run assert a clean exit 0, so an
     // unrelated CLI failure cannot masquerade as "no edge was collected".
-    mkdirSync(join(root, 'src', 'verticals', 'sportsbook', 'sports'), { recursive: true });
-    writeFileSync(join(root, 'src', 'verticals', 'sportsbook', 'sports', 'registry.ts'), '// fixture anchor\n');
-    mkdirSync(join(root, 'src', 'verticals', 'sportsbook', 'bet-slip'), { recursive: true });
+    mkdirSync(join(root, 'src', 'design-system', 'tokens'), { recursive: true });
+    writeFileSync(join(root, 'src', 'design-system', 'tokens', 'registry.ts'), '// fixture anchor\n');
+    mkdirSync(join(root, 'src', 'design-system', 'component-set'), { recursive: true });
     // L-000362 already exists and is catalog-declared; this rewrites it to
     // carry the nested `relates` map. `depends-on` names an accession no store
     // mints, so the edge — once declared — has nowhere to resolve.
@@ -123,20 +123,20 @@ function withStore(fn) {
     // its whole claim is a clean exit 0, and a leaf with a missing identity or
     // a notation-form citation would fail it for reasons that have nothing to
     // do with whether the edge was declared.
-    writeFileSync(join(root, 'knowledge', 'regulation', '362.1-ach-settlement-windows.md'), [
+    writeFileSync(join(root, 'knowledge', 'engineering', '362.1-preview-deploy-windows.md'), [
       '---',
       'schema-version: 2',
       'id: L-000362',
       'notation: "362.1"',
-      'domain: regulation',
-      'heading: ACH settlement windows',
+      'domain: engineering',
+      'heading: Preview deploy windows',
       'cross-references:',
       '  see-also: [L-000363]',
       'meta:',
       '  relates:',
       '    depends-on: [L-000999]',
       'citations:',
-      '  - source: NACHA operating rules 2026',
+      '  - source: CI pipeline handbook 2026',
       '---',
       '',
       'A leaf carrying the v2-shaped nested edge.',
@@ -177,7 +177,7 @@ test('one declaration makes the new typed edge real, surfacing at the CLI seam',
   // The finding names the edge by its declared path, so an author is pointed
   // at the exact member they wrote — three levels down, index included.
   assert.match(output, /meta\.relates\.depends-on\[0\]/);
-  assert.match(output, /knowledge\/regulation\/362\.1-ach-settlement-windows\.md/);
+  assert.match(output, /knowledge\/engineering\/362\.1-preview-deploy-windows\.md/);
 
   // The declaration adds exactly ONE edge; the store's other refs still resolve.
   assert.equal((output.match(/unresolved-ref/g) ?? []).length, 1, `exactly one new finding: ${output}`);

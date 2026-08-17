@@ -49,11 +49,11 @@ test('healthy store: entries indexed by id in each id space', () => {
   // no index answers to.
   assert.deepEqual([...model.leaves.keys()], ['L-000362', 'L-000363']);
   assert.deepEqual([...model.decisions.keys()], ['D-004']);
-  const sport = model.concepts.get('K-210');
-  assert.equal(sport.record.term, 'Sport');
-  assert.equal(sport.file, 'ontology/classes/200-sportsbook.yaml');
+  const token = model.concepts.get('K-210');
+  assert.equal(token.record.term, 'Design token');
+  assert.equal(token.file, 'ontology/classes/200-design-system.yaml');
   const leaf = model.leaves.get('L-000362');
-  assert.equal(leaf.record.heading, 'ACH settlement windows');
+  assert.equal(leaf.record.heading, 'Preview deploy windows');
   assert.equal(leaf.notation, '362.1', 'the notation rides along as a published field');
   assert.match(leaf.body, /actual knowledge content/);
   assert.equal(model.decisions.get('D-004').record.status, 'accepted');
@@ -62,10 +62,10 @@ test('healthy store: entries indexed by id in each id space', () => {
 test('healthy store: pointer index maps source-of-truth paths to concepts (KK-06 --paths)', () => {
   const model = fixtureModel('healthy');
   assert.deepEqual(
-    model.pointers.get('src/verticals/sportsbook/sports/registry.ts'),
+    model.pointers.get('src/design-system/tokens/registry.ts'),
     ['K-210'],
   );
-  assert.deepEqual(model.pointers.get('src/verticals/sportsbook/bet-slip'), ['K-220']);
+  assert.deepEqual(model.pointers.get('src/design-system/component-set'), ['K-220']);
 });
 
 test('healthy store: cross-ref graph edges are typed and resolved', () => {
@@ -82,10 +82,10 @@ test('healthy store: cross-ref graph edges are typed and resolved', () => {
   assert.deepEqual(model.refs, [
     { from: 'D-004', type: 'relates-to.concepts', to: 'K-210', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.concepts[0]', resolved: true },
     { from: 'D-004', type: 'relates-to.leaves', to: 'L-000362', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.leaves[0]', resolved: true },
-    { from: 'K-210', type: 'rationale', to: 'D-004', file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[0].rationale[0]', resolved: true },
-    { from: 'K-210', type: 'used-by', to: 'K-220', file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[0].used-by[0]', resolved: true },
-    { from: 'K-220', type: 'confusable-with', to: 'K-210', file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[1].confusable-with[0]', resolved: true },
-    { from: 'L-000362', type: 'cross-references.see-also', to: 'L-000363', file: 'knowledge/regulation/362.1-ach-settlement-windows.md', path: 'cross-references.see-also[0]', resolved: true },
+    { from: 'K-210', type: 'rationale', to: 'D-004', file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].rationale[0]', resolved: true },
+    { from: 'K-210', type: 'used-by', to: 'K-220', file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].used-by[0]', resolved: true },
+    { from: 'K-220', type: 'confusable-with', to: 'K-210', file: 'ontology/classes/200-design-system.yaml', path: 'entries[1].confusable-with[0]', resolved: true },
+    { from: 'L-000362', type: 'cross-references.see-also', to: 'L-000363', file: 'knowledge/engineering/362.1-preview-deploy-windows.md', path: 'cross-references.see-also[0]', resolved: true },
   ]);
 });
 
@@ -94,7 +94,7 @@ test('healthy store: all three stores present, record files listed', () => {
   assert.equal(model.stores.ontology.present, true);
   assert.equal(model.stores.knowledge.present, true);
   assert.equal(model.stores.decisions.present, true);
-  assert.deepEqual(model.stores.ontology.files, ['ontology/classes/200-sportsbook.yaml']);
+  assert.deepEqual(model.stores.ontology.files, ['ontology/classes/200-design-system.yaml']);
   assert.deepEqual(model.stores.decisions.files, ['decisions/entries/D-004-three-stores.yaml']);
   assert.equal(model.stores.ontology.catalog.store, 'ontology');
   assert.equal(model.stores.ontology.rules.store, 'ontology');
@@ -172,7 +172,7 @@ test('duplicate-id: the same id minted twice within one file is the same defect'
 
 test('duplicate-id: the first mint wins the index; the model is still queryable', () => {
   const model = fixtureModel('duplicate-id');
-  assert.equal(model.concepts.get('K-210').record.term, 'Sport');
+  assert.equal(model.concepts.get('K-210').record.term, 'Design token');
   assert.equal(model.decisions.get('D-001').record.title, 'First mint');
 });
 
@@ -185,9 +185,9 @@ test('unresolved-ref: dangling typed refs error in every store, with paths', () 
     byCode(model, 'unresolved-ref').map(({ file, path }) => ({ file, path })),
     [
       { file: 'decisions/entries/D-004-present.yaml', path: 'entries[0].relates-to.concepts[0]' },
-      { file: 'knowledge/regulation/362.1-ach-settlement-windows.md', path: 'cross-references.see-also[0]' },
-      { file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[0].rationale[0]' },
-      { file: 'ontology/classes/200-sportsbook.yaml', path: 'entries[0].used-by[0]' },
+      { file: 'knowledge/engineering/362.1-preview-deploy-windows.md', path: 'cross-references.see-also[0]' },
+      { file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].rationale[0]' },
+      { file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].used-by[0]' },
     ],
   );
 });

@@ -152,11 +152,11 @@ test('minting conduct: literary warrant with evidence attached, one Decisions en
 test('the A5 walkthrough exercises the residue cluster through to an approved mint', () => {
   // The walkthrough is the honest seam for prose protocol: if reflect is where
   // misses become edges, the acceptance run has to actually walk one.
-  assert.match(walkthrough, /residue `lacrosse`/);
+  assert.match(walkthrough, /residue `stencil`/);
   // Seeded as findings through the CLI, carrying their context and locator.
-  assert.match(walkthrough, /"residue":\["lacrosse"\]/);
-  assert.match(walkthrough, /"resolved-context":\["add-sport","K-110"\]/);
-  assert.match(walkthrough, /"section":\{"document":"docs\/sports-expansion\.md","address":"Planned sports","line":24\}/);
+  assert.match(walkthrough, /"residue":\["stencil"\]/);
+  assert.match(walkthrough, /"resolved-context":\["add-tool","K-110"\]/);
+  assert.match(walkthrough, /"section":\{"document":"docs\/tool-expansion\.md","address":"Planned tools","line":24\}/);
   // A mint-proposal item reaches the gate on three distinct fragments, and the
   // warrant was checked by opening the source the locator addressed.
   assert.match(walkthrough, /category `mint-proposal`/);

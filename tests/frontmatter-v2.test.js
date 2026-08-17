@@ -62,17 +62,17 @@ test('a v2 fixture leaf carrying the full record shape validates clean (golden)'
   // than restated — a fixture that drifted from the spec would still pass a
   // test that only asserted the validator's verdict.
   const leaf = load(readFileSync(
-    join(CLEAN, 'knowledge/sportsbook/117.1-odds-feed-provider-quirks.md'), 'utf8',
+    join(CLEAN, 'knowledge/design-system/117.1-icon-component-sizing-quirks.md'), 'utf8',
   ).split('---')[1]);
   assert.equal(leaf.id, 'L-000117');
   assert.equal(leaf.edition, 1);
   assert.deepEqual(leaf.facets, {
-    domain: 'sportsbook/odds-feed', form: 'reference', anchor: 'world', stage: 'verified',
+    domain: 'design-system/components', form: 'reference', anchor: 'world', stage: 'verified',
   });
-  assert.deepEqual(leaf.operations, ['onboard-provider']);
+  assert.deepEqual(leaf.operations, ['add-component']);
   assert.deepEqual(leaf.applies, { jurisdictions: [] });
   assert.deepEqual(leaf.citations, [
-    { source: 'OddsCo API v3 §4.2', accessed: '2026-08-01', authority: 'vendor-doc' },
+    { source: 'Component Kit API v3 §4.2', accessed: '2026-08-01', authority: 'vendor-doc' },
   ]);
   // The time facets and typed edges land in LATER tickets — asserted absent so
   // this fixture cannot quietly acquire them ahead of the ticket that owns them.
@@ -120,7 +120,7 @@ test('the three new facets are DECLARATIONS, not new checker branches', () => {
 // -------------------------- AC2: draft stage, one predicate, two surfaces
 
 test('a draft-stage leaf is downranked in resolver output (golden)', () => {
-  const payload = json('resolve.js', 0, 'odds feed', '--root', CLEAN);
+  const payload = json('resolve.js', 0, 'component', '--root', CLEAN);
   const entries = payload.results[0].knowledge;
   // Order IS the downrank: the draft leaf sorts below the verified one. A
   // demotion, never a filter — a draft leaf is still the best answer when it is
@@ -262,7 +262,7 @@ function withEditedLeaf(replacements, expectStatus, assertions) {
   const dir = mkdtempSync(join(tmpdir(), 'uk-v2-edit-'));
   try {
     cpSync(CLEAN, dir, { recursive: true });
-    const leaf = join(dir, 'knowledge/sportsbook/117.1-odds-feed-provider-quirks.md');
+    const leaf = join(dir, 'knowledge/design-system/117.1-icon-component-sizing-quirks.md');
     let text = readFileSync(leaf, 'utf8');
     for (const [from, to] of replacements) {
       assert.ok(text.includes(from), `fixture no longer contains ${JSON.stringify(from)}`);
@@ -332,11 +332,11 @@ test('a leaf carrying the retired `description` fails as an unknown property (go
   // deprecated: an authored one-liner is a second copy of the claim, and the
   // copy is what goes stale when the body is edited and the frontmatter is not.
   const leaf = load(readFileSync(
-    join(CLEAN, 'knowledge/sportsbook/117.1-odds-feed-provider-quirks.md'), 'utf8',
+    join(CLEAN, 'knowledge/design-system/117.1-icon-component-sizing-quirks.md'), 'utf8',
   ).split('---')[1]);
   assert.equal(leaf.description, undefined, 'no shipped fixture may carry it');
 
-  leaf.description = 'When odds feeds misbehave.';
+  leaf.description = 'When components misbehave.';
   const result = validateStoreFile('knowledge-leaf', leaf);
   assert.equal(result.ok, false);
   assert.deepEqual(
@@ -346,17 +346,17 @@ test('a leaf carrying the retired `description` fails as an unknown property (go
 });
 
 test('display prose is DERIVED: the excerpt is the body topic sentence (golden)', () => {
-  const payload = json('resolve.js', 0, 'odds feed', '--root', CLEAN);
+  const payload = json('resolve.js', 0, 'component', '--root', CLEAN);
   assert.deepEqual(payload.results[0].knowledge.map((k) => k.excerpt), [
-    'OddsCo suspends markets roughly ninety seconds before an event locks.',
-    'End-to-end ingest-to-price must complete within four hundred milliseconds or the market suspends.',
+    'Icons ship on a 24px grid, but the export step trims the transparent bounding box.',
+    'First paint of a newly inserted component must complete within four hundred milliseconds or the canvas shows a skeleton.',
   ]);
   // And it reaches the human surface, which is where display prose is actually
   // read — the retired field had no renderer at all, so this is the first time
   // a leaf one-liner is shown anywhere.
-  const human = runCli('resolve.js', 'odds feed', '--root', CLEAN);
+  const human = runCli('resolve.js', 'component', '--root', CLEAN);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /OddsCo suspends markets roughly ninety seconds before an event locks\./);
+  assert.match(human.stdout, /Icons ship on a 24px grid, but the export step trims the transparent bounding box\./);
   assert.match(human.stdout, /\[draft — downranked\]/);
 });
 
@@ -368,8 +368,8 @@ test('the excerpt deriver is literal about what a first sentence is', () => {
   // flattened before it is split.
   assert.equal(firstSentence('A sentence that\nwraps across lines. Next.'), 'A sentence that wraps across lines.');
   // A dotted token is not a sentence end — `§4.2` and `v3.` must not truncate.
-  assert.equal(firstSentence('See OddsCo API v3.2 §4.2 for detail. Then stop.'),
-    'See OddsCo API v3.2 §4.2 for detail.');
+  assert.equal(firstSentence('See Component Kit API v3.2 §4.2 for detail. Then stop.'),
+    'See Component Kit API v3.2 §4.2 for detail.');
   // Markdown structure is not prose: headings, lists, quotes, and fences are
   // skipped until an actual paragraph turns up.
   assert.equal(firstSentence('# Title\n\n- a list item\n\nThe real opening. More.'), 'The real opening.');
@@ -479,7 +479,7 @@ test('the tier requirement is opt-in: a store with no tiers registry is not nagg
 // --------------------------------------------- AC5: provenance round-trips
 
 test('provenance validates and round-trips into resolver output untouched (golden)', () => {
-  const payload = json('resolve.js', 0, 'odds feed', '--root', CLEAN);
+  const payload = json('resolve.js', 0, 'component', '--root', CLEAN);
   for (const entry of payload.results[0].knowledge) {
     assert.deepEqual(entry.provenance, { author: 'dimitri', 'skill-version': 'kb-build@2.0.0' },
       'carried verbatim — no registry governs provenance, so there is no judgement to apply');

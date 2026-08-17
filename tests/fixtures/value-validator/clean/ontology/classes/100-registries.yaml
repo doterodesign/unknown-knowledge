@@ -5,19 +5,19 @@
 schema-version: 1
 entries:
   - id: K-100
-    term: Sport
+    term: Icon
     class: 100-registries
-    summary: A sport vertical the product serves.
-    source-of-truth: [src/sports.txt]
+    summary: An icon the product's icon set ships.
+    source-of-truth: [src/icons.txt]
     status: active
     enumerates:
       - kind: test-lines
-        source: src/sports.txt
-        values: [nfl, nba, mlb]
+        source: src/icons.txt
+        values: [grid, list, search]
   - id: K-130
-    term: Draft vertical
+    term: Draft panel
     class: 100-registries
-    summary: A concept still being drafted.
+    summary: A panel still being drafted.
     source-of-truth: [src/missing.txt]
     status: draft
     enumerates:

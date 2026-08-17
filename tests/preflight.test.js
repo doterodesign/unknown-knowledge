@@ -155,7 +155,7 @@ test('--log appends one engine-attributed quarantine finding per quarantined con
     // Capture content policy (§3.4): concept ids, codes, and paths only.
     assert.match(entry.summary, /K-100/);
     assert.match(entry.summary, /value-not-in-source/);
-    assert.match(entry.summary, /src\/sports\.txt/);
+    assert.match(entry.summary, /src\/icons\.txt/);
   });
 });
 

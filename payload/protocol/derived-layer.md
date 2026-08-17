@@ -91,9 +91,9 @@ an axis.
 A demoted leaf appears in every tree it belongs in, wearing its reason:
 
 ```
-- **withdrawals/** (2)
+- **frontend/** (2)
   - **runbook/** (1)
-    - `PAY/WIT/RUN·L-000171` Chargeback dispute playbook — **demoted** (stage, time)
+    - `ENG/FRO/RUN·L-000171` Visual regression triage playbook — **demoted** (stage, time)
       - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations
       - time: verified 154 day(s) ago, past the 90-day limit for volatile knowledge
 ```

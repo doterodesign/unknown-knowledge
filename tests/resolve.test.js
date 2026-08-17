@@ -353,13 +353,13 @@ test('warning-only health is surfaced in human mode too', () => {
 });
 
 test('unhealthy store still resolves; health surfaced, not fatal (one health model)', () => {
-  const r = run('sport', '--root', brokenStore, '--json');
+  const r = run('design token', '--root', brokenStore, '--json');
   assert.equal(r.status, 0);
   const out = JSON.parse(r.stdout);
   assert.equal(out['store-health'].ok, false);
   assert.ok(out['store-health'].errors > 0);
   assert.equal(out.results[0].id, 'K-210');
-  const human = run('sport', '--root', brokenStore);
+  const human = run('design token', '--root', brokenStore);
   assert.match(human.stdout, /store health: /);
 });
 

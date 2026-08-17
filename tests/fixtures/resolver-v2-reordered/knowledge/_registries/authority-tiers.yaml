@@ -5,7 +5,7 @@ registry: authority-tiers
 values:
   - value: regulator
     gloss: A regulator's own published text.
-    warrant: L-000140 cites an NJ DGE bulletin; L-000190 an MGA directive.
+    warrant: L-000140 cites EU accessibility act guidance; L-000190 a US-CA directive.
     decision: D-201
     minted: "2026-07-07"
   - value: internal

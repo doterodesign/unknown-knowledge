@@ -52,10 +52,10 @@ test('drift store: value-not-in-source AND source-value-missing in one run — e
   assert.ok(codes.includes('source-value-missing'), `codes: ${codes}`);
   const notInSource = out.findings.find((f) => f.code === 'value-not-in-source');
   assert.equal(notInSource.concept, 'K-100');
-  assert.equal(notInSource.value, 'xfl');
+  assert.equal(notInSource.value, 'star');
   assert.equal(notInSource.severity, 'error');
   const missing = out.findings.find((f) => f.code === 'source-value-missing');
-  assert.equal(missing.value, 'mls');
+  assert.equal(missing.value, 'tag');
   assert.equal(missing.severity, 'error');
 });
 
@@ -63,12 +63,12 @@ test('duplicate value in the source is a finding (§3.5: values compare as sets)
   const out = runJson('drift', 1, '--concepts', 'K-100');
   const dup = out.findings.find((f) => f.code === 'duplicate-source-value');
   assert.ok(dup, `findings: ${JSON.stringify(out.findings)}`);
-  assert.equal(dup.value, 'nba');
+  assert.equal(dup.value, 'list');
 });
 
 test('equality is byte-exact and case-sensitive — no normalization sneaks in', () => {
-  // usd/eur match exactly; if comparison lowercased or trimmed this would
-  // still pass, so the drift store proves the negative: "xfl" vs source
+  // srgb/p3 match exactly; if comparison lowercased or trimmed this would
+  // still pass, so the drift store proves the negative: "star" vs source
   // holding no near-miss. The clean store proves order-insensitivity.
   const out = runJson('drift', 0, '--concepts', 'K-110');
   assert.deepEqual(out.findings, []);
@@ -197,7 +197,7 @@ test('human mode reports findings with concept, code, and source', () => {
   assert.match(r.stdout, /K-100/);
   assert.match(r.stdout, /value-not-in-source/);
   assert.match(r.stdout, /source-value-missing/);
-  assert.match(r.stdout, /src\/sports\.txt/);
+  assert.match(r.stdout, /src\/icons\.txt/);
 });
 
 test('human mode on a clean store says so', () => {

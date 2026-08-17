@@ -369,7 +369,7 @@ criterion('A3', [
     assert.equal(out.counts.stale, 0);
     assert.equal(out['leaf-verdicts'][0].verdict, 'trusted');
   }],
-  ['UCS-1159 plants 2/5 + 4/5 — jurisdiction mismatch (`applies.jurisdictions[0]` = uk-gc, registry empty) and unregistered facet value (`facets.form` = walkthrough): exactly two `unregistered-value` findings, exit 1, store still LOADS clean', () => {
+  ['UCS-1159 plants 2/5 + 4/5 — jurisdiction mismatch (`applies.jurisdictions[0]` = eu-eaa, registry empty) and unregistered facet value (`facets.form` = walkthrough): exactly two `unregistered-value` findings, exit 1, store still LOADS clean', () => {
     const out = runJson('validate.js', 1, '--root', fixture('ts-app'), '--json');
     // The soft plants are value defects, not load defects: the store must stay
     // healthy or the fixture-store pin test (and these findings) would vanish.

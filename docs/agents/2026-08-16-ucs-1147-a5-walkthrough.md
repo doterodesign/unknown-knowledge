@@ -24,7 +24,7 @@ numeric part `000110`).
 
 The pre-existing setup only seeded `knowledge/_rules.yaml`. That was already a
 latent hole: the drafted leaf uses `facets.domain: product/payments`,
-`facets.form: reference`, `operations: [process-withdrawal]` and
+`facets.form: reference`, `operations: [ship-frontend]` and
 `citations[].authority: regulator`, none of which the fixture's registries mint.
 Running the walkthrough as written produced **4 blocking findings**
 (1 `unminted-segment`, 3 `unregistered-value`), so the pasted "exit 0" was not
@@ -53,8 +53,8 @@ registry edit plus a Decisions entry and never the drafting agent's to invent.
   `product/payments` (`facets.domain`) rather than a domain/division slot.
 - Re-captured the `resolve.js` output. The old paste was already stale: it was
   missing the `time check: skipped …` line and the whole `decomposition:` block,
-  and (after the setup change mints `process-withdrawal`) it also now emits a
-  `near-miss: operation process-withdrawal …` line.
+  and (after the setup change mints `ship-frontend`) it also now emits a
+  `near-miss: operation ship-frontend …` line.
 
 ### 2. CITE — accession-only citation
 
@@ -73,8 +73,8 @@ registry edit plus a Decisions entry and never the drafting agent's to invent.
 
 ### 3. DRAFT — leaf rewritten
 
-- File path: `unknown-knowledge/knowledge/product/110.1-ach-withdrawal-settlement-windows.md`
-  → `unknown-knowledge/knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md`,
+- File path: `unknown-knowledge/knowledge/product/110.1-icon-grid-alignment-rules.md`
+  → `unknown-knowledge/knowledge/L-00/L-000110-icon-grid-alignment-rules.md`,
   with a sentence explaining the shard is a fanout device carrying no meaning.
 - Frontmatter: `schema-version: 1` → `2`; **added `id: L-000110`**.
 - `notation: "110.1"` **kept**, but re-presented as the optional legacy label —
@@ -94,7 +94,7 @@ registry edit plus a Decisions entry and never the drafting agent's to invent.
 
 - `- id: "110.1"` → `- id: L-000110` (unquoted, matching the fixture catalog's
   existing `- id: L-000100` style).
-- `file:` → `L-00/L-000110-ach-withdrawal-settlement-windows.md`.
+- `file:` → `L-00/L-000110-icon-grid-alignment-rules.md`.
 - Added a checkbox: the row's `id` is the same accession the leaf's `id` field
   carries; moving the leaf to another shard later is an edit to this `file`
   field and nothing else, because no citation names a directory. Mirrors
@@ -123,22 +123,22 @@ what is pasted is provably what the documented artifacts produce. `fixtures/ts-a
 itself was never touched (verified via `git diff -- fixtures/`; the only diff
 there is the pre-existing `schema-version: 2` stamp from earlier UCS-1147 work).
 
-### `resolve.js "withdrawal" --root .` (step 1, pre-draft) — exit 0
+### `resolve.js "frontend" --root .` (step 1, pre-draft) — exit 0
 
 ```
-resolve "withdrawal" -> 1 concept
+resolve "frontend" -> 1 concept
 
 time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
 
 decomposition:
-  noun  -> concepts: K-104 "Withdrawal method" (term-match)
-  residue (unresolved): withdrawal  [resolved context: K-104]
-  near-miss: operation process-withdrawal — token overlap [withdrawal] below the match threshold
+  noun  -> concepts: K-104 "Asset kind" (term-match)
+  residue (unresolved): frontend  [resolved context: K-104]
+  near-miss: operation ship-frontend — token overlap [frontend] below the match threshold
 
-K-104  Withdrawal method  [active]  score 60 (term-match)
+K-104  Asset kind  [active]  score 60 (term-match)
   summary: Payout rails. DRIFT — source also has 'crypto', unclaimed here.
   source-of-truth:
-    src/types/withdrawal.ts
+    src/types/asset-kind.ts
 ```
 
 Note: this must be captured BEFORE the leaf is drafted. Run after drafting, it
@@ -156,7 +156,7 @@ what step 1 shows.
     "schema-version": 1,
     "date": "2026-07-09",
     "status": "open",
-    "summary": "kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf L-000100, concept K-104",
+    "summary": "kb-build item not promotable: render-precision claim lacks any citation; nearest leaf L-000100, concept K-104",
     "consulted": {
       "concepts": [
         "K-104"
@@ -176,7 +176,7 @@ the documented "hex suffix varies" convention is preserved.
 
 ```
 validate: the store loader reported 1 error(s) — structural checks never ran (a check that never ran is a blocking defect, PRD §5)
-  unresolved-ref  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  cross-references.see-also[1]  cross-references.see-also ref "L-000999" does not resolve to any knowledge entry or catalog-declared id
+  unresolved-ref  knowledge/L-00/L-000110-icon-grid-alignment-rules.md  cross-references.see-also[1]  cross-references.see-also ref "L-000999" does not resolve to any knowledge entry or catalog-declared id
 ```
 
 Changed from the old `"999.9"` probe: a dotted notation now fails with a
@@ -187,8 +187,8 @@ what this probe is for. `L-000999` is well-formed and carried by no leaf.
 
 ```
 validate: the store loader reported 2 error(s) — structural checks never ran (a check that never ran is a blocking defect, PRD §5)
-  pattern-mismatch  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  cross-references.see-also[0]  "100.1" is not a valid id here — expected the leaf's accession id (L-NNNNNN); the dotted notation is a legacy display label and no longer resolves as a citation
-  unresolved-ref  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  cross-references.see-also[0]  cross-references.see-also ref "100.1" does not resolve to any knowledge entry or catalog-declared id
+  pattern-mismatch  knowledge/L-00/L-000110-icon-grid-alignment-rules.md  cross-references.see-also[0]  "100.1" is not a valid id here — expected the leaf's accession id (L-NNNNNN); the dotted notation is a legacy display label and no longer resolves as a citation
+  unresolved-ref  knowledge/L-00/L-000110-icon-grid-alignment-rules.md  cross-references.see-also[0]  cross-references.see-also ref "100.1" does not resolve to any knowledge entry or catalog-declared id
 ```
 
 I judged this worth adding: it is the ticket's contract stated by the engine in
@@ -203,7 +203,7 @@ citation at all. Two findings, and the first names the migration explicitly.
 structural validate -> 1 finding(s) (1 error(s), 0 warning(s))
 checks run: id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unminted-segment, unregistered-value
 
-error  orphan  L-000110  knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md  id
+error  orphan  L-000110  knowledge/L-00/L-000110-icon-grid-alignment-rules.md  id
     "L-000110" is not declared in knowledge/_catalog.yaml — unreachable through the store's navigational entry point (§3)
 ```
 

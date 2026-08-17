@@ -1,36 +1,36 @@
-# Lacrosse launch plan
+# Icon set launch plan
 
-This plan covers the work to add a new sport to the book for the New Jersey
+This plan covers the work to add a new token to the design system for the EU EAA
 launch. It is written the way a real plan is written — the author knew nothing
 about the governed vocabulary the store carries, which is the whole point: the
 coverage map finds the constraints, the author never cites them.
 
 ## Registry work
 
-Adding the sport means a registry change and an ontology review in one pass.
-The **Provisional Market Ladder** is the structure we will use to stage the
-new markets before they go live, and it is not something the store knows yet.
+Adding the token means a registry change and an ontology review in one pass.
+The **Provisional Token Ladder** is the structure we will use to stage the
+new tokens before they go live, and it is not something the store knows yet.
 
-The Provisional Market Ladder has three rungs. Each rung is a gate the sport
-must clear before the next opens, and a rung that fails sends the sport back
+The Provisional Token Ladder has three rungs. Each rung is a gate the token
+must clear before the next opens, and a rung that fails sends the token back
 to the previous one rather than blocking the whole launch.
 
-## Settlement and rounding
+## Export and rounding
 
-Settlement for lacrosse follows the same rounding rule every other sport uses.
-Nothing here is novel, which is exactly why the map should say so: the
+Theme export for this launch follows the same rounding rule every other theme
+uses. Nothing here is novel, which is exactly why the map should say so: the
 constraint already exists and this section joins it rather than inventing one.
 
 ## Disclosure obligations
 
-Return-to-player disclosure is handled by the client team. This section names a
-constraint that belongs to a different regulator, and the map should flag the
+Contrast disclosure is handled by the client team. This section names a
+constraint that belongs to a different jurisdiction, and the map should flag the
 mismatch rather than silently applying a rule from the wrong place.
 
 ## Open questions
 
-The Quiet Period question is unresolved: how long after a market opens can we
-still correct its line without voiding the bets placed against it? The Quiet
-Period is a term this team uses constantly and the store has never heard of.
-Nobody has written the Quiet Period rule down, so it stays a candidate until a
-steward corroborates it and mints it by literary warrant.
+The Quiet Period question is unresolved: how long after a theme publishes can we
+still correct its tokens without breaking the components already using them? The
+Quiet Period is a term this team uses constantly and the store has never heard
+of. Nobody has written the Quiet Period rule down, so it stays a candidate until
+a steward corroborates it and mints it by literary warrant.

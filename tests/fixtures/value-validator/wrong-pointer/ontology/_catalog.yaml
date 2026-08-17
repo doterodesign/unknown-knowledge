@@ -2,5 +2,5 @@ schema-version: 1
 store: ontology
 entries:
   - id: K-100
-    title: Sport
+    title: Icon
     file: classes/100-registries.yaml

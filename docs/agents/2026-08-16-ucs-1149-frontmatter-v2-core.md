@@ -198,7 +198,7 @@ against running code before being fixed.
    like `selectLeaves`; distinct unresolved ids stay distinct rows.
 5. **Inaccurate fixture comment.** The findings store's `jurisdictions.yaml` had been copied
    from the clean fixture and described leaves "claiming universally" while its own leaf claims
-   `[nj-dge]`. Rewritten, and it now draws the distinction the original blurred: an empty
+   `[eu-eaa]`. Rewritten, and it now draws the distinction the original blurred: an empty
    *registry* means nothing minted; an empty *list on a leaf* means universal.
 
 ## Third review round (prose accuracy, 9 findings → `df5be95`)

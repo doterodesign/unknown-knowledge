@@ -15,8 +15,8 @@ Fixed `--suffix` values make the fragment file names deterministic too.
 
 ## Setup (the human, not the agent)
 
-The swift-app fixture ships with planted drift on K-110 (claims `cricket`,
-misses `tennis` — its A3 role) — exactly the situation that produces
+The swift-app fixture ships with planted drift on K-110 (claims `eyedropper`,
+misses `comment` — its A3 role) — exactly the situation that produces
 correction findings in the field. Seed a week of them:
 
 ```sh
@@ -29,26 +29,26 @@ mkdir -p unknown-knowledge/logs/findings unknown-knowledge/logs/misses unknown-k
 # Three corroborating corrections about K-110 (one concept, three sessions):
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-01 --suffix 00000001 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"correction: K-110 enumerates disagrees with Sources/Sportsbook/Sport.swift — claims cricket, misses tennis","consulted":{"concepts":["K-110"]},"session":"s-3f81"}'
+  --entry '{"trigger":"correction","summary":"correction: K-110 enumerates disagrees with Sources/Canvas/CanvasTool.swift — claims eyedropper, misses comment","consulted":{"concepts":["K-110"]},"session":"s-3f81"}'
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-03 --suffix 00000002 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"correction: K-110 lists cricket; Sources/Sportsbook/Sport.swift has no such case","consulted":{"concepts":["K-110"]},"session":"s-77c0"}'
+  --entry '{"trigger":"correction","summary":"correction: K-110 lists eyedropper; Sources/Canvas/CanvasTool.swift has no such case","consulted":{"concepts":["K-110"]},"session":"s-77c0"}'
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-06 --suffix 00000003 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"correction: tennis exists in Sources/Sportsbook/Sport.swift but K-110 does not claim it","consulted":{"concepts":["K-110"]},"session":"s-a1d9"}'
+  --entry '{"trigger":"correction","summary":"correction: comment exists in Sources/Canvas/CanvasTool.swift but K-110 does not claim it","consulted":{"concepts":["K-110"]},"session":"s-a1d9"}'
 
 # One uncorroborated single struggle (K-130):
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-05 --suffix 00000004 \
   --root unknown-knowledge \
-  --entry '{"trigger":"retrieval-struggle","summary":"retrieval-struggle: query bet types reached K-130 only via Sources/Sportsbook/Markets.swift; alias missing","consulted":{"concepts":["K-130"]},"session":"s-52be"}'
+  --entry '{"trigger":"retrieval-struggle","summary":"retrieval-struggle: query toolbar actions reached K-130 only via Sources/Canvas/Actions.swift; alias missing","consulted":{"concepts":["K-130"]},"session":"s-52be"}'
 
 # One mutually contradictory pair (K-120):
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-04 --suffix 00000005 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"correction: K-120 raw value for soccer should be UEFA, not EPL, per Sources/Sportsbook/Sport.swift","consulted":{"concepts":["K-120"]},"session":"s-08fe"}'
+  --entry '{"trigger":"correction","summary":"correction: K-120 raw value for hand should be Cmd-H, not H, per Sources/Canvas/CanvasTool.swift","consulted":{"concepts":["K-120"]},"session":"s-08fe"}'
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-06 --suffix 00000006 \
   --root unknown-knowledge \
-  --entry '{"trigger":"correction","summary":"correction: K-120 EPL is correct in Sources/Sportsbook/Sport.swift; the UEFA claim is wrong","consulted":{"concepts":["K-120"]},"session":"s-c414"}'
+  --entry '{"trigger":"correction","summary":"correction: K-120 H is correct in Sources/Canvas/CanvasTool.swift; the Cmd-H claim is wrong","consulted":{"concepts":["K-120"]},"session":"s-c414"}'
 
 # Three corroborating RESIDUE findings about the same unresolved term
 # (UCS-1160) — the misses the loop turns into tomorrow's edges. Two are query
@@ -56,13 +56,13 @@ node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-06 --suffix
 # carrying its section locator:
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-02 --suffix 00000007 \
   --root unknown-knowledge \
-  --entry '{"trigger":"retrieval-miss","summary":"residue from resolve: lacrosse unresolved in an ask that resolved add-sport","residue":["lacrosse"],"resolved-context":["add-sport","K-110"],"session":"s-4b02"}'
+  --entry '{"trigger":"retrieval-miss","summary":"residue from resolve: stencil unresolved in an ask that resolved add-tool","residue":["stencil"],"resolved-context":["add-tool","K-110"],"session":"s-4b02"}'
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-05 --suffix 00000008 \
   --root unknown-knowledge \
-  --entry '{"trigger":"retrieval-miss","summary":"residue from resolve: lacrosse unresolved; add-sport and K-110 resolved","residue":["lacrosse"],"resolved-context":["add-sport","K-110"],"session":"s-9d17"}'
+  --entry '{"trigger":"retrieval-miss","summary":"residue from resolve: stencil unresolved; add-tool and K-110 resolved","residue":["stencil"],"resolved-context":["add-tool","K-110"],"session":"s-9d17"}'
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-07 --suffix 00000009 \
   --root unknown-knowledge \
-  --entry '{"trigger":"retrieval-miss","summary":"document candidate: lacrosse in docs/sports-expansion.md; K-110 resolved","residue":["lacrosse"],"resolved-context":["K-110"],"section":{"document":"docs/sports-expansion.md","address":"Planned sports","line":24},"session":"s-e330"}'
+  --entry '{"trigger":"retrieval-miss","summary":"document candidate: stencil in docs/tool-expansion.md; K-110 resolved","residue":["stencil"],"resolved-context":["K-110"],"section":{"document":"docs/tool-expansion.md","address":"Planned tools","line":24},"session":"s-e330"}'
 ```
 
 Each of those nine writes one fragment — one file per finding, so the
@@ -78,16 +78,16 @@ prints its locator back:
     "date": "2026-07-07",
     "status": "open",
     "trigger": "retrieval-miss",
-    "summary": "document candidate: lacrosse in docs/sports-expansion.md; K-110 resolved",
+    "summary": "document candidate: stencil in docs/tool-expansion.md; K-110 resolved",
     "residue": [
-      "lacrosse"
+      "stencil"
     ],
     "resolved-context": [
       "K-110"
     ],
     "section": {
-      "document": "docs/sports-expansion.md",
-      "address": "Planned sports",
+      "document": "docs/tool-expansion.md",
+      "address": "Planned tools",
       "line": 24
     },
     "session": "s-e330"
@@ -120,23 +120,23 @@ matches.
   the store has no concept for — that is the whole point of them:
   - **K-110** — 3 corrections (…00000001, …00000002, …00000003)
   - **K-120** — 2 corrections (…00000005, …00000006), **mutually
-    contradictory** (UEFA-not-EPL vs. EPL-is-correct) → flagged
+    contradictory** (Cmd-H-not-H vs. H-is-correct) → flagged
     `disputed` (a cluster flag for this run — never a fragment status)
   - **K-130** — 1 retrieval-struggle (…00000004)
-  - **residue `lacrosse`** — 3 retrieval-misses (…00000007, …00000008,
+  - **residue `stencil`** — 3 retrieval-misses (…00000007, …00000008,
     …00000009), clustered on the shared unresolved term. Their
-    `resolved-context` agrees (`add-sport`, `K-110`), which localizes the
-    gap: the ask resolved the operation and the sports concept and fell
-    over on the sport itself.
+    `resolved-context` agrees (`add-tool`, `K-110`), which localizes the
+    gap: the ask resolved the operation and the tool concept and fell
+    over on the tool itself.
 
 ## 3. Disputed cluster (K-120) — resolved by reading the SSOT
 
 - [ ] The agent follows K-120's pointer and reads
-  `Sources/Sportsbook/Sport.swift` (the map is never the fact — and
+  `Sources/Canvas/CanvasTool.swift` (the map is never the fact — and
   neither is either finding). Line 19 decides it:
 
 ```
-    case soccer = "EPL" // trailing comment with a stray " quote
+    case hand = "H" // trailing comment with a stray " quote
 ```
 
 - [ ] The engine confirms the read — the store already agrees with the
@@ -164,7 +164,7 @@ node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-06-00000
   --to proposed --date 2026-07-09 --root unknown-knowledge
 node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-04-00000005.yaml \
   --to rejected --date 2026-07-09 --root unknown-knowledge \
-  --reason 'disputed cluster resolved by reading the SSOT: Sources/Sportsbook/Sport.swift:19 declares case soccer = "EPL"; validate-values --concepts K-120 ran green'
+  --reason 'disputed cluster resolved by reading the SSOT: Sources/Canvas/CanvasTool.swift:19 declares case hand = "H"; validate-values --concepts K-120 ran green'
 node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-06-00000006.yaml \
   --to resolved --date 2026-07-09 --root unknown-knowledge
 ```
@@ -176,7 +176,7 @@ The rejection prints (note `reason` is now on the fragment):
   "file": "logs/findings/2026-07-04-00000005.yaml",
   "status": "rejected",
   ...
-    "reason": "disputed cluster resolved by reading the SSOT: Sources/Sportsbook/Sport.swift:19 declares case soccer = \"EPL\"; validate-values --concepts K-120 ran green"
+    "reason": "disputed cluster resolved by reading the SSOT: Sources/Canvas/CanvasTool.swift:19 declares case hand = \"H\"; validate-values --concepts K-120 ran green"
 }
 ```
 
@@ -201,7 +201,7 @@ and the resolution carries the stamped `verified` date:
   moderator reviews what reflect puts in front of them and never goes
   looking through `ontology/` or `knowledge/` for things to fix. All four
   queue sections are present, in order:
-  - **Mint proposals** — the `lacrosse` item (below)
+  - **Mint proposals** — the `stencil` item (below)
   - **Corroborated findings** — the K-110 item (below)
   - **Drafts awaiting promotion** — empty this cycle (no
     `knowledge-promotion` or `extractor-draft` handoffs)
@@ -211,16 +211,16 @@ and the resolution carries the stamped `verified` date:
 - [ ] Exactly two recommendation items, presented per-item in the
   conversation with category, concrete diff, and the justifying findings
   attached:
-  - **category `concept-fix`** — K-110: replace claimed value `cricket`
-    with `tennis` in the `swift-enum` descriptor, per a fresh read of
-    `Sources/Sportsbook/Sport.swift` (drafted from the source, never from
+  - **category `concept-fix`** — K-110: replace claimed value `eyedropper`
+    with `comment` in the `swift-enum` descriptor, per a fresh read of
+    `Sources/Canvas/CanvasTool.swift` (drafted from the source, never from
     the findings' prose); evidence: `logs/findings/2026-07-01-00000001.yaml`,
     `…2026-07-03-00000002.yaml`, `…2026-07-06-00000003.yaml`.
-  - **category `mint-proposal`** — mint `lacrosse` as a value. Three
+  - **category `mint-proposal`** — mint `stencil` as a value. Three
     distinct fragments corroborate it (2026-07-02, 2026-07-05, 2026-07-07 —
     one correction is a data point, three are a pattern), and the **literary
     warrant** is material that exists now: the agent opened
-    `docs/sports-expansion.md` at the `Planned sports` section its candidate
+    `docs/tool-expansion.md` at the `Planned tools` section its candidate
     locator addressed (line 24) rather than trusting the finding's prose — a
     candidate is a claim about the map until someone reads the source.
     Evidence: `logs/findings/2026-07-02-00000007.yaml`,
@@ -269,15 +269,15 @@ Exit 1:
 ```
 validate-values: 1 concept(s) checked, 0 skipped (draft/proposed), 2 findings, 0 hard errors
 
-FINDING source-value-missing  K-110  "tennis"  (source: Sources/Sportsbook/Sport.swift)
-  source value "tennis" in "Sources/Sportsbook/Sport.swift" is not claimed by the descriptor
-FINDING value-not-in-source  K-110  "cricket"  (source: Sources/Sportsbook/Sport.swift)
-  claimed value "cricket" is not in "Sources/Sportsbook/Sport.swift" (byte-exact, case-sensitive, §3.5)
+FINDING source-value-missing  K-110  "comment"  (source: Sources/Canvas/CanvasTool.swift)
+  source value "comment" in "Sources/Canvas/CanvasTool.swift" is not claimed by the descriptor
+FINDING value-not-in-source  K-110  "eyedropper"  (source: Sources/Canvas/CanvasTool.swift)
+  claimed value "eyedropper" is not in "Sources/Canvas/CanvasTool.swift" (byte-exact, case-sensitive, §3.5)
 ```
 
 - [ ] The agent applies the approved diff to
   `unknown-knowledge/ontology/classes/100-app.yaml` — K-110's descriptor
-  values become `[football, basketball, baseball, iceHockey, soccer, tennis]`
+  values become `[select, frame, pen, textStyle, hand, comment]`
   (derived from the source read, byte-exact) — then re-runs **both**
   validators filtered to exactly the touched concept:
 
@@ -341,16 +341,16 @@ node "$KIT/engine/log-entry.js" transition --file logs/findings/2026-07-07-00000
     "date": "2026-07-07",
     "status": "resolved",
     "trigger": "retrieval-miss",
-    "summary": "document candidate: lacrosse in docs/sports-expansion.md; K-110 resolved",
+    "summary": "document candidate: stencil in docs/tool-expansion.md; K-110 resolved",
     "residue": [
-      "lacrosse"
+      "stencil"
     ],
     "resolved-context": [
       "K-110"
     ],
     "section": {
-      "document": "docs/sports-expansion.md",
-      "address": "Planned sports",
+      "document": "docs/tool-expansion.md",
+      "address": "Planned tools",
       "line": 24
     },
     "session": "s-e330",

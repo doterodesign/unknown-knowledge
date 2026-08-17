@@ -1,7 +1,7 @@
 schema-version: 1
 entries:
   - id: K-210
-    term: Market
-    class: 200-sportsbook
+    term: Component
+    class: 200-design-system
     summary: Minted on branch B — textually clean merge, duplicate id on main.
     status: active

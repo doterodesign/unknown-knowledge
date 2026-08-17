@@ -68,7 +68,7 @@ domain spine the bootstrap interview wrote. Then ask the engine what
 already exists near the item:
 
 ```
-node unknown-knowledge/engine/resolve.js "ach withdrawal settlement" --json --root .
+node unknown-knowledge/engine/resolve.js "svg asset export precision" --json --root .
 ```
 
 `resolve.js` is what answers "does the store already cover this". Read its
@@ -123,7 +123,7 @@ state:
 ```
 node unknown-knowledge/engine/log-entry.js create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"kb-build item not promotable: withdrawal-speed claim lacks any citation; nearest leaf L-000100","consulted":{"leaves":["L-000100"]}}'
+  --entry '{"summary":"kb-build item not promotable: export-precision claim lacks any citation; nearest leaf L-000100","consulted":{"leaves":["L-000100"]}}'
 ```
 
 `--date` is injected, never wall-clock; the summary carries leaf ids,
@@ -296,7 +296,7 @@ Then attribute what you touched, which the `hooks/reverse-lookup` hook does
 automatically over the staged diff and you can run directly:
 
 ```
-node unknown-knowledge/engine/resolve.js --paths knowledge/L-00/L-000110-ach-withdrawal-settlement-windows.md --json --root .
+node unknown-knowledge/engine/resolve.js --paths knowledge/L-00/L-000110-svg-asset-export-precision.md --json --root .
 ```
 
 The skill declares done only on an exit-0 run that saw the final draft —

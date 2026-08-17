@@ -148,7 +148,7 @@ block in the walkthrough came from a real run against `fixtures/ts-app`:
 
 | Block | Command | Observed |
 | --- | --- | --- |
-| step 1 | `resolve.js "withdrawal" --root .` | exit 0, unchanged from prior capture |
+| step 1 | `resolve.js "frontend" --root .` | exit 0, unchanged from prior capture |
 | step 2 | `log-entry.js create --log gaps …` | exit 0, fragment `2026-07-09-80864041.yaml` |
 | step 3 probe | `validate.js` w/ planted `form: settlement-note` | `unregistered-value` on `L-000110` |
 | step 5 orphan probe | `validate.js --root .` | exit 1, 3 findings |

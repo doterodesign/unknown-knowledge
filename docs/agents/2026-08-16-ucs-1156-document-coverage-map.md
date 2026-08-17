@@ -66,7 +66,7 @@ forced:
   term with an article bolted on.
 
 Also: `ss` is exempt from the singular fold — candidates are read by a human
-deciding whether to mint, and "Refund Basis" must not display as "refund basi".
+deciding whether to mint, and "Design Basis" must not display as "design basi".
 
 **Suppression identity.** `{ term, sourcePath }` via `suppressibleBy`, the same
 grammar `audit.js` uses, with `sourcePath` = the submitted document (mirroring
