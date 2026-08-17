@@ -67,9 +67,13 @@ companion, and the design-system/engineering/brand knowledge behind them.
 - **Accession, decision, and concept ids unchanged** wherever they were before
   (L-NNNNNN, D-NNN, K-NNN); only slugs, titles, domains, bodies, and vocabulary
   values changed.
-- **Registry↔store consistency** was swept explicitly per store: every minted
-  registry value has a leaf that carries it, and no leaf carries a value the
-  registry does not mint (the recurring defect class).
+- **Registry↔store consistency** was swept explicitly per store: no leaf carries
+  a value the registry does not mint, and every minted value has a leaf carrying
+  it — except the deliberately kept fixed-vocabulary and lifecycle values (the
+  three truth anchors, the pre-promotion stages) that are minted by the store
+  model rather than by any one leaf, exactly as the acceptance fixtures document
+  them. This is the recurring defect class (a registry contradicting its own
+  store), and it was checked in both directions.
 
 ### Preservation notes
 

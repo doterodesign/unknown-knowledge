@@ -78,12 +78,9 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
 
 - `Sources/Payments/Providers.swift` remains the computed-array miss specimen;
   it reads as an ordinary in-app billing surface (Stripe/Adyen), client-neutral
-  for a SaaS design tool, and carries no old-topic vocabulary.
-  in-app-purchase surface of the design tool, not old-topic residue, and is
-  outside the banned-word family.
-- Out of scope but observed: `acceptance/run.js:372` still carries a stale
-  a stale jurisdiction string in a test-description literal (now `eu-eaa`).
-  Left for the owner of that file.
+  for a SaaS design tool, and carries no old-topic vocabulary. The shipped
+  bootstrap skill example that named this path was later changed to a neutral
+  `Sources/Integrations/Providers.swift`.
 
 ## Verification
 
