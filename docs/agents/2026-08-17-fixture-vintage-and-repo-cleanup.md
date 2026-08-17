@@ -5,6 +5,10 @@ prototype/planning artifacts; Phase 2 re-cast the entire fixture and example
 world as a client-neutral product-design studio. This record describes the new
 state and the deletions.
 
+Per-cluster records (same date): `phoenix-fixture-vintage.md`,
+`validator-loader-fixture-vintage.md`, `v1-resolver-fixture-vintage.md`,
+`a5-walkthrough-vintage.md`.
+
 ## Phase 1 — prototype/planning artifact removal (merged, PR #70)
 
 Deleted from the repo root, none of which were part of the init payload (D-007)
