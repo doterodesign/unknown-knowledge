@@ -31,7 +31,7 @@ test('layout matches PRD §9.2', () => {
 });
 
 test('kit eats its own cooking: root documents present', () => {
-  for (const file of ['PRD.html', 'CONTEXT.md', 'README.md']) {
+  for (const file of ['CONTEXT.md', 'README.md']) {
     const stat = statSync(join(root, file), { throwIfNoEntry: false });
     assert.ok(stat?.isFile(), `missing root file: ${file}`);
   }

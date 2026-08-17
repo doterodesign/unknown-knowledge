@@ -50,12 +50,9 @@
 /**
  * The pinned stopword list.
  *
- * PROVENANCE: copied verbatim from the `STOP` set in the bash-driven
- * deterministic session in `search-experience-prototype.html`, which is this
- * ticket's executable intent. It is reproduced here rather than re-derived,
- * because the prototype's residue output is what the goldens mirror, and a
- * list that drifted from it would make the fixtures disagree with the artifact
- * they were written from.
+ * PROVENANCE: the list is fixed rather than re-derived per store, because the
+ * residue output built on it is what the goldens mirror, and a list that
+ * drifted would make the fixtures disagree with the behavior they pin.
  *
  * PINNED AND NOT CONFIGURABLE, for the same reason the volatility thresholds
  * are (UCS-1150): residue is a governance signal — it is what gets logged as a
