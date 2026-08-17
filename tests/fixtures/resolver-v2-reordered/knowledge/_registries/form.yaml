@@ -5,7 +5,7 @@ registry: form
 values:
   - value: recipe
     gloss: A procedure to follow, start to finish.
-    warrant: L-000102 is the sport-registration procedure.
+    warrant: L-000102 is the token-registration procedure.
     decision: D-201
     minted: "2026-07-07"
   - value: constraint

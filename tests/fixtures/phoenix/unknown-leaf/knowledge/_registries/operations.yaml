@@ -3,13 +3,13 @@ schema-version: 1
 store: knowledge
 registry: operations
 values:
-  - value: onboard-provider
-    gloss: Bring a new odds-feed provider into the ingest pipeline.
-    warrant: L-000117 documents what onboarding a provider must account for.
+  - value: add-primitive
+    gloss: Add a new single-control primitive to the component library.
+    warrant: L-000117 documents what adding a primitive must account for.
     decision: D-401
     minted: "2026-08-16"
-  - value: settle-bet
-    gloss: Settle a priced market once its event finishes.
-    warrant: L-000133 states the rounding rule settlement applies.
+  - value: compose-pattern
+    gloss: Compose several primitives into a reusable pattern.
+    warrant: L-000133 states the composition rule an empty-state pattern applies.
     decision: D-401
     minted: "2026-08-16"

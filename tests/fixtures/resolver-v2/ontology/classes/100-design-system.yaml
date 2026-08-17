@@ -1,0 +1,33 @@
+# Query-decomposition fixture (UCS-1152) — the NOUN vocabulary the query's noun
+# axis joins through.
+#
+# K-101 "Token" is the concept the "add a new token" ask reaches by its noun,
+# while `add-token` reaches the same leaf by its verb. Both joins firing on one
+# leaf is what makes the additive leaf scoring observable: the recipe leaf
+# scores operation + concept + term, and no single signal explains its rank.
+#
+# K-103 "Theme status" is DELIBERATELY vocabulary no leaf in this store writes
+# as a term. A leaf still reaches it, by declaring the concept id — the
+# structural join from UCS-1151, exercised here through the new leaf-first
+# scoring.
+schema-version: 1
+entries:
+  - id: K-101
+    term: Token
+    class: 100-design-system
+    summary: A design token the system publishes.
+    aliases: [token type]
+    source-of-truth: [src/registry/tokens.ts]
+    status: active
+  - id: K-103
+    term: Theme status
+    class: 100-design-system
+    summary: The lifecycle state a published theme is in.
+    aliases: [theme]
+    # The pointer names where the lifecycle is DEFINED — the status union
+    # itself. `src/theming/rounding.ts` is where one transition happens to
+    # be implemented, which is a different claim: a source-of-truth pointer
+    # that named it would send a reader after the rounding helper when they
+    # asked what states a theme can be in.
+    source-of-truth: [src/types/theme-status.ts]
+    status: active

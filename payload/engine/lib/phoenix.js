@@ -406,8 +406,8 @@ export function planEvent(model, event) {
     }
 
     // A move must say why. On a split this is the whole substance of the review:
-    // the class-level rule cannot explain why one sibling went to ingest and the
-    // other to settlement, so the row has to, and a row that does not is a bulk
+    // the class-level rule cannot explain why one sibling went to primitives and
+    // the other to patterns, so the row has to, and a row that does not is a bulk
     // rewrite with no rationale attached to the leaf it moved.
     if (typeof row.why !== 'string' || row.why.trim() === '') {
       push({

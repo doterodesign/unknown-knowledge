@@ -4,28 +4,28 @@ store: knowledge
 registry: domains
 hierarchical: true
 values:
-  - value: sportsbook
-    gloss: The sportsbook vertical.
-    warrant: L-000102 and L-000140 both document sportsbook material.
+  - value: design-system
+    gloss: The shared design system.
+    warrant: L-000102 and L-000140 both document design-system material.
     decision: D-201
     minted: "2026-07-07"
-  - value: sportsbook/registry
-    gloss: The registries the book enumerates its offering from.
-    warrant: L-000102 documents the sports registry edit.
+  - value: design-system/tokens
+    gloss: The registries the system enumerates its tokens from.
+    warrant: L-000102 documents the token registry edit.
     decision: D-201
     minted: "2026-07-07"
-  - value: sportsbook/settlement
-    gloss: Settling placed bets once their events resolve.
-    warrant: L-000140 and L-000190 both state settlement constraints.
+  - value: design-system/theming
+    gloss: Publishing themes once their tokens resolve.
+    warrant: L-000140 and L-000190 both state theming constraints.
     decision: D-201
     minted: "2026-07-07"
-  - value: payments
-    gloss: Money movement.
-    warrant: L-000133 states the rounding rule money movement obeys.
+  - value: engineering
+    gloss: Building and shipping the product.
+    warrant: L-000133 states the rounding rule theme export obeys.
     decision: D-201
     minted: "2026-07-07"
-  - value: payments/settlement
-    gloss: Rounding and precision when funds actually move.
-    warrant: L-000133 states banker's rounding at settlement.
+  - value: engineering/frontend
+    gloss: Rounding and precision when a theme is exported.
+    warrant: L-000133 states banker's rounding at theme export.
     decision: D-201
     minted: "2026-07-07"

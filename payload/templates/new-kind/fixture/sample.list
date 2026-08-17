@@ -2,6 +2,6 @@
 # parser must read, paired with fixture/EXPECTED.yaml. Blank lines and
 # comments are inside the envelope; any other non-value line hard-errors.
 
-- nfl
-- nba
-- mlb
+- png
+- svg
+- pdf

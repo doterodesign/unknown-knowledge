@@ -19,7 +19,7 @@
  * So the defense is structural rather than advisory, in three parts:
  *
  *   1. The grammar cannot be mistaken for an id. `L-000117` is the accession;
- *      a call number looks like `SPO-ODD/REF·L-000117` — uppercase facet
+ *      a call number looks like `DES-COM/REF·L-000117` — uppercase facet
  *      abbreviations, a slash, and a MIDDLE DOT that no id grammar accepts.
  *      `assertNoIdSpaceMatches` (below) proves it against every compiled id
  *      space in ID_GRAMMARS rather than against a remembered list, so a new id
@@ -34,8 +34,8 @@
  *      thing to paste therefore contains the correct thing to paste.
  *
  * The call number is NOT stable across projections, and that is a feature: the
- * same leaf reads `SPO-ODD/REF·L-000117` in the domain-first tree and
- * `REF/SPO-ODD·L-000117` in the form-first one, because the call number
+ * same leaf reads `DES-COM/REF·L-000117` in the domain-first tree and
+ * `REF/DES-COM·L-000117` in the form-first one, because the call number
  * describes a POSITION in a projection, and that leaf holds two of them. A
  * string that changed meaning between trees while looking stable would be the
  * worst of both worlds; one that visibly reorders says what it is.
@@ -49,7 +49,7 @@ import { idPattern, ID_GRAMMARS } from './id-grammars.js';
  * none plausibly will: the id spaces are all `[A-Z]-[0-9]` or dotted decimals,
  * and a middle dot is not a character an author reaches for when minting an id.
  * It is also visually distinct from the ASCII period that the LEGACY notation
- * used, so `362.1` and `SPO-ODD/REF·L-000117` cannot be skim-confused.
+ * used, so `362.1` and `DES-COM/REF·L-000117` cannot be skim-confused.
  */
 export const CALL_NUMBER_SEPARATOR = '·';
 
@@ -63,7 +63,7 @@ const ABSENT_SEGMENT = 'UNC';
  * Abbreviate one facet segment for display.
  *
  * Uppercased and truncated to three characters, with non-alphanumerics dropped
- * so a segment like `odds-feed` reads `ODD` rather than `ODD-`. Deliberately
+ * so a segment like `components` reads `COM` rather than `COM-`. Deliberately
  * LOSSY: two segments can abbreviate to the same three letters, and that is
  * fine because nothing resolves through this string — the accession suffix is
  * what disambiguates, and it is exact. Making the abbreviation collision-free

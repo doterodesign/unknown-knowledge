@@ -14,5 +14,5 @@
 #   (value-not-in-source / source-value-missing). Strings, byte-exact,
 #   case-sensitive, as sets — quote YAML-1.1 traps like "no"/"on" (§3.5).
 - kind: line-list
-  source: docs/supported-sports.list
-  values: [nfl, nba, mlb]
+  source: docs/supported-formats.list
+  values: [png, svg, pdf]

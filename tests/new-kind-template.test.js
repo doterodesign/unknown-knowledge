@@ -52,22 +52,22 @@ test('CRLF line endings are inside the envelope — the split normalizes them', 
   // An anchor authored on Windows is the same document; \r\n must not leak a
   // \r into the byte-exact value nor hard-error a fully in-envelope file.
   assert.deepEqual(
-    extractValues('# comment\r\n- soccer\r\n- tennis\r\n', 'crlf.list'),
-    ['soccer', 'tennis'],
+    extractValues('# comment\r\n- grid\r\n- stack\r\n', 'crlf.list'),
+    ['grid', 'stack'],
   );
 });
 
 test('trailing whitespace on a value line is an out-of-envelope hard error', () => {
-  // "- nfl " would capture "nfl " — a value that can never byte-match the
+  // "- png " would capture "png " — a value that can never byte-match the
   // visually identical claim. Hard-error-never-guess: name the invisible
   // whitespace explicitly instead of parsing either way.
   assert.throws(
-    () => extractValues('- nfl \n', 'trail.list'),
+    () => extractValues('- png \n', 'trail.list'),
     (error) => {
       assert.match(error.message, /trail\.list:1: /);
       assert.match(error.message, /trailing whitespace/);
       // JSON.stringify of the raw line makes the invisible byte visible.
-      assert.ok(error.message.includes('"- nfl "'), `message shows the raw line: ${error.message}`);
+      assert.ok(error.message.includes('"- png "'), `message shows the raw line: ${error.message}`);
       return true;
     },
   );
@@ -89,10 +89,10 @@ test('demo-run CLI: fixture run exits 0 and prints the JSON the walkthrough reco
   const output = JSON.parse(result.stdout);
   assert.equal(output.kind, KIND);
   assert.equal(output.file, 'fixture/sample.list');
-  assert.deepEqual([...output.values].sort(), ['mlb', 'nba', 'nfl']);
+  assert.deepEqual([...output.values].sort(), ['pdf', 'png', 'svg']);
 });
 
-test('demo-anchor run reproduces the README walkthrough exactly (exit 0, soccer + tennis)', () => {
+test('demo-anchor run reproduces the README walkthrough exactly (exit 0, grid + stack)', () => {
   const result = runCli(['fixture/demo-anchor.list']);
   assert.equal(result.status, 0, result.stderr);
   const output = JSON.parse(result.stdout);
@@ -101,7 +101,7 @@ test('demo-anchor run reproduces the README walkthrough exactly (exit 0, soccer 
   assert.deepEqual(output, {
     kind: KIND,
     file: 'fixture/demo-anchor.list',
-    values: ['soccer', 'tennis'],
+    values: ['grid', 'stack'],
   });
 });
 

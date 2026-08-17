@@ -3,4 +3,4 @@
 # case-sensitive, as a set (§3.5): order here is presentation only.
 kind: line-list
 file: sample.list
-values: [nfl, nba, mlb]
+values: [png, svg, pdf]
