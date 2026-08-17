@@ -138,7 +138,7 @@ K-104  Asset kind  [active]  score 60 (term-match)
 
 Two claims in the item:
 
-- [ ] **Judgment fill — candidate confirmation**: the settlement-window
+- [ ] **Judgment fill — candidate confirmation**: the SVG-export-precision
   claim carries a citation the agent followed (W3C SVG 2, `accessed`
   dated) → promotable. Confirming the source supports the claim *as written*
   is a read, not a lookup.
@@ -204,11 +204,11 @@ grep -A1 '^  - value:' unknown-knowledge/knowledge/_registries/form.yaml | tail 
   is a decision recorded, not a field skipped.
 - [ ] Negative check: the agent does NOT invent a facet value. The gate is
   mechanical, not a matter of restraint — plant an unminted `facets.form`
-  (say `settlement-note`) and step 5 refuses it by name:
+  (say `spec-sheet`) and step 5 refuses it by name:
 
 ```
 error  unregistered-value  L-000110  knowledge/L-00/L-000110-svg-asset-export-precision.md  facets.form
-    value "settlement-note" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
+    value "spec-sheet" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
 ```
 
 - [ ] **Judgment fill — mint proposals with warrant evidence**: had no

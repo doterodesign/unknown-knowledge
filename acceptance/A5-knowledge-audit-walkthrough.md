@@ -49,7 +49,7 @@ entries:
       One lexically checkable home; K-1xx concept to follow.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-101], leaves: [], decisions: [D-101] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-101] }
 EOF
 cat >> unknown-knowledge/decisions/_catalog.yaml <<'EOF'
   - id: D-2026-04-02-plan-tier-source
