@@ -439,7 +439,7 @@ criterion('A4', FIXTURES.flatMap((app) => {
       assert.deepEqual(out.results, []);
     }],
     [`${app}: usage error (unknown flag) exits 2`, () => {
-      const r = run('resolve.js', 'sport', '--root', fixture(app), '--no-such-flag');
+      const r = run('resolve.js', 'export', '--root', fixture(app), '--no-such-flag');
       assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     }],
   ];
