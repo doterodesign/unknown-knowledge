@@ -259,11 +259,11 @@ collecting its allowlist entries automatically, and worth naming in the PR.
 
 | Path | Why it was exempt | Now |
 | --- | --- | --- |
-| `tests/fixtures/loader/unresolved-ref/knowledge/regulation/362.1-…md` | dangling NOTATION `"999.9"` specimen | `see-also: [L-000999]` |
+| `tests/fixtures/loader/unresolved-ref/knowledge/engineering/362.1-…md` | dangling NOTATION `"999.9"` specimen | `see-also: [L-000999]` |
 | `tests/fixtures/loader/unresolved-ref/knowledge/_catalog.yaml` | catalog of the above, notation row | `id: L-000362` |
 | `tests/fixtures/loader/unresolved-leaf-ref/knowledge/widgets/700.1-…md` | one dangling accession + one dangling notation `"700.9"` | `[L-000999]`, `[L-000997]` |
 | `tests/fixtures/loader/unresolved-leaf-ref/decisions/entries/D-301-dangling.yaml` | dangling accession + dangling notation `"700.8"` | `[L-000998, L-000996]` |
-| `tests/fixtures/loader/healthy/knowledge/regulation/362.1-…md` | THE notation-only (unminted) specimen | `id: L-000362`, `see-also: [L-000363]` |
+| `tests/fixtures/loader/healthy/knowledge/engineering/362.1-…md` | THE notation-only (unminted) specimen | `id: L-000362`, `see-also: [L-000363]` |
 | `tests/fixtures/loader/healthy/knowledge/_catalog.yaml` | catalog of the notation-only specimen | `L-000362`, `L-000363` |
 | `tests/fixtures/loader/healthy/decisions/entries/D-004-three-stores.yaml` | `relates-to.leaves: ["362.1"]` into the unminted leaf | `[L-000362]` |
 | `tests/fixtures/resolver/store/knowledge/_catalog.yaml` | notation-only resolver store (the `id: null` golden) | `L-000410`, `L-000411` |

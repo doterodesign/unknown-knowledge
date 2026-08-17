@@ -10,7 +10,7 @@ subtrees, plus the test files that assert on their content. Part of the wider
 
 A product-design / engineering studio. The fixtures now speak of a design
 system, its components and tokens, brand identity, and the engineering that
-ships them — never the previous throwaway topic.
+ships them.
 
 ### Domain / vocabulary of the new world
 
@@ -77,14 +77,14 @@ introduced.
 ## Spots where the role could not be preserved exactly
 
 - None functionally. One judgment call: `tests/fixtures/resolver/` (v1) was
-  NOT re-themed. It contains no banned vocabulary (payments / API / settlement
-  windows), reads plausibly as studio billing-and-API material, and is
+  NOT re-themed. It reads plausibly as studio billing-and-API material, and is
   consumed by several tests via stable term queries; re-theming it would be
   churn with no confidentiality benefit. Flagged here for a reviewer who would
   prefer full thematic uniformity.
 
-## Cross-scope couplings observed (owned by other agents, left untouched or
-   aligned to their current state)
+## Cross-scope couplings observed
+
+Owned by other agents; left untouched or aligned to their current state.
 
 - `document-coverage.test.js` resolves against `resolver-v2` /
   `resolver-v2-reordered` (parent-owned). Its queries were realigned to the

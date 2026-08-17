@@ -51,8 +51,8 @@ Plants 1, 2, 4 behave as the ticket assumes. Plants 3 and 5 do not.
 
 ### Plants 2 + 4 — registry membership (WORKS, exit 1)
 
-Planting `applies.jurisdictions: [uk-gc]` (empty registry) and
-`facets.form: explainer` (unminted) on leaf `L-000100`:
+Planting `applies.jurisdictions: [eu-eaa]` (empty registry) and
+`facets.form: walkthrough` (unminted) on leaf `L-000100`:
 
 ```
 node payload/engine/validate.js --root <copy> --json   →   EXIT 1
@@ -210,7 +210,7 @@ main store keeps only value-level plants.
 
 **Main store — `fixtures/ts-app` (three value-level plants, still loads clean):**
 - `L-000100` (`knowledge/product/100.1-adding-a-new-export-format.md`) carries plant 2
-  (`applies.jurisdictions: [uk-gc]`, line 15) and plant 4
+  (`applies.jurisdictions: [eu-eaa]`, line 15) and plant 4
   (`facets.form: walkthrough`, line 10). Both emit `unregistered-value` at
   exit 1, distinguished only by `path`.
 - `L-000200` (`knowledge/product/100.2-deprecating-a-library-release.md`, NEW) carries

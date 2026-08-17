@@ -8,6 +8,7 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
 ## Walkthroughs re-captured
 
 ### A5-agents-md-walkthrough (runs on fixtures/ts-app)
+
 - Task: **"add `avif` as a supported export format"**.
 - RESOLVE query `export format`; K-101 "Export format"; the
   confusable is K-113 "Export preset". Real run now emits **two** near-miss
@@ -21,6 +22,7 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
 - Decision draft `D-2026-07-08-avif-launch`.
 
 ### A5-knowledge-audit-walkthrough (runs on fixtures/ts-app)
+
 - Seeded findings: K-108 quarantine (pointer `export-formats.ts`), K-102
   correction (`blend-modes.ts` / `luminosity`), a miss on `export-presets.ts`,
   and a proposed decision `D-2026-04-02-plan-tier-source` (was loyalty-tier).
@@ -34,6 +36,7 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
   pins these and passes unchanged.
 
 ### A5-knowledge-reflect-walkthrough (runs on fixtures/swift-app)
+
 - New story: K-110 "Canvas tool" claims `eyedropper` (absent) and misses
   `comment` (source case) in `Sources/Canvas/CanvasTool.swift`; K-120 dispute is
   `hand`'s shortcut `Cmd-H` vs `H` (line 19 `case hand = "H"` decides it); K-130
@@ -46,11 +49,12 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
   exit-2 message are byte-identical to the old world.
 
 ### A5-kb-build-walkthrough (runs on fixtures/ts-app)
-- Incoming item changed from an ACH-withdrawal settlement rule to **SVG asset
+
+- Incoming item is **SVG asset
   export precision** (cites *W3C SVG 2 Recommendation §7.11*). New leaf
   `L-000110` "SVG asset export precision" under `product/engineering`, operation
   `export-asset`, form `reference`, authority `regulator`.
-- CLASSIFY query `withdrawal` → `asset` (K-104 "Asset kind", term-match score
+- CLASSIFY query `asset` (K-104 "Asset kind", term-match score
   60, near-miss on `export-asset`). Seed mints `product/engineering`,
   `reference`, `export-asset`, `regulator`.
 - Orphan probe, clean run, gap fragment, and the two hooks (`pre-commit` exit 1,
@@ -58,6 +62,7 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
   all re-captured. The reverse-lookup lists K-104 on `src/types/asset-kind.ts`.
 
 ### A5-knowledge-bootstrap-walkthrough (runs on fixtures/swift-app)
+
 - Builds the ontology from scratch: classes `100-canvas`/`200-platform`;
   concepts K-100 "Canvas" (folder `Sources/Canvas`),
   K-110 "Canvas tool" (case-name), K-120 "Tool shortcut" (raw-value V/F/P/T/H/C).
@@ -70,15 +75,17 @@ against the (already-rewritten) design-studio fixtures and pasted byte-honest.
   `product` (editor/engineering). Final validators both green (3 concepts).
 
 ## Notes / surprises
+
 - `Sources/Payments/Providers.swift` is untouched by the fixture rewrite and
   remains the computed-array miss specimen; "Payments" here reads as an ordinary
   in-app-purchase surface of the design tool, not old-topic residue, and is
   outside the banned-word family.
 - Out of scope but observed: `acceptance/run.js:372` still carries a stale
-  `uk-gc` string in a test-description literal (the ts-app plant is now `eu-eaa`).
+  a stale jurisdiction string in a test-description literal (now `eu-eaa`).
   Left for the owner of that file.
 
 ## Verification
+
 - `node --test` on all five pinning tests: **65 pass, 0 fail**.
 - Scoped banned-word sweep over the five walkthroughs, `acceptance/README.md`,
   and the five test files: **zero matches**.

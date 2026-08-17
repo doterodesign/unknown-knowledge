@@ -15,9 +15,9 @@ Scope: fixture DATA only (`tests/fixtures/**`, `fixtures/**`). No `.js` file tou
 
 | Fixture store | Leaf file | New id |
 |---|---|---|
-| `tests/fixtures/loader/healthy` | `knowledge/regulation/362.1-ach-settlement-windows.md` | `L-000362` |
-| `tests/fixtures/loader/healthy` | `knowledge/regulation/362.2-wire-settlement-windows.md` | `L-000363` |
-| `tests/fixtures/loader/unresolved-ref` | `knowledge/regulation/362.1-ach-settlement-windows.md` | `L-000362` |
+| `tests/fixtures/loader/healthy` | `knowledge/engineering/362.1-preview-deploy-windows.md` | `L-000362` |
+| `tests/fixtures/loader/healthy` | `knowledge/engineering/362.2-production-deploy-windows.md` | `L-000363` |
+| `tests/fixtures/loader/unresolved-ref` | `knowledge/engineering/362.1-preview-deploy-windows.md` | `L-000362` |
 | `tests/fixtures/resolver/store` | `knowledge/payments/410.1-card-settlement-windows.md` | `L-000410` |
 | `tests/fixtures/resolver/store` | `knowledge/payments/410.2-accepted-payment-instruments.md` | `L-000411` |
 
@@ -53,13 +53,13 @@ state every store lands in once the migration is done.
 ## Changes grouped by fixture store
 
 ### 1. `tests/fixtures/loader/healthy/`
-- `knowledge/regulation/362.1-ach-settlement-windows.md` — added `id: L-000362`; `see-also: ["362.2"]` -> `[L-000363]`; schema-version 1 -> 2.
-- `knowledge/regulation/362.2-wire-settlement-windows.md` — added `id: L-000363`; schema-version 1 -> 2.
+- `knowledge/engineering/362.1-preview-deploy-windows.md` — added `id: L-000362`; `see-also: ["362.2"]` -> `[L-000363]`; schema-version 1 -> 2.
+- `knowledge/engineering/362.2-production-deploy-windows.md` — added `id: L-000363`; schema-version 1 -> 2.
 - `knowledge/_catalog.yaml` — both rows: `"362.1"` -> `L-000362`, `"362.2"` -> `L-000363`.
 - `decisions/entries/D-004-three-stores.yaml` — `relates-to.leaves: ["362.1"]` -> `[L-000362]`.
 
 ### 2. `tests/fixtures/loader/unresolved-ref/`
-- `knowledge/regulation/362.1-ach-settlement-windows.md` — added `id: L-000362`; `see-also: ["999.9"]` -> `[L-000999]` (still dangling by design); schema-version 1 -> 2; body sentence "points at a notation that does not exist" -> "points at an accession that does not exist".
+- `knowledge/engineering/362.1-preview-deploy-windows.md` — added `id: L-000362`; `see-also: ["999.9"]` -> `[L-000999]` (still dangling by design); schema-version 1 -> 2; body sentence "points at a notation that does not exist" -> "points at an accession that does not exist".
 - `knowledge/_catalog.yaml` — row `"362.1"` -> `L-000362`.
 
 ### 3. `tests/fixtures/resolver/store/`
@@ -103,7 +103,7 @@ bumped.
 | Item | Reason |
 |---|---|
 | `tests/fixtures/structural-validator/bad-accession/knowledge/_catalog.yaml` `id: L-42` | Planted malformed-id defect; explicitly out of scope. |
-| `tests/fixtures/loader/malformed/knowledge/regulation/no-front-matter.md` | Deliberately has NO YAML front matter at all — it is the "not a leaf" fixture. Adding an `id` or a schema-version would destroy the defect it pins. Only leaf without an `id` remaining, by design. |
+| `tests/fixtures/loader/malformed/knowledge/engineering/no-front-matter.md` | Deliberately has NO YAML front matter at all — it is the "not a leaf" fixture. Adding an `id` or a schema-version would destroy the defect it pins. Only leaf without an `id` remaining, by design. |
 | `tests/fixtures/structural-validator/findings/ontology/_catalog.yaml` `id: BAD` | ONTOLOGY catalog (concept id), not a leaf ref. Planted defect for concept-id shape. Out of scope. |
 | `supersedes: [D-101]` / `[D-102]` in `structural-validator/findings/decisions/entries/*` | Decision-to-decision edges (`D-` ids), not leaf refs. The accession-only `leafRef` contract does not govern them. |
 | Prose mentions of `501.1` / `501.3` etc. in `typed-edges` leaf bodies (`501.4`, `501.5`) | Narrative references to leaves by their notation inside body text, not machine-read citation fields. Notation remains a legal optional-legacy field, so prose naming is still accurate. |

@@ -36,14 +36,14 @@ Shared flag grammar in `cli.js` `parseArgs`: `--flag value` and `--flag=value`, 
 
 Leaves live at `knowledge/**/*.md` (recursive), one leaf per file, loaded by `loadLeafFiles()` in `payload/engine/lib/load-stores.js`. Format: YAML frontmatter fenced by `---` + markdown body; BOM and CRLF normalized; no frontmatter = `parse-error`. Store layout per store: `_catalog.yaml` → `_rules.yaml` → entries (decisions has no `_rules.yaml` by design).
 
-**Current leaf frontmatter** (schema: `payload/schemas/knowledge-leaf.schema.json`; live example `tests/fixtures/loader/healthy/knowledge/regulation/362.1-ach-settlement-windows.md`):
+**Current leaf frontmatter** (schema: `payload/schemas/knowledge-leaf.schema.json`; live example `tests/fixtures/loader/healthy/knowledge/engineering/362.1-preview-deploy-windows.md`):
 
 ```yaml
 schema-version: 1          # required, integer ≥1
 notation: "362.1"          # required — THE IDENTITY; pattern ^[0-9]+(\.[0-9]+)*$
-domain: regulation         # required, free string
-division: settlement       # optional, free string
-heading: ACH settlement windows   # required
+domain: engineering        # required, free string
+division: deploy       # optional, free string
+heading: Preview deploy windows   # required
 description: Prose is navigation, never the fact.
 notes:                     # optional; type ∈ scope|class-here|revision
   - { type: scope, text: "US-facing operators only.", date: "2026-07-07" }
@@ -53,7 +53,7 @@ cross-references:
   including: []            # free strings, "standing room", non-authoritative
 citations:                 # REQUIRED, minItems 1
   - { source: "NACHA operating rules 2026", accessed: "2026-07-07" }
-terms: [ACH, settlement]   # optional; the resolver's leaf→concept join key
+terms: [preview, deploy]   # optional; the resolver's leaf→concept join key
 edition: 1                 # optional integer ≥1
 contributors: [dimitri]
 ```
@@ -83,7 +83,7 @@ Duplicate minting is caught by the loader's `indexRecord()` → `duplicate-id` e
 2. **Leaf → leaf**, `cross-references.see-also[]` — same shape. (`including[]` is free strings, *not* notations — not a migration site.)
 3. **Decisions `relates-to.leaves[]`** — `decision-entry.schema.json` `$defs/notation`. Live: `fixtures/ts-app/unknown-knowledge/decisions/entries/D-101-*.yaml` (`leaves: ["100.1"]`), `tests/fixtures/loader/healthy/decisions/entries/D-004-three-stores.yaml` (`leaves: ["362.1"]`). All 22 kit decisions carry `leaves: []`.
 4. **Knowledge catalog rows** — `knowledge/_catalog.yaml` `entries[].id` is the notation (quoted), plus `title` and `file`. Validated by `ID_GRAMMARS.knowledge` in `commands/validate.js` (`id-shape`) and by `index-drift`/`orphan`.
-5. **The leaf's own `notation:` field** and, by convention, **the filename prefix** (`362.1-ach-settlement-windows.md`, `product/100.1-adding-a-new-export-format.md`). The filename prefix is convention only — nothing parses it for leaves (unlike ontology class files, where the prefix *is* the id range).
+5. **The leaf's own `notation:` field** and, by convention, **the filename prefix** (`362.1-preview-deploy-windows.md`, `product/100.1-adding-a-new-export-format.md`). The filename prefix is convention only — nothing parses it for leaves (unlike ontology class files, where the prefix *is* the id range).
 6. **Log fragments** — `finding.schema.json` `consulted.leaves[]` uses `$defs/notation`; same in `gap.schema.json` and `miss.schema.json`. Written via `log-entry.js`, e.g. kb-build's gap example `"consulted":{"leaves":["100.1"]}`.
 7. **Ontology concepts → leaves: none.** Concepts have `used-by`/`confusable-with` (K-), `rationale` (D-). The leaf→concept join today is **implicit and text-based**: `knowledgeEntryPoints()` in `commands/resolve.js` matches leaf `terms[]` against a concept's `term`/`aliases` by normalized string. There is no typed edge in either direction — the spec's leaf-side `concepts: [K-102]` creates one where none exists.
 8. **Engine code**: `ID_GRAMMARS.knowledge` regex in `commands/validate.js:71`; `REF_FIELDS['knowledge-leaf']` and the `indexRecord(ctx, 'leaves', record.notation, …)` call in `lib/load-stores.js`; `resolve.js` result field `notation`; `checkCatalogs`/`checkOrphans`/`checkCitations` in `validate.js` all key on `notation`.
@@ -113,7 +113,7 @@ Scenario names encode the expected verdict. Fixtures are immutable and memoized 
 
 **The planted-drift pattern** (`fixtures/ts-app/FIXTURE.md`) — this is the shape the spec's v2 plants should mirror:
 - Three markdown tables: **A2 clean extractions** (concept | kind | anchor file:line | symbol | expected value set | notes), **A3 planted drift** (case | concept | anchor | expected finding), **§5.1 out-of-envelope** (case | concept | anchor | sentinel | wrong-parse trap).
-- One planted case per finding code, named by the code: `value-not-in-source` (K-102 claims `futures`, absent), `source-value-missing` (K-104 source has `crypto`, unclaimed), `wrong-pointer` (K-108 all values missing from a real parseable file).
+- One planted case per finding code, named by the code: `value-not-in-source` (K-102 claims `luminosity`, absent), `source-value-missing` (K-104 source has `video`, unclaimed), `wrong-pointer` (K-108 all values missing from a real parseable file).
 - Every anchor cited as `file:line`, including into the store YAML (`100-product.yaml:134`).
 - The invariant is stated: *"All store files are schema-valid: drift is planted in values, never in descriptor shape, so no case hides behind a malformed-descriptor hard error."* Plus *"Every planted case is deliberate; if you 'fix' one, you break the harness."*
 - Adversarial-but-extractable inventory listed separately from unextractable.

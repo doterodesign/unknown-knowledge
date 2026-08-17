@@ -23,7 +23,7 @@ numeric part `000110`).
 ### Setup (the human, not the agent) — EXPANDED
 
 The pre-existing setup only seeded `knowledge/_rules.yaml`. That was already a
-latent hole: the drafted leaf uses `facets.domain: product/payments`,
+latent hole: the drafted leaf uses `facets.domain: product/editor`,
 `facets.form: reference`, `operations: [ship-frontend]` and
 `citations[].authority: regulator`, none of which the fixture's registries mint.
 Running the walkthrough as written produced **4 blocking findings**
@@ -50,7 +50,7 @@ registry edit plus a Decisions entry and never the drafting agent's to invent.
   from a sequence, so two authors classifying into one domain never contend for
   a number.
 - The "spine names the home" line now names the governed subject path
-  `product/payments` (`facets.domain`) rather than a domain/division slot.
+  `product/editor` (`facets.domain`) rather than a domain/division slot.
 - Re-captured the `resolve.js` output. The old paste was already stale: it was
   missing the `time check: skipped …` line and the whole `decomposition:` block,
   and (after the setup change mints `ship-frontend`) it also now emits a
@@ -136,7 +136,7 @@ decomposition:
   near-miss: operation ship-frontend — token overlap [frontend] below the match threshold
 
 K-104  Asset kind  [active]  score 60 (term-match)
-  summary: Payout rails. DRIFT — source also has 'crypto', unclaimed here.
+  summary: Asset kinds. DRIFT — source also has 'video', unclaimed here.
   source-of-truth:
     src/types/asset-kind.ts
 ```
