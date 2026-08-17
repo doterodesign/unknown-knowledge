@@ -70,8 +70,8 @@ test('the `=` spelling is the escape hatch for a value that looks like a flag', 
 
 test('a stray positional is refused unless the command takes them', () => {
   assert.throws(() => parseArgs(['stray'], SPEC), /unexpected argument "stray"/);
-  const { positionals, options } = parseArgs(['sport', 'type', '--json'], { ...SPEC, positionals: true });
-  assert.deepEqual(positionals, ['sport', 'type']);
+  const { positionals, options } = parseArgs(['export', 'format', '--json'], { ...SPEC, positionals: true });
+  assert.deepEqual(positionals, ['export', 'format']);
   assert.equal(options.json, true);
 });
 

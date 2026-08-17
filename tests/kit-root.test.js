@@ -59,7 +59,7 @@ const storeAt = (prefix, id, term, pointer) => ({
 });
 
 /** A registry-shaped anchor: the survey map sees it, so the audit will too. */
-const ANCHOR = "export const SPORTS = ['nfl', 'nba'];\n";
+const ANCHOR = "export const FORMATS = ['png', 'svg'];\n";
 
 // ------------------------------------------------------- the locator itself
 

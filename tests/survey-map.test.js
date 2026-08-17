@@ -39,12 +39,12 @@ function plant(rel, content) {
 
 // Planted anchors — one per §5.1 pre-scannable shape (kind → path).
 const PLANTED = [
-  ['ts-union', 'src/sports.ts'],
+  ['ts-union', 'src/tokens.ts'],
   ['ts-object-keys', 'src/registry.ts'],
-  ['ts-const-array', 'src/markets.ts'],
+  ['ts-const-array', 'src/presets.ts'],
   ['ts-enum', 'src/tiers.ts'],
-  ['swift-enum', 'App/Models/Sport.swift'],
-  ['swift-const-array', 'App/Models/Markets.swift'],
+  ['swift-enum', 'App/Models/Token.swift'],
+  ['swift-const-array', 'App/Models/Presets.swift'],
   ['json-keys', 'config/app.json'],
   ['yaml-keys', 'config/flags.yaml'],
   ['strings-keys', 'Locales/en.strings'],
@@ -56,44 +56,44 @@ const PLANTED = [
 
 mkdirSync(repo);
 git('init', '-q');
-plant('src/sports.ts', "export type Sport = 'nfl' | 'nba' | 'mlb';\n");
-plant('src/registry.ts', 'export const SPORTS = {\n  nfl: {},\n  nba: {},\n};\n');
-plant('src/markets.ts', "export const supportedMarkets = ['spread', 'total'];\n");
+plant('src/tokens.ts', "export type Token = 'png' | 'svg' | 'pdf';\n");
+plant('src/registry.ts', 'export const TOKENS = {\n  color: {},\n  space: {},\n};\n');
+plant('src/presets.ts', "export const supportedPresets = ['web', 'print'];\n");
 plant('src/tiers.ts', 'export enum Tier {\n  Free,\n  Paid,\n}\n');
-plant('App/Models/Sport.swift', 'enum Sport: String, CaseIterable {\n  case nfl\n}\n');
-plant('App/Models/Markets.swift', 'static let supportedMarkets = ["spread", "total"]\n');
-plant('config/app.json', '{\n  "features": { "parlay": true }\n}\n');
-plant('config/flags.yaml', 'flags:\n  parlay: true\n');
-plant('Locales/en.strings', '"bet.place" = "Place bet";\n');
+plant('App/Models/Token.swift', 'enum Token: String, CaseIterable {\n  case color\n}\n');
+plant('App/Models/Presets.swift', 'static let supportedPresets = ["web", "print"]\n');
+plant('config/app.json', '{\n  "features": { "beta": true }\n}\n');
+plant('config/flags.yaml', 'flags:\n  beta: true\n');
+plant('Locales/en.strings', '"editor.insert" = "Insert";\n');
 // .xcstrings is JSON — PRD §5.1 defines strings-keys over BOTH formats.
 plant('Locales/App.xcstrings',
-  '{\n  "sourceLanguage" : "en",\n  "strings" : {\n    "bet.place" : {}\n  },\n  "version" : "1.0"\n}\n');
+  '{\n  "sourceLanguage" : "en",\n  "strings" : {\n    "editor.insert" : {}\n  },\n  "version" : "1.0"\n}\n');
 // Legacy UTF-16 .strings (BOM-marked): unsniffable as UTF-8 — candidate by extension.
-plant('Locales/legacy-utf16.strings', Buffer.from('\ufeff"bet.cancel" = "Cancel bet";\n', 'utf16le'));
+plant('Locales/legacy-utf16.strings', Buffer.from('\ufeff"editor.cancel" = "Cancel";\n', 'utf16le'));
 for (const m of ['nfl', 'nba', 'mlb']) plant(`modules/${m}.ts`, `export const id = '${m}';\n`);
 // PRD's canonical dir-modules layout: one SUBFOLDER per module (modules/nfl/, …).
 for (const m of ['nfl', 'nba', 'mlb']) plant(`modules2/${m}/index.ts`, `export const id = '${m}';\n`);
 // Denylisted-but-tracked: none of these may surface anywhere in the map.
-plant('node_modules/pkg/index.js', "export const SPORTS = { x: 1 };\n");
-plant('vendor/lib.js', "export const SPORTS = { x: 1 };\n");
+plant('node_modules/pkg/index.js', "export const TOKENS = { x: 1 };\n");
+plant('vendor/lib.js', "export const TOKENS = { x: 1 };\n");
 plant('package-lock.json', '{ "lockfileVersion": 3 }\n');
-plant('src/types.gen.ts', "export type Sport = 'stale' | 'copy';\n");
+plant('src/types.gen.ts', "export type Token = 'stale' | 'copy';\n");
 plant('assets/logo.png', 'not really a png');
 plant('.github/workflows/ci.yml', 'jobs:\n  test: {}\n');
 // Untracked file: git-tracked-only means it never appears at all.
-plant('scratch.js', "export const SPORTS = { x: 1 };\n");
+plant('scratch.js', "export const TOKENS = { x: 1 };\n");
 git('add', '--force', 'src', 'App', 'config', 'Locales', 'modules', 'modules2',
   'node_modules', 'vendor', 'package-lock.json', 'assets', '.github');
 // Submodule gitlink (mode 160000) via plumbing — no real submodule needed.
 git('update-index', '--add', '--cacheinfo',
-  '160000,1234567890123456789012345678901234567890,libs/billing-sub');
+  '160000,1234567890123456789012345678901234567890,libs/analytics-sub');
 // Out-of-root symlink: target resolves outside the repo root.
 writeFileSync(join(outer, 'outside.txt'), 'outside\n');
 symlinkSync(join(outer, 'outside.txt'), join(repo, 'linked.txt'));
 git('add', 'linked.txt');
 // In-repo ABSOLUTE symlink: must never be flagged as a blind spot, even when
 // the survey root is itself reached through a symlink (/tmp -> /private/tmp).
-symlinkSync(join(repo, 'src/sports.ts'), join(repo, 'linked-in.txt'));
+symlinkSync(join(repo, 'src/tokens.ts'), join(repo, 'linked-in.txt'));
 git('add', 'linked-in.txt');
 
 test.after(() => rmSync(outer, { recursive: true, force: true }));
@@ -180,7 +180,7 @@ test('proposal round-trip: propose → persist → re-survey loses no files', ()
 
 test('unsurveyed: discloses the gitlink and the out-of-root symlink', () => {
   assert.deepEqual(map.unsurveyed, [
-    { path: 'libs/billing-sub', reason: 'submodule-gitlink' },
+    { path: 'libs/analytics-sub', reason: 'submodule-gitlink' },
     { path: 'linked.txt', reason: 'out-of-root-symlink' },
   ]);
 });
@@ -199,7 +199,7 @@ test('in-repo absolute symlinks are in-root even via a symlinked survey root', (
   try {
     const viaAlias = buildSurveyMap(alias);
     assert.deepEqual(viaAlias.unsurveyed, [
-      { path: 'libs/billing-sub', reason: 'submodule-gitlink' },
+      { path: 'libs/analytics-sub', reason: 'submodule-gitlink' },
       { path: 'linked.txt', reason: 'out-of-root-symlink' },
     ], 'in-repo symlink linked-in.txt falsely flagged as out-of-root');
   } finally {
@@ -209,7 +209,7 @@ test('in-repo absolute symlinks are in-root even via a symlinked survey root', (
 
 test('merge-stage duplicates collapse: one row per conflicted path', () => {
   // `git ls-files --stage` emits stages 1/2/3 for a conflicted path.
-  plant('conflict.ts', "export const conflictMarkets = ['spread'];\n");
+  plant('conflict.ts', "export const conflictPresets = ['web'];\n");
   const sha = git('hash-object', '-w', 'conflict.ts').trim();
   const info = [1, 2, 3].map((s) => `100644 ${sha} ${s}\tconflict.ts`).join('\n');
   const staged = spawnSync('git', ['-C', repo, 'update-index', '--index-info'], {
@@ -255,7 +255,7 @@ test('honor-it contract: a present scope file bounds the whole map', () => {
     // The same contract audit/reflect consume:
     const scope = loadSurveyScope(repo);
     assert.equal(scope.present, true);
-    assert.ok(inScope('src/sports.ts', scope));
+    assert.ok(inScope('src/tokens.ts', scope));
     assert.ok(!inScope('config/app.json', scope), 'not included');
     assert.ok(!inScope('vendor/lib.js', { ...scope, include: ['vendor'] }), 'exclude wins');
   } finally {
@@ -269,13 +269,13 @@ test('trailing-slash prefixes are normalized; "." matches root-level files only'
     const scoped = buildSurveyMap(repo);
     assert.deepEqual(scoped.scope.include, ['src'], 'trailing slash not normalized');
     assert.ok(scoped.counts.surveyed > 0, 'include: [src/] silently surveyed nothing');
-    assert.ok(scoped.candidates.some((c) => c.path === 'src/sports.ts'));
+    assert.ok(scoped.candidates.some((c) => c.path === 'src/tokens.ts'));
   } finally {
     rmSync(join(repo, SCOPE_FILE));
   }
   const dotScope = { present: true, include: ['.'], exclude: [] };
   assert.ok(inScope('package.json', dotScope), "'.' covers root-level files");
-  assert.ok(!inScope('src/sports.ts', dotScope), "'.' does not swallow subdirectories");
+  assert.ok(!inScope('src/tokens.ts', dotScope), "'.' does not swallow subdirectories");
 });
 
 test('a scope whose include matches zero tracked files is an engine failure', () => {
@@ -316,7 +316,7 @@ test('CLI --json: parseable stdout, exit 1 while blind spots exist', () => {
 });
 
 test('CLI: exit 0 on a repo with no blind spots; human mode summarizes', () => {
-  git('update-index', '--force-remove', 'libs/billing-sub', 'linked.txt');
+  git('update-index', '--force-remove', 'libs/analytics-sub', 'linked.txt');
   try {
     const result = run([repo]);
     assert.equal(result.status, 0, result.stderr);
@@ -324,7 +324,7 @@ test('CLI: exit 0 on a repo with no blind spots; human mode summarizes', () => {
     assert.match(result.stdout, /nothing unsurveyed/i);
   } finally {
     git('update-index', '--add', '--cacheinfo',
-      '160000,1234567890123456789012345678901234567890,libs/billing-sub');
+      '160000,1234567890123456789012345678901234567890,libs/analytics-sub');
     git('add', 'linked.txt');
   }
 });

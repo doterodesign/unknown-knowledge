@@ -19,7 +19,7 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const cliPath = join(repoRoot, 'payload', 'engine', 'log-entry.js');
 const tmpRoot = () => mkdtempSync(join(tmpdir(), 'kk13-'));
 
-const FINDING = { trigger: 'correction', summary: 'concept K-210 was stale per src/sports.ts' };
+const FINDING = { trigger: 'correction', summary: 'concept K-210 was stale per src/tokens.ts' };
 const MISS = { path: 'src/registry.generated.ts', shape: 'codegen output; values only in generator config' };
 const GAP = { summary: 'no skill routes retention analytics; nearest concept K-310' };
 const FIELDS = { findings: FINDING, misses: MISS, gaps: GAP };
@@ -361,18 +361,18 @@ test('CLI: creating the same accession-citing fragment twice is byte-stable', ()
 /** Query residue: the tokens no join consumed, with what DID resolve (UCS-1152). */
 const RESIDUE_FINDING = {
   trigger: 'retrieval-miss',
-  summary: 'residue from resolve: lacrosse unresolved',
-  residue: ['lacrosse'],
-  'resolved-context': ['add-sport', 'K-110', 'new-jersey'],
+  summary: 'residue from resolve: stencil unresolved',
+  residue: ['stencil'],
+  'resolved-context': ['add-token', 'K-110', 'eu-eaa'],
 };
 
 /** A ranked --doc candidate: the document's own residue, section-addressed. */
 const CANDIDATE_FINDING = {
   trigger: 'retrieval-miss',
-  summary: 'document candidate: parlay in docs/betting-rules.md',
-  residue: ['parlay'],
+  summary: 'document candidate: marquee in docs/theming-rules.md',
+  residue: ['marquee'],
   'resolved-context': ['K-110'],
-  section: { document: 'docs/betting-rules.md', address: 'Bet types', line: 42 },
+  section: { document: 'docs/theming-rules.md', address: 'Theme types', line: 42 },
 };
 
 test('CLI: residue and document candidates emit as valid finding fragments, exit 0', () => {
@@ -398,8 +398,8 @@ test('CLI: residue and document candidates emit as valid finding fragments, exit
 
 test('CLI: each emitted finding carries its resolved context; candidates carry the section locator', () => {
   // The acceptance criterion this ticket exists for. A bare unresolved token is
-  // a finding nobody can act on: `lacrosse` unresolved in an ask that DID
-  // resolve add-sport and new-jersey localizes the gap precisely enough that
+  // a finding nobody can act on: `stencil` unresolved in an ask that DID
+  // resolve add-token and eu-eaa localizes the gap precisely enough that
   // the minting decision writes itself.
   const root = tmpRoot();
 
@@ -407,8 +407,8 @@ test('CLI: each emitted finding carries its resolved context; candidates carry t
     'create', '--log', 'findings', '--date', '2026-08-16',
     '--entry', JSON.stringify(RESIDUE_FINDING),
   ], root).stdout);
-  assert.deepEqual(residue.entry.residue, ['lacrosse']);
-  assert.deepEqual(residue.entry['resolved-context'], ['add-sport', 'K-110', 'new-jersey'],
+  assert.deepEqual(residue.entry.residue, ['stencil']);
+  assert.deepEqual(residue.entry['resolved-context'], ['add-token', 'K-110', 'eu-eaa'],
     'the resolved context travels in written order, never reordered');
   // Query residue has no document to address, so it carries no locator.
   assert.equal(residue.entry.section, undefined);
@@ -446,13 +446,13 @@ test('UCS-1160 golden: the emitted fragment shape is byte-stable', () => {
     "date: '2026-08-16'",
     'status: open',
     'trigger: retrieval-miss',
-    "summary: 'residue from resolve: lacrosse unresolved'",
+    "summary: 'residue from resolve: stencil unresolved'",
     'residue:',
-    '  - lacrosse',
+    '  - stencil',
     'resolved-context:',
-    '  - add-sport',
+    '  - add-token',
     '  - K-110',
-    '  - new-jersey',
+    '  - eu-eaa',
     '',
   ].join('\n'));
 
@@ -461,14 +461,14 @@ test('UCS-1160 golden: the emitted fragment shape is byte-stable', () => {
     "date: '2026-08-16'",
     'status: open',
     'trigger: retrieval-miss',
-    "summary: 'document candidate: parlay in docs/betting-rules.md'",
+    "summary: 'document candidate: marquee in docs/theming-rules.md'",
     'residue:',
-    '  - parlay',
+    '  - marquee',
     'resolved-context:',
     '  - K-110',
     'section:',
-    '  document: docs/betting-rules.md',
-    '  address: Bet types',
+    '  document: docs/theming-rules.md',
+    '  address: Theme types',
     '  line: 42',
     '',
   ].join('\n'));
@@ -491,8 +491,8 @@ test('UCS-1160: residue findings take the ordinary lifecycle — reflect consoli
   assert.equal(entry.verified, '2026-08-18', 'resolving stamps the verified date');
   // The residue payload survived every transition — it is what the minting
   // decision cites, so losing it mid-lifecycle would strand the evidence.
-  assert.deepEqual(entry.residue, ['lacrosse']);
-  assert.deepEqual(entry['resolved-context'], ['add-sport', 'K-110', 'new-jersey']);
+  assert.deepEqual(entry.residue, ['stencil']);
+  assert.deepEqual(entry['resolved-context'], ['add-token', 'K-110', 'eu-eaa']);
 });
 
 test('UCS-1160: a section locator is line- OR page-addressed, and its shape is closed', () => {
@@ -511,8 +511,8 @@ test('UCS-1160: a section locator is line- OR page-addressed, and its shape is c
   // A locator with no document, or with a typo'd key, is a hard error — a
   // locator that sends a reader to the wrong lines is worse than no locator.
   for (const [why, section] of [
-    ['no document', { address: 'Bet types', line: 42 }],
-    ['typo key', { document: 'a.md', address: 'Bet types', lines: 42 }],
+    ['no document', { address: 'Theme types', line: 42 }],
+    ['typo key', { document: 'a.md', address: 'Theme types', lines: 42 }],
   ]) {
     const bad = runCli([
       'create', '--log', 'findings', '--date', '2026-08-16',
@@ -541,19 +541,19 @@ test('UCS-1160: a locator addresses EXACTLY ONE coordinate system — neither an
     '--entry', JSON.stringify({ ...CANDIDATE_FINDING, section }),
   ], root);
 
-  const neither = withSection({ document: 'docs/rules.md', address: 'Bet types' });
+  const neither = withSection({ document: 'docs/rules.md', address: 'Theme types' });
   assert.equal(neither.status, 2, 'a locator with no coordinate is refused');
   assert.match(neither.stderr, /locator-shape/);
   assert.match(neither.stderr, /a locator with neither cannot open the section it addresses/);
 
-  const both = withSection({ document: 'docs/rules.md', address: 'Bet types', line: 42, page: 7 });
+  const both = withSection({ document: 'docs/rules.md', address: 'Theme types', line: 42, page: 7 });
   assert.equal(both.status, 2, 'a locator with two coordinate systems is refused');
   assert.match(both.stderr, /locator-shape/);
   assert.match(both.stderr, /never both/);
 
   // And exactly one of each still passes — the rule refuses the two broken
   // shapes without narrowing the two real ones.
-  assert.equal(withSection({ document: 'docs/rules.md', address: 'Bet types', line: 42 }).status, 0);
+  assert.equal(withSection({ document: 'docs/rules.md', address: 'Theme types', line: 42 }).status, 0);
   assert.equal(withSection({ document: 'docs/handbook.pdf', address: 'Settlement', page: 7 }).status, 0);
 });
 

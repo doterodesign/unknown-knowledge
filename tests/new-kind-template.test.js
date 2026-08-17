@@ -132,7 +132,7 @@ test('descriptor example passes the shipped ontology-concept schema machinery', 
   // as the loader will at RE-RUN time.
   const record = {
     id: 'K-1',
-    term: 'supported sports',
+    term: 'supported formats',
     class: 'demo',
     summary: 'template demo concept carrying the example descriptor',
     status: 'draft',
