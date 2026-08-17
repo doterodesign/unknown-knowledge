@@ -81,10 +81,10 @@ test('A3 planted drift: exactly the tabulated findings, both directions, nothing
   assert.deepEqual(
     out.findings.map((f) => [f.concept, f.path, f.code, f.value ?? null]),
     [
-      ['K-110', 'enumerates[0]', 'source-value-missing', 'tennis'],
-      ['K-110', 'enumerates[0]', 'value-not-in-source', 'cricket'],
+      ['K-110', 'enumerates[0]', 'source-value-missing', 'comment'],
+      ['K-110', 'enumerates[0]', 'value-not-in-source', 'eyedropper'],
       ['K-150', 'enumerates[0]', 'source-value-missing', '2027-preview'],
-      ['K-160', 'enumerates[1]', 'value-not-in-source', 'cta.transfer'],
+      ['K-160', 'enumerates[1]', 'value-not-in-source', 'cta.publish'],
     ],
   );
 });

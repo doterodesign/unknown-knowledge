@@ -4,33 +4,33 @@
 schema-version: 1
 entries:
   - id: K-110
-    term: Sport
+    term: Canvas tool
     class: 100-app
-    summary: A bettable sport offered by the app (Swift case-name facet).
-    aliases: [sport type]
-    source-of-truth: [Sources/Sportsbook/Sport.swift]
-    owned-by: sportsbook
+    summary: A tool users can pick on the canvas (Swift case-name facet).
+    aliases: [tool type]
+    source-of-truth: [Sources/Canvas/CanvasTool.swift]
+    owned-by: canvas
     used-by: [K-120]
     confusable-with: [K-130]
     rationale: [D-001]
     status: active
     last-verified: "2026-07-01"
     enumerates:
-      # PLANTED BIDIRECTIONAL DRIFT (A3): "cricket" is claimed but absent
-      # from the enum (value-not-in-source); source case "tennis" is not
+      # PLANTED BIDIRECTIONAL DRIFT (A3): "eyedropper" is claimed but absent
+      # from the enum (value-not-in-source); source case "comment" is not
       # claimed here (source-value-missing).
       - kind: swift-enum
-        source: Sources/Sportsbook/Sport.swift
-        symbol: Sport
+        source: Sources/Canvas/CanvasTool.swift
+        symbol: CanvasTool
         emit: case-name
-        values: [football, basketball, baseball, iceHockey, soccer, cricket]
+        values: [select, frame, pen, textStyle, hand, eyedropper]
 
   - id: K-120
-    term: Sport wire code
+    term: Tool shortcut
     class: 100-app
-    summary: The upstream odds-feed code for a sport (Swift raw-value facet).
-    source-of-truth: [Sources/Sportsbook/Sport.swift]
-    owned-by: sportsbook
+    summary: The keyboard shortcut for a canvas tool (Swift raw-value facet).
+    source-of-truth: [Sources/Canvas/CanvasTool.swift]
+    owned-by: canvas
     confusable-with: [K-110]
     rationale: [D-001]
     status: active
@@ -39,17 +39,17 @@ entries:
       # CLEAN (A2): raw-value facet of the same anchor as K-110 — proves the
       # two swift-enum facets are independent value sets (§3.5 emit).
       - kind: swift-enum
-        source: Sources/Sportsbook/Sport.swift
-        symbol: Sport
+        source: Sources/Canvas/CanvasTool.swift
+        symbol: CanvasTool
         emit: raw-value
-        values: [NFL, NBA, MLB, NHL, EPL, ATP]
+        values: [V, F, P, T, H, C]
 
   - id: K-130
-    term: Betting market
+    term: Toolbar action
     class: 100-app
-    summary: A market type users can bet on (moneyline, spread, ...).
-    source-of-truth: [Sources/Sportsbook/Markets.swift]
-    owned-by: sportsbook
+    summary: A bulk action the selection toolbar can apply (align, tidy, ...).
+    source-of-truth: [Sources/Canvas/Actions.swift]
+    owned-by: canvas
     confusable-with: [K-110]
     status: active
     last-verified: "2026-07-01"
@@ -57,9 +57,9 @@ entries:
       # CLEAN (A2): matches the adversarial-but-extractable literal exactly —
       # commented-out entry excluded, decoy symbol untouched.
       - kind: swift-const-array
-        source: Sources/Sportsbook/Markets.swift
-        symbol: supportedMarkets
-        values: [moneyline, spread, totals, parlay, same_game_parlay, props]
+        source: Sources/Canvas/Actions.swift
+        symbol: supportedActions
+        values: [align, distribute, tidy, group, boolean_union, flatten]
 
   - id: K-140
     term: App configuration section
@@ -77,20 +77,20 @@ entries:
         values: [environment, api, regions, telemetry, "on"]
 
   - id: K-150
-    term: Betting feature flag
+    term: Canvas feature flag
     class: 100-app
-    summary: A rollout flag under the betting flag block.
+    summary: A rollout flag under the canvas flag block.
     source-of-truth: [Config/feature-flags.yaml]
     owned-by: platform
     status: active
     last-verified: "2026-07-01"
     enumerates:
       # PLANTED DRIFT (A3, source-value-missing): source also has
-      # "2027-preview" under flags.betting, unclaimed here.
+      # "2027-preview" under flags.canvas, unclaimed here.
       - kind: yaml-map-keys
         source: Config/feature-flags.yaml
-        symbol: flags.betting
-        values: [parlay-builder, cash-out, same-game-parlay]
+        symbol: flags.canvas
+        values: [vector-networks, auto-layout, component-props]
 
   - id: K-160
     term: Localization key
@@ -106,17 +106,17 @@ entries:
       # CLEAN (A2): .strings — commented-out pair excluded.
       - kind: strings-keys
         source: Resources/en.lproj/Localizable.strings
-        values: [welcome.title, welcome.subtitle, betslip.add, betslip.confirm]
-      # PLANTED DRIFT (A3, value-not-in-source): "cta.transfer" is claimed
+        values: [welcome.title, welcome.subtitle, editor.add, editor.confirm]
+      # PLANTED DRIFT (A3, value-not-in-source): "cta.publish" is claimed
       # but absent from the .xcstrings catalog.
       - kind: strings-keys
         source: Resources/Localizable.xcstrings
         values:
-          - cta.deposit
-          - cta.withdraw
-          - cta.transfer
+          - cta.share
+          - cta.export
+          - cta.publish
           - legal.disclaimer
-          - promo.100-bonus
+          - promo.100-templates
 
   - id: K-170
     term: Layout density
@@ -153,4 +153,4 @@ entries:
         source: Sources/Analytics/Events.swift
         symbol: AnalyticsEvent
         emit: raw-value
-        values: [app_open, bet_placed, session_end]
+        values: [app_open, file_published, session_end]

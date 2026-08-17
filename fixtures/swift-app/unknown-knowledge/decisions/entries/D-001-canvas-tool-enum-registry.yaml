@@ -2,17 +2,17 @@
 schema-version: 1
 entries:
   - id: D-001
-    title: Sports are registered as a raw-value Swift enum
+    title: Canvas tools are registered as a raw-value Swift enum
     category: architecture
     status: accepted
     date: "2026-07-01"
     deciders: [fixture-team]
     context: >
-      The app needs one registry for bettable sports; wire codes differ from
-      Swift identifiers.
+      The app needs one registry for canvas tools; keyboard shortcuts differ
+      from Swift identifiers.
     decision: >
-      Register sports as a raw-value String enum (Sport) so case names and
-      wire codes are two facets of one declaration.
+      Register tools as a raw-value String enum (CanvasTool) so case names and
+      shortcuts are two facets of one declaration.
     supersedes: []
     superseded-by: []
     relates-to: { concepts: [K-110, K-120], leaves: [], decisions: [] }

@@ -17,18 +17,18 @@ Every Swift-relevant MVP kind (§5.1 / KK-09) has at least one clean anchor.
 
 | Kind | Anchor | Concept / descriptor | Expected value set |
 |---|---|---|---|
-| `swift-enum` (emit: `case-name`) | `Sources/Sportsbook/Sport.swift:12-20`, symbol `Sport` | K-110 | `football, basketball, baseball, iceHockey, soccer, tennis` |
-| `swift-enum` (emit: `raw-value`) | same anchor | K-120 | `NFL, NBA, MLB, NHL, EPL, ATP` |
-| `swift-const-array` | `Sources/Sportsbook/Markets.swift:9-16`, symbol `supportedMarkets` | K-130 | `moneyline, spread, totals, parlay, same_game_parlay, props` |
+| `swift-enum` (emit: `case-name`) | `Sources/Canvas/CanvasTool.swift:12-20`, symbol `CanvasTool` | K-110 | `select, frame, pen, textStyle, hand, comment` |
+| `swift-enum` (emit: `raw-value`) | same anchor | K-120 | `V, F, P, T, H, C` |
+| `swift-const-array` | `Sources/Canvas/Actions.swift:9-16`, symbol `supportedActions` | K-130 | `align, distribute, tidy, group, boolean_union, flatten` |
 | `swift-const-array` | `Sources/Settings/Theme.swift:9`, symbol `themeNames` | K-170 (wrong-pointer, §3) | `light, dark, system` |
 | `yaml-keys` | `Config/app-config.yaml` (top level: lines 7, 10, 14, 18, 22) | K-140 | `environment, api, regions, telemetry, on` |
-| `yaml-map-keys` | `Config/feature-flags.yaml:11-14`, path `flags.betting` | K-150 | `parlay-builder, cash-out, same-game-parlay, 2027-preview` |
-| `strings-keys` (.strings) | `Resources/en.lproj/Localizable.strings:7,8,13,14` | K-160 desc 1 | `welcome.title, welcome.subtitle, betslip.add, betslip.confirm` |
-| `strings-keys` (.xcstrings) | `Resources/Localizable.xcstrings:4,9,14,20` | K-160 desc 2 | `cta.deposit, cta.withdraw, legal.disclaimer, promo.100-bonus` |
+| `yaml-map-keys` | `Config/feature-flags.yaml:11-14`, path `flags.canvas` | K-150 | `vector-networks, auto-layout, component-props, 2027-preview` |
+| `strings-keys` (.strings) | `Resources/en.lproj/Localizable.strings:7,8,13,14` | K-160 desc 1 | `welcome.title, welcome.subtitle, editor.add, editor.confirm` |
+| `strings-keys` (.xcstrings) | `Resources/Localizable.xcstrings:4,9,14,20` | K-160 desc 2 | `cta.share, cta.export, legal.disclaimer, promo.100-templates` |
 
 Uncovered-by-design anchors (survey-candidate material, no concept points at
-them): `SportGroup` enum (`Sources/Sportsbook/Sport.swift:38-41`),
-`retiredMarkets` (`Sources/Sportsbook/Markets.swift:20`), `core`
+them): `ToolGroup` enum (`Sources/Canvas/CanvasTool.swift:38-41`),
+`retiredActions` (`Sources/Canvas/Actions.swift:20`), `core`
 (`Sources/Payments/Providers.swift:7`), `flags.account`
 (`Config/feature-flags.yaml:15-17`).
 
@@ -38,10 +38,10 @@ Concept store: `unknown-knowledge/ontology/classes/100-app.yaml`.
 
 | Concept | Descriptor | Planted case | Expected finding |
 |---|---|---|---|
-| K-110 | `swift-enum` case-name on `Sport` | claims `cricket`; no such case exists | `value-not-in-source`: `cricket` |
-| K-110 | same | source case `tennis` (`Sport.swift:20`) is unclaimed | `source-value-missing`: `tennis` |
-| K-150 | `yaml-map-keys` on `flags.betting` | source key `2027-preview` (`feature-flags.yaml:14`) is unclaimed | `source-value-missing`: `2027-preview` |
-| K-160 | `strings-keys` on `Localizable.xcstrings` | claims `cta.transfer`; no such key exists | `value-not-in-source`: `cta.transfer` |
+| K-110 | `swift-enum` case-name on `CanvasTool` | claims `eyedropper`; no such case exists | `value-not-in-source`: `eyedropper` |
+| K-110 | same | source case `comment` (`CanvasTool.swift:20`) is unclaimed | `source-value-missing`: `comment` |
+| K-150 | `yaml-map-keys` on `flags.canvas` | source key `2027-preview` (`feature-flags.yaml:14`) is unclaimed | `source-value-missing`: `2027-preview` |
+| K-160 | `strings-keys` on `Localizable.xcstrings` | claims `cta.publish`; no such key exists | `value-not-in-source`: `cta.publish` |
 
 Both directions are covered twice (value-not-in-source: K-110, K-160;
 source-value-missing: K-110, K-150) and K-110 drifts both ways at once.
@@ -67,20 +67,20 @@ descriptor-pointed hard-error path; U2/U3 cover the survey/miss-log path).
 
 | # | Shape | Location | Trap for a naive parser | Correct result |
 |---|---|---|---|---|
-| S1 | comment between cases containing the word `case` | `Sport.swift:14-15` | comment counted as a case | ignored |
-| S2 | aligned `=` padding | `Sport.swift:17-18` | raw-value regex anchored to `` = " `` exactly | `baseball`/`MLB`, `iceHockey`/`NHL` extracted |
-| S3 | trailing comment with a stray `"` quote | `Sport.swift:19` | quote counting breaks | `soccer`/`EPL` extracted |
-| S4 | `switch self` arms `case .football:` inside the enum body | `Sport.swift:25-32` | pattern-match `case`s counted as declarations | not values |
-| S5 | decoy sibling enum `SportGroup` in the same file | `Sport.swift:38-41` | symbol scoping ignored | `team`/`individual` never bleed into `Sport` |
-| S6 | commented-out array entry `// "teaser"` | `Markets.swift:12` | string literal inside a comment extracted | excluded |
-| S7 | two values on one line + trailing comma | `Markets.swift:14-15` | one-value-per-line assumption | `parlay` and `same_game_parlay` both extracted |
-| S8 | decoy sibling array `retiredMarkets` | `Markets.swift:20` | symbol scoping ignored | `pleaser` never bleeds in |
+| S1 | comment between cases containing the word `case` | `CanvasTool.swift:14-15` | comment counted as a case | ignored |
+| S2 | aligned `=` padding | `CanvasTool.swift:17-18` | raw-value regex anchored to `` = " `` exactly | `pen`/`P`, `textStyle`/`T` extracted |
+| S3 | trailing comment with a stray `"` quote | `CanvasTool.swift:19` | quote counting breaks | `hand`/`H` extracted |
+| S4 | `switch self` arms `case .select:` inside the enum body | `CanvasTool.swift:25-32` | pattern-match `case`s counted as declarations | not values |
+| S5 | decoy sibling enum `ToolGroup` in the same file | `CanvasTool.swift:38-41` | symbol scoping ignored | `pointer`/`drawing` never bleed into `CanvasTool` |
+| S6 | commented-out array entry `// "outline_stroke"` | `Actions.swift:12` | string literal inside a comment extracted | excluded |
+| S7 | two values on one line + trailing comma | `Actions.swift:14-15` | one-value-per-line assumption | `group` and `boolean_union` both extracted |
+| S8 | decoy sibling array `retiredActions` | `Actions.swift:20` | symbol scoping ignored | `explode` never bleeds in |
 | S9 | nested maps + YAML anchor/alias (`&api-defaults`, `<<:`) | `app-config.yaml:10-21` | nested keys or merge keys counted as top-level | only the 5 top-level keys |
 | S10 | quoted `"on"` top-level key | `app-config.yaml:22` | YAML 1.1 coercion → boolean `true` (§3.5 trap) | string `on`; concept quotes it |
-| S11 | sibling map `flags.account` + quoted digit-leading key `"2027-preview"` | `feature-flags.yaml:14-17` | dotted-path scoping ignored; key coerced | only `flags.betting` keys; `2027-preview` as string |
+| S11 | sibling map `flags.account` + quoted digit-leading key `"2027-preview"` | `feature-flags.yaml:14-17` | dotted-path scoping ignored; key coerced | only `flags.canvas` keys; `2027-preview` as string |
 | S12 | `=` inside a .strings value | `Localizable.strings:8` | split-on-`=` grabs the wrong side | key `welcome.subtitle` |
 | S13 | commented-out .strings pair | `Localizable.strings:10` | comment extracted | `welcome.legacy` excluded |
-| S14 | escaped quotes `\"` inside a .strings value | `Localizable.strings:14` | quote counting breaks | key `betslip.confirm` |
+| S14 | escaped quotes `\"` inside a .strings value | `Localizable.strings:14` | quote counting breaks | key `editor.confirm` |
 | S15 | `.xcstrings` value containing the token `"strings" :` | `Localizable.xcstrings:14-18` | regex-level key scrape matches inside values | only the 4 top-level `strings` keys |
 
 ## 6. Store summary

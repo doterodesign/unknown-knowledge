@@ -328,10 +328,10 @@ criterion('A3', [
       '--concepts', 'K-110,K-150,K-160');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code, f.value ?? null]), [
-      ['K-110', 'source-value-missing', 'tennis'],
-      ['K-110', 'value-not-in-source', 'cricket'],
+      ['K-110', 'source-value-missing', 'comment'],
+      ['K-110', 'value-not-in-source', 'eyedropper'],
       ['K-150', 'source-value-missing', '2027-preview'],
-      ['K-160', 'value-not-in-source', 'cta.transfer'],
+      ['K-160', 'value-not-in-source', 'cta.publish'],
     ]);
   }],
   ['swift-app: wrong-pointer signature (K-170: all claimed values missing from a real, parseable file) — one finding, no cascade', () => {
@@ -419,7 +419,7 @@ criterion('A3', [
 // PRD §10 A4 — "Resolution works: fixture queries → expected ranked concepts;
 // confusable-with surfaced; CLI exit codes correct."
 const A4_QUERIES = {
-  'swift-app': { query: 'sport', top: 'K-110', confusable: 'K-130' },
+  'swift-app': { query: 'canvas tool', top: 'K-110', confusable: 'K-130' },
   'ts-app': { query: 'export format', top: 'K-101', confusable: 'K-113' },
 };
 criterion('A4', FIXTURES.flatMap((app) => {
@@ -471,8 +471,8 @@ const PLANTED_ANCHORS = {
   // FIXTURE.md §1 (swift-app) / A2 table (ts-app): every planted anchor a
   // concept points at must appear in the survey-map candidate list.
   'swift-app': [
-    ['swift-enum', 'Sources/Sportsbook/Sport.swift'],
-    ['swift-const-array', 'Sources/Sportsbook/Markets.swift'],
+    ['swift-enum', 'Sources/Canvas/CanvasTool.swift'],
+    ['swift-const-array', 'Sources/Canvas/Actions.swift'],
     ['swift-const-array', 'Sources/Settings/Theme.swift'],
     ['yaml-keys', 'Config/app-config.yaml'],
     ['yaml-map-keys', 'Config/feature-flags.yaml'],

@@ -4,19 +4,19 @@ schema-version: 1
 store: ontology
 entries:
   - id: K-110
-    title: Sport
+    title: Canvas tool
     file: classes/100-app.yaml
   - id: K-120
-    title: Sport wire code
+    title: Tool shortcut
     file: classes/100-app.yaml
   - id: K-130
-    title: Betting market
+    title: Toolbar action
     file: classes/100-app.yaml
   - id: K-140
     title: App configuration section
     file: classes/100-app.yaml
   - id: K-150
-    title: Betting feature flag
+    title: Canvas feature flag
     file: classes/100-app.yaml
   - id: K-160
     title: Localization key

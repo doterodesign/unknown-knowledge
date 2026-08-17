@@ -4,11 +4,11 @@
    extracted. */
 
 /* Onboarding */
-"welcome.title" = "Welcome to FixtureBook";
-"welcome.subtitle" = "Odds = opportunity"; /* '=' inside the value */
+"welcome.title" = "Welcome to FixtureCanvas";
+"welcome.subtitle" = "Design = iteration"; /* '=' inside the value */
 
 // "welcome.legacy" = "Old copy"; — commented-out pair, not a key
 
-/* Bet slip */
-"betslip.add" = "Add to bet slip";
-"betslip.confirm" = "Tap \"Place bet\" to confirm"; // escaped quotes in value
+/* Editor */
+"editor.add" = "Add to canvas";
+"editor.confirm" = "Tap \"Insert\" to confirm"; // escaped quotes in value

@@ -8,12 +8,12 @@ environment: production
 
 # Nested block: `base-url` / `timeout-seconds` are NOT top-level keys.
 api: &api-defaults
-  base-url: https://api.fixturebook.example
+  base-url: https://api.fixturecanvas.example
   timeout-seconds: 30
 
 regions:
-  - us-nj
-  - us-pa
+  - us-east
+  - eu-west
 
 telemetry:
   <<: *api-defaults

@@ -7,7 +7,7 @@ import Foundation
 /// shape to logs/misses/. Concept K-180 points here on purpose.
 enum AnalyticsEvent: String {
     case appOpen = "app_open"
-    case betPlaced = "bet_placed"
+    case filePublished = "file_published"
     #if DEBUG
     case debugMenuOpened = "debug_menu_opened"
     #endif
