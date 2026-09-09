@@ -104,18 +104,23 @@ previous npx download cannot satisfy the command. Substitute the released
 version for `2.1.0` on later releases:
 
 ```sh
+(
 release_probe=$(mktemp -d)
+export npm_config_cache="$release_probe/cache"
+export npm_config_registry=https://registry.npmjs.org/
 mkdir "$release_probe/repo"
 git -C "$release_probe/repo" init
 cd "$release_probe/repo"
-npm_config_cache="$release_probe/cache" npx --yes unknown-knowledge@2.1.0 init --yes
+npx --yes unknown-knowledge@2.1.0 init --yes
 npm install --save-dev js-yaml
 node unknown-knowledge/engine/validate.js --root unknown-knowledge
 npm view unknown-knowledge@2.1.0 version dist.attestations --json
+npm pack unknown-knowledge@2.1.0
+)
 ```
 
 Confirm `unknown-knowledge/kit.manifest.yaml` records the expected kit
-version, the wrapper exists, and LICENSE/NOTICE were seeded. Download the
-registry tarball with `npm pack unknown-knowledge@2.1.0`, inspect its contents,
+version, the wrapper exists, and LICENSE/NOTICE were seeded. Inspect the
+registry tarball downloaded by `npm pack` above,
 and verify the provenance statement identifies this repository, tag, and
 publish workflow. Only then close the release issue.
