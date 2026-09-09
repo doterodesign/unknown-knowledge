@@ -19,16 +19,20 @@ before the first publish:
    Authentication → require 2FA for both authorization and writes. After the
    first publish, additionally set the package's publishing access to
    "Require two-factor authentication or an automation token".
-3. **Restrict publish access to the org.** Package Settings → Publishing
-   access: limit maintainers to the `unknown-creatives` org; no individual
-   accounts outside it.
+3. **Verify package maintainers after publication.** The signed-in npm
+   account for this release is `unknown-creatives-studio`. Confirm it owns
+   `unknown-knowledge` with `npm owner ls unknown-knowledge`; do not add
+   unrelated owners. The `unknown-creatives` org reservation is a separate
+   brand-protection check and does not by itself grant package access.
 4. **Re-verify name availability at publish time.** D-017's availability
    check is a point-in-time fact from 2026-07-08 — confirm `unknown-knowledge`
    is still unpublished immediately before the first release.
 5. **Authenticate the first publish.** Before the package exists, its npm
    settings cannot hold a trusted-publisher configuration. Provision a
    short-lived granular token with the minimum permissions npm permits for
-   creating this unscoped package, and store it as the `NPM_TOKEN` secret in
+   creating this unscoped package. The bootstrap token must permit writes
+   and have **Bypass 2FA** enabled: a GitHub Actions job cannot answer an OTP.
+   Keep account 2FA enabled. Store the token as the `NPM_TOKEN` secret in
    `doterodesign/unknown-knowledge`. Never paste a token into an issue, PR, or
    release log. Confirm its expiry and publishing permissions before tagging.
 6. **After the first publish, configure Trusted Publishing.** In the npm

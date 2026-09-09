@@ -6,8 +6,8 @@
 #
 # Manual account-side prerequisites (documented in docs/publishing.md,
 # cannot be performed from this repo): npm publish 2FA enabled, publish
-# access restricted to the `unknown-creatives` org, org reservation
-# verified, and an automation token or trusted-publisher config in place.
+# maintainers verified, org reservation checked, and a bootstrap token
+# or trusted-publisher config in place.
 name: Publish
 
 on:
