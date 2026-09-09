@@ -19,10 +19,9 @@
  * the copilot platform.
  *
  * npx-ability: package.json maps bin "unknown-knowledge" → this file. The
- * package stays `private: true` until the first release (the publish guard,
- * docs/publishing.md) — until then, run locally via `node cli/init.js init`
- * (or `npm link` and `unknown-knowledge init`); the real
- * `npx unknown-knowledge init` works post-publish.
+ * is published through GitHub Actions with provenance (docs/publishing.md).
+ * For local development, run `node cli/init.js init`; release verification
+ * runs `npx unknown-knowledge@<version> init` from a fresh npm cache.
  *
  * Exit codes (same contract as cli/init-copy.js):
  *   0 — seeded clean. Wrapper skips and gitignore WARNs are reported

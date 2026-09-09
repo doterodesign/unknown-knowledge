@@ -24,9 +24,6 @@ Then run `/knowledge-bootstrap` in your coding agent. Phase 2 surveys the repo,
 proposes Anchor candidates, and you approve each Concept. Nothing is captured
 automatically — a fact nobody approved is a fact nobody checked.
 
-> Until `1.0.0` is published to npm, install straight from the repo:
-> `npx -y github:doterodesign/unknown-knowledge init`
-
 ## What you get
 
 Three governed YAML stores, split by **truth anchor** — who is allowed to say a

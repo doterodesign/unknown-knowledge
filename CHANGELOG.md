@@ -13,6 +13,19 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+## [2.1.0] - 2026-09-09
+
+### Added
+
+- npm release preparation (UCS-955): remove the private publish guard and
+  use an OIDC-capable npm CLI in the provenance-enabled publish workflow.
+
+### Security
+
+- Raise the `js-yaml` dependency floor to 5.4.1 and refresh the lockfile,
+  excluding versions affected by GHSA-pm4m-ph32-ghv5 (exponential parsing
+  time in nested flow collections).
+
 ### Changed
 
 - Acceptance fixture world: design-studio domain, new fixture vintage. The
