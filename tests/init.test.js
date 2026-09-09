@@ -276,13 +276,13 @@ test('D-006: init never writes CI config — no .github/workflows anywhere, and 
 
 // ------------------------------------------------------ npx packaging (bin)
 
-test('package.json: bin maps unknown-knowledge → cli/init.js; files allowlist ships cli/ + payload/ + license artifacts; private guard stays on', () => {
+test('package.json: bin maps unknown-knowledge → cli/init.js; files allowlist ships cli/ + payload/ + license artifacts; release is publishable', () => {
   const pkg = JSON.parse(readFileSync(join(kitRoot, 'package.json'), 'utf8'));
   assert.deepEqual(pkg.bin, { 'unknown-knowledge': 'cli/init.js' });
   assert.deepEqual(pkg.files, ['cli/', 'payload/', 'LICENSE', 'NOTICE', 'README.md'],
     'publish allowlist: the kit\'s fixtures/, tests/, acceptance/ never ship (D-007 posture)');
-  assert.equal(pkg.private, true,
-    'private stays true until the first release — flipping it is a release decision (docs/publishing.md)');
+  assert.notEqual(pkg.private, true,
+    'UCS-955: the first npm release deliberately removes the private guard');
 });
 
 // --------------------------------------------- runtime-dependency preflight

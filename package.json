@@ -1,7 +1,6 @@
 {
   "name": "unknown-knowledge",
-  "version": "2.0.0",
-  "private": true,
+  "version": "2.1.0",
   "description": "Free OSS kit that stands up self-improving knowledge-base + ontology structures in any codebase: three governed YAML stores, a deterministic engine, and an agent protocol.",
   "license": "Apache-2.0",
   "repository": {
@@ -32,6 +31,6 @@
     "acceptance": "node acceptance/run.js"
   },
   "dependencies": {
-    "js-yaml": "^5.2.1"
+    "js-yaml": "^5.4.1"
   }
 }

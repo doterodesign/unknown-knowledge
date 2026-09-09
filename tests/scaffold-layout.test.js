@@ -41,7 +41,7 @@ test('package.json follows D-022 / D-016 conventions', () => {
   const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   assert.equal(pkg.name, 'unknown-knowledge', 'D-016/D-018: bare name is canonical');
   assert.equal(pkg.type, 'module', 'D-022: plain ES modules, zero build step');
-  assert.equal(pkg.private, true, 'publishing is KK-28');
+  assert.notEqual(pkg.private, true, 'UCS-955: the release must be publishable');
   // Was pinned to '0.0.0' with the note "version policy lands with KK-28".
   // It has landed (D-021), so pin the POLICY rather than a frozen literal: a
   // released semver version, never the placeholder. The version stamp seeded
