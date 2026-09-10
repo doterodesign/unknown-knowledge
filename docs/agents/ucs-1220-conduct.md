@@ -51,5 +51,5 @@ synthetic local sources. Added `missing-stage` and `missing-date` variants alter
 only controlled fixture metadata. Dependencies are runtime inputs excluded by
 the generated `.gitignore`; they are not committed evidence. The existing
 complete-evidence-set protocol and platform wrappers are retained. See the
-walkthrough report for actual runs, traces and limitations; static assertions
+[walkthrough report](ucs-1220-walkthrough.md) for actual runs, traces and limitations; static assertions
 about prompt wording do not count as agent trials.

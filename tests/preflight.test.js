@@ -335,13 +335,19 @@ test('a legacy missing-stage leaf remains inspectable but cannot establish trust
 
 // `supply-verified-date` is a defensive fallback: currently the structural
 // missing/malformed-date finding takes precedence and emits repair-evidence.
-for (const [name, stage, extra, status, verdict, reason, time] of [
-  ['missing stage with stale age', null, {}, 2, 'unknown', /missing review stage/, 'stale'],
-  ['missing stage with static age exemption', null, { volatility: 'static' }, 2, 'unknown', /missing review stage/, 'trusted'],
-  ['missing stage with no time governance', null, { volatility: null }, 2, 'unknown', /missing review stage/, 'exempt'],
-  ['draft with stale age', 'draft', {}, 2, 'unknown', /stage "draft".*pre-promotion/, 'stale'],
-  ['proposed with stale age', 'proposed', {}, 2, 'unknown', /stage "proposed".*pre-promotion/, 'stale'],
-  ['missing stage with missing verification date', null, { verified: null }, 1, 'quarantined', /error-severity/, 'undated'],
+for (const { name, stage, extra = {}, status, verdict, reason, time } of [
+  { name: 'missing stage with stale age', stage: null,
+    status: 2, verdict: 'unknown', reason: /missing review stage/, time: 'stale' },
+  { name: 'missing stage with static age exemption', stage: null, extra: { volatility: 'static' },
+    status: 2, verdict: 'unknown', reason: /missing review stage/, time: 'trusted' },
+  { name: 'missing stage with no time governance', stage: null, extra: { volatility: null },
+    status: 2, verdict: 'unknown', reason: /missing review stage/, time: 'exempt' },
+  { name: 'draft with stale age', stage: 'draft',
+    status: 2, verdict: 'unknown', reason: /stage "draft".*pre-promotion/, time: 'stale' },
+  { name: 'proposed with stale age', stage: 'proposed',
+    status: 2, verdict: 'unknown', reason: /stage "proposed".*pre-promotion/, time: 'stale' },
+  { name: 'missing stage with missing verification date', stage: null, extra: { verified: null },
+    status: 1, verdict: 'quarantined', reason: /error-severity/, time: 'undated' },
 ]) {
   test(`review and freshness precedence through the CLI: ${name}`, (t) => {
     const root = mkdtempSync(join(tmpdir(), 'preflight-review-'));
