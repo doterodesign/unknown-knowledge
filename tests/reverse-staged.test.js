@@ -238,3 +238,27 @@ test('an initial staged commit has candidate attribution and no invented before 
   assert.equal(records.before, undefined);
   assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['K-101']);
 });
+
+test('copy attribution is independent of the local Git rename limit', (t) => {
+  const { git, write, commit, run } = setup(t);
+  for (let i = 0; i < 4; i += 1) {
+    write(`src/original-${i}.ts`, Array.from({ length: 100 }, (_, n) => `source ${i} line ${n}\n`).join(''));
+  }
+  write(conceptFile, concept('src/original-0.ts'));
+  assert.equal(commit().status, 0);
+  for (let i = 0; i < 4; i += 1) {
+    write(`src/copied-${i}.ts`, Array.from({ length: 100 }, (_, n) => n < 90 ? `source ${i} line ${n}\n` : `changed ${i} line ${n}\n`).join(''));
+  }
+  assert.equal(git('add', '-A').status, 0);
+  assert.equal(git('config', 'diff.renameLimit', '1').status, 0);
+  const low = run('sh', ['unknown-knowledge/hooks/reverse-lookup']);
+  assert.equal(git('config', 'diff.renameLimit', '999').status, 0);
+  const high = run('sh', ['unknown-knowledge/hooks/reverse-lookup']);
+  assert.equal(low.status, 0, low.stderr);
+  assert.equal(high.status, 0, high.stderr);
+  assert.equal(low.stdout, high.stdout, 'identical trees must have identical attribution');
+  assert.equal(git('config', 'diff.renameLimit', '1').status, 0);
+  const result = git('commit', '-qm', 'copy attribution with local limit');
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.deepEqual(attribution(result).before.paths.find((p) => p.path === 'src/original-0.ts').concepts.map((c) => c.id), ['K-101']);
+});

@@ -113,6 +113,7 @@ test('the Engine term names every shipped engine surface', () => {
   const prose = {
     validate: 'structural validator',
     'commit-check': 'commit gate',
+    'reverse-staged': 'staged attribution',
     'validate-values': 'value validator',
     preflight: 'preflight',
     resolve: 'resolver',

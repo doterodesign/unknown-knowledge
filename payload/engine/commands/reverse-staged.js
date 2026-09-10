@@ -1,6 +1,6 @@
 /** Informational attribution of the proposed commit and its prior governance. */
 import process from 'node:process';
-import { parseArgs, runCli } from '../lib/cli.js';
+import { parseArgs as parseFlags, runCli } from '../lib/cli.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { withCommitSnapshot } from '../lib/commit-snapshot.js';
 
@@ -8,7 +8,7 @@ export const USAGE = 'usage: reverse-staged [--root <repo-root>]';
 
 /** @param {string[]} argv @returns {Promise<number>} */
 export async function main(argv) {
-  const { options } = parseArgs(argv, { value: ['root'] });
+  const { options } = parseFlags(argv, { value: ['root'] });
   return withCommitSnapshot(options.root ?? process.cwd(), async ({ candidate, before, changedPaths }) => {
     const paths = changedPaths();
     if (!paths.length) return EXIT_CODES.CLEAN;

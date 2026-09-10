@@ -52,7 +52,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Eleven command-line surfaces. JavaScript with JSDoc types, zero build step, one
+Twelve command-line surfaces. JavaScript with JSDoc types, zero build step, one
 dependency (D-022).
 
 | Command | Answers |
@@ -123,7 +123,10 @@ is clean or has findings. Both checks always run over the whole store (D-012).
 Reverse lookup is advisory attribution; its results never restrict validation
 or prove that the agent updated the store. It reads NUL-delimited Git records
 and includes additions, modifications, type changes, deletions and both paths
-of detected copies and renames. Each complete path is passed to the resolver
+of detected copies and renames. Detection uses 50% similarity and a fixed
+1000-candidate exhaustive-search limit; above it, Git may report additions and
+deletions instead of a rename/copy relationship. Local Git limits cannot
+change these settings. Each complete path is passed to the resolver
 with `--path=value`, preserving spaces, commas, quotes, tabs and newlines.
 
 Attribution prints a `staged attribution: candidate <tree-id>` section followed

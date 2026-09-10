@@ -72,7 +72,9 @@ export async function withCommitSnapshot(repoRoot, check, { skipUnchanged = fals
     const changedPaths = () => {
       if (pathsCache) return pathsCache;
       const base = beforeTree ?? git(['hash-object', '-w', '-t', 'tree', '--stdin']).toString().trim();
-      const bytes = git(['diff-tree', '--no-commit-id', '--name-status', '-r', '-z', '--no-ext-diff', '--no-textconv', '--find-renames', '--find-copies', '--find-copies-harder', base, tree, '--']);
+      // Pin similarity and exhaustive-search limits: host diff.renameLimit
+      // must not change the path set for the same immutable trees.
+      const bytes = git(['diff-tree', '--no-commit-id', '--name-status', '-r', '-z', '--no-ext-diff', '--no-textconv', '--find-renames=50%', '--find-copies=50%', '--find-copies-harder', '-l1000', base, tree, '--']);
       const text = bytes.toString();
       if (!Buffer.from(text).equals(bytes)) throw new Error('snapshot: non-UTF-8 changed paths cannot be attributed faithfully');
       if (text && !text.endsWith('\0')) throw new Error('snapshot: incomplete Git change records');

@@ -173,7 +173,10 @@ not run it. Preserve your existing hooks and call it explicitly from an event
 hook when using that configuration.
 
 The engine parses NUL-delimited Git status/path records, including deletions
-and both paths of detected renames and copies. It passes complete filenames
+and both paths of detected renames and copies. Detection uses 50% similarity
+and a fixed 1000-candidate exhaustive-search limit. Beyond it, Git may emit
+additions/deletions instead of rename/copy relationships; whole-store checks
+remain authoritative. It passes complete filenames
 to the resolver as repeated `--path=value` arguments, with no shell expansion.
 It prints `staged attribution: candidate <tree-id>` followed by resolver JSON,
 then a `before <tree-id>` section when HEAD exists. Both sections attribute the
