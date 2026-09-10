@@ -102,12 +102,24 @@ shipped CI default.
 
 ## Hooks — the protocol, enforced mechanically
 
-Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs the blocking
-validator before a commit exists, and `reverse-lookup` runs the `--paths`
+Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs both whole-store
+validators through `engine/commit-check.js` before a commit exists, and `reverse-lookup` runs the `--paths`
 lookup over your staged diff, so the knowledge governing the files you touched
 surfaces without anyone remembering to ask. Each is a thin wrapper — it invokes
 one engine command and exits with its code, unchanged — and neither reads a
 bypass variable, because a hook with an off switch enforces nothing.
+
+The gate reports each check by name. It exits 0 only when both checks pass;
+findings exit 1, and a failed or never-run check exits 2 even if the other check
+is clean or has findings. Both checks always run over the whole store (D-012).
+Reverse lookup is advisory attribution; its results never restrict validation.
+These lexical checks detect store and vocabulary drift. Application behavior
+remains the application's test suite's responsibility.
+
+**Current limitation:** the gate reads the working tree, not an isolated staged
+snapshot. It does not provide partial-staging safety: unstaged repairs can hide
+invalid staged content, and unstaged defects can block valid staged content.
+Installed-hook behavior is covered by real Git commit tests in the kit.
 
 They **seed but do not install**: `init` never writes `.git/`, so wiring them is
 your act, not the kit's. Git runs a hook only if it is executable, and the copy

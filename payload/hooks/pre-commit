@@ -8,11 +8,8 @@
 # Protocol compliance is a property of the mechanism, not of agent
 # obedience: the same validator CI runs, run before the commit exists.
 #
-# Not a test seam. The tested surface is the wrapped command
-# (`engine/validate.js`, tests/validate.test.js); testing it IS testing
-# this hook, because this file adds nothing to test. Wiring is reviewed
-# the way the per-IDE wrappers are — read it once, confirm it is a
-# pointer, and trust the command it points at.
+# Installed-hook behavior is exercised with real Git commits in
+# tests/commit-gate.test.js; command tests alone do not prove the wiring.
 #
 # Wire it (the client's own git config — the kit never writes .git/):
 #   ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
@@ -20,10 +17,13 @@
 # opts in: seeding a hook is not installing one.
 #
 # Exit codes are the engine's, propagated verbatim (PRD §5):
-#   0 — the store is structurally sound; the commit proceeds.
+#   0 — both whole-store validators are clean; the commit proceeds.
 #   1 — the check ran and found something; the commit is refused.
 #   2 — the check never ran; the commit is refused. A check that never
 #       ran is a blocking defect, never a silent pass.
+#
+# This gate currently reads the working tree, not an isolated Git index.
+# Partial-staging safety is not provided by this version.
 #
 # KIT_DIR names the seeded root when it is not the default; UK_ROOT names
 # the repo root when the hook runs from elsewhere. Both are location
@@ -33,5 +33,5 @@ set -u
 KIT_DIR="${KIT_DIR:-unknown-knowledge}"
 UK_ROOT="${UK_ROOT:-.}"
 
-node "$UK_ROOT/$KIT_DIR/engine/validate.js" --root "$UK_ROOT"
+node "$UK_ROOT/$KIT_DIR/engine/commit-check.js" --root "$UK_ROOT"
 exit $?

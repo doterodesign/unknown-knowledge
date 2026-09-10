@@ -59,6 +59,7 @@ const ARGV = {
 /** Surfaces that can legitimately return exit 1, and why. */
 const EMITS_FINDINGS = new Set([
   'payload/engine/validate.js', // structural findings
+  'payload/engine/commit-check.js', // findings from either whole-store validator
   'payload/engine/validate-values.js', // value findings
   'payload/engine/preflight.js', // quarantined concepts
   'payload/engine/audit.js', // findings, under the human opt-in only

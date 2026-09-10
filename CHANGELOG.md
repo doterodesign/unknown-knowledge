@@ -18,6 +18,15 @@ dates are recorded at release time, never retroactively.
 - Importable Verdict computation in `engine/lib/verdicts.js` (UCS-947),
   including store-wide degradation and leaf/time verdicts. Preflight uses
   the library with unchanged output, exit codes, and logging behavior.
+- `engine/commit-check.js` runs both whole-store validators with named
+  diagnostics and failure-dominant exit codes (UCS-1227).
+
+### Fixed
+
+- Installed pre-commit hooks now refuse source-value drift as well as
+  structural findings. Real Git integration tests cover paired updates,
+  findings and check failures. This gate still reads the working tree;
+  partial-staging safety is not included in this change (UCS-1227).
 
 ## [2.1.0] - 2026-09-09
 

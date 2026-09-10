@@ -25,9 +25,9 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. Ten command-line surfaces —
+**Engine** — The vendored deterministic code. Eleven command-line surfaces —
 structural validator, value validator, preflight, resolver, survey map, reverse
-audit, log-entry helper, document ingest, phoenix events, derived layer — over a
+audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate — over a
 store loader, an extractor library, and a format-adapter library.
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
@@ -119,12 +119,12 @@ agent intelligence: navigation, runtime loop, gate rules. Per-IDE wrappers
 pointers to these.
 
 **Hooks** — Seeded git hooks that enforce the protocol mechanically rather than
-relying on anyone remembering it: `hooks/pre-commit` runs blocking validation
+relying on anyone remembering it: `hooks/pre-commit` runs both whole-store validators through `commit-check.js`
 before a commit exists, `hooks/reverse-lookup` runs the reverse lookup over the
 staged diff. Both are **thin wrappers** — each invokes one engine command and
-exits with its code, unchanged, with no bypass variable to read — so the tested
-surface is the wrapped command, and the wiring is reviewed the way the per-IDE
-wrappers are. They seed but do not install: `init` never writes `.git/`, so the
+exits with its code, unchanged, with no bypass variable to read. Real Git commit
+tests exercise the installed gate. It currently reads working-tree evidence;
+partial-staging safety is not provided. They seed but do not install: `init` never writes `.git/`, so the
 client hangs the gate the kit ships (D-006).
 
 **Runtime loop** — The per-request agent protocol: resolve → preflight →

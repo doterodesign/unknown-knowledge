@@ -112,6 +112,7 @@ test('the Engine term names every shipped engine surface', () => {
   /** What the glossary calls each surface. */
   const prose = {
     validate: 'structural validator',
+    'commit-check': 'commit gate',
     'validate-values': 'value validator',
     preflight: 'preflight',
     resolve: 'resolver',

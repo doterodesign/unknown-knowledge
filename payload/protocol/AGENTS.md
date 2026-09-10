@@ -14,7 +14,7 @@ wrapper files are thin pointers here. Follow it on every request.
 Two `--root` conventions, stated once:
 
 - Every store-reading CLI (`resolve.js`, `preflight.js`, `validate.js`,
-  `validate-values.js`, `audit.js`, `survey-map.js`) takes `--root` as the
+  `validate-values.js`, `commit-check.js`, `audit.js`, `survey-map.js`) takes `--root` as the
   **repo root** (default: cwd). The stores are auto-located at
   `<root>/unknown-knowledge/`; source-of-truth pointers resolve against the
   repo root (§9.1).
@@ -143,9 +143,12 @@ never a gate.
 
 Where the client has wired the seeded hooks (`hooks/pre-commit`,
 `hooks/reverse-lookup`), both of these run automatically: the pre-commit hook
-runs the blocking validation before the commit exists, and the reverse-lookup
-hook runs the `--paths` lookup over the staged diff. Each is a thin wrapper
-around the command above and exits with its code, unchanged — so a wired repo
+runs both whole-store validators through `engine/commit-check.js` before the
+commit exists, and the reverse-lookup hook runs the `--paths` lookup over the
+staged diff. Attribution never limits the gate to a concept subset (D-012).
+The gate currently reads working-tree evidence and does not provide
+partial-staging safety. Each hook is a thin wrapper around its engine command
+and exits with its code, unchanged — so a wired repo
 enforces this step mechanically rather than depending on you to remember it.
 Run the commands yourself anyway: seeing the findings before the commit is
 cheaper than being refused by it, and a hook the client never wired enforces

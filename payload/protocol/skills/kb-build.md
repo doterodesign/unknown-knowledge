@@ -277,8 +277,9 @@ frontmatter came from step 2 or step 3.
 node unknown-knowledge/engine/validate.js --root .
 ```
 
-This is the same command the `hooks/pre-commit` hook runs, so a commit that
-would fail here is refused before it exists — running it now is how you see
+The `hooks/pre-commit` hook runs this check and whole-store value validation
+through `engine/commit-check.js`, so a commit that would fail here is refused
+before it exists — running it now is how you see
 the findings first, not a substitute for the hook.
 
 - **Exit 0** — done drafting. Hand the change to the human gate: the leaf,

@@ -33,6 +33,20 @@ never executes your code and never touches the network
 (`docs/boundaries.md`) — so the jobs need no secrets, tokens, or extra
 permissions.
 
+## Commit gate and CI evidence
+
+The opt-in pre-commit hook calls `engine/commit-check.js --root .`. This runs
+both whole-store validators, reports each check, and returns 2 for any failed
+or never-run check, otherwise 1 for findings, otherwise 0. It reads the working
+tree in this version and does not provide partial-staging safety.
+
+In CI, check out the actual committed merge candidate and run both validators
+against that checkout, with no generated or repaired governed files between
+checkout and validation. `node unknown-knowledge/engine/commit-check.js --root .`
+also runs both checks even if one fails. Reverse lookup remains advisory;
+changed-path attribution never limits the whole-store correctness gate.
+Application behavior tests remain separate from these lexical checks.
+
 ## GitHub Actions
 
 ```yaml

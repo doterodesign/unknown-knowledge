@@ -68,6 +68,32 @@ authoring README seeded beside the packs) — there is no update channel. The
 governed path for teaching the engine a new anchor shape is
 `protocol/new-kind-pipeline.md`.
 
+## Commit gate (opt-in)
+
+The seeded `hooks/pre-commit` invokes `engine/commit-check.js`, which runs both
+whole-store structural and value validation. Each check reports its name and
+status. Exit 0 means both pass; 1 means findings; 2 means a check failed or
+could not run. Failure dominates findings and success. There is no bypass
+variable. Validators inspect source lexically and never execute application
+code; application behavior still needs its own tests.
+
+Install from the repo root when you choose (init never edits `.git/`):
+
+```sh
+chmod +x unknown-knowledge/hooks/pre-commit
+ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
+```
+
+Use your chosen kit directory name if different; `KIT_DIR` selects that name.
+Preserve existing hooks when integrating this invocation into your setup.
+`hooks/reverse-lookup` provides advisory attribution and never selects a subset
+for the commit gate. Real installed-hook Git tests exercise gate behavior.
+
+The gate currently reads working-tree evidence. It does **not** provide
+partial-staging safety: unstaged repairs can hide invalid staged content, and
+unstaged defects can block valid staged content. Run whole-store checks on the
+actual merge candidate in CI as described below.
+
 ## CI
 
 Session-level preflight is a sufficient gate for a small team, not for
