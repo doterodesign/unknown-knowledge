@@ -31,6 +31,10 @@ dates are recorded at release time, never retroactively.
 
 ### Fixed
 
+- Reflect diagnoses recurring terminology, relationship and source-pointer gaps
+  before proposing a minimal governed repair, routes all leaf revisions through
+  kb-build, and verifies derived discovery plus before/after retrieval (UCS-1224).
+
 - Leaf supersession cycles now produce `ref-cycle` findings for each cycle
   member, so target preflight quarantines circular replacement claims.
 
