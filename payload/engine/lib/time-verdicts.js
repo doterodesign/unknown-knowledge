@@ -231,7 +231,7 @@ export function timeVerdict(record, today) {
     return {
       ...base,
       verdict: TIME_VERDICTS.SKIPPED,
-      reason: 'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)',
+      reason: timeCheckStatus(null),
     };
   }
   if (verified === null) {

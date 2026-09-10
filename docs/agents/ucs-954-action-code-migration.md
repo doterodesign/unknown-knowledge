@@ -58,5 +58,5 @@ now reads `next: proceed`, and the quarantined line reads
 subject to the command exit gate. Old time-skip and stale prose in historical
 traces is historical output, not the current output contract.
 
-The UCS-954 fresh-agent walkthrough report records actual tool execution and
+The [UCS-954 fresh-agent walkthrough report](ucs-954-a5-walkthrough.md) records actual tool execution and
 checks the source reads and exit handling separately from answer correctness.
