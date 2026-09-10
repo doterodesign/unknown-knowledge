@@ -24,7 +24,8 @@ export function prepareReflectionFixture(root) {
   mkdirSync(root, { recursive: true });
   run(process.execPath, [join(kit, 'cli/init-copy.js'), '--target', root]);
   symlinkSync(join(kit, 'node_modules'), join(root, 'node_modules'), 'dir');
-  write('.gitignore', 'node_modules/\n');
+  // Runtime dependencies are a symlink here; a directory-only rule does not ignore it.
+  write('.gitignore', '/node_modules\n');
   write('survey-scope.yaml', yaml.dump({ 'schema-version': 1, include: ['src', 'docs'], exclude: [] }));
   write('src/formats.ts', "export const FORMATS = ['png', 'svg'];\n");
   write('src/delivery.ts', "export const DELIVERY = ['archive', 'manifest'];\n");
