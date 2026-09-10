@@ -155,9 +155,13 @@ Leaf results expose `superseded-by`: direct incoming claims derived from other
 leaves' `relates.supersedes`. Follow the listed accession and file when looking
 for current evidence, and repeat hop by hop with a visited-ID set. Several
 successors are several claims; do not choose by date, score, or list order.
-Compare each target's `applies` jurisdictions with the request (empty means
-universal), inspect stage and freshness, and run `preflight.js --leaves <IDs>`
-on every target you will consult before reading its leaf and cited source.
+Read target metadata to compare `applies` jurisdictions with the request
+(empty means universal) and inspect stage and freshness before selecting
+evidence. Metadata-only navigation does not add a target to the evidence set.
+Before relying on a selected successor's claims or gathering its cited source,
+run `preflight.js --leaves <IDs> --today <YYYY-MM-DD>` with the current
+evaluation date, following PREFLIGHT below. Check every selected successor;
+do not require a verdict for a candidate rejected during metadata navigation.
 Resolver metadata is navigation, never target preflight or proof that a
 successor applies. Historical requests can still use the predecessor's source;
 an unresolved conflict, cycle, or inapplicable successor is not a current answer.
