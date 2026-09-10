@@ -29,7 +29,9 @@ No production knowledge is used or promoted. The evaluation date is
 re-date the synthetic fixture and record a new vintage.
 
 Initialize each client as a Git repo, commit its seed, and run structural
-validation before dispatch. For the execution row install the copied
+validation and `survey-map.js --json --root .` before dispatch. Check that the
+map accepts the scope and reports `scope.source: survey-scope.yaml`.
+For the execution row install the copied
 `unknown-knowledge/hooks/pre-commit` at `.git/hooks/pre-commit` and
 `unknown-knowledge/hooks/reverse-lookup` at `.git/hooks/prepare-commit-msg`, both
 executable. Scope is confirmed to `src`; no other source traversal is authorized.
