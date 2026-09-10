@@ -106,6 +106,17 @@ test('a supersession cycle stays bounded in resolution and fails target prefligh
   assert.deepEqual(JSON.parse(result.stdout)['leaf-verdicts'].map((leaf) => leaf.verdict), ['quarantined', 'quarantined']);
 });
 
+test('every member of overlapping supersession cycles fails even when preflighted alone', (t) => {
+  const store = scenario(t);
+  editLeaf(store, 'L-000102', (leaf) => { leaf.relates.supersedes = ['L-000140', 'L-000190']; });
+  editLeaf(store, 'L-000190', (leaf) => { leaf.relates = { supersedes: ['L-000140'] }; });
+  for (const id of ['L-000102', 'L-000140', 'L-000190']) {
+    const result = cli(store, 'preflight.js', ['--leaves', id], 1);
+    assert.equal(result['leaf-verdicts'][0].verdict, 'quarantined');
+    assert.match(JSON.stringify(result['leaf-verdicts'][0].evidence), /ref-cycle/);
+  }
+});
+
 test('chains are followed one hop at a time and multiple draft or stale successors remain explicit', (t) => {
   const store = scenario(t);
   editLeaf(store, 'L-000190', (leaf) => {

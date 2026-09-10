@@ -1,6 +1,6 @@
 schema-version: 1
 entries:
-  - id: D-2026-09-10-incoming-supersession
+  - id: D-023
     title: Incoming leaf supersession is derived navigation
     category: architecture
     status: proposed

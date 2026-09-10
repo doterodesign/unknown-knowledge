@@ -1204,7 +1204,56 @@ function checkGraduations(model, push) {
   }
 }
 
-function checkSupersessionCycles(entries, field, push) {
+/**
+ * Tarjan components identify EVERY cyclic leaf, including overlapping cycles
+ * whose cross-edges a back-edge-only walk misses. Findings use the existing
+ * ref-cycle contract, attributed per leaf so isolated target preflight works.
+ */
+function checkLeafSupersessionCycles(model, push) {
+  const index = new Map();
+  const low = new Map();
+  const stack = [];
+  const active = new Set();
+  const targets = (id) => strings(model.leaves.get(id)?.record?.relates?.supersedes)
+    .filter((to) => model.leaves.has(to)).sort(compare);
+
+  const visit = (id) => {
+    index.set(id, index.size);
+    low.set(id, index.get(id));
+    stack.push(id);
+    active.add(id);
+    for (const to of targets(id)) {
+      if (!index.has(to)) {
+        visit(to);
+        low.set(id, Math.min(low.get(id), low.get(to)));
+      } else if (active.has(to)) {
+        low.set(id, Math.min(low.get(id), index.get(to)));
+      }
+    }
+    if (low.get(id) !== index.get(id)) return;
+    const members = [];
+    let member;
+    do {
+      member = stack.pop();
+      active.delete(member);
+      members.push(member);
+    } while (member !== id);
+    if (members.length === 1 && !targets(id).includes(id)) return;
+    members.sort(compare);
+    for (const cyclic of members) {
+      push({
+        severity: 'error', code: 'ref-cycle', id: cyclic,
+        file: model.leaves.get(cyclic).file, path: 'relates.supersedes',
+        message: `supersedes cycle includes: ${members.join(', ')} — leaf chains must be acyclic (UCS-1226)`,
+      });
+    }
+  };
+  for (const id of [...model.leaves.keys()].sort(compare)) {
+    if (!index.has(id)) visit(id);
+  }
+}
+
+function checkDecisionCycles(model, push) {
   const seen = new Set(); // canonical cycle keys — each loop reported once
   const color = new Map(); // 0/undefined = white, 1 = on stack, 2 = done
   const stack = [];
@@ -1212,10 +1261,9 @@ function checkSupersessionCycles(entries, field, push) {
   const visit = (id) => {
     color.set(id, 1);
     stack.push(id);
-    const record = entries.get(id)?.record;
-    const targets = field.split('.').reduce((value, key) => value?.[key], record);
-    for (const to of strings(targets).sort(compare)) {
-      if (!entries.has(to)) continue; // unresolved-ref is the loader's
+    const record = model.decisions.get(id)?.record;
+    for (const to of strings(record?.supersedes).sort(compare)) {
+      if (!model.decisions.has(to)) continue; // unresolved-ref is the loader's
       if (color.get(to) === 1) {
         const cycle = stack.slice(stack.indexOf(to));
         // Canonical rotation: start at the smallest id, attribute to it.
@@ -1225,16 +1273,11 @@ function checkSupersessionCycles(entries, field, push) {
         if (!seen.has(key)) {
           seen.add(key);
           const head = rotated[0];
-          // Attribute a leaf cycle to every member so preflight on any target
-          // refuses it. Preserve the existing single-head Decisions contract.
-          const leafCycle = field === 'relates.supersedes';
-          for (const member of leafCycle ? rotated : [head]) {
-            push({
-              severity: 'error', code: 'ref-cycle', id: member,
-              file: entries.get(member).file, path: field,
-              message: `supersedes chain loops: ${[...rotated, head].join(' -> ')} — ${leafCycle ? 'leaf chains must be acyclic (UCS-1226)' : 'decision chains must be acyclic (§3.3)'}`,
-            });
-          }
+          push({
+            severity: 'error', code: 'ref-cycle', id: head,
+            file: model.decisions.get(head).file, path: 'supersedes',
+            message: `supersedes chain loops: ${[...rotated, head].join(' -> ')} — decision chains must be acyclic (§3.3)`,
+          });
         }
       } else if (color.get(to) !== 2) {
         visit(to);
@@ -1244,7 +1287,7 @@ function checkSupersessionCycles(entries, field, push) {
     color.set(id, 2);
   };
 
-  for (const id of [...entries.keys()].sort(compare)) {
+  for (const id of [...model.decisions.keys()].sort(compare)) {
     if (!color.get(id)) visit(id);
   }
 }
@@ -1269,8 +1312,8 @@ export function runChecks(model, repoRoot = model.root) {
   checkVerifiedDates(model, push);
   checkEditions(model, push);
   checkGraduations(model, push);
-  checkSupersessionCycles(model.decisions, 'supersedes', push);
-  checkSupersessionCycles(model.leaves, 'relates.supersedes', push);
+  checkDecisionCycles(model, push);
+  checkLeafSupersessionCycles(model, push);
   findings.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code) || compare(a.id, b.id));
   return findings;
