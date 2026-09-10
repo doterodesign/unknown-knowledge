@@ -42,7 +42,7 @@
  *   missing-citation  a knowledge-leaf citation whose source is empty — an
  *                     unsourced claim is not promotable (§3.2); presence and
  *                     minItems are schema checks upstream
- *   ref-cycle         a decision supersedes chain that loops (§3.3 chains
+ *   ref-cycle         a decision or leaf supersedes chain that loops (§3.3 chains
  *                     must be acyclic; supersedes/superseded-by mirror pairs
  *                     are legitimate, so only supersedes edges are walked)
  *   unregistered-value  a governed facet value absent from its registry
@@ -1204,7 +1204,7 @@ function checkGraduations(model, push) {
   }
 }
 
-function checkDecisionCycles(model, push) {
+function checkSupersessionCycles(entries, field, push) {
   const seen = new Set(); // canonical cycle keys — each loop reported once
   const color = new Map(); // 0/undefined = white, 1 = on stack, 2 = done
   const stack = [];
@@ -1212,9 +1212,10 @@ function checkDecisionCycles(model, push) {
   const visit = (id) => {
     color.set(id, 1);
     stack.push(id);
-    const record = model.decisions.get(id)?.record;
-    for (const to of strings(record?.supersedes).sort(compare)) {
-      if (!model.decisions.has(to)) continue; // unresolved-ref is the loader's
+    const record = entries.get(id)?.record;
+    const targets = field.split('.').reduce((value, key) => value?.[key], record);
+    for (const to of strings(targets).sort(compare)) {
+      if (!entries.has(to)) continue; // unresolved-ref is the loader's
       if (color.get(to) === 1) {
         const cycle = stack.slice(stack.indexOf(to));
         // Canonical rotation: start at the smallest id, attribute to it.
@@ -1224,11 +1225,16 @@ function checkDecisionCycles(model, push) {
         if (!seen.has(key)) {
           seen.add(key);
           const head = rotated[0];
-          push({
-            severity: 'error', code: 'ref-cycle', id: head,
-            file: model.decisions.get(head).file, path: 'supersedes',
-            message: `supersedes chain loops: ${[...rotated, head].join(' -> ')} — decision chains must be acyclic (§3.3)`,
-          });
+          // Attribute a leaf cycle to every member so preflight on any target
+          // refuses it. Preserve the existing single-head Decisions contract.
+          const leafCycle = field === 'relates.supersedes';
+          for (const member of leafCycle ? rotated : [head]) {
+            push({
+              severity: 'error', code: 'ref-cycle', id: member,
+              file: entries.get(member).file, path: field,
+              message: `supersedes chain loops: ${[...rotated, head].join(' -> ')} — ${leafCycle ? 'leaf chains must be acyclic (UCS-1226)' : 'decision chains must be acyclic (§3.3)'}`,
+            });
+          }
         }
       } else if (color.get(to) !== 2) {
         visit(to);
@@ -1238,7 +1244,7 @@ function checkDecisionCycles(model, push) {
     color.set(id, 2);
   };
 
-  for (const id of [...model.decisions.keys()].sort(compare)) {
+  for (const id of [...entries.keys()].sort(compare)) {
     if (!color.get(id)) visit(id);
   }
 }
@@ -1263,7 +1269,8 @@ export function runChecks(model, repoRoot = model.root) {
   checkVerifiedDates(model, push);
   checkEditions(model, push);
   checkGraduations(model, push);
-  checkDecisionCycles(model, push);
+  checkSupersessionCycles(model.decisions, 'supersedes', push);
+  checkSupersessionCycles(model.leaves, 'relates.supersedes', push);
   findings.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code) || compare(a.id, b.id));
   return findings;

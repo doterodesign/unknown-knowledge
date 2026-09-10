@@ -15,6 +15,10 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Resolver leaf results expose direct incoming `superseded-by` navigation,
+  derived from authored `relates.supersedes`, with target scope and lifecycle
+  metadata across query, path and document output (UCS-1226).
+
 - Repeatable resolver `--path` input preserves complete filenames, including
   commas and whitespace, with safe argv-array invocation guidance (UCS-1229).
   Legacy comma-separated `--paths` remains compatible; mixing the two forms
@@ -26,6 +30,9 @@ dates are recorded at release time, never retroactively.
   diagnostics and failure-dominant exit codes (UCS-1227).
 
 ### Fixed
+
+- Leaf supersession cycles now produce `ref-cycle` findings for each cycle
+  member, so target preflight quarantines circular replacement claims.
 
 - Installed pre-commit hooks now refuse source-value drift as well as
   structural findings. Real Git integration tests cover paired updates,

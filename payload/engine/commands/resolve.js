@@ -87,6 +87,14 @@
  *             immediately around a hit, and depth 2 is most of the store
  *             arriving unranked
  *
+ * Incoming supersession (UCS-1226) adds a separate `superseded-by` array to
+ * leaf results, including document gather and scope exclusions. References
+ * carry id/notation/heading/file, stage/time/downranked/demotions, and applies
+ * (declared jurisdictions, empty means universal). No content, score, trust
+ * verdict, or nested edges: callers compare scope, preflight targets, and read
+ * sources. All direct successors are sorted by accession, never by recency.
+ * The inverse is rebuilt from relates.supersedes at load; no reciprocal authoring.
+ *
  * Knowledge entry points now join STRUCTURALLY as well as textually: a leaf
  * that declares a concept surfaces under it whether or not any term text
  * matches, so knowledge stops depending on two authors choosing the same words.
@@ -418,10 +426,8 @@ function confusables(model, record) {
  * OUTGOING edges only. The ticket says the resolver expands over relates edges
  * FROM a hit, and outgoing is what this leaf's author asserted: a leaf declares
  * what IT depends on, what IT contradicts. An incoming edge is somebody else's
- * claim about this leaf, which is a genuinely useful thing to see and a
- * different question — it belongs to whatever surface presents "what cites
- * this", where it can be labeled as such rather than blended into the leaf's
- * own assertions.
+ * claim about this leaf. Incoming supersession is published separately as
+ * `superseded-by` (UCS-1226), never blended into the leaf's own assertions.
  *
  * Neighbors resolve through `leafIdentityOf`, the one lookup every surface
  * asks — so an edge citing a leaf by its retired notation reaches nothing here
@@ -476,7 +482,7 @@ function relatesNeighborhood(model, record) {
  * are exactly the ones whose whole contract is that they are STABLE keys that
  * may be null.
  */
-function publishLeaf(model, entry, today) {
+function leafMetadata(entry, today) {
   const { file, record: leaf } = entry;
   const stage = leafStage(leaf);
   const provenance = leaf.provenance;
@@ -567,10 +573,19 @@ function publishLeaf(model, entry, today) {
     // reading one answer.
     time,
     file,
-    // The one-hop structural neighborhood (UCS-1151) — every leaf the resolver
-    // publishes carries it, so "any hit carries its relates neighborhood" is
-    // true by construction rather than by remembering to attach it per mode.
-    [RELATES_FIELD]: relatesNeighborhood(model, leaf),
+  };
+}
+
+/** One shared projection; successors are navigation, never recursively expanded. */
+function publishLeaf(model, entry, today) {
+  return {
+    ...leafMetadata(entry, today),
+    [RELATES_FIELD]: relatesNeighborhood(model, entry.record),
+    'superseded-by': (model.supersedingLeaves.get(entry.identity) ?? []).map((id) => {
+      const successor = model.leaves.get(id);
+      const { excerpt, provenance, ...metadata } = leafMetadata(successor, today);
+      return { ...metadata, applies: [...leafJurisdictions(successor.record)].sort(compare) };
+    }),
   };
 }
 
@@ -869,6 +884,7 @@ function applyScope(scored, jurisdictions) {
       file: leaf.file,
       applies: leaf.applies,
       asked,
+      'superseded-by': leaf['superseded-by'],
       reason: `declares applies.jurisdictions [${leaf.applies.join(', ')}] — the query is scoped to [${asked.join(', ')}], which this leaf does not cover (UCS-1152)`,
     });
   }
@@ -1338,6 +1354,7 @@ function renderDoc(payload) {
       // applicability the reader has to act on, not a detail of the hit.
       if (g['scope-mismatch']) lines.push(`    scope-mismatch: ${g['scope-mismatch']}`);
       for (const d of g.demotions) lines.push(`    demoted (${d.reason}): ${d.detail}`);
+      lines.push(...renderSuccessors(g, '    '));
     }
     lines.push('');
   }
@@ -1440,7 +1457,15 @@ function renderRelates(leaf, indent = '      ') {
     if (!neighbors.length) continue;
     lines.push(`${indent}${kind}: ${neighbors.map((n) => `${n.id ?? n.notation} "${n.heading ?? '?'}"`).join(', ')}`);
   }
-  return lines;
+  return [...lines, ...renderSuccessors(leaf, indent)];
+}
+
+/** Incoming claims remain navigation: applicability and target preflight are required. */
+function renderSuccessors(leaf, indent) {
+  return (leaf['superseded-by'] ?? []).map((successor) =>
+    `${indent}superseded-by: ${successor.id} "${successor.heading ?? '?'}" (${successor.file})`
+    + ` [stage: ${successor.stage ?? 'unknown'}; time: ${successor.time.verdict}; jurisdictions: ${successor.applies.join(', ') || 'universal'}]`
+    + ' — verify applicability, preflight this target, and read its source before selecting an answer');
 }
 
 /**
@@ -1518,6 +1543,7 @@ function renderExclusions(payload, lines) {
   for (const x of payload.exclusions) {
     lines.push(`  ${x.id ? `${x.id}  ` : ''}${x.notation}  ${x.heading}  (${x.file})`);
     lines.push(`    ${x.reason}`);
+    lines.push(...renderSuccessors(x, '    '));
   }
   lines.push('');
 }

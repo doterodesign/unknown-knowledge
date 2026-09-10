@@ -151,6 +151,17 @@ Query terms are positional (joined into one query); results come scored with
 entry points. Exit 0 = the lookup ran (hits or none); exit 2 = it never ran —
 stop, that is an engine failure, not an empty result.
 
+Leaf results expose `superseded-by`: direct incoming claims derived from other
+leaves' `relates.supersedes`. Follow the listed accession and file when looking
+for current evidence, and repeat hop by hop with a visited-ID set. Several
+successors are several claims; do not choose by date, score, or list order.
+Compare each target's `applies` jurisdictions with the request (empty means
+universal), inspect stage and freshness, and run `preflight.js --leaves <IDs>`
+on every target you will consult before reading its leaf and cited source.
+Resolver metadata is navigation, never target preflight or proof that a
+successor applies. Historical requests can still use the predecessor's source;
+an unresolved conflict, cycle, or inapplicable successor is not a current answer.
+
 **Zero resolution is a normal outcome**, not proof of missing evidence.
 Use this recovery path before source search:
 

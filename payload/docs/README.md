@@ -27,6 +27,40 @@ paths arrived from the kit and which your own loop produced.
 
 ## Running the gates
 
+### Following replacements from an old result
+
+Resolver JSON leaf projections include `superseded-by`, a stable array that
+is empty when no loaded leaf directly supersedes the match. It appears on
+query leaves, concept knowledge entry points, path knowledge, scope exclusions
+and document gather rows. Each reference has these fields:
+
+| Fields | Meaning |
+|---|---|
+| `id`, `notation`, `heading`, `file` | Accession and navigational metadata; notation is only a legacy display label |
+| `stage`, `time`, `downranked`, `demotions` | The target's normal lifecycle and freshness metadata; `time.verdict` checks freshness only, not trust |
+| `applies` | Declared jurisdictions, sorted; an empty array means universal |
+
+This is an additive output contract under D-021. Existing fields and scores
+retain their meaning. Authors write only `relates.supersedes` on the successor;
+the loader derives the inverse from the store on every load, without reading
+or storing reciprocal edges in `knowledge/derived/`.
+
+References are deduplicated and sorted by accession. They contain no body,
+excerpt, score or nested edges. Follow one hop at a time, keeping visited IDs
+to avoid revisiting a cycle. Multiple successors remain explicit; order never
+selects a winner. The predecessor remains available for historical requests.
+
+Successor scope is declared metadata, not an applicability verdict. Compare
+it with the request's jurisdiction; without a jurisdiction, establish whether
+the target applies before selecting an answer. A scoped-out successor stays
+visible as navigation and does not enter the ranked results merely because
+it supersedes a match. Draft and stale successors keep their normal flags.
+Run `preflight.js --leaves <IDs>` for consulted targets and read their cited
+sources. Existing health gates report dangling references; structural
+`ref-cycle` findings quarantine every leaf in a supersession cycle.
+
+### Validation commands
+
 The engine is plain Node (≥ 22, no build step) with one library
 dependency, `js-yaml`, resolved from your repo like any other package: if
 your repo does not already carry it, run `npm install --save-dev js-yaml`

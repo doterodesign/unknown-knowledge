@@ -70,3 +70,6 @@ entries:
   - id: D-022
     title: Engine is JavaScript with JSDoc types, zero build step, minimal deps
     file: entries/D-022-engine-is-javascript-jsdoc.yaml
+  - id: D-2026-09-10-incoming-supersession
+    title: Incoming leaf supersession is derived navigation
+    file: entries/D-2026-09-10-incoming-supersession.yaml

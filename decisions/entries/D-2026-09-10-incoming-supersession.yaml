@@ -1,0 +1,29 @@
+schema-version: 1
+entries:
+  - id: D-2026-09-10-incoming-supersession
+    title: Incoming leaf supersession is derived navigation
+    category: architecture
+    status: proposed
+    date: "2026-09-10"
+    deciders: [codex]
+    context: >
+      UCS-1226 and its parent UCS-1217 require old-only matches to expose
+      direct replacements without reciprocal authoring or ranking changes.
+      Scope, currentness and trust remain distinct questions.
+    decision: >
+      Under D-021, superseded-by is an additive resolver output field with
+      a stable empty-array shape. Derive it from relates.supersedes at load,
+      retain only accession identities in the inverse index, and publish
+      one-hop navigation with target lifecycle and declared jurisdictions.
+      Consumers compare applicability, preflight every consulted target and
+      read its cited evidence. Never infer a winner from order or freshness.
+      Reuse structural ref-cycle findings for leaf supersession, attributed
+      to each member so target preflight cannot trust a circular claim.
+    consequences: >
+      Existing output fields, ranking and historical access keep their meaning.
+      Derived files remain disposable. A relationship alone never certifies
+      an answer. Leaf-cycle validation now rejects a previously accepted
+      malformed relationship; Decisions cycle behavior stays unchanged.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-011, D-021, D-022] }

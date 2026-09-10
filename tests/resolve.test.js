@@ -151,6 +151,7 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
       },
+      'superseded-by': [],
     },
   ]);
 });
@@ -187,6 +188,7 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
       },
+      'superseded-by': [],
     },
   ]);
 

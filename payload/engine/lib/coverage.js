@@ -842,6 +842,7 @@ function gatherRollup(joined) {
         ? `declares applies.jurisdictions [${leaf.applies.join(', ')}] — the document is scoped to [${scopes.join(', ')}], which this leaf does not cover; verify applicability (UCS-1156)`
         : null,
       demotions: leaf.demotions,
+      'superseded-by': leaf['superseded-by'],
     });
   }
   return rollup.sort((a, b) =>

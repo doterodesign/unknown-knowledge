@@ -68,6 +68,8 @@
  *                               // from either end: resolving a concept surfaces
  *                               // its declaring leaves structurally, with no
  *                               // dependence on whether any term text matches
+ *     supersedingLeaves: Map leaf id -> [direct successor identities],
+ *                               // derived from relates.supersedes; never stored
  *     refs:      [{ from, type, to, file, path, resolved }], // cross-ref graph
  *     diagnostics: [{ severity, code, file, path, message }],
  *     ok,                       // true iff no error-severity diagnostic
@@ -1333,6 +1335,17 @@ function buildLeavesByConcept(ctx) {
   return sortedMap(index);
 }
 
+/** Disposable inverse of the authoritative leaf supersedes edges, one hop. */
+function buildSupersedingLeaves(ctx) {
+  const index = new Map();
+  for (const ref of ctx.refs) {
+    if (ref.type !== 'relates.supersedes' || !ctx.leaves.has(ref.from) || !ctx.leaves.has(ref.to)) continue;
+    if (!index.has(ref.to)) index.set(ref.to, new Set());
+    index.get(ref.to).add(ref.from);
+  }
+  return sortedMap(new Map([...index].map(([id, successors]) => [id, [...successors].sort(compare)])));
+}
+
 /** Resolve every collected edge; a miss is an unresolved-ref error. */
 function resolveRefs(ctx) {
   for (const ref of ctx.refs) {
@@ -1422,6 +1435,7 @@ export function loadStores(root) {
     phoenix: sortedMap(ctx.phoenix),
     pointers,
     leavesByConcept,
+    supersedingLeaves: buildSupersedingLeaves(ctx),
     refs: ctx.refs,
     diagnostics: ctx.diagnostics,
     ok: ctx.diagnostics.every((d) => d.severity !== 'error'),
