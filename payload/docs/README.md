@@ -48,6 +48,51 @@ proposes draft concepts for anchors the map does not cover yet; a human
 reviews every draft. Run it on the steward cadence, never as a gate
 (`docs/steward-guide.md`).
 
+## Reverse lookup for complete filenames
+
+Use one `--path` per filename to find the concepts and knowledge leaves that
+govern it:
+
+```sh
+node unknown-knowledge/engine/resolve.js --root . --path 'src/a,b.ts' --path 'src/my file.ts' --json
+```
+
+Both `--path value` and `--path=value` work. Use the equals form for a name
+beginning with `--`, for example `--path=--draft.ts`. Each value stays one
+complete path: commas, quotes, tabs, newlines, Unicode, leading/trailing
+whitespace and POSIX backslashes are literal data. Paths still use POSIX
+normalization for `.`, `..`, repeated `/` and absolute paths relative to
+`--root`. Complete normalized paths are deduplicated and sorted.
+
+Programmatic callers should pass an argument array with no shell. This
+example assumes `repoRoot` and `changedPaths` contain the root and filename
+strings already obtained by the caller:
+
+```js
+import { spawnSync } from 'node:child_process';
+import { resolve } from 'node:path';
+
+const result = spawnSync(process.execPath, [
+  resolve(repoRoot, 'unknown-knowledge/engine/resolve.js'),
+  '--root', repoRoot, '--json',
+  ...changedPaths.map((path) => `--path=${path}`),
+], { encoding: 'utf8', shell: false });
+if (result.error) throw result.error;
+if (result.status !== 0) throw new Error(result.stderr || 'Reverse lookup did not complete');
+const attribution = JSON.parse(result.stdout);
+```
+
+Do not join filenames into a shell command or split them on commas or
+newlines. Skip the invocation when there are no changed paths. An empty or
+missing `--path` value, a repo-root-only path, or mixing `--path` with
+`--paths`, query terms or `--doc` fails with a usage message and exit 2.
+An unmatched path is a normal result: exit 0 with empty attribution.
+
+Legacy `--paths a.ts,b.ts` remains supported, including its comma splitting,
+whitespace trimming and backslash conversion. For equivalent ordinary path
+sets, both inputs return the same attribution and deterministic output.
+The repeatable flag is an additive MINOR surface change under D-021.
+
 ## How the loop works
 
 The runtime contract — `RESOLVE → PREFLIGHT → GATHER → ACT → RECORD` — lives

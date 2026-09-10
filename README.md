@@ -85,6 +85,12 @@ exit `1`, that agent would walk straight past a check that never happened. So a
 crash always exits `2`, and a test enumerates every surface, forces a bug into
 each, and proves it.
 
+The resolver also accepts repeatable `--path` values for lossless filename
+transport, for example `--path 'src/a,b.ts' --path 'src/my file.ts'`. Legacy
+comma-separated `--paths` remains supported; mixing the forms fails with
+exit 2. See the [complete-filename and safe programmatic invocation guide](payload/docs/README.md#reverse-lookup-for-complete-filenames).
+This is an additive MINOR CLI surface change under D-021.
+
 The reverse audit is advisory: its findings are proposals for human review, and
 never a gate. A human may opt in with `--fail-on-findings`, and that is never a
 shipped CI default.

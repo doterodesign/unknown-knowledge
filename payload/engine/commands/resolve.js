@@ -5,6 +5,7 @@
  *
  *   node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
  *   node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>]
+ *   node payload/engine/resolve.js --path <file> [--path <file>...] [--json] [--root <dir>]
  *   node payload/engine/resolve.js --doc <document> [--json] [--root <dir>]
  *
  * ONE ENTRY POINT, THREE INPUT SHAPES (UCS-1156). A query, a set of repo paths,
@@ -164,7 +165,7 @@
  * localized enough to act on. The stopword list is pinned and shipped in the
  * engine (lib/decomposition.js), never configurable per run.
  *
- * --paths mode — reverse lookup over BOTH pointer families: "which concepts
+ * Paths mode (--path or legacy --paths) — reverse lookup over BOTH pointer families: "which concepts
  * point at these files, and which leaves govern them" (UCS-1151). The join runs
  * over concept source-of-truth pointers and over leaf `paths` declarations, so
  * a diff-shaped input surfaces the knowledge that governs the files before an
@@ -173,10 +174,11 @@
  * nested under a FOLDER pointer (§3.1). Folder-ness is read from the
  * filesystem, not from the name — `src/api.v2` is a directory whose extname is
  * ".v2" — and from the name only when the pointer is gone, since a diff names
- * deleted paths; see folderPointerTest. Paths are normalized with path.posix
- * semantics (dots resolved, separators collapsed, backslashes converted,
- * absolute paths relativized against the store root) so attribution survives
- * the forms real tooling emits. An entry naming the repo root is a usage
+ * deleted paths; see folderPointerTest. Paths use path.posix semantics (dots
+ * resolved, separators collapsed, absolute paths relativized against the store
+ * root). Legacy --paths trims whitespace and converts backslashes; --path keeps
+ * both literal and takes one complete name per argument, without comma splitting.
+ * An entry naming the repo root is a usage
  * error, never a silently dropped lookup. A lookup, not subset validation (no
  * D-012 conflict). Paths are deduped and sorted ascending.
  *
@@ -225,6 +227,7 @@ import { loadSuppressions } from '../lib/suppressions.js';
 
 export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
        node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
+       node payload/engine/resolve.js --path <file> [--path <file>...] [--json] [--root <dir>] [--today <YYYY-MM-DD>]
        node payload/engine/resolve.js --doc <document> [--json] [--root <dir>] [--today <YYYY-MM-DD>]`;
 
 // The concept ladder and the draft downrank moved to lib/scoring.js (UCS-1152)
@@ -1034,13 +1037,15 @@ const ZERO_RESOLUTION_CONDUCT = 'zero resolution is a normal outcome (PRD §7): 
 
 /**
  * Normalize a path to the repo-root-relative posix form pointers use (§9.1):
- * backslashes become '/', `..`/`.`/`//` resolve away (path.posix semantics),
+ * `..`/`.`/`//` resolve away (path.posix semantics),
  * trailing slashes drop, and absolute paths relativize against `root`.
+ * Legacy --paths also trims whitespace and converts backslashes to '/'. With
+ * --path, those bytes are literal filename data on both sides of the join.
  * Wrong normalization is wrong ATTRIBUTION — `a/b/../c.ts` must hit the file
  * pointer `a/c.ts`, not the folder pointer `a/b`.
  */
-function normPath(root, p) {
-  let path = posix.normalize(p.trim().replace(/\\/g, '/'));
+function normPath(root, p, literal = false) {
+  let path = posix.normalize(literal ? p : p.trim().replace(/\\/g, '/'));
   if (posix.isAbsolute(path)) path = posix.relative(root.replace(/\\/g, '/'), path);
   path = path.replace(/\/+$/, '');
   return path === '.' ? '' : path;
@@ -1088,20 +1093,21 @@ function folderPointerTest(repoRoot) {
   };
 }
 
-function resolvePaths(model, rawPaths, repoRoot, today) {
+function resolvePaths(model, rawPaths, repoRoot, today, literal = false) {
+  const flag = literal ? '--path' : '--paths';
   // Pointers are repo-root-relative (§9.1), so both sides normalize against
   // the repo root — the KK-08 two-root convention (model.root may be the
   // nested unknown-knowledge/ store dir in a seeded repo).
   // An entry that normalizes away (empty, ".", "src/..") names the repo root,
   // not a path inside it. Dropping it silently would shrink the lookup the
   // caller asked for — a lookup that never ran, wearing a clean exit.
-  const rootish = rawPaths.filter((p) => normPath(repoRoot, p) === '');
+  const rootish = rawPaths.filter((p) => normPath(repoRoot, p, literal) === '');
   if (rootish.length) {
-    throw new UsageError(`--paths entries ${rootish.map((p) => JSON.stringify(p)).join(', ')} name the repo root, not a path inside it — name the files or directories the change touched`);
+    throw new UsageError(`${flag} entries ${rootish.map((p) => JSON.stringify(p)).join(', ')} name the repo root, not a path inside it — name the files or directories the change touched`);
   }
-  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p)))].sort(compare);
+  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p, literal)))].sort(compare);
   if (!paths.length) {
-    throw new UsageError('--paths must name at least one path — a lookup that never ran is a failure, never a silent empty result');
+    throw new UsageError(`${flag} must name at least one path — a lookup that never ran is a failure, never a silent empty result`);
   }
   const isFolderPointer = folderPointerTest(repoRoot);
   // Leaf `paths` are the second pointer family (UCS-1151), indexed once for the
@@ -1123,7 +1129,7 @@ function resolvePaths(model, rawPaths, repoRoot, today) {
    * the validator is where the author is told to fix it.
    */
   const governs = (pointer, path) => {
-    const p = normPath(repoRoot, pointer);
+    const p = normPath(repoRoot, pointer, literal);
     if (p === '') return false;
     return path === p || (isFolderPointer(p) && path.startsWith(`${p}/`));
   };
@@ -1363,15 +1369,19 @@ function parseArgs(argv) {
   const { options, positionals } = parseFlags(argv, {
     boolean: ['json'],
     value: ['root', 'today', 'doc'],
-    repeatable: ['paths'],
-    // Query terms arrive as bare arguments; --paths is the reverse lookup;
+    repeatable: ['paths', 'path'],
+    // Query terms arrive as bare arguments; --path/--paths are reverse lookup;
     // --doc is the third input shape (UCS-1156).
     positionals: true,
   });
+  if (options.path && options.paths) {
+    throw new UsageError('cannot combine --path and --paths — choose complete paths or legacy comma-separated lists');
+  }
   const opts = {
     json: !!options.json,
     root: options.root ?? process.cwd(),
-    paths: options.paths ? options.paths.flatMap((v) => v.split(',')) : null,
+    paths: options.path ?? (options.paths ? options.paths.flatMap((v) => v.split(',')) : null),
+    literalPaths: !!options.path,
     doc: options.doc ?? null,
     terms: positionals,
     // The injected date the time verdicts are measured against (UCS-1150).
@@ -1390,14 +1400,14 @@ function parseArgs(argv) {
   // a query — so it is a usage error rather than a silently-preferred mode.
   const shapes = [
     opts.terms.length ? 'query terms' : null,
-    opts.paths ? '--paths' : null,
+    opts.paths ? (opts.literalPaths ? '--path' : '--paths') : null,
     opts.doc ? '--doc' : null,
   ].filter(Boolean);
   if (shapes.length > 1) {
-    throw new UsageError(`give exactly one input shape, got ${shapes.join(' and ')} — a query, --paths, or --doc`);
+    throw new UsageError(`give exactly one input shape, got ${shapes.join(' and ')} — a query, --path/--paths, or --doc`);
   }
   if (!shapes.length) {
-    throw new UsageError('nothing to resolve — give query terms, --paths, or --doc');
+    throw new UsageError('nothing to resolve — give query terms, --path/--paths, or --doc');
   }
   return opts;
 }
@@ -1659,7 +1669,7 @@ export function main(argv) {
     } else if (opts.paths) {
       payload = {
         mode: 'paths', 'time-check': timeCheck, 'store-health': health,
-        paths: resolvePaths(model, opts.paths, opts.root, opts.today),
+        paths: resolvePaths(model, opts.paths, opts.root, opts.today, opts.literalPaths),
       };
     } else {
       payload = {

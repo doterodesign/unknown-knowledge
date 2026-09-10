@@ -6,7 +6,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, cpSync, mkdtempSync, rmSync, statSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, mkdtempSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -251,6 +251,121 @@ test('zero-hit query is a normal outcome: exit 0, explicit empty result', () => 
 });
 
 // ------------------------------------- --paths reverse lookup (ACT step)
+
+test('--path: repeated complete names preserve commas and edge whitespace', () => {
+  const out = runJson(
+    '--path', 'src/design/targets/first,second.ts',
+    '--path=src/design/targets/ spaced.ts ',
+  );
+  assert.deepEqual(out.paths, [
+    {
+      path: 'src/design/targets/ spaced.ts ',
+      concepts: [{ id: 'K-110', term: 'Asset target', status: 'active', pointer: 'src/design/targets' }],
+      knowledge: [],
+    },
+    {
+      path: 'src/design/targets/first,second.ts',
+      concepts: [{ id: 'K-110', term: 'Asset target', status: 'active', pointer: 'src/design/targets' }],
+      knowledge: [],
+    },
+  ]);
+});
+
+test('--path: mixing complete paths with legacy comma lists is a usage failure', () => {
+  for (const args of [
+    ['--path', 'a,b.ts', '--paths', 'c.ts,d.ts'],
+    ['--paths=c.ts,d.ts', '--path=a,b.ts'],
+  ]) {
+    const r = run(...args, '--root', store, '--json');
+    assert.equal(r.status, 2);
+    assert.equal(r.stdout, '');
+    assert.match(r.stderr, /cannot combine --path and --paths/);
+    assert.match(r.stderr, /usage:/);
+  }
+});
+
+test('--path: argv transports unusual filenames to their exact pointers without executing shell syntax', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'resolver-path-'));
+  const names = [
+    ' leading.ts', 'trailing.ts \t\n', 'comma,name.ts', '"quoted".ts', "quote'name.ts",
+    'tab\tline\nend.ts', '-leading.ts', '--json', '雪.ts', 'back\\slash.ts',
+    ',', ' ', '\t', '\n', '$(touch UCS1229-shell-marker)', '`touch UCS1229-shell-marker`',
+  ];
+  try {
+    cpSync(store, dir, { recursive: true });
+    writeFileSync(join(dir, 'ontology/classes/100-design.yaml'), JSON.stringify({
+      'schema-version': 1,
+      entries: [{
+        id: 'K-120', term: 'Export', class: '100-design', status: 'active',
+        'source-of-truth': names,
+      }],
+    }));
+    for (const name of names) writeFileSync(join(dir, name), 'fixture\n');
+    // An argv array, never a shell command. Equals form also escapes --json
+    // as a filename rather than treating it as a resolver option.
+    const r = spawnSync(process.execPath, [
+      cli, ...names.map((name) => `--path=${name}`), '--root', dir, '--json',
+    ], { encoding: 'utf8', cwd: dir });
+    assert.equal(r.status, 0, r.stderr);
+    const out = JSON.parse(r.stdout);
+    assert.equal(out.paths.length, names.length);
+    for (const name of names) {
+      assert.deepEqual(out.paths.find((row) => row.path === name), {
+        path: name,
+        concepts: [{ id: 'K-120', term: 'Export', status: 'active', pointer: name }],
+        knowledge: [],
+      }, JSON.stringify(name));
+    }
+    assert.equal(existsSync(join(dir, 'UCS1229-shell-marker')), false);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('--path: ordinary path sets have byte-identical legacy attribution, ordering and deduplication', () => {
+  const args = ['--root', store, '--json'];
+  const repeated = run(
+    '--path', 'src/unmapped/thing.ts', '--path', 'src/design/export.ts',
+    '--path=./src/design/export.ts', '--path=src/design/export.ts', ...args,
+  );
+  const legacy = run('--paths=src/unmapped/thing.ts,./src/design/export.ts,src/design/export.ts', ...args);
+  const reordered = run('--path=src/design/export.ts', '--path=src/unmapped/thing.ts', ...args);
+  for (const r of [repeated, legacy, reordered]) assert.equal(r.status, 0, r.stderr);
+  assert.equal(repeated.stdout, legacy.stdout);
+  assert.equal(repeated.stdout, reordered.stdout);
+  assert.deepEqual(JSON.parse(repeated.stdout).paths, [
+    {
+      path: 'src/design/export.ts',
+      concepts: [{ id: 'K-120', term: 'Export', status: 'active', pointer: 'src/design/export.ts' }],
+      knowledge: [],
+    },
+    { path: 'src/unmapped/thing.ts', concepts: [], knowledge: [] },
+  ]);
+});
+
+test('--path: duplicate complete comma paths collapse without splitting', () => {
+  const out = runJson('--path=src/unmapped/a,b.ts', '--path', 'src/unmapped/a,b.ts');
+  assert.deepEqual(out.paths, [{ path: 'src/unmapped/a,b.ts', concepts: [], knowledge: [] }]);
+});
+
+test('--path: empty or missing values fail even after a valid path', () => {
+  for (const invalid of [['--path'], ['--path', ''], ['--path='], ['--path', '--json']]) {
+    const r = run('--root', store, '--path=src/design/export.ts', ...invalid);
+    assert.equal(r.status, 2);
+    assert.equal(r.stdout, '');
+    assert.match(r.stderr, /--path requires a value/);
+    assert.match(r.stderr, /usage:/);
+  }
+});
+
+test('--path: query and document input cannot be combined with reverse lookup', () => {
+  for (const args of [['export'], ['--doc=README.md']]) {
+    const r = run('--path=src/design/export.ts', '--root', store, ...args);
+    assert.equal(r.status, 2);
+    assert.equal(r.stdout, '');
+    assert.match(r.stderr, /give exactly one input shape/);
+  }
+});
 
 test('--paths: exact file pointer maps back to its concept', () => {
   const out = runJson('--paths', 'src/design/export.ts');

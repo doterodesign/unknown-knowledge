@@ -15,6 +15,10 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- Repeatable resolver `--path` input preserves complete filenames, including
+  commas and whitespace, with safe argv-array invocation guidance (UCS-1229).
+  Legacy comma-separated `--paths` remains compatible; mixing the two forms
+  fails with exit 2. This is an additive MINOR CLI surface change under D-021.
 - Importable Verdict computation in `engine/lib/verdicts.js` (UCS-947),
   including store-wide degradation and leaf/time verdicts. Preflight uses
   the library with unchanged output, exit codes, and logging behavior.
