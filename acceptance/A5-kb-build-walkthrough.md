@@ -364,99 +364,53 @@ fix every error-severity finding before merging — this validator is blocking-g
   (agents draft; humans approve). It does NOT self-merge or claim the
   leaf is "live".
 
-## The hooks — the same gates, run mechanically
+## The hooks — installed commit verification
 
-The two checks above are the ones the seeded hooks run, so a repo that
-wired them enforces this step whether or not the agent remembered it. This
-section runs them directly with `sh` to watch what they do; in a real repo
-they are wired through `.git/hooks/` with **event-named** symlinks
-(`pre-commit`, and `prepare-commit-msg` for the reverse lookup — git runs a
-hook only if its filename names an event it fires). To watch that happen on
-the fixture (which has no vendored engine, so link the kit's in first):
-
-```sh
-mkdir -p unknown-knowledge/hooks
-cp "$KIT/hooks/pre-commit" "$KIT/hooks/reverse-lookup" unknown-knowledge/hooks/
-chmod +x unknown-knowledge/hooks/*
-ln -sf "$KIT/engine" unknown-knowledge/engine
-sh unknown-knowledge/hooks/pre-commit
-```
-
-- [ ] The pre-commit hook prints the validator's output byte-for-byte and
-  **exits 1** — the same code the direct run gave, propagated unchanged.
-  There is no bypass variable to set: a hook with an off switch enforces
-  nothing.
-
-```
-structural validate -> 2 finding(s) (2 error(s), 0 warning(s))
-checks run: disconnected-revocation, gated-category-graduation, graduation-field-shape, graduation-not-trust-category, id-range, id-shape, index-drift, malformed-verified, missing-authority, missing-citation, missing-graduation-table, missing-path, missing-registry, missing-verified, orphan, ref-cycle, registry-shape-mismatch, suppressed-value, unaccounted-edition, undeclared-category, unminted-segment, unregistered-value
-
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  applies.jurisdictions[0]
-    value "eu-eaa" is not minted in the "knowledge/jurisdictions" registry (knowledge/_registries/jurisdictions.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-error  unregistered-value  L-000100  knowledge/product/100.1-adding-a-new-export-format.md  facets.form
-    value "walkthrough" is not minted in the "knowledge/form" registry (knowledge/_registries/form.yaml) — governed facets draw only from their registry; minting a new value is a registry edit plus a Decisions entry, never an ad-hoc string
-
-fix every error-severity finding before merging — this validator is blocking-grade (PRD §4)
-```
-
-Then the reverse lookup, over whatever is staged:
+Use an isolated copy of this fixture for the commit checks. Copy the kit's
+`engine/`, `schemas/`, `hooks/` and `package.json` into its `unknown-knowledge/`
+directory. Keep the installed Node dependencies outside staged evidence and
+ignore `/node_modules` if it is a symlink. An external engine symlink cannot
+serve as candidate evidence; snapshot containment refuses escaping links.
+Install both seeded hooks explicitly:
 
 ```sh
-git add unknown-knowledge/knowledge/L-00/L-000110-svg-asset-export-precision.md src/types/asset-kind.ts
-sh unknown-knowledge/hooks/reverse-lookup
+chmod +x unknown-knowledge/hooks/pre-commit unknown-knowledge/hooks/reverse-lookup
+ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
+ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
 ```
 
-- [ ] Exit 0, and the hook reports what governs each staged path — the
-  AGENTS.md ACT step, performed without being remembered:
-
-```
-resolve --paths -> 2 paths
-
-time check: skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)
-
-src/types/asset-kind.ts
-  K-104  Asset kind  [active]  (pointer: src/types/asset-kind.ts)
-
-unknown-knowledge/knowledge/L-00/L-000110-svg-asset-export-precision.md
-  no concepts point at this path
-
-update every concept listed above in the same commit as the change (PRD §7 ACT)
-```
-
-- [ ] With nothing staged (`git reset`), the hook exits 0 without invoking
-  the engine — an empty diff is not a failure, and `--paths` with an empty
-  list would be a usage error (exit 2):
-
-```sh
-git reset -q && sh unknown-knowledge/hooks/reverse-lookup; echo "exit $?"
-```
-
-```
-exit 0
-```
-
-- [ ] An empty diff and a FAILED read are different things, and only one of
-  them is a clean result. Run the hook where git cannot answer (any
-  directory outside a repository) and it exits **2** — the lookup never
-  ran — rather than reading as "nothing to attribute":
-
-```sh
-# From a directory that is not a git repository. git prints its own usage
-# to stderr first; the hook's own line is the last of it.
-sh "$KIT/hooks/reverse-lookup" 2>/tmp/rl-err >/dev/null; echo "exit $?"
-tail -1 /tmp/rl-err
-```
-
-```
-exit 2
-reverse-lookup: git diff failed — the staged paths could not be read, so the lookup never ran
-```
-
-- [ ] Negative check: neither hook computes a verdict, filters a finding, or
-  reads a switch that would let it pass. Each invokes one engine command and
-  exits with its code — which is why testing the command IS testing the hook.
-  The one code either hook authors itself is that exit 2, for the one thing
-  the engine cannot report: its own input never being read.
+- [ ] Stage the intended source and store bytes, then attempt a real commit.
+  `pre-commit` runs `engine/commit-check.js`: both whole-store validators print
+  their findings and named statuses. Findings refuse the commit with engine
+  exit 1; a failed check has engine exit 2. Git itself may normalize a failed
+  hook's status. Capture stdout, stderr, HEAD and index before/after.
+- [ ] Apply only the fixture's approved repairs, stage them, and commit through
+  the installed hooks. Verify the committed source and store bytes agree.
+- [ ] `prepare-commit-msg` invokes `engine/reverse-staged.js`. Its
+  `staged attribution: candidate <tree-id>` section carries resolver JSON.
+  Existing history adds a `before <tree-id>` section with the same path set.
+  The initial commit has no invented before snapshot.
+- [ ] In the isolated fixture, rename a governed source and repair its pointer
+  in the same staged change. Commit and inspect both sections: the original
+  name retains its before concept; the destination has candidate attribution.
+  Repeat for a deletion with an approved replacement pointer. This historical
+  navigation is not a current trust verdict or proof that every required store
+  edit was made.
+- [ ] Verify complete filenames with commas, whitespace, quotes and newlines
+  survive through actual Git commits and resolver JSON without splitting or
+  shell execution. `tests/reverse-staged.test.js` provides deterministic
+  regression cases; a fresh-agent walkthrough still needs its own trace.
+- [ ] With no staged changes, `sh unknown-knowledge/hooks/reverse-lookup` exits
+  0 with no output. This also holds for an empty unborn index.
+- [ ] A failed Git read, missing resolver or unsupported snapshot exits 2 from
+  the engine/hook and refuses an attempted commit. A failed lookup must not be
+  recorded as zero hits. Historical snapshot failures can refuse attribution
+  even when both candidate validators pass.
+- [ ] Neither hook reads a bypass switch or selects a validation subset. Thin
+  wrappers keep orchestration in the versioned engine. Real installed-hook
+  commit tests verify wiring and Git index behavior; command tests alone do
+  not establish that evidence. Preserve actual command/output traces before
+  marking this manual walkthrough complete.
 
 ## Done
 

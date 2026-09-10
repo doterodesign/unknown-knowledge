@@ -159,14 +159,34 @@ code; application behavior still needs its own tests.
 Install from the repo root when you choose (init never edits `.git/`):
 
 ```sh
-chmod +x unknown-knowledge/hooks/pre-commit
+chmod +x unknown-knowledge/hooks/pre-commit unknown-knowledge/hooks/reverse-lookup
 ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit
+ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
 ```
 
 Use your chosen kit directory name if different; `KIT_DIR` selects that name.
 Preserve existing hooks when integrating this invocation into your setup.
-`hooks/reverse-lookup` provides advisory attribution and never selects a subset
-for the commit gate. Real installed-hook Git tests exercise gate behavior.
+`hooks/reverse-lookup` invokes `engine/reverse-staged.js --root .` for advisory
+attribution. Git runs it through the event-named `prepare-commit-msg` link;
+putting `reverse-lookup` beside `pre-commit` under `core.hooksPath` alone does
+not run it. Preserve your existing hooks and call it explicitly from an event
+hook when using that configuration.
+
+The engine parses NUL-delimited Git status/path records, including deletions
+and both paths of detected renames and copies. It passes complete filenames
+to the resolver as repeated `--path=value` arguments, with no shell expansion.
+It prints `staged attribution: candidate <tree-id>` followed by resolver JSON,
+then a `before <tree-id>` section when HEAD exists. Both sections attribute the
+same deduplicated path set against their own snapshot. Previous pointers stay
+visible even when the staged store removes or repairs them. Historical results
+are navigation evidence, not current trust verdicts or proof of a store update.
+
+No staged changes means quiet exit 0, including an empty unborn repository.
+A failed Git read, resolver or snapshot operation exits 2, never a zero-hit
+success. Unsupported history can also refuse attribution even when candidate
+validation passes. Attribution never selects a subset for the whole-store
+gate. Real installed-hook commits test this behavior, including pointer repairs,
+partial staging and unusual filenames.
 
 The gate checks an isolated Git index snapshot. Both validators read staged
 source, stores and repo-relative rules; unstaged and untracked evidence cannot

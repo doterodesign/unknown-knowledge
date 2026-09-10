@@ -17,7 +17,7 @@ const manifest = readFileSync(join(root, 'cli', 'kit.manifest.yaml'), 'utf8');
 /** The seeded hooks, and the single engine command each one wraps. */
 const HOOKS = {
   'pre-commit': { cli: 'commit-check.js', purpose: 'blocking validation' },
-  'reverse-lookup': { cli: 'resolve.js', purpose: 'automatic reverse lookup' },
+  'reverse-lookup': { cli: 'reverse-staged.js', purpose: 'automatic reverse lookup' },
 };
 
 /** A hook's executable lines — comments and blank lines are not logic. */
@@ -121,17 +121,10 @@ test('pre-commit runs the BLOCKING validator, unfiltered — the whole store or 
   assert.doesNotMatch(src, /--concepts/);
 });
 
-test('reverse-lookup asks the engine which leaves govern the staged paths', () => {
+test('reverse-lookup delegates staged attribution to the versioned engine', () => {
   const src = readFileSync(join(hookDir, 'reverse-lookup'), 'utf8');
-  // `resolve.js --paths` is the surface that answers it (UCS-1151).
-  assert.match(src, /resolve\.js" --paths "\$PATHS"/);
-  // The paths come from git, not from the hook's own idea of what changed.
-  assert.match(src, /git diff --cached --name-only/);
-  // An empty diff is not a failure — and `--paths` with an empty list is a
-  // usage error (exit 2), so the hook must not invoke the engine with one.
-  assert.match(src, /\[ -z "\$STAGED" \] && exit 0/);
-  // A git failure is a different thing from an empty diff, and exits 2.
-  assert.match(src, /exit 2/);
+  assert.match(src, /reverse-staged\.js" --root "\$UK_ROOT"/);
+  assert.doesNotMatch(src, /git diff|paste|--paths/);
 });
 
 test('the manifest seeds hooks WITHOUT installing them — init never writes .git/', () => {

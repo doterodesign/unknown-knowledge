@@ -7,15 +7,16 @@ import process from 'node:process';
 
 /**
  * @typedef {{root: string, tree: string}} TreeSnapshot
- * @typedef {{candidate: TreeSnapshot, before: null | {tree: string, materialize: () => TreeSnapshot}}} CommitSnapshot
+ * @typedef {{candidate: TreeSnapshot, before: null | {tree: string, materialize: () => TreeSnapshot}, changedPaths: () => string[]}} CommitSnapshot
  *
  * The callback owns no files. Candidate evidence and optional before evidence
  * share this lifetime; immutable tree IDs pin provenance for later attribution.
  * Before materialization is lazy: commit validation checks only the candidate.
  * @param {string} repoRoot
  * @param {(snapshot: CommitSnapshot) => Promise<number>} check
+ * @param {{skipUnchanged?: boolean}} [options] Attribution can skip an empty diff.
  */
-export async function withCommitSnapshot(repoRoot, check) {
+export async function withCommitSnapshot(repoRoot, check, { skipUnchanged = false } = {}) {
   const temporary = mkdtempSync(join(tmpdir(), 'unknown-knowledge-commit-'));
   const env = { ...process.env, GIT_NO_REPLACE_OBJECTS: '1', GIT_NO_LAZY_FETCH: '1' };
   const git = (args, { missing = false } = {}) => {
@@ -45,11 +46,16 @@ export async function withCommitSnapshot(repoRoot, check) {
     // Git's alternate index during a path-limited commit.
     const index = git(['rev-parse', '--git-path', 'index']).toString().replace(/\n$/, '');
     const privateIndex = join(temporary, 'index');
-    copyFileSync(resolve(repoRoot, index), privateIndex);
+    try {
+      copyFileSync(resolve(repoRoot, index), privateIndex);
+    } catch (error) {
+      // A new repo may have no index yet. Git writes the empty tree from the
+      // absent private index; other missing/unreadable indexes still fail.
+      if (error.code !== 'ENOENT' || beforeTree !== null) throw error;
+    }
     env.GIT_INDEX_FILE = privateIndex;
     const tree = git(['write-tree']).toString().trim();
     const candidate = { root: join(temporary, 'candidate'), tree };
-    materializeTree(candidate.root, tree, git);
     let beforeSnapshot;
     const before = beforeTree === null ? null : {
       tree: beforeTree,
@@ -62,7 +68,32 @@ export async function withCommitSnapshot(repoRoot, check) {
         return beforeSnapshot;
       },
     };
-    return await check({ candidate, before });
+    let pathsCache;
+    const changedPaths = () => {
+      if (pathsCache) return pathsCache;
+      const base = beforeTree ?? git(['hash-object', '-w', '-t', 'tree', '--stdin']).toString().trim();
+      const bytes = git(['diff-tree', '--no-commit-id', '--name-status', '-r', '-z', '--no-ext-diff', '--no-textconv', '--find-renames', '--find-copies', '--find-copies-harder', base, tree, '--']);
+      const text = bytes.toString();
+      if (!Buffer.from(text).equals(bytes)) throw new Error('snapshot: non-UTF-8 changed paths cannot be attributed faithfully');
+      if (text && !text.endsWith('\0')) throw new Error('snapshot: incomplete Git change records');
+      const records = text ? text.slice(0, -1).split('\0') : [];
+      const paths = [];
+      for (let i = 0; i < records.length;) {
+        const status = records[i++];
+        if (!/^(?:[ADMT]|[RC]\d+)$/.test(status)) throw new Error(`snapshot: unsupported Git change status ${JSON.stringify(status)}`);
+        const count = /^[RC]/.test(status) ? 2 : 1;
+        for (let n = 0; n < count; n += 1) {
+          const path = records[i++];
+          if (!path) throw new Error('snapshot: incomplete Git change records');
+          paths.push(path);
+        }
+      }
+      pathsCache = [...new Set(paths)];
+      return pathsCache;
+    };
+    if (skipUnchanged && changedPaths().length === 0) return 0;
+    materializeTree(candidate.root, tree, git);
+    return await check({ candidate, before, changedPaths });
   } finally {
     try {
       rmSync(temporary, { recursive: true, force: true, maxRetries: 3 });

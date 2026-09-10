@@ -60,6 +60,7 @@ dependency (D-022).
 | `validate.js` | is the store structurally sound? |
 | `validate-values.js` | do the Concepts still match the code they point at? |
 | `commit-check.js` | do both whole-store validators pass the commit gate? |
+| `reverse-staged.js` | what governed each staged path before and after this commit? |
 | `preflight.js` | which Concepts may this agent trust, right now? |
 | `resolve.js` | what does the store know about these terms or paths? |
 | `survey-map.js` | what is in this repo, and what could not be surveyed? |
@@ -110,8 +111,8 @@ shipped CI default.
 ## Hooks — the protocol, enforced mechanically
 
 Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs both whole-store
-validators through `engine/commit-check.js` before a commit exists, and `reverse-lookup` runs the `--paths`
-lookup over your staged diff, so the knowledge governing the files you touched
+validators through `engine/commit-check.js` before a commit exists, and `reverse-lookup` invokes `engine/reverse-staged.js`
+over your staged diff, so the knowledge governing the files you touched
 surfaces without anyone remembering to ask. Each is a thin wrapper — it invokes
 one engine command and exits with its code, unchanged — and neither reads a
 bypass variable, because a hook with an off switch enforces nothing.
@@ -119,7 +120,20 @@ bypass variable, because a hook with an off switch enforces nothing.
 The gate reports each check by name. It exits 0 only when both checks pass;
 findings exit 1, and a failed or never-run check exits 2 even if the other check
 is clean or has findings. Both checks always run over the whole store (D-012).
-Reverse lookup is advisory attribution; its results never restrict validation.
+Reverse lookup is advisory attribution; its results never restrict validation
+or prove that the agent updated the store. It reads NUL-delimited Git records
+and includes additions, modifications, type changes, deletions and both paths
+of detected copies and renames. Each complete path is passed to the resolver
+with `--path=value`, preserving spaces, commas, quotes, tabs and newlines.
+
+Attribution prints a `staged attribution: candidate <tree-id>` section followed
+by resolver JSON, then a `before <tree-id>` section for HEAD when it exists.
+Both sections use the same complete path set; each reports only that snapshot's
+own pointers. A staged pointer repair therefore cannot erase the old path's
+previous governance. Before evidence is historical navigation, not a current
+trust verdict. An empty staged diff produces no output and exits 0, including
+an unborn repository with nothing staged. Git, resolver and snapshot failures
+exit 2; attribution may be incomplete and must not be treated as a clean lookup.
 These lexical checks detect store and vocabulary drift. Application behavior
 remains the application's test suite's responsibility.
 

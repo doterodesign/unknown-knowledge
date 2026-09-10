@@ -126,10 +126,10 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
     let checkRoot = fixture;
-    if (surface === 'commit-check.js') {
+    if (['commit-check.js', 'reverse-staged.js'].includes(surface)) {
       // The gate now needs a real Git candidate, even when runtime loading
       // fails. Keep evidence separate from the deliberately broken runtime.
-      checkRoot = join(dir, 'candidate-repo');
+      checkRoot = join(dir, `candidate-${surface}`);
       cpSync(fixture, checkRoot, { recursive: true });
       for (const args of [['init', '-q'], ['add', '.']]) {
         const git = spawnSync('git', ['-C', checkRoot, ...args], { encoding: 'utf8' });
@@ -155,6 +155,8 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
       // Both failures must remain visible and the aggregate must still be 2.
       assert.match(r.stderr, /validate: failure \(exit 2\)/);
       assert.match(r.stderr, /validate-values: failure \(exit 2\)/);
+    } else if (surface === 'reverse-staged.js') {
+      assert.match(r.stderr, /internal failure — the command did not complete/);
     } else {
       assert.match(r.stderr, /internal failure — the engine could not be loaded/);
     }

@@ -15,6 +15,9 @@ dates are recorded at release time, never retroactively.
 
 ### Added
 
+- `engine/reverse-staged.js` provides snapshot-aware staged attribution for the
+  opt-in reverse hook, with explicit candidate/before origins (UCS-1230).
+
 - Resolver leaf results expose direct incoming `superseded-by` navigation,
   derived from authored `relates.supersedes`, with target scope and lifecycle
   metadata across query, path and document output (UCS-1226).
@@ -30,6 +33,11 @@ dates are recorded at release time, never retroactively.
   diagnostics and failure-dominant exit codes (UCS-1227).
 
 ### Fixed
+
+- Installed reverse lookup now attributes deletions and both paths of detected
+  renames/copies from isolated candidate and before snapshots. Pointer repairs
+  preserve historical governance, complete filenames survive Git-to-resolver
+  transport, and failed reads refuse attribution (UCS-1230).
 
 - Reflect diagnoses recurring terminology, relationship and source-pointer gaps
   before proposing a minimal governed repair, routes all leaf revisions through
