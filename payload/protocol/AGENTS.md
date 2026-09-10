@@ -426,6 +426,10 @@ Omit unsafe tokens; never paste the question into a summary. Findings record
 navigation evidence, not the missing company fact. Reflect judges independent
 corroboration; a later cited addition goes through `protocol/skills/kb-build.md`.
 
+For later answers about a recorded gap, follow PREFLIGHT for each consulted
+leaf itself (a concept verdict does not cover its leaves), then GATHER its
+cited evidence. Preserve the source's limits and attribute accession and source.
+
 ## Decisions-authoring path (§3.5)
 
 When your work surfaces a decision — a trade-off taken, a graduation of

@@ -218,6 +218,13 @@ this skill makes on top of the schema:
   verdicted `unknown` by preflight, which is correct and not a defect:
   nothing has certified it yet. Promotion is a moderator's act after the
   citations are checked, never the author's.
+  Leaf preflight reports this expected pre-promotion `unknown` with exit 2,
+  which still stops governed retrieval and claim reliance. In this authoring
+  workflow, an explicit human instruction to draft permits committing the
+  unpromoted draft for review after both `validate.js` and `validate-values.js`
+  exit 0 and the normal commit gates pass. Submission does not certify its
+  claims or authorize promotion. Loader errors and failed checks still require
+  repair.
 - **`notes`** — every leaf carries a `scope` note (what it covers and
   pointedly does not) and every write appends a `revision` note with
   `date` (initial entry, or what changed); add `class-here` when step 1
