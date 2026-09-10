@@ -36,7 +36,10 @@ and after:
 
 Give both agents the same verification instruction: before using a knowledge
 leaf, run public preflight for that leaf as well as for concepts, with the
-injected date. This is a controlled retrieval comparison, not evidence that the
+injected date. Supply the public syntax, without target IDs:
+`preflight.js --concepts <ids> --leaves <ids> --json --root . --today 2026-09-10`.
+The CLIs do not implement `--help`; do not use it for discovery. This is a
+controlled retrieval comparison, not evidence that the
 general runtime protocol independently elicits leaf preflight. If an unprompted
 baseline omits it, preserve that failure separately rather than correcting its
 trace after the fact.
