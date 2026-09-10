@@ -13,6 +13,12 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+### Added
+
+- Importable Verdict computation in `engine/lib/verdicts.js` (UCS-947),
+  including store-wide degradation and leaf/time verdicts. Preflight uses
+  the library with unchanged output, exit codes, and logging behavior.
+
 ## [2.1.0] - 2026-09-09
 
 ### Added
