@@ -23,6 +23,10 @@ dates are recorded at release time, never retroactively.
   [migration guidance](docs/agents/ucs-954-action-code-migration.md).
   No version bump or publication is included here.
 
+- Preflight is a thin CLI adapter over library orchestration (UCS-953), with
+  direct tests for Verdict rules and CLI regression tests for runtime crashes
+  and partial finding-append failures. Output and exit codes are unchanged.
+
 ### Added
 
 - `engine/reverse-staged.js` provides snapshot-aware staged attribution for the
@@ -76,12 +80,6 @@ dates are recorded at release time, never retroactively.
   retrieval struggles, in-scope misses and excluded topics.
 - Clarify the cited, human-reviewed path from an organizational evidence gap
   through capture and kb-build to fresh-session retrieval (UCS-1225).
-
-### Changed
-
-- Preflight is a thin CLI adapter over library orchestration (UCS-953), with
-  direct tests for Verdict rules and CLI regression tests for runtime crashes
-  and partial finding-append failures. Output and exit codes are unchanged.
 
 ## [2.1.0] - 2026-09-09
 
