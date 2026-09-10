@@ -52,13 +52,14 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Ten command-line surfaces. JavaScript with JSDoc types, zero build step, one
+Eleven command-line surfaces. JavaScript with JSDoc types, zero build step, one
 dependency (D-022).
 
 | Command | Answers |
 | --- | --- |
 | `validate.js` | is the store structurally sound? |
 | `validate-values.js` | do the Concepts still match the code they point at? |
+| `commit-check.js` | do both whole-store validators pass the commit gate? |
 | `preflight.js` | which Concepts may this agent trust, right now? |
 | `resolve.js` | what does the store know about these terms or paths? |
 | `survey-map.js` | what is in this repo, and what could not be surveyed? |

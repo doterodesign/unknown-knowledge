@@ -139,7 +139,14 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
         'ingest must have loaded far enough to parse flags');
       continue;
     }
-    assert.match(r.stderr, /internal failure — the engine could not be loaded/);
+    if (surface === 'commit-check.js') {
+      // Orchestration loads without YAML; each validator then fails separately.
+      // Both failures must remain visible and the aggregate must still be 2.
+      assert.match(r.stderr, /validate: failure \(exit 2\)/);
+      assert.match(r.stderr, /validate-values: failure \(exit 2\)/);
+    } else {
+      assert.match(r.stderr, /internal failure — the engine could not be loaded/);
+    }
     assert.match(r.stderr, /Cannot find package|ERR_MODULE_NOT_FOUND/);
   }
 });
