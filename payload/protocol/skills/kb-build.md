@@ -19,6 +19,28 @@ promotable.** A claim with no traceable source never becomes a leaf; it
 parks as a gap-log entry (step 2) so the demand signal survives without the
 store vouching for it.
 
+## Closing an organizational evidence gap
+
+A reflect handoff must say whether the source exists but was hard to reach,
+or the organizational fact is still unestablished after scoped navigation.
+Only the former can be repaired by a search term or pointer alone. For the
+latter, name the consulted IDs/paths, permitted residue/context and the
+missing evidence in the steward-facing recommendation; do not invent a
+provider, safeguard or policy from general knowledge. Expected out-of-scope
+absence warrants no taxonomy expansion.
+
+`knowledge-reflect.md` owns independent corroboration, literary warrant and
+rejection/reopening rules. A lone miss stays under-corroborated; copying it
+into three fragments does not justify a handoff. Reflect recommends knowledge
+work but never writes leaves. A human bringing a source directly may invoke
+this skill without manufacturing a reflect cluster: the five steps below
+still apply, including citation review and the separate promotion gate.
+
+Approval to investigate or draft is not approval to promote. A rejected or
+unapproved proposal stays unpublished; if retained as a draft it remains
+`draft` (preflight `unknown`). Do not mark its findings resolved or mint
+vocabulary to make an unknown organizational fact appear covered.
+
 ## This skill is thin orchestration
 
 Every mechanical step below **names the engine command that performs it**.
@@ -123,7 +145,7 @@ state:
 ```
 node unknown-knowledge/engine/log-entry.js create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"kb-build item not promotable: export-precision claim lacks any citation; nearest leaf L-000100","consulted":{"leaves":["L-000100"]}}'
+  --entry '{"summary":"L-000100 knowledge/_catalog.yaml","consulted":{"leaves":["L-000100"]}}'
 ```
 
 `--date` is injected, never wall-clock; the summary carries leaf ids,
@@ -302,3 +324,28 @@ node unknown-knowledge/engine/resolve.js --paths knowledge/L-00/L-000110-svg-ass
 
 The skill declares done only on an exit-0 run that saw the final draft —
 a verdict is per-run, never carried (D-011).
+
+**Closing the gap happens after drafting.** Structural validation checks
+shape and resolving references; it does not read citations or prove human
+approval. Hand the reviewer the actual sources read, claim-to-source mapping,
+scope and revision notes, provenance, catalog row and applicable typed
+`concepts`/`paths`/`relates` edges. Never add unrelated edges just to fill a
+field. A citation's authority tier does not itself certify company policy.
+
+After the human approves the cited content and promotion, apply that reviewed
+change through this write path, including any required time metadata. Run
+`validate.js` and `validate-values.js`, then regenerate discovery and check
+it with the same injected date:
+
+```sh
+node unknown-knowledge/engine/derive.js --write --today 2026-09-10 --root .
+node unknown-knowledge/engine/derive.js --check --today 2026-09-10 --root .
+```
+
+Use the actual review date in place of the example. Keep the approved change
+and its validation in the normal PR gate; only then resolve the associated
+findings through `log-entry.js`. Verify the original question in a fresh
+session: resolve, run `preflight.js --leaves <accession> --today <date>` on
+each consulted leaf, read its body and cited evidence, then answer with the
+accession and source attribution. A catalog hit, derived excerpt or concept
+preflight alone does not establish that the new knowledge is usable.

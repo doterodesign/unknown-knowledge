@@ -108,6 +108,7 @@ expected-artifact boxes, and records the wall-clock time.
 | [`A5-knowledge-bootstrap-walkthrough.md`](A5-knowledge-bootstrap-walkthrough.md) | `payload/protocol/skills/knowledge-bootstrap.md` phase-2 bootstrap (survey → gate → emit → miss → interview → green finish) | swift-app | landed (KK-21) |
 | [`A5-knowledge-reflect-walkthrough.md`](A5-knowledge-reflect-walkthrough.md) | `payload/protocol/skills/knowledge-reflect.md` consolidation (seeded findings → clustering → recommendation list → simulated approval → apply → green re-validation → last-reflect stamp) | swift-app | landed (KK-22) |
 | [`A5-kb-build-walkthrough.md`](A5-kb-build-walkthrough.md) | `payload/protocol/skills/kb-build.md` sole knowledge write path (classify → cite → draft → index → validate) | ts-app | landed (KK-23) |
+| [`A5-knowledge-gap-walkthrough.md`](A5-knowledge-gap-walkthrough.md) | capture → reflect → kb-build → fresh retrieval, including rejected/unapproved drafts and controlled citation review | disposable clean v2 component fixture | UCS-1225; run with fresh agents |
 | [`A5-knowledge-audit-walkthrough.md`](A5-knowledge-audit-walkthrough.md) | `payload/protocol/skills/knowledge-audit.md` health check + loop heartbeat (validators → reverse audit → sweeps → heartbeat → report) | ts-app | landed (KK-23) |
 
 Each new skill issue ships its `A5-<skill>-walkthrough.md` here; the harness

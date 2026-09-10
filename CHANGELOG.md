@@ -50,6 +50,8 @@ dates are recorded at release time, never retroactively.
   seeded-client versus kit-repository roots; preflight zero-hit queries,
   recover catalog wording before survey-scoped fallback, and distinguish
   retrieval struggles, in-scope misses and excluded topics.
+- Clarify the cited, human-reviewed path from an organizational evidence gap
+  through capture and kb-build to fresh-session retrieval (UCS-1225).
 
 ## [2.1.0] - 2026-09-09
 

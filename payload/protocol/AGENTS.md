@@ -409,6 +409,23 @@ secrets**. The `session` field is an opaque ID. Committed fragments are
 permanent git history in this repo and are reviewable content like any other
 PR change.
 
+**Missing evidence is different from missing wording.** After scoped source
+and catalog navigation, an undocumented organizational fact stays
+**unestablished**. General knowledge can explain what telemetry providers or
+safeguards usually do; it cannot establish which ones this organization uses.
+An in-scope evidence gap is a `retrieval-miss`; a fact recovered through
+another term or catalog is a `retrieval-struggle`. Expected absence outside
+`survey-scope.yaml` is neither a demand to search excluded paths nor warrant
+for taxonomy expansion.
+
+For an in-scope miss, the helper may record permitted `residue` and
+`resolved-context` from the resolver alongside `consulted` IDs and paths.
+Review tokens before persisting them: these fields are not an exception to
+the content policy, and a query can contain secrets or identifying text.
+Omit unsafe tokens; never paste the question into a summary. Findings record
+navigation evidence, not the missing company fact. Reflect judges independent
+corroboration; a later cited addition goes through `protocol/skills/kb-build.md`.
+
 ## Decisions-authoring path (§3.5)
 
 When your work surfaces a decision — a trade-off taken, a graduation of
