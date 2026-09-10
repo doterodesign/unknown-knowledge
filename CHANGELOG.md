@@ -15,6 +15,11 @@ dates are recorded at release time, never retroactively.
 
 ### Changed
 
+- Runtime source gathering explicitly follows cited URLs with host tools and
+  attributes answers/actions to organizational records, external evidence,
+  general explanation or inference, while preserving inaccessible evidence and
+  undocumented facts as gaps (UCS-1221). Existing trust gates remain unchanged.
+
 - **Breaking CLI contract (MAJOR, D-021):** preflight `next-action` values
   are stable machine codes in JSON and human output; client-editable protocol
   rows own conduct wording (UCS-954). Shared time reasons retain facts without

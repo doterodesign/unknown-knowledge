@@ -299,10 +299,40 @@ failures degrade every requested verdict to `unknown`. Never cache verdicts.
 
 ### 3. GATHER — read the fact, not the map
 
-Follow each resolved concept's `source-of-truth` pointer and **read the
-file**. One targeted read per fact. Knowledge leaves: read the leaf body and
-follow `class-elsewhere` redirects. Never substitute a summary, an
-`enumerates` list, or a leaf heading for the artifact.
+Follow each selected concept's `source-of-truth` pointer and **read the
+file**. Knowledge leaves: read the body and follow the citations, including
+external URLs, using the host agent's source-reading tools. The engine stays
+offline and never executes client code. Catalog titles, summaries,
+`enumerates` lists and leaf headings locate evidence; none replaces reading
+the original artifact or cited source.
+
+Follow redirects, dependencies and successors through the records and return
+to PREFLIGHT for newly selected concepts/leaves before gathering their sources
+or relying on their claims. Read decision entries themselves for team rationale,
+including lifecycle and supersession; a preserved historical decision is not
+current policy. Use the existing navigation rules to select applicable evidence.
+
+If a citation cannot be retrieved, disclose that access failure and which claim
+remains unverified. An unavailable source is not proof that a fact is absent.
+For an unresolved organizational fact, follow scoped fallback and RECORD's
+finding rules; the stores are not an exhaustive account of world knowledge.
+Successful browsing does not promote a leaf or refresh its `verified` date.
+
+**Attribute the answer or action to what you actually read.** Cite the relevant
+concept/leaf IDs and source paths or URLs; cite decision IDs for team rationale.
+Use concise natural prose, without mandatory headings, to distinguish:
+
+- Organizational facts supported by the applicable records and artifacts.
+- External source facts, within the source's scope; vendor advice alone does
+  not establish this organization's implementation, policy or contract.
+- General knowledge used to explain a gap, and inference from evidence where
+  it could otherwise sound like a recorded organizational fact.
+- Unresolved gaps, inaccessible evidence, and stale/quarantined records that
+  remain unverified under the client's permitted exit-1 conduct.
+
+Never fill an undocumented organizational fact with general knowledge or
+inference. Reconcile the relied-upon evidence set before answering or acting;
+this guidance does not permit GATHER or ACT after any exit-2 result.
 
 ### 4. ACT — execute, then attribute before committing
 
