@@ -105,21 +105,67 @@ search within the paths `survey-scope.yaml` includes, and append a
 `retrieval-miss` finding (RECORD, below) only when the topic plausibly should
 be mapped — an unmapped area the scope excludes is expected, not a miss.
 
-### 2. PREFLIGHT — deterministic verdicts on what you resolved
+### 2. PREFLIGHT — check every concept and leaf you rely on
 
+Maintain the **evidence set**: the concept IDs and leaf accessions whose
+claims will support your answer or action. Select every one explicitly in
+preflight, whether found by the resolver or through the catalogs. Merely
+visible related candidates need not be checked unless you rely on them.
+
+Mixed concept-and-leaf request (replace these IDs with your evidence set):
+
+```sh
+node unknown-knowledge/engine/preflight.js --concepts K-101,K-102 --leaves L-000100,L-000200 --today <YYYY-MM-DD> --log --json --root .
 ```
-node unknown-knowledge/engine/preflight.js --concepts K-101,K-102 --json --root .
+
+Leaf-only request — no ontology hit is needed to check knowledge:
+
+```sh
+node unknown-knowledge/engine/preflight.js --leaves L-000100 --today <YYYY-MM-DD> --log --json --root .
 ```
 
-One verdict per concept — `trusted` / `quarantined` / `unknown` — computed by
-engine code, never by your judgment. Store-wide failures degrade every
-requested verdict to `unknown`. Exit codes: 0 all trusted, 1 quarantines
-present, 2 engine failure / check-never-ran. What you DO with a verdict is
-the conduct policy below. Add `--log --today <YYYY-MM-DD>` so quarantine
-findings auto-append (one fragment per quarantined concept).
+Replace `<YYYY-MM-DD>` with the **current evaluation date** on every run,
+including concept-only and store-health runs. The engine never reads the
+clock; omitting the date skips freshness checks. `--log` appends quarantine
+findings for selected quarantined records. Use `--concepts` only for concept
+IDs and `--leaves` for accessions; there is **no decision-preflight flag**.
+Read decision lifecycle and supersession records when selecting rationale,
+and check any supporting concepts or leaves you rely on through these flags.
 
-With an empty/omitted `--concepts`, preflight validates store health only and
-exits on the store verdict — the zero-resolution branch still preflights.
+**GATHER can expand the evidence set.** Read entry metadata to navigate, but
+before relying on a newly reached `class-elsewhere` target, `depends-on`
+prerequisite, replacement/successor, or other supporting entry, return to
+PREFLIGHT with its ID. Incremental batches are fine: each relied-upon concept
+and leaf must have a verdict from this run before its claims support the
+answer or action. Following a redirect does not transfer its verdict to the
+target. Before answering or acting, reconcile the evidence set with the
+returned `verdicts` and `leaf-verdicts`; resolver metadata is not a substitute.
+
+Keep these four checks separate:
+
+- **Store health** says whether the stores loaded. Only when BOTH selectors
+  are empty/omitted does preflight run in store-health-only mode, with no
+  selected verdicts. The zero-resolution branch still checks health, but a
+  health pass never checks a leaf's claims.
+- **Review eligibility** comes from the declared lifecycle/stage. Draft or
+  proposed records are `unknown`. A declared `verified` stage is metadata,
+  not authenticated proof that a human approved the evidence.
+- **Freshness** uses the leaf's `verified` date and `volatility` against
+  `--today`. Stale is distinct from quarantined and unknown. No declared
+  volatility means time-governance **exemption**, not proof of freshness;
+  static knowledge never ages out, which also does not verify its source.
+- **Original-source verification** still requires GATHER's source reads.
+  Even `trusted` reports the attributable engine checks, not an independent
+  reading of citations. The engine remains offline; the host follows sources.
+
+Exit 0 means every selected record is trusted. Exit 1 means completed checks
+found quarantined or stale records: apply the permitted conduct below and
+keep stale claims visibly unverified; browsing never authorizes promotion or
+timestamp refresh. **Exit 2 stops the governed task**, including draft/proposed
+`unknown` results and malformed-store failures. This stop takes precedence
+over any source-gathering advice accompanying an unknown verdict: report the
+blocking result, do not continue GATHER/ACT as if the check passed. Store-wide
+failures degrade every requested verdict to `unknown`. Never cache verdicts.
 
 ### 3. GATHER — read the fact, not the map
 

@@ -35,6 +35,10 @@ dates are recorded at release time, never retroactively.
   the first action before recursive product-source discovery (UCS-1222).
   Client-authored instructions keep the existing append/non-clobber behavior;
   existing seeds remain client-owned and are not automatically updated.
+- Runtime preflight now explicitly selects every relied-upon concept and
+  knowledge leaf with the current date, including leaf-only requests and
+  targets discovered during gathering. Store health, review eligibility,
+  freshness, and source verification remain distinct (UCS-1219).
 
 ## [2.1.0] - 2026-09-09
 
