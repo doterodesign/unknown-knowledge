@@ -252,4 +252,3 @@ function degradeAll(model, ids, errors) {
     evidence: [],
   })).sort((a, b) => compare(a.concept, b.concept));
 }
-
