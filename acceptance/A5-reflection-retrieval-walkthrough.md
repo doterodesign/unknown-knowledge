@@ -32,7 +32,7 @@ Ask it to preserve actual commands, outputs, reads and its final answer in a
 trace **outside** the fixture. Use the same model/settings and request before
 and after:
 
-> What canvas output formats are supported, and what must a delivery profile contain?
+> What canvas output formats are supported, and how should I verify a delivery profile before accepting it?
 
 Give both agents the same verification instruction: before using a knowledge
 leaf, run public preflight for that leaf as well as for concepts, with the
@@ -42,8 +42,10 @@ baseline omits it, preserve that failure separately rather than correcting its
 trace after the fact.
 
 - [ ] Record the baseline answer and actual navigation, including catalog or
-  source fallback. The correct source-grounded answer is PNG/SVG and an archive
-  plus manifest; a recovered correct answer still has measurable retrieval cost.
+  source fallback. The correct source-grounded answer is PNG/SVG (from code)
+  and comparing file checksums with the sender's inventory before acceptance
+  (from the handbook). Code cannot testify to that independent verification
+  guidance. A recovered correct answer still has measurable retrieval cost.
 - [ ] Record leaf IDs actually read, separately from resolver entry points and
   concept preflight. Do not award leaf preflight for a concept verdict.
 - [ ] Save public resolver JSON for `canvas output`, `delivery profile`, and

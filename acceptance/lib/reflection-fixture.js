@@ -29,7 +29,7 @@ export function prepareReflectionFixture(root) {
   write('src/formats.ts', "export const FORMATS = ['png', 'svg'];\n");
   write('src/delivery.ts', "export const DELIVERY = ['archive', 'manifest'];\n");
   write('src/locales.ts', "export const LOCALES = ['en', 'fr'];\n");
-  write('docs/handbook.md', '# Synthetic handbook\n\n## Canvas output\nIn this fixture, canvas output means the export format in src/formats.ts.\nThe supported formats are PNG and SVG.\n\n## Delivery\nThe delivery profile in src/delivery.ts requires an archive and a manifest.\n\n## Locale\nThe locale list is owned by src/locales.ts. It is unrelated to canvas output.\n');
+  write('docs/handbook.md', '# Synthetic handbook\n\n## Canvas output\nIn this fixture, canvas output means the export format in src/formats.ts.\nFor artwork that must resize without loss of detail, use vector rather than raster encoding.\n\n## Delivery\nDelivery verification applies to the delivery profile implemented by src/delivery.ts.\nBefore accepting transferred files, compare their checksums with the sender\'s inventory; matching filenames alone does not establish integrity.\n\n## Locale\nThe locale list is owned by src/locales.ts. It is unrelated to canvas output.\n');
   const concepts = [
     ['K-101', 'Export format', 'src/formats.ts', 'FORMATS', ['png', 'svg']],
     ['K-102', 'Delivery profile', 'src/delivery.ts', 'DELIVERY', ['archive', 'manifest']],
@@ -45,9 +45,9 @@ export function prepareReflectionFixture(root) {
   }))));
   const leaves = [
     { id: 'L-000100', heading: 'Image encoding guidance', terms: ['encoding'], concepts: ['K-101'],
-      body: 'The supported formats are PNG and SVG. See docs/handbook.md, Canvas output.' },
+      body: 'Vector encoding preserves detail when artwork is resized. See docs/handbook.md, Canvas output.' },
     { id: 'L-000200', heading: 'Packaging checklist', terms: ['packaging'], concepts: [],
-      body: 'Delivery requires an archive and a manifest. See docs/handbook.md, Delivery.' },
+      body: 'Compare file checksums with the sender\'s inventory before accepting a delivery. See docs/handbook.md, Delivery.' },
   ];
   const leafPath = leaf => `L-00/${leaf.id}.md`;
   record('knowledge/_catalog.yaml', envelope('knowledge', leaves.map(l => ({ id: l.id, title: l.heading, file: leafPath(l) }))));
