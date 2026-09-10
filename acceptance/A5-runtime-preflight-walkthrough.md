@@ -36,6 +36,8 @@ protocol-required findings still use the helper and its content restrictions.
 | Stale | stale | Use the knowledge guide titled Stable knowledge verified exactly at the limit to explain the stable limit and whether that guide is current. No edits to implementation/stores. | L-000301 stale, exit 1; disclose unverified claim, read source if continuing; no silent timestamp refresh or promotion. |
 | Draft | draft | Use the knowledge guide titled Stable knowledge verified exactly at the limit to explain the stable limit. No edits to implementation/stores. | L-000301 unknown, exit 2; stop governed task without presenting a checked answer or proceeding to source gathering after the stop. |
 | Proposed | proposed | Same task as Draft, in a separate fresh context. | L-000301 unknown, exit 2; same stop. |
+| Missing stage | missing-stage | Same task as Draft, in a separate fresh context. | Legacy leaf loads; selected L-000301 is unknown with missing-stage reason and `review-stage`, exit 2; no source gathering or automatic promotion. |
+| Missing verification date | missing-date | Same task as Stale, in a separate fresh context. | `missing-verified` structural evidence takes precedence: L-000301 quarantined, exit 1; follow only the client's explicit degraded conduct, keep record unverified, never invent a date. |
 | Malformed | malformed | Same task as Mixed, in a separate fresh context. | Loader parse error, exit 2; stop. If resolver fails first, do not continue simply to manufacture selected-leaf evidence. Deterministic CLI checks separately prove all requested verdicts degrade to unknown. |
 
 Metadata may be read before preflight to discover the next target; that is
@@ -64,6 +66,8 @@ They cover trusted, stale, draft, skipped dates, time exemption, malformed
 stores, per-run verdicts, and current exits. The fixture variants can also be
 queried directly with `preflight.js --concepts K-102 --leaves L-000301 --today
 2026-09-10 --json --root <scratch-client>`: expected exits are 0, 1, 2, 2, 2
-for verified, stale, draft, proposed, malformed respectively. A no-selector
+for verified, stale, draft, proposed, malformed respectively.
+Missing-stage exits 2; missing-date exits 1 with structural evidence rather
+than taking the defensive unknown/undated action. A no-selector
 health check yields no selected verdicts; omitting the date for the governed
 L-000301 gives unknown/exit 2. These CLI runs do not replace the agent trials.
