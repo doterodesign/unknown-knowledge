@@ -8,8 +8,8 @@ import { dump, load } from 'js-yaml';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const [destination, variant = 'verified'] = process.argv.slice(2);
-if (!destination || !['verified', 'stale', 'draft', 'proposed', 'malformed'].includes(variant)) {
-  throw new Error('usage: node acceptance/runtime-preflight-fixture.js <new-directory> [verified|stale|draft|proposed|malformed]');
+if (!destination || !['verified', 'stale', 'draft', 'proposed', 'missing-stage', 'missing-date', 'malformed'].includes(variant)) {
+  throw new Error('usage: node acceptance/runtime-preflight-fixture.js <new-directory> [verified|stale|draft|proposed|missing-stage|missing-date|malformed]');
 }
 mkdirSync(destination); // Refuse an existing destination rather than overwrite it.
 const kit = join(destination, 'unknown-knowledge');
@@ -19,6 +19,8 @@ for (const name of ['engine', 'schemas', 'protocol']) {
   cpSync(join(repo, 'payload', name), join(kit, name), { recursive: true });
 }
 cpSync(join(repo, 'node_modules'), join(destination, 'node_modules'), { recursive: true });
+// Runtime dependencies must not become Git snapshot evidence in a trial.
+writeFileSync(join(destination, '.gitignore'), 'node_modules/\n');
 writeFileSync(join(destination, 'AGENTS.md'), 'Read unknown-knowledge/protocol/AGENTS.md and follow its runtime loop.\n');
 
 const directory = join(kit, 'knowledge/freshness');
@@ -32,6 +34,8 @@ for (const file of readdirSync(directory)) {
   if (leaf.id === 'L-000301') {
     leaf.verified = variant === 'stale' ? '2025-09-08' : '2026-09-09';
     if (variant === 'draft' || variant === 'proposed') leaf.facets.stage = variant;
+    if (variant === 'missing-stage') delete leaf.facets.stage;
+    if (variant === 'missing-date') delete leaf.verified;
     leaf.relates = { supersedes: ['L-000307'] };
   }
   if (leaf.id === 'L-000305') leaf['cross-references'] = { 'class-elsewhere': ['L-000306'] };

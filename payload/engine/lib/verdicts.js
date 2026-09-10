@@ -126,7 +126,7 @@ function computeConceptVerdicts(model, ids, repoRoot) {
  *                half: value checks diff a descriptor against source code, and
  *                a leaf carries no descriptor. Its evidence is structural only,
  *                which is stated rather than silently implied by an empty list.
- *   unknown      `facets.stage` is pre-promotion — the SAME predicate the
+ *   unknown      `facets.stage` is missing or pre-promotion — the SAME predicate the
  *                concept path calls, so a draft leaf and a draft concept cannot
  *                be verdicted differently by two surfaces that both think they
  *                are asking one question. This is preflight's half of the
@@ -158,10 +158,12 @@ function computeLeafVerdicts(model, ids, repoRoot, today) {
         evidence,
       };
     }
-    if (isPrePromotionStatus(stage)) {
+    if (stage === null || isPrePromotionStatus(stage)) {
       return {
         ...base, verdict: 'unknown',
-        reason: `stage "${stage}" — this leaf is pre-promotion, so no moderator has certified its citations and nothing vouches for the claim`,
+        reason: stage === null
+          ? 'missing review stage (facets.stage) — this leaf has no declared promotion state'
+          : `stage "${stage}" — this leaf is pre-promotion; its declared stage does not establish reviewed evidence`,
         'next-action': NEXT_ACTIONS['unknown-stage'],
         evidence,
       };

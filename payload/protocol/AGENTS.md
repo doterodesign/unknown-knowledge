@@ -277,7 +277,9 @@ Keep these four checks separate:
   selected verdicts. The zero-resolution branch still checks health, but a
   health pass never checks a leaf's claims.
 - **Review eligibility** comes from the declared lifecycle/stage. Draft or
-  proposed records are `unknown`. A declared `verified` stage is metadata,
+  proposed records and leaves missing `facets.stage` are `unknown`. Legacy
+  leaves without stage remain loadable for inspection and remediation; an
+  absent stage never establishes promotion. A declared `verified` stage is metadata,
   not authenticated proof that a human approved the evidence.
 - **Freshness** uses the leaf's `verified` date and `volatility` against
   `--today`. Stale is distinct from quarantined and unknown. No declared
@@ -290,10 +292,9 @@ Keep these four checks separate:
 Exit 0 means every selected record is trusted. Exit 1 means completed checks
 found quarantined or stale records: apply the permitted conduct below and
 keep stale claims visibly unverified; browsing never authorizes promotion or
-timestamp refresh. **Exit 2 stops the governed task**, including draft/proposed
-`unknown` results and malformed-store failures. This stop takes precedence
-over any source-gathering advice accompanying an unknown verdict: report the
-blocking result, do not continue GATHER/ACT as if the check passed. Store-wide
+timestamp refresh. **Exit 2 stops the governed task**, including draft/proposed,
+missing-stage, skipped-check `unknown` results and malformed-store failures.
+Report the blocking result; do not continue GATHER/ACT. Store-wide
 failures degrade every requested verdict to `unknown`. Never cache verdicts.
 
 ### 3. GATHER — read the fact, not the map
@@ -355,7 +356,7 @@ See capture obligations below. Findings, misses, and gaps are appended via
 > quarantined claims.
 
 **Apply the command exit first. Exit 2 means STOP**, including an `unknown`
-verdict for a draft/proposed record, a skipped check, a store failure, or an
+verdict for a draft/proposed record, a missing review stage, a skipped check, a store failure, or an
 incomplete command. Report the blocking result. Do not continue GATHER/ACT,
 even if another row says `proceed`; an action code is not permission to cross
 this gate. A command that failed before returning verdicts may have no code.
@@ -369,14 +370,20 @@ not permission to repair or promote records automatically.
 | `proceed` | `trusted` | Proceed to GATHER if the command permits it. Follow the original evidence; trust is limited to this run's attributable checks. Never cache verdicts. |
 | `repair-evidence` | `quarantined` concept or leaf | **Quarantine-and-continue** on exit 1: do not trust the record's claims. Gather from the source artifact or cited sources directly; use confirmed survey scope if an artifact pointer is broken. Keep the record untrusted until error-severity evidence is repaired through the human gate and preflight reruns. Ensure required quarantine findings are recorded: `--log --today <date>` automatically logs selected quarantined concepts only; leaf findings use `log-entry.js` with `consulted.leaves`. |
 | `review-status` | `unknown`, pre-promotion concept | Stop on exit 2; report unverified status and skipped value checks. Request human review of the concept before promotion, then rerun preflight. Direct source verification is not a way to continue this stopped task. |
-| `review-stage` | `unknown`, pre-promotion leaf | Stop on exit 2; report the leaf as unverified. Request moderator review of the cited evidence before promotion, then rerun preflight. Do not gather its citations to continue this stopped task. |
+| `review-stage` | `unknown`, pre-promotion or missing-stage leaf | Stop on exit 2; report the leaf as unverified and distinguish a declared draft/proposed stage from missing `facets.stage` using `stage` and `reason`. Request moderator review before establishing a promotion state, then rerun preflight. Keep legacy records available for inspection; never fill in `verified` stage automatically. Do not gather citations to continue this stopped task. |
 | `repair-store` | `unknown`, store-wide failure | Stop; report loader diagnostics. The store must be repaired before preflight can run its checks. Rerun after authorized repair. |
 | `reverify-leaf` | `stale` | On exit 1, continue with the claim visibly unverified; follow the cited evidence directly. Ask the steward to reverify the leaf through the human gate. Browsing alone never authorizes promotion or updating `verified`. |
 | `supply-verified-date` | `unknown`, time-governed leaf has no usable verification date | Stop on exit 2; request human verification and a valid `verified` date, then rerun preflight. Never invent a timestamp. Current structural `missing-verified` / `malformed-verified` findings take precedence and normally produce `repair-evidence`; this code retains the undated fallback. |
 | `supply-evaluation-date` | `unknown`, freshness check skipped | Stop on exit 2; rerun preflight with the current evaluation date via `--today <YYYY-MM-DD>` before gathering or relying on the leaf. |
 
 These rows apply only to selected evidence. Metadata-only candidate navigation
-remains permitted as described in RESOLVE; it does not establish checked claims.
+before the gate remains permitted as described in RESOLVE; it does not establish
+checked claims or permit continued navigation after exit 2. On exit 1, only
+the conduct explicitly permitted by the client's table may continue. A
+missing/malformed verification date is identifiable in `evidence` even when
+structural findings take precedence over an undated time result. Source
+collection leaves stale and quarantined records unverified; static or absent
+volatility exempts age checks, never review or source verification.
 An unfamiliar code is not an all-clear: report the contract mismatch and stop.
 
 ## Gate rules

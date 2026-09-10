@@ -310,8 +310,69 @@ test('leaf time diagnostics report measurements without prescribing conduct', ()
 });
 
 // The literal codes are the public contract, independent of client wording.
+test('a legacy missing-stage leaf remains inspectable but cannot establish trusted promotion', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'preflight-missing-stage-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  cpSync(fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url)), root, { recursive: true });
+  const path = join(root, 'knowledge/freshness/301.1-stable-at-the-limit.md');
+  const original = readFileSync(path, 'utf8');
+  const legacy = original.replace('  stage: verified\n', '');
+  writeFileSync(path, legacy);
+
+  const health = run('--root', root, '--json');
+  assert.equal(health.status, 0, health.stderr);
+  assert.equal(JSON.parse(health.stdout)['store-health'].ok, true);
+  const result = run('--root', root, '--leaves', 'L-000301', '--today', '2026-08-16', '--json');
+  assert.equal(result.status, 2, result.stdout);
+  const [leaf] = JSON.parse(result.stdout)['leaf-verdicts'];
+  assert.equal(leaf.verdict, 'unknown');
+  assert.equal(leaf.stage, null);
+  assert.equal(leaf['next-action'], 'review-stage');
+  assert.match(leaf.reason, /missing.*stage.*promotion/i);
+  assert.deepEqual(leaf.evidence, []);
+  assert.equal(readFileSync(path, 'utf8'), legacy);
+});
+
 // `supply-verified-date` is a defensive fallback: currently the structural
 // missing/malformed-date finding takes precedence and emits repair-evidence.
+for (const [name, stage, extra, status, verdict, reason, time] of [
+  ['missing stage with stale age', null, {}, 2, 'unknown', /missing review stage/, 'stale'],
+  ['missing stage with static age exemption', null, { volatility: 'static' }, 2, 'unknown', /missing review stage/, 'trusted'],
+  ['missing stage with no time governance', null, { volatility: null }, 2, 'unknown', /missing review stage/, 'exempt'],
+  ['draft with stale age', 'draft', {}, 2, 'unknown', /stage "draft".*pre-promotion/, 'stale'],
+  ['proposed with stale age', 'proposed', {}, 2, 'unknown', /stage "proposed".*pre-promotion/, 'stale'],
+  ['missing stage with missing verification date', null, { verified: null }, 1, 'quarantined', /error-severity/, 'undated'],
+]) {
+  test(`review and freshness precedence through the CLI: ${name}`, (t) => {
+    const root = mkdtempSync(join(tmpdir(), 'preflight-review-'));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    cpSync(fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url)), root, { recursive: true });
+    const path = join(root, 'knowledge/freshness/301.1-stable-at-the-limit.md');
+    let leafText = readFileSync(path, 'utf8').replace('  stage: verified\n', stage === null ? '' : `  stage: ${stage}\n`);
+    for (const [key, value] of Object.entries(extra)) {
+      leafText = leafText.replace(new RegExp(`^${key}:.*\\n`, 'm'), value === null ? '' : `${key}: ${value}\n`);
+    }
+    writeFileSync(path, leafText);
+    const args = ['--root', root, '--leaves', 'L-000301', '--today', '2026-09-10'];
+    const result = run(...args, '--json');
+    assert.equal(result.status, status, result.stdout + result.stderr);
+    const [leaf] = JSON.parse(result.stdout)['leaf-verdicts'];
+    assert.equal(leaf.verdict, verdict);
+    assert.equal(leaf.stage, stage);
+    assert.match(leaf.reason, reason);
+    assert.equal(leaf.time.verdict, time);
+    const action = verdict === 'quarantined' ? 'repair-evidence' : 'review-stage';
+    assert.equal(leaf['next-action'], action);
+    if (verdict === 'quarantined') assert.deepEqual(leaf.evidence.map((e) => e.code), ['missing-verified']);
+    const human = run(...args);
+    assert.equal(human.status, status, human.stderr);
+    assert.match(human.stdout, reason);
+    assert.ok(human.stdout.includes(`next: ${action}`));
+    assert.equal(run(...args, '--json').stdout, result.stdout);
+    assert.equal(readFileSync(path, 'utf8'), leafText);
+  });
+}
+
 for (const [name, store, args, status, expected] of [
   ['trusted and quarantine', 'preflight/drift', ['--concepts', 'K-110,K-100'], 1,
     [['K-100', 'repair-evidence'], ['K-110', 'proceed']]],

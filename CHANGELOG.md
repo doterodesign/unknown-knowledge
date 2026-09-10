@@ -48,6 +48,13 @@ dates are recorded at release time, never retroactively.
 
 ### Fixed
 
+- Preflight keeps legacy leaves with missing review stage loadable but reports
+  them as unknown (`review-stage`, exit 2). Client conduct distinguishes missing
+  stage, pre-promotion, freshness prerequisites and store failure, preserves
+  structural precedence, and never permits source gathering through exit 2
+  (UCS-1220). Static age exemption establishes neither promotion nor source
+  freshness. See [compatibility and verification](docs/agents/ucs-1220-conduct.md).
+
 - Installed reverse lookup now attributes deletions and both paths of detected
   renames/copies from isolated candidate and before snapshots. Pointer repairs
   preserve historical governance, complete filenames survive Git-to-resolver
