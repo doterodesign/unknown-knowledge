@@ -25,7 +25,7 @@ entries:
       No stash, reset, restage, checkout filters, archive attributes or lazy
       network fetch is used. Git's alternate index is honored for path-limited
       commits. Preparation and cleanup failures block with exit 2. Submodules,
-      escaping symlinks and non-UTF-8 paths are refused when the snapshot cannot
+      escaping symlinks and non-UTF-8 paths or link targets are refused when it cannot
       represent them honestly; supported relative symlinks retain staged targets.
       Value validation now refuses escaped source reads before extraction, also
       when called directly outside the commit gate. Engine/runtime edits are

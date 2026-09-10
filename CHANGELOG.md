@@ -43,8 +43,7 @@ dates are recorded at release time, never retroactively.
 
 - Installed pre-commit hooks now refuse source-value drift as well as
   structural findings. Real Git integration tests cover paired updates,
-  findings and check failures. This gate still reads the working tree;
-  partial-staging safety is not included in this change (UCS-1227).
+  findings and check failures (UCS-1227).
 - Generated agent wrappers now point to the canonical navigation contract as
   the first action before recursive product-source discovery (UCS-1222).
   Client-authored instructions keep the existing append/non-clobber behavior;

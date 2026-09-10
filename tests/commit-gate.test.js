@@ -283,6 +283,48 @@ test('commit-check refuses a root below the Git repository instead of checking a
   assert.deepEqual(readFileSync(join(repo, '.git/index')), index);
 });
 
+test('the same missing candidate evidence produces byte-identical diagnostics', (t) => {
+  const { git, write, run } = setup(t);
+  write(conceptPath, ontology.replaceAll('src/formats.ts', 'src/missing.ts'));
+  assert.equal(git('add', conceptPath).status, 0);
+  const first = run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']);
+  const second = run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']);
+  assert.equal(first.status, 2);
+  assert.equal(second.status, 2);
+  assert.equal(first.stdout, second.stdout);
+  assert.equal(first.stderr, second.stderr);
+  assert.doesNotMatch(first.stdout + first.stderr, /unknown-knowledge-commit-/);
+});
+
+test('non-UTF-8 symlink bytes cannot become a different candidate source', (t) => {
+  const { repo, git, write, base, scratch } = setup(t);
+  // Decoding ff as the replacement character would redirect this dangling
+  // link to a different, valid file and produce a false clean candidate.
+  write('src/\ufffd.ts', source);
+  symlinkSync(Buffer.from([0xff, 0x2e, 0x74, 0x73]), join(repo, 'src/link.ts'));
+  write(conceptPath, ontology.replaceAll('src/formats.ts', 'src/link.ts'));
+  assert.equal(git('add', '-A').status, 0);
+  const staged = git('ls-files', '--stage', '-z').stdout;
+  const result = git('commit', '-qm', 'invalid symlink encoding');
+  assert.notEqual(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stderr, /snapshot.*non-UTF-8 symlink target/);
+  assert.equal(git('rev-parse', 'HEAD').stdout, base);
+  assert.equal(git('ls-files', '--stage', '-z').stdout, staged);
+  assert.deepEqual(readdirSync(scratch).filter((name) => name.startsWith('unknown-knowledge-commit-')), []);
+});
+
+test('an ambiguous candidate layout fails with stable snapshot diagnostics', (t) => {
+  const { git, write, run } = setup(t);
+  write('ontology/_catalog.yaml', 'schema-version: 1\nstore: ontology\nentries: []\n');
+  assert.equal(git('add', 'ontology').status, 0);
+  const first = run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']);
+  const second = run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']);
+  assert.equal(first.status, 2);
+  assert.equal(second.status, 2);
+  assert.match(first.stderr, /two candidate kit roots/);
+  assert.equal(first.stderr, second.stderr);
+});
+
 test('installed gate refuses malformed staged store bytes despite an unstaged repair', (t) => {
   const { repo, write, git, base } = setup(t);
   write(conceptPath, 'entries: [broken\n');

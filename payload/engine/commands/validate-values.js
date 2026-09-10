@@ -133,7 +133,10 @@ function checkDescriptor(ctx, concept, descriptor, i) {
       ? listDirectory(join(ctx.root, descriptor.source))
       : readFileSync(join(ctx.root, descriptor.source), 'utf8');
   } catch (error) {
-    never('source-missing', `cannot ${readsDirectory ? 'list source directory' : 'read source'} ${JSON.stringify(descriptor.source)}: ${error.message}`);
+    // A filesystem message includes the absolute (possibly temporary) root.
+    // The declared source and stable error code identify the repair without
+    // making the same candidate emit different diagnostics on every run.
+    never('source-missing', `cannot ${readsDirectory ? 'list source directory' : 'read source'} ${JSON.stringify(descriptor.source)}: ${error.code ?? error.message}`);
     return;
   }
 

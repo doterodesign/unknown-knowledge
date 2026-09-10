@@ -91,6 +91,9 @@ function materializeTree(snapshotRoot, tree, git) {
     const bytes = git(['cat-file', 'blob', object]);
     if (mode === '120000') {
       const link = bytes.toString();
+      if (!Buffer.from(link).equals(bytes)) {
+        throw new Error(`snapshot: non-UTF-8 symlink target at ${JSON.stringify(path)} cannot be materialized faithfully`);
+      }
       if (isAbsolute(link) || outside(snapshotRoot, resolve(dirname(target), link))) {
         throw new Error(`snapshot: symlink ${JSON.stringify(path)} points outside the candidate`);
       }

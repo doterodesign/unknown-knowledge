@@ -124,8 +124,8 @@ against an isolated Git index snapshot before a commit exists,
 `hooks/reverse-lookup` runs the reverse lookup over the
 staged diff. Both are **thin wrappers** — each invokes one engine command and
 exits with its code, unchanged, with no bypass variable to read. Real Git commit
-tests exercise the installed gate. It currently reads working-tree evidence;
-partial-staging safety is not provided. They seed but do not install: `init` never writes `.git/`, so the
+tests exercise the installed gate, including partial staging and preservation
+of local work. They seed but do not install: `init` never writes `.git/`, so the
 client hangs the gate the kit ships (D-006).
 
 **Runtime loop** — The per-request agent protocol: resolve → preflight →

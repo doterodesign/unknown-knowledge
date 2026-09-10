@@ -174,7 +174,7 @@ affect their findings. Local work is never stashed, reset or restaged. Installed
 engine code, schemas and dependencies run from the host and are not linked into
 the evidence snapshot. Missing dependencies, snapshot preparation failures and
 cleanup failures block with exit 2. Git submodules and escaping symlinks are
-unsupported and refused explicitly, as are non-UTF-8 path names. Raw blob reads
+unsupported and refused explicitly, as are non-UTF-8 path names or symlink targets. Raw blob reads
 do not invoke checkout
 filters or apply archive attributes. Run from the repository root and install
 the runtime dependencies before committing. Check the actual merge candidate

@@ -132,7 +132,7 @@ into the candidate. Snapshot preparation and cleanup failures block with exit 2.
 Real installed-hook tests check partial staging, committed bytes and cleanup.
 
 Git submodules, symlinks that escape the snapshot, and non-UTF-8 path names
-are refused explicitly when their evidence cannot be represented faithfully. It reads raw blobs without
+or symlink targets are refused explicitly when their evidence cannot be represented faithfully. It reads raw blobs without
 checkout filters or archive attributes. Install required runtime dependencies
 before committing; keep whole-store checks on the actual merge candidate in CI.
 

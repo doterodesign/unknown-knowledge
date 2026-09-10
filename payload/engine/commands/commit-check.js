@@ -2,7 +2,7 @@
 import process from 'node:process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { parseArgs as parseFlags, runCli } from '../lib/cli.js';
+import { parseArgs as parseFlags, rethrowIfBug, runCli } from '../lib/cli.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
 import { withCommitSnapshot } from '../lib/commit-snapshot.js';
 import { locateKitRoot } from '../lib/kit-root.js';
@@ -16,7 +16,16 @@ export async function main(argv) {
 }
 
 async function checkCandidate(root) {
-  const kitRoot = locateKitRoot(root);
+  let kitRoot;
+  try {
+    kitRoot = locateKitRoot(root);
+  } catch (error) {
+    rethrowIfBug(error);
+    // Layout refusals describe candidate evidence, not the random directory
+    // used to hold it. Operational cleanup failures still name their artifact.
+    process.stderr.write(`commit-check: snapshot: ${error.message.replaceAll(root, '<candidate>')}\n`);
+    return EXIT_CODES.FAILURE;
+  }
   if (!['ontology', 'knowledge', 'decisions'].some((store) => existsSync(join(kitRoot, store)))) {
     throw new Error('snapshot: no governed stores in the candidate; stage the kit before checking a commit');
   }
