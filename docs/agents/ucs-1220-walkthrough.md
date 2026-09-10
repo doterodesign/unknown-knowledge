@@ -7,7 +7,7 @@ implementation context was loaded. No model override was set; agents identify
 as Codex/GPT-6 where exposed, with exact serving variant unavailable.
 
 Fixture revision: `1370824` (the implementation commit). Later changes are
-acceptance/report documentation only. The copied engine and protocol were
+acceptance/report documentation and test readability only. The copied engine and protocol were
 compared byte-for-byte with the reviewed branch. Each trial's `manifest.json`
 records the fixture variant, evaluation date and protocol SHA-256. Dependencies
 live outside the governed store and generated `.gitignore` excludes them from
