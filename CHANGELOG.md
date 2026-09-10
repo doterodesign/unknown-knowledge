@@ -13,6 +13,16 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking CLI contract (MAJOR, D-021):** preflight `next-action` values
+  are stable machine codes in JSON and human output; client-editable protocol
+  rows own conduct wording (UCS-954). Shared time reasons retain facts without
+  instructions. Numeric exits and verdict computation are unchanged; exit 2
+  still stops the task, including unknown results. See
+  [migration guidance](docs/agents/ucs-954-action-code-migration.md).
+  No version bump or publication is included here.
+
 ### Added
 
 - `engine/reverse-staged.js` provides snapshot-aware staged attribution for the

@@ -114,11 +114,11 @@ are NOT identities: cite the accession id (L-NNNNNN), never a call number.
   - **frontend/** (2)
     - **constraint/** (1)
       - \`ENG/FRO/CON·L-000162\` Bundle-size budget thresholds — **demoted** (time)
-        - time: verified 223 day(s) ago, past the 90-day limit for volatile knowledge — re-verify against the cited sources, or treat the claim as unverified (UCS-1150)
+        - time: verified 223 day(s) ago, past the 90-day limit for volatile knowledge (UCS-1150)
     - **runbook/** (1)
       - \`ENG/FRO/RUN·L-000171\` Visual regression triage playbook — **demoted** (stage, time)
         - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)
-        - time: verified 154 day(s) ago, past the 90-day limit for volatile knowledge — re-verify against the cited sources, or treat the claim as unverified (UCS-1150)
+        - time: verified 154 day(s) ago, past the 90-day limit for volatile knowledge (UCS-1150)
 `);
 });
 
@@ -354,10 +354,10 @@ test('without --today, staleness is skipped and SAID — never a silent pass', (
   const root = scratch(t);
   const r = derive(root, ['--write', '--json']);
   assert.equal(r.status, 0);
-  assert.match(r.json['time-check'], /^skipped — pass --today/);
+  assert.match(r.json['time-check'], /^skipped — no evaluation date supplied/);
 
   const tree = derivedFile(root, 'tree.domain-form.md');
-  assert.match(tree, /- time verdicts: skipped — pass --today YYYY-MM-DD to enable/);
+  assert.match(tree, /- time verdicts: skipped — no evaluation date supplied/);
   // The stale-only leaf is NOT marked stale, because nothing measured it — and
   // the header says why rather than letting it read as fresh.
   assert.doesNotMatch(tree, /L-000162` Bundle-size budget thresholds — \*\*demoted\*\*/);

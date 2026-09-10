@@ -39,7 +39,7 @@ test('clean store: every requested active concept is trusted — exit 0', () => 
     const v = verdictOf(out, id);
     assert.equal(v.verdict, 'trusted');
     assert.deepEqual(v.evidence, []);
-    assert.match(v['next-action'], /never cache/i); // no verdict caching (D-011)
+    assert.equal(v['next-action'], 'proceed');
   }
 });
 
@@ -54,7 +54,7 @@ test('fixture drift: quarantined verdict for the touching concept, trusted for t
   const codes = bad.evidence.map((e) => e.code);
   assert.ok(codes.includes('value-not-in-source'), `codes: ${codes}`);
   assert.ok(codes.includes('source-value-missing'), `codes: ${codes}`);
-  assert.match(bad['next-action'], /protocol-layer/); // conduct is not the engine's
+  assert.equal(bad['next-action'], 'repair-evidence');
   assert.equal(verdictOf(out, 'K-110').verdict, 'trusted');
 });
 
@@ -65,6 +65,7 @@ test('draft concept verdicts unknown — value checks were skipped, so nothing c
   const v = verdictOf(out, 'K-130');
   assert.equal(v.verdict, 'unknown');
   assert.equal(v.status, 'draft');
+  assert.equal(v['next-action'], 'review-status');
   assert.match(v.reason, /structural checks only/);
 });
 
@@ -84,6 +85,7 @@ test('store-wide parse failure degrades ALL requested verdicts to unknown — ex
   for (const v of out.verdicts) {
     assert.equal(v.verdict, 'unknown');
     assert.match(v.reason, /store-wide failure/);
+    assert.equal(v['next-action'], 'repair-store');
   }
   assert.ok(out['store-errors'].some((d) => d.code === 'parse-error'));
 });
@@ -293,3 +295,51 @@ test('human mode on an all-trusted run says so', () => {
   assert.match(r.stdout, /2 trusted, 0 quarantined, 0 stale, 0 unknown/);
   assert.match(r.stdout, /never cached/);
 });
+
+test('leaf time diagnostics report measurements without prescribing conduct', () => {
+  const root = fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url));
+  const stale = run('--root', root, '--leaves', 'L-000302', '--today', '2026-08-16', '--json');
+  assert.equal(stale.status, 1, stale.stderr);
+  const [v] = JSON.parse(stale.stdout)['leaf-verdicts'];
+  assert.equal(v.reason, 'verified 366 day(s) ago, past the 365-day limit for stable knowledge (UCS-1150)');
+  assert.equal(v.time.reason, v.reason);
+  const skipped = run('--root', root, '--leaves', 'L-000302', '--json');
+  assert.equal(skipped.status, 2, skipped.stderr);
+  assert.equal(JSON.parse(skipped.stdout)['leaf-verdicts'][0].reason,
+    'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
+});
+
+// The literal codes are the public contract, independent of client wording.
+// `supply-verified-date` is a defensive fallback: currently the structural
+// missing/malformed-date finding takes precedence and emits repair-evidence.
+for (const [name, store, args, status, expected] of [
+  ['trusted and quarantine', 'preflight/drift', ['--concepts', 'K-110,K-100'], 1,
+    [['K-100', 'repair-evidence'], ['K-110', 'proceed']]],
+  ['unknown concept', 'preflight/clean', ['--concepts', 'K-130'], 2,
+    [['K-130', 'review-status']]],
+  ['store degradation for both kinds', 'preflight/malformed', ['--concepts', 'K-110,K-100', '--leaves', 'L-000999'], 2,
+    [['K-100', 'repair-store'], ['K-110', 'repair-store'], ['L-000999', 'repair-store']]],
+  ['trusted and pre-promotion leaves', 'structural-validator/frontmatter-v2', ['--leaves', 'L-000213,L-000117'], 2,
+    [['L-000117', 'proceed'], ['L-000213', 'review-stage']]],
+  ['leaf quarantine', 'structural-validator/frontmatter-v2-findings', ['--leaves', 'L-000901'], 1,
+    [['L-000901', 'repair-evidence']]],
+  ['stale and fresh leaves', 'structural-validator/time-facet', ['--leaves', 'L-000302,L-000301', '--today', '2026-08-16'], 1,
+    [['L-000301', 'proceed'], ['L-000302', 'reverify-leaf']]],
+  ['missing and malformed verification dates', 'structural-validator/time-facet-findings', ['--leaves', 'L-000402,L-000401', '--today', '2026-08-16'], 1,
+    [['L-000401', 'repair-evidence'], ['L-000402', 'repair-evidence']]],
+  ['skipped freshness', 'structural-validator/time-facet', ['--leaves', 'L-000302'], 2,
+    [['L-000302', 'supply-evaluation-date']]],
+]) {
+  test(`next-action codes in JSON and human output: ${name}`, () => {
+    const root = fileURLToPath(new URL(`fixtures/${store}/`, import.meta.url));
+    const human = run('--root', root, ...args);
+    const json = run('--root', root, ...args, '--json');
+    assert.equal(human.status, status, human.stderr);
+    assert.equal(json.status, status, json.stderr);
+    const payload = JSON.parse(json.stdout);
+    const rows = [...payload.verdicts, ...(payload['leaf-verdicts'] ?? [])];
+    assert.deepEqual(rows.map((v) => [v.concept ?? v.leaf, v['next-action']]), expected);
+    assert.deepEqual([...human.stdout.matchAll(/^  next: (.+)$/gm)].map((m) => m[1]), expected.map((row) => row[1]));
+    assert.equal(run('--root', root, ...args, '--json').stdout, json.stdout);
+  });
+}

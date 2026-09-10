@@ -346,19 +346,38 @@ See capture obligations below. Findings, misses, and gaps are appended via
 
 ## Conduct-on-verdict policy (D-011)
 
-> **CLIENT-EDITABLE.** Verdicts are deterministic engine facts; what a
-> session does about one is policy in this markdown, which you (the client)
-> own. The table below is the recommended default — quarantine-and-continue.
-> A stricter shop may edit `quarantined` to fail-stop. What is NOT editable:
-> the engine's verdicts, exit codes, and evidence — and a policy edit must
-> never tell an agent to bypass a gate or trust quarantined claims.
+> **CLIENT-EDITABLE.** Verdicts are deterministic engine facts; conduct
+> belongs to this markdown. The engine's `next-action` field is a stable code
+> in JSON and in human output (`next: <code>`). Look up that code below.
+> Clients may edit the conduct wording (for example, make `repair-evidence`
+> fail-stop). Never change the engine's verdicts, exit codes, or evidence to
+> enforce a policy, and never tell an agent to bypass a gate or trust
+> quarantined claims.
 
-| Verdict / outcome | Conduct (recommended default) |
-|---|---|
-| `trusted` | Proceed. The verdict is fresh this run; never cache it. |
-| `quarantined` | **Quarantine-and-continue**: continue the task, but do NOT trust the concept's claims — gather from the source artifact directly (falling back to survey-scoped search if the pointer itself is the problem), and make sure the quarantine finding was appended (run preflight with `--log --today <date>`; it does this for you). |
-| `unknown` | Treat as unverified — draft/proposed concepts and store-wide degradations land here. Work from the source artifact; do not present store claims as checked. |
-| exit 2 — engine failure / check-never-ran | **STOP.** A check that never ran is a blocking defect, never a silent pass. Report the engine error; do not proceed as if preflight passed. |
+**Apply the command exit first. Exit 2 means STOP**, including an `unknown`
+verdict for a draft/proposed record, a skipped check, a store failure, or an
+incomplete command. Report the blocking result. Do not continue GATHER/ACT,
+even if another row says `proceed`; an action code is not permission to cross
+this gate. A command that failed before returning verdicts may have no code.
+Do not infer that checks never ran from every exit 2: an output or logging
+failure can occur after computation. Report what the diagnostics establish.
+The repair/review actions below describe the next recovery step after the stop,
+not permission to repair or promote records automatically.
+
+| `next-action` code | Verdict / condition | Conduct (recommended default) |
+|---|---|---|
+| `proceed` | `trusted` | Proceed to GATHER if the command permits it. Follow the original evidence; trust is limited to this run's attributable checks. Never cache verdicts. |
+| `repair-evidence` | `quarantined` concept or leaf | **Quarantine-and-continue** on exit 1: do not trust the record's claims. Gather from the source artifact or cited sources directly; use confirmed survey scope if an artifact pointer is broken. Keep the record untrusted until error-severity evidence is repaired through the human gate and preflight reruns. Ensure required quarantine findings are recorded: `--log --today <date>` automatically logs selected quarantined concepts only; leaf findings use `log-entry.js` with `consulted.leaves`. |
+| `review-status` | `unknown`, pre-promotion concept | Stop on exit 2; report unverified status and skipped value checks. Request human review of the concept before promotion, then rerun preflight. Direct source verification is not a way to continue this stopped task. |
+| `review-stage` | `unknown`, pre-promotion leaf | Stop on exit 2; report the leaf as unverified. Request moderator review of the cited evidence before promotion, then rerun preflight. Do not gather its citations to continue this stopped task. |
+| `repair-store` | `unknown`, store-wide failure | Stop; report loader diagnostics. The store must be repaired before preflight can run its checks. Rerun after authorized repair. |
+| `reverify-leaf` | `stale` | On exit 1, continue with the claim visibly unverified; follow the cited evidence directly. Ask the steward to reverify the leaf through the human gate. Browsing alone never authorizes promotion or updating `verified`. |
+| `supply-verified-date` | `unknown`, time-governed leaf has no usable verification date | Stop on exit 2; request human verification and a valid `verified` date, then rerun preflight. Never invent a timestamp. Current structural `missing-verified` / `malformed-verified` findings take precedence and normally produce `repair-evidence`; this code retains the undated fallback. |
+| `supply-evaluation-date` | `unknown`, freshness check skipped | Stop on exit 2; rerun preflight with the current evaluation date via `--today <YYYY-MM-DD>` before gathering or relying on the leaf. |
+
+These rows apply only to selected evidence. Metadata-only candidate navigation
+remains permitted as described in RESOLVE; it does not establish checked claims.
+An unfamiliar code is not an all-clear: report the contract mismatch and stop.
 
 ## Gate rules
 

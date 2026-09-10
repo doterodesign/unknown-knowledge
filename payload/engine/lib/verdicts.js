@@ -38,22 +38,26 @@ export function computeVerdicts(model, { repoRoot, concepts = null, leaves = nul
   return { health, storeVerdict: health.ok ? 'trusted' : 'unknown', verdicts, leafVerdicts };
 }
 
-/** The per-verdict next action (engine hint; conduct is protocol policy). */
+/**
+ * Stable next-action codes, shared by JSON and human output (UCS-954).
+ * Conduct is keyed by these codes in protocol/AGENTS.md, never rendered here.
+ * Changing a code is a breaking CLI contract change (D-021).
+ */
 const NEXT_ACTIONS = Object.freeze({
-  trusted: 'proceed — this verdict was computed fresh this run; never cache it (a stale "trusted" is a false all-clear, D-011)',
-  quarantined: 'treat the concept as untrusted and fix the error-severity evidence, then re-run preflight — what a session does meanwhile (quarantine-and-continue vs. fail-stop) is protocol-layer policy (KK-20, D-011)',
-  'unknown-status': 'do not rely on the enumerated values — only structural checks ran (§3.5); promote the concept to active to make its checks blocking-grade, or verify against the source-of-truth directly',
-  'unknown-stage': 'do not rely on this leaf — a pre-promotion stage means no moderator has verified its citations (UCS-1149); read the cited sources directly, or have the leaf promoted to a verified stage',
-  'unknown-store': 'repair the store first (fix the loader error diagnostics), then re-run preflight — no check ran for this concept, and a check that never ran is a blocking defect, never a silent pass (PRD §5)',
+  trusted: 'proceed',
+  quarantined: 'repair-evidence',
+  'unknown-status': 'review-status',
+  'unknown-stage': 'review-stage',
+  'unknown-store': 'repair-store',
   // The Time facet (UCS-1150). A stale leaf is not broken and its checks did
   // run — the action is re-verification against the sources, which is a
   // steward's job rather than a repair.
-  stale: 're-verify this leaf against its cited sources and update its `verified` date, or treat the claim as unverified — the knowledge is past the pinned freshness limit for its volatility class, so nothing currently vouches for it (UCS-1150)',
+  stale: 'reverify-leaf',
   // A leaf that asked to be governed by time and gave nothing to measure from.
   // Its verdict can only ever be `undated`, so the fix is the missing field.
-  'unknown-undated': 'add the `verified` date this leaf is missing — it declares a volatility class, so it is under time governance, but its age cannot be computed and its freshness can never be certified (UCS-1150); the validator reports the same omission as a missing-verified finding',
+  'unknown-undated': 'supply-verified-date',
   // No --today was injected, so no freshness verdict was computed at all.
-  'unknown-skipped': 'pass --today <YYYY-MM-DD> to compute time verdicts — this leaf declares a volatility class but nothing measured its age this run, and a check that never ran is never a silent pass (PRD §5, D-012)',
+  'unknown-skipped': 'supply-evaluation-date',
 });
 
 // ---------------------------------------------------------- verdict joining
