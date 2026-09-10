@@ -256,7 +256,7 @@ node unknown-knowledge/engine/preflight.js --leaves L-000100 --today <YYYY-MM-DD
 Replace `<YYYY-MM-DD>` with the **current evaluation date** on every run,
 including concept-only and store-health runs. The engine never reads the
 clock; omitting the date skips freshness checks. `--log` appends quarantine
-findings for selected quarantined records. Use `--concepts` only for concept
+findings for selected quarantined concepts. Use `--concepts` only for concept
 IDs and `--leaves` for accessions; there is **no decision-preflight flag**.
 Read decision lifecycle and supersession records when selecting rationale,
 and check any supporting concepts or leaves you rely on through these flags.
