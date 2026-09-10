@@ -458,9 +458,11 @@ test('timeVerdict is the ONE implementation every projection reads', () => {
   // UCS-1152's resolution pipeline inherit these verdicts rather than
   // recomputing them. Asserted structurally: neither surface spells the
   // thresholds or the field names itself.
-  for (const file of ['commands/resolve.js', 'commands/preflight.js', 'commands/validate.js']) {
+  // Preflight's computation and time-check summary now live in libraries;
+  // the command only renders their result (UCS-947/UCS-953).
+  for (const file of ['commands/resolve.js', 'lib/preflight.js', 'lib/verdicts.js', 'commands/validate.js']) {
     const source = readFileSync(join(root, 'payload/engine', file), 'utf8');
-    assert.match(source, /from '\.\.\/lib\/time-verdicts\.js'/, `${file} must read the shared module`);
+    assert.match(source, /from '(?:\.\.\/lib\/|\.\/)time-verdicts\.js'/, `${file} must read the shared module`);
     // Comments are stripped before the check: a docstring naming the
     // thresholds is documentation a reader needs, while a threshold in CODE is
     // a second copy that can drift from the table. Only the latter is the

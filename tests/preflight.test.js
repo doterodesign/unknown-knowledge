@@ -9,10 +9,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { load } from 'js-yaml';
 
 const cli = fileURLToPath(new URL('../payload/engine/preflight.js', import.meta.url));
@@ -139,6 +139,23 @@ function withDriftCopy(fn) {
   }
 }
 
+test('a runtime crash while rendering computed verdicts reaches the outer guard and exits 2', () => {
+  withDriftCopy((dir) => {
+    const preload = join(dir, 'crash.mjs');
+    // Inject at the output boundary, after computation. No engine module is
+    // replaced, and the actual CLI entry point must catch this TypeError.
+    writeFileSync(preload, `process.stdout.write = () => {
+      throw new TypeError('injected preflight output failure');
+    };\n`);
+    const r = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href,
+      cli, '--root', dir, '--concepts', 'K-100', '--json'], { encoding: 'utf8' });
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.match(r.stderr, /internal failure — the command did not complete/);
+    assert.match(r.stderr, /TypeError: injected preflight output failure/);
+    assert.equal(r.stdout, '');
+  });
+});
+
 test('--log appends one engine-attributed quarantine finding per quarantined concept (KK-13 schema)', () => {
   withDriftCopy((dir) => {
     const r = run('--root', dir, '--concepts', 'K-100,K-110', '--log', '--today', '2026-01-05', '--json');
@@ -156,6 +173,46 @@ test('--log appends one engine-attributed quarantine finding per quarantined con
     assert.match(entry.summary, /K-100/);
     assert.match(entry.summary, /value-not-in-source/);
     assert.match(entry.summary, /src\/icons\.txt/);
+  });
+});
+
+test('a second finding append failure exits 2 and reports incompletion without denying computed verdicts', () => {
+  withDriftCopy((dir) => {
+    writeFileSync(join(dir, 'src/color-tokens.txt'), 'srgb\nchanged\n');
+    const args = ['--root', dir, '--concepts', 'K-100,K-110', '--json'];
+    const checked = run(...args);
+    assert.equal(checked.status, 1, checked.stderr);
+    assert.deepEqual(JSON.parse(checked.stdout).verdicts.map(({ concept, verdict }) => [concept, verdict]), [
+      ['K-100', 'quarantined'], ['K-110', 'quarantined'],
+    ]);
+
+    // Fail only the second finding write at the filesystem boundary. The
+    // first append uses the real writer, including schema checks and 'wx'.
+    const preload = join(dir, 'full-disk.mjs');
+    writeFileSync(preload, `import fs from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
+const write = fs.writeFileSync;
+let findings = 0;
+fs.writeFileSync = (file, ...args) => {
+  if (String(file).includes('/logs/findings/') && ++findings === 2) {
+    throw Object.assign(new Error('injected ENOSPC on second finding append'), { code: 'ENOSPC' });
+  }
+  return write(file, ...args);
+};
+syncBuiltinESMExports();\n`);
+    const r = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href,
+      cli, ...args, '--log', '--today', '2026-01-05'], { encoding: 'utf8' });
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.equal(r.stdout, '', 'an incomplete logged run must not publish a complete result');
+    assert.match(r.stderr, /internal failure — the command did not complete/);
+    assert.match(r.stderr, /injected ENOSPC on second finding append/);
+    assert.doesNotMatch(r.stderr, /no check ran|checks? never ran|verdicts? (?:were |was )?(?:not|never) computed/i);
+    const files = readdirSync(join(dir, 'logs/findings'));
+    assert.equal(files.length, 1, 'the first finding survives the second append failure');
+    const entry = load(readFileSync(join(dir, 'logs/findings', files[0]), 'utf8'));
+    assert.deepEqual(entry.consulted, { concepts: ['K-100'] });
+    assert.equal(entry.trigger, 'quarantine');
+    assert.match(entry.summary, /value-not-in-source/);
   });
 });
 
