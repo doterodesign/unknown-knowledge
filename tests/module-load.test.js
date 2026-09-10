@@ -125,7 +125,18 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
   // which the loop below asserts for every surface either way.
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
-    const r = run(dir, surface, '--root', fixture);
+    let checkRoot = fixture;
+    if (surface === 'commit-check.js') {
+      // The gate now needs a real Git candidate, even when runtime loading
+      // fails. Keep evidence separate from the deliberately broken runtime.
+      checkRoot = join(dir, 'candidate-repo');
+      cpSync(fixture, checkRoot, { recursive: true });
+      for (const args of [['init', '-q'], ['add', '.']]) {
+        const git = spawnSync('git', ['-C', checkRoot, ...args], { encoding: 'utf8' });
+        assert.equal(git.status, 0, git.stderr);
+      }
+    }
+    const r = run(dir, surface, '--root', checkRoot);
     assertNeverFindings(r, surface, 'with js-yaml absent');
     if (surface === 'ingest.js') {
       // ingest reaches no YAML, so it LOADS here rather than failing to. That

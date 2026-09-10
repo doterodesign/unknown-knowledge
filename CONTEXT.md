@@ -120,7 +120,8 @@ pointers to these.
 
 **Hooks** — Seeded git hooks that enforce the protocol mechanically rather than
 relying on anyone remembering it: `hooks/pre-commit` runs both whole-store validators through `commit-check.js`
-before a commit exists, `hooks/reverse-lookup` runs the reverse lookup over the
+against an isolated Git index snapshot before a commit exists,
+`hooks/reverse-lookup` runs the reverse lookup over the
 staged diff. Both are **thin wrappers** — each invokes one engine command and
 exits with its code, unchanged, with no bypass variable to read. Real Git commit
 tests exercise the installed gate. It currently reads working-tree evidence;

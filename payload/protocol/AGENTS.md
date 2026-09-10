@@ -330,8 +330,9 @@ Where the client has wired the seeded hooks (`hooks/pre-commit`,
 runs both whole-store validators through `engine/commit-check.js` before the
 commit exists, and the reverse-lookup hook runs the `--paths` lookup over the
 staged diff. Attribution never limits the gate to a concept subset (D-012).
-The gate currently reads working-tree evidence and does not provide
-partial-staging safety. Each hook is a thin wrapper around its engine command
+Both validators read the same isolated Git index snapshot; unstaged and
+untracked evidence cannot change the result. Snapshot preparation or cleanup
+failure is exit 2: stop. Each hook is a thin wrapper around its engine command
 and exits with its code, unchanged — so a wired repo
 enforces this step mechanically rather than depending on you to remember it.
 Run the commands yourself anyway: seeing the findings before the commit is

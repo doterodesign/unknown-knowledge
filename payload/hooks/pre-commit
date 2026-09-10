@@ -22,8 +22,8 @@
 #   2 — the check never ran; the commit is refused. A check that never
 #       ran is a blocking defect, never a silent pass.
 #
-# This gate currently reads the working tree, not an isolated Git index.
-# Partial-staging safety is not provided by this version.
+# Both validators read one isolated Git index snapshot. Unstaged and untracked
+# evidence cannot affect the result; preparation or cleanup failure exits 2.
 #
 # KIT_DIR names the seeded root when it is not the default; UK_ROOT names
 # the repo root when the hook runs from elsewhere. Both are location

@@ -3,6 +3,9 @@
 schema-version: 1
 store: decisions
 entries:
+  - id: D-024
+    title: Commit evidence comes from the Git index; installed runtime stays separate
+    file: entries/D-024-commit-snapshot-runtime-separation.yaml
   # D-001..D-016 are the seed decision set, imported from PRD.html §13 (KK-03).
   - id: D-001
     title: Seeded-once-then-owned; no update channel, ever

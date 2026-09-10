@@ -75,8 +75,8 @@ test('the README makes no promise that has already been kept', () => {
   assert.doesNotMatch(readme, /lands with KK-/, 'a shipped promise is not a promise');
 });
 
-test('the README claims only one subprocess, and that is true', () => {
-  assert.match(readme, /the one subprocess it\s+runs is `git ls-files`/);
+test('the README limits subprocesses to Git navigation and snapshot reads', () => {
+  assert.match(readme, /subprocesses invoke\s+Git only/);
   const engineDir = join(root, 'payload', 'engine');
   const spawners = [];
   const walk = (dir) => {
@@ -87,7 +87,11 @@ test('the README claims only one subprocess, and that is true', () => {
     }
   };
   walk(engineDir);
-  assert.deepEqual(spawners, ['survey-map.js'], 'only the survey map spawns anything (D-014)');
+  assert.deepEqual(spawners.sort(), ['commit-snapshot.js', 'survey-map.js'], 'only Git navigation and snapshot orchestration spawn (D-014)');
+  const snapshot = readFileSync(join(engineDir, 'lib', 'commit-snapshot.js'), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
+  assert.match(snapshot, /spawnSync\('git',/);
+  assert.doesNotMatch(snapshot, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
 
   // Importing child_process is not the claim. WHAT it spawns is.
   //
@@ -100,7 +104,7 @@ test('the README claims only one subprocess, and that is true', () => {
     .replace(/^\s*\/\/.*$/gm, '');
 
   const spawns = [...source.matchAll(/\bspawnSync\s*\(/g)];
-  assert.equal(spawns.length, 1, `survey-map spawns ${spawns.length} times; the README promises one`);
+  assert.equal(spawns.length, 1, `survey-map spawns ${spawns.length} times; the survey map has one Git invocation`);
 
   // The binary is a STRING LITERAL. A computed name is what would let the
   // engine run client-controlled code, which D-014 forbids outright.

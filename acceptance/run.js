@@ -573,7 +573,7 @@ criterion('A6', [
     }
     assert.ok(mentioned >= 1, 'grep exercised nothing — did the flag move?');
   }],
-  ['payload/: no-code-execution grep — no eval/new Function/dynamic import of repo content; child_process only in survey-map.js, spawning the fixed git binary (D-014)', () => {
+  ['payload/: no-code-execution grep — no eval/new Function/dynamic import of repo content; child_process only in Git navigation/snapshot orchestration, spawning the fixed git binary (D-014)', () => {
     for (const file of payloadFiles()) {
       if (!/\.(js|mjs|cjs)$/.test(file)) continue;
       const rel = relative(root, file);
@@ -596,9 +596,11 @@ criterion('A6', [
           `${rel}: import(${spec.trim()}) — only a string-literal import of the engine's own modules is allowed (D-014)`);
       }
       if (/node:child_process/.test(text)) {
-        assert.equal(rel, join('payload', 'engine', 'commands', 'survey-map.js'),
-          `${rel}: child_process outside the allowlisted git ls-files call (D-014)`);
-        assert.match(text, /spawnSync\('git',/, 'survey-map may only spawn the fixed git binary');
+        assert.ok([join('payload', 'engine', 'commands', 'survey-map.js'),
+          join('payload', 'engine', 'lib', 'commit-snapshot.js')].includes(rel),
+        `${rel}: child_process outside Git navigation/snapshot orchestration (D-014)`);
+        assert.match(text, /spawnSync\('git',/, 'only the fixed git binary may be spawned');
+        assert.doesNotMatch(text, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
       }
     }
   }],

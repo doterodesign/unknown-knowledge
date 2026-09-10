@@ -37,6 +37,9 @@ dates are recorded at release time, never retroactively.
 
 - Leaf supersession cycles now produce `ref-cycle` findings for each cycle
   member, so target preflight quarantines circular replacement claims.
+- Commit validation reads one isolated Git index snapshot, preserving local
+  staging and working files. Unstaged repairs and untracked evidence cannot
+  conceal candidate defects; preparation and cleanup failures block (UCS-1228).
 
 - Installed pre-commit hooks now refuse source-value drift as well as
   structural findings. Real Git integration tests cover paired updates,

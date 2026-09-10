@@ -168,10 +168,17 @@ Preserve existing hooks when integrating this invocation into your setup.
 `hooks/reverse-lookup` provides advisory attribution and never selects a subset
 for the commit gate. Real installed-hook Git tests exercise gate behavior.
 
-The gate currently reads working-tree evidence. It does **not** provide
-partial-staging safety: unstaged repairs can hide invalid staged content, and
-unstaged defects can block valid staged content. Run whole-store checks on the
-actual merge candidate in CI as described below.
+The gate checks an isolated Git index snapshot. Both validators read staged
+source, stores and repo-relative rules; unstaged and untracked evidence cannot
+affect their findings. Local work is never stashed, reset or restaged. Installed
+engine code, schemas and dependencies run from the host and are not linked into
+the evidence snapshot. Missing dependencies, snapshot preparation failures and
+cleanup failures block with exit 2. Git submodules and escaping symlinks are
+unsupported and refused explicitly, as are non-UTF-8 path names. Raw blob reads
+do not invoke checkout
+filters or apply archive attributes. Run from the repository root and install
+the runtime dependencies before committing. Check the actual merge candidate
+in CI as described below.
 
 ## CI
 

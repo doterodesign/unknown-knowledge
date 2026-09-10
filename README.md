@@ -98,8 +98,8 @@ shipped CI default.
 ## Guarantees
 
 - **The engine never executes your code** (D-014). No `eval`, no importing your
-  modules, no spawning your build. Parsing is lexical; the one subprocess it
-  runs is `git ls-files`.
+  modules, no spawning your build. Parsing is lexical; subprocesses invoke
+  Git only, to list tracked files and read the proposed commit snapshot.
 - **No network, ever.** Nothing is uploaded, and nothing is fetched.
 - **Deterministic.** Same tree in, byte-identical output out. Dates are
   injected, never read from the wall clock, so a report is reproducible from
@@ -123,10 +123,18 @@ Reverse lookup is advisory attribution; its results never restrict validation.
 These lexical checks detect store and vocabulary drift. Application behavior
 remains the application's test suite's responsibility.
 
-**Current limitation:** the gate reads the working tree, not an isolated staged
-snapshot. It does not provide partial-staging safety: unstaged repairs can hide
-invalid staged content, and unstaged defects can block valid staged content.
-Installed-hook behavior is covered by real Git commit tests in the kit.
+The gate validates an isolated copy of the Git index. Source, stores and
+repo-relative rules come from the same candidate, so unstaged repairs cannot
+hide broken staged bytes and unstaged edits cannot introduce findings. It
+never stashes, resets or restages local work. Installed engine code, schemas
+and runtime dependencies stay on the host; untracked evidence is never copied
+into the candidate. Snapshot preparation and cleanup failures block with exit 2.
+Real installed-hook tests check partial staging, committed bytes and cleanup.
+
+Git submodules, symlinks that escape the snapshot, and non-UTF-8 path names
+are refused explicitly when their evidence cannot be represented faithfully. It reads raw blobs without
+checkout filters or archive attributes. Install required runtime dependencies
+before committing; keep whole-store checks on the actual merge candidate in CI.
 
 They **seed but do not install**: `init` never writes `.git/`, so wiring them is
 your act, not the kit's. Git runs a hook only if it is executable, and the copy
