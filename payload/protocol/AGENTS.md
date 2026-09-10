@@ -11,6 +11,15 @@ YAML stores that map the system, a deterministic engine that checks the map,
 and this protocol. This file is the platform-agnostic contract — per-platform
 wrapper files are thin pointers here. Follow it on every request.
 
+**First action: read this contract before recursive product-source filename
+or content discovery.** Locating and reading top-level agent instructions and
+necessary top-level configuration is permitted. Before reading product source,
+read the relevant KB catalogs and the entries they name, following the store
+navigation contract below. A resolver hit does not replace these reads.
+Targeted reads of source paths supplied by the KB are expected GATHER behavior;
+source search after a coverage miss follows this contract's fallback rules.
+These are agent instructions, not a host tool firewall.
+
 Two `--root` conventions, stated once:
 
 - Every store-reading CLI (`resolve.js`, `preflight.js`, `validate.js`,

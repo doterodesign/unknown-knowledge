@@ -1,15 +1,14 @@
 ---
-description: unknown-knowledge store — read {{root}}/protocol/AGENTS.md before working
+description: First action — read {{root}}/protocol/AGENTS.md before recursive product-source discovery
 alwaysApply: true
 ---
 
 ## unknown-knowledge
 
-This repository carries an unknown-knowledge store at `{{root}}/` — three
-governed YAML stores that map the system and a deterministic engine that
-checks the map.
+**First action on every request: read `{{root}}/protocol/AGENTS.md`** before
+recursive product-source filename or content discovery. Follow that canonical
+navigation contract to reach source through the knowledge base.
 
-Before working in this repository, read `{{root}}/protocol/AGENTS.md` — the
-platform-agnostic navigation contract — and follow its five-step runtime loop
-on every request. That file is the single source of truth for the protocol;
-this wrapper is a thin pointer and intentionally repeats none of it.
+The seeded kit is at `{{root}}/`, relative to the repository root. The protocol
+owns the navigation rules and runtime loop; this wrapper is only its entry
+pointer.
