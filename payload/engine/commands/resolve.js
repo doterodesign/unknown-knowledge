@@ -183,9 +183,9 @@
  * D-012 conflict). Paths are deduped and sorted ascending.
  *
  * Zero resolution is a NORMAL outcome (PRD §7 — common in month one): exit 0
- * with an explicit empty result plus the fallback conduct (search within
- * survey-scope.yaml; append a retrieval-miss finding only if the topic
- * plausibly should be mapped). Exit codes (PRD §5): 0 = the lookup ran (hits
+ * with an explicit empty result plus a pointer to the canonical recovery
+ * protocol (preflight, catalog recovery, then survey-scoped fallback).
+ * Exit codes (PRD §5): 0 = the lookup ran (hits
  * or none), 2 = usage/engine failure — a lookup that never ran is a failure,
  * never a silent empty result. The resolver emits no findings, so it never
  * exits 1; gating on store health is preflight's job. Store health is still
@@ -1031,7 +1031,7 @@ function resolveQuery(model, terms, today) {
  * lookup failed or the store is simply silent on the topic, and those demand
  * different next steps.
  */
-const ZERO_RESOLUTION_CONDUCT = 'zero resolution is a normal outcome (PRD §7): fall back to search within survey-scope.yaml; append a retrieval-miss finding only if this topic plausibly should be mapped (an unmapped area the scope excludes is expected, not a miss)';
+const ZERO_RESOLUTION_CONDUCT = 'zero resolution is a normal outcome (PRD §7): preflight store health, recover through relevant catalogs, then search unresolved tasks through the survey map bounded by repo-root survey-scope.yaml. Record recovered wording as retrieval-struggle, missing in-scope evidence as retrieval-miss, and excluded topics as expected absence. Follow protocol/AGENTS.md for layout and recovery rules.';
 
 // ---------------------------------------------------------------- paths mode
 

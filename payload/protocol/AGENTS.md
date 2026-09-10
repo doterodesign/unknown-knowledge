@@ -1,10 +1,8 @@
 # AGENTS.md — navigation contract + runtime loop (PRD §7)
 
-> Paths in this document are client-relative — relative to the vendored kit
-> root after init (`ontology/…`, `engine/…`, `protocol/…`). In the kit repo
-> itself these live under `payload/`. Commands are written to run from the
-> **repo root** with the kit dir at its default name `unknown-knowledge/`;
-> substitute your chosen kit dir name if it differs.
+> Commands below run from the **repository root**. Store and protocol paths
+> in prose are relative to the store/kit root in the layout table below;
+> source-of-truth pointers and survey-scope paths are repository-relative.
 
 You are a coding agent in a repo seeded with the unknown-knowledge kit: three
 YAML stores that map the system, a deterministic engine that checks the map,
@@ -20,15 +18,57 @@ Targeted reads of source paths supplied by the KB are expected GATHER behavior;
 source search after a coverage miss follows this contract's fallback rules.
 These are agent instructions, not a host tool firewall.
 
-Two `--root` conventions, stated once:
+## Layout and command roots
+
+Read the entry instructions and necessary top-level configuration to identify
+the layout before invoking the engine. These are the supported conventions:
+
+| Location | Seeded client (default name) | Kit's own repository |
+|---|---|---|
+| Store/kit root | `unknown-knowledge/` | `.` |
+| Ontology and knowledge | `unknown-knowledge/ontology/`, `unknown-knowledge/knowledge/` | absent by design; `payload/templates/` contains seed templates, not live stores |
+| Decisions catalog | `unknown-knowledge/decisions/_catalog.yaml` | `decisions/_catalog.yaml` |
+| Canonical protocol | `unknown-knowledge/protocol/AGENTS.md` | `payload/protocol/AGENTS.md` |
+| Engine commands | `unknown-knowledge/engine/<command>.js` | `payload/engine/<command>.js` |
+| Confirmed survey scope | `survey-scope.yaml` at repository root | `survey-scope.yaml` at repository root, if confirmed |
+| Finding logs | `unknown-knowledge/logs/` | `logs/` |
+
+Two `--root` conventions:
 
 - Every store-reading CLI (`resolve.js`, `preflight.js`, `validate.js`,
   `validate-values.js`, `commit-check.js`, `audit.js`, `survey-map.js`) takes `--root` as the
-  **repo root** (default: cwd). The stores are auto-located at
-  `<root>/unknown-knowledge/`; source-of-truth pointers resolve against the
-  repo root (§9.1).
+  **repo root** (default: cwd). Store readers auto-locate
+  `<root>/unknown-knowledge/` when present, otherwise stores at `<root>/`.
+  `survey-map.js` reads `<root>/survey-scope.yaml`; source-of-truth pointers
+  also resolve against the repo root (§9.1).
 - `log-entry.js` takes `--root` as the **kit dir** (the directory containing
-  `logs/`), e.g. `--root unknown-knowledge`.
+  `logs/`), e.g. `--root unknown-knowledge` in a seeded client, `--root .`
+  in the kit's own repository.
+
+For the kit's own decision-store use case, stay at the repository root:
+
+```
+node payload/engine/resolve.js "engine language" --json --root .
+node payload/engine/preflight.js --json --root .
+```
+
+Then enter `decisions/_catalog.yaml` and read the named entries using the
+shared lifecycle rules below. The resolver searches concepts/leaves, not
+decision text; zero hits cannot establish that a decision is absent. Missing
+ontology/knowledge warnings are expected in this decision-only layout.
+
+If working from another directory, supply an absolute repo root to store
+commands and an absolute store/kit root to logging. Do not use `--root payload`
+or `--root unknown-knowledge` to make source pointers work by accident.
+An initializer `--root <name>` selects the seed destination; it is **not**
+a store-reader configuration flag. Renamed client directories are not
+auto-discovered by the current engine. Honor explicit configuration only
+where the invoked command supports it; if entry instructions name an
+unsupported root, or the expected catalog cannot be read, report the layout
+problem and stop that navigation path. Do not interpret missing-store
+warnings in an unexpected layout as empty knowledge, guess alternative roots,
+or repair custom-root discovery during the task. Ambiguous layouts that the
+engine refuses are failures, not query misses.
 
 ## The SSOT contract — the map is never the fact
 
@@ -50,11 +90,23 @@ never truth. The rules that follow from this:
 
 ## Store navigation contract
 
-Three stores, one navigational grammar: **`_catalog.yaml` → `_rules.yaml` →
-entries** (`classes/*.yaml`, tree leaves, `entries/*.yaml`). Enter through
-the catalog, honor the rules file, then read the entry the catalog names —
-never grep the store tree cold, and never raw-traverse the repo (triage
-`engine/survey-map.js` output instead).
+Enter through the relevant catalog before recursive product-source filename
+or content discovery. Honor the actual rules for that store, then read the
+entry the catalog names. Targeted source reads from those pointers are GATHER;
+they do not require rediscovering the repository. Never grep the store tree
+cold or raw-traverse the repo; unresolved tasks use the survey map below.
+
+| Store | Navigation order |
+|---|---|
+| Ontology | `ontology/_catalog.yaml` → `ontology/_rules.yaml` → catalog-named class/concept files |
+| Knowledge | `knowledge/_catalog.yaml` → `knowledge/_rules.yaml` → catalog-named leaves |
+| Decisions | `decisions/_catalog.yaml` → this document's **Gate rules** and **Decisions-authoring path** (shared lifecycle rules) → catalog-named entries |
+
+There is no required `decisions/_rules.yaml`. Do not search for or invent one.
+For a decision question, read the relevant entries' `status`, `supersedes`,
+and `superseded-by` fields and follow those IDs through the catalog until the
+current decision is reached. An older title or preserved reasoning is history,
+not current policy; report broken or cyclic chains instead of guessing.
 
 | Store | Truth anchor | Points | Write gate |
 |---|---|---|---|
@@ -99,11 +151,73 @@ Query terms are positional (joined into one query); results come scored with
 entry points. Exit 0 = the lookup ran (hits or none); exit 2 = it never ran —
 stop, that is an engine failure, not an empty result.
 
-**Zero resolution is a normal outcome** (common in month one — bootstrap is
-deliberately non-exhaustive). Proceed **without store claims**: fall back to
-search within the paths `survey-scope.yaml` includes, and append a
-`retrieval-miss` finding (RECORD, below) only when the topic plausibly should
-be mapped — an unmapped area the scope excludes is expected, not a miss.
+**Zero resolution is a normal outcome**, not proof of missing evidence.
+Use this recovery path before source search:
+
+1. **PREFLIGHT store health even with zero hits**: run `preflight.js --json
+   --root .` without concept/leaf selectors. Follow its outcome; an exit 2
+   stops the task. A lookup over a broken or unsupported store is not a miss.
+2. Inspect relevant catalogs using the store navigation contract. Use the
+   terms, titles, aliases and named entries there to recover the subject.
+   Retry resolution when a catalog supplies a new relevant term; preflight
+   recovered concepts/leaves before gathering their evidence. Decisions are
+   recovered directly through their catalog and lifecycle links.
+3. Stop reformulating when the task is resolved or the relevant catalog
+   entries supply no new lead. Do not repeat equivalent queries or generate
+   an unbounded synonym loop; the stopping condition is exhausted catalog
+   evidence, not an arbitrary retry count.
+4. Only the unresolved portion proceeds to **Scoped fallback** below. If
+   catalog recovery found the answer, gather the named evidence and record
+   `retrieval-struggle` for the wording friction, not `retrieval-miss`.
+
+### Scoped fallback — unresolved evidence only
+
+Read **`<repo-root>/survey-scope.yaml`**, not a file under the seeded kit
+directory. Its include/exclude values are repository-relative path prefixes;
+exclusions win. `.` includes root-level files only, not every subtree.
+If no confirmed scope exists, use the bootstrap scope gate before source
+search; a proposed map is not an agreed boundary. Do not widen scope yourself.
+An unreadable or malformed scope must be reported, never replaced with a
+guessed path or interpreted as an empty knowledge base.
+
+```
+node unknown-knowledge/engine/survey-map.js --json --root .
+```
+
+In the kit repo, use `node payload/engine/survey-map.js --json --root .`.
+Confirm the map reports `scope.source: survey-scope.yaml`. Search only
+relevant candidate paths or directories named by this map, within its
+confirmed includes and excluding every configured exclusion. A directory
+histogram is not permission to recurse into excluded children: bound any
+filename/content search accordingly. Non-candidate files in those directories
+may hold evidence; lack of an extractor-shaped candidate is not absence.
+The map covers tracked files minus its built-in denylist. Honor those limits
+and disclose `unsurveyed` paths rather than searching around them.
+
+Report the boundary reached and classify the outcome:
+
+| Outcome | RECORD behavior |
+|---|---|
+| Existing indexed evidence recovered through different catalog wording | `retrieval-struggle`, naming the recovered IDs and paths |
+| Required in-scope fact or pointer still missing after catalog recovery and bounded search | `retrieval-miss`, naming the searched paths and any consulted IDs; do not claim absence beyond the surveyed scope |
+| Topic outside the agreed scope | Expected absence; explain the boundary, without automatically logging an index defect or searching excluded material |
+| Unsupported layout, unreadable store/scope, or an engine check that never ran | Report the concrete failure; do not recast it as a retrieval miss |
+
+General knowledge can explain a concept if clearly attributed. It cannot
+establish undocumented company policy or other company-specific facts. Findings
+use `log-entry.js` and the capture content policy below; do not copy the user's
+question or source contents into a finding.
+
+For recovery findings, `consulted` accepts `concepts` (`K-NNN`) and `leaves`
+(`L-NNNNNN`) only. Decision paths belong in `summary`; there is no
+`consulted.decisions` field. Ordinary decision-catalog navigation is expected,
+not itself wording friction: log a struggle only when retrieval was indirect.
+
+Preserve each command's own exit code and stderr in walkthrough evidence.
+Resolver exit 0 includes zero hits. Survey-map exit 1 discloses blind spots;
+exit 2 means the engine check failed. A search tool's no-match status or a
+failed file read is that tool's outcome, not an engine failure. Do not combine
+commands so the last command's status hides earlier outcomes.
 
 ### 2. PREFLIGHT — check every concept and leaf you rely on
 

@@ -1,5 +1,12 @@
 # A5 walkthrough — AGENTS.md executes the runtime loop on fixtures/ts-app
 
+> Historical runtime-loop trace below. Its zero-hit fallback wording and
+> automatic miss example predate UCS-1223. Use
+> [the catalog-recovery walkthrough](A5-catalog-recovery-walkthrough.md) for
+> current zero-hit conduct: health check, catalog recovery, confirmed scope,
+> bounded search, then classification. The old pasted output is retained as
+> historical command evidence, not a current expected-output assertion.
+
 Acceptance criterion A5 (PRD §10): *an agent following only
 `payload/protocol/AGENTS.md` executes the loop on a fixture correctly.*
 This is the scripted checklist for a human to run with a fresh agent —

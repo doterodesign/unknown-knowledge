@@ -39,6 +39,10 @@ dates are recorded at release time, never retroactively.
   knowledge leaf with the current date, including leaf-only requests and
   targets discovered during gathering. Store health, review eligibility,
   freshness, and source verification remain distinct (UCS-1219).
+- Catalog recovery guidance (UCS-1223): document per-store navigation and
+  seeded-client versus kit-repository roots; preflight zero-hit queries,
+  recover catalog wording before survey-scoped fallback, and distinguish
+  retrieval struggles, in-scope misses and excluded topics.
 
 ## [2.1.0] - 2026-09-09
 

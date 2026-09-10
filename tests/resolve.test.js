@@ -250,6 +250,15 @@ test('zero-hit query is a normal outcome: exit 0, explicit empty result', () => 
   assert.match(human.stdout, /retrieval-miss/);
 });
 
+test('zero-hit CLI guidance routes through health and catalog recovery before scoped search', () => {
+  const human = run('quantum', 'entanglement', '--root', store);
+  assert.equal(human.status, 0);
+  assert.match(human.stdout, /preflight[^\n]*catalog[^\n]*survey-scope\.yaml/i);
+  assert.match(human.stdout, /retrieval-struggle/);
+  assert.match(human.stdout, /retrieval-miss/);
+  assert.match(human.stdout, /protocol\/AGENTS\.md/);
+});
+
 // ------------------------------------- --paths reverse lookup (ACT step)
 
 test('--path: repeated complete names preserve commas and edge whitespace', () => {
