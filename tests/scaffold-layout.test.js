@@ -48,7 +48,7 @@ test('package.json follows D-022 / D-016 conventions', () => {
   // into every client repo is that repo's birth certificate and must name a
   // real release. tests/check-tag-version.test.js holds the CHANGELOG and the
   // release tag to this same value.
-  assert.match(pkg.version, /^\d+\.\d+\.\d+$/, 'D-021: a plain semver version');
+  assert.match(pkg.version, /^(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-rc\.(?:0|[1-9]\d*))?$/, 'D-021: a stable or numbered candidate version');
   assert.notEqual(pkg.version, '0.0.0', 'D-021: the placeholder is not a released version');
   assert.ok(pkg.scripts?.test, 'missing test script');
   assert.ok(pkg.scripts?.lint, 'missing lint script');

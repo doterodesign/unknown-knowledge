@@ -15,7 +15,7 @@ entries:
       a stable empty-array shape. Derive it from relates.supersedes at load,
       retain only accession identities in the inverse index, and publish
       one-hop navigation with target lifecycle and declared jurisdictions.
-      Consumers compare applicability, preflight every consulted target and
+      Consumers compare applicability, preflight every relied-upon target and
       read its cited evidence. Never infer a winner from order or freshness.
       Reuse structural ref-cycle findings for leaf supersession, attributed
       to each member so target preflight cannot trust a circular claim.

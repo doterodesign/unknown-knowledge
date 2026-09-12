@@ -429,3 +429,18 @@ test('whole-store gate refuses existing drift when only an unrelated file is sta
   assert.match(result.stdout + result.stderr, /source-value-missing.*K-101.*pdf/);
   assert.equal(git('rev-parse', 'HEAD').stdout, driftHead);
 });
+
+
+test('layout selection comes from the staged candidate, never an unstaged repair', (t) => {
+  const { git, write } = setup(t);
+  write('knowledge/legacy.txt', 'Existing application data.\n');
+  assert.equal(git('add', 'knowledge/legacy.txt').status, 0);
+  write('.unknown-knowledge.json', '{"kitRoot":"unknown-knowledge"}\n');
+  const refused = git('commit', '-qm', 'unstaged selection');
+  assert.notEqual(refused.status, 0);
+  assert.match(refused.stdout + refused.stderr, /two candidate kit roots/);
+  assert.equal(git('add', '.unknown-knowledge.json').status, 0);
+  write('.unknown-knowledge.json', '{broken');
+  const accepted = git('commit', '-qm', 'staged selection');
+  assert.equal(accepted.status, 0, accepted.stdout + accepted.stderr);
+});

@@ -3,6 +3,9 @@
 schema-version: 1
 store: decisions
 entries:
+  - id: D-025
+    title: Explicit layout selection preserves repository-relative evidence
+    file: entries/D-025-explicit-kit-layout.yaml
   - id: D-024
     title: Commit evidence comes from the Git index; installed runtime stays separate
     file: entries/D-024-commit-snapshot-runtime-separation.yaml

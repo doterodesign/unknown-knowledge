@@ -37,8 +37,9 @@ permissions.
 
 The opt-in pre-commit hook calls `engine/commit-check.js --root .`. This runs
 both whole-store validators, reports each check, and returns 2 for any failed
-or never-run check, otherwise 1 for findings, otherwise 0. It reads the working
-tree in this version and does not provide partial-staging safety.
+or never-run check, otherwise 1 for findings, otherwise 0. It reads an isolated snapshot of the Git index, including staged source
+files and layout selection. An unstaged repair cannot hide a broken candidate.
+The installed engine and dependencies remain separate runtime inputs.
 
 In CI, check out the actual committed merge candidate and run both validators
 against that checkout, with no generated or repaired governed files between
@@ -46,6 +47,16 @@ checkout and validation. `node unknown-knowledge/engine/commit-check.js --root .
 also runs both checks even if one fails. Reverse lookup remains advisory;
 changed-path attribution never limits the whole-store correctness gate.
 Application behavior tests remain separate from these lexical checks.
+
+## Existing application store names
+
+If root-level application `knowledge/` or `ontology/` coexists with the seeded
+kit, commit `.unknown-knowledge.json` at the repository root containing
+`{"kitRoot":"unknown-knowledge"}`. Use `{"kitRoot":"."}` to select root-level
+stores instead. These are the two supported layouts. Keep `--root` at the
+repository root: source pointers are repository-relative. Missing selection in
+an ambiguous layout or invalid configuration stops the check. Stage selection
+with the migration; each candidate/before tree uses its own tracked choice.
 
 ## GitHub Actions
 

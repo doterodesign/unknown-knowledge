@@ -21,11 +21,11 @@
  * tag push.
  */
 import process from 'node:process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, appendFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-/** Exactly `vMAJOR.MINOR.PATCH`, matching the workflow's `v*.*.*` trigger. */
-const RELEASE_TAG = /^v(\d+\.\d+\.\d+)$/;
+/** Stable releases and numbered candidates; no ambiguous leading zeros. */
+const RELEASE_TAG = /^v((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-rc\.(?:0|[1-9]\d*))?)$/;
 
 /**
  * @param {string | undefined} tag the release tag, e.g. `v1.0.0`
@@ -38,7 +38,7 @@ export function tagVersionProblem(tag, version) {
   }
   const match = RELEASE_TAG.exec(tag);
   if (match === null) {
-    return `tag ${JSON.stringify(tag)} is not a release tag — expected vMAJOR.MINOR.PATCH`;
+    return `tag ${JSON.stringify(tag)} is not a release tag — expected vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-rc.N`;
   }
   if (match[1] !== version) {
     return `tag ${JSON.stringify(tag)} names version ${JSON.stringify(match[1])}, `
@@ -49,7 +49,7 @@ export function tagVersionProblem(tag, version) {
 }
 
 /** @returns {number} an exit code */
-export function main(argv, { stderr = process.stderr, stdout = process.stdout } = {}) {
+export function main(argv, { stderr = process.stderr, stdout = process.stdout, githubOutput = process.env.GITHUB_OUTPUT } = {}) {
   const tag = argv[0] ?? process.env.GITHUB_REF_NAME;
   const manifest = fileURLToPath(new URL('../package.json', import.meta.url));
   const { version } = JSON.parse(readFileSync(manifest, 'utf8'));
@@ -59,6 +59,9 @@ export function main(argv, { stderr = process.stderr, stdout = process.stdout } 
     stderr.write(`check-tag-version: ${problem}\n`);
     return 1;
   }
+  // Only validated versions produce a channel. The publish step consumes this
+  // output explicitly so a candidate can never default to npm's latest tag.
+  if (githubOutput) appendFileSync(githubOutput, `npm_tag=${version.includes('-rc.') ? 'next' : 'latest'}\n`);
   stdout.write(`check-tag-version: tag ${tag} agrees with package.json ${version}\n`);
   return 0;
 }

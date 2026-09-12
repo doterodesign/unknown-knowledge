@@ -178,3 +178,35 @@ test('one repo, every surface, one refusal: an ambiguous layout fails identicall
     assert.notEqual(r.status, 1, `${name} must not report a refusal as findings`);
   }
 });
+
+
+test('explicit layout preserves repo-relative evidence across all surfaces', () => {
+  for (const [kitRoot, id] of [['unknown-knowledge', 'K-200'], ['.', 'K-100']]) {
+    const repo = plant({
+      '.unknown-knowledge.json': JSON.stringify({ kitRoot }),
+      'src/a.ts': ANCHOR,
+      ...storeAt('', 'K-100', 'Root', 'src/a.ts'),
+      ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested', 'src/a.ts'),
+    });
+    for (const [name, argv] of SURFACES) {
+      const result = spawn(argv(repo));
+      assert.notEqual(result.status, 2, `${name}: ${result.stderr}`);
+    }
+    const result = spawn([engine('validate.js'), '--root', repo, '--concepts', id, '--json']);
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.ok(result.stdout.includes(id));
+    const reverse = spawn([engine('resolve.js'), '--root', repo, '--paths', 'src/a.ts', '--json']);
+    assert.equal(reverse.status, 0, reverse.stderr);
+    assert.ok(reverse.stdout.includes(id));
+    assert.ok(!reverse.stdout.includes(id === 'K-200' ? 'K-100' : 'K-200'));
+  }
+});
+
+test('invalid or missing explicit layout refuses rather than falling back', () => {
+  for (const config of ['{', 'null', '{}', '{"kitRoot":"../outside"}', '{"kitRoot":"unknown-knowledge"}', '{"kitRoot":".","typo":true}']) {
+    const repo = plant({ '.unknown-knowledge.json': config, ...storeAt('', 'K-100', 'Root') });
+    const result = spawn([engine('validate.js'), '--root', repo, '--json']);
+    assert.equal(result.status, 2, config + result.stdout);
+    assert.match(result.stderr, /unknown-knowledge.json/);
+  }
+});

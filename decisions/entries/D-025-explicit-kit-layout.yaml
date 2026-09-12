@@ -1,0 +1,26 @@
+schema-version: 1
+entries:
+  - id: D-025
+    title: Explicit layout selection preserves repository-relative evidence
+    category: architecture
+    status: proposed
+    date: "2026-09-12"
+    deciders: [codex]
+    context: >
+      A migration can retain application data named knowledge/ or ontology/
+      alongside the seeded unknown-knowledge/ kit. Automatic selection is
+      ambiguous. Pointing --root at the kit would misresolve repository-relative
+      source pointers and cannot represent a Git repository snapshot.
+    decision: >
+      Accept an optional repository-root .unknown-knowledge.json regular file
+      containing only kitRoot, set to . or unknown-knowledge. All store-reading
+      surfaces use the existing shared locator. Invalid selection refuses;
+      absent selection preserves existing discovery and ambiguity refusal.
+      Snapshot commands read selection from each materialized tree.
+    consequences: >
+      Legacy application records can coexist without moving files or changing
+      source pointer bases. Selection is governed versioned data and must be
+      staged with migration. Custom path discovery and automatic migration are
+      outside this change. This proposal records implementation rationale and
+      does not claim human acceptance of an imported knowledge store.
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-006, D-024] }

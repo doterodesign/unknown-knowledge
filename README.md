@@ -14,6 +14,12 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
+The 3.0 pilot is available explicitly with
+`npx unknown-knowledge@3.0.0-rc.1 init`. The stable `latest` channel remains
+2.1.0. Existing installations should follow the
+[migration guide](https://github.com/doterodesign/unknown-knowledge/blob/main/docs/migration-3.md);
+init refuses existing roots and does not overwrite client-owned records.
+
 ```bash
 cd your-repo
 npx unknown-knowledge init          # seeds unknown-knowledge/ and an agent wrapper

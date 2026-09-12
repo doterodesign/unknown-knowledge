@@ -22,7 +22,8 @@
  *
  * Both repos look identical from here. Picking either silently reads one Store
  * and ignores the other — a confident wrong answer, which is the failure class
- * this engine exists to prevent. So an ambiguous layout REFUSES: every surface
+ * this engine exists to prevent. An explicit .unknown-knowledge.json selection settles this choice across all surfaces.
+ * Without that selection, an ambiguous layout REFUSES: every surface
  * fails identically (exit 2) and names both candidates, rather than four
  * surfaces agreeing on one Store while the audit quietly reads the other.
  *
@@ -33,12 +34,15 @@
  * Stores absent entirely is not an error: the loader reports missing-store
  * warnings and the audit proposes every anchor.
  */
-import { statSync } from 'node:fs';
+import { statSync, lstatSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { EngineRefusal } from './engine-refusal.js';
 
 /** The §9.1/D-016 seeded kit directory name. Renames are a later seam. */
 export const KIT_DIR_DEFAULT = 'unknown-knowledge';
+
+/** Versioned selection for repositories containing both supported layouts. */
+export const KIT_LAYOUT_FILE = '.unknown-knowledge.json';
 
 /** The human-confirmed survey boundary (§6), written at the kit root. */
 export const SCOPE_FILE = 'survey-scope.yaml';
@@ -83,13 +87,31 @@ export class AmbiguousKitLayout extends EngineRefusal {
  *   both exist, so no surface can know which Store is authoritative
  */
 export function locateKit(root) {
+  const selection = join(root, KIT_LAYOUT_FILE);
+  const selectionStat = lstatSync(selection, { throwIfNoEntry: false });
+  if (selectionStat) {
+    if (!selectionStat.isFile()) throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} must be a regular JSON file`);
+    let config;
+    try {
+      config = JSON.parse(readFileSync(selection, 'utf8'));
+    } catch (error) {
+      throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} could not be read as JSON: ${error.message}`, { cause: error });
+    }
+    if (!config || Array.isArray(config) || Object.keys(config).length !== 1
+      || !['.', KIT_DIR_DEFAULT].includes(config.kitRoot)) {
+      throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} must contain only "kitRoot", set to "." or "${KIT_DIR_DEFAULT}"`);
+    }
+    const kitRoot = join(root, config.kitRoot);
+    if (!isDir(kitRoot)) throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} selects a missing kit directory`);
+    return { kitRoot, kitPrefixes: [...(config.kitRoot === '.' ? KIT_ZONE_AT_ROOT : [KIT_DIR_DEFAULT]), KIT_LAYOUT_FILE] };
+  }
   const nested = join(root, KIT_DIR_DEFAULT);
   if (isDir(nested)) {
     if (looksLikeStoreRoot(root)) {
       throw new AmbiguousKitLayout(
         `two candidate kit roots under ${JSON.stringify(root)}: the seeded ${KIT_DIR_DEFAULT}/ and stores at the root itself. `
         + 'Which one is authoritative is not knowable from here, and guessing would let the reverse audit read a different '
-        + 'store than the validators (PRD §4, single health model). Point --root at the intended kit root, or remove the stale one.',
+        + 'store than the validators (PRD §4, single health model). Select the authoritative layout with .unknown-knowledge.json (kitRoot: "." or "unknown-knowledge"), or remove the stale one. Keep --root at the repository root.',
       );
     }
     return { kitRoot: nested, kitPrefixes: [KIT_DIR_DEFAULT] };

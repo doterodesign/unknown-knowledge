@@ -13,6 +13,19 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+## [3.0.0-rc.1] - 2026-09-12
+
+### Release preparation
+
+- Publish numbered candidates to npm `next` and stable versions to `latest`,
+  only after the tag and package version agree. Publishing uses GitHub OIDC
+  without the bootstrap token.
+- Document migration of seeded kits and older custom stores without overwriting
+  authored records or promoting unreviewed evidence.
+- Support an explicit `.unknown-knowledge.json` layout selection when application
+  data occupies a root-level store name; retain repository-relative source paths
+  and staged selection during commit checks.
+
 ### Changed
 
 - Runtime source gathering explicitly follows cited URLs with host tools and
@@ -26,7 +39,6 @@ dates are recorded at release time, never retroactively.
   instructions. Numeric exits and verdict computation are unchanged; exit 2
   still stops the task, including unknown results. See
   [migration guidance](docs/agents/ucs-954-action-code-migration.md).
-  No version bump or publication is included here.
 
 - Preflight is a thin CLI adapter over library orchestration (UCS-953), with
   direct tests for Verdict rules and CLI regression tests for runtime crashes
