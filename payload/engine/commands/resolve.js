@@ -5,6 +5,7 @@
  *
  *   node payload/engine/resolve.js <query terms...> [--json] [--root <dir>]
  *   node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>]
+ *   node payload/engine/resolve.js --path <file> [--path <file>...] [--json] [--root <dir>]
  *   node payload/engine/resolve.js --doc <document> [--json] [--root <dir>]
  *
  * ONE ENTRY POINT, THREE INPUT SHAPES (UCS-1156). A query, a set of repo paths,
@@ -86,6 +87,14 @@
  *             immediately around a hit, and depth 2 is most of the store
  *             arriving unranked
  *
+ * Incoming supersession (UCS-1226) adds a separate `superseded-by` array to
+ * leaf results, including document gather and scope exclusions. References
+ * carry id/notation/heading/file, stage/time/downranked/demotions, and applies
+ * (declared jurisdictions, empty means universal). No content, score, trust
+ * verdict, or nested edges: callers compare scope, preflight targets, and read
+ * sources. All direct successors are sorted by accession, never by recency.
+ * The inverse is rebuilt from relates.supersedes at load; no reciprocal authoring.
+ *
  * Knowledge entry points now join STRUCTURALLY as well as textually: a leaf
  * that declares a concept surfaces under it whether or not any term text
  * matches, so knowledge stops depending on two authors choosing the same words.
@@ -164,7 +173,7 @@
  * localized enough to act on. The stopword list is pinned and shipped in the
  * engine (lib/decomposition.js), never configurable per run.
  *
- * --paths mode — reverse lookup over BOTH pointer families: "which concepts
+ * Paths mode (--path or legacy --paths) — reverse lookup over BOTH pointer families: "which concepts
  * point at these files, and which leaves govern them" (UCS-1151). The join runs
  * over concept source-of-truth pointers and over leaf `paths` declarations, so
  * a diff-shaped input surfaces the knowledge that governs the files before an
@@ -173,17 +182,18 @@
  * nested under a FOLDER pointer (§3.1). Folder-ness is read from the
  * filesystem, not from the name — `src/api.v2` is a directory whose extname is
  * ".v2" — and from the name only when the pointer is gone, since a diff names
- * deleted paths; see folderPointerTest. Paths are normalized with path.posix
- * semantics (dots resolved, separators collapsed, backslashes converted,
- * absolute paths relativized against the store root) so attribution survives
- * the forms real tooling emits. An entry naming the repo root is a usage
+ * deleted paths; see folderPointerTest. Paths use path.posix semantics (dots
+ * resolved, separators collapsed, absolute paths relativized against the store
+ * root). Legacy --paths trims whitespace and converts backslashes; --path keeps
+ * both literal and takes one complete name per argument, without comma splitting.
+ * An entry naming the repo root is a usage
  * error, never a silently dropped lookup. A lookup, not subset validation (no
  * D-012 conflict). Paths are deduped and sorted ascending.
  *
  * Zero resolution is a NORMAL outcome (PRD §7 — common in month one): exit 0
- * with an explicit empty result plus the fallback conduct (search within
- * survey-scope.yaml; append a retrieval-miss finding only if the topic
- * plausibly should be mapped). Exit codes (PRD §5): 0 = the lookup ran (hits
+ * with an explicit empty result plus a pointer to the canonical recovery
+ * protocol (preflight, catalog recovery, then survey-scoped fallback).
+ * Exit codes (PRD §5): 0 = the lookup ran (hits
  * or none), 2 = usage/engine failure — a lookup that never ran is a failure,
  * never a silent empty result. The resolver emits no findings, so it never
  * exits 1; gating on store health is preflight's job. Store health is still
@@ -225,6 +235,7 @@ import { loadSuppressions } from '../lib/suppressions.js';
 
 export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
        node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
+       node payload/engine/resolve.js --path <file> [--path <file>...] [--json] [--root <dir>] [--today <YYYY-MM-DD>]
        node payload/engine/resolve.js --doc <document> [--json] [--root <dir>] [--today <YYYY-MM-DD>]`;
 
 // The concept ladder and the draft downrank moved to lib/scoring.js (UCS-1152)
@@ -415,10 +426,8 @@ function confusables(model, record) {
  * OUTGOING edges only. The ticket says the resolver expands over relates edges
  * FROM a hit, and outgoing is what this leaf's author asserted: a leaf declares
  * what IT depends on, what IT contradicts. An incoming edge is somebody else's
- * claim about this leaf, which is a genuinely useful thing to see and a
- * different question — it belongs to whatever surface presents "what cites
- * this", where it can be labeled as such rather than blended into the leaf's
- * own assertions.
+ * claim about this leaf. Incoming supersession is published separately as
+ * `superseded-by` (UCS-1226), never blended into the leaf's own assertions.
  *
  * Neighbors resolve through `leafIdentityOf`, the one lookup every surface
  * asks — so an edge citing a leaf by its retired notation reaches nothing here
@@ -473,7 +482,7 @@ function relatesNeighborhood(model, record) {
  * are exactly the ones whose whole contract is that they are STABLE keys that
  * may be null.
  */
-function publishLeaf(model, entry, today) {
+function leafMetadata(entry, today) {
   const { file, record: leaf } = entry;
   const stage = leafStage(leaf);
   const provenance = leaf.provenance;
@@ -564,10 +573,19 @@ function publishLeaf(model, entry, today) {
     // reading one answer.
     time,
     file,
-    // The one-hop structural neighborhood (UCS-1151) — every leaf the resolver
-    // publishes carries it, so "any hit carries its relates neighborhood" is
-    // true by construction rather than by remembering to attach it per mode.
-    [RELATES_FIELD]: relatesNeighborhood(model, leaf),
+  };
+}
+
+/** One shared projection; successors are navigation, never recursively expanded. */
+function publishLeaf(model, entry, today) {
+  return {
+    ...leafMetadata(entry, today),
+    [RELATES_FIELD]: relatesNeighborhood(model, entry.record),
+    'superseded-by': (model.supersedingLeaves.get(entry.identity) ?? []).map((id) => {
+      const successor = model.leaves.get(id);
+      const { excerpt, provenance, ...metadata } = leafMetadata(successor, today);
+      return { ...metadata, applies: [...leafJurisdictions(successor.record)].sort(compare) };
+    }),
   };
 }
 
@@ -866,6 +884,7 @@ function applyScope(scored, jurisdictions) {
       file: leaf.file,
       applies: leaf.applies,
       asked,
+      'superseded-by': leaf['superseded-by'],
       reason: `declares applies.jurisdictions [${leaf.applies.join(', ')}] — the query is scoped to [${asked.join(', ')}], which this leaf does not cover (UCS-1152)`,
     });
   }
@@ -1028,19 +1047,21 @@ function resolveQuery(model, terms, today) {
  * lookup failed or the store is simply silent on the topic, and those demand
  * different next steps.
  */
-const ZERO_RESOLUTION_CONDUCT = 'zero resolution is a normal outcome (PRD §7): fall back to search within survey-scope.yaml; append a retrieval-miss finding only if this topic plausibly should be mapped (an unmapped area the scope excludes is expected, not a miss)';
+const ZERO_RESOLUTION_CONDUCT = 'zero resolution is a normal outcome (PRD §7): preflight store health, recover through relevant catalogs, then search unresolved tasks through the survey map bounded by repo-root survey-scope.yaml. Record recovered wording as retrieval-struggle, missing in-scope evidence as retrieval-miss, and excluded topics as expected absence. Follow protocol/AGENTS.md for layout and recovery rules.';
 
 // ---------------------------------------------------------------- paths mode
 
 /**
  * Normalize a path to the repo-root-relative posix form pointers use (§9.1):
- * backslashes become '/', `..`/`.`/`//` resolve away (path.posix semantics),
+ * `..`/`.`/`//` resolve away (path.posix semantics),
  * trailing slashes drop, and absolute paths relativize against `root`.
+ * Legacy --paths also trims whitespace and converts backslashes to '/'. With
+ * --path, those bytes are literal filename data on both sides of the join.
  * Wrong normalization is wrong ATTRIBUTION — `a/b/../c.ts` must hit the file
  * pointer `a/c.ts`, not the folder pointer `a/b`.
  */
-function normPath(root, p) {
-  let path = posix.normalize(p.trim().replace(/\\/g, '/'));
+function normPath(root, p, literal = false) {
+  let path = posix.normalize(literal ? p : p.trim().replace(/\\/g, '/'));
   if (posix.isAbsolute(path)) path = posix.relative(root.replace(/\\/g, '/'), path);
   path = path.replace(/\/+$/, '');
   return path === '.' ? '' : path;
@@ -1088,20 +1109,21 @@ function folderPointerTest(repoRoot) {
   };
 }
 
-function resolvePaths(model, rawPaths, repoRoot, today) {
+function resolvePaths(model, rawPaths, repoRoot, today, literal = false) {
+  const flag = literal ? '--path' : '--paths';
   // Pointers are repo-root-relative (§9.1), so both sides normalize against
   // the repo root — the KK-08 two-root convention (model.root may be the
   // nested unknown-knowledge/ store dir in a seeded repo).
   // An entry that normalizes away (empty, ".", "src/..") names the repo root,
   // not a path inside it. Dropping it silently would shrink the lookup the
   // caller asked for — a lookup that never ran, wearing a clean exit.
-  const rootish = rawPaths.filter((p) => normPath(repoRoot, p) === '');
+  const rootish = rawPaths.filter((p) => normPath(repoRoot, p, literal) === '');
   if (rootish.length) {
-    throw new UsageError(`--paths entries ${rootish.map((p) => JSON.stringify(p)).join(', ')} name the repo root, not a path inside it — name the files or directories the change touched`);
+    throw new UsageError(`${flag} entries ${rootish.map((p) => JSON.stringify(p)).join(', ')} name the repo root, not a path inside it — name the files or directories the change touched`);
   }
-  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p)))].sort(compare);
+  const paths = [...new Set(rawPaths.map((p) => normPath(repoRoot, p, literal)))].sort(compare);
   if (!paths.length) {
-    throw new UsageError('--paths must name at least one path — a lookup that never ran is a failure, never a silent empty result');
+    throw new UsageError(`${flag} must name at least one path — a lookup that never ran is a failure, never a silent empty result`);
   }
   const isFolderPointer = folderPointerTest(repoRoot);
   // Leaf `paths` are the second pointer family (UCS-1151), indexed once for the
@@ -1123,7 +1145,7 @@ function resolvePaths(model, rawPaths, repoRoot, today) {
    * the validator is where the author is told to fix it.
    */
   const governs = (pointer, path) => {
-    const p = normPath(repoRoot, pointer);
+    const p = normPath(repoRoot, pointer, literal);
     if (p === '') return false;
     return path === p || (isFolderPointer(p) && path.startsWith(`${p}/`));
   };
@@ -1332,6 +1354,7 @@ function renderDoc(payload) {
       // applicability the reader has to act on, not a detail of the hit.
       if (g['scope-mismatch']) lines.push(`    scope-mismatch: ${g['scope-mismatch']}`);
       for (const d of g.demotions) lines.push(`    demoted (${d.reason}): ${d.detail}`);
+      lines.push(...renderSuccessors(g, '    '));
     }
     lines.push('');
   }
@@ -1363,15 +1386,19 @@ function parseArgs(argv) {
   const { options, positionals } = parseFlags(argv, {
     boolean: ['json'],
     value: ['root', 'today', 'doc'],
-    repeatable: ['paths'],
-    // Query terms arrive as bare arguments; --paths is the reverse lookup;
+    repeatable: ['paths', 'path'],
+    // Query terms arrive as bare arguments; --path/--paths are reverse lookup;
     // --doc is the third input shape (UCS-1156).
     positionals: true,
   });
+  if (options.path && options.paths) {
+    throw new UsageError('cannot combine --path and --paths — choose complete paths or legacy comma-separated lists');
+  }
   const opts = {
     json: !!options.json,
     root: options.root ?? process.cwd(),
-    paths: options.paths ? options.paths.flatMap((v) => v.split(',')) : null,
+    paths: options.path ?? (options.paths ? options.paths.flatMap((v) => v.split(',')) : null),
+    literalPaths: !!options.path,
     doc: options.doc ?? null,
     terms: positionals,
     // The injected date the time verdicts are measured against (UCS-1150).
@@ -1390,14 +1417,14 @@ function parseArgs(argv) {
   // a query — so it is a usage error rather than a silently-preferred mode.
   const shapes = [
     opts.terms.length ? 'query terms' : null,
-    opts.paths ? '--paths' : null,
+    opts.paths ? (opts.literalPaths ? '--path' : '--paths') : null,
     opts.doc ? '--doc' : null,
   ].filter(Boolean);
   if (shapes.length > 1) {
-    throw new UsageError(`give exactly one input shape, got ${shapes.join(' and ')} — a query, --paths, or --doc`);
+    throw new UsageError(`give exactly one input shape, got ${shapes.join(' and ')} — a query, --path/--paths, or --doc`);
   }
   if (!shapes.length) {
-    throw new UsageError('nothing to resolve — give query terms, --paths, or --doc');
+    throw new UsageError('nothing to resolve — give query terms, --path/--paths, or --doc');
   }
   return opts;
 }
@@ -1430,7 +1457,15 @@ function renderRelates(leaf, indent = '      ') {
     if (!neighbors.length) continue;
     lines.push(`${indent}${kind}: ${neighbors.map((n) => `${n.id ?? n.notation} "${n.heading ?? '?'}"`).join(', ')}`);
   }
-  return lines;
+  return [...lines, ...renderSuccessors(leaf, indent)];
+}
+
+/** Incoming claims remain navigation: applicability and target preflight are required. */
+function renderSuccessors(leaf, indent) {
+  return (leaf['superseded-by'] ?? []).map((successor) =>
+    `${indent}superseded-by: ${successor.id} "${successor.heading ?? '?'}" (${successor.file})`
+    + ` [stage: ${successor.stage ?? 'unknown'}; time: ${successor.time.verdict}; jurisdictions: ${successor.applies.join(', ') || 'universal'}]`
+    + ' — verify applicability, preflight this target, and read its source before selecting an answer');
 }
 
 /**
@@ -1508,6 +1543,7 @@ function renderExclusions(payload, lines) {
   for (const x of payload.exclusions) {
     lines.push(`  ${x.id ? `${x.id}  ` : ''}${x.notation}  ${x.heading}  (${x.file})`);
     lines.push(`    ${x.reason}`);
+    lines.push(...renderSuccessors(x, '    '));
   }
   lines.push('');
 }
@@ -1659,7 +1695,7 @@ export function main(argv) {
     } else if (opts.paths) {
       payload = {
         mode: 'paths', 'time-check': timeCheck, 'store-health': health,
-        paths: resolvePaths(model, opts.paths, opts.root, opts.today),
+        paths: resolvePaths(model, opts.paths, opts.root, opts.today, opts.literalPaths),
       };
     } else {
       payload = {

@@ -137,6 +137,7 @@ test('the SAME draft leaf yields an unknown-class preflight verdict (golden)', (
     ['L-000117', 'verified', 'trusted'],
     ['L-000213', 'draft', 'unknown'],
   ]);
+  assert.equal(payload['leaf-verdicts'].find((v) => v.leaf === 'L-000213')['next-action'], 'review-stage');
   // An unknown verdict gates at 2 — a check that never ran is a blocking
   // defect, never a silent pass (PRD §5). Asserted by the expected exit above.
   assert.equal(payload.counts.unknown, 1);

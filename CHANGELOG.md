@@ -13,6 +13,98 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+## [3.0.0-rc.1] - 2026-09-12
+
+### Release preparation
+
+- Publish numbered candidates to npm `next` and stable versions to `latest`,
+  only after the tag and package version agree. Publishing uses GitHub OIDC
+  without the bootstrap token.
+- Document migration of seeded kits and older custom stores without overwriting
+  authored records or promoting unreviewed evidence.
+- Support an explicit `.unknown-knowledge.json` layout selection when application
+  data occupies a root-level store name; retain repository-relative source paths
+  and staged selection during commit checks.
+
+### Changed
+
+- Runtime source gathering explicitly follows cited URLs with host tools and
+  attributes answers/actions to organizational records, external evidence,
+  general explanation or inference, while preserving inaccessible evidence and
+  undocumented facts as gaps (UCS-1221). Existing trust gates remain unchanged.
+
+- **Breaking CLI contract (MAJOR, D-021):** preflight `next-action` values
+  are stable machine codes in JSON and human output; client-editable protocol
+  rows own conduct wording (UCS-954). Shared time reasons retain facts without
+  instructions. Numeric exits and verdict computation are unchanged; exit 2
+  still stops the task, including unknown results. See
+  [migration guidance](docs/agents/ucs-954-action-code-migration.md).
+
+- Preflight is a thin CLI adapter over library orchestration (UCS-953), with
+  direct tests for Verdict rules and CLI regression tests for runtime crashes
+  and partial finding-append failures. Output and exit codes are unchanged.
+
+### Added
+
+- `engine/reverse-staged.js` provides snapshot-aware staged attribution for the
+  opt-in reverse hook, with explicit candidate/before origins (UCS-1230).
+
+- Resolver leaf results expose direct incoming `superseded-by` navigation,
+  derived from authored `relates.supersedes`, with target scope and lifecycle
+  metadata across query, path and document output (UCS-1226).
+
+- Repeatable resolver `--path` input preserves complete filenames, including
+  commas and whitespace, with safe argv-array invocation guidance (UCS-1229).
+  Legacy comma-separated `--paths` remains compatible; mixing the two forms
+  fails with exit 2. This is an additive MINOR CLI surface change under D-021.
+- Importable Verdict computation in `engine/lib/verdicts.js` (UCS-947),
+  including store-wide degradation and leaf/time verdicts. Preflight uses
+  the library with unchanged output, exit codes, and logging behavior.
+- `engine/commit-check.js` runs both whole-store validators with named
+  diagnostics and failure-dominant exit codes (UCS-1227).
+
+### Fixed
+
+- Preflight keeps legacy leaves with missing review stage loadable but reports
+  them as unknown (`review-stage`, exit 2). Client conduct distinguishes missing
+  stage, pre-promotion, freshness prerequisites and store failure, preserves
+  structural precedence, and never permits source gathering through exit 2
+  (UCS-1220). Static age exemption establishes neither promotion nor source
+  freshness. See [compatibility and verification](docs/agents/ucs-1220-conduct.md).
+
+- Installed reverse lookup now attributes deletions and both paths of detected
+  renames/copies from isolated candidate and before snapshots. Pointer repairs
+  preserve historical governance, complete filenames survive Git-to-resolver
+  transport, and failed reads refuse attribution (UCS-1230).
+
+- Reflect diagnoses recurring terminology, relationship and source-pointer gaps
+  before proposing a minimal governed repair, routes all leaf revisions through
+  kb-build, and verifies derived discovery plus before/after retrieval (UCS-1224).
+
+- Leaf supersession cycles now produce `ref-cycle` findings for each cycle
+  member, so target preflight quarantines circular replacement claims.
+- Commit validation reads one isolated Git index snapshot, preserving local
+  staging and working files. Unstaged repairs and untracked evidence cannot
+  conceal candidate defects; preparation and cleanup failures block (UCS-1228).
+
+- Installed pre-commit hooks now refuse source-value drift as well as
+  structural findings. Real Git integration tests cover paired updates,
+  findings and check failures (UCS-1227).
+- Generated agent wrappers now point to the canonical navigation contract as
+  the first action before recursive product-source discovery (UCS-1222).
+  Client-authored instructions keep the existing append/non-clobber behavior;
+  existing seeds remain client-owned and are not automatically updated.
+- Runtime preflight now explicitly selects every relied-upon concept and
+  knowledge leaf with the current date, including leaf-only requests and
+  targets discovered during gathering. Store health, review eligibility,
+  freshness, and source verification remain distinct (UCS-1219).
+- Catalog recovery guidance (UCS-1223): document per-store navigation and
+  seeded-client versus kit-repository roots; preflight zero-hit queries,
+  recover catalog wording before survey-scoped fallback, and distinguish
+  retrieval struggles, in-scope misses and excluded topics.
+- Clarify the cited, human-reviewed path from an organizational evidence gap
+  through capture and kb-build to fresh-session retrieval (UCS-1225).
+
 ## [2.1.0] - 2026-09-09
 
 ### Added

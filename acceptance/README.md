@@ -103,9 +103,13 @@ expected-artifact boxes, and records the wall-clock time.
 | Checklist | Skill / protocol under test | Fixture | Status |
 |---|---|---|---|
 | [`A5-agents-md-walkthrough.md`](A5-agents-md-walkthrough.md) | `payload/protocol/AGENTS.md` runtime loop (resolve → preflight → act → log) | ts-app | landed (KK-20) |
+| [`A5-wrapper-navigation-walkthrough.md`](A5-wrapper-navigation-walkthrough.md) | Real init → generated wrapper → fresh-agent navigation and tool order | isolated ts-app covered concept | manual (UCS-1222) |
+| [`A5-catalog-recovery-walkthrough.md`](A5-catalog-recovery-walkthrough.md) | Catalog recovery, actual layouts and survey-scoped fallback | initialized ts-app copies + real kit decisions | manual (UCS-1223) |
 | [`A5-knowledge-bootstrap-walkthrough.md`](A5-knowledge-bootstrap-walkthrough.md) | `payload/protocol/skills/knowledge-bootstrap.md` phase-2 bootstrap (survey → gate → emit → miss → interview → green finish) | swift-app | landed (KK-21) |
 | [`A5-knowledge-reflect-walkthrough.md`](A5-knowledge-reflect-walkthrough.md) | `payload/protocol/skills/knowledge-reflect.md` consolidation (seeded findings → clustering → recommendation list → simulated approval → apply → green re-validation → last-reflect stamp) | swift-app | landed (KK-22) |
+| [`A5-reflection-retrieval-walkthrough.md`](A5-reflection-retrieval-walkthrough.md) | Governed alias/relationship repair, rejection/reopening and fresh-agent before/after retrieval | generated synthetic store | UCS-1224; actual traces required |
 | [`A5-kb-build-walkthrough.md`](A5-kb-build-walkthrough.md) | `payload/protocol/skills/kb-build.md` sole knowledge write path (classify → cite → draft → index → validate) | ts-app | landed (KK-23) |
+| [`A5-knowledge-gap-walkthrough.md`](A5-knowledge-gap-walkthrough.md) | capture → reflect → kb-build → fresh retrieval, including rejected/unapproved drafts and controlled citation review | disposable clean v2 component fixture | UCS-1225; run with fresh agents |
 | [`A5-knowledge-audit-walkthrough.md`](A5-knowledge-audit-walkthrough.md) | `payload/protocol/skills/knowledge-audit.md` health check + loop heartbeat (validators → reverse audit → sweeps → heartbeat → report) | ts-app | landed (KK-23) |
 
 Each new skill issue ships its `A5-<skill>-walkthrough.md` here; the harness

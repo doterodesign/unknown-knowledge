@@ -9,10 +9,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { load } from 'js-yaml';
 
 const cli = fileURLToPath(new URL('../payload/engine/preflight.js', import.meta.url));
@@ -39,7 +39,7 @@ test('clean store: every requested active concept is trusted — exit 0', () => 
     const v = verdictOf(out, id);
     assert.equal(v.verdict, 'trusted');
     assert.deepEqual(v.evidence, []);
-    assert.match(v['next-action'], /never cache/i); // no verdict caching (D-011)
+    assert.equal(v['next-action'], 'proceed');
   }
 });
 
@@ -54,7 +54,7 @@ test('fixture drift: quarantined verdict for the touching concept, trusted for t
   const codes = bad.evidence.map((e) => e.code);
   assert.ok(codes.includes('value-not-in-source'), `codes: ${codes}`);
   assert.ok(codes.includes('source-value-missing'), `codes: ${codes}`);
-  assert.match(bad['next-action'], /protocol-layer/); // conduct is not the engine's
+  assert.equal(bad['next-action'], 'repair-evidence');
   assert.equal(verdictOf(out, 'K-110').verdict, 'trusted');
 });
 
@@ -65,6 +65,7 @@ test('draft concept verdicts unknown — value checks were skipped, so nothing c
   const v = verdictOf(out, 'K-130');
   assert.equal(v.verdict, 'unknown');
   assert.equal(v.status, 'draft');
+  assert.equal(v['next-action'], 'review-status');
   assert.match(v.reason, /structural checks only/);
 });
 
@@ -84,6 +85,7 @@ test('store-wide parse failure degrades ALL requested verdicts to unknown — ex
   for (const v of out.verdicts) {
     assert.equal(v.verdict, 'unknown');
     assert.match(v.reason, /store-wide failure/);
+    assert.equal(v['next-action'], 'repair-store');
   }
   assert.ok(out['store-errors'].some((d) => d.code === 'parse-error'));
 });
@@ -139,6 +141,23 @@ function withDriftCopy(fn) {
   }
 }
 
+test('a runtime crash while rendering computed verdicts reaches the outer guard and exits 2', () => {
+  withDriftCopy((dir) => {
+    const preload = join(dir, 'crash.mjs');
+    // Inject at the output boundary, after computation. No engine module is
+    // replaced, and the actual CLI entry point must catch this TypeError.
+    writeFileSync(preload, `process.stdout.write = () => {
+      throw new TypeError('injected preflight output failure');
+    };\n`);
+    const r = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href,
+      cli, '--root', dir, '--concepts', 'K-100', '--json'], { encoding: 'utf8' });
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.match(r.stderr, /internal failure — the command did not complete/);
+    assert.match(r.stderr, /TypeError: injected preflight output failure/);
+    assert.equal(r.stdout, '');
+  });
+});
+
 test('--log appends one engine-attributed quarantine finding per quarantined concept (KK-13 schema)', () => {
   withDriftCopy((dir) => {
     const r = run('--root', dir, '--concepts', 'K-100,K-110', '--log', '--today', '2026-01-05', '--json');
@@ -156,6 +175,46 @@ test('--log appends one engine-attributed quarantine finding per quarantined con
     assert.match(entry.summary, /K-100/);
     assert.match(entry.summary, /value-not-in-source/);
     assert.match(entry.summary, /src\/icons\.txt/);
+  });
+});
+
+test('a second finding append failure exits 2 and reports incompletion without denying computed verdicts', () => {
+  withDriftCopy((dir) => {
+    writeFileSync(join(dir, 'src/color-tokens.txt'), 'srgb\nchanged\n');
+    const args = ['--root', dir, '--concepts', 'K-100,K-110', '--json'];
+    const checked = run(...args);
+    assert.equal(checked.status, 1, checked.stderr);
+    assert.deepEqual(JSON.parse(checked.stdout).verdicts.map(({ concept, verdict }) => [concept, verdict]), [
+      ['K-100', 'quarantined'], ['K-110', 'quarantined'],
+    ]);
+
+    // Fail only the second finding write at the filesystem boundary. The
+    // first append uses the real writer, including schema checks and 'wx'.
+    const preload = join(dir, 'full-disk.mjs');
+    writeFileSync(preload, `import fs from 'node:fs';
+import { syncBuiltinESMExports } from 'node:module';
+const write = fs.writeFileSync;
+let findings = 0;
+fs.writeFileSync = (file, ...args) => {
+  if (String(file).includes('/logs/findings/') && ++findings === 2) {
+    throw Object.assign(new Error('injected ENOSPC on second finding append'), { code: 'ENOSPC' });
+  }
+  return write(file, ...args);
+};
+syncBuiltinESMExports();\n`);
+    const r = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href,
+      cli, ...args, '--log', '--today', '2026-01-05'], { encoding: 'utf8' });
+    assert.equal(r.status, 2, r.stdout + r.stderr);
+    assert.equal(r.stdout, '', 'an incomplete logged run must not publish a complete result');
+    assert.match(r.stderr, /internal failure — the command did not complete/);
+    assert.match(r.stderr, /injected ENOSPC on second finding append/);
+    assert.doesNotMatch(r.stderr, /no check ran|checks? never ran|verdicts? (?:were |was )?(?:not|never) computed/i);
+    const files = readdirSync(join(dir, 'logs/findings'));
+    assert.equal(files.length, 1, 'the first finding survives the second append failure');
+    const entry = load(readFileSync(join(dir, 'logs/findings', files[0]), 'utf8'));
+    assert.deepEqual(entry.consulted, { concepts: ['K-100'] });
+    assert.equal(entry.trigger, 'quarantine');
+    assert.match(entry.summary, /value-not-in-source/);
   });
 });
 
@@ -236,3 +295,118 @@ test('human mode on an all-trusted run says so', () => {
   assert.match(r.stdout, /2 trusted, 0 quarantined, 0 stale, 0 unknown/);
   assert.match(r.stdout, /never cached/);
 });
+
+test('leaf time diagnostics report measurements without prescribing conduct', () => {
+  const root = fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url));
+  const stale = run('--root', root, '--leaves', 'L-000302', '--today', '2026-08-16', '--json');
+  assert.equal(stale.status, 1, stale.stderr);
+  const [v] = JSON.parse(stale.stdout)['leaf-verdicts'];
+  assert.equal(v.reason, 'verified 366 day(s) ago, past the 365-day limit for stable knowledge (UCS-1150)');
+  assert.equal(v.time.reason, v.reason);
+  const skipped = run('--root', root, '--leaves', 'L-000302', '--json');
+  assert.equal(skipped.status, 2, skipped.stderr);
+  assert.equal(JSON.parse(skipped.stdout)['leaf-verdicts'][0].reason,
+    'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
+});
+
+// The literal codes are the public contract, independent of client wording.
+test('a legacy missing-stage leaf remains inspectable but cannot establish trusted promotion', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'preflight-missing-stage-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  cpSync(fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url)), root, { recursive: true });
+  const path = join(root, 'knowledge/freshness/301.1-stable-at-the-limit.md');
+  const original = readFileSync(path, 'utf8');
+  const legacy = original.replace('  stage: verified\n', '');
+  writeFileSync(path, legacy);
+
+  const health = run('--root', root, '--json');
+  assert.equal(health.status, 0, health.stderr);
+  assert.equal(JSON.parse(health.stdout)['store-health'].ok, true);
+  const result = run('--root', root, '--leaves', 'L-000301', '--today', '2026-08-16', '--json');
+  assert.equal(result.status, 2, result.stdout);
+  const [leaf] = JSON.parse(result.stdout)['leaf-verdicts'];
+  assert.equal(leaf.verdict, 'unknown');
+  assert.equal(leaf.stage, null);
+  assert.equal(leaf['next-action'], 'review-stage');
+  assert.match(leaf.reason, /missing.*stage.*promotion/i);
+  assert.deepEqual(leaf.evidence, []);
+  assert.equal(readFileSync(path, 'utf8'), legacy);
+});
+
+// `supply-verified-date` is a defensive fallback: currently the structural
+// missing/malformed-date finding takes precedence and emits repair-evidence.
+for (const { name, stage, extra = {}, status, verdict, reason, time } of [
+  { name: 'missing stage with stale age', stage: null,
+    status: 2, verdict: 'unknown', reason: /missing review stage/, time: 'stale' },
+  { name: 'missing stage with static age exemption', stage: null, extra: { volatility: 'static' },
+    status: 2, verdict: 'unknown', reason: /missing review stage/, time: 'trusted' },
+  { name: 'missing stage with no time governance', stage: null, extra: { volatility: null },
+    status: 2, verdict: 'unknown', reason: /missing review stage/, time: 'exempt' },
+  { name: 'draft with stale age', stage: 'draft',
+    status: 2, verdict: 'unknown', reason: /stage "draft".*pre-promotion/, time: 'stale' },
+  { name: 'proposed with stale age', stage: 'proposed',
+    status: 2, verdict: 'unknown', reason: /stage "proposed".*pre-promotion/, time: 'stale' },
+  { name: 'missing stage with missing verification date', stage: null, extra: { verified: null },
+    status: 1, verdict: 'quarantined', reason: /error-severity/, time: 'undated' },
+]) {
+  test(`review and freshness precedence through the CLI: ${name}`, (t) => {
+    const root = mkdtempSync(join(tmpdir(), 'preflight-review-'));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+    cpSync(fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url)), root, { recursive: true });
+    const path = join(root, 'knowledge/freshness/301.1-stable-at-the-limit.md');
+    let leafText = readFileSync(path, 'utf8').replace('  stage: verified\n', stage === null ? '' : `  stage: ${stage}\n`);
+    for (const [key, value] of Object.entries(extra)) {
+      leafText = leafText.replace(new RegExp(`^${key}:.*\\n`, 'm'), value === null ? '' : `${key}: ${value}\n`);
+    }
+    writeFileSync(path, leafText);
+    const args = ['--root', root, '--leaves', 'L-000301', '--today', '2026-09-10'];
+    const result = run(...args, '--json');
+    assert.equal(result.status, status, result.stdout + result.stderr);
+    const [leaf] = JSON.parse(result.stdout)['leaf-verdicts'];
+    assert.equal(leaf.verdict, verdict);
+    assert.equal(leaf.stage, stage);
+    assert.match(leaf.reason, reason);
+    assert.equal(leaf.time.verdict, time);
+    const action = verdict === 'quarantined' ? 'repair-evidence' : 'review-stage';
+    assert.equal(leaf['next-action'], action);
+    if (verdict === 'quarantined') assert.deepEqual(leaf.evidence.map((e) => e.code), ['missing-verified']);
+    const human = run(...args);
+    assert.equal(human.status, status, human.stderr);
+    assert.match(human.stdout, reason);
+    assert.ok(human.stdout.includes(`next: ${action}`));
+    assert.equal(run(...args, '--json').stdout, result.stdout);
+    assert.equal(readFileSync(path, 'utf8'), leafText);
+  });
+}
+
+for (const [name, store, args, status, expected] of [
+  ['trusted and quarantine', 'preflight/drift', ['--concepts', 'K-110,K-100'], 1,
+    [['K-100', 'repair-evidence'], ['K-110', 'proceed']]],
+  ['unknown concept', 'preflight/clean', ['--concepts', 'K-130'], 2,
+    [['K-130', 'review-status']]],
+  ['store degradation for both kinds', 'preflight/malformed', ['--concepts', 'K-110,K-100', '--leaves', 'L-000999'], 2,
+    [['K-100', 'repair-store'], ['K-110', 'repair-store'], ['L-000999', 'repair-store']]],
+  ['trusted and pre-promotion leaves', 'structural-validator/frontmatter-v2', ['--leaves', 'L-000213,L-000117'], 2,
+    [['L-000117', 'proceed'], ['L-000213', 'review-stage']]],
+  ['leaf quarantine', 'structural-validator/frontmatter-v2-findings', ['--leaves', 'L-000901'], 1,
+    [['L-000901', 'repair-evidence']]],
+  ['stale and fresh leaves', 'structural-validator/time-facet', ['--leaves', 'L-000302,L-000301', '--today', '2026-08-16'], 1,
+    [['L-000301', 'proceed'], ['L-000302', 'reverify-leaf']]],
+  ['missing and malformed verification dates', 'structural-validator/time-facet-findings', ['--leaves', 'L-000402,L-000401', '--today', '2026-08-16'], 1,
+    [['L-000401', 'repair-evidence'], ['L-000402', 'repair-evidence']]],
+  ['skipped freshness', 'structural-validator/time-facet', ['--leaves', 'L-000302'], 2,
+    [['L-000302', 'supply-evaluation-date']]],
+]) {
+  test(`next-action codes in JSON and human output: ${name}`, () => {
+    const root = fileURLToPath(new URL(`fixtures/${store}/`, import.meta.url));
+    const human = run('--root', root, ...args);
+    const json = run('--root', root, ...args, '--json');
+    assert.equal(human.status, status, human.stderr);
+    assert.equal(json.status, status, json.stderr);
+    const payload = JSON.parse(json.stdout);
+    const rows = [...payload.verdicts, ...(payload['leaf-verdicts'] ?? [])];
+    assert.deepEqual(rows.map((v) => [v.concept ?? v.leaf, v['next-action']]), expected);
+    assert.deepEqual([...human.stdout.matchAll(/^  next: (.+)$/gm)].map((m) => m[1]), expected.map((row) => row[1]));
+    assert.equal(run('--root', root, ...args, '--json').stdout, json.stdout);
+  });
+}

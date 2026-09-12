@@ -231,7 +231,7 @@ export function timeVerdict(record, today) {
     return {
       ...base,
       verdict: TIME_VERDICTS.SKIPPED,
-      reason: 'skipped — pass --today YYYY-MM-DD to enable time verdicts; diffable output never reads the wall clock (D-012)',
+      reason: timeCheckStatus(null),
     };
   }
   if (verified === null) {
@@ -252,7 +252,7 @@ export function timeVerdict(record, today) {
       age,
       verdict: TIME_VERDICTS.STALE,
       stale: true,
-      reason: `verified ${age} day(s) ago, past the ${limit}-day limit for ${volatility} knowledge — re-verify against the cited sources, or treat the claim as unverified (UCS-1150)`,
+      reason: `verified ${age} day(s) ago, past the ${limit}-day limit for ${volatility} knowledge (UCS-1150)`,
     };
   }
   // Only `stable` and `volatile` reach here — `static` returned above and
@@ -270,13 +270,12 @@ export function timeVerdict(record, today) {
  *
  * Every projection that can demote on time must SAY whether it computed
  * verdicts, and it must say so in one wording — a surface that phrased its own
- * skip notice would eventually phrase it as silence. Mirrors the audit's
- * `checks['stale-last-verified']` string exactly, so a reader who has seen one
- * recognizes the other.
+ * skip notice would eventually phrase it as silence. Reports the missing
+ * input as a fact; recovery wording belongs to the protocol (D-011).
  *
  * @param {string|null} today the injected date, or null
  * @returns {string}
  */
 export const timeCheckStatus = (today) => (today
   ? `checked against --today ${today} (stale after ${VOLATILITY_LIMITS.stable} days for stable, ${VOLATILITY_LIMITS.volatile} for volatile; static never stales)`
-  : 'skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)');
+  : 'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');

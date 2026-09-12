@@ -22,6 +22,7 @@ import {
 
 const kitRoot = fileURLToPath(new URL('..', import.meta.url));
 const initCopyJs = join(kitRoot, 'cli', 'init-copy.js');
+const initJs = join(kitRoot, 'cli', 'init.js');
 const registry = loadManifest(kitRoot).platforms;
 const ALL_PLATFORMS = Object.keys(registry).sort();
 
@@ -60,6 +61,23 @@ test('the shipped registry covers the five §6 platforms at their conventional p
 });
 
 // -------------------------------------- generation matrix (the public seam)
+
+test('init gives every platform a first-action protocol pointer before recursive source discovery', () => {
+  for (const rootName of [DEFAULT_ROOT, 'kb']) {
+    const target = freshDir();
+    const r = spawnSync(process.execPath, [initJs, 'init', '--yes', '--target', target,
+      '--root', rootName, '--platforms', ALL_PLATFORMS.join(',')], { encoding: 'utf8' });
+    assert.equal(r.status, 0, r.stderr);
+    for (const id of ALL_PLATFORMS) {
+      const text = readFileSync(join(target, registry[id].target), 'utf8');
+      assert.match(text, /First action[^\n]*read/i, `${id}: the first action must be explicit`);
+      assert.ok(text.includes(`${rootName}/protocol/AGENTS.md`), `${id}: canonical entry point`);
+      assert.ok(text.includes(`\`${rootName}/\``), `${id}: seeded kit location`);
+      assert.match(text, /before[\s\S]*recursive[\s\S]*source[\s\S]*discovery/i,
+        `${id}: establish order before product-source discovery`);
+    }
+  }
+});
 
 test('per-platform matrix: each platform alone generates exactly its wrapper — a thin pointer at the conventional path', () => {
   for (const id of ALL_PLATFORMS) {

@@ -1,13 +1,13 @@
 # npm publish with provenance attestation (KK-28, supply-chain posture per
 # D-018): runs only on release tags, publishes the bare `unknown-knowledge`
 # package publicly with an npm provenance attestation minted via GitHub
-# Actions OIDC (`id-token: write`). See docs/publishing.md for first-publish
-# authentication and the transition to npm Trusted Publishing.
+# Actions OIDC (`id-token: write`). See docs/publishing.md for the token-free
+# Trusted Publishing path and candidate vs. stable channels.
 #
 # Manual account-side prerequisites (documented in docs/publishing.md,
 # cannot be performed from this repo): npm publish 2FA enabled, publish
-# maintainers verified, org reservation checked, and a bootstrap token
-# or trusted-publisher config in place.
+# maintainers verified, org reservation checked, and a trusted publisher
+# configured for this exact workflow.
 name: Publish
 
 on:
@@ -34,15 +34,17 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run acceptance
+      - run: node payload/engine/validate.js --root .
+      - run: npm audit --omit=dev
+      - run: npm pack --dry-run
       # The tag and the manifest must name the same version, BEFORE publish. A
       # published version is immutable: pushing v1.0.0 against a 0.0.0 manifest
       # would put 0.0.0 on the registry under a tag claiming otherwise, and
       # every repo seeded from it would carry a birth certificate naming a
       # release that does not exist (D-021). Nothing is published if this fails.
       - name: Tag agrees with package version
+        id: release
         run: node scripts/check-tag-version.js
-      # OIDC authenticates once the package trusts this workflow. NPM_TOKEN
-      # supports the first publish, before package settings exist on npm.
-      - run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # Trusted Publishing is configured for this workflow. Deliberately omit
+      # the bootstrap token so successful publication proves the OIDC path.
+      - run: npm publish --provenance --access public --tag "${{ steps.release.outputs.npm_tag }}"

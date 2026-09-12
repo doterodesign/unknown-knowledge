@@ -42,7 +42,7 @@ score. Reflect is the judgment half, and this threshold is judgment.
 
 ### Residue and candidate findings — the misses that become edges
 
-Sessions append two kinds of finding that exist to be minted from
+Sessions append two kinds of finding that can support reviewed repairs
 (UCS-1160), both through `log-entry.js` like every other fragment:
 
 - **Residue** — from `resolve`'s `decomposition.residue`: the non-stopword
@@ -65,9 +65,11 @@ mapped.
 
 ## Minting conduct — how a miss becomes a deterministic edge
 
-A corroborated residue cluster is evidence the store has no word for
-something the material keeps naming. Minting that word is the loop's whole
-point, and it is a governed act. Four vocabularies can be minted from
+A corroborated residue cluster is evidence of recurring retrieval friction,
+not proof that a new word is needed. Diagnose the failed route first (CLUSTER,
+below): existing wording may already reach the concept while its leaf link or
+source pointer is wrong. When a new word is the smallest supported repair,
+minting it is a governed act. Four vocabularies can be minted from
 reflect: **terms**, **aliases**, **operations**, and **domain classes**.
 
 ### What "three distinct fragments" means
@@ -186,6 +188,48 @@ it takes the Disputed-clusters procedure (below) first.
 derived, never stored; `proposed` fragments keep their prior item
 membership (see the resume table).
 
+#### Diagnose the failed route before proposing a repair
+
+For each retrieval cluster, distinguish the **same supported problem** from
+mere word overlap. Group by intended concept/leaf and the route that failed;
+unrelated asks sharing a residue token do not corroborate each other. Show the
+session/date events counted and which fragments are duplicates of one event.
+Do not count repeated records of that event again. Missing event identity is
+uncertain evidence, not permission to assume independence.
+
+Replay the observed wording through public `resolve`, keeping the query and
+options fixed for a later before/after comparison. Use a privacy-safe fixture
+paraphrase when the original contains private text; never copy user text into
+committed findings. Preserve the CLI output and the recovery route in the
+review evidence. Enter stores through their catalogs/rules and read the
+intended leaf and source, including a candidate's located section. Findings
+report a struggle; only those reads establish what repair the material supports.
+
+| Diagnosis | Smallest supported proposal and existing write path |
+|---|---|
+| The wording misses an existing concept | One observed alias on that concept (`alias-addition`), proposal-first ontology review, with the minting Decisions entry and its warrant. Do not enumerate speculative synonyms. |
+| The concept resolves but its intended leaf is absent | The leaf's `concepts` edge (`knowledge-promotion` handoff to kb-build), after checking the leaf is actually about that concept. Do not substitute aliases for a missing relationship. |
+| The leaf itself needs the observed search wording | A minimal `terms` revision (`knowledge-promotion` handoff to kb-build), with the minting Decisions provenance. Even a frontmatter-only leaf change uses kb-build. |
+| The concept reaches an inaccurate source | `ssot-repoint`, with a freshly read replacement pointer and any matching `enumerates.source` change; do not hide the wrong pointer behind a vocabulary change. |
+| Existing material needs an unminted operation or domain | `mint-proposal`, only with literary warrant and the existing registry/Decisions gate. A query miss alone does not warrant a new domain. |
+| The organizational fact is undocumented, or the topic is outside scope | No terminology repair. Keep the fact unknown; route in-scope evidence work through the existing cited kb-build handoff or hold the gap. Expected out-of-scope absence warrants no expansion. General knowledge may explain the topic but cannot establish a company fact. |
+
+The recommendation must name its diagnosis, the intended accession/concept,
+why a smaller repair would not suffice, and a nearby query that must **not**
+gain an unrelated match. These are review evidence, not new log fields or a
+new automatic corroboration mechanism. Retain the existing change categories:
+a leaf revision remains a handoff even when accompanied by a vocabulary
+decision; do not duplicate it as a second recommendation just to count a mint.
+
+Read prior rejected/resolved fragments and relevant Decisions before raising
+the item. A repeated rejection without changed evidence does not create a new
+proposal. For a real recurrence, re-open the original fragment, carry the old
+reason and any new evidence into review, and honor registry suppressions.
+Preserve that reason in the review evidence before the transition: the helper
+clears the current `reason` on reopening; it does not retain it in the fragment.
+Insufficient corroboration still means hold-and-age, never new siblings to
+manufacture a threshold.
+
 ### 3. RECOMMEND — the evidence-gated list
 
 Build the recommendation list. One item per cluster that **meets the
@@ -272,16 +316,29 @@ APPLY; never re-ask a recorded outcome.
 
 ### 5. APPLY — approved diffs, then close the loop
 
-Apply each approved diff (as modified, if approve-with-modification), then
-re-run **both validators filtered to exactly the concepts the diff
-touched** — an id left off the list is a check that never ran:
+Apply each approved ontology/Decisions diff (as modified, if
+approve-with-modification). Knowledge-leaf changes, including only `terms`,
+`concepts`, `paths`, or citations, go through kb-build; reflect never writes
+them directly. Approval of a reflect handoff does not promote the downstream
+draft: kb-build's citation check, draft stage and human gate still apply.
+
+Run full structural validation so leaf, registry and Decisions changes are
+checked even when no ontology concept changed:
+
+```
+node unknown-knowledge/engine/validate.js --root .
+```
+
+For changed concepts, also re-run **both validators filtered to exactly the
+concepts the diff touched** — an id left off the list is a check that never ran:
 
 ```
 node unknown-knowledge/engine/validate.js --concepts K-110 --root .
 node unknown-knowledge/engine/validate-values.js --concepts K-110 --root .
 ```
 
-- **Exit 0 + 0** — the loop is closed: transition the item's findings
+- **All required validators exit 0** — continue to the discovery verification
+  below. Only after it passes, transition the item's findings
   `proposed → resolved` (the helper stamps `verified` with the run date).
   A finding is never resolved ahead of the green re-run — green first,
   then the transition.
@@ -298,6 +355,36 @@ Handoff categories (`knowledge-promotion`, `extractor-draft`) have no diff
 to apply here: their findings stay `proposed` and resolve when the
 downstream gate (kb-build / new-kind pipeline) lands — reflect reports
 them as handed off.
+
+For a retrieval repair, close the loop over the final approved records,
+including any completed kb-build handoff:
+
+1. Regenerate and check disposable discovery using the same injected date
+   (`protocol/derived-layer.md`), never by editing generated files:
+
+   ```
+   node unknown-knowledge/engine/derive.js --root . --today 2026-09-10 --write
+   node unknown-knowledge/engine/derive.js --root . --today 2026-09-10 --check
+   ```
+
+2. Replay the saved public resolver query/options and the nearby negative
+   query. Verify the intended ID and navigable leaf/source, fewer recovery
+   steps, and no incorrect broadened match. A green derive check alone does
+   not prove recall: the resolver reads authored stores, not the derived index.
+3. For the acceptance walkthrough, run a **fresh agent** on the same request
+   with no proposed alias, target ID, answer, or earlier trace in its prompt.
+   Preserve actual commands, consulted sources/leaves, leaf-specific preflight
+   with the injected date, answer, and navigation steps. Compare correctness
+   and recovery effort, not just matching scores. A checklist or static prompt
+   assertion is not an agent trial; if a required trial cannot run, report it
+   pending rather than claiming completion.
+
+Nonzero checks, an unrepaired route, or a new incorrect match keep the findings
+unresolved. Use the failure/reopen procedure above for an applied defective
+repair; an exit-2 check still stops the run. Preserve original authored records
+as the source of truth and attach the before/after evidence to the reflect PR.
+An interrupted retrieval repair must finish these checks before resolution,
+even if its concept validators passed before the interruption.
 
 Completion criterion: every approved item is either resolved over a green
 filtered re-run, reverted-and-re-opened with the failure recorded, or

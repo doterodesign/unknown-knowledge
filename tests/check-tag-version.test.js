@@ -11,7 +11,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { load } from 'js-yaml';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, copyFileSync, realpathSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { main, tagVersionProblem } from '../scripts/check-tag-version.js';
@@ -31,6 +33,14 @@ test('a tag that names the package version is allowed through', () => {
   assert.equal(tagVersionProblem('v1.0.0', '1.0.0'), null);
   assert.equal(tagVersionProblem('v0.0.0', '0.0.0'), null);
   assert.equal(tagVersionProblem('v12.34.56', '12.34.56'), null);
+});
+
+test('numbered release candidates are allowed only when the manifest agrees', () => {
+  assert.equal(tagVersionProblem('v3.0.0-rc.1', '3.0.0-rc.1'), null);
+  assert.notEqual(tagVersionProblem('v3.0.0-rc.1', '3.0.0-rc.2'), null);
+  for (const version of ['03.0.0', '3.00.0', '3.0.00', '3.0.0-rc.01', '3.0.0-rc', '3.0.0-beta.1', '3.0.0+build']) {
+    assert.notEqual(tagVersionProblem(`v${version}`, version), null, version);
+  }
 });
 
 test('a tag that disagrees with the manifest is refused, and both values are named', () => {
@@ -54,9 +64,20 @@ test('a near-miss version is refused — this is exact equality, not "close enou
 });
 
 test('a tag that is not a release tag is refused rather than interpreted', () => {
-  for (const tag of ['1.0.0', 'v1.0', 'v1', 'release-1.0.0', 'v1.0.0-rc.1', 'v1.0.0+build', 'main']) {
+  for (const tag of ['1.0.0', 'v1.0', 'v1', 'release-1.0.0', 'v1.0.0+build', 'main']) {
     assert.match(tagVersionProblem(tag, '1.0.0'), /is not a release tag/, `${tag} is not vMAJOR.MINOR.PATCH`);
   }
+});
+
+test('the release guard supplies the npm channel only after successful validation', (t) => {
+  const root = mkdtempSync(join(tmpdir(), 'release-channel-'));
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const githubOutput = join(root, 'output');
+  const { version } = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  assert.equal(main(['main'], { stdout: capture(), stderr: capture(), githubOutput }), 1);
+  assert.equal(existsSync(githubOutput), false);
+  assert.equal(main([`v${version}`], { stdout: capture(), stderr: capture(), githubOutput }), 0);
+  assert.equal(readFileSync(githubOutput, 'utf8'), `npm_tag=${version.includes('-rc.') ? 'next' : 'latest'}\n`);
 });
 
 test('no tag at all is a refusal, never a silent pass', () => {
@@ -108,6 +129,11 @@ test('the workflow still fires only on release tags, and keeps its provenance po
   assert.deepEqual(wf.on.push.tags, ['v*.*.*'], 'the trigger and the guard must agree on what a release tag is');
   assert.match(text, /npm publish --provenance --access public/);
   assert.equal(wf.jobs.publish.permissions['id-token'], 'write', 'OIDC, for the provenance attestation');
+  const guard = wf.jobs.publish.steps.find((s) => /check-tag-version/.test(s.run ?? ''));
+  const publish = wf.jobs.publish.steps.find((s) => /npm publish/.test(s.run ?? ''));
+  assert.equal(guard.id, 'release');
+  assert.match(publish.run, /--tag "\$\{\{ steps\.release\.outputs\.npm_tag \}\}"/);
+  assert.equal(publish.env?.NODE_AUTH_TOKEN, undefined, 'prove OIDC without bootstrap-token fallback');
 });
 
 test('the run-book documents the tag-and-version ordering', () => {
@@ -133,7 +159,7 @@ test('the CHANGELOG carries a heading for the version the manifest names', () =>
 test('Unreleased sits above the newest release, and is empty after a cut', () => {
   const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
   const unreleased = changelog.indexOf('## [Unreleased]');
-  const firstRelease = changelog.search(/^## \[\d+\.\d+\.\d+\]/m);
+  const firstRelease = changelog.search(/^## \[\d+\.\d+\.\d+(?:-rc\.\d+)?\]/m);
   assert.notEqual(unreleased, -1, 'the next cycle needs somewhere to accrue');
   assert.notEqual(firstRelease, -1, 'there is at least one released version');
   assert.ok(unreleased < firstRelease, 'Unreleased comes first — newest at the top');
@@ -149,12 +175,30 @@ test('every release heading names a real day, and none is in the future', () => 
   // fails only when a heading is genuinely dated ahead of the machine running it.
   const today = new Date().toISOString().slice(0, 10);
   const headings = [...readFileSync(join(root, 'CHANGELOG.md'), 'utf8')
-    .matchAll(/^## \[(\d+\.\d+\.\d+)\] - (\d{4}-\d{2}-\d{2})$/gm)];
+    .matchAll(/^## \[(\d+\.\d+\.\d+(?:-rc\.\d+)?)\] - (\d{4}-\d{2}-\d{2})$/gm)];
 
   assert.ok(headings.length > 0, 'there is at least one released version to check');
   for (const [, version, date] of headings) {
     assert.ok(isCalendarDate(date), `${version} is dated ${date}, which is not a real calendar day`);
     assert.ok(date <= today,
       `${version} is dated ${date}, which is in the future — D-021 records dates at release time, never ahead of it`);
+  }
+});
+
+
+test('the real guard CLI routes stable and candidate manifests to different channels', (t) => {
+  const temporary = realpathSync(mkdtempSync(join(tmpdir(), 'release-cli-')));
+  t.after(() => rmSync(temporary, { recursive: true, force: true }));
+  mkdirSync(join(temporary, 'scripts'));
+  const script = join(temporary, 'scripts/check-tag-version.js');
+  copyFileSync(join(root, 'scripts/check-tag-version.js'), script);
+  for (const [version, channel] of [['3.0.0', 'latest'], ['3.0.0-rc.1', 'next']]) {
+    writeFileSync(join(temporary, 'package.json'), JSON.stringify({ type: 'module', version }));
+    const output = join(temporary, channel);
+    const result = spawnSync(process.execPath, [script, `v${version}`], {
+      encoding: 'utf8', env: { ...process.env, GITHUB_OUTPUT: output },
+    });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(readFileSync(output, 'utf8'), `npm_tag=${channel}\n`);
   }
 });

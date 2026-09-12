@@ -61,8 +61,8 @@
  * 2 engine failure / check-never-ran.
  */
 import process from 'node:process';
-import { readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { readFileSync, realpathSync } from 'node:fs';
+import { isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { healthSummary, loadStores, isPrePromotionStatus, normalizeConceptIds, selectConcepts, storeHealth, UnknownConceptsError } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
@@ -116,11 +116,27 @@ function checkDescriptor(ctx, concept, descriptor, i) {
 
   let input;
   try {
+    // Governed evidence stays inside --root, including through symlinks.
+    // Check before reading so a failed structural pointer cannot still feed
+    // host bytes to the value validator during a snapshot check.
+    const target = resolve(ctx.root, descriptor.source);
+    const outside = (root, path) => {
+      const rel = relative(root, path);
+      return rel === '..' || rel.startsWith(`..${sep}`) || isAbsolute(rel);
+    };
+    if (outside(resolve(ctx.root), target)
+      || outside(realpathSync(ctx.root), realpathSync(target))) {
+      never('source-missing', `source ${JSON.stringify(descriptor.source)} resolves outside the repo root`);
+      return;
+    }
     input = readsDirectory
       ? listDirectory(join(ctx.root, descriptor.source))
       : readFileSync(join(ctx.root, descriptor.source), 'utf8');
   } catch (error) {
-    never('source-missing', `cannot ${readsDirectory ? 'list source directory' : 'read source'} ${JSON.stringify(descriptor.source)}: ${error.message}`);
+    // A filesystem message includes the absolute (possibly temporary) root.
+    // The declared source and stable error code identify the repair without
+    // making the same candidate emit different diagnostics on every run.
+    never('source-missing', `cannot ${readsDirectory ? 'list source directory' : 'read source'} ${JSON.stringify(descriptor.source)}: ${error.code ?? error.message}`);
     return;
   }
 

@@ -1,5 +1,21 @@
 # Publishing `unknown-knowledge`
 
+## Current pilot release
+
+The 3.0 pilot is `3.0.0-rc.1`, published on **next**. Stable `latest` stays at
+2.1.0. The tag guard accepts canonical `vMAJOR.MINOR.PATCH` and numbered
+`vMAJOR.MINOR.PATCH-rc.N` candidates, checks exact manifest agreement, and emits
+the npm tag consumed by the publish step: `latest` for stable, `next` for rc.
+Other prerelease spellings and build suffixes are refused until deliberately
+supported. See [migration and pilot checks](migration-3.md).
+
+This workflow now uses Trusted Publishing without `NODE_AUTH_TOKEN`. Its first
+successful token-free run is the verification that bootstrap-token expiry no
+longer affects publishing. Preserve the existing npm publisher connection:
+`doterodesign/unknown-knowledge`, `publish.yml`, no GitHub environment.
+After verification, remove the obsolete GitHub `NPM_TOKEN` secret. Any original
+npm token can be revoked by its owner or allowed to expire; never expose it.
+
 Release policy: bare `unknown-knowledge` is the one canonical package
 (D-018); the license is Apache-2.0 (D-020); version semantics are semver per
 D-021. Publishing runs from CI only — `.github/workflows/publish.yml`
@@ -40,7 +56,7 @@ before the first publish:
    `unknown-knowledge`, workflow filename `publish.yml`, with no environment
    name (the job declares none). Permit direct `npm publish`. Verify a
    subsequent OIDC publish succeeds before revoking the bootstrap token and
-   deleting the GitHub secret. The workflow supports both paths and installs
+   deleting the GitHub secret. The original bootstrap workflow supported both paths; the current workflow uses OIDC only and installs
    npm 11.17.0 explicitly because Node 22's bundled npm 10 cannot authenticate
    through Trusted Publishing. See [npm's current setup guide](https://docs.npmjs.com/trusted-publishers/).
 
@@ -57,11 +73,13 @@ before the first publish:
    with today's date.
 4. Run lint, tests, acceptance, `npm audit`, and `npm pack --dry-run`.
    Verify the tarball's allowlist and all payload-manifest source files.
-5. Merge the release change, then tag `vX.Y.Z` at the merged commit and push
+5. Merge the release change, then tag `vX.Y.Z` (or `vX.Y.Z-rc.N`) at the merged commit and push
    the tag; CI runs lint, tests, acceptance, then
-   `scripts/check-tag-version.js`, then publishes with provenance.
+   `scripts/check-tag-version.js`, then publishes with provenance and the guard's
+   explicit npm tag. For candidates, confirm `latest` did not move.
 6. Verify the registry version, provenance, tarball, and cold install below.
-   Create the GitHub Release only after npm publication succeeds.
+   Create the GitHub Release only after npm publication succeeds; mark a
+   candidate as a GitHub prerelease and do not mark it latest.
 
 **The version lands in the manifest BEFORE the tag exists.** Step 2 is not
 bookkeeping you can do afterwards. The workflow fires on the tag and reads
@@ -101,7 +119,7 @@ references them. The excluded material is the kit's root `fixtures/`,
 
 Use a new temporary directory and a fresh npm cache so a local checkout or
 previous npx download cannot satisfy the command. Substitute the released
-version for `2.1.0` on later releases:
+version for `3.0.0-rc.1` on later releases:
 
 ```sh
 (
@@ -111,11 +129,11 @@ export npm_config_registry=https://registry.npmjs.org/
 mkdir "$release_probe/repo"
 git -C "$release_probe/repo" init
 cd "$release_probe/repo"
-npx --yes unknown-knowledge@2.1.0 init --yes
-npm install --save-dev js-yaml
-node unknown-knowledge/engine/validate.js --root unknown-knowledge
-npm view unknown-knowledge@2.1.0 version dist.attestations --json
-npm pack unknown-knowledge@2.1.0
+npx --yes unknown-knowledge@3.0.0-rc.1 init --yes
+npm install --save-dev --save-exact js-yaml@5.4.1
+node unknown-knowledge/engine/validate.js --root .
+npm view unknown-knowledge@3.0.0-rc.1 version dist.attestations --json
+npm pack unknown-knowledge@3.0.0-rc.1
 )
 ```
 

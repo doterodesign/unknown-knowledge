@@ -432,6 +432,7 @@ test('resolver knowledge entry points publish the accession as the leaf id', () 
       relates: {
         'depends-on': [], 'see-also': [], contradicts: [], supersedes: [],
       },
+      'superseded-by': [],
     },
   ]);
 });

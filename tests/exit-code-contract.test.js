@@ -59,6 +59,7 @@ const ARGV = {
 /** Surfaces that can legitimately return exit 1, and why. */
 const EMITS_FINDINGS = new Set([
   'payload/engine/validate.js', // structural findings
+  'payload/engine/commit-check.js', // findings from either whole-store validator
   'payload/engine/validate-values.js', // value findings
   'payload/engine/preflight.js', // quarantined concepts
   'payload/engine/audit.js', // findings, under the human opt-in only
@@ -210,9 +211,12 @@ test('exit 1 still MEANS findings for the surfaces that have them', (t) => {
   assert.deepEqual(JSON.parse(blind.stdout).unsurveyed,
     [{ path: 'link.txt', reason: 'out-of-root-symlink' }]);
 
-  // And every findings-capable surface still names the code it returns.
+  // Every findings-capable surface's result owner still names the code it
+  // returns. Preflight delegates that outcome to its library (UCS-953).
   for (const surface of EMITS_FINDINGS) {
-    const source = readFileSync(join(repoRoot, commandOf(surface)), 'utf8');
+    const owner = surface === 'payload/engine/preflight.js'
+      ? 'payload/engine/lib/preflight.js' : commandOf(surface);
+    const source = readFileSync(join(repoRoot, owner), 'utf8');
     assert.match(source, /EXIT_CODES\.FINDINGS/, `${surface} no longer returns the FINDINGS code it exists to return`);
   }
 });

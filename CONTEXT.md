@@ -25,10 +25,10 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. Ten command-line surfaces —
+**Engine** — The vendored deterministic code. Twelve command-line surfaces —
 structural validator, value validator, preflight, resolver, survey map, reverse
-audit, log-entry helper, document ingest, phoenix events, derived layer — over a
-store loader, an extractor library, and a format-adapter library.
+audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate,
+staged attribution — over a store loader, an extractor library, and a format-adapter library.
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
 not decide what to do about them (D-011).
@@ -119,12 +119,15 @@ agent intelligence: navigation, runtime loop, gate rules. Per-IDE wrappers
 pointers to these.
 
 **Hooks** — Seeded git hooks that enforce the protocol mechanically rather than
-relying on anyone remembering it: `hooks/pre-commit` runs blocking validation
-before a commit exists, `hooks/reverse-lookup` runs the reverse lookup over the
-staged diff. Both are **thin wrappers** — each invokes one engine command and
-exits with its code, unchanged, with no bypass variable to read — so the tested
-surface is the wrapped command, and the wiring is reviewed the way the per-IDE
-wrappers are. They seed but do not install: `init` never writes `.git/`, so the
+relying on anyone remembering it: `hooks/pre-commit` runs both whole-store validators through `commit-check.js`
+against an isolated Git index snapshot before a commit exists,
+`hooks/reverse-lookup` runs the reverse lookup over the
+staged diff using candidate and before snapshots, so deletion and rename
+history remains visible after pointer repair. Attribution is informational;
+it does not prove a store update. Both are **thin wrappers** — each invokes one engine command and
+exits with its code, unchanged, with no bypass variable to read. Real Git commit
+tests exercise the installed gate, including partial staging and preservation
+of local work. They seed but do not install: `init` never writes `.git/`, so the
 client hangs the gate the kit ships (D-006).
 
 **Runtime loop** — The per-request agent protocol: resolve → preflight →

@@ -1,23 +1,9 @@
 // UCS-1157: the seeded git hooks — blocking validation before commit, and
 // automatic reverse lookup over the staged diff.
 //
-// These hooks are EXPLICITLY NOT A TEST SEAM. The tested surface is the
-// engine command each one wraps (tests/validate.test.js,
-// tests/resolve.test.js), and the wiring is reviewed the way the per-IDE
-// wrappers are (tests/init-wrappers.test.js). So this file does not test
-// hook behavior — there is no behavior to test. It pins the properties
-// that make "test the command, not the hook" a true statement:
-//
-//   1. the hook is THIN — it invokes one engine command and does nothing
-//      else, so nothing can be true of the hook that is not true of the
-//      command;
-//   2. it propagates the command's exit code UNCHANGED — no remapping, no
-//      swallowing, no `|| true`;
-//   3. it has NO BYPASS — no env var, no flag, no branch that makes it
-//      pass. A hook with an off switch enforces nothing;
-//   4. it SHIPS through the D-007 manifest, because a hook the manifest
-//      does not name is never seeded, and an unseeded hook enforces
-//      nothing either.
+// These source checks supplement tests/commit-gate.test.js, which exercises
+// real commits with the installed pre-commit hook. They pin packaging,
+// thin wrappers and the absence of a bypass switch.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, statSync } from 'node:fs';
@@ -30,8 +16,8 @@ const manifest = readFileSync(join(root, 'cli', 'kit.manifest.yaml'), 'utf8');
 
 /** The seeded hooks, and the single engine command each one wraps. */
 const HOOKS = {
-  'pre-commit': { cli: 'validate.js', purpose: 'blocking validation' },
-  'reverse-lookup': { cli: 'resolve.js', purpose: 'automatic reverse lookup' },
+  'pre-commit': { cli: 'commit-check.js', purpose: 'blocking validation' },
+  'reverse-lookup': { cli: 'reverse-staged.js', purpose: 'automatic reverse lookup' },
 };
 
 /** A hook's executable lines — comments and blank lines are not logic. */
@@ -59,7 +45,7 @@ for (const [name, { cli, purpose }] of Object.entries(HOOKS)) {
       `a hook that invokes anything but ${cli} is no longer a wrapper around a tested command`);
   });
 
-  test(`${name}: is THIN — the wrapped command is the tested surface`, () => {
+  test(`${name}: is THIN — sequencing belongs in the engine`, () => {
     // A generous ceiling that still refuses a hook that grew a brain. The
     // per-IDE wrapper pin uses the same shape (< 25 lines, "must stay a
     // THIN pointer"); this is its executable-line equivalent.
@@ -70,11 +56,11 @@ for (const [name, { cli, purpose }] of Object.entries(HOOKS)) {
     // spend. Those lines are the opposite of a hook growing behavior —
     // they are what keeps its ONE decision (did the input read?) honest.
     assert.ok(lines.length <= 12,
-      `${name} has ${lines.length} executable lines — a hook this size has behavior of its own, and behavior of its own is untested behavior:\n${lines.join('\n')}`);
+      `${name} has ${lines.length} executable lines — a hook this size has behavior of its own, and sequencing belongs in the tested engine:\n${lines.join('\n')}`);
   });
 
   test(`${name}: never lets a failed command read as a clean one`, () => {
-    // Static, per this file's philosophy: no behavior test, just a check
+    // A supplemental source check
     // that every command whose output the hook DEPENDS ON has its status
     // read. A pipeline reports its LAST stage's status, so a `cmd | join`
     // that fails at `cmd` reports success, and the hook proceeds on empty
@@ -124,31 +110,21 @@ for (const [name, { cli, purpose }] of Object.entries(HOOKS)) {
     assert.match(src, /UK_ROOT:-\./);
   });
 
-  test(`${name}: declares that it is not a test seam`, () => {
-    assert.match(src, /[Nn]ot a test seam/);
-    assert.match(src, /per-IDE wrappers/);
-  });
+
 }
 
 test('pre-commit runs the BLOCKING validator, unfiltered — the whole store or nothing', () => {
   const src = readFileSync(join(hookDir, 'pre-commit'), 'utf8');
-  assert.match(src, /validate\.js" --root "\$UK_ROOT"/);
+  assert.match(src, /commit-check\.js" --root "\$UK_ROOT"/);
   // No --concepts filter: a pre-commit gate that checks a subset is a gate
   // that passes on the part nobody changed.
   assert.doesNotMatch(src, /--concepts/);
 });
 
-test('reverse-lookup asks the engine which leaves govern the staged paths', () => {
+test('reverse-lookup delegates staged attribution to the versioned engine', () => {
   const src = readFileSync(join(hookDir, 'reverse-lookup'), 'utf8');
-  // `resolve.js --paths` is the surface that answers it (UCS-1151).
-  assert.match(src, /resolve\.js" --paths "\$PATHS"/);
-  // The paths come from git, not from the hook's own idea of what changed.
-  assert.match(src, /git diff --cached --name-only/);
-  // An empty diff is not a failure — and `--paths` with an empty list is a
-  // usage error (exit 2), so the hook must not invoke the engine with one.
-  assert.match(src, /\[ -z "\$STAGED" \] && exit 0/);
-  // A git failure is a different thing from an empty diff, and exits 2.
-  assert.match(src, /exit 2/);
+  assert.match(src, /reverse-staged\.js" --root "\$UK_ROOT"/);
+  assert.doesNotMatch(src, /git diff|paste|--paths/);
 });
 
 test('the manifest seeds hooks WITHOUT installing them — init never writes .git/', () => {

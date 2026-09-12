@@ -6,8 +6,9 @@
 // apart.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { statSync } from 'node:fs';
+import { mkdtempSync, rmSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 /** Fenced code blocks of a markdown doc. */
 export const codeBlocks = (md) => [...md.matchAll(/```(?:\w+)?\n([\s\S]*?)```/g)].map((m) => m[1]);
@@ -49,9 +50,16 @@ export function assertRealEngineCommands(root, name, md, { minCommands = 1 } = {
     const enginePath = join(root, 'payload', 'engine', file);
     assert.ok(statSync(enginePath, { throwIfNoEntry: false })?.isFile(), `${file} is not a real engine CLI`);
     for (const flag of flags) {
-      const r = spawnSync(process.execPath, [enginePath, ...positionals, flag], { encoding: 'utf8' });
-      assert.ok(!/unknown flag|unknown argument|unexpected argument/.test(r.stderr),
-        `${file} ${positionals.join(' ')} does not implement ${flag}:\n${r.stderr}`);
+      // A flag such as derive --write can run successfully by itself. Probe
+      // in a disposable root so documenting it cannot mutate the kit stores.
+      const cwd = mkdtempSync(join(tmpdir(), 'uk-protocol-probe-'));
+      try {
+        const r = spawnSync(process.execPath, [enginePath, ...positionals, flag], { encoding: 'utf8', cwd });
+        assert.ok(!/unknown flag|unknown argument|unexpected argument/.test(r.stderr),
+          `${file} ${positionals.join(' ')} does not implement ${flag}:\n${r.stderr}`);
+      } finally {
+        rmSync(cwd, { recursive: true, force: true });
+      }
     }
   }
 }

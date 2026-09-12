@@ -1,0 +1,36 @@
+schema-version: 1
+entries:
+  - id: D-024
+    title: Commit evidence comes from the Git index; installed runtime stays separate
+    category: architecture
+    status: proposed
+    date: "2026-09-09"
+    deciders: [codex]
+    context: >
+      UCS-1218 and UCS-1228 require both commit validators to assess the same
+      proposed bytes without changing local work. Working-tree validation can
+      accept broken staged stores after an unstaged repair. Checking out files
+      can invoke client filters; archives can omit export-ignore paths.
+    decision: >
+      Copy the active Git index to a temporary directory and write its tree
+      from that private copy. Materialize raw blobs through Git plumbing, then
+      run both whole-store validators against that candidate. The installed
+      engine, extractor registry, schemas and Node dependencies remain runtime
+      inputs on the host; no host dependency directory is linked into evidence.
+      Candidate source, stores and repo-relative rules resolve only inside the
+      isolated tree. Preserve candidate and HEAD tree IDs and expose lazy
+      before-tree materialization within the same cleanup lifetime for later
+      attribution. Attribution does not narrow whole-store validation.
+    consequences: >
+      No stash, reset, restage, checkout filters, archive attributes or lazy
+      network fetch is used. Git's alternate index is honored for path-limited
+      commits. Preparation and cleanup failures block with exit 2. Submodules,
+      escaping symlinks and non-UTF-8 paths or link targets are refused when it cannot
+      represent them honestly; supported relative symlinks retain staged targets.
+      Value validation now refuses escaped source reads before extraction, also
+      when called directly outside the commit gate. Engine/runtime edits are
+      reviewed separately; this gate certifies governed evidence, not new engine
+      behavior. Clients retain opt-in hook and CI installation under D-006.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-005, D-006, D-012, D-014, D-022] }

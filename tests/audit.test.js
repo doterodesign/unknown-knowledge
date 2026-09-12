@@ -222,7 +222,8 @@ test('a seeded kit dir alongside root-level stores is ambiguous: the audit refus
   assert.equal(r.status, 2, `an ambiguous layout is an engine failure: ${r.stdout}`);
   assert.match(r.stderr, /two candidate kit roots/);
   // The human is told how to disambiguate, not merely that something is wrong.
-  assert.match(r.stderr, /Point --root at the intended kit root, or remove the stale one/);
+  assert.match(r.stderr, /Select the authoritative layout with \.unknown-knowledge\.json/);
+  assert.match(r.stderr, /Keep --root at the repository root/);
 });
 
 test('a seeded kit dir alone is the Kit; the audit never proposes concepts for it', () => {

@@ -60,9 +60,8 @@ unconditional:
     # Git hooks that enforce the protocol mechanically (UCS-1157): blocking
     # validation before a commit exists, and automatic reverse lookup over
     # the staged diff. They are THIN WRAPPERS — each invokes one engine
-    # command and exits with its code, unchanged — so the tested surface is
-    # the wrapped command, and the wiring is reviewed the way the per-IDE
-    # wrappers are.
+    # command and exits with its code, unchanged. Real installed-hook Git
+    # tests exercise the pre-commit gate as well as the engine commands.
     #
     # They SEED but do not INSTALL. init never writes .git/ (the client's own
     # config is the client's), so these land at <root>/hooks/ and the client

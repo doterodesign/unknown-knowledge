@@ -185,6 +185,7 @@ test('golden: a jurisdiction-scoped ask excludes non-applicable leaves WITH the 
       file: 'knowledge/design-system/600.2-archived-theme-fallback-basis.md',
       applies: ['eu-eaa'],
       asked: ['us-ca'],
+      'superseded-by': [],
       reason: 'declares applies.jurisdictions [eu-eaa] — the query is scoped to [us-ca], which this leaf does not cover (UCS-1152)',
     },
   ]);

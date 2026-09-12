@@ -125,7 +125,18 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
   // which the loop below asserts for every surface either way.
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
-    const r = run(dir, surface, '--root', fixture);
+    let checkRoot = fixture;
+    if (['commit-check.js', 'reverse-staged.js'].includes(surface)) {
+      // The gate now needs a real Git candidate, even when runtime loading
+      // fails. Keep evidence separate from the deliberately broken runtime.
+      checkRoot = join(dir, `candidate-${surface}`);
+      cpSync(fixture, checkRoot, { recursive: true });
+      for (const args of [['init', '-q'], ['add', '.']]) {
+        const git = spawnSync('git', ['-C', checkRoot, ...args], { encoding: 'utf8' });
+        assert.equal(git.status, 0, git.stderr);
+      }
+    }
+    const r = run(dir, surface, '--root', checkRoot);
     assertNeverFindings(r, surface, 'with js-yaml absent');
     if (surface === 'ingest.js') {
       // ingest reaches no YAML, so it LOADS here rather than failing to. That
@@ -139,7 +150,16 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
         'ingest must have loaded far enough to parse flags');
       continue;
     }
-    assert.match(r.stderr, /internal failure — the engine could not be loaded/);
+    if (surface === 'commit-check.js') {
+      // Orchestration loads without YAML; each validator then fails separately.
+      // Both failures must remain visible and the aggregate must still be 2.
+      assert.match(r.stderr, /validate: failure \(exit 2\)/);
+      assert.match(r.stderr, /validate-values: failure \(exit 2\)/);
+    } else if (surface === 'reverse-staged.js') {
+      assert.match(r.stderr, /internal failure — the command did not complete/);
+    } else {
+      assert.match(r.stderr, /internal failure — the engine could not be loaded/);
+    }
     assert.match(r.stderr, /Cannot find package|ERR_MODULE_NOT_FOUND/);
   }
 });

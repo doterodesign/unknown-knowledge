@@ -14,6 +14,12 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
+The 3.0 pilot is available explicitly with
+`npx unknown-knowledge@3.0.0-rc.1 init`. The stable `latest` channel remains
+2.1.0. Existing installations should follow the
+[migration guide](https://github.com/doterodesign/unknown-knowledge/blob/main/docs/migration-3.md);
+init refuses existing roots and does not overwrite client-owned records.
+
 ```bash
 cd your-repo
 npx unknown-knowledge init          # seeds unknown-knowledge/ and an agent wrapper
@@ -52,13 +58,15 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Ten command-line surfaces. JavaScript with JSDoc types, zero build step, one
+Twelve command-line surfaces. JavaScript with JSDoc types, zero build step, one
 dependency (D-022).
 
 | Command | Answers |
 | --- | --- |
 | `validate.js` | is the store structurally sound? |
 | `validate-values.js` | do the Concepts still match the code they point at? |
+| `commit-check.js` | do both whole-store validators pass the commit gate? |
+| `reverse-staged.js` | what governed each staged path before and after this commit? |
 | `preflight.js` | which Concepts may this agent trust, right now? |
 | `resolve.js` | what does the store know about these terms or paths? |
 | `survey-map.js` | what is in this repo, and what could not be surveyed? |
@@ -84,6 +92,12 @@ exit `1`, that agent would walk straight past a check that never happened. So a
 crash always exits `2`, and a test enumerates every surface, forces a bug into
 each, and proves it.
 
+The resolver also accepts repeatable `--path` values for lossless filename
+transport, for example `--path 'src/a,b.ts' --path 'src/my file.ts'`. Legacy
+comma-separated `--paths` remains supported; mixing the forms fails with
+exit 2. See the [complete-filename and safe programmatic invocation guide](payload/docs/README.md#reverse-lookup-for-complete-filenames).
+This is an additive MINOR CLI surface change under D-021.
+
 The reverse audit is advisory: its findings are proposals for human review, and
 never a gate. A human may opt in with `--fail-on-findings`, and that is never a
 shipped CI default.
@@ -91,8 +105,8 @@ shipped CI default.
 ## Guarantees
 
 - **The engine never executes your code** (D-014). No `eval`, no importing your
-  modules, no spawning your build. Parsing is lexical; the one subprocess it
-  runs is `git ls-files`.
+  modules, no spawning your build. Parsing is lexical; subprocesses invoke
+  Git only, to list tracked files and read the proposed commit snapshot.
 - **No network, ever.** Nothing is uploaded, and nothing is fetched.
 - **Deterministic.** Same tree in, byte-identical output out. Dates are
   injected, never read from the wall clock, so a report is reproducible from
@@ -102,12 +116,48 @@ shipped CI default.
 
 ## Hooks — the protocol, enforced mechanically
 
-Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs the blocking
-validator before a commit exists, and `reverse-lookup` runs the `--paths`
-lookup over your staged diff, so the knowledge governing the files you touched
+Two POSIX-sh hooks seed under `hooks/`: `pre-commit` runs both whole-store
+validators through `engine/commit-check.js` before a commit exists, and `reverse-lookup` invokes `engine/reverse-staged.js`
+over your staged diff, so the knowledge governing the files you touched
 surfaces without anyone remembering to ask. Each is a thin wrapper — it invokes
 one engine command and exits with its code, unchanged — and neither reads a
 bypass variable, because a hook with an off switch enforces nothing.
+
+The gate reports each check by name. It exits 0 only when both checks pass;
+findings exit 1, and a failed or never-run check exits 2 even if the other check
+is clean or has findings. Both checks always run over the whole store (D-012).
+Reverse lookup is advisory attribution; its results never restrict validation
+or prove that the agent updated the store. It reads NUL-delimited Git records
+and includes additions, modifications, type changes, deletions and both paths
+of detected copies and renames. Detection uses 50% similarity and a fixed
+1000-candidate exhaustive-search limit; above it, Git may report additions and
+deletions instead of a rename/copy relationship. Local Git limits cannot
+change these settings. Each complete path is passed to the resolver
+with `--path=value`, preserving spaces, commas, quotes, tabs and newlines.
+
+Attribution prints a `staged attribution: candidate <tree-id>` section followed
+by resolver JSON, then a `before <tree-id>` section for HEAD when it exists.
+Both sections use the same complete path set; each reports only that snapshot's
+own pointers. A staged pointer repair therefore cannot erase the old path's
+previous governance. Before evidence is historical navigation, not a current
+trust verdict. An empty staged diff produces no output and exits 0, including
+an unborn repository with nothing staged. Git, resolver and snapshot failures
+exit 2; attribution may be incomplete and must not be treated as a clean lookup.
+These lexical checks detect store and vocabulary drift. Application behavior
+remains the application's test suite's responsibility.
+
+The gate validates an isolated copy of the Git index. Source, stores and
+repo-relative rules come from the same candidate, so unstaged repairs cannot
+hide broken staged bytes and unstaged edits cannot introduce findings. It
+never stashes, resets or restages local work. Installed engine code, schemas
+and runtime dependencies stay on the host; untracked evidence is never copied
+into the candidate. Snapshot preparation and cleanup failures block with exit 2.
+Real installed-hook tests check partial staging, committed bytes and cleanup.
+
+Git submodules, symlinks that escape the snapshot, and non-UTF-8 path names
+or symlink targets are refused explicitly when their evidence cannot be represented faithfully. It reads raw blobs without
+checkout filters or archive attributes. Install required runtime dependencies
+before committing; keep whole-store checks on the actual merge candidate in CI.
 
 They **seed but do not install**: `init` never writes `.git/`, so wiring them is
 your act, not the kit's. Git runs a hook only if it is executable, and the copy

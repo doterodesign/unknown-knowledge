@@ -208,7 +208,7 @@ test('the demotion carries its REASON, in JSON and on the human surface (golden)
   assert.deepEqual(stale.demotions, [
     {
       reason: 'time',
-      detail: 'verified 366 day(s) ago, past the 365-day limit for stable knowledge — re-verify against the cited sources, or treat the claim as unverified (UCS-1150)',
+      detail: 'verified 366 day(s) ago, past the 365-day limit for stable knowledge (UCS-1150)',
     },
   ]);
   // A bare flag would say a leaf was demoted without saying why, and a demotion
@@ -240,7 +240,7 @@ test('a stale leaf is demoted in preflight leaf verdicts too — one shared func
   // and returned a definite answer. Folding it into either would tell a steward
   // to repair evidence that is fine, or to pass a flag they already passed.
   assert.deepEqual(byLeaf['L-000302'].evidence, [], 'stale is not an evidence-bearing quarantine');
-  assert.match(byLeaf['L-000302']['next-action'], /re-verify this leaf against its cited sources/);
+  assert.equal(byLeaf['L-000302']['next-action'], 'reverify-leaf');
 
   // The reason travels here too, and it is the SAME string the resolver
   // published — one verdict function, so one wording.
@@ -306,7 +306,7 @@ test('time demotion COMPOSES with the draft-stage downrank — both reasons, not
 test('without --today, resolver time verdicts report themselves skipped (golden)', () => {
   const payload = json('resolve.js', 0, 'freshness boundary', '--root', CLEAN);
   assert.equal(payload['time-check'],
-    'skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)');
+    'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
 
   // Every time-governed leaf reads `skipped`, and NOT `trusted`: reporting a
   // leaf as fresh because nobody asked what day it is would be exactly the
@@ -326,12 +326,12 @@ test('without --today, preflight time verdicts are unknown and the output says s
   // at 2, which the expected exit status asserts.
   const payload = json('preflight.js', 2, '--leaves', 'L-000301,L-000302', '--root', CLEAN);
   assert.equal(payload['time-check'],
-    'skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)');
+    'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
   assert.deepEqual(payload['leaf-verdicts'].map((v) => [v.leaf, v.verdict, v.time.verdict]), [
     ['L-000301', 'unknown', 'skipped'],
     ['L-000302', 'unknown', 'skipped'],
   ]);
-  assert.match(payload['leaf-verdicts'][0]['next-action'], /pass --today/);
+  assert.equal(payload['leaf-verdicts'][0]['next-action'], 'supply-evaluation-date');
 });
 
 test('the skip notice reaches the HUMAN surface of both projections', () => {
@@ -340,10 +340,10 @@ test('the skip notice reaches the HUMAN surface of both projections', () => {
   for (const args of [['resolve.js', 'freshness boundary'], ['resolve.js', '--paths', 'src/freshness.ts']]) {
     const r = runCli(...args, '--root', CLEAN);
     assert.equal(r.status, 0);
-    assert.match(r.stdout, /^time check: skipped — pass --today/m, args.join(' '));
+    assert.match(r.stdout, /^time check: skipped — no evaluation date supplied/m, args.join(' '));
   }
   const pre = runCli('preflight.js', '--leaves', 'L-000301', '--root', CLEAN);
-  assert.match(pre.stdout, /^time check: skipped — pass --today/m);
+  assert.match(pre.stdout, /^time check: skipped — no evaluation date supplied/m);
 
   // And when a date IS injected, the same line says what was checked against
   // what — the thresholds included, so the verdict is readable without the docs.
@@ -360,15 +360,9 @@ test('--today must be a real calendar date on the resolver, like everywhere else
   assert.match(r.stderr, /--today must be a real calendar date/);
 });
 
-test('the skipped notice is the AUDIT\'s wording — one rule, stated once', () => {
-  // The audit's `stale-last-verified` check established the injection rule, and
-  // a reader who has seen its skip notice must recognize this one. A surface
-  // that phrased its own would eventually phrase it as silence.
+test('the shared skip notice reports the missing input without prescribing conduct', () => {
   assert.equal(timeCheckStatus(null),
-    'skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)');
-  const audit = readFileSync(join(root, 'payload/engine/commands/audit.js'), 'utf8');
-  assert.ok(audit.includes('skipped — pass --today YYYY-MM-DD to enable; diffable output never reads the wall clock (D-012)'),
-    'the audit must still carry the wording this mirrors');
+    'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
 });
 
 // ---- AC4: a non-static leaf missing its date is a finding; static is clean
@@ -458,9 +452,11 @@ test('timeVerdict is the ONE implementation every projection reads', () => {
   // UCS-1152's resolution pipeline inherit these verdicts rather than
   // recomputing them. Asserted structurally: neither surface spells the
   // thresholds or the field names itself.
-  for (const file of ['commands/resolve.js', 'commands/preflight.js', 'commands/validate.js']) {
+  // Preflight's computation and time-check summary now live in libraries;
+  // the command only renders their result (UCS-947/UCS-953).
+  for (const file of ['commands/resolve.js', 'lib/preflight.js', 'lib/verdicts.js', 'commands/validate.js']) {
     const source = readFileSync(join(root, 'payload/engine', file), 'utf8');
-    assert.match(source, /from '\.\.\/lib\/time-verdicts\.js'/, `${file} must read the shared module`);
+    assert.match(source, /from '(?:\.\.\/lib\/|\.\/)time-verdicts\.js'/, `${file} must read the shared module`);
     // Comments are stripped before the check: a docstring naming the
     // thresholds is documentation a reader needs, while a threshold in CODE is
     // a second copy that can drift from the table. Only the latter is the
