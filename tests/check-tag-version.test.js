@@ -11,7 +11,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { load } from 'js-yaml';
-import { readFileSync, mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs';
+import { readFileSync, mkdtempSync, rmSync, existsSync, mkdirSync, writeFileSync, copyFileSync, realpathSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -187,7 +187,7 @@ test('every release heading names a real day, and none is in the future', () => 
 
 
 test('the real guard CLI routes stable and candidate manifests to different channels', (t) => {
-  const temporary = mkdtempSync(join(tmpdir(), 'release-cli-'));
+  const temporary = realpathSync(mkdtempSync(join(tmpdir(), 'release-cli-')));
   t.after(() => rmSync(temporary, { recursive: true, force: true }));
   mkdirSync(join(temporary, 'scripts'));
   const script = join(temporary, 'scripts/check-tag-version.js');

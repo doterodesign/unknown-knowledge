@@ -181,12 +181,12 @@ test('one repo, every surface, one refusal: an ambiguous layout fails identicall
 
 
 test('explicit layout preserves repo-relative evidence across all surfaces', () => {
-  for (const [kitRoot, id] of [['unknown-knowledge', 'K-200'], ['.', 'K-100']]) {
+  for (const [kitRoot, id] of [['unknown-knowledge', 'K-101'], ['.', 'K-100']]) {
     const repo = plant({
       '.unknown-knowledge.json': JSON.stringify({ kitRoot }),
       'src/a.ts': ANCHOR,
       ...storeAt('', 'K-100', 'Root', 'src/a.ts'),
-      ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested', 'src/a.ts'),
+      ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-101', 'Nested', 'src/a.ts'),
     });
     for (const [name, argv] of SURFACES) {
       const result = spawn(argv(repo));
@@ -198,7 +198,7 @@ test('explicit layout preserves repo-relative evidence across all surfaces', () 
     const reverse = spawn([engine('resolve.js'), '--root', repo, '--paths', 'src/a.ts', '--json']);
     assert.equal(reverse.status, 0, reverse.stderr);
     assert.ok(reverse.stdout.includes(id));
-    assert.ok(!reverse.stdout.includes(id === 'K-200' ? 'K-100' : 'K-200'));
+    assert.ok(!reverse.stdout.includes(id === 'K-101' ? 'K-100' : 'K-101'));
   }
 });
 

@@ -39,6 +39,10 @@ Two `--root` conventions:
   `validate-values.js`, `commit-check.js`, `audit.js`, `survey-map.js`) takes `--root` as the
   **repo root** (default: cwd). Store readers auto-locate
   `<root>/unknown-knowledge/` when present, otherwise stores at `<root>/`.
+  When both layouts exist, read repository-root `.unknown-knowledge.json`: its
+  sole `kitRoot` field explicitly selects `"unknown-knowledge"` or `"."`.
+  Without that selection the ambiguous layout refuses. Keep `--root` at the
+  repository root; stage configuration with migrations for commit checks.
   `survey-map.js` reads `<root>/survey-scope.yaml`; source-of-truth pointers
   also resolve against the repo root (§9.1).
 - `log-entry.js` takes `--root` as the **kit dir** (the directory containing

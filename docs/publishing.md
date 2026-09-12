@@ -119,7 +119,7 @@ references them. The excluded material is the kit's root `fixtures/`,
 
 Use a new temporary directory and a fresh npm cache so a local checkout or
 previous npx download cannot satisfy the command. Substitute the released
-version for `2.1.0` on later releases:
+version for `3.0.0-rc.1` on later releases:
 
 ```sh
 (
@@ -129,11 +129,11 @@ export npm_config_registry=https://registry.npmjs.org/
 mkdir "$release_probe/repo"
 git -C "$release_probe/repo" init
 cd "$release_probe/repo"
-npx --yes unknown-knowledge@2.1.0 init --yes
-npm install --save-dev js-yaml
-node unknown-knowledge/engine/validate.js --root unknown-knowledge
-npm view unknown-knowledge@2.1.0 version dist.attestations --json
-npm pack unknown-knowledge@2.1.0
+npx --yes unknown-knowledge@3.0.0-rc.1 init --yes
+npm install --save-dev --save-exact js-yaml@5.4.1
+node unknown-knowledge/engine/validate.js --root .
+npm view unknown-knowledge@3.0.0-rc.1 version dist.attestations --json
+npm pack unknown-knowledge@3.0.0-rc.1
 )
 ```
 
