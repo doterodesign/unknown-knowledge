@@ -247,9 +247,10 @@ root-files:
 
 # ---------------------------------------------------------------- zone map
 # Echoed into the seeded kit.manifest.yaml (§9.1) — which seeded paths are
-# kit-vendored code vs. client data. Everything is client-OWNED after seed
-# (D-001, seeded-once); the map tells an uninstall/audit what came from the
-# kit vs. what the client's own loop produced.
+# kit-vendored code vs. client data. Clients control their seeded copy (D-001);
+# the vendored software remains Apache-2.0, without a copyright transfer.
+# Independent client records remain client content. The map tracks provenance
+# for uninstall/audit; it does not assign copyright or license customer records.
 zones:
   seeded: [engine, protocol, schemas, templates, kit.manifest.yaml]
   client: [ontology, knowledge, decisions, logs, survey-scope.yaml]

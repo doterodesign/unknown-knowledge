@@ -1,0 +1,48 @@
+# Provisional proposal key in the current schema's id field; no canonical ID minted.
+schema-version: 1
+entries:
+  - id: D-2026-09-21-licensing-clarification
+    title: Proposed addendum — licensing rationale and redistribution duties
+    category: governance
+    status: proposed
+    date: "2026-09-21"
+    deciders: [dimitri]
+    context: >-
+      D-015 describes permissive licensing as architecturally forced and
+      assumes copyleft covers every seeded repository. D-020 reduces Apache
+      redistribution duties to NOTICE attribution. Those explanations are
+      inaccurate. Dimitri authorized this documentation correction and a draft
+      PR on 2026-09-21; that authorization does not record acceptance of this
+      addendum, mint a canonical decision ID, or authorize publication.
+      Historical context, decision, consequences, and lifecycle fields remain
+      intact. Review evidence and documentation coverage are recorded in
+      docs/agents/2026-09-21-licensing-correction.md.
+    decision: >-
+      Retain Apache-2.0 as a deliberate permissive-license choice. Vendoring
+      does not force permissive licensing: copyleft scope depends on the
+      applicable license and how works are combined and distributed, and
+      does not automatically encompass independent customer records or a
+      whole repository. Replace the NOTICE-only explanation with the
+      redistribution duties in Apache-2.0 section 4: provide the license,
+      mark modified files, preserve applicable source notices, and include
+      required NOTICE attribution where applicable. NOTICE is informational
+      and cannot modify the license. Commercial use, resale, and competing
+      hosting remain permitted subject to the license. Customer control of
+      a seeded copy under D-001 does not transfer software copyright;
+      independently authored customer records remain customer-owned.
+    consequences: >-
+      This is a proposed explanatory addendum to D-015/D-020, not a license
+      transition or replacement of their free/open-source and Apache-2.0
+      choices. No supersession or acceptance is asserted. Current README,
+      contributor, glossary, and seeded documentation explain the corrected
+      scope. D-015's studio service-revenue choice does not restrict others'
+      commercial activity. No dependency or customer-ownership audit,
+      procurement guarantee, or new trademark policy is established.
+    supersedes: []
+    superseded-by: []
+    relates-to:
+      concepts: []
+      leaves: []
+      decisions: [D-001, D-015, D-020, D-021]
+    provenance:
+      author: codex

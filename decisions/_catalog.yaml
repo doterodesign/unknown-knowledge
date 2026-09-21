@@ -3,6 +3,9 @@
 schema-version: 1
 store: decisions
 entries:
+  - id: D-2026-09-21-licensing-clarification
+    title: Proposed addendum — licensing rationale and redistribution duties
+    file: entries/D-2026-09-21-licensing-clarification.yaml
   - id: D-025
     title: Explicit layout selection preserves repository-relative evidence
     file: entries/D-025-explicit-kit-layout.yaml

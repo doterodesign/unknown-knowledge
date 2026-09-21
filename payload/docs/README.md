@@ -16,8 +16,9 @@ diff the two and say exactly where they disagree.
 
 ## What you own vs. what was vendored
 
-Everything is client-owned after seeding; the zone map in
-`kit.manifest.yaml` records what an uninstall or audit needs to know — which
+You control the seeded files; the vendored software remains licensed under
+Apache-2.0, and seeding does not transfer its copyright. Independently authored
+records remain your content. The zone map in `kit.manifest.yaml` records which
 paths arrived from the kit and which your own loop produced.
 
 | Zone | Paths | Meaning |
@@ -216,9 +217,22 @@ templates and the PR drift-attribution recipe are in
 `kit-version` in `kit.manifest.yaml` records the kit version that seeded
 this directory — a birth certificate, not a dependency pin (D-021): it says
 which schema revision, extractor-kind set, and fixture vintage the seed was
-born with, and implies no update channel. The vendored code is Apache-2.0
-(D-020); the seeded `LICENSE` and `NOTICE` carry the terms and the
-attribution. Your stores and logs are your own content, not the kit's.
+born with, and implies no update channel. The vendored software is Apache-2.0
+(D-020), a deliberate permissive choice. Vendoring does not require that
+license family. Copyleft scope depends on the license and the combination and
+distribution of works; it does not automatically cover independent records or
+an entire repository. See the [GNU FAQ on aggregation](https://www.gnu.org/licenses/gpl-faq.en.html#MereAggregation)
+and [program output](https://www.gnu.org/licenses/gpl-faq.en.html#WhatCaseIsOutputGPL).
+
+For redistribution, [Apache-2.0 §4](https://www.apache.org/licenses/LICENSE-2.0)
+requires a license copy, prominent change notices in modified files, applicable
+source notices, and required NOTICE attribution. Section 4(d) allows the latter
+in NOTICE, accompanying source or documentation, or a customary notices display.
+The seeded `LICENSE` governs; the studio's `NOTICE` adds no commercial limits.
+Commercial use, resale, and competing hosting are permitted subject to the
+license; see also the [OSI Open Source Definition §§1, 6](https://opensource.org/osd).
+Independently authored stores and logs remain your content. Incorporating
+licensed material into a record can carry that material's own obligations.
 
 ## Uninstalling
 
