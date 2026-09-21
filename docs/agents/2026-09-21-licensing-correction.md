@@ -84,9 +84,17 @@ The existing test `the CHANGELOG carries a heading for the version the manifest
 names` in `tests/check-tag-version.test.js` requires a release date even for an
 unreleased candidate. This conflicts with D-021's instruction to record dates
 at release time. The branch retains an honest unreleased heading and leaves the
-test intact. This is a review blocker, not a passing release check. Full-suite
-results are recorded in the draft PR; no release or acceptance is inferred from
-the package version.
+test intact. A second repository test, `each entry file declares exactly the
+D-NNN id its filename carries`, permits only finalized three-digit filenames,
+although the protocol and schema permit date-suffixed proposals. The branch
+preserves the proposed record and does not mint a canonical ID to satisfy it.
+These are review blockers, not passing release checks.
+
+CI on commit `8a63bce` completed all 1,091 tests: 1,089 passed and only those
+two assertions failed. CI acceptance passed. The duplicate local test run was
+stopped after the complete CI results arrived. The staged commit gate also
+passed both validators. No release or acceptance is inferred from the package
+version or structural validation.
 
 Store-health preflight passes with the two expected missing ontology/knowledge
 warnings in this decision-only repository. Initially the engine could not load
