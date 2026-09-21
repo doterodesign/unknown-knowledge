@@ -186,7 +186,8 @@ There is no update channel and there never will be one. You control your copy
 of the engine and can read and change it under Apache-2.0. Seeding does not
 transfer the software's copyright. Independently authored customer records
 remain the customer's content; storing them beside the kit does not license
-them under Apache-2.0.
+them under Apache-2.0. Incorporating licensed material into a record can carry
+that material's own obligations.
 
 The seed stamps the kit version into `unknown-knowledge/kit.manifest.yaml`. That
 stamp is a **birth certificate, not a dependency pin**: it records the schema
