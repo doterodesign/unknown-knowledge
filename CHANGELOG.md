@@ -13,6 +13,17 @@ dates are recorded at release time, never retroactively.
 
 ## [Unreleased]
 
+## [3.0.0-rc.2] - Unreleased
+
+### Fixed
+
+- Clarify the deliberate Apache-2.0 choice, redistribution duties, NOTICE's
+  informational role, and the distinction between licensed software and
+  independent customer records. Preserve accepted D-015/D-020 reasoning with a
+  [proposed addendum](decisions/entries/D-2026-09-21-licensing-clarification.yaml).
+  Documentation-only scope (PATCH under D-021); advance the existing release
+  candidate sequence without publishing or declaring a stable 3.0 release.
+
 ## [3.0.0-rc.1] - 2026-09-12
 
 ### Release preparation

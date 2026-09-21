@@ -181,9 +181,12 @@ never fire. Under that wiring, call it explicitly from your `pre-commit`.
 
 ## Seeded once, then owned
 
-After `init`, the seeded directory has no relationship to this kit (D-001).
-There is no update channel and there never will be one. You own the engine, you
-can read it, and you can change it — it is JavaScript, not a binary.
+After `init`, the seeded directory has no update relationship to this kit (D-001).
+There is no update channel and there never will be one. You control your copy
+of the engine and can read and change it under Apache-2.0. Seeding does not
+transfer the software's copyright. Independently authored customer records
+remain the customer's content; storing them beside the kit does not license
+them under Apache-2.0.
 
 The seed stamps the kit version into `unknown-knowledge/kit.manifest.yaml`. That
 stamp is a **birth certificate, not a dependency pin**: it records the schema
@@ -210,8 +213,26 @@ Changelog form).
 
 ## License and contributing
 
-Licensed under [Apache-2.0](LICENSE) (D-020); redistribution carries the
-[NOTICE](NOTICE) file. Contributions are welcome — especially new extractor
+Licensed under [Apache-2.0](LICENSE) (D-020), a deliberate permissive choice.
+Vendoring does not technically require a permissive license. Copyleft scope
+depends on the applicable license and how works are combined and distributed;
+it does not automatically cover independent records or an entire repository.
+See the [GNU FAQ on aggregation](https://www.gnu.org/licenses/gpl-faq.en.html#MereAggregation)
+and [program output](https://www.gnu.org/licenses/gpl-faq.en.html#WhatCaseIsOutputGPL).
+
+When redistributing the kit or derivative works, Apache-2.0 §4 requires a
+license copy, prominent change notices in modified files, retention of
+applicable source notices, and required NOTICE attribution where applicable.
+Section 4(d) permits that attribution in NOTICE, accompanying source or
+documentation, or a customary third-party-notices display. The studio's
+[NOTICE](NOTICE) is informational and adds no commercial restrictions.
+Commercial use, resale, and competing hosting are permitted subject to the
+license. See the [Apache license](https://www.apache.org/licenses/LICENSE-2.0)
+and [OSI Open Source Definition §§1, 6](https://opensource.org/osd).
+
+The [proposed licensing addendum](decisions/entries/D-2026-09-21-licensing-clarification.yaml)
+records the correction to D-015/D-020 without rewriting accepted history.
+Contributions are welcome — especially new extractor
 kinds, and field reports of anchors the extractors could not read. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the gate (parser + fixture + demo run,
 D-005) and PR expectations.

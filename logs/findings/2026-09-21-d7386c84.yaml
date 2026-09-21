@@ -1,0 +1,9 @@
+schema-version: 1
+date: '2026-09-21'
+status: open
+trigger: correction
+summary: >-
+  decisions/entries/D-015-free-open-source.yaml decisions/entries/D-020-license-apache-2.yaml
+  decisions/entries/D-2026-09-21-licensing-clarification.yaml
+consulted:
+  concepts: []

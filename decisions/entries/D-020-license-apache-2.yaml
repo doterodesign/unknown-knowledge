@@ -1,4 +1,6 @@
 # One entry per file; schema per PRD.html §3.3.
+# Historical reasoning preserved. Proposed correction (not yet accepted):
+# D-2026-09-21-licensing-clarification.yaml; see README.md#license-and-contributing.
 schema-version: 1
 entries:
   - id: D-020

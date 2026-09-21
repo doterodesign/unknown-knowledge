@@ -22,8 +22,14 @@ as there are axes worth browsing.
 **Kit** — The product itself: a free, open-source CLI (permissive license,
 public npm — D-015) that scaffolds the three stores, engine, and agent
 protocol into a target repo. Distribution is seeded-once-then-owned: after
-`init`, the seeded repo has no relationship to the Kit. Revenue attaches to
-services on top (bootstrap engagements, stewardship), never the code.
+`init`, the seeded repo has no update relationship to the Kit. The vendored
+software remains Apache-2.0; independently authored customer records remain
+customer-owned. Permissive licensing is a deliberate choice, not a technical
+requirement of seeding. The studio earns revenue from services on top
+(bootstrap engagements, stewardship); this business model does not restrict
+others' commercial use of the software. See the
+[licensing explanation](README.md#license-and-contributing) and its linked
+proposed addendum to D-015/D-020.
 
 **Engine** — The vendored deterministic code. Twelve command-line surfaces —
 structural validator, value validator, preflight, resolver, survey map, reverse

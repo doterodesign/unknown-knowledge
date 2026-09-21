@@ -5,6 +5,11 @@ a contribution you agree it is licensed under the same terms (Apache-2.0
 §5). The domain glossary is [CONTEXT.md](CONTEXT.md); the kit records its own
 decisions in [decisions/](decisions/).
 
+Redistribution has separate duties under Apache-2.0 §4; NOTICE attribution is
+one of them. See the [licensing explanation](README.md#license-and-contributing)
+and linked proposed addendum to D-015/D-020. Independent customer records do
+not become contributions to this project merely by using the kit.
+
 ## Community extractor kinds — the gate
 
 New extractor kinds are the main community contribution surface, and they
