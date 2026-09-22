@@ -14,7 +14,7 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 
 The 3.0 pilot is available explicitly with
@@ -61,7 +61,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 Sixteen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
 

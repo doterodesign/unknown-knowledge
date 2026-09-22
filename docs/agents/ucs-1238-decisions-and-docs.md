@@ -1,4 +1,4 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -89,7 +89,7 @@ module/protocol scope; no unproved outcome is marked complete here.
 ## Retained reconsideration material
 
 The [consumer contract](ucs-1237-reconsideration-consumers.md), under the
-reconsideration Decision (contract arrives in PR3; see delivery availability),
+[reconsideration Decision](../../decisions/entries/suppressed-subject-reconsideration.yaml),
 adds `--material-captures` to both intent query modes. Existing assessment and
 Decision evidence remain necessary where referenced. The query-plan guide and
 installed intent protocol describe the flag, unchanged result shapes and

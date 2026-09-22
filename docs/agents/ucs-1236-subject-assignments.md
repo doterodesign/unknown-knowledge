@@ -1,4 +1,4 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -74,7 +74,7 @@ require no subject lookup; that is not permission to skip actual model,
 identity, capture, history, evidence or human gates. A specifically admitted
 no-Subject-authority operation must establish its capability boundary itself.
 
-The split request and metadata contract (contract arrives in PR3; see delivery availability)
+The [split request and metadata contract](ucs-1235-subject-split-design.md#implemented-split-request-and-event-metadata)
 now defines ordered zero/one/several successor choices per existing owner and a
 separate version-2 [assignment split event schema](../../payload/schemas/assignment-split-event.schema.json).
 Its rows are nonempty, have known before/after assignments and retain nonnull

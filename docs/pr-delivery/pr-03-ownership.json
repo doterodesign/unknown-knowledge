@@ -1,0 +1,1185 @@
+{
+  "stage": 3,
+  "version": "3.0.0-rc.4",
+  "reference": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "referencePaths": [
+    {
+      "path": "decisions/entries/assignment-finite-replay-evidence.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "258e1456e9a78e8495bb5b23db93b413b48da4c0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/assignment-snapshot-preservation.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "36039f8a0ecfb3a686e5205ae961b03569a36e3b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/equivalent-subject-merge-governance.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b20a8a0973b5f1ccb997038f0ed8f03ba75a9cd2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/ordinary-decision-promotion-proof.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "409a90299be0fd4ef8e3917c88d50b50c9cbbbd2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/plain-subject-retirement.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ce73e3d6bf2edc64ab98ba5fc54987c2dcb9aeb3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/plain-subject-split.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "396dd519b5a43125768ebe50ccc571be80705060",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/retained-runtime-validation-and-publication.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5c9933597218e1db01a3c7dce25f36b60fb30083",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/subjectless-decision-promotion-proof.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6c78ccf5f44595798000ee50bc0bcdb0029a3aa5",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/suppressed-subject-reconsideration.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "50031ac4df848c5852c41f14a3b126620ff04e00",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/typed-equivalent-merge-assignment-scope.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "42b77a411459b3d4b1418d73e7ec59263ec9ceea",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/typed-record-promotion-byte-plans.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b0e61df890aaaced941b035f928b3d388ffc1eb4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/ucs-1241-typed-promotion-design.yaml",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7c31638449897400f25fba432ada625ff2ff99d6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1234-decision-promotion.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "57ff32ff3a37a810df29a562a5e284ffc78fae5d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1234-typed-promotion-planner.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8d7012f8dc46f73ee7c264981f0dc7361276b68f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-equivalent-merge-dto.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5b83111d98d778d7fbbe6b0c258adbf12f817663",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-plain-retirement-design.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3956faf0afe56cf0830b04b5054496c6becdedd1",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-plain-retirement-dto.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1ca1cbc4f66959c531c53392ffd7a6cf9559253f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-reconsideration-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "787594e9b17b330e833889cfc97e42f07fd75c97",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-reconsideration-git-core.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "19ef7434301c96f4260d9a90d3aa477432e7b909",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-subject-creation-allocation.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1afb21faa08d94885ec3ae8563304523d0d2dbbd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-subject-reconsideration-creation.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d3be95bfd5db6e3f2e0d8ae43f3cc939269b8c29",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-subject-split-design.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5a234d9537a4a80ae8700409f9cc343f6292a19f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-subject-split-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "97fe9401d2bba3227c338379525dfac65b678e6e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-subject-split-replays.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "028c064f2955074865687dcd10c5d4198c0fc7d6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1235-subject-use-inventory.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3d4a1d7920d2c5d4c2a87c05ee080e418c968a46",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-assignment-continuation.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e4bbfa2dc7974a099f256c47d5ac6d1c1eb9973d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-assignment-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4fc61afd69e2feabff817f118f22d5e1f32ec639",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-assignment-replays.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4462b1439319d364b37d55a46e516460d3ecda63",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-decision-promotion-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cfdfc12b0d5a5c6758be0d4643b3c0e625dbf0af",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-documentation-audit.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5f36da12525091efb2ee015c980592f2929331f8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-prepared-assignment-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "86cc1590d646d3777d401b5d70acb6bb9c046e22",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-subject-split-assignment-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c797aeaf74317ff0179e6ca4dc487bd0fb551cf8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-subject-use-assignment-gate.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8e8f7230146f7170b464389b38187b73fa1edf7e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-typed-assignment-publication.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "00dff3f392ded44c0f735056ab023e57d595c506",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-typed-assignments.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3d4029f1d143d5e7e771329a9c11982b21eceee6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-typed-promotion-design.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "47d6447cb35818f8e65607d5a801d40d83366913",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1241-typed-promotion-material.md",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e13a009533fd65a5bf5558f7929c8a9223fd5f48",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/assignment-continuation-context.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "173b8f3723afe79c958f1e91561f6d6ac7938f32",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/assignment-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f02c39c4d7abd1781ef4be7669e8e31468d165d7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/assignment-preservation.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "73a77839c4c0046d539e39b08ec0815e67ded69f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/canonical-base64.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b212fcccd70bd8b71915ec979ff61786e9727970",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/decision-promotion-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "910f36bb15ac01a09a336e3c347acec3f3f951c9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-record-promotion.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2ead9c6d5a7732e4481d183351cf9ee3c1d7fe7c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-lifecycle-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9a1025a0d1c59e9dde8027863d205ed972d7398f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/record-promotion-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fe5475ca7636b384a8b9f673bd4bdf5d548a333b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/record-promotion.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b00366be15a7dc982f733316140b3f037b3f63ca",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-assignment-continuation.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "337b3816a135305efa48aff369926dbbdfb3ad08",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-capture-admission.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4e547a6524a978359eda9684177e1601c3d41fac",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-creation-core.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f5c2633dba678602b60a13d2698034bdb4d00988",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-creation-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3906893e3ffbd21c5dd1938a5f0a141eb8dfe9a3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-creation-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7070cf3be4f7ab82fdc614134def40ccbcb660c0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-equivalent-merge-core.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6132ab860ba920d465150a2160a34ca523647a55",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-equivalent-merge-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5c5341ec3fb163b588d929967d6566c283a6892a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-equivalent-merge-impact.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c191cf7585294c225df819d42c6009046a5d3531",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-equivalent-merge-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "19bddf94c8dab3480d90bc44d6845d087ce79c08",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-equivalent-merge-replay.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5f1d6ffc9db3c23e5490244711aefe6a2b58860d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-eventless-creation-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "557ebd4c9f359e67349448abba25415800ac349d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-eventless-source.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1482cc39fe6ba9c8e959d386e6b067a0d5061924",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-lifecycle-context.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cba18d048984cbb5ee12366e85953cb3d2ba1ecf",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-lifecycle-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "129d32fa5209f656a33cb04e8640f76a6b1bd136",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-metadata-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1d03c7a8feb89904276d8c6b9a411041f17ffb28",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-metadata-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a481b418d0debe11f062afa8f1424da5facc277f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-metadata-replay.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "893b0fd9089b024465a368046520fea12ed46f6b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-reconsideration-core.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cae2752288dec1f2a2bb9a3bdb608daa0b973fab",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-reconsideration-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c866382261a2285c8378f301650994dce3cba946",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-reconsideration-impact.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0602ac6d43f8f40e8242a889f4cbeccc941714e3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-reconsideration-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e2a44d3f0a41a8bc744990d10d14bf540ee97fe5",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-reconsideration-replay.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "11849a29ac2eb5c7645c30e3b3ce5490ab39ba7c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-replay-impact.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a8614bce4b8e7b78b4304ca93f2e6a7ef43fda80",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-retirement-core.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "016c65120f4150fc60bbb4790f68bf1a6b83d944",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-retirement-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2ff29802c520d867ebb2948e5b1ee4f01d4afe6e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-retirement-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "918ddb70a7db43ba4e061836741a69520c59cb45",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-retirement-replay.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1cf3a2fa66420095c592ca325e773f8c4e79e30b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-split-core.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "149b5cfe48cde21417acfb6b6cf0d3acdc4f533d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-split-gate.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6e89d43ecfcf83ab4c47c0f7d844bafef837849c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-split-input.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6d35c7401ca1450732246917ae602b3bab2af1f4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-split-replay.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8421d1f5c5596bc31c01a5b14334f97e795f00b6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-transition-core.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8a8d3793f89f02fedff5149e3b40a71ac6533969",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-transition-impact.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8cc49dc49c088af2108407481a01165e39837512",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/subject-use-inventory.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "aae65cbbab09731c3f5cc0def746a44bae4ad9f4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/typed-promotion-checks.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5313d6202cc0771a43a21a9632bb8edce4ef778f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/typed-promotion-policy.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c3f73c75b4771fb058a27a3199f22faf45788c76",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/typed-promotion-replay.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "15b65194d00addca0e3f3acb25103cb7735315cd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/yaml-source.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "52959914e7bd7764ae0032cd7847cecffd996fc8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-continuation-input.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5dfc9096d9b0b59cc1035fdd4475f08b1715b763",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-event-source.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b1628cc45485a9a23ee405a1c85c029e78cd4f04",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-gate-cleanup.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a38837f5324bc1b2479e31169a3066fd1c3d5d09",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d35887206eeba3521d99ea4bbdc86cb5a020e331",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-preservation.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1de95f4e1f74cc6360897be031deb885277a95f2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-replay-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d3d911f5f5b9df911b9897580327aeb54a268960",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/classified-decision-promotion-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7437ff07c30dc5ce16d1f83e00f64c5395ce7a1a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/decision-promotion-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "39db9c49899bb0b41baa32a41de52cc2e3796ffb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/decision-promotion-input.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c1231165411e98e7cd7592755561bb30f33c8664",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/decision-promotion-gate-fixture.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1e347bc571d6d182880e7a8df790c18b4d3ecaa2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-lifecycle-material-fixture.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9d1b85a2010972d87d3e585499a2434e07eadd53",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-reconsideration-gate-fixture.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "40a1f7d7aa8b827cc241a1d1fa1e231ecb096974",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-split-replay-fixture.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a7e29fbf5c7f65b1a68f4aed240fd87458c3696c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/typed-assignment-source-fixture.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "132fe537e67a813ac8a6ee204a0ea1c16fe13699",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/knowledge-promotion-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6ea339b0b032d6a8dff65786cfa7603c01881744",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-assignment-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d512a7bbf772dda11601de0fbb98cb745e70da0e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-capture-admission.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "eb5ee99f90355c0d16699f2a3ffc219533829abe",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-creation-core.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2c5185fca8580407e8d9191f6a89121bc1e261c2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-creation-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0913fcf11aff13529ca63dc6944d2341a1980a6b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-core.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8916b018133a3dbbe407f6b035015a7e17517197",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a47ed338e2a0998d90e9509cbdf5a7cda7096ff8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-impact.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d6390bf07a9633fecadac064f3bb8599c8d9e292",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-input.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "946264ef0dcfcae2fad587d8caa00173d44d4dfd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-replay.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c1c3e862bb77b34457c0fea86ed4aeefcc2017eb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-operation-replay.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7845702b309c53959a24ff83c0354df758bbaa18",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-core-provenance.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "de815ac70f70de232baec28d50b5f9d8620769dd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-core.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "af9df06ba883163efd666b3bc32bb78f8617bb2a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-gate-composition.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "44d4ce9d4c657c75548b610270d76489a3e912d0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-gate-integration.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "be3ccf05a37560ce1bd483203781ad1eb41e9f3d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d2b9c352d5da7e46404764f9f31aef6512c76a01",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-replay-faults.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7b5c974ae84ab372fe2fa5ea5e63ab8ceb748d80",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-replay.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "401371815dbb28d69d2502f10b22bc5482d3ba18",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-replay-impact.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bebd2a8fd2842b34300c6e12680899c0e32777f9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-assignment-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "67a7b3707140569fada9c015f146a1683864de97",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-core.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7c005dc656661191722b19aeb111086bb8e366c0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "15dd94194af7f2cd09ba6ccae177a1279b906fcc",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-input.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f5aa1291356e974300209d3ae21db0e9b8fdd29e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-object-format.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9846398a91e1074e30d2530c3248787391d35a47",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-replay.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "61fade1f20096f9fb53c36e974bcec60da05017e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-assignment-gate-budget.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e37f121f797b3ceeec35999cc4cbef94b213af87",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-assignment-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7b97359800b7b1da20f5e91844c80180a7ee4159",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-block-fixture.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "16d1e698382173a58f5bc80440bdde61f98976c8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-core-budget.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "99738df84bd7a844890f9f51cbc11095b1778fe4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-core-evidence.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e3beea3bdf67054398458923871e3f4b3c7fa39c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-core-graph.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8d5aa4805e04fb839c0c0802200fa488012dccfa",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-core-protection.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "19c5d66b894beb5d492677ee8dee5a3cdc616fd9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-core-refusals.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "860a94735f777a33a367023462fb9448e38673f2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-core.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "20082da419bb1b839683f9341b796c345c43d656",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-gate-positive.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4923ae8a27aaa93e101de4a1ad1452acefd8d1ed",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2641abdfb1d87f01bc5e9c1dbef2afcaca4326cd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-input.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fce300397a265fdec8dc7b95f578dd379730286e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-provenance.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ac520262962a86afa031d751d64fa722accc87d3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-replay-faults.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3383440e0b5c17fd68407aac1fe6d4d80d5de654",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-replay.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c327362a7c17429d935678e55031149e4306a6e3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-use-assignment-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "43efe30e4dad4a698310d269032da2b5e2585718",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-use-inventory.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0eeff06d421bc33e14843355025f90281660c714",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-assignment-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "42473b99a3c85103b98fc823d9002e7ce9d451fb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-assignment-preservation.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5671994c66534b5813a3d3f33403290f898247bc",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-equivalent-merge-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cfb92a9dd8dcda92e5f10c9f3aca89836e6b1c31",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-promotion-gate.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5a1f482d413b416cc47de7931eaa38329cc32031",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-promotion-source-contract.test.js",
+      "pr": 3,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "547846c92d2af548a593105b88aef55f3ac7217b",
+      "referenceMode": "100644"
+    }
+  ],
+  "sharedTransitions": [
+    "package.json",
+    "package-lock.json",
+    "CHANGELOG.md",
+    "decisions/_catalog.yaml",
+    "README.md",
+    "CONTEXT.md",
+    "cli/kit.manifest.yaml",
+    "payload/protocol/AGENTS.md",
+    "payload/engine/lib/log-entry.js",
+    "payload/schemas/finding.schema.json",
+    "payload/schemas/miss.schema.json",
+    "payload/schemas/gap.schema.json",
+    "acceptance/run.js",
+    "docs/migration-3.md",
+    "docs/change-completeness.md",
+    "docs/publishing.md"
+  ]
+}

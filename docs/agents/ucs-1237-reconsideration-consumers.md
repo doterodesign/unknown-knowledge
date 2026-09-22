@@ -1,16 +1,16 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
 # Retained material in read-only retrieval
 
-The reconsideration Decision (contract arrives in PR3; see delivery availability)
+The [reconsideration Decision](../../decisions/entries/suppressed-subject-reconsideration.yaml)
 requires ordinary retrieval to preserve the evidence needed by the
-history/model validator (contract arrives in PR3; see delivery availability).
+[history/model validator](ucs-1235-subject-reconsideration-creation.md).
 Material transport supplies those bytes to the existing governance evaluator;
 it does not add a second approval or query engine.
 
-For writes, the separate ordinary assignment continuation (contract arrives in PR3; see delivery availability)
+For writes, the separate [ordinary assignment continuation](ucs-1241-assignment-continuation.md)
 now supplies retained evidence to actual staged/prepared owners and fresh
 review/publication. These query flags do not configure that internal operation.
 Retirement material continuation is implemented with verification recorded in
@@ -118,7 +118,7 @@ retained publication profile (contract arrives in PR4; see delivery availability
 their own proofs. The shared API/CLI/MCP interface (contract arrives in PR6; see delivery availability)
 exposes read-only retrieval and contextual navigation. Later lifecycle and
 typed-promotion material propagation remain required work. The
-actual-Git owner (contract arrives in PR3; see delivery availability)
+[actual-Git owner](ucs-1235-reconsideration-git-core.md)
 provides supplied-capture provenance and stored-owner preservation through its
 fixed internal entrypoint; these query consumers do not perform those checks.
 

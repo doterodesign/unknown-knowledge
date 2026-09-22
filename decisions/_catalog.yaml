@@ -6,12 +6,27 @@ entries:
   - id: proposal:decision:c30ef8a6-a3c5-419a-a6a0-478084c73cd0
     title: Share complete query assignment outcomes without dropping row evidence
     file: entries/lossless-subject-query-output.yaml
+  - id: proposal:decision:3d935466-771a-458b-be78-37bec94ec044
+    title: Suppressed Subject reconsideration preserves refusal history and publishes one fresh identity
+    file: entries/suppressed-subject-reconsideration.yaml
+  - id: proposal:decision:e4a28bbf-8a28-4eea-b32a-b81b15bdc14d
+    title: Subject split preserves original meaning and proves fresh successors and complete mappings
+    file: entries/plain-subject-split.yaml
+  - id: proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4
+    title: Plain Subject retirement separates explicit withdrawal from retained history and refusal probes
+    file: entries/plain-subject-retirement.yaml
+  - id: proposal:decision:ac919c9f-8879-422b-9dce-8b3e04324712
+    title: Typed promotion separates candidate activation from fresh assignment genesis
+    file: entries/ucs-1241-typed-promotion-design.yaml
   - id: proposal:decision:e9114f58-49dc-4459-9a9d-3d0867c31638
     title: Reuse current-query Subject eligibility only within its immutable capture and authentic operation
     file: entries/current-query-eligibility-reuse.yaml
   - id: proposal:decision:bd38c554-e695-45a0-b6e4-0bea9d74af95
     title: Contract-first onboarding includes recursive installed-runtime discovery
     file: entries/onboarding-before-runtime-discovery.yaml
+  - id: proposal:decision:b35f9a27-86ca-454f-ad53-b77113499a68
+    title: Typed promotion shares exact byte planning with fixed store lifecycle policies
+    file: entries/typed-record-promotion-byte-plans.yaml
   - id: proposal:decision:adc0ae03-6d6c-4f3b-8d45-69c1185d0f02
     title: Optional whole-record subjects retain unknown state and disposable direct indexes
     file: entries/whole-record-subject-assignments.yaml
@@ -24,6 +39,12 @@ entries:
   - id: proposal:decision:8a17c8a0-8437-4d3c-a26f-46c24adb70ae
     title: Permanent typed identities use explicit allocation and separate proposal keys
     file: entries/ucs-1234-identities-runtime-promotion.yaml
+  - id: proposal:decision:bc77a31e-0fbb-4fbe-ba20-299bb0095953
+    title: Retained validation separates actual execution from runtime approval and publication
+    file: entries/retained-runtime-validation-and-publication.yaml
+  - id: proposal:decision:1c8d9b0f-38a9-4f86-a571-3ed7d14add75
+    title: Ordinary Decision promotion compares exact committed transformations and canonical genesis
+    file: entries/ordinary-decision-promotion-proof.yaml
   - id: proposal:decision:00000000-0000-4000-8000-000000000025
     title: Explicit layout selection preserves repository-relative evidence
     file: entries/D-025-explicit-kit-layout.yaml
@@ -36,6 +57,9 @@ entries:
   - id: proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a
     title: Captured Subject governance preserves historical evidence and explicit refusal assessment
     file: entries/captured-subject-governance-history.yaml
+  - id: proposal:decision:35fdefd8-f0e3-4b39-aa76-7dcd27442536
+    title: Equivalent merge composes actual typed use closure and mandatory impacts before publication
+    file: entries/equivalent-subject-merge-governance.yaml
   - id: proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3
     title: Subject operations use authentic cumulative logical budgets with explicit accounting exclusions
     file: entries/subject-logical-operation-budgets.yaml
@@ -146,6 +170,18 @@ entries:
   - id: proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba
     title: Assignment genesis distinguishes canonical absence from unknown classification
     file: entries/ucs-1241-assignment-history-and-gates.yaml
+  - id: proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533
+    title: Assignment gates derive evidence from actual snapshots and preserve grouped file bytes
+    file: entries/assignment-snapshot-preservation.yaml
+  - id: proposal:decision:f1369103-65d4-4660-b166-f396e918a67d
+    title: Finite replay evidence reserves the complete recipe and preserves unknown results
+    file: entries/assignment-finite-replay-evidence.yaml
+  - id: proposal:decision:a51231ef-db5b-49d4-a3ee-0bdd363fff75
+    title: Equivalent merges derive complete typed scope and retain protected unknown files
+    file: entries/typed-equivalent-merge-assignment-scope.yaml
+  - id: proposal:decision:53e6b70b-75d3-476b-bd2c-1b11ef075ebc
+    title: First Decision promotion uses actual subjectless capabilities and separate creation proof
+    file: entries/subjectless-decision-promotion-proof.yaml
   - id: proposal:decision:7a69353a-0ea1-40b1-8af9-51914458b002
     title: Reflection approval and completed repair require separate durable evidence
     file: entries/retrieval-review-state.yaml

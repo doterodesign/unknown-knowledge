@@ -1,0 +1,159 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4
+    title: Plain Subject retirement separates explicit withdrawal from retained history and refusal probes
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      UCS-1235 requires plain retirement to retain a meaning and historical uses
+      while blocking new effective assignments and adjudicating current uses.
+      Equivalent merge cannot provide this behavior because its query policy
+      follows an active survivor, while plain retirement has no redirect.
+    decision: >
+      Propose a separate closed retirement gate over actual committed K/O/D and
+      registry captures. Withdraw exactly the retired ID from every effective
+      canonical direct use, retaining known empty arrays, old history, inactive
+      historical owners and explicitly reviewed unknown owners. Preserve the
+      authorizer and protected historical/unknown files in full. Permit a null
+      assignment event only with a dedicated actual zero-effective-use proof and
+      registry-only changed paths. Assess real historical query deltas separately
+      from actual current/equivalent source-ineligibility probes; never reinterpret
+      refused queries as empty sets. Require actual reach and whole-registry tree
+      impacts on both branches. Retained parent edges and inherited uses are a
+      proposed reviewed extension, with exact DTO and owner agreement still needed.
+    consequences: >
+      This is design rationale, not implemented retirement or canonical approval.
+      P8 and P6 reviewed their typed-history and view seams; P1/P4 review, the
+      forest-retention contract, final schemas, limits and integration source pin
+      remain open. Full-file protection temporarily refuses shared selected
+      siblings. Graph rewrites, proposal source edits, split, union, suppression
+      reversal and final publication remain separate required work. Reusing merge
+      semantics or fabricating empty assignment events is rejected because it
+      conceals lifecycle ineligibility or missing scope proof. Evidence and the
+      required actual test matrix are in
+      docs/agents/ucs-1235-plain-retirement-design.md. Main retains PR versioning
+      and integrated acceptance ownership; this document changes no runtime.
+      Main and the domain/publication reviewers subsequently froze the retirement
+      input, zero-use preservation, inherited-witness closure and fixed replay
+      contracts before dependent implementation. Reuse the merge capture envelope
+      through two fixed family interfaces, adding only explicit closure row/byte
+      capacities for retirement. Preserve the original merge schema and use a
+      separately dispatched closed retirement scope rather than expanding the
+      schema validator language or admitting optional fields from both actions.
+      A zero-use proof binds actual commit descriptors, operation and inventory
+      digests, registry path and exact raw tree-diff paths. It proves unchanged
+      non-registry bytes and modes without a redundant capture scanner. It never
+      fabricates a P8 assignment report. Positive withdrawals use the existing
+      actual typed history pipeline. Actual inherited witness unions preserve
+      newly exposed descendant witnesses after a same-owner direct withdrawal.
+      Fixed historical comparisons and separately assessed exact current/equivalent
+      retirement refusals retain raw incomplete comparator results and unknown
+      usage; a refused query never becomes empty matches. Implementation remains
+      in progress; test evidence and completion scope must be recorded separately.
+      The preceding proposal-time limitations and rejection rationale are retained
+      as history. At the subsequent 2026-09-20 implementation checkpoint, the fixed
+      retirement core is implemented in payload/engine/lib/subject-transition-core.js
+      with inspectSubjectRetirementAssignmentScope exposed through
+      payload/engine/lib/subject-retirement-core.js. The existing merge wrapper
+      retains its public DTO, diagnostics and budget behavior; two fixed internal
+      entrypoints share private verification without caller policies or callbacks.
+      Retirement verifies one plain-retire registry event, actual capture/query
+      eligibility, unchanged identity/meaning/forest/old registry history and the
+      complete authorizer file. Effective canonical K/O/D assignments become
+      exactly known-minus-source in original order. The assignment event is null
+      if and only if the derived effective-direct scope is empty; positive event
+      bytes remain the fixed P8 adapter's responsibility. Exact inactive and
+      unknown retentions protect whole files, including selected siblings.
+      Source-bearing or inherited proposals, unknown source lifecycles, incident
+      associations and inbound redirects/successors refuse. Actual parent and
+      inherited-union rows retain captures/witnesses; a null before witness requires
+      proven same-owner direct withdrawal exposing unchanged descendant membership.
+      The version-1 core envelope adds retainedHistoricalUses, retainedParents and
+      eight-field retainedInheritedUses only inside authoredReferenceClosure, plus
+      resources.closure used rows/bytes and sticky failure. All nine limit groups
+      remain explicit. Every actual unknown/historical/parent/inherited/assignment
+      expectation row is charged for complete canonical bytes before attachment;
+      the gate separately charges its one zero-proof row. Native Git I/O and
+      materialization/parsing/serialization allocation are not globally bounded
+      by these report allowances. Exact DTOs, fixture hooks and evidence are in
+      docs/agents/ucs-1235-plain-retirement-design.md and the actual tests in
+      tests/subject-retirement-core.test.js with its dedicated fixture helper.
+      Initial actual RED is /private/tmp/subject-retirement-core-red.log
+      (merge-event-mismatch, 0/1 pass); first GREEN is
+      /private/tmp/subject-retirement-core-first.log (10/10). Preserve
+      /private/tmp/subject-retirement-core-regression.log (16/20): four missing-K6
+      inherited-review fixture failures, corrected without changing original K6
+      bytes or relaxing production, then
+      /private/tmp/subject-retirement-core-corrected.log (5/5) and
+      /private/tmp/subject-retirement-core-negative.log (7/7). Core and existing
+      merge/assignment regressions passed 63/63 in
+      /private/tmp/subject-retirement-core-final.log. Subsequent no-K positive/zero
+      O+D and D-only cases passed 4/4 in
+      /private/tmp/subject-retirement-core-no-knowledge.log; defaults rechecked
+      4/4 in /private/tmp/subject-retirement-core-defaults.log. These are separate
+      actual runs, not one combined suite. That initial bounded review found
+      no unresolved production-core issue; the later provenance correction below
+      supersedes that checkpoint. Main's expanded integration log
+      /private/tmp/unknown-knowledge-retirement-gate-expanded-red.log retains
+      14/15 pass and the oversized zero-proof attachment RED. Main reports the
+      attachment moved after actual capacity admission; the combined regression
+      subsequently passed 162/162, 96968.189584 ms, in
+      /private/tmp/unknown-knowledge-retirement-domain-regression.log. This run
+      preceded the subsequent provenance finding. Main owns full
+      gate/P8/impact acceptance and exact-fit/one-short proof checks; P7 owns
+      replay/publication integration. Final source pin, authenticated review,
+      publication acceptance and release remain pending. Implementation scope
+      authorization is separate from canonical Decision approval: this record
+      remains proposed with its original proposal key and historical rationale.
+      Subsequent independent review by Dewey identified a zero-scope provenance
+      bypass: stripping source for current authorizer comparison admitted valid
+      captured bytes and matching supplied evidence with an existing source commit
+      but a false declared tree. The actual pre-fix test reproduces ok:true in
+      /private/tmp/subject-retirement-core-provenance-red.log (1/2 pass; the valid
+      counterpart passed). The fixed retirement core now independently recaptures
+      any declared new-review source commit/file with captureCommittedFile, charges
+      that additional capture to governance and compares the complete locator,
+      including source commit/tree. A mismatch refuses retirement-authorizer-source
+      before Decision/inventory attachment. Positive and zero retirement share
+      this check; source-less locators and all existing merge behavior remain
+      unchanged. No DTO or input-policy expansion is needed. Actual GREEN is
+      /private/tmp/subject-retirement-core-provenance-green.log (2/2), followed by
+      /private/tmp/subject-retirement-core-provenance-budget-green.log (2/2) with
+      exact historical capture-byte charge and exact-fit/one-short assertions.
+      Post-correction core/merge/assignment regression passed 69/69,
+      96092.662791 ms, in
+      /private/tmp/subject-retirement-core-provenance-regression.log. No unresolved
+      core finding remains after this correction. Main subsequently reports actual
+      RED then 3/3 GREEN for outer cleanup and prior positive/zero history cases,
+      and 2/2 actual mixed K+O and K+D grouped cases. These owner-reported results
+      are separate from the independent 69-case regression. Core code is stable;
+      final integrated regression and lint remain main-owned and pending. The
+      current internal request/report contract is documented in
+      docs/agents/ucs-1235-plain-retirement-dto.md. Original proposal status,
+      prior failed evidence and publication limitations remain unchanged.
+      Final focused integration passed 168/168 in 108382.8765 ms, including
+      source-provenance and cleanup corrections, prior history on both branches,
+      absent stores, mixed K+O/K+D files and exact capacity boundaries. Lint
+      checked 486 files with no failures; automated A1-A4/A6, structural/value
+      validation and 153 local documentation links passed. A5 remains manual.
+      Package and lock fields remain 3.0.0-rc.2 Unreleased; the PR guard confirms
+      the advance from rc.1, not a new release. The next publication seam is
+      agreed but unimplemented: a closed subject-retirement evidence envelope
+      carries a mandatory event-independent Decision tuple; assignment evidence
+      and retained event artifact are absent exactly for zero use. Fresh captures
+      bind event:null on zero; a fixed success predicate recomputes inventory,
+      operation and preservation digests before accepting the sole assignment
+      inapplicability exception. Receipts consume the verified Decision tuple
+      rather than dereferencing an absent event. Their operator review reference
+      stays distinct from the registry review reference. Runtime availability,
+      retained/fresh equality, route capability and final ref CAS remain required;
+      the agreement alone grants no publication support.
+      The first full run at 8c9cac77ac154376cc43b4340cb647b0066bb27e passed
+      2538/2539 in 510701.489167 ms. Its sole failure was the existing closed
+      schema-kind inventory expectation missing assignment-retirement-event.
+      The expectation correction preserves the intentional explicit inventory;
+      no runtime change or schema relaxation was needed. The failed full run
+      remains evidence, with corrected verification recorded separately.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000011, D-000012, proposal:decision:35fdefd8-f0e3-4b39-aa76-7dcd27442536] }

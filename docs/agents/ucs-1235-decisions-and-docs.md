@@ -1,4 +1,4 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -18,9 +18,9 @@ Each record below has its own file and an additive entry in
 | --- | --- | --- |
 | [c584ac00-a64a-4fc3-bc61-882e68e96e6d](../../decisions/entries/subject-governance-contracts.yaml) | Shared canonical Subject authority; distinguish labels, graph inspection and effective eligibility | [Governance](ucs-1235-subject-governance.md) |
 | [95dfdc46-5a14-4cee-9e35-452b7ee5369a](../../decisions/entries/captured-subject-governance-history.yaml) | Private captured governance, retained historical evidence and explicit refusal-assessment attestation | [Governance](ucs-1235-subject-governance.md) |
-| 35fdefd8-f0e3-4b39-aa76-7dcd27442536 (contract arrives in PR3; see delivery availability) | Actual all-owner use closure, typed merge preservation and fixed mandatory impacts before final publication | Inventory (contract arrives in PR3; see delivery availability), merge DTO (contract arrives in PR3; see delivery availability) |
+| [35fdefd8-f0e3-4b39-aa76-7dcd27442536](../../decisions/entries/equivalent-subject-merge-governance.yaml) | Actual all-owner use closure, typed merge preservation and fixed mandatory impacts before final publication | [Inventory](ucs-1235-subject-use-inventory.md), [merge DTO](ucs-1235-equivalent-merge-dto.md) |
 | [a5cd613f-8b58-4822-90a0-5446201d5ca3](../../decisions/entries/subject-logical-operation-budgets.yaml) | Authentic cumulative logical allowances and private reuse of work, with explicit native/host exclusions | [Budget composition](ucs-1235-operation-budget.md) |
-| 3d935466-771a-458b-be78-37bec94ec044 (contract arrives in PR3; see delivery availability) | Preserve the exact refused proposal through reviewed reconsideration; verify one fresh Subject allocation with the native planner | History/model (contract arrives in PR3; see delivery availability), [read-only consumers](ucs-1237-reconsideration-consumers.md), actual-Git core (contract arrives in PR3; see delivery availability), prepared impact gate (contract arrives in PR3; see delivery availability), retained publication (contract arrives in PR4; see delivery availability) and clarified remaining scope (contract arrives in PR4; see delivery availability) |
+| [3d935466-771a-458b-be78-37bec94ec044](../../decisions/entries/suppressed-subject-reconsideration.yaml) | Preserve the exact refused proposal through reviewed reconsideration; verify one fresh Subject allocation with the native planner | [History/model](ucs-1235-subject-reconsideration-creation.md), [read-only consumers](ucs-1237-reconsideration-consumers.md), [actual-Git core](ucs-1235-reconsideration-git-core.md), [prepared impact gate](ucs-1235-reconsideration-gate.md), retained publication (contract arrives in PR4; see delivery availability) and clarified remaining scope (contract arrives in PR4; see delivery availability) |
 
 Existing D-000005, D-000010, D-000011, D-000012, D-000014 and D-000022 continue
 to cover vendored validators, Git concurrency, mechanical verdicts, whole-store
@@ -84,9 +84,9 @@ or complete the remaining lifecycle family.
 
 ## Subsequent plain-retirement owner gate
 
-The plain-retirement Decision (contract arrives in PR3; see delivery availability)
-and current DTO (contract arrives in PR3; see delivery availability) extend the actual use core
-through a fixed entry point. The preserved design history (contract arrives in PR3; see delivery availability)
+The [plain-retirement Decision](../../decisions/entries/plain-subject-retirement.yaml)
+and [current DTO](ucs-1235-plain-retirement-dto.md) extend the actual use core
+through a fixed entry point. The preserved [design history](ucs-1235-plain-retirement-design.md)
 records alternatives and the later exact agreement. Retirement retains historical
 owners, unknown files, parent edges and supported inherited witnesses; effective
 direct uses receive exact known-minus-source withdrawals. The zero-use path
@@ -145,8 +145,8 @@ Verification and remaining limits are recorded in the linked publication guide.
 
 ## Split design and peer agreement
 
-The split Decision (contract arrives in PR3; see delivery availability) and
-design (contract arrives in PR3; see delivery availability) record the next required lifecycle
+The [split Decision](../../decisions/entries/plain-subject-split.yaml) and
+[design](ucs-1235-subject-split-design.md) record the next required lifecycle
 composition. Exact allocation, activation/split evidence dependencies, complete
 reasoned mappings and retained ledger review differ from retirement. Their
 implementation and test claims are recorded separately as work lands. Structural
@@ -195,12 +195,12 @@ the design; the earlier full-suite snapshot retains its original scope.
 
 ## Split request and event contract
 
-The existing split Decision (contract arrives in PR3; see delivery availability)
+The existing [split Decision](../../decisions/entries/plain-subject-split.yaml)
 now captures the agreed thirteen-field operation, explicit roots and ordered
 mapping choices, source-centric inherited review, separate known-state event
 schema and the planned same-budget core/P8 handoff. Its original proposal ID,
 title and single catalog row are unchanged; it has not been promoted or approved.
-The design (contract arrives in PR3; see delivery availability)
+The [design](ucs-1235-subject-split-design.md#implemented-split-request-and-event-metadata)
 distinguishes implemented request/metadata checks from outstanding actual core,
 mapping closure, impact/replay and publication checks.
 
@@ -230,9 +230,9 @@ Positive P8 wiring, outer preservation/impacts/replay and publication remain ope
 
 ## Subsequent prepared split composition
 
-The same split Decision (contract arrives in PR3; see delivery availability) now
+The same [split Decision](../../decisions/entries/plain-subject-split.yaml) now
 records the implemented positive P8 continuation, eventless two-path proof and
-fixed four-class replay. The outer gate (contract arrives in PR3; see delivery availability) composes
+fixed four-class replay. The [outer gate](ucs-1235-subject-split-gate.md) composes
 their independent obligations. Earlier core-only evidence remains historical;
 it is not relabeled as proof of this composition.
 
@@ -263,8 +263,8 @@ No ordinary assignment policy, public command or installed AGENTS workflow chang
 
 ## Suppressed-proposal reconsideration history/model
 
-The fixed validator (contract arrives in PR3; see delivery availability) implements
-the recorded reconsideration design (contract arrives in PR3; see delivery availability).
+The [fixed validator](ucs-1235-subject-reconsideration-creation.md) implements
+the [recorded reconsideration design](../../decisions/entries/suppressed-subject-reconsideration.yaml).
 It consumes exact retained suppression history, verifies native fresh allocation,
 binds the original registry/ledger pair and requires a distinct effective current
 Decision plus captured material. Parent eligibility is checked at activation time.
@@ -284,7 +284,7 @@ actual Git, impact and ordinary assignment implementations are recorded below.
 Later lifecycle evidence propagation and reconsideration's own retained review
 and publication remain required.
 
-The implemented actual-Git contract (contract arrives in PR3; see delivery availability) limits
+The implemented [actual-Git contract](ucs-1235-reconsideration-git-core.md) limits
 provenance claims to supplied witnesses and mandatory selected dependencies;
 it preserves per-event unavailability for unrelated omitted evidence. It also
 requires source-less current correspondence and a complete stored K/O/D owner
@@ -293,7 +293,7 @@ dependent implementation. Owner tests passed 39/39, independent provenance tests
 12/12, and main's combined integration 253/253; the guide records exact receipts
 and review corrections. These overlapping runs are not unique-test totals.
 
-The impact gate contract (contract arrives in PR3; see delivery availability) now records mandatory
+The [impact gate contract](ucs-1235-reconsideration-gate.md) now records mandatory
 reach, whole-registry trees and finite native replay composition. Independent
 review requires preserving attempted queries and partial output on operation
 failure, distinguishing missing usage reports from zero usage, and preserving
@@ -303,7 +303,7 @@ The implemented gate passed 59 owner checks and 242 independent integration
 checks; its guide records frozen snapshots, the independent test-oracle
 correction and scope limits. Retained execution and publication remain required.
 
-The ordinary assignment continuation (contract arrives in PR3; see delivery availability),
+The [ordinary assignment continuation](ucs-1241-assignment-continuation.md),
 integrated in `81520d1`, now carries assessment/material evidence through staged
 and prepared owners, both fixed wire workers and fresh review/publication. Main
 integration passed 215/215 with the exact snapshot and limitations recorded in

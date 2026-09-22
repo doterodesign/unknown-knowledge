@@ -1,0 +1,77 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:35fdefd8-f0e3-4b39-aa76-7dcd27442536
+    title: Equivalent merge composes actual typed use closure and mandatory impacts before publication
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      A registry redirect alone can conceal affected records, unknown assignments,
+      graph references or changed file siblings. Independent owner reports and
+      generic incomplete deltas cannot be promoted into a successful lifecycle
+      operation by caller-selected inventories or approval flags.
+    decision: >
+      Inspect actual immutable committed before/candidate trees over all original
+      canonical/proposal K/O/D records, ledger allocations and authored registry
+      references. Compose the fixed registry core and P8 actual typed assignment
+      pipeline through a closed input and deterministic report. The implemented
+      tranche merges one active source into one active survivor and substitutes
+      every effective allocated canonical K/O/D direct use exactly, preserving
+      unrelated order and the existing survivor position. Group selected O/D edits
+      by actual file, preserving all bytes outside their combined subjects spans;
+      only Knowledge receives its exact existing revision-note suffix. Require
+      exact reviewed retention rows for absent-field owners, complete structural
+      use inspection, actual reach assessment, one whole-registry tree artifact
+      pair and the fixed all-store original-operand replay recipe. Preserve raw
+      incomplete inventory/reach statuses for those exact retained absences.
+    consequences: >
+      Authorizer and retained-unknown files remain wholly unchanged in this
+      tranche, so a selected sibling in either file refuses. Inactive/proposal
+      source edits, graph rewriting and wider lifecycle cases remain unsupported
+      staged scope, not redefined final requirements. Mechanical success always
+      retains publicationReady false and a pending final runtime capability;
+      authenticated review, actual final rerun and publication belong to P1/P7.
+      Widening Knowledge to effective K/O/D preserves the DTO and fixed all-store
+      recipe but requires newly reviewed complete runtime bytes. Sources:
+      docs/agents/ucs-1235-subject-use-inventory.md and
+      docs/agents/ucs-1235-equivalent-merge-dto.md; implementation releases
+      c116e32, 5441fa8, d514792 and 765aa74. Actual tests include deterministic
+      reruns, grouped typed history, protected-file refusals and exact budgets.
+      Finite replay assessment is neither exhaustive discovery nor proof of
+      semantic equivalence. This record is proposed and grants no publication.
+      Subsequent internal implementation authorization on 2026-09-21 adds an
+      eventless branch to this same operation: original assignmentEvent null
+      requires an actually derived empty supported direct-use scope. Preserve
+      existing inactive/proposal and inherited/incident graph refusals. Use
+      actual immutable validated contexts and the native core once, without P8
+      assignment execution. Require exactly the registry path to change; ledger,
+      all record files, assignment history, authorizer bytes and modes remain
+      unchanged. Explicit zero-only closure row/byte limits charge retained
+      unknown rows and the complete preservation proof before attachment.
+      Zero report version 3 carries null assignments, explicit not-applicable
+      assignment assessment and preservation; positive version 1/2 remains
+      unchanged. Preserve native reach/tree/replay behavior: original absorbed-ID
+      equivalent queries may gain existing survivor-assigned records despite
+      no assignment edits. Neither an empty corpus nor empty query deltas prove
+      this branch. The alternative of fabricating an empty event misstates work;
+      the alternative of skipping inventory would conceal unsupported uses.
+      Implementation and evidence belong to the scoped guide
+      docs/agents/ucs-1240-equivalent-merge-zero.md. This internal authorization
+      changes no record approval or publication status.
+      A further explicitly agreed bounded completion admits a repeated reviewed
+      equivalence A to B followed by B to C. Preserve A's entire retired row and
+      exact A-to-B redirect, all earlier registry events and assignment history;
+      append only the ordinary B-to-C merge. The fixed core may discharge an
+      inbound reference only when it is an unchanged retired equivalence redirect
+      whose exact one-hop before and two-hop candidate resolutions are verified
+      under the same governance allowance. Parent, association, split-alternative,
+      inherited-use and unsupported direct-use refusals remain. Reuse the native
+      resolver, use inventory, P8 history and original-operand replay instead of
+      adding a chain engine, flattening old redirects or granting a generic graph
+      exception. Existing operation/report/policy versions remain unchanged;
+      final execution still requires the complete newly reviewed runtime bytes.
+      The scoped guide docs/agents/ucs-1240-repeated-equivalent-merge.md records
+      implementation and actual controls. User authorization permits isolated
+      implementation and tests, not approval, real publication or release.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000012, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:00000000-0000-4000-8000-000000000024] }

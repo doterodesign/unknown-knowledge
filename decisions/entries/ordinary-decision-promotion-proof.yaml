@@ -1,0 +1,32 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:1c8d9b0f-38a9-4f86-a571-3ed7d14add75
+    title: Ordinary Decision promotion compares exact committed transformations and canonical genesis
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      Ordinary promotion needs the same permanent allocator as migration while
+      preserving existing source formatting, evidence and sibling records.
+      A proposal has source bytes but no prior canonical assignment revision.
+    decision: >
+      Plan promotion from the actual committed source using the neutral original
+      YAML scalar-span parser. Sort selected proposal keys, allocate the exact
+      requested fresh IDs, and change only selected identity and lifecycle spans,
+      their typed references and catalog entries, plus exact new ledger rows.
+      The fixed prepared gate invokes that planner itself and compares every
+      actual candidate file byte and mode and the complete changed-path set.
+      Canonical creation has null before state, capture and revision; its exact
+      revision-zero event and baselines bind actual candidate whole-file captures.
+    consequences: >
+      The first released gate supports Decisions-only stores with no Subject
+      registry, no prior assignment history, and absent or explicitly empty
+      assignments. Malformed history never becomes absence. A separate existing
+      effective authorizer may share a changed physical file only when its
+      record remains unchanged and review binds the original whole-file evidence.
+      This exception does not relax equivalent merge's whole-authorizer-file
+      preservation. The gate keeps publicationReady false and human approval
+      unperformed. Broader typed or classified promotion and final publication
+      require their own actual integration evidence.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:8a17c8a0-8437-4d3c-a26f-46c24adb70ae, proposal:decision:bc77a31e-0fbb-4fbe-ba20-299bb0095953] }

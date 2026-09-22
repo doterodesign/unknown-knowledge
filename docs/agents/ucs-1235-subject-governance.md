@@ -1,4 +1,4 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -10,21 +10,21 @@ operations do not authenticate a human reviewer or publish an installation.
 The separate metadata publication profile (contract arrives in PR4; see delivery availability)
 now composes actual Git evidence, unchanged assignments, native reach/tree/query
 effects, fresh review and publication for rename/clarify/reparent/relate.
-The separate actual equivalent-merge gate (contract arrives in PR3; see delivery availability)
+The separate [actual equivalent-merge gate](ucs-1235-equivalent-merge-dto.md)
 composes registry, assignment and impact owners over committed trees.
-The separate plain-retirement gate (contract arrives in PR3; see delivery availability) checks
+The separate [plain-retirement gate](ucs-1235-plain-retirement-dto.md) checks
 exact withdrawals or a proven zero-use branch, preserving reviewed historical
 and inherited uses. Its separate final publication profile (contract arrives in PR4; see delivery availability)
 adds retained review, fresh evidence and the candidate-ref transaction.
 Rationale and documentation coverage are indexed in the
 [P2 decision audit](ucs-1235-decisions-and-docs.md).
 
-The split foundations (contract arrives in PR3; see delivery availability) add evaluated historical
+The [split foundations](ucs-1235-subject-split-design.md) add evaluated historical
 activation/split pairs, dependent assessment verification, a fixed bounded
 allocation comparator, actual-model creation validation and closed split request/
 assignment-event metadata. A separate actual Git core now proves mapping and
 retention scope from original/candidate snapshots. Request shape alone does not
-establish that closure. The prepared split gate (contract arrives in PR3; see delivery availability)
+establish that closure. The [prepared split gate](ucs-1235-subject-split-gate.md)
 now composes the fixed P8 preservation, eventless proof and mandatory impacts.
 The separate split review/publication profile (contract arrives in PR4; see delivery availability)
 verifies actual authority and allocation before fresh owner checks and the
@@ -118,17 +118,17 @@ Other retirement/merge variants retain their documented limits and need explicit
 scenario-to-spec adjudication under the required scope (contract arrives in PR4; see delivery availability).
 Structural split resolution
 returns explicit alternatives, and historical split-event governance is now
-implemented. The actual-model and Git scope boundaries (contract arrives in PR3; see delivery availability)
+implemented. The [actual-model and Git scope boundaries](ucs-1235-subject-split-design.md)
 are implemented and now feed the dedicated split assignment/preservation and
 impact composition and the retained split publication profile (contract arrives in PR4; see delivery availability).
 Suppressed-proposal reconsideration has a separate
-history/model validator (contract arrives in PR3; see delivery availability);
+[history/model validator](ucs-1235-subject-reconsideration-creation.md);
 its [query/intent/view consumers](ucs-1237-reconsideration-consumers.md) receive
 retained material. The retained publication profile (contract arrives in PR4; see delivery availability)
 now provides actual-Git review and fresh candidate-ref publication. The
 material-continuation contract (contract arrives in PR4; see delivery availability) carries
 that evidence through retirement, positive-use equivalent merge, split and
-K/O/D promotion. The typed existing-record assignment profile (contract arrives in PR3; see delivery availability)
+K/O/D promotion. The [typed existing-record assignment profile](ucs-1241-typed-assignment-publication.md)
 now provides retained and fresh publication for mixed K/O/D selections. The
 zero-use equivalent-merge profile (contract arrives in PR4; see delivery availability) also proves
 registry-only changes and publishes without an assignment event. Ordinary fresh
@@ -251,7 +251,7 @@ validation and fresh review/publication. Its
 allowance into candidate history evaluation; it adds no new action/history rules.
 
 Proposal promotion uses its separate bounded API below. The separate
-reconsideration validator (contract arrives in PR3; see delivery availability)
+[reconsideration validator](ucs-1235-subject-reconsideration-creation.md)
 consumes an exact suppressed proposal through a fresh activation. Active/canonical
 suppression, canonical restoration and automatic similarity-based refusal
 adjudication remain unsupported. A refusal does not prove
@@ -368,15 +368,15 @@ is refused. An effective child requires an active canonical parent. P1 still own
 fresh-allocation planning, complete ledger continuity, pinned tree membership and
 publication assembly. Every result has `publicationReady: false`.
 
-The separate single-Subject allocation comparator (contract arrives in PR3; see delivery availability)
+The separate [single-Subject allocation comparator](ucs-1235-subject-creation-allocation.md)
 proves the exact native one-ID ledger plan. It does not itself upgrade this
 promotion validator to an actual Git or publication gate. The
-reconsideration Decision (contract arrives in PR3; see delivery availability)
-defines the separate fixed model profile (contract arrives in PR3; see delivery availability)
+[reconsideration Decision](../../decisions/entries/suppressed-subject-reconsideration.yaml)
+defines the separate [fixed model profile](ucs-1235-subject-reconsideration-creation.md)
 consuming a retained suppressed proposal with prior-refusal and captured-material
 review. Ordinary promotion still requires
 an unrefused proposal; allocation verification alone does not enable reversal.
-The actual-Git owner (contract arrives in PR3; see delivery availability)
+The [actual-Git owner](ucs-1235-reconsideration-git-core.md)
 adds supplied-capture provenance and complete stored-owner
 preservation. Its file-level material proof does not judge semantic support.
 

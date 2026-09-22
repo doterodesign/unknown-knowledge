@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.0.0-rc.4] - Unreleased
+
+- Exact assignment and lifecycle domain checks, typed promotion planning, merge, split, retirement, creation, metadata and reconsideration proofs.
+- Review scope, Decisions and validation: [PR 3](docs/pr-delivery/pr-03.md).
+
 ## [3.0.0-rc.3] - Unreleased
 
 - Captured Subject queries, strong Kleene unknowns, bounded intent execution, lookup, generated trees and context/route views.

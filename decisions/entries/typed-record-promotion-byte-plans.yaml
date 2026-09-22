@@ -1,0 +1,34 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:b35f9a27-86ca-454f-ad53-b77113499a68
+    title: Typed promotion shares exact byte planning with fixed store lifecycle policies
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Knowledge and Ontology proposal promotion need the existing permanent
+      allocator and exact source-preservation proof. Their lifecycle fields and
+      evidence gates differ, so a generic caller-supplied rewrite policy would
+      expand authority beyond the actual store contracts.
+    decision: >
+      Add a closed versioned homogeneous K/O planner over the existing actual
+      committed byte-planning implementation. Fixed installed descriptors select
+      each store parser, catalog, reference space and lifecycle path. Accept only
+      actual draft/proposed K/O source payloads, targeting verified Knowledge or
+      active Ontology. Preserve the original proposed-to-accepted Decision input
+      through its fixed wrapper. Rewrite only selected identity/lifecycle spans,
+      matching typed references and catalog entries, and exact new ledger rows.
+      Preserve all evidence and unrelated bytes; refuse consumed proposal
+      references outside the admitted spans instead of broad text substitution.
+    consequences: >
+      Shared planning avoids divergent allocators and serializers while keeping
+      source lifecycle checks explicit. Dense enumerable input admission also
+      refuses hidden selected-array slots before copying. Neither byte planning
+      nor the requested effective status establishes source verification, fresh
+      assignment governance, canonical genesis history or human approval. Those
+      remain actual prepared-gate and publication obligations. Supporting K/O
+      byte plans does not expand an Ontology-only gate or the existing Decision
+      publication profile. Implementation, limits and actual Git test evidence
+      are documented in docs/agents/ucs-1234-typed-promotion-planner.md.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:1c8d9b0f-38a9-4f86-a571-3ed7d14add75] }

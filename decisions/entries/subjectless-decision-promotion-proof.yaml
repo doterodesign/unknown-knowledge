@@ -1,0 +1,36 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:53e6b70b-75d3-476b-bd2c-1b11ef075ebc
+    title: First Decision promotion uses actual subjectless capabilities and separate creation proof
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      The first ordinary promotion path must work in a healthy Decisions-only
+      installation without inventing a Subject registry or reusing Knowledge-only
+      replay as typed proof. Original proposal evidence is distinct from a newly
+      allocated canonical record's null prior state. The authorizer may share the
+      physical file with selected proposals while its own record remains unchanged.
+    decision: >
+      Admit a closed detached Decisions-only operation with actual absent K/O stores
+      and Subject registry, absent before history and exact selected after genesis.
+      Selected assignment states are unknown or known-empty. Reinvoke P1's fixed
+      committed-source planner, compare every actual candidate file and mode, exact
+      ledger and new-ID set, proposal consumption and candidate occurrences. Reuse
+      the common P8 chain, P3 null-before and unchanged existing authorizer checks.
+      Bind publication.review to the event review reference; keep the human receipt
+      reference separate. Hash the exact authored operation excluding checkout path.
+    consequences: >
+      History remains an independently validated identity-bound source even without
+      Subject authority. Invalid capabilities and malformed history refuse; absent
+      Subject reports remain unassessed. Full-file planned transformations protect
+      the authorizer record despite selected sibling edits. Non-enumerable array
+      indices are rejected before cloning to preserve closed admission failures.
+      Broader K/O/classified creation, prior-history support and final publication
+      remain outside this first gate. Evidence includes 3731a4f, actual SHA1/SHA256
+      promotion tests and docs/agents/ucs-1241-decision-promotion-gate.md. Retained
+      runtime, review and final CAS belong to P7; publicationReady stays false.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000005, D-000010, proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533] }
