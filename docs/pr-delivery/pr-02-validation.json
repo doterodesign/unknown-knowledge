@@ -92,5 +92,9 @@
     "tests/readme.test.js",
     "tests/context-glossary.test.js",
     "tests/exit-code-contract.test.js"
-  ]
+  ],
+  "originalValidatedHead": "4fb81055d215f07c853a7dab721877df6f5d9324",
+  "originalValidatedTree": "b37ca0104d8fb29b1a6841bd4b86064e1ddb1a05",
+  "currentStackBase": "5899858634f3e53a92ba45681610f386cb645e22",
+  "ancestorCorrection": "PR1 bounded teardown correction merged; runtime bytes unchanged. Original logs retain their original tree binding; focused correction receipts supplement them."
 }
