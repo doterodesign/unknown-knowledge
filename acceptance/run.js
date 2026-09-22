@@ -30,6 +30,7 @@
  * Usage: node acceptance/run.js        (or: npm run acceptance)
  */
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -38,6 +39,7 @@ import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import { loadManifest, expandManifest, DEFAULT_ROOT, SEEDED_MANIFEST } from '../cli/lib/copy-payload.js';
 import { SENTINEL_BEGIN, SENTINEL_END } from '../cli/lib/generate-wrappers.js';
+import { isOwnEngineImport } from './lib/engine-module-import.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const engine = (cli) => join(root, 'payload', 'engine', cli);
@@ -147,12 +149,12 @@ criterion('A1', A1_SELECTIONS.map((stacks) => [
     assert.equal(r.status, 0, `init-copy failed: ${r.stderr}`);
 
     // Byte-for-byte: the seeded tree is EXACTLY the manifest expansion plus
-    // the engine-generated files (kit.manifest.yaml stamp, create-dir
+    // the engine-generated files (kit.manifest.yaml stamp, installation identity, create-dir
     // .gitkeeps) — every file identical to its payload source, nothing
     // else present.
     const manifest = loadManifest(root);
     const plan = expandManifest(manifest, stacks);
-    const generated = [SEEDED_MANIFEST, ...manifest.create.map((d) => `${d}/.gitkeep`)];
+    const generated = [SEEDED_MANIFEST, '_identity.yaml', ...manifest.create.map((d) => `${d}/.gitkeep`)];
     const seedRoot = join(target, DEFAULT_ROOT);
     const expected = [...plan.map((p) => p.to), ...generated].sort();
     assert.deepEqual(walkSeed(seedRoot), expected, 'seeded file set != manifest expansion');
@@ -278,32 +280,32 @@ criterion('A1', A1_SELECTIONS.map((stacks) => [
 // "exit 0, zero findings" IS "extracted set == expected set" (§3.5 set
 // equality through the validator's own diff).
 criterion('A2', [
-  ['ts-app: all 10 clean anchors extract to their expected sets (every TS MVP kind; dir-modules plain K-110 + pattern/strip K-111; .tsx K-107; plain .js K-114)', () => {
+  ['ts-app: all 10 clean anchors extract to their expected sets (every TS MVP kind; dir-modules plain O-000010 + pattern/strip O-000011; .tsx O-000007; plain .js O-000014)', () => {
     const out = runJson('validate-values.js', 0, '--root', fixture('ts-app'), '--json',
-      '--concepts', 'K-101,K-103,K-105,K-106,K-107,K-109,K-110,K-111,K-112,K-114');
+      '--concepts', 'O-000001,O-000003,O-000005,O-000006,O-000007,O-000009,O-000010,O-000011,O-000012,O-000014');
     assert.deepEqual(out.findings, []);
     assert.deepEqual(out['hard-errors'], []);
     assert.equal(out.checked.filter((c) => !c.skipped).length, 10);
   }],
-  ['swift-app: clean anchors extract to their expected sets (swift-enum raw-value facet K-120, swift-const-array K-130, yaml-keys K-140)', () => {
+  ['swift-app: clean anchors extract to their expected sets (swift-enum raw-value facet O-000002, swift-const-array O-000003, yaml-keys O-000004)', () => {
     const out = runJson('validate-values.js', 0, '--root', fixture('swift-app'), '--json',
-      '--concepts', 'K-120,K-130,K-140');
+      '--concepts', 'O-000002,O-000003,O-000004');
     assert.deepEqual(out.findings, []);
     assert.deepEqual(out['hard-errors'], []);
     assert.equal(out.checked.filter((c) => !c.skipped).length, 3);
   }],
-  ['ts-app: out-of-envelope anchors HARD-ERROR (exit 2) — spread K-113, computed key K-115, re-export barrel K-116 — never a partial value set', () => {
+  ['ts-app: out-of-envelope anchors HARD-ERROR (exit 2) — spread O-000013, computed key O-000015, re-export barrel O-000016 — never a partial value set', () => {
     const out = runJson('validate-values.js', 2, '--root', fixture('ts-app'), '--json',
-      '--concepts', 'K-113,K-115,K-116');
+      '--concepts', 'O-000013,O-000015,O-000016');
     assert.deepEqual(out.findings, []);
     assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]),
-      [['K-113', 'out-of-envelope'], ['K-115', 'out-of-envelope'], ['K-116', 'out-of-envelope']]);
+      [['O-000013', 'out-of-envelope'], ['O-000015', 'out-of-envelope'], ['O-000016', 'out-of-envelope']]);
   }],
-  ['swift-app: out-of-envelope anchor (#if in the enum span, K-180) HARD-ERRORS (exit 2)', () => {
+  ['swift-app: out-of-envelope anchor (#if in the enum span, O-000008) HARD-ERRORS (exit 2)', () => {
     const out = runJson('validate-values.js', 2, '--root', fixture('swift-app'), '--json',
-      '--concepts', 'K-180');
+      '--concepts', 'O-000008');
     assert.deepEqual(out.findings, []);
-    assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['K-180', 'out-of-envelope']]);
+    assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['O-000008', 'out-of-envelope']]);
     assert.match(out['hard-errors'][0].message, /#if/);
   }],
 ]);
@@ -313,32 +315,32 @@ criterion('A2', [
 // with no concept and the reverse; CI asserts the correct finding kind fires
 // in each direction; wrong-pointer (all-values-missing) signature detected."
 criterion('A3', [
-  ['ts-app: exactly the three tabulated findings — value-not-in-source (K-102 "luminosity"), source-value-missing (K-104 "video"), wrong-pointer (K-108) — exit 1', () => {
+  ['ts-app: exactly the three tabulated findings — value-not-in-source (O-000002 "luminosity"), source-value-missing (O-000004 "video"), wrong-pointer (O-000008) — exit 1', () => {
     const out = runJson('validate-values.js', 1, '--root', fixture('ts-app'), '--json',
-      '--concepts', 'K-102,K-104,K-108');
+      '--concepts', 'O-000002,O-000004,O-000008');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code, f.value ?? null]), [
-      ['K-102', 'value-not-in-source', 'luminosity'],
-      ['K-104', 'source-value-missing', 'video'],
-      ['K-108', 'wrong-pointer', null],
+      ['O-000002', 'value-not-in-source', 'luminosity'],
+      ['O-000004', 'source-value-missing', 'video'],
+      ['O-000008', 'wrong-pointer', null],
     ]);
   }],
-  ['swift-app: exactly the four tabulated findings, both directions (K-110 drifts both ways at once) — exit 1', () => {
+  ['swift-app: exactly the four tabulated findings, both directions (O-000001 drifts both ways at once) — exit 1', () => {
     const out = runJson('validate-values.js', 1, '--root', fixture('swift-app'), '--json',
-      '--concepts', 'K-110,K-150,K-160');
+      '--concepts', 'O-000001,O-000005,O-000006');
     assert.deepEqual(out['hard-errors'], []);
     assert.deepEqual(out.findings.map((f) => [f.concept, f.code, f.value ?? null]), [
-      ['K-110', 'source-value-missing', 'comment'],
-      ['K-110', 'value-not-in-source', 'eyedropper'],
-      ['K-150', 'source-value-missing', '2027-preview'],
-      ['K-160', 'value-not-in-source', 'cta.publish'],
+      ['O-000001', 'source-value-missing', 'comment'],
+      ['O-000001', 'value-not-in-source', 'eyedropper'],
+      ['O-000005', 'source-value-missing', '2027-preview'],
+      ['O-000006', 'value-not-in-source', 'cta.publish'],
     ]);
   }],
-  ['swift-app: wrong-pointer signature (K-170: all claimed values missing from a real, parseable file) — one finding, no cascade', () => {
+  ['swift-app: wrong-pointer signature (O-000007: all claimed values missing from a real, parseable file) — one finding, no cascade', () => {
     const out = runJson('validate-values.js', 1, '--root', fixture('swift-app'), '--json',
-      '--concepts', 'K-170');
+      '--concepts', 'O-000007');
     assert.deepEqual(out['hard-errors'], []);
-    assert.deepEqual(out.findings.map((f) => [f.concept, f.code]), [['K-170', 'wrong-pointer']]);
+    assert.deepEqual(out.findings.map((f) => [f.concept, f.code]), [['O-000007', 'wrong-pointer']]);
   }],
 
   // ---------------------------------------------- UCS-1159: the five v2 plants
@@ -351,13 +353,13 @@ criterion('A3', [
   //
   // Both registry-membership plants share the code `unregistered-value`, so
   // the assertions pin `path` too: the code alone does not discriminate them.
-  ['UCS-1159 plant 1/5 — stale volatile leaf: L-000200 is `volatile`, verified 2026-01-05, so at --today 2026-08-16 it is 223 days past the 90-day limit → preflight `stale` verdict, exit 1 (never the wall clock)', () => {
+  ['UCS-1159 plant 1/5 — stale volatile leaf: K-000002 is `volatile`, verified 2026-01-05, so at --today 2026-08-16 it is 223 days past the 90-day limit → preflight `stale` verdict, exit 1 (never the wall clock)', () => {
     const out = runJson('preflight.js', 1, '--root', fixture('ts-app'), '--json',
-      '--leaves', 'L-000200', '--today', '2026-08-16');
+      '--leaves', 'K-000002', '--today', '2026-08-16');
     assert.equal(out.counts.stale, 1);
     assert.equal(out.counts.quarantined + out.counts.unknown, 0);
     const [leaf] = out['leaf-verdicts'];
-    assert.equal(leaf.leaf, 'L-000200');
+    assert.equal(leaf.leaf, 'K-000002');
     assert.equal(leaf.verdict, 'stale');
     assert.equal(leaf.time.volatility, 'volatile');
     assert.equal(leaf.time.limit, 90);
@@ -365,7 +367,7 @@ criterion('A3', [
   }],
   ['UCS-1159 plant 1/5 control — the SAME run at a --today inside the window returns the leaf to `trusted`: the plant is the date arithmetic, not a broken record', () => {
     const out = runJson('preflight.js', 0, '--root', fixture('ts-app'), '--json',
-      '--leaves', 'L-000200', '--today', '2026-02-01');
+      '--leaves', 'K-000002', '--today', '2026-02-01');
     assert.equal(out.counts.stale, 0);
     assert.equal(out['leaf-verdicts'][0].verdict, 'trusted');
   }],
@@ -375,25 +377,26 @@ criterion('A3', [
     // healthy or the fixture-store pin test (and these findings) would vanish.
     assert.deepEqual(out['store-health'], { ok: true, errors: 0, warnings: 0 });
     assert.deepEqual(out.findings.map((f) => [f.code, f.id, f.path]), [
-      ['unregistered-value', 'L-000100', 'applies.jurisdictions[0]'],
-      ['unregistered-value', 'L-000100', 'facets.form'],
+      ['unregistered-value', 'K-000001', 'applies.jurisdictions[0]'],
+      ['unregistered-value', 'K-000001', 'facets.form'],
     ]);
   }],
-  ['UCS-1159 plant 5/5 — duplicate accession: two well-formed leaves mint L-000100, so the loader refuses the later mint → exactly one `duplicate-id`, exit 2, in its OWN store (a load failure reports nothing else)', () => {
+  ['UCS-1159 plant 5/5 — duplicate accession: two well-formed leaves mint K-000001, so the loader refuses the later mint → one `duplicate-id` plus ambiguous canonical identity, exit 2, in its OWN store', () => {
     const r = run('validate.js', '--root', fixture('plant-duplicate-accession'), '--json');
     assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
-    assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
-    assert.match(lines[0], /^\s+duplicate-id\s+knowledge\/product\/100.2-registering-a-new-export-format\.md\s+id\s/);
-    assert.match(lines[0], /id "L-000100" is already minted in knowledge\/product\/100.1-adding-a-new-export-format\.md/);
+    assert.equal(lines.length, 2, `duplicate and ambiguous identity diagnostics expected: ${r.stderr}`);
+    assert.match(lines[0], /^\s+invalid-identity.*identity K-000001: ambiguous/);
+    assert.match(lines[1], /^\s+duplicate-id\s+knowledge\/product\/100.2-registering-a-new-export-format\.md\s+id\s/);
+    assert.match(lines[1], /id "K-000001" is already minted in knowledge\/product\/100.1-adding-a-new-export-format\.md/);
   }],
-  ['UCS-1159 plant 3/5 — unresolvable relates ref: a well-formed `relates.see-also` cites L-000999, which nothing mints → exactly one `unresolved-ref`, exit 2, in its OWN store', () => {
+  ['UCS-1159 plant 3/5 — unresolvable relates ref: a well-formed `relates.see-also` cites K-000999, which nothing mints → exactly one `unresolved-ref`, exit 2, in its OWN store', () => {
     const r = run('validate.js', '--root', fixture('plant-unresolved-relates'), '--json');
     assert.equal(r.status, 2, `expected exit 2, got ${r.status}: ${r.stderr}`);
     const lines = r.stderr.trim().split('\n').filter((l) => /^\s+\S/.test(l));
     assert.equal(lines.length, 1, `exactly one diagnostic expected: ${r.stderr}`);
     assert.match(lines[0], /^\s+unresolved-ref\s+knowledge\/product\/100.1-adding-a-new-export-format\.md\s+relates\.see-also\[0\]\s/);
-    assert.match(lines[0], /relates\.see-also ref "L-000999" does not resolve/);
+    assert.match(lines[0], /relates\.see-also ref "K-000999" does not resolve/);
   }],
   ['UCS-1159 invariant — no plant masks another: each plant store carries exactly ONE defect, and the main store\'s three plants are all observable in the same pair of runs (the reason the two loader-fatal plants live in isolated roots)', () => {
     // Each isolated root reports its own plant and nothing else — proven by the
@@ -403,13 +406,13 @@ criterion('A3', [
     assert.equal(out['store-health'].ok, true, 'a loader-fatal plant in the main store would mask the others');
     assert.equal(out.findings.length, 2, 'both registry plants observable in one run');
     const both = runJson('preflight.js', 1, '--root', fixture('ts-app'), '--json',
-      '--leaves', 'L-000100,L-000200', '--today', '2026-08-16');
+      '--leaves', 'K-000001,K-000002', '--today', '2026-08-16');
     // The stale plant sits on its own leaf, so it neither hides nor is hidden
     // by the registry plants: one run shows BOTH, and shows them as different
-    // verdicts — L-000100 quarantined for its two registry findings, L-000200
+    // verdicts — K-000001 quarantined for its two registry findings, K-000002
     // stale for its age. Distinct leaves, distinct verdicts, one invocation.
     assert.deepEqual(both['leaf-verdicts'].map((v) => [v.leaf, v.verdict]),
-      [['L-000100', 'quarantined'], ['L-000200', 'stale']]);
+      [['K-000001', 'quarantined'], ['K-000002', 'stale']]);
     assert.equal(both.counts.quarantined, 1);
     assert.equal(both.counts.stale, 1);
   }],
@@ -419,8 +422,8 @@ criterion('A3', [
 // PRD §10 A4 — "Resolution works: fixture queries → expected ranked concepts;
 // confusable-with surfaced; CLI exit codes correct."
 const A4_QUERIES = {
-  'swift-app': { query: 'canvas tool', top: 'K-110', confusable: 'K-130' },
-  'ts-app': { query: 'export format', top: 'K-101', confusable: 'K-113' },
+  'swift-app': { query: 'canvas tool', top: 'O-000001', confusable: 'O-000003' },
+  'ts-app': { query: 'export format', top: 'O-000001', confusable: 'O-000013' },
 };
 criterion('A4', FIXTURES.flatMap((app) => {
   const { query, top, confusable } = A4_QUERIES[app];
@@ -494,8 +497,8 @@ const PLANTED_ANCHORS = {
 };
 const A6_PREFLIGHT = {
   // clean concepts / a drifting concept per fixture (FIXTURE.md tables).
-  'swift-app': { clean: 'K-120,K-130', drift: 'K-110' },
-  'ts-app': { clean: 'K-101,K-103', drift: 'K-102' },
+  'swift-app': { clean: 'O-000002,O-000003', drift: 'O-000001' },
+  'ts-app': { clean: 'O-000001,O-000003', drift: 'O-000002' },
 };
 
 criterion('A6', [
@@ -573,7 +576,11 @@ criterion('A6', [
     }
     assert.ok(mentioned >= 1, 'grep exercised nothing — did the flag move?');
   }],
-  ['payload/: no-code-execution grep — no eval/new Function/dynamic import of repo content; child_process only in Git navigation/snapshot orchestration, spawning the fixed git binary (D-014)', () => {
+  ['payload/: no-client-code-execution grep — fixed Git plumbing and captured trusted-engine checks only (D-014)', () => {
+    // The fixed historical distribution is still inspected by every code guard.
+    // Its complete file inventory additionally binds unchanged reviewed bytes.
+    const historicalRoot = 'payload/engine/compatibility/identity-migration-08066b5/';
+    const preparedLaunches = new Map(); // No prepared workers ship before PR4.
     for (const file of payloadFiles()) {
       if (!/\.(js|mjs|cjs)$/.test(file)) continue;
       const rel = relative(root, file);
@@ -590,17 +597,83 @@ criterion('A6', [
       // engine's own files: there is no variable a client path could reach.
       // A computed specifier — `import(path)`, or a template — is refused.
       for (const [, spec] of text.matchAll(/\bimport\s*\(([^)]*)\)/g)) {
-        // `./` only, and no `..`: a literal can name the engine's own modules,
-        // never a path that climbs out of the engine toward client code.
-        assert.match(spec.trim(), /^'\.\/(?!.*\.\.)[\w/-]+(?:\.[\w-]+)*\.js'$/,
+        // Commands may reach sibling engine libraries. Check the actual file
+        // boundary, including symlinks, rather than assuming a shim's depth.
+        assert.ok(isOwnEngineImport(spec, file, join(root, 'payload', 'engine')),
           `${rel}: import(${spec.trim()}) — only a string-literal import of the engine's own modules is allowed (D-014)`);
       }
-      if (/node:child_process/.test(text)) {
+      if (/['"](?:node:)?child_process['"]/.test(text)) {
+        assert.doesNotMatch(text, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
+        if (rel === join('payload', 'engine', 'lib', 'candidate-ref-transaction.js')) {
+          assert.match(text, /import\s*\{\s*spawn\s*\}\s*from\s*'node:child_process'/);
+          assert.equal([...text.matchAll(/['"](?:node:)?child_process['"]/g)].length, 1);
+          assert.equal([...text.matchAll(/\bspawn\s*\(/g)].length, 2);
+          assert.equal([...text.matchAll(/spawn\('\/usr\/bin\/git',/g)].length, 2);
+          assert.match(text, /'update-ref', '--no-deref', '--stdin', '-z'/);
+          assert.match(text, /core\.hooksPath=\/dev\/null/);
+          assert.doesNotMatch(text, /shell\s*:|['"](?:fetch|pull|reset|stash|add)['"]/);
+          continue;
+        }
+        const prepared = preparedLaunches.get(rel);
+        if (prepared) {
+          assert.equal([...text.matchAll(/['"](?:node:)?child_process['"]/g)].length, 1,
+            `${rel}: exactly one approved child_process import, without additional methods or module aliases`);
+          assert.match(text, new RegExp(`import\\s*\\{\\s*${prepared.method}\\s*\\}\\s*from\\s*'node:child_process'`));
+          assert.equal([...text.matchAll(/\b(?:spawnSync|spawn)\s*\(/g)].length, 1,
+            `${rel}: exactly one fixed trusted launch point`);
+          assert.match(text, prepared.call, `${rel}: fixed executable and arguments`);
+          for (const boundary of prepared.boundaries) assert.match(text, boundary, `${rel}: trusted runtime boundary`);
+          assert.doesNotMatch(text, /shell\s*:/, `${rel}: trusted checks must not invoke a shell`);
+          continue;
+        }
+        if (rel === join('payload', 'engine', 'lib', 'migration-activation.js')) {
+          assert.equal([...text.matchAll(/\bspawnSync\s*\(/g)].length, 1);
+          assert.match(text, /spawnSync\('\/usr\/bin\/git', \['-c', 'core.fsmonitor=false', '-C', root, \.\.\.args\]/);
+          assert.match(text, /git\(\['config', '--null', '--get-all', 'core.hooksPath'\]\)/);
+          assert.match(text, /git\(\['ls-files', '--stage', '-z'\]\)/);
+          assert.match(text, /git\(\['rev-parse', '--verify', request.publish.outputRef\]\)/);
+          assert.doesNotMatch(text, /shell\s*:|['"](?:fetch|pull|reset|checkout|update-ref|add|commit)['"]/);
+          continue;
+        }
+        if (rel === join('payload', 'engine', 'lib', 'migration-consumer-proof.js')) {
+          assert.equal([...text.matchAll(/\bspawnSync\s*\(/g)].length, 1);
+          assert.match(text, /spawnSync\('git',/);
+          assert.match(text, /git\(\['init', '--quiet', '--template='\]\)/);
+          assert.match(text, /git\(\['add', '--all', '--force', '--', '\.'\]\)/);
+          assert.match(text, /core\.hooksPath=\/dev\/null/);
+          assert.match(text, /GIT_CONFIG_GLOBAL: '\/dev\/null'/);
+          assert.doesNotMatch(text, /shell\s*:|['"](?:fetch|pull|reset|checkout|update-ref)['"]/);
+          continue;
+        }
+        const capturedReaders = [
+          join('payload', 'engine', 'lib', 'captured-source.js'),
+          join('payload', 'engine', 'lib', 'identity-migration-source.js'),
+          join('payload', 'engine', 'lib', 'prepared-migration-gate.js'),
+        ];
+        const historicalGit = [
+          join('payload', 'engine', 'compatibility', 'identity-migration-08066b5', 'engine', 'commands', 'survey-map.js'),
+          join('payload', 'engine', 'compatibility', 'identity-migration-08066b5', 'engine', 'lib', 'commit-snapshot.js'),
+        ];
+        if (historicalGit.includes(rel)) {
+          assert.match(text, /import\s*\{\s*spawnSync\s*\}\s*from\s*'node:child_process'/);
+          assert.equal([...text.matchAll(/['"](?:node:)?child_process['"]/g)].length, 1);
+          assert.equal([...text.matchAll(/\b(?:spawnSync|spawn)\s*\(/g)].length, 1);
+          assert.match(text, /spawnSync\('git',/);
+          assert.doesNotMatch(text, /shell\s*:/);
+        }
         assert.ok([join('payload', 'engine', 'commands', 'survey-map.js'),
-          join('payload', 'engine', 'lib', 'commit-snapshot.js')].includes(rel),
+          join('payload', 'engine', 'lib', 'commit-snapshot.js'),
+          join('payload', 'engine', 'lib', 'prepare-candidate.js'), ...capturedReaders, ...historicalGit].includes(rel),
         `${rel}: child_process outside Git navigation/snapshot orchestration (D-014)`);
         assert.match(text, /spawnSync\('git',/, 'only the fixed git binary may be spawned');
-        assert.doesNotMatch(text, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
+        if (capturedReaders.includes(rel)) {
+          assert.match(text, /import\s*\{\s*spawnSync\s*\}\s*from\s*'node:child_process'/,
+            `${rel}: captured readers import only synchronous Git spawning`);
+          assert.equal([...text.matchAll(/\bspawnSync\s*\(/g)].length, 1,
+            `${rel}: every subprocess uses the single fixed Git runner`);
+          assert.doesNotMatch(text, /['"](?:write-tree|update-ref|hash-object|fetch|pull)['"]|shell\s*:/,
+            `${rel}: captured readers must not write Git state, fetch objects, or invoke a shell`);
+        }
       }
     }
   }],

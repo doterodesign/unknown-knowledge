@@ -5,7 +5,7 @@
 # open ONE PR carrying the entry and — if the category is not yet declared — the
 # row that declares it in decisions/_registries/graduation-categories.yaml.
 #
-# Autonomy is PER CATEGORY, never per leaf. "L-000117 has been right ten times"
+# Autonomy is PER CATEGORY, never per leaf. "K-000001 has been right ten times"
 # is not evidence about anything: the eleventh leaf is a different claim by a
 # different author. "Alias additions have been approved unmodified ten cycles
 # running" is evidence about a class of edit, which is why the category is the
@@ -55,7 +55,7 @@
 #
 # The full inventory:
 #
-#   id                    the provisional D-YYYY-MM-DD-<slug> (schema-rejected)
+#   id                    proposal:decision:UUID; replace UUID with a lowercase v4 UUID (schema-rejected)
 #   date                  the real date (schema-rejected)
 #   title                 <category>
 #   deciders              <steward>
@@ -66,9 +66,9 @@
 #   graduation.observed-cycles   your actual count, not 0
 #   provenance.author     <steward-or-agent>
 #   provenance.skill-version     <skill@version>
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-YYYY-MM-DD-graduate-example-category
+  - id: proposal:decision:UUID
     title: "Graduate <category> to sampling"
     # `trust` — this entry moves the system's own trust boundary, which is what
     # the third store governs (PRD §3: rationale, ADR-style records, trust

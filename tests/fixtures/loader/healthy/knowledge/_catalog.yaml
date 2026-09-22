@@ -1,9 +1,9 @@
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000362
+  - id: K-000001
     title: Preview deploy windows
     file: engineering/362.1-preview-deploy-windows.md
-  - id: L-000363
+  - id: K-000002
     title: Production deploy windows
     file: engineering/362.2-production-deploy-windows.md

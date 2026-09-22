@@ -64,7 +64,7 @@ test('a v2 fixture leaf carrying the full record shape validates clean (golden)'
   const leaf = load(readFileSync(
     join(CLEAN, 'knowledge/design-system/117.1-icon-component-sizing-quirks.md'), 'utf8',
   ).split('---')[1]);
-  assert.equal(leaf.id, 'L-000117');
+  assert.equal(leaf.id, 'K-000001');
   assert.equal(leaf.edition, 1);
   assert.deepEqual(leaf.facets, {
     domain: 'design-system/components', form: 'reference', anchor: 'world', stage: 'verified',
@@ -126,18 +126,18 @@ test('a draft-stage leaf is downranked in resolver output (golden)', () => {
   // demotion, never a filter — a draft leaf is still the best answer when it is
   // the only answer.
   assert.deepEqual(entries.map((k) => [k.id, k.stage, k.downranked]), [
-    ['L-000117', 'verified', false],
-    ['L-000213', 'draft', true],
+    ['K-000001', 'verified', false],
+    ['proposal:knowledge:21321321-3213-4213-8213-213213213213', 'draft', true],
   ]);
 });
 
 test('the SAME draft leaf yields an unknown-class preflight verdict (golden)', () => {
-  const payload = json('preflight.js', 2, '--leaves', 'L-000117,L-000213', '--root', CLEAN);
+  const payload = json('preflight.js', 2, '--leaves', 'K-000001,proposal:knowledge:21321321-3213-4213-8213-213213213213', '--root', CLEAN);
   assert.deepEqual(payload['leaf-verdicts'].map((v) => [v.leaf, v.stage, v.verdict]), [
-    ['L-000117', 'verified', 'trusted'],
-    ['L-000213', 'draft', 'unknown'],
+    ['K-000001', 'verified', 'trusted'],
+    ['proposal:knowledge:21321321-3213-4213-8213-213213213213', 'draft', 'unknown'],
   ]);
-  assert.equal(payload['leaf-verdicts'].find((v) => v.leaf === 'L-000213')['next-action'], 'review-stage');
+  assert.equal(payload['leaf-verdicts'].find((v) => v.leaf === 'proposal:knowledge:21321321-3213-4213-8213-213213213213')['next-action'], 'review-stage');
   // An unknown verdict gates at 2 — a check that never ran is a blocking
   // defect, never a silent pass (PRD §5). Asserted by the expected exit above.
   assert.equal(payload.counts.unknown, 1);
@@ -150,8 +150,8 @@ test('resolver downrank and preflight verdict read ONE predicate — they cannot
   // enumerates draft/proposed itself. So the vocabulary lives in one place and
   // a change moves both surfaces together or neither.
   const model = loadStores(CLEAN);
-  const draft = model.leaves.get('L-000213');
-  const verified = model.leaves.get('L-000117');
+  const draft = model.proposals.knowledge.get('proposal:knowledge:21321321-3213-4213-8213-213213213213');
+  const verified = model.leaves.get('K-000001');
   assert.equal(leafStage(draft.record), 'draft');
   assert.equal(leafStage(verified.record), 'verified');
   assert.equal(isPrePromotionStatus(leafStage(draft.record)), true);
@@ -177,7 +177,7 @@ test('a leaf with a quarantined-grade finding verdicts quarantined, not unknown'
   // the same verdict as an honest draft.
   // Named by accession, the one spelling `--leaves` takes (UCS-1147); this read
   // '900.1' while a leaf also answered to its notation.
-  const payload = json('preflight.js', 1, '--leaves', 'L-000901', '--root', FINDINGS);
+  const payload = json('preflight.js', 1, '--leaves', 'K-000001', '--root', FINDINGS);
   const [verdict] = payload['leaf-verdicts'];
   assert.equal(verdict.verdict, 'quarantined');
   assert.equal(verdict.evidence.length, 7);
@@ -193,11 +193,11 @@ test('--leaves names a leaf by its accession; a notation is an unknown id (exit 
   // rest of the surface rather than keeping a private convenience alias — a
   // selector that accepted a spelling no citation may use would be the alias
   // table growing back in one command's argument parser.
-  const byAccession = json('preflight.js', 2, '--leaves', 'L-000213', '--root', CLEAN);
-  assert.deepEqual(byAccession['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
+  const byAccession = json('preflight.js', 2, '--leaves', 'proposal:knowledge:21321321-3213-4213-8213-213213213213', '--root', CLEAN);
+  assert.deepEqual(byAccession['leaf-verdicts'].map((v) => v.leaf), ['proposal:knowledge:21321321-3213-4213-8213-213213213213']);
   // Naming it twice is still ONE leaf, not two verdicts about nothing. The
   // de-duplication outlived the narrowing it was written for.
-  const twice = json('preflight.js', 2, '--leaves', 'L-000213,L-000213', '--root', CLEAN);
+  const twice = json('preflight.js', 2, '--leaves', 'proposal:knowledge:21321321-3213-4213-8213-213213213213,proposal:knowledge:21321321-3213-4213-8213-213213213213', '--root', CLEAN);
   assert.equal(twice['leaf-verdicts'].length, 1);
 
   // The inversion, pinned where a caller meets it. The leaf EXISTS and still
@@ -208,7 +208,7 @@ test('--leaves names a leaf by its accession; a notation is an unknown id (exit 
   assert.equal(byNotation.status, 2, 'a notation selector names nothing, and must say so');
   assert.match(byNotation.stderr, /--leaves names id\(s\) not in the knowledge store: 213\.1/);
 
-  const unknown = runCli('preflight.js', '--leaves', 'L-999999', '--root', CLEAN, '--json');
+  const unknown = runCli('preflight.js', '--leaves', 'K-999999', '--root', CLEAN, '--json');
   assert.equal(unknown.status, 2, 'a verdict on a typo must never read as anything');
   assert.match(unknown.stderr, /not in the knowledge store/);
 });
@@ -225,8 +225,8 @@ test('a degraded store reports the SAME leaf name and stage a healthy one would'
   // longer TRANSLATES a notation into an accession, it just answers whether the
   // store carries the leaf. It stays pinned because the two paths must still
   // agree, and agreeing is what they got wrong the first time.
-  const healthy = json('preflight.js', 2, '--leaves', 'L-000213', '--root', CLEAN);
-  assert.deepEqual(healthy['leaf-verdicts'].map((v) => [v.leaf, v.stage]), [['L-000213', 'draft']]);
+  const healthy = json('preflight.js', 2, '--leaves', 'proposal:knowledge:21321321-3213-4213-8213-213213213213', '--root', CLEAN);
+  assert.deepEqual(healthy['leaf-verdicts'].map((v) => [v.leaf, v.stage]), [['proposal:knowledge:21321321-3213-4213-8213-213213213213', 'draft']]);
 
   const dir = mkdtempSync(join(tmpdir(), 'uk-v2-degraded-'));
   try {
@@ -235,23 +235,23 @@ test('a degraded store reports the SAME leaf name and stage a healthy one would'
     // diagnostic, which is what degrades every verdict (a structural finding
     // would only quarantine the record it names).
     writeFileSync(join(dir, 'ontology/classes/100-feed.yaml'), 'entries: [oops\n');
-    const degraded = json('preflight.js', 2, '--leaves', 'L-000213', '--root', dir);
+    const degraded = json('preflight.js', 2, '--leaves', 'proposal:knowledge:21321321-3213-4213-8213-213213213213', '--root', dir);
     assert.equal(degraded['store-verdict'], 'unknown', 'the store must actually be broken');
     assert.deepEqual(degraded['leaf-verdicts'].map((v) => [v.leaf, v.stage, v.verdict]), [
-      ['L-000213', 'draft', 'unknown'],
+      ['proposal:knowledge:21321321-3213-4213-8213-213213213213', 'draft', 'unknown'],
     ]);
 
     // And it de-duplicates by identity like the healthy path: one leaf named
     // twice is ONE verdict, not two rows a caller has to reconcile.
-    const twice = json('preflight.js', 2, '--leaves', 'L-000213,L-000213', '--root', dir);
-    assert.deepEqual(twice['leaf-verdicts'].map((v) => v.leaf), ['L-000213']);
+    const twice = json('preflight.js', 2, '--leaves', 'proposal:knowledge:21321321-3213-4213-8213-213213213213,proposal:knowledge:21321321-3213-4213-8213-213213213213', '--root', dir);
+    assert.deepEqual(twice['leaf-verdicts'].map((v) => v.leaf), ['proposal:knowledge:21321321-3213-4213-8213-213213213213']);
 
     // An id that resolves to nothing keeps the caller's spelling — on a store
     // this broken the leaf may simply have failed to load — and two distinct
     // unresolved ids stay two rows rather than collapsing into one.
-    const missing = json('preflight.js', 2, '--leaves', 'L-000900,L-000901', '--root', dir);
+    const missing = json('preflight.js', 2, '--leaves', 'K-999900,K-999901', '--root', dir);
     assert.deepEqual(missing['leaf-verdicts'].map((v) => [v.leaf, v.stage]), [
-      ['L-000900', null], ['L-000901', null],
+      ['K-999900', null], ['K-999901', null],
     ]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
@@ -320,7 +320,7 @@ test('only fields with an owning absence check may defer a blank', () => {
 
 test('a --concepts-only run is byte-identical to before: no leaf surface appears', () => {
   // The new flag must not change the shape of a run that did not ask for it.
-  const payload = json('preflight.js', 0, '--concepts', 'K-102', '--root', CLEAN);
+  const payload = json('preflight.js', 0, '--concepts', 'O-000001', '--root', CLEAN);
   assert.equal(payload.mode, 'concepts');
   assert.equal(payload['leaf-verdicts'], undefined);
   assert.equal(payload.verdicts.length, 1);
@@ -493,7 +493,7 @@ test('provenance validates and round-trips into resolver output untouched (golde
 
 test('provenance travels through the validator untouched — recorded, never judged', () => {
   const model = loadStores(CLEAN);
-  assert.deepEqual(model.leaves.get('L-000117').record.provenance, {
+  assert.deepEqual(model.leaves.get('K-000001').record.provenance, {
     author: 'dimitri', 'skill-version': 'kb-build@2.0.0',
   });
   // No governed-facet row claims it: provenance is a fact about how the entry
@@ -538,7 +538,7 @@ test('the kit-fixed vocabularies are documented in the templates that seed empty
     join(root, 'payload/templates/knowledge/_registries', `${name}.yaml`), 'utf8');
 
   const anchor = read('anchor');
-  assert.match(anchor, /D-003/, 'the anchor vocabulary cites the decision that fixed it');
+  assert.match(anchor, /D-000003/, 'the anchor vocabulary cites the decision that fixed it');
   for (const value of ['artifact', 'world', 'team']) assert.match(anchor, new RegExp(value));
 
   const stage = read('stage');

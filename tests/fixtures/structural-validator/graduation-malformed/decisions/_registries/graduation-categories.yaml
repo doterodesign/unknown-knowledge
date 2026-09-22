@@ -9,7 +9,7 @@
 #      against no bar at all.
 #   3. `domain-classes` is permanently gated yet carries a threshold, which
 #      advertises a bar that can never be met.
-schema-version: 1
+schema-version: 2
 store: decisions
 table: graduation-categories
 categories:
@@ -17,17 +17,17 @@ categories:
     eligibility: eligible
     threshold: 3
     warrant: Mechanical; checkable by reading the edit.
-    decision: D-201
+    decision: D-000001
   - category: alias-additions
     eligibility: gated
     warrant: Contradicts the row above — the table answers one question twice.
-    decision: D-201
+    decision: D-000001
   - category: paths-edges
     eligibility: eligible
     warrant: Mechanical, but no threshold is declared.
-    decision: D-201
+    decision: D-000001
   - category: domain-classes
     eligibility: gated
     threshold: 5
     warrant: Judgment, yet a threshold is declared alongside the gate.
-    decision: D-201
+    decision: D-000001

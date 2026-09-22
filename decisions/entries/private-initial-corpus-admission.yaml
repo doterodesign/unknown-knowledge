@@ -1,0 +1,39 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:30f04d46-dc02-4b4f-8f7a-c08df6ef8ee3
+    title: Admit initial corpus metadata within the actual loader ownership lifetime
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Retained 4401ce5 operational runs still refuse all four invocations. The
+      near-byte context now reaches the first parsed Decision guard; initial
+      corpus admission earlier repeats record and body payloads already guarded
+      by the actual same-budget parser. P1 audited every intervening loader
+      consumer at 069f0ba and found no payload mutation or external exposure.
+    decision: >
+      Compose fixed synchronous loading and initial corpus admission privately
+      before returning the model. Accept only an authentic operation and primitive
+      kit-root string. For exact known enumerable-data wrappers, guard a real
+      metadata shell preserving keys and nonpayload values with null record/body
+      markers, preceded by one charged classification step. Unfamiliar wrappers
+      fall back to the existing full entry guard. Retain actual shape checks,
+      assignments, UTF-8 body scan, registry, history, baseline and hierarchy work.
+      Do not reuse external mutable model identity, add a durable receipt or parser
+      skip API, freeze returned models, or bundle registry-view/evidence caching.
+    consequences: >
+      Payload proof depends on the actual same-budget parse and unchanged private
+      synchronous lifetime, not wrapper shape alone. Future payload mutation,
+      replacement, exposure or caller/async boundary must re-guard changed data
+      or disable reuse. Public admission always guards full current entries.
+      Actual metadata visits and one new per-entry step change partial counters
+      and first-failure order; sticky failures and unique capacities remain.
+      tests/subject-initial-corpus.test.js establishes actual context RED to GREEN
+      from 8192 to 4096 added text units for a 4096-unit body increase, with exact
+      accounting and mutation/boundary tests. See docs/agents/ucs-1235-operation-budget.md
+      and docs/agents/ucs-1237-subject-query.md. P1/P2 agreed the bounded design and
+      main authorized implementation; proposed status grants no publication or
+      human approval. Preserved refusals remain, with no operational qualification,
+      capacity increase, fixture reduction or eligibility change.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20, proposal:decision:88481c7c-29da-40e0-a5b7-f8331769f765] }

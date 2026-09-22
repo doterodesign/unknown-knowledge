@@ -306,7 +306,7 @@ export function renderTree(tree, axis, today) {
     `- time verdicts: ${timeCheckStatus(today)}`,
     '',
     'Call numbers are synthesized display strings for this projection only. They',
-    'are NOT identities: cite the accession id (L-NNNNNN), never a call number.',
+    'are NOT identities: cite the canonical Knowledge id (K-000001 through K-999999), never a call number.',
     '',
   ];
   renderNode(tree, 0, lines);

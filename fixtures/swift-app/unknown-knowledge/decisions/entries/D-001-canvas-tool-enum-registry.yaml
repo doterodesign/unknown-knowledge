@@ -1,7 +1,7 @@
 # Fixture decision — exists so concept rationale refs resolve cross-store.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-001
+  - id: D-000001
     title: Canvas tools are registered as a raw-value Swift enum
     category: architecture
     status: accepted
@@ -15,4 +15,4 @@ entries:
       shortcuts are two facets of one declaration.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-110, K-120], leaves: [], decisions: [] }
+    relates-to: { concepts: [O-000001, O-000002], leaves: [], decisions: [] }

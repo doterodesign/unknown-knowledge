@@ -35,7 +35,7 @@
 # always the mistake you made:
 #
 #   - `graduation.category` is pattern-checked (lowercase kebab) and
-#     `graduation.revokes` is pattern-checked (D-NNN), so leaving either
+#     `graduation.revokes` is pattern-checked (D-NNNNNN), so leaving either
 #     unfilled is a KK-02 `pattern-mismatch` at EXIT 2. The store fails to load
 #     rather than validating with findings, so the graduation checks never run.
 #   - the PROSE fields (context, decision, consequences, title, deciders,
@@ -45,7 +45,7 @@
 #
 # The full inventory:
 #
-#   id                    the provisional D-YYYY-MM-DD-<slug> (schema-rejected)
+#   id                    proposal:decision:UUID; replace UUID with a lowercase v4 UUID (schema-rejected)
 #   date                  the real date (schema-rejected)
 #   title                 <category>
 #   deciders              <steward>
@@ -53,17 +53,17 @@
 #   decision              <category>
 #   consequences          the whole prose block
 #   graduation.category   <category-name> — must match a row in the table
-#   graduation.revokes    D-NNN — the graduation being withdrawn. DELETE this
+#   graduation.revokes    D-NNNNNN — the graduation being withdrawn. DELETE this
 #                         line if no graduation for the category exists (the
-#                         standing-position case); leaving `D-NNN` literal is an
+#                         standing-position case); leaving `D-NNNNNN` literal is an
 #                         unresolved ref, and omitting it when a graduation DOES
 #                         stand is a `disconnected-revocation` finding
 #   graduation.defect     <what went wrong>
 #   provenance.author     <steward-or-agent>
 #   provenance.skill-version     <skill@version>
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-YYYY-MM-DD-revoke-example-category
+  - id: proposal:decision:UUID
     title: "Revoke sampling for <category>"
     # `trust` — like the graduation it withdraws, this entry moves the system's
     # own trust boundary.
@@ -95,7 +95,7 @@ entries:
       # The graduation entry being withdrawn. Resolved like any other ref, so a
       # revocation naming no graduation is an unresolved-ref error — the
       # withdrawal and the thing withdrawn stay connected in the record.
-      revokes: D-NNN
+      revokes: D-NNNNNN
       # What went wrong, in one line. The machine-checkable half is that a
       # revocation exists at all; this is the half a human reads.
       defect: <what went wrong>

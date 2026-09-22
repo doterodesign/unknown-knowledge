@@ -29,14 +29,15 @@
 #   these leaves stays valid across the event. If a proposal requires renaming
 #   or reissuing an id, it is not a phoenix event.
 #
+# Replace UUID in proposal:decision:UUID with a lowercase v4 UUID.
 # The `id` and `date` placeholders below are DELIBERATELY not valid, so this
 # file fails validation until a steward fills them — pasting the template
 # unedited must never produce a Decisions entry, or a bulk rewrite would end up
 # carrying a rationale nobody wrote. Every other field is real: fill those two
 # and the entry validates.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-YYYY-MM-DD-phoenix-example-split
+  - id: proposal:decision:UUID
     title: "Phoenix: <what splits, merges or moves> (edition <n>)"
     # `governance` — an event changes how the Store is filed, not how the engine
     # works.

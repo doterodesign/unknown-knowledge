@@ -1,3 +1,7 @@
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+
+This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
+
 # UCS-1146 — Migrate: decisions relates-to and log-fragment leaf references to accession IDs
 
 Branch: `ucs-1146-migrate-decisions-relates-to-and-log-fragment-leaf` (base `faceted-store-v2` @ 2abae19)

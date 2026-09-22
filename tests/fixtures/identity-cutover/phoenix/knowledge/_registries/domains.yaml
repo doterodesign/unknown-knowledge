@@ -1,0 +1,15 @@
+schema-version: 2
+store: knowledge
+registry: domains
+hierarchical: true
+values:
+  - value: before
+    gloss: The original category.
+    warrant: The carried evidence still belongs here.
+    decision: D-000001
+    minted: "2026-08-01"
+  - value: after
+    gloss: The destination category.
+    warrant: The moved evidence now belongs here.
+    decision: D-000001
+    minted: "2026-08-01"

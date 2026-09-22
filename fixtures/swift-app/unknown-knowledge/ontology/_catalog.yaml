@@ -1,29 +1,29 @@
 # Ontology catalog — Swift acceptance fixture (KK-14). Navigational entry
 # point per PRD §3; every planted concept is cataloged individually.
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-110
+  - id: O-000001
     title: Canvas tool
     file: classes/100-app.yaml
-  - id: K-120
+  - id: O-000002
     title: Tool shortcut
     file: classes/100-app.yaml
-  - id: K-130
+  - id: O-000003
     title: Toolbar action
     file: classes/100-app.yaml
-  - id: K-140
+  - id: O-000004
     title: App configuration section
     file: classes/100-app.yaml
-  - id: K-150
+  - id: O-000005
     title: Canvas feature flag
     file: classes/100-app.yaml
-  - id: K-160
+  - id: O-000006
     title: Localization key
     file: classes/100-app.yaml
-  - id: K-170
+  - id: O-000007
     title: Layout density
     file: classes/100-app.yaml
-  - id: K-180
+  - id: O-000008
     title: Analytics event
     file: classes/100-app.yaml

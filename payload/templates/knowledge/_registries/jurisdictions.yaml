@@ -12,9 +12,9 @@
 #     - value: us
 #       gloss: United States.
 #       warrant: 362.1 states US-CA-only accessibility rules.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values: []

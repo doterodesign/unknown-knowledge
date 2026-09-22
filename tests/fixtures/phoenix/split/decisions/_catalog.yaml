@@ -1,9 +1,9 @@
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-401
+  - id: D-000001
     title: Frontmatter v2 vocabularies
     file: entries/D-401-frontmatter-v2.yaml
-  - id: D-420
+  - id: D-000002
     title: "Phoenix: split components into primitives/patterns (edition 2)"
     file: entries/D-420-phoenix-split-components.yaml

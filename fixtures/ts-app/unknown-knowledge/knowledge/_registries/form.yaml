@@ -1,12 +1,12 @@
 # Acceptance-fixture store (KK-15) — the form registry (UCS-1149).
 # Only the form the store's material actually needs is minted: a value minted
 # ahead of its material is speculative shelving (`walkthrough` is plant 4).
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: form
 values:
   - value: recipe
     gloss: The ordered steps for performing a task.
     warrant: 100.2 is the step list for deprecating a release.
-    decision: D-101
+    decision: D-000001
     minted: "2026-07-08"

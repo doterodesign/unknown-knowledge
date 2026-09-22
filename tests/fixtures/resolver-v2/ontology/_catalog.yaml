@@ -1,10 +1,10 @@
 # Query-decomposition fixture (UCS-1152) — the noun vocabulary.
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-101
+  - id: O-000001
     title: Token
     file: classes/100-design-system.yaml
-  - id: K-103
+  - id: O-000002
     title: Theme status
     file: classes/100-design-system.yaml

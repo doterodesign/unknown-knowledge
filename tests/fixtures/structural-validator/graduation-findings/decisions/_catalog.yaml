@@ -1,27 +1,27 @@
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-201
+  - id: D-000001
     title: One gadget store
     file: entries/D-201-gadget-store.yaml
-  - id: D-205
+  - id: proposal:decision:00000000-0000-4000-8000-000000000205
     title: Graduate authority assignments to sampling
     file: entries/D-205-graduate-gated-category.yaml
-  - id: D-206
+  - id: proposal:decision:00000000-0000-4000-8000-000000000206
     title: Graduate see-also links to sampling
     file: entries/D-206-graduate-undeclared-category.yaml
-  - id: D-207
+  - id: proposal:decision:00000000-0000-4000-8000-000000000207
     title: Graduate alias additions to sampling
     file: entries/D-207-graduation-wrong-category.yaml
-  - id: D-208
+  - id: proposal:decision:00000000-0000-4000-8000-000000000208
     title: Revoke sampling for alias additions
     file: entries/D-208-disconnected-revocation.yaml
-  - id: D-209
+  - id: proposal:decision:00000000-0000-4000-8000-000000000209
     title: Graduate alias additions to sampling
     file: entries/D-209-graduation-missing-cycles.yaml
-  - id: D-210
+  - id: proposal:decision:00000000-0000-4000-8000-000000000210
     title: Revoke sampling for see-also links
     file: entries/D-210-revocation-wrong-target.yaml
-  - id: D-211
+  - id: proposal:decision:00000000-0000-4000-8000-000000000211
     title: Revoke sampling for verified bumps
     file: entries/D-211-revocation-wrong-category.yaml

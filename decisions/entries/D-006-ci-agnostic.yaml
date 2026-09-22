@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-006
+  - id: D-000006
     title: CI-agnostic; init never touches CI config
     category: scope
     status: accepted

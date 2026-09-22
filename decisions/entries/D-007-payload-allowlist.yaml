@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-007
+  - id: D-000007
     title: Init copies from an explicit payload allowlist; acceptance fixtures and kit tests can never ship
     category: trust
     status: accepted

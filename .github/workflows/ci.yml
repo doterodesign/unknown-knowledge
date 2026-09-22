@@ -15,6 +15,21 @@ on:
   pull_request:
 
 jobs:
+  pr-version:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Require a version and changelog update for every PR
+        env:
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/check-pr-version.js "$PR_BASE_SHA"
+
   changes:
     runs-on: ubuntu-latest
     permissions:
@@ -73,7 +88,7 @@ jobs:
   # job, so a required check always resolves; fails if any needed job
   # failed or was cancelled.
   ci-ok:
-    needs: [changes, engine-tests, fixture-acceptance]
+    needs: [changes, pr-version, engine-tests, fixture-acceptance]
     if: always()
     runs-on: ubuntu-latest
     steps:

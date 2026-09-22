@@ -1,0 +1,33 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20
+    title: One Subject operation owns cumulative admission and bounded CLI failure output
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      Per-query algorithm limits do not cover loading, retained capture transport,
+      repeated preparation or serialized output. A fresh allowance between phases
+      or an unbounded error fallback would bypass an operation's stated limits.
+    decision: >
+      Offer explicit opt-in closed limits with a fixed pre-parse inline policy cap.
+      Bind one authentic operation to one context capture attempt and its actual
+      model/governance. Share source, expanded-document and Subject counters across
+      actual work, with a sticky first failure. Reserve raw capture bytes before
+      decoding and retain exact ownership/content checks for repeated admission.
+      Keep unique corpus cardinalities separate from repeated logical visits;
+      count all Subject and assignment history rows, including baselines. Admit
+      the entire output before writing. All bounded CLI commands delegate failure
+      classification to one shared harness, preserving typed admission failures
+      versus unexpected bugs and the original programmatic exception behavior.
+      No smaller or unbounded fallback follows output exhaustion.
+    consequences: >
+      Bootstrap failures can be silent; failure/usage inspection remains possible
+      after exhaustion but dependent work cannot continue. Physical write uncertainty
+      does not refund capacity. Host release 130156f and shared CLI release cb7e2e9
+      retain their original evidence. See docs/agents/ucs-1237-subject-query.md and
+      docs/agents/ucs-1235-operation-budget.md. Native allocation/CPU and other
+      documented exclusions remain outside the guarantee. This backfill creates
+      no operational qualification, default capacity or canonical approval.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000011, proposal:decision:b0ef0f5a-f028-4509-a3b7-a08c6d598349] }

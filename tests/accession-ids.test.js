@@ -1,4 +1,4 @@
-// UCS-1147: a leaf IS its accession id (L-NNNNNN) — minted, required, and the
+// UCS-1147: a leaf IS its accession id (K-NNNNNN) — minted, required, and the
 // only spelling anything may cite it by.
 //
 // The CONTRACT phase of the identity inversion, and the end of it. UCS-1144's
@@ -40,7 +40,7 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { loadStores } from '../payload/engine/lib/load-stores.js';
 import {
-  ACCESSION_MIGRATION_HINT, ID_GRAMMARS, idPattern,
+  ACCESSION_MIGRATION_HINT, AUTHORING_ID_GRAMMARS, ID_GRAMMARS, idPattern,
 } from '../payload/engine/lib/id-grammars.js';
 import { validateRecord } from '../payload/engine/lib/validate-record.js';
 
@@ -53,7 +53,7 @@ const ACCESSIONED = fixture('structural-validator/accessioned');
 const SHARDED = fixture('structural-validator/sharded');
 
 /**
- * One leaf's file text. Every synthesized leaf carries `schema-version: 2` and
+ * One leaf's file text. Every synthesized leaf carries `schema-version: 3` and
  * an `id`, because that is now the only shape a leaf may legally have — a
  * helper that could still emit an unaccessioned leaf by default would seed
  * every case with a missing-required defect it was not testing.
@@ -65,7 +65,7 @@ const SHARDED = fixture('structural-validator/sharded');
  */
 const leafFile = ({ heading, notation, accession, seeAlso, terms }) => [
   '---',
-  'schema-version: 2',
+  'schema-version: 3',
   ...(accession ? [`id: ${accession}`] : []),
   `notation: "${notation}"`,
   'domain: w',
@@ -96,7 +96,7 @@ function withStore(leaves, check, { concept } = {}) {
   try {
     for (const store of ['knowledge', 'ontology', 'decisions']) {
       mkdirSync(join(root, store), { recursive: true });
-      writeFileSync(join(root, store, '_catalog.yaml'), `schema-version: 1\nstore: ${store}\nentries: []\n`);
+      writeFileSync(join(root, store, '_catalog.yaml'), `schema-version: 2\nstore: ${store}\nentries: []\n`);
       // decisions has no _rules.yaml (§9.1).
       if (store !== 'decisions') {
         writeFileSync(join(root, store, '_rules.yaml'), `schema-version: 1\nstore: ${store}\nrules: []\n`);
@@ -105,13 +105,25 @@ function withStore(leaves, check, { concept } = {}) {
     if (concept) {
       mkdirSync(join(root, 'ontology/classes'), { recursive: true });
       writeFileSync(join(root, 'ontology/classes/500-w.yaml'),
-        `schema-version: 1\nentries:\n  - id: ${concept.id}\n    term: ${concept.term}\n`
+        `schema-version: 2\nentries:\n  - id: ${concept.id}\n    term: ${concept.term}\n`
         + '    class: 500-w\n    summary: fixture concept\n    status: active\n');
     }
     mkdirSync(join(root, 'knowledge/w'), { recursive: true });
     for (const [name, text] of Object.entries(leaves)) {
       writeFileSync(join(root, 'knowledge/w', name), text);
     }
+    // Allocate exactly the authored canonical fixture records; duplicate claims
+    // share a slot so the loader still diagnoses the duplicate itself.
+    const ids = new Set(Object.values(leaves).flatMap((text) =>
+      [...text.matchAll(/^id: (K-[0-9]{6})$/gm)].map((match) => match[1])));
+    if (concept) ids.add(concept.id);
+    writeFileSync(join(root, '_identity.yaml'), JSON.stringify({
+      'schema-version': 1, 'identity-format': 1,
+      namespace: '41414141-4141-4141-8141-414141414141',
+      allocations: [...ids].map((id) => ({ id, kind: id.startsWith('K-') ? 'knowledge' : 'ontology',
+        state: 'allocated', publication: { id: '42424242-4242-4242-8242-424242424242',
+          review: 'fixture:accession-behavior' } })),
+    }));
     check(loadStores(root), root);
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -123,10 +135,10 @@ function withStore(leaves, check, { concept } = {}) {
 test('the accession grammar is declared in the one id-grammar module', () => {
   // Not a second regex somewhere: UCS-1142 made this module THE place, and the
   // accession space is the first real proof that adding one costs a lookup.
-  assert.match('L-000101', idPattern('accessions'));
+  assert.match('K-000001', idPattern('accessions'));
   assert.doesNotMatch('L-42', idPattern('accessions'), 'the mint width is fixed at six digits');
   assert.doesNotMatch('362.1', idPattern('accessions'), 'a notation is not an accession');
-  assert.match(ID_GRAMMARS.accessions.hint, /L-NNNNNN/,
+  assert.match(ID_GRAMMARS.accessions.hint, /K-000001 through K-999999/,
     'the hint names the shape an author must write');
 });
 
@@ -138,7 +150,7 @@ test('the leaf-ref grammar is the accession grammar, and refuses a notation', ()
   // composition left to mis-strip and nothing to keep two members from
   // drifting apart.
   const leafRef = idPattern('leaf-ref');
-  assert.match('L-000101', leafRef);
+  assert.match('K-000001', leafRef);
   assert.doesNotMatch('362.1', leafRef, 'a notation is no longer a legal citation');
   assert.doesNotMatch('K-101', leafRef, 'an id from another space is still refused');
   assert.doesNotMatch('L-42', leafRef, 'the mint width is fixed at six digits');
@@ -152,12 +164,12 @@ test('the leaf-ref grammar is the accession grammar, and refuses a notation', ()
   // The hints deliberately DIFFER, because the two findings say different
   // things: a minting finding tells an author to assign their leaf an identity,
   // a citation finding tells them the spelling they used was retired. Both name
-  // L-NNNNNN, since that is the answer in either case.
+  // K-NNNNNN, since that is the answer in either case.
   assert.notEqual(ID_GRAMMARS.accessions.hint, ID_GRAMMARS['leaf-ref'].hint);
-  assert.match(ID_GRAMMARS.accessions.hint, /identity/,
-    'the minting hint says what the field IS, not merely its shape');
+  assert.match(ID_GRAMMARS.accessions.hint, /K-000001 through K-999999/,
+    'the allocation hint names the nonzero canonical identity range');
   assert.equal(ID_GRAMMARS['leaf-ref'].hint, ACCESSION_MIGRATION_HINT);
-  assert.match(ACCESSION_MIGRATION_HINT, /no longer resolves/,
+  assert.match(ACCESSION_MIGRATION_HINT, /never resolves/,
     'the migration hint must tell an author the old spelling is dead, not merely wrong');
 });
 
@@ -169,20 +181,20 @@ test('the legacy notation grammar survives as a LABEL grammar, not an id space',
   // malformed display label is a defect even though nothing resolves through
   // it — but it is no longer an identity anything may hold.
   assert.match('362.1', idPattern('knowledge'));
-  assert.doesNotMatch('L-000101', idPattern('knowledge'),
+  assert.doesNotMatch('K-000001', idPattern('knowledge'),
     'an accession is not a legal notation — a leaf cannot hold two identities');
   assert.match(ID_GRAMMARS.knowledge.hint, /legacy/,
     'the hint must say "legacy" out loud, so quoting it cannot read as an invitation');
 
   const leaf = (fields) => ({
-    'schema-version': 2,
+    'schema-version': 3,
     domain: 'test',
     heading: 'test leaf',
     citations: [{ source: 'test' }],
     ...fields,
   });
   assert.deepEqual(
-    validateRecord('knowledge-leaf', leaf({ id: 'L-000101', notation: 'L-000101' })).errors.map((e) => e.code),
+    validateRecord('knowledge-leaf', leaf({ id: 'K-000001', notation: 'K-000001' })).errors.map((e) => e.code),
     ['pattern-mismatch'],
     'an accession is not a legal notation',
   );
@@ -193,8 +205,8 @@ test('the legacy notation grammar survives as a LABEL grammar, not an id space',
   );
   // The clean shape: a required accession, and the notation as an optional
   // label the leaf may keep or drop.
-  assert.deepEqual(validateRecord('knowledge-leaf', leaf({ id: 'L-000101', notation: '700.1' })).errors, []);
-  assert.deepEqual(validateRecord('knowledge-leaf', leaf({ id: 'L-000101' })).errors, [],
+  assert.deepEqual(validateRecord('knowledge-leaf', leaf({ id: 'K-000001', notation: '700.1' })).errors, []);
+  assert.deepEqual(validateRecord('knowledge-leaf', leaf({ id: 'K-000001' })).errors, [],
     'the notation is OPTIONAL now — a leaf that never had one is well-formed');
 });
 
@@ -205,7 +217,7 @@ test('a leaf with no accession is a missing-required finding naming the migratio
   // NOT — an accession is required, so a leaf without one is a defect an author
   // has to fix rather than a store state the engine tolerates.
   const unminted = {
-    'schema-version': 2,
+    'schema-version': 3,
     notation: '700.1',
     domain: 'test',
     heading: 'test leaf',
@@ -218,7 +230,7 @@ test('a leaf with no accession is a missing-required finding naming the migratio
       code: 'missing-required',
       // The message carries the accession grammar's hint, so the author is told
       // what to assign and why the field exists — not merely that a key is absent.
-      message: `required property "id" is missing — expected ${ID_GRAMMARS.accessions.hint}`,
+      message: `required property "id" is missing — expected ${AUTHORING_ID_GRAMMARS.knowledge.hint}`,
     }],
     'a leaf carrying only a notation is missing its identity, not carrying an alternate one',
   );
@@ -259,13 +271,13 @@ test('the loader indexes a leaf by its accession and nothing else', () => {
   // longer exists, so there is no second index a notation could be looked up
   // in. That is the shape of the contract phase — one leaf, one key, one name.
   const model = loadStores(ACCESSIONED);
-  assert.deepEqual([...model.leaves.keys()], ['L-000101', 'L-000102']);
+  assert.deepEqual([...model.leaves.keys()], ['K-000001', 'K-000002']);
   assert.equal(model.leafAliases, undefined,
     'the alias table left with the second spelling it existed to serve');
 
-  const leaf = model.leaves.get('L-000101');
-  assert.equal(leaf.identity, 'L-000101', 'identity IS the accession');
-  assert.equal(leaf.id, 'L-000101');
+  const leaf = model.leaves.get('K-000001');
+  assert.equal(leaf.identity, 'K-000001', 'identity IS the accession');
+  assert.equal(leaf.id, 'K-000001');
   // The notation stays on the entry because it is still a PUBLISHED resolver
   // field — the legacy display label. What it is not is a key: nothing in
   // `leaves` answers to it.
@@ -282,16 +294,16 @@ test('two leaves claiming one accession is a duplicate-id loader error', () => {
   assert.deepEqual(duplicates.map((d) => ({ file: d.file, path: d.path })), [
     { file: 'knowledge/widgets/700.2-branch-b.md', path: 'id' },
   ], 'the SECOND mint is the finding, attributed to the field that collided');
-  assert.match(duplicates[0].message, /"L-000101" is already minted in/);
+  assert.match(duplicates[0].message, /"K-000001" is already minted in/);
   assert.equal(model.ok, false, 'a collision makes the store unhealthy');
 
   // The loser owns NOTHING. This used to also assert that it contributed no
   // ALIAS — the dual-shape hazard was that indexing the loser's notation would
-  // file "700.2" under L-000101, a different leaf in a different file, so a
+  // file "700.2" under K-000001, a different leaf in a different file, so a
   // notation-form citation of 700.2 would resolve silently to the wrong
   // content. That hazard is structurally gone with the alias table: there is
   // only one index, and the loser is simply not in it.
-  assert.deepEqual([...model.leaves.keys()], ['L-000101']);
+  assert.deepEqual([...model.leaves.keys()], ['K-000001']);
 });
 
 test('an accession collision is caught whichever leaf loads first', () => {
@@ -308,8 +320,8 @@ test('an accession collision is caught whichever leaf loads first', () => {
   const leaf = (heading, accession) => leafFile({ heading, notation: '700.1', accession });
 
   const cases = [
-    ['a before b', { 'a.md': leaf('A', 'L-000101'), 'b.md': leaf('B', 'L-000101') }, 'knowledge/w/b.md'],
-    ['b before z', { 'b.md': leaf('B', 'L-000101'), 'z.md': leaf('Z', 'L-000101') }, 'knowledge/w/z.md'],
+    ['a before b', { 'a.md': leaf('A', 'K-000001'), 'b.md': leaf('B', 'K-000001') }, 'knowledge/w/b.md'],
+    ['b before z', { 'b.md': leaf('B', 'K-000001'), 'z.md': leaf('Z', 'K-000001') }, 'knowledge/w/z.md'],
   ];
 
   for (const [label, leaves, expectedFile] of cases) {
@@ -324,12 +336,12 @@ test('an accession collision is caught whichever leaf loads first', () => {
   // collision at all. A notation that still collided would be an identity
   // wearing a label's name.
   withStore({
-    'a.md': leaf('A', 'L-000101'),
-    'b.md': leaf('B', 'L-000102'),
+    'a.md': leaf('A', 'K-000001'),
+    'b.md': leaf('B', 'K-000002'),
   }, (model) => {
     assert.deepEqual(model.diagnostics, [],
       'two leaves may share a legacy display label — only identity is unique');
-    assert.deepEqual([...model.leaves.keys()], ['L-000101', 'L-000102']);
+    assert.deepEqual([...model.leaves.keys()], ['K-000001', 'K-000002']);
   });
 });
 
@@ -345,9 +357,9 @@ test('a leaf that loses its identity contributes nothing to the ref graph', () =
   // graph ever saw it — and a second finding would blur what this test is
   // about, which is that the edge never enters the graph at all.
   withStore({
-    'a.md': leafFile({ heading: 'Winner', accession: 'L-000101', notation: '700.1' }),
+    'a.md': leafFile({ heading: 'Winner', accession: 'K-000001', notation: '700.1' }),
     'b.md': leafFile({
-      heading: 'Loser', accession: 'L-000101', notation: '700.2', seeAlso: 'L-000999',
+      heading: 'Loser', accession: 'K-000001', notation: '700.2', seeAlso: 'K-999999',
     }),
   }, (model) => {
     assert.deepEqual(model.refs, [], 'the loser\'s edge must not enter the graph');
@@ -355,8 +367,8 @@ test('a leaf that loses its identity contributes nothing to the ref graph', () =
       model.diagnostics.filter((d) => d.code === 'unresolved-ref'), [],
       'and must not produce an unresolved-ref attributed to the winner',
     );
-    assert.deepEqual(model.diagnostics.map((d) => d.code), ['duplicate-id'],
-      'the collision is the whole story');
+    assert.deepEqual(model.diagnostics.map((d) => d.code), ['invalid-identity', 'duplicate-id'],
+      'the duplicate also makes canonical resolution ambiguous, without adding any edge');
   });
 });
 
@@ -381,19 +393,17 @@ test('an accession collision surfaces at every CLI surface', () => {
 
 // ------------------------------ AC3: a malformed accession is an id-shape find
 
-test('a malformed accession is an id-shape finding carrying the grammar hint', () => {
-  const r = runCli('validate.js', '--root', fixture('structural-validator/bad-accession'), '--json');
-  assert.equal(r.status, 1, 'findings exit 1');
-  const shape = JSON.parse(r.stdout).findings.filter((f) => f.code === 'id-shape');
-  assert.deepEqual(shape.map((f) => ({ id: f.id, file: f.file, path: f.path })), [
-    { id: 'L-42', file: 'knowledge/_catalog.yaml', path: 'entries[0].id' },
-  ]);
-  // The message quotes the hint that travels WITH the pattern, so the prose can
-  // never describe a grammar the engine no longer enforces (UCS-1142).
-  assert.ok(
-    shape[0].message.includes(ID_GRAMMARS['leaf-ref'].hint),
-    `id-shape message must carry the paired hint; got: ${shape[0].message}`,
-  );
+test('a malformed catalog identity is refused before structural checks', () => {
+  const root = fixture('structural-validator/bad-accession');
+  const model = loadStores(root);
+  assert.equal(model.ok, false);
+  assert.deepEqual(model.diagnostics.filter((d) => d.code === 'invalid-identity')
+    .map((d) => [d.file, d.path]), [['knowledge/_catalog.yaml', 'entries[0].id']]);
+  assert.equal(model.stores.knowledge.catalog.entries[0].id, 'L-42');
+  const result = runCli('validate.js', '--root', root, '--json');
+  assert.equal(result.status, 2);
+  assert.equal(result.stdout, '');
+  assert.match(result.stderr, /invalid-identity/);
 });
 
 // ----------------------------- AC4: resolver output carries the accession
@@ -404,7 +414,7 @@ test('resolver knowledge entry points publish the accession as the leaf id', () 
   assert.deepEqual(out.results[0].knowledge, [
     {
       via: 'terms',
-      id: 'L-000101',
+      id: 'K-000001',
       notation: '700.1',
       heading: 'Widget registry rules',
       // Frontmatter v2 keys (UCS-1149) on a leaf that declares none of them:
@@ -494,7 +504,7 @@ test('a non-string accession publishes null, and indexes the leaf nowhere', () =
       assert.deepEqual(out.results[0].knowledge, []);
       assert.deepEqual(out.leaves, []);
     },
-    { concept: { id: 'K-510', term: 'Widget' } },
+    { concept: { id: 'O-000001', term: 'Widget' } },
   );
 });
 
@@ -511,9 +521,9 @@ test('a leaf whose id is notation-form takes no identity, so the notation still 
   // grammar catches it. That is why the check has to be the grammar.
   withStore({
     'a.md': leafFile({ heading: 'Malformed', notation: '700.2', accession: '"700.2"' }),
-    'b.md': leafFile({ heading: 'Citer', notation: '700.1', accession: 'L-000101', seeAlso: '"700.2"' }),
+    'b.md': leafFile({ heading: 'Citer', notation: '700.1', accession: 'K-000001', seeAlso: '"700.2"' }),
   }, (model) => {
-    assert.deepEqual([...model.leaves.keys()], ['L-000101'],
+    assert.deepEqual([...model.leaves.keys()], ['K-000001'],
       'a leaf whose id is not accession-shaped holds no identity to be keyed under');
 
     const cite = model.refs.find((r) => r.to === '700.2');
@@ -549,21 +559,21 @@ test('cross-references, relates-to and catalog rows name leaves by accession', (
   const edge = (from, type) => model.refs.find((r) => r.from === from && r.type === type);
 
   // A leaf cites its sibling by accession...
-  assert.equal(edge('L-000101', 'cross-references.see-also').to, 'L-000102');
-  assert.equal(edge('L-000101', 'cross-references.see-also').resolved, true);
+  assert.equal(edge('K-000001', 'cross-references.see-also').to, 'K-000002');
+  assert.equal(edge('K-000001', 'cross-references.see-also').resolved, true);
   // ...and the sibling cites back the same way. There is no second form left
   // for either to be second-class against.
-  assert.equal(edge('L-000102', 'cross-references.class-elsewhere').to, 'L-000101');
-  assert.equal(edge('L-000102', 'cross-references.class-elsewhere').resolved, true);
+  assert.equal(edge('K-000002', 'cross-references.class-elsewhere').to, 'K-000001');
+  assert.equal(edge('K-000002', 'cross-references.class-elsewhere').resolved, true);
 
   // A decision's relates-to.leaves reaches leaves the one legal way.
   const relates = model.refs.filter((r) => r.type === 'relates-to.leaves');
-  assert.deepEqual(relates.map((r) => [r.to, r.resolved]), [['L-000101', true], ['L-000102', true]]);
+  assert.deepEqual(relates.map((r) => [r.to, r.resolved]), [['K-000001', true], ['K-000002', true]]);
 
   // And the catalog — the store's own citation of its leaves — names both rows
   // by accession. A catalog row is a POINTER, and a pointer has one spelling.
   assert.deepEqual(
-    model.stores.knowledge.catalog.entries.map((e) => e.id), ['L-000101', 'L-000102']);
+    model.stores.knowledge.catalog.entries.map((e) => e.id), ['K-000001', 'K-000002']);
   assert.deepEqual(model.diagnostics, [], 'no drift, no orphans, no unresolved refs');
 });
 
@@ -577,15 +587,15 @@ test('a notation-form value FAILS in every position a leaf citation is legal', (
   // failing the same way, then confirmed below at the CLI seam a user observes.
   const sites = [
     ['knowledge-leaf', {
-      'schema-version': 2,
-      id: 'L-000101',
+      'schema-version': 3,
+      id: 'K-000001',
       domain: 'test',
       heading: 'test leaf',
       citations: [{ source: 'test' }],
       'cross-references': { 'see-also': ['700.2'] },
     }, 'cross-references.see-also[0]'],
     ['decision-entry', {
-      id: 'D-301',
+      id: 'D-000001',
       title: 'Cites a leaf the retired way',
       category: 'architecture',
       status: 'accepted',
@@ -596,12 +606,12 @@ test('a notation-form value FAILS in every position a leaf citation is legal', (
       'relates-to': { concepts: [], leaves: ['700.2'], decisions: [] },
     }, 'relates-to.leaves[0]'],
     ['finding', {
-      'schema-version': 1,
+      'schema-version': 2,
       date: '2026-07-07',
       status: 'open',
       trigger: 'retrieval-miss',
-      summary: 'K-510 had no leaf',
-      consulted: { concepts: ['K-510'], leaves: ['700.2'] },
+      summary: 'O-000001 had no leaf',
+      consulted: { concepts: ['O-000001'], leaves: ['700.2'] },
     }, 'consulted.leaves[0]'],
   ];
   for (const [kind, record, path] of sites) {
@@ -613,20 +623,17 @@ test('a notation-form value FAILS in every position a leaf citation is legal', (
         // Built from the grammar module's own hint rather than restated, so a
         // reworded hint reaches this golden. The hint is the half of the
         // message that names the migration — the criterion's actual demand.
-        message: `"700.2" is not a valid id here — expected ${ID_GRAMMARS['leaf-ref'].hint}`,
+        message: `"700.2" is not a valid id here — expected ${AUTHORING_ID_GRAMMARS.knowledge.hint}`,
       }],
       `${kind}: a notation in ${path} is a defect, not an alternate spelling`,
     );
   }
 
-  // The migration is NAMED where an author meets it. The schema's message
-  // quotes the pattern; the citation grammar's hint — the prose half of the
-  // same fact — is what a catalog id-shape finding carries, and it is the one
-  // place the engine tells an author what to do instead of what is wrong.
-  const r = runCli('validate.js', '--root', fixture('structural-validator/bad-accession'), '--json');
-  const [shape] = JSON.parse(r.stdout).findings.filter((f) => f.code === 'id-shape');
-  assert.ok(shape.message.includes(ACCESSION_MIGRATION_HINT),
-    `a leaf-citation id-shape finding must name the accession migration; got: ${shape.message}`);
+  // Malformed catalog IDs now fail at the loader boundary, before findings.
+  const result = runCli('validate.js', '--root', fixture('structural-validator/bad-accession'), '--json');
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /invalid-identity/);
+
 });
 
 test('a notation-form citation is refused at the CLI seam, in every store position', () => {
@@ -640,9 +647,9 @@ test('a notation-form citation is refused at the CLI seam, in every store positi
   // target EXISTS; only the spelling is retired. That is what makes these
   // findings about the contract rather than about a typo.
   const cases = [
-    ['knowledge/L-01/L-010501-widget-audit.md', 'see-also: [L-000101]', 'see-also: ["700.1"]',
+    ['knowledge/L-01/L-010501-widget-audit.md', 'see-also: [K-000001]', 'see-also: ["700.1"]',
       'cross-references.see-also[0]'],
-    ['decisions/entries/D-302-prefix-sharding.yaml', 'leaves: [L-000101]', 'leaves: ["700.1"]',
+    ['decisions/entries/D-302-prefix-sharding.yaml', 'leaves: [K-000001]', 'leaves: ["700.1"]',
       'entries[0].relates-to.leaves[0]'],
   ];
   for (const [file, from, to, path] of cases) {
@@ -667,8 +674,8 @@ test('a notation-form citation is refused at the CLI seam, in every store positi
       // hint reaches this assertion instead of silently passing it.
       assert.ok(r.stderr.includes('"700.1" is not a valid id here'),
         `${file}: the finding quotes the value the author wrote`);
-      assert.ok(r.stderr.includes(ACCESSION_MIGRATION_HINT),
-        `${file}: the message names the accession migration, not just the pattern`);
+      assert.ok(r.stderr.includes(AUTHORING_ID_GRAMMARS.knowledge.hint),
+        `${file}: the message names the exact canonical and proposal authoring spellings`);
       // And the ref graph refuses it too, so the defect is reported by both the
       // shape check and the resolution check rather than only one of them.
       assert.match(r.stderr, /unresolved-ref/,
@@ -690,7 +697,7 @@ test('a dangling accession is an unresolved-ref finding from every record kind',
   const unresolved = model.diagnostics
     .filter((d) => d.code === 'unresolved-ref')
     .map((d) => d.message.match(/ref "([^"]+)"/)[1]);
-  assert.deepEqual(unresolved.sort(), ['L-000996', 'L-000997', 'L-000998', 'L-000999']);
+  assert.deepEqual(unresolved.sort(), ['K-999996', 'K-999997', 'K-999998', 'K-999999']);
   for (const id of unresolved) {
     assert.match(id, idPattern('accessions'),
       'every dangling target is well-formed — the defect is that it names nothing');
@@ -724,13 +731,13 @@ test('a dangling accession in relates-to.leaves surfaces at the validator seam',
     .map((l) => l.trim().split(/\s{2,}/));
   assert.deepEqual(dangling, [
     ['unresolved-ref', 'decisions/entries/D-301-dangling.yaml', 'entries[0].relates-to.leaves[0]',
-      'relates-to.leaves ref "L-000998" does not resolve to any knowledge entry or catalog-declared id'],
+      'relates-to.leaves ref "K-999998" does not resolve to any knowledge entry or catalog-declared id'],
     // Both members are ACCESSIONS now; the second was the notation "700.8"
     // while the union stood. Two dangling accessions from one edge list still
     // produce two findings, so narrowing the grammar did not collapse the
     // per-element attribution an author acts on.
     ['unresolved-ref', 'decisions/entries/D-301-dangling.yaml', 'entries[0].relates-to.leaves[1]',
-      'relates-to.leaves ref "L-000996" does not resolve to any knowledge entry or catalog-declared id'],
+      'relates-to.leaves ref "K-999996" does not resolve to any knowledge entry or catalog-declared id'],
   ]);
 
   // Byte-stable, like every other seam (D-012).
@@ -746,17 +753,17 @@ test('log-fragment leaf refs take accessions, and only accessions', () => {
   // named entry rather than a pattern spelled per record kind.
   for (const kind of ['finding', 'gap']) {
     const entry = (leaves) => ({
-      'schema-version': 1,
+      'schema-version': 2,
       date: '2026-07-07',
       status: 'open',
-      summary: 'K-510 had no leaf',
-      consulted: { concepts: ['K-510'], leaves },
+      summary: 'O-000001 had no leaf',
+      consulted: { concepts: ['O-000001'], leaves },
       ...(kind === 'finding' ? { trigger: 'retrieval-miss' } : {}),
     });
-    assert.deepEqual(validateRecord(kind, entry(['L-000101', 'L-000102'])).errors, [],
+    assert.deepEqual(validateRecord(kind, entry(['K-000001', 'K-000002'])).errors, [],
       `${kind}: consulted.leaves takes accessions`);
     assert.deepEqual(
-      validateRecord(kind, entry(['L-000101', '700.2'])).errors.map((e) => [e.path, e.code]),
+      validateRecord(kind, entry(['K-000001', '700.2'])).errors.map((e) => [e.path, e.code]),
       [['consulted.leaves[1]', 'pattern-mismatch']],
       `${kind}: and refuses the retired spelling, naming the element that carries it`,
     );
@@ -771,7 +778,7 @@ test('log-fragment leaf refs take accessions, and only accessions', () => {
 // leaves however it likes — and may re-file them later without touching a
 // single reference. The `sharded` fixture is that claim as data: leaves live
 // under knowledge/L-00/ and knowledge/L-01/ by accession prefix, a fanout device
-// with no meaning, and L-000101 and L-010501 cite each other ACROSS shards.
+// with no meaning, and K-000001 and K-000003 cite each other ACROSS shards.
 
 test('a store sharded by accession prefix loads, validates and resolves clean', () => {
   // The precondition for the move golden below, and a claim in its own right:
@@ -781,12 +788,12 @@ test('a store sharded by accession prefix loads, validates and resolves clean', 
   const model = loadStores(SHARDED);
   assert.deepEqual(model.diagnostics, [], 'a shard directory is just a directory');
   assert.equal(model.ok, true);
-  assert.deepEqual([...model.leaves.keys()], ['L-000101', 'L-000102', 'L-010501']);
+  assert.deepEqual([...model.leaves.keys()], ['K-000001', 'K-000002', 'K-000003']);
   // The cross-shard citations resolve exactly as the same-shard one does.
   assert.deepEqual(
     model.refs.filter((r) => r.type.startsWith('cross-references'))
       .map((r) => [r.from, r.to, r.resolved]),
-    [['L-000101', 'L-000102', true], ['L-000101', 'L-010501', true], ['L-010501', 'L-000101', true]],
+    [['K-000001', 'K-000002', true], ['K-000001', 'K-000003', true], ['K-000003', 'K-000001', true]],
   );
 
   const validated = runCli('validate.js', '--root', SHARDED, '--json');
@@ -799,7 +806,7 @@ test('a store sharded by accession prefix loads, validates and resolves clean', 
   assert.equal(resolved.status, 0, `the sharded store must resolve clean:\n${resolved.stderr}`);
   const out = JSON.parse(resolved.stdout);
   assert.equal(out['store-health'].ok, true);
-  assert.deepEqual(out.results[0].knowledge.map((k) => k.id), ['L-000101', 'L-000102', 'L-010501'],
+  assert.deepEqual(out.results[0].knowledge.map((k) => k.id), ['K-000001', 'K-000002', 'K-000003'],
     'all three leaves reach the concept, whichever shard they are filed under');
 });
 
@@ -820,7 +827,7 @@ test('moving a leaf between shards changes its file field and nothing else', () 
     cpSync(SHARDED, root, { recursive: true });
     const before = JSON.parse(runCli('resolve.js', 'Widget', '--root', root, '--json').stdout);
 
-    // The move: L-000102 leaves the L-00 shard for the L-01 one. Its accession
+    // The move: K-000002 leaves the L-00 shard for the L-01 one. Its accession
     // does not change, so the new location disagrees with the prefix scheme —
     // deliberately. A layout that only works while every leaf sits in its
     // "correct" shard would be a coordinate system wearing a fanout device's
@@ -864,17 +871,17 @@ test('moving a leaf between shards changes its file field and nothing else', () 
     const ids = (out) => out.results[0].knowledge.map((k) => [k.id, k.notation, k.heading]);
     assert.deepEqual(ids(after), ids(before));
     assert.deepEqual(ids(after), [
-      ['L-000101', '700.1', 'Widget registry rules'],
-      ['L-000102', '700.2', 'Widget retirement rules'],
-      ['L-010501', '701.5', 'Widget audit schedule'],
+      ['K-000001', '700.1', 'Widget registry rules'],
+      ['K-000002', '700.2', 'Widget retirement rules'],
+      ['K-000003', '701.5', 'Widget audit schedule'],
     ]);
 
     // The `file` field DID move, and tracks where the bytes actually are —
     // otherwise "unchanged apart from file" would be true of a field nobody
     // updates, which proves nothing.
     const fileOf = (out, id) => out.results[0].knowledge.find((k) => k.id === id).file;
-    assert.equal(fileOf(before, 'L-000102'), 'knowledge/L-00/L-000102-widget-retirement.md');
-    assert.equal(fileOf(after, 'L-000102'), 'knowledge/L-01/L-000102-widget-retirement.md');
+    assert.equal(fileOf(before, 'K-000002'), 'knowledge/L-00/L-000102-widget-retirement.md');
+    assert.equal(fileOf(after, 'K-000002'), 'knowledge/L-01/L-000102-widget-retirement.md');
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

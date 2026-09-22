@@ -1,16 +1,16 @@
 # Frontmatter v2 fixture (UCS-1149) — the hierarchical domains registry.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: domains
 hierarchical: true
 values:
   - value: design-system
     gloss: The shared design system.
-    warrant: L-000117 and L-000213 both document design-system material.
-    decision: D-401
+    warrant: K-000001 and proposal:knowledge:21321321-3213-4213-8213-213213213213 both document design-system material.
+    decision: D-000001
     minted: "2026-08-16"
   - value: design-system/components
     gloss: The component library and the rules its parts obey.
-    warrant: L-000117 states component sizing quirks; L-000213 states the render budget.
-    decision: D-401
+    warrant: K-000001 states component sizing quirks; proposal:knowledge:21321321-3213-4213-8213-213213213213 states the render budget.
+    decision: D-000001
     minted: "2026-08-16"

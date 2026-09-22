@@ -20,7 +20,7 @@ for (const name of ['engine', 'schemas', 'protocol']) {
 }
 cpSync(join(repo, 'node_modules'), join(destination, 'node_modules'), { recursive: true });
 // Runtime dependencies must not become Git snapshot evidence in a trial.
-writeFileSync(join(destination, '.gitignore'), 'node_modules/\n');
+writeFileSync(join(destination, '.gitignore'), '/node_modules\n');
 writeFileSync(join(destination, 'AGENTS.md'), 'Read unknown-knowledge/protocol/AGENTS.md and follow its runtime loop.\n');
 
 const directory = join(kit, 'knowledge/freshness');
@@ -30,21 +30,21 @@ for (const file of readdirSync(directory)) {
   const leaf = load(frontmatter);
   leaf.citations = [{ source: 'src/freshness.ts', accessed: '2026-09-10', authority: 'vendor-doc' }];
   // Keep the original IDs, catalog, facets, and time classes. This controlled
-  // evaluation's current date is 2026-09-10; only L-000301 is newly dated.
-  if (leaf.id === 'L-000301') {
+  // evaluation's current date is 2026-09-10; only K-000001 is newly dated.
+  if (leaf.id === 'K-000001') {
     leaf.verified = variant === 'stale' ? '2025-09-08' : '2026-09-09';
     if (variant === 'draft' || variant === 'proposed') leaf.facets.stage = variant;
     if (variant === 'missing-stage') delete leaf.facets.stage;
     if (variant === 'missing-date') delete leaf.verified;
-    leaf.relates = { supersedes: ['L-000307'] };
+    leaf.relates = { supersedes: ['K-000007'] };
   }
-  if (leaf.id === 'L-000305') leaf['cross-references'] = { 'class-elsewhere': ['L-000306'] };
-  if (leaf.id === 'L-000306') leaf.relates = { 'depends-on': ['L-000307'] };
+  if (leaf.id === 'K-000005') leaf['cross-references'] = { 'class-elsewhere': ['K-000006'] };
+  if (leaf.id === 'K-000006') leaf.relates = { 'depends-on': ['K-000007'] };
   const bodies = {
-    'L-000301': 'For the current stable freshness boundary, read the stable member in src/freshness.ts. This replaces L-000307.\n',
-    'L-000305': 'This is a signpost. Follow the class-elsewhere target for the current freshness guide.\n',
-    'L-000306': 'The freshness guide needs L-000307 before selecting the applicable stable limit.\n',
-    'L-000307': 'This undated guide is replaced by L-000301. Follow that leaf before answering the current stable limit.\n',
+    'K-000001': 'For the current stable freshness boundary, read the stable member in src/freshness.ts. This replaces K-000007.\n',
+    'K-000005': 'This is a signpost. Follow the class-elsewhere target for the current freshness guide.\n',
+    'K-000006': 'The freshness guide needs K-000007 before selecting the applicable stable limit.\n',
+    'K-000007': 'This undated guide is replaced by K-000001. Follow that leaf before answering the current stable limit.\n',
   };
   const body = bodies[leaf.id] ?? 'Related historical boundary example; read src/freshness.ts for the implemented limits.\n';
   writeFileSync(path, `---\n${dump(leaf, { lineWidth: 100 })}---\n\n${body}`);
@@ -53,7 +53,7 @@ if (variant === 'malformed') {
   writeFileSync(join(kit, 'decisions/entries/D-401-frontmatter-v2.yaml'), 'entries: [broken\n');
 }
 writeFileSync(join(destination, 'fixture-version.json'), JSON.stringify({
-  fixture: 'runtime-preflight-v1', variant, today: '2026-09-10',
+  fixture: 'runtime-preflight-v2', variant, today: '2026-09-10',
   kitVersion: JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8')).version,
   source: 'tests/fixtures/structural-validator/time-facet',
 }, null, 2) + '\n');

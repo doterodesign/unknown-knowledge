@@ -1,11 +1,11 @@
 ---
-schema-version: 2
-id: L-000101
+schema-version: 3
+id: K-000001
 notation: "700.1"
 domain: widgets
 heading: Widget registry rules
 cross-references:
-  see-also: [L-000102, L-010501]
+  see-also: [K-000002, K-000003]
 citations:
   - source: Widget registry operating manual 2026
     accessed: "2026-07-07"

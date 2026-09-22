@@ -55,6 +55,6 @@ test('package.json follows D-022 / D-016 conventions', () => {
   assert.deepEqual(
     Object.keys(pkg.dependencies ?? {}),
     ['js-yaml'],
-    'PRD §4: js-yaml and little else',
+    'package dependencies are limited to YAML and the approved MCP transport',
   );
 });

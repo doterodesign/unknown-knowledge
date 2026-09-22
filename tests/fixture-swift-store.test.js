@@ -5,6 +5,7 @@
 // Planted-case inventory: fixtures/swift-app/FIXTURE.md (KK-16 asserts it).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,15 +20,15 @@ test('the Swift fixture store loads with zero diagnostics', () => {
   assert.equal(model.ok, true);
 });
 
-test('every planted concept K-110..K-180 is present and cataloged', () => {
-  const expected = ['K-110', 'K-120', 'K-130', 'K-140', 'K-150', 'K-160', 'K-170', 'K-180'];
+test('every planted concept O-000001..O-000008 is present and cataloged', () => {
+  const expected = ['O-000001', 'O-000002', 'O-000003', 'O-000004', 'O-000005', 'O-000006', 'O-000007', 'O-000008'];
   assert.deepEqual([...model.concepts.keys()], expected);
   const cataloged = model.stores.ontology.catalog.entries.map((e) => e.id).sort();
   assert.deepEqual(cataloged, expected);
 });
 
 test('every source-of-truth pointer resolves to a real fixture file', () => {
-  // The one deliberately unhealthy pointer case (K-170) is wrong-VALUES at a
+  // The one deliberately unhealthy pointer case (O-000007) is wrong-VALUES at a
   // real file — a dangling path would be a different finding (KK-05's), so
   // no pointer here may dangle.
   for (const [path, ids] of model.pointers) {
@@ -49,18 +50,18 @@ test('every enumerates descriptor names a listed source-of-truth entry (§3.5)',
   }
 });
 
-test('K-170 wrong-pointer: no claimed value appears anywhere in the pointed file', () => {
+test('O-000007 wrong-pointer: no claimed value appears anywhere in the pointed file', () => {
   // The wrong-pointer signature is that ALL claimed values are missing from
   // the pointed file — lexically too: grep-level detectors (and the KK-25
   // pre-scan) work lexically, so even a doc comment naming a claimed value
   // would contaminate the signature.
-  const { record } = model.concepts.get('K-170');
+  const { record } = model.concepts.get('O-000007');
   for (const desc of record.enumerates) {
     const body = readFileSync(join(fixtureRoot, desc.source), 'utf8').toLowerCase();
     for (const value of desc.values) {
       assert.ok(
         !body.includes(String(value).toLowerCase()),
-        `K-170 claimed value "${value}" must not appear lexically in ${desc.source}`,
+        `O-000007 claimed value "${value}" must not appear lexically in ${desc.source}`,
       );
     }
   }
@@ -91,6 +92,14 @@ test('nothing shipped by init (payload/, cli/) references the acceptance fixture
         `${file} must not reference the acceptance fixture apps (D-007)`,
       );
       if (tree === 'payload') {
+        if (file === join(root, 'payload/engine/policies/installation-assets.json')) {
+          // The reviewed installation inventory names shipped extractor/adapter
+          // fixtures. Only these exact bytes may bypass the blanket word scan;
+          // the acceptance-app ban above and manifest construction checks remain.
+          assert.equal(createHash('sha256').update(text).digest('hex'),
+            '72d5861ce17a81a0652a72b246f6a89de731dadfa40f73533f36ea244bde23fb');
+          continue;
+        }
         assert.ok(
           !/\bfixtures\//.test(text),
           `${file} must not reference the acceptance fixtures (D-007)`,

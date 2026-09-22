@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { dump, load } from 'js-yaml';
+import { planAllocations } from '../payload/engine/lib/identity-ledger.js';
 
 const repo = fileURLToPath(new URL('..', import.meta.url));
 const [destination, variant = 'verified', sourceUrl] = process.argv.slice(2);
@@ -23,24 +24,33 @@ writeFileSync(leafPath, `---\n${dump(leaf)}---\n\nConsult the cited vendor guida
 const decisions = join(kit, 'decisions');
 const catalogPath = join(decisions, '_catalog.yaml');
 const catalog = load(readFileSync(catalogPath, 'utf8'));
+const identityPath = join(kit, '_identity.yaml');
+const allocation = planAllocations(load(readFileSync(identityPath, 'utf8')), {
+  kind: 'decision', count: 2, publication: {
+    id: '12420000-0000-4000-8000-000000000004', review: 'fixture:source-evidence-overlay',
+  },
+});
+if (!allocation.ok) throw new Error(`fixture allocation failed: ${allocation.code}`);
+const [previousDecision, currentDecision] = allocation.ids;
 const entries = [
-  { id: 'D-402', title: 'Stable cache decision', status: 'superseded', decision: 'Previously adopt a 180-day stable limit.', supersedes: [], 'superseded-by': ['D-403'] },
-  { id: 'D-403', title: 'Current stable cache decision', status: 'accepted', decision: 'Adopt a 365-day stable limit for the synthetic client. Annual source review is the team rationale. Vendor guidance is advisory, not a company retention contract.', supersedes: ['D-402'], 'superseded-by': [] },
+  { id: previousDecision, title: 'Stable cache decision', status: 'superseded', decision: 'Previously adopt a 180-day stable limit.', supersedes: [], 'superseded-by': [currentDecision] },
+  { id: currentDecision, title: 'Current stable cache decision', status: 'accepted', decision: 'Adopt a 365-day stable limit for the synthetic client. Annual source review is the team rationale. Vendor guidance is advisory, not a company retention contract.', supersedes: [previousDecision], 'superseded-by': [] },
 ];
 for (const entry of entries) {
   const file = `entries/${entry.id}.yaml`;
   catalog.entries.push({ id: entry.id, title: entry.title, file });
-  writeFileSync(join(decisions, file), dump({ 'schema-version': 1, entries: [{
+  writeFileSync(join(decisions, file), dump({ 'schema-version': 2, entries: [{
     ...entry, category: 'architecture', date: '2026-09-09', deciders: ['fixture-steward'],
     context: 'Controlled source-evidence acceptance scenario.',
-    'relates-to': { concepts: ['K-102'], leaves: ['L-000301'], decisions: [] },
+    'relates-to': { concepts: ['O-000001'], leaves: ['K-000001'], decisions: [] },
   }] }));
 }
 writeFileSync(catalogPath, dump(catalog));
+writeFileSync(identityPath, dump(allocation.ledger));
 writeFileSync(join(destination, 'survey-scope.yaml'), dump({ 'schema-version': 1, include: ['src'], exclude: [] }));
 cpSync(join(repo, 'payload/hooks'), join(kit, 'hooks'), { recursive: true });
 writeFileSync(join(destination, 'fixture-version.json'), JSON.stringify({
-  fixture: 'source-evidence-v1', parent: 'runtime-preflight-v1', variant,
+  fixture: 'source-evidence-v2', parent: 'runtime-preflight-v2', variant,
   today: '2026-09-10', sourceUrl,
   kitVersion: JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8')).version,
 }, null, 2) + '\n');

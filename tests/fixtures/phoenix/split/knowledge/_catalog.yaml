@@ -1,12 +1,12 @@
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000117
+  - id: K-000001
     title: Icon button focus-ring spec
     file: design-system/117.1-icon-button-focus-ring.md
-  - id: L-000133
+  - id: K-000002
     title: Empty-state pattern guidance
     file: design-system/133.1-empty-state-pattern.md
-  - id: L-000213
+  - id: K-000003
     title: Primitive render budget
     file: design-system/213.1-primitive-render-budget.md

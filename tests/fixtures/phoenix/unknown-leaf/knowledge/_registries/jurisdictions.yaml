@@ -3,7 +3,7 @@
 # Every leaf here claims universally (`applies.jurisdictions: []`), so nothing
 # has warrant yet. An EMPTY registry is not a missing one: it is a vocabulary
 # nothing has needed, and empty `jurisdictions` means universal, not unchecked.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values: []

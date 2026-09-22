@@ -22,9 +22,11 @@ test('the kinds cover §3.1–3.4 records, the navigational grammar, and the §4
   // UCS-1154 the phoenix event mappings, UCS-1155 the trust graduation
   // category table — additive-only evolution (§3.5, D-013).
   assert.deepEqual([...KINDS].sort(), [
+    'assignment-baselines', 'assignment-creation-event', 'assignment-event', 'assignment-event-v2',
+    'assignment-retirement-event', 'assignment-split-event', 'assignment-transition-event',
     'catalog', 'decision-entry', 'finding', 'gap', 'graduation-categories',
     'knowledge-leaf', 'miss', 'ontology-concept', 'phoenix-event', 'registry',
-    'rules', 'survey-scope',
+    'rules', 'subject-registry', 'survey-scope',
   ]);
 });
 
@@ -36,7 +38,7 @@ test('unknown kind is a programmer error, not a diagnostic', () => {
 // ---------------------------------------------------- ontology concept §3.1
 
 const CONCEPT_YAML = `
-id: K-210
+id: O-000001
 term: Sport
 class: 200-sportsbook
 summary: A bettable sport offered by the sportsbook vertical.
@@ -45,9 +47,9 @@ definition: >
 aliases: [sport type]
 source-of-truth: [src/verticals/sportsbook/sports/registry.ts]
 owned-by: sportsbook
-used-by: [K-220]
+used-by: [O-000002]
 confusable-with: []
-rationale: [D-004]
+rationale: [D-000001]
 status: active
 last-verified: "2026-07-07"
 enumerates:
@@ -64,7 +66,7 @@ test('accepts the §3.1 canonical concept, parsed from real YAML', () => {
 
 test('accepts a minimal concept (rung-4 prose, no pointers yet)', () => {
   const result = validateRecord('ontology-concept', {
-    id: 'K-100', term: 'Vertical', class: '100-core',
+    id: 'proposal:ontology:10010010-0100-4100-8100-100100100100', term: 'Vertical', class: '100-core',
     summary: 'A product vertical.', status: 'draft',
   });
   assert.equal(result.ok, true, JSON.stringify(result.errors));
@@ -85,7 +87,7 @@ test('malformed concept: useful path + code per defect', () => {
 });
 
 test('a non-object record is rejected at the root', () => {
-  const result = validateRecord('ontology-concept', 'K-210');
+  const result = validateRecord('ontology-concept', 'O-000001');
   assert.equal(result.ok, false);
   assert.deepEqual(codesAt(result, ''), ['wrong-type']);
 });
@@ -174,7 +176,7 @@ test('a descriptor without values is malformed — hard error, never skipped', (
 // ------------------------------------------------------ decision entry §3.3
 
 const DECISION_YAML = `
-id: D-004
+id: D-000001
 title: Three stores split by truth anchor
 category: architecture
 status: accepted
@@ -193,9 +195,9 @@ test('accepts the §3.3 canonical decision entry', () => {
   assert.deepEqual(result, { ok: true, errors: [] });
 });
 
-test('§3.5: provisional date-suffixed draft ids are accepted', () => {
+test('§3.5: qualified provisional draft ids are accepted', () => {
   const record = load(DECISION_YAML);
-  record.id = 'D-2026-07-08-schema-split';
+  record.id = 'proposal:decision:33333333-3333-4333-8333-333333333333';
   record.status = 'proposed';
   const result = validateRecord('decision-entry', record);
   assert.equal(result.ok, true, JSON.stringify(result.errors));
@@ -222,8 +224,8 @@ test('relates-to is typed: unknown ref buckets are rejected', () => {
 // Membership of the governed values is a structural-validator check, not a
 // schema one — this fixture pins the SHAPE.
 const LEAF_YAML = `
-schema-version: 1
-id: L-000117
+schema-version: 3
+id: K-000001
 notation: "362.1"
 domain: regulation
 division: settlement
@@ -336,12 +338,12 @@ test('unquoted notation parses as a number and is rejected — quote it', () => 
 // ------------------------------------------------------------- finding §3.4
 
 const FINDING_YAML = `
-schema-version: 1
+schema-version: 2
 date: "2026-07-07"
 trigger: correction
 session: claude-code/abc123
-summary: User corrected the claimed sport list; concept K-210 was stale.
-consulted: { concepts: [K-210], leaves: [] }
+summary: User corrected the claimed sport list; concept O-000001 was stale.
+consulted: { concepts: [O-000001], leaves: [] }
 status: open
 `;
 
@@ -368,7 +370,7 @@ test('a finding fragment IS a store file: schema-version is required (§3.5)', (
 
 test('entries files: schema-version + entries envelope, entries validated', () => {
   const doc = {
-    'schema-version': 1,
+    'schema-version': 2,
     entries: [load(DECISION_YAML)],
   };
   assert.deepEqual(validateStoreFile('decision-entry', doc), { ok: true, errors: [] });
@@ -379,8 +381,8 @@ test('missing schema-version on a store file is a hard error', () => {
   assert.deepEqual(codesAt(result, 'schema-version'), ['invalid-schema-version']);
 });
 
-test('schema-version must be an integer ≥ 1 — "1" and 0 are both rejected', () => {
-  for (const bad of ['1', 0, 1.5, null]) {
+test('schema-version must equal the active file-kind version', () => {
+  for (const bad of ['2', 0, 1, 3, 1.5, null]) {
     const result = validateStoreFile('decision-entry', {
       'schema-version': bad,
       entries: [],
@@ -404,7 +406,7 @@ test('entry defects surface with entries[i] paths and §3.5 checks applied', () 
   const concept = load(CONCEPT_YAML);
   concept.enumerates[0].values = ['nfl', true];
   const result = validateStoreFile('ontology-concept', {
-    'schema-version': 1,
+    'schema-version': 2,
     entries: [concept],
   });
   assert.equal(result.ok, false);

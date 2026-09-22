@@ -1,10 +1,10 @@
 # Frontmatter v2 fixture (UCS-1149) — the operations registry (verbs).
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: operations
 values:
   - value: add-component
     gloss: Add a new component to the shared library.
-    warrant: L-000117 documents what adding a component must account for.
-    decision: D-401
+    warrant: K-000001 documents what adding a component must account for.
+    decision: D-000001
     minted: "2026-08-16"

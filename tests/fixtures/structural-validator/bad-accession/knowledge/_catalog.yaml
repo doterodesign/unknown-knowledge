@@ -1,7 +1,7 @@
 # A catalog row naming a leaf by an id of no legal shape — neither an accession
 # (L-NNNNNN) nor a notation. The id-shape finding quotes the paired hint that
 # travels with the grammar in lib/id-grammars.js (UCS-1144).
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
   - id: L-42

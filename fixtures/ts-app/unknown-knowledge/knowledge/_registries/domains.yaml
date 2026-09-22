@@ -1,7 +1,7 @@
 # Acceptance-fixture store (KK-15) — the hierarchical domains registry.
 # Minted from the material that exists: 100.1 documents the export-format
 # registry recipe and needs a home (UCS-1148/1149).
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: domains
 hierarchical: true
@@ -9,10 +9,10 @@ values:
   - value: product
     gloss: Product-facing behaviour of the design tool.
     warrant: 100.1 documents a product procedure and needs a top-level home.
-    decision: D-101
+    decision: D-000001
     minted: "2026-07-08"
   - value: product/editor
     gloss: The canvas editor vertical specifically.
     warrant: 100.1 is editor-specific — the export registry is not shared with whiteboard.
-    decision: D-101
+    decision: D-000001
     minted: "2026-07-08"

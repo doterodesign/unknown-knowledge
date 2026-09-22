@@ -1,0 +1,39 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:e9114f58-49dc-4459-9a9d-3d0867c31638
+    title: Reuse current-query Subject eligibility only within its immutable capture and authentic operation
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Retained b118c12 joint query work exhausts the Subject-visit allowance during
+      repeated per-record assignment eligibility. The actual current-policy path
+      resolves each active target twice and verifies its history again even when
+      many records carry the same Subject. Mutable record/model checks must stay
+      fresh; changing capacities or treating an identity index as model proof
+      would not remove this repeated immutable-domain work safely.
+    decision: >
+      Retain a private success-only memo in each evaluated governance capture,
+      usable solely with its exact explicit authentic operation allowance for
+      query/current canonical active same-ID zero-redirect verified success.
+      Preserve all option/handle/budget checks and pay eligibility plus named
+      lookup steps before each attempt. Misses keep actual resolution/history
+      work; hits omit only that already verified immutable work. Return fresh
+      mutable outcome containers around the existing deeply frozen Subject value.
+      Assert active state before population. Keep every query model/index/authorizer
+      binding and P3 row/list/namespace/path check; introduce no caller proof,
+      session callback, public fast flag, global cache or cross-operation reuse.
+    consequences: >
+      Other policies, purposes and unbounded calls remain ordinary; failures and
+      ineligible or unavailable outcomes do not populate the memo. Counters and
+      first-failure boundaries change with actual removed work and the added lookup
+      step, with no refund or fictitious Subject visits. Tests at
+      tests/subject-query-eligibility-reuse.test.js establish RED to GREEN and cover
+      actual query mutation, per-row attribution and exact budget/latch boundaries.
+      Source is payload/engine/lib/subject-governance.js; the owner contract is
+      docs/agents/ucs-1235-query-eligibility-reuse.md. P1/P3/P4 agreed the design and
+      main authorized implementation from efe0590, but this proposed record grants
+      no canonical approval or publication authority. No probe, capacity, fixture
+      or controller change is authorized; operational qualification stays separate.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3] }

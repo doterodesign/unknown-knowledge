@@ -1,12 +1,12 @@
 # Structural-validator fixture (UCS-1148) — the jurisdictions registry.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values:
   - value: us
     gloss: United States.
     warrant: 600.1 states US-only servicing intervals.
-    decision: D-201
+    decision: D-000001
     minted: "2026-07-07"
   - value: eu
     gloss: European Union.
@@ -15,5 +15,5 @@ values:
     # rather than as an empty registry — the planted case needs a vocabulary
     # that exists and simply does not contain the value the leaf used.
     warrant: The EU servicing variants recorded across the widgets division.
-    decision: D-201
+    decision: D-000001
     minted: "2026-07-07"

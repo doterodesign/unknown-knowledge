@@ -3,9 +3,9 @@
 # category would never see it. The graduation itself is otherwise valid —
 # `alias-additions` is declared and eligible — so this fixture isolates the
 # miscategorisation rather than compounding it with a second defect.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-207
+  - id: proposal:decision:00000000-0000-4000-8000-000000000207
     title: Graduate alias additions to sampling
     category: process
     status: proposed

@@ -1,18 +1,18 @@
-schema-version: 1
+schema-version: 2
 entries:
-  # K-201's term and aliases are DELIBERATELY vocabulary no leaf in this store
+  # O-000001's term and aliases are DELIBERATELY vocabulary no leaf in this store
   # writes. A leaf still reaches it, because it declares the concept id — that
   # is the structural join, and it is the whole acceptance criterion: the leaf
   # surfaces under the concept without term luck.
-  - id: K-201
+  - id: O-000001
     term: Retrieval ranking
     class: 200-retrieval
     summary: How candidate results are ordered before they are returned.
     source-of-truth: [src/retrieval]
     status: active
-  # K-202, by contrast, IS named by a leaf's terms — so the same store proves
+  # O-000002, by contrast, IS named by a leaf's terms — so the same store proves
   # the textual join still fires and still reports itself as such.
-  - id: K-202
+  - id: O-000002
     term: Index build
     class: 200-retrieval
     summary: The batch that materializes the searchable index.

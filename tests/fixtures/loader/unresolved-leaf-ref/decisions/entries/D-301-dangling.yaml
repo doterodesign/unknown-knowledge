@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-301
+  - id: D-000001
     title: Dangling leaf refs
     category: architecture
     status: accepted
@@ -9,4 +9,4 @@ entries:
     context: relates-to.leaves is a leaf-targeting edge like any other.
     decision: A dangling accession target must refuse.
     supersedes: []
-    relates-to: { concepts: [], leaves: [L-000998, L-000996], decisions: [] }
+    relates-to: { concepts: [], leaves: [K-999998, K-999996], decisions: [] }

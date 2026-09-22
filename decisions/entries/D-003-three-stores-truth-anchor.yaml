@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-003
+  - id: D-000003
     title: Three stores split by truth anchor (artifact/world/team), uniform YAML rigor
     category: architecture
     status: accepted

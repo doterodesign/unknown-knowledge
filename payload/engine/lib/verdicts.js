@@ -6,7 +6,7 @@
  * their promotion and time rules. No results are cached and no logs are
  * written; callers retain rendering, logging, and exit-code handling.
  */
-import { isPrePromotionStatus, leafIdentityOf, leafStage, selectConcepts, selectLeaves, storeHealth } from './load-stores.js';
+import { isPrePromotionStatus, authoringRecords, leafStage, selectConcepts, selectLeaves, storeHealth } from './load-stores.js';
 import { compare } from './validate-record.js';
 import { runChecks } from '../commands/validate.js';
 import { validateValues } from '../commands/validate-values.js';
@@ -214,10 +214,9 @@ function computeLeafVerdicts(model, ids, repoRoot, today) {
 /**
  * Store-wide failure: no check ran — every requested LEAF verdict is unknown.
  *
- * Ids are resolved through `leafIdentityOf`, the same lookup the healthy path's
- * `selectLeaves` uses, so a leaf that IS in the store reports under its own
- * identity whether the store loaded clean or not. An id that resolves to
- * nothing keys on the caller's spelling instead — see below.
+ * Exact authored keys inspect the same canonical/proposal capture as the
+ * healthy selector. Unknown keys retain the caller's spelling; this path
+ * never claims that a proposal has a published identity.
  */
 function degradeAllLeaves(model, ids, today, errors) {
   // De-duplicated by IDENTITY, like selectLeaves: naming one leaf twice is one
@@ -227,13 +226,14 @@ function degradeAllLeaves(model, ids, today, errors) {
   // store this broken the leaf may simply have failed to load, so echoing back
   // what was asked for is more honest than inventing an identity, and two
   // distinct unresolved ids stay two rows.
+  const records = authoringRecords(model, 'knowledge');
   const seen = new Set();
   const out = [];
   for (const id of ids) {
-    const identity = leafIdentityOf(model, id) ?? id;
+    const identity = id;
     if (seen.has(identity)) continue;
     seen.add(identity);
-    const record = model.leaves.get(identity)?.record;
+    const record = records.get(identity)?.record;
     out.push({
       leaf: identity, stage: leafStage(record),
       // The time verdict travels on the degraded path too, computed from
@@ -251,8 +251,9 @@ function degradeAllLeaves(model, ids, today, errors) {
 
 /** Store-wide failure: no check ran — every requested verdict is unknown. */
 function degradeAll(model, ids, errors) {
+  const records = authoringRecords(model, 'ontology');
   return ids.map((id) => ({
-    concept: id, status: model.concepts.get(id)?.record.status ?? null, verdict: 'unknown',
+    concept: id, status: records.get(id)?.record.status ?? null, verdict: 'unknown',
     reason: `store-wide failure: the loader reported ${errors} error(s) — no check ran for any concept (single health model, PRD §4)`,
     'next-action': NEXT_ACTIONS['unknown-store'],
     evidence: [],

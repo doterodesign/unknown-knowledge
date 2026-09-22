@@ -5,7 +5,7 @@
 # loader parse-error — error severity, gating the validator to exit 2. It must
 # never degrade to "the registry is empty", which would silently fail every
 # value that WAS minted.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: domains
 hierarchical: true

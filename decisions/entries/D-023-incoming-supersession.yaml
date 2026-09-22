@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-023
+  - id: proposal:decision:00000000-0000-4000-8000-000000000023
     title: Incoming leaf supersession is derived navigation
     category: architecture
     status: proposed
@@ -11,7 +11,7 @@ entries:
       direct replacements without reciprocal authoring or ranking changes.
       Scope, currentness and trust remain distinct questions.
     decision: >
-      Under D-021, superseded-by is an additive resolver output field with
+      Under D-000021, superseded-by is an additive resolver output field with
       a stable empty-array shape. Derive it from relates.supersedes at load,
       retain only accession identities in the inverse index, and publish
       one-hop navigation with target lifecycle and declared jurisdictions.
@@ -26,4 +26,4 @@ entries:
       malformed relationship; Decisions cycle behavior stays unchanged.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-011, D-021, D-022] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000011, D-000021, D-000022] }

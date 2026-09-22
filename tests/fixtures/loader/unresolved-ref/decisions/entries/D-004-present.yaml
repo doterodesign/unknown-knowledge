@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-004
+  - id: D-000001
     title: Refs one missing concept, one catalog-declared decision
     category: architecture
     status: accepted
@@ -8,4 +8,4 @@ entries:
     deciders: [dimitri]
     context: c
     decision: d
-    relates-to: { concepts: [K-888], leaves: [], decisions: [D-005] }
+    relates-to: { concepts: [O-999888], leaves: [], decisions: [D-000002] }

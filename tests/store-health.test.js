@@ -117,6 +117,43 @@ test('the authority is what the seven hand-filters were computing', () => {
 // the same way. This is a structural pin: it fails the moment a surface starts
 // deriving store health for itself again.
 
+// A structural tripwire for inline severity predicates, not a JavaScript lint
+// parser. Code-based partitions do not decide store health; a later statement's
+// severity check must not make one look like it does.
+const derivesHealthBySeverity = (source) =>
+  /\bdiagnostics\s*\.\s*(?:filter|some|every|find)\s*\([^;]*?\bseverity\b/.test(source);
+
+// The offline inventory judges supplied source documents, not a loaded model.
+// Its descriptor-only loader import is valid; invoking model loading/health
+// would cross this narrow exception back into the loader's authority.
+const ownsSourceAuditDiagnostics = (file, source) =>
+  file === join('lib', 'identity-migration.js') && !/\b(?:loadStores|storeHealth)\s*\(/.test(source);
+
+test('only the offline migration inventory owns source-audit diagnostics independently', () => {
+  const source = "return { ok: !diagnostics.some(d => d.severity !== 'warning') };";
+  assert.equal(ownsSourceAuditDiagnostics(join('lib', 'identity-migration.js'), source), true);
+  assert.equal(ownsSourceAuditDiagnostics(join('commands', 'resolve.js'), source), false);
+  for (const call of ['loadStores(root)', 'storeHealth(model)']) {
+    assert.equal(ownsSourceAuditDiagnostics(join('lib', 'identity-migration.js'), `${call}; ${source}`), false,
+      'source-audit ownership does not permit deriving loaded-model health');
+  }
+});
+
+test('the structural health guard distinguishes severity decisions from diagnostic partitions', () => {
+  for (const source of [
+    "model.diagnostics.filter((d) => d.severity === 'error')",
+    "model.diagnostics.filter(d => d.severity === 'warning')",
+    "model.diagnostics.some(({ severity }) => severity === 'error')",
+    "model.diagnostics.every(d => d.severity !== 'error')",
+    "model.diagnostics.find(d => d.severity === 'error')",
+  ]) assert.equal(derivesHealthBySeverity(source), true, source);
+  for (const source of [
+    "checked.diagnostics.filter(d => d.code !== 'duplicate-allocation');",
+    "checked.diagnostics.filter(d => d.code !== 'duplicate-allocation'); other.severity === 'error';",
+    'storeHealth(model)',
+  ]) assert.equal(derivesHealthBySeverity(source), false, source);
+});
+
 test('no engine surface derives store health by hand — only the loader does', async () => {
   const engineDir = fileURLToPath(new URL('../payload/engine', import.meta.url));
   const offenders = [];
@@ -128,7 +165,8 @@ test('no engine surface derives store health by hand — only the loader does', 
       // The loader is the one authority; it alone may filter by severity.
       if (path.endsWith(join('lib', 'load-stores.js'))) continue;
       const source = await readFile(path, 'utf8');
-      if (/diagnostics\s*\.\s*filter/.test(source)) offenders.push(relative(engineDir, path));
+      if (ownsSourceAuditDiagnostics(relative(engineDir, path), source)) continue;
+      if (derivesHealthBySeverity(source)) offenders.push(relative(engineDir, path));
     }
   };
   await walk(engineDir);

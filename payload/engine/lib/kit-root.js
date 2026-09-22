@@ -34,7 +34,9 @@
  * Stores absent entirely is not an error: the loader reports missing-store
  * warnings and the audit proposes every anchor.
  */
-import { statSync, lstatSync, readFileSync } from 'node:fs';
+import { readSourceFileSync, assertSourceBudget, SourceBudgetError } from './source-budget.js';
+import { guardCapturedDocument, getDocumentBudgetUsage } from './document-budget.js';
+import { statSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 import { EngineRefusal } from './engine-refusal.js';
 
@@ -59,16 +61,18 @@ const STORE_DIRS = ['ontology', 'knowledge', 'decisions', 'logs'];
  * ambiguous before the zone is ever consulted, but a stray file by that name
  * is still kit-shaped and never product surface to propose concepts for.
  */
-const KIT_ZONE_AT_ROOT = [...STORE_DIRS, SCOPE_FILE, SUPPRESSIONS_FILE, KIT_DIR_DEFAULT];
+const KIT_ZONE_AT_ROOT = [...STORE_DIRS, '_identity.yaml', 'subjects', SCOPE_FILE, SUPPRESSIONS_FILE, KIT_DIR_DEFAULT];
 
 const isDir = (path) => !!statSync(path, { throwIfNoEntry: false })?.isDirectory();
 
 /**
- * The repo root is itself a store root when it carries the artifact-owned or
- * world-owned stores. `decisions/` alone does not count: the kit's own repo
- * keeps a decisions store at its root without being a seeded kit.
+ * A root identity authority identifies an installation even when it has only
+ * shared subject metadata or Decisions. Without that marker, the artifact/world
+ * stores remain the layout signal; a historical decisions/ directory alone
+ * does not displace an explicitly seeded nested installation.
  */
-const looksLikeStoreRoot = (root) => isDir(join(root, 'ontology')) || isDir(join(root, 'knowledge'));
+const looksLikeStoreRoot = (root) => isDir(join(root, 'ontology')) || isDir(join(root, 'knowledge'))
+  || !!lstatSync(join(root, '_identity.yaml'), { throwIfNoEntry: false })?.isFile();
 
 /** A repo whose Kit cannot be identified — never resolved by guessing. */
 export class AmbiguousKitLayout extends EngineRefusal {
@@ -86,17 +90,21 @@ export class AmbiguousKitLayout extends EngineRefusal {
  * @throws {AmbiguousKitLayout} when a seeded kit dir and root-level stores
  *   both exist, so no surface can know which Store is authoritative
  */
-export function locateKit(root) {
+export function locateKit(root, { sourceBudget, documentBudget } = {}) {
+  if (sourceBudget !== undefined) assertSourceBudget(sourceBudget);
+  if (documentBudget !== undefined) getDocumentBudgetUsage(documentBudget);
   const selection = join(root, KIT_LAYOUT_FILE);
   const selectionStat = lstatSync(selection, { throwIfNoEntry: false });
   if (selectionStat) {
     if (!selectionStat.isFile()) throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} must be a regular JSON file`);
     let config;
     try {
-      config = JSON.parse(readFileSync(selection, 'utf8'));
+      config = JSON.parse(readSourceFileSync(selection, { sourceBudget, encoding: 'utf8' }));
     } catch (error) {
+      if (error instanceof SourceBudgetError) throw error;
       throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} could not be read as JSON: ${error.message}`, { cause: error });
     }
+    if (documentBudget !== undefined) guardCapturedDocument(config, documentBudget, { phase: 'parsed-layout' });
     if (!config || Array.isArray(config) || Object.keys(config).length !== 1
       || !['.', KIT_DIR_DEFAULT].includes(config.kitRoot)) {
       throw new AmbiguousKitLayout(`${KIT_LAYOUT_FILE} must contain only "kitRoot", set to "." or "${KIT_DIR_DEFAULT}"`);
@@ -120,4 +128,4 @@ export function locateKit(root) {
 }
 
 /** The store root alone, for surfaces that never scan for product anchors. */
-export const locateKitRoot = (root) => locateKit(root).kitRoot;
+export const locateKitRoot = (root, options) => locateKit(root, options).kitRoot;

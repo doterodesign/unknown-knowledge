@@ -1,9 +1,9 @@
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-100
+  - id: O-000001
     title: Icon
     file: classes/100-registries.yaml
-  - id: K-110
+  - id: O-000002
     title: Color token
     file: classes/100-registries.yaml

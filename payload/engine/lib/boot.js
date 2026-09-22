@@ -24,6 +24,7 @@
  */
 import process from 'node:process';
 import { runCli } from './cli.js';
+import { EXIT_CODES } from './exit-codes.js';
 
 /**
  * The shim performs the `import()` itself, with a string-literal specifier, and
@@ -34,6 +35,12 @@ import { runCli } from './cli.js';
  * @param {{ main: (argv: string[]) => number | Promise<number>, USAGE: string }} command
  * @returns {Promise<number>} an exit code; 1 only if the command returned it
  */
-export async function boot(name, command) {
+export async function boot(name, command, { bounded = false } = {}) {
+  if (bounded) {
+    // The operation-aware command reports through its authentic allowance.
+    // Failures before that allowance exists must not acquire a free epilogue.
+    try { return await command.main(process.argv.slice(2), { reportErrors: true }); }
+    catch { return EXIT_CODES.FAILURE; }
+  }
   return runCli(name, command.main, { usage: command.USAGE });
 }

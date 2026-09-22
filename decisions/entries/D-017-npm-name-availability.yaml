@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-017
+  - id: D-000017
     title: npm availability & typosquat check for `unknown-knowledge` — name is clean
     category: scope
     status: accepted
@@ -9,7 +9,7 @@ entries:
     deciders: [dimitri]
     context: >
       KK-28 requires an npm availability/typosquat check before packaging, because
-      the package name freezes into every seeded repo permanently (D-001, D-016).
+      the package name freezes into every seeded repo permanently (D-000001, D-000016).
       Checked against the public npm registry on 2026-07-08.
     decision: >
       The name is claimable and clean. `unknown-knowledge` (bare) and
@@ -20,11 +20,11 @@ entries:
       "unknown knowledge" surfaces no package a user could plausibly confuse with
       this product. No defensive registration of variant names (npm policy forbids
       placeholder squatting); the mitigation for the documented-command vector is
-      D-018.
+      D-000018.
     consequences: >
-      The D-016 name proceeds to packaging unchanged. The check is a point-in-time
+      The D-000016 name proceeds to packaging unchanged. The check is a point-in-time
       fact; KK-28 execution (actual publish with 2FA + provenance) should re-verify
       availability at publish time.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-016, D-018] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000015, D-000016, D-000018] }

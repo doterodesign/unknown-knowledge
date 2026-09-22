@@ -1,0 +1,22 @@
+schema-version: 1
+identity-format: 1
+namespace: eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee
+allocations:
+  - id: D-000001
+    kind: decision
+    state: allocated
+    publication:
+      id: ffffffff-ffff-4fff-8fff-ffffffffffff
+      review: fixture:retained-phoenix-cutover
+  - id: K-000001
+    kind: knowledge
+    state: allocated
+    publication:
+      id: ffffffff-ffff-4fff-8fff-ffffffffffff
+      review: fixture:retained-phoenix-cutover
+  - id: K-000002
+    kind: knowledge
+    state: allocated
+    publication:
+      id: ffffffff-ffff-4fff-8fff-ffffffffffff
+      review: fixture:retained-phoenix-cutover

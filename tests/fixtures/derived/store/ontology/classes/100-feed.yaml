@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-102
+  - id: O-000001
     term: Component
     class: 100-feed
     summary: A reusable element in the shared component library.

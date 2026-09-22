@@ -1,9 +1,9 @@
 # KK-07 wrong-pointer fixture: the file EXISTS and parses, but carries none of
 # the claimed values — the wrong-pointer signature (PRD §4), one distinct
 # finding instead of a per-value cascade.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.

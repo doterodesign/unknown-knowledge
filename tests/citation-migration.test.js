@@ -37,7 +37,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'js-yaml';
-import { idPattern } from '../payload/engine/lib/id-grammars.js';
+import { AUTHORING_ID_GRAMMARS } from '../payload/engine/lib/id-grammars.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 
@@ -62,13 +62,24 @@ const SCOPE_ROOTS = [
  * exemptions — the contract they demonstrated no longer exists, so a fixture
  * demonstrating it would be teaching a shape the engine refuses.
  *
- * What remains is two entries, and NEITHER is a dual-shape exemption. Both are
+ * Two malformed-value controls and two offline migration sources remain. The controls are
  * here because the verifier below tests a value for "is not an accession", and
  * an id of some OTHER illegal shape answers that question the same way a
  * notation does. Read the reasons: each plants a spelling the engine refuses,
  * and the refusal is the thing under test.
  */
 const EXEMPT = new Map([
+  [
+    'tests/fixtures/migration-08066b5/knowledge/_catalog.yaml',
+    'Immutable old-format input copied from release 08066b5; migration-historical-runtime.test.js '
+    + 'loads it through the fixed historical runtime to verify actual legacy retrieval and generation. '
+    + 'It is never a current-format installation or a legacy lookup fallback.',
+  ],
+  [
+    'tests/fixtures/identity-migration/phoenix-before/knowledge/_catalog.yaml',
+    'Immutable old-format migration input, never loaded as a current installation; '
+    + 'identity-conversion-phoenix.test.js compares its actual conversion to independent canonical golden bytes.',
+  ],
   [
     'tests/fixtures/structural-validator/bad-accession/knowledge/_catalog.yaml',
     'Its row id is "L-42" — an id of NO legal shape under any contract this kit has '
@@ -81,7 +92,7 @@ const EXEMPT = new Map([
   ],
   [
     'tests/fixtures/derived/call-number-citation/knowledge/design-system/icon-component-sizing-quirks.md',
-    'Its relates.see-also carries "DES/COM/CON·L-000133" — a SYNTHESIZED CALL NUMBER '
+    'Its relates.see-also carries "DES/COM/CON·K-000002" — a SYNTHESIZED CALL NUMBER '
     + '(UCS-1158), which is a display string generated for one browse-tree projection '
     + 'and never an identity. This is not a retired spelling being kept alive: it is a '
     + 'shape that was never citable, planted so derived-call-numbers.test.js can prove '
@@ -97,7 +108,7 @@ const EXEMPT = new Map([
 // Read from the grammar module rather than restating it, so a change to the
 // accession shape reaches this assertion instead of leaving it believing the
 // old one.
-const ACCESSION = new RegExp(idPattern('accessions'));
+const ACCESSION = new RegExp(AUTHORING_ID_GRAMMARS.knowledge.pattern);
 
 /** Every file under `dir` matching `test`, as repo-relative paths. */
 const walk = (dir, test) => {

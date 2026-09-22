@@ -1,0 +1,84 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:7a69353a-0ea1-40b1-8af9-51914458b002
+    title: Reflection approval and completed repair require separate durable evidence
+    category: governance
+    status: proposed
+    date: "2026-09-20"
+    deciders: ["integration owner (record review pending)"]
+    context: >
+      Reflection can be interrupted after an item gate but before implementation
+      or summary publication. A heartbeat alone cannot prove reviewed proposal
+      bytes, approval, downstream Knowledge promotion, completed repair or
+      independent review dates. Concurrent findings and replacement items must
+      retain their earlier outcomes rather than overwrite a convenient latest
+      summary. D-000010 provides Git review and D-000011 separates verdicts from
+      host conduct; neither records this durable review-state boundary.
+    decision: >
+      Bind each item outcome to immutable reviewed proposal bytes and retain
+      the review frontier, replacement lineage and actual work/check evidence.
+      Keep review completion, per-cycle gates and cumulative pending/completed
+      approved work separate. Write retained evidence before the derived
+      heartbeat; detect changed bytes and shared-finding conflicts before
+      mutation. Preserve earlier rejection and exact prior heartbeat bytes,
+      reopen the original finding for recurrence, and never infer missing
+      approval or work completion on resume. Keep Knowledge revisions behind
+      their separate kb-build and promotion gates. Failures or incomplete
+      history prevent authoritative completion or aging totals.
+      Evidence audit, 2026-09-21: existing supported writer, fresh resume and
+      independent chain-reader trials prove the historical pending-handoff and
+      same-day cases. Review completion retains zero completed repairs and one
+      pending handoff; repeating a completed review is byte-stable, and a second
+      same-day review counts one completed date without duplicated approval.
+      Three copied Locale fragments remain one occasion, not corroboration.
+      Main verified 24 source-file hashes and 53 retained snapshot entries.
+      Preserve historical runtime/Node versions, synthetic steward authority
+      and all pending states; these receipts are not current blanket acceptance.
+      Correct the final coverage mapping's claim that those conduct receipts
+      remain unlocated. The positive later-date archival threshold and retained
+      nonempty archive history are still unverified; prepare one bounded
+      injected-date protocol check rather than waiving that branch or requiring
+      a real-wall-clock multi-day study. Preparation alone releases no trial.
+      The public P9 audit SHA256 is
+      d2594a81a7a75d66e4df33619cb656e5e82a2f3b16d20f404eadf1315bf61de6;
+      main receipt SHA256 is
+      aa18905333f7d0006d75f8b03cffc3d8e6bc4a75806c980d60d22683f057f74e.
+      Prospective archival check, 2026-09-21: main and P2 reviewed the concrete
+      pinned 90d5336 packet before main released one fresh worker for three
+      sequential injected-date reviews. Two explicitly synthetic completed
+      dates seed the boundary; they are not observed historical executions.
+      Check retention below N, persistence/readback before eligible deletion at
+      N, and whole-artifact preservation through a later same-day review.
+      Keep original approved work pending and stop on the first failed stage
+      or incomplete proof, without replacement runs. Packet SHA256 is
+      3ad638406c03a3668c7112653c431539d37611a9e0761d39787682dca9635675;
+      execution release SHA256 is
+      bc6d38a35542263b9c898a5a7c5cdf35af186cc91a957a48d5082f9136d13c83.
+      The preserved pre-dispatch Git setup failure was corrected with portable
+      system-Git initialization, without rebuilding inputs or repeating native
+      checks. Preparation and execution authorization establish no trial result,
+      governed repair completion or release qualification.
+      Result adjudication, 2026-09-21: main and P2 accept all three executed
+      stages for this narrow archival requirement. Two prior completed dates
+      preserve the fragments; three permit archival only after actual persisted
+      bytes and hash are returned before deletion. A further same-day review
+      preserves the entire completed archive artifact and adds no duplicate
+      date. Six reviews retain two items and eight rows, with zero completed
+      repairs and one pending. All 46 sealed execution files and the final
+      483-file snapshot were independently checked. Recovered truncated reads,
+      synthetic seeds and encrypted parent-message custody remain disclosed;
+      no blanket conduct, repair-completion or held-out acceptance follows.
+      Execution manifest SHA256 is
+      53474890c771a7c4c201c0131fa39c19647daa09fe1a65bf4d85f99d0ad362a7;
+      main acceptance SHA256 is
+      80fa215c809b47d6aefd92923a00f1a6f250a9e3286c73cae75df6c4cbd5d44e.
+    consequences: >
+      This favors inspectable recovery over a simpler mutable completion flag.
+      It is not a multi-file atomic publication service or a new approval
+      mechanism. Existing commands and fragment contracts remain authoritative.
+      Implementation evidence includes commits 432a9e0 and 68748ed, the shipped
+      knowledge-reflect and knowledge-audit protocols, and their existing tests
+      and A5 walkthroughs. The decision/documentation coverage note is
+      docs/agents/ucs-1242-retrieval-governance.md. This backfill remains proposed;
+      implementation authorization is not canonical Decision promotion.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000011] }

@@ -6,15 +6,17 @@ of live organizational knowledge.
 
 ## Setup
 
-Copy `tests/fixtures/resolver-v2` into an isolated flat-layout fixture. Include
+Copy `tests/fixtures/resolver-v2`, including its matching `_identity.yaml`,
+into an isolated flat-layout fixture. Retain occupied allocations even when
+fixture setup omits a record. Include
 the current `payload/engine`, `payload/schemas`, `payload/protocol`, ESM package
 marker and installed runtime dependencies. Add an AGENTS.md wrapper explaining
 the flat layout and pointing to the shipped protocol.
 
-Give L-000102 the sole term `twilight policy`, and L-000140 the sole term
+Give K-000001 the sole term `twilight policy`, and K-000003 the sole term
 `retention schedule`. Remove their concepts and operations so the latter cannot
 match the old query accidentally. Both leaves are verified, freshly dated and
-scoped to `eu-eaa`. Only L-000140 declares `relates.supersedes: [L-000102]`.
+scoped to `eu-eaa`. Only K-000003 declares `relates.supersedes: [K-000001]`.
 The leaf bodies point to separate local synthetic source memos: the earlier
 memo says 3 days; the replacement says 14 days and explicitly replaces the
 twilight policy effective 2026-08-01. Validate the fixture before dispatch.
@@ -30,10 +32,10 @@ commands/output, and this question:
 
 ## Evidence checklist
 
-- The initial query reaches only L-000102, and exposes L-000140 through derived
+- The initial query reaches only K-000001, and exposes K-000003 through derived
   incoming supersession without a supplied alias or successor hint.
 - Actual `preflight.js --leaves` includes every consulted leaf, especially
-  L-000140, with the injected date before evidence-backed answer selection.
+  K-000003, with the injected date before evidence-backed answer selection.
 - The agent compares target scope and lifecycle, reads the leaf and cited
   replacement memo, and checks whether the chain continues.
 - The answer selects 14 days from the replacement source and distinguishes
@@ -42,6 +44,10 @@ commands/output, and this question:
   wall-clock duration. Count resolver calls separately from source reads.
 
 ## Recorded run — 2026-09-10
+
+The following is historical evidence with its original IDs and runtime; it is
+not a newly executed canonical-format trial.
+
 
 Fresh agent `policy_walkthrough_retry` passed in 106.28 seconds against the
 implementation at dcc3beda41f970ab90f4e0e75dbf7ada803d7ee7. It ran three resolver

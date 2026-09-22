@@ -19,7 +19,7 @@
  *     additional entries are secondary references; every enumerates
  *     descriptor's source must name a listed entry
  *     (`enumerates-source-not-listed`).
- *   - every store file carries an integer schema-version >= 1; value defects
+ *   - every store file carries its exact active schema-version; value defects
  *     there are normalized to `invalid-schema-version` (a stray record-level
  *     key stays `unknown-property` — the fix is to remove it, not retype it).
  *     Evolution is additive-only (D-013 generalized).
@@ -29,7 +29,9 @@
  * run-over-run diffs mean something.
  */
 import { readFileSync } from 'node:fs';
-import { ID_GRAMMARS, SCHEMA_DEFS } from './id-grammars.js';
+import { ID_GRAMMARS, SCHEMA_DEFS, AUTHORING_ID_GRAMMARS, CANONICAL_ID_GRAMMARS, SCHEMA_REF_KINDS } from './id-grammars.js';
+import { isCalendarDate } from './iso-date.js';
+import { readAssignments } from './subject-assignments.js';
 
 /** Record kind → schema document shipped in payload/schemas/. */
 const KIND_SCHEMA_FILES = Object.freeze({
@@ -43,6 +45,14 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'catalog': 'catalog.schema.json',
   'rules': 'rules.schema.json',
   'registry': 'registry.schema.json',
+  'subject-registry': 'subject-registry.schema.json',
+  'assignment-baselines': 'assignment-baselines.schema.json',
+  'assignment-event': 'assignment-event.schema.json',
+  'assignment-event-v2': 'assignment-event-v2.schema.json',
+  'assignment-creation-event': 'assignment-creation-event.schema.json',
+  'assignment-transition-event': 'assignment-transition-event.schema.json',
+  'assignment-retirement-event': 'assignment-retirement-event.schema.json',
+  'assignment-split-event': 'assignment-split-event.schema.json',
   'phoenix-event': 'phoenix-event.schema.json',
   'graduation-categories': 'graduation-categories.schema.json',
 });
@@ -63,6 +73,9 @@ export const ERROR_CODES = Object.freeze([
   'enumerates-source-not-listed',
   'lifecycle-field-mismatch',
   'locator-shape',
+  'invalid-subjects',
+  'invalid-subject-id',
+  'duplicate-subject',
 ]);
 
 /**
@@ -112,6 +125,12 @@ function bindIdGrammars(schema) {
       node.hint = ID_GRAMMARS[space].hint;
     }
   }
+  for (const [def, kind] of Object.entries(SCHEMA_REF_KINDS)) {
+    const node = schema.$defs?.[def];
+    if (node) Object.assign(node, AUTHORING_ID_GRAMMARS[kind]);
+  }
+  // Assignment targets stay canonical even when the owning record is a proposal.
+  if (schema.$defs?.subjectRef) Object.assign(schema.$defs.subjectRef, CANONICAL_ID_GRAMMARS.subject);
   return schema;
 }
 
@@ -125,6 +144,16 @@ function schemaFor(kind) {
     schemaCache.set(kind, bindIdGrammars(JSON.parse(readFileSync(url, 'utf8'))));
   }
   return schemaCache.get(kind);
+}
+
+/** The exact active file version, shared by validators and file writers. */
+export function schemaVersionFor(kind) {
+  const schema = schemaFor(kind);
+  const versions = (schema.$defs?.storeFile ?? schema).properties?.['schema-version']?.enum;
+  if (!Array.isArray(versions) || versions.length !== 1 || !Number.isInteger(versions[0])) {
+    throw new Error(`schema ${kind} does not declare exactly one active file version`);
+  }
+  return versions[0];
 }
 
 function isPlainObject(value) {
@@ -355,7 +384,7 @@ function conceptConventions(record, basePath, errors) {
  *   - verified ⇔ status resolved (both directions)
  *   - rejected ⇒ non-empty reason; reason travels only with rejected
  */
-function lifecycleConventions(record, basePath, errors) {
+function outcomeConventions(record, basePath, errors) {
   if (!isPlainObject(record) || typeof record.status !== 'string') return;
   const { status } = record;
   if (Object.hasOwn(record, 'verified') !== (status === 'resolved')) {
@@ -377,6 +406,26 @@ function lifecycleConventions(record, basePath, errors) {
         : `reason travels only with status "rejected", not ${JSON.stringify(status)} — re-opening drops it (§8)`,
     });
   }
+}
+
+/** Current fields and historical snapshots obey the same outcome invariants. */
+function lifecycleConventions(record, basePath, errors) {
+  outcomeConventions(record, basePath, errors);
+  if (!isPlainObject(record) || !Array.isArray(record['prior-outcomes'])) return;
+  record['prior-outcomes'].forEach((outcome, i) => {
+    const path = joinPath(basePath, `prior-outcomes[${i}]`);
+    outcomeConventions(outcome, path, errors);
+    if (!isPlainObject(outcome)) return; // schema reports the shape defect
+    for (const field of ['reopened-on', 'verified']) {
+      if (typeof outcome[field] === 'string' && !isCalendarDate(outcome[field])) {
+        errors.push({
+          path: joinPath(path, field),
+          code: 'lifecycle-field-mismatch',
+          message: 'a prior outcome date must name a real calendar day (YYYY-MM-DD)',
+        });
+      }
+    }
+  });
 }
 
 /**
@@ -437,7 +486,7 @@ const CONVENTIONS = Object.freeze({
  * `unknown-property` at that path means the key is misplaced (it belongs on
  * the store-file envelope), which is the opposite remediation.
  */
-const SCHEMA_VERSION_VALUE_DEFECTS = new Set(['wrong-type', 'missing-required', 'out-of-range']);
+const SCHEMA_VERSION_VALUE_DEFECTS = new Set(['wrong-type', 'missing-required', 'out-of-range', 'invalid-enum-value']);
 
 /**
  * Dedupe (convention codes own their paths over generic schema codes),
@@ -452,7 +501,7 @@ function finish(errors, { fileEnvelope }) {
   const cleaned = errors
     .filter((e) => e.code === 'non-string-enumerates-value' || !conventionPaths.has(e.path))
     .map((e) => (fileEnvelope && e.path === 'schema-version' && SCHEMA_VERSION_VALUE_DEFECTS.has(e.code)
-      ? { ...e, code: 'invalid-schema-version', message: `${e.message} — every store file carries an integer schema-version >= 1 (§3.5)` }
+      ? { ...e, code: 'invalid-schema-version', message: `${e.message} — the active identity format requires the exact schema version for this file kind` }
       : e));
   cleaned.sort((a, b) => compare(a.path, b.path) || compare(a.code, b.code));
   return { ok: cleaned.length === 0, errors: cleaned };
@@ -460,6 +509,17 @@ function finish(errors, { fileEnvelope }) {
 
 function runConventions(kind, record, basePath, errors) {
   CONVENTIONS[kind]?.(record, basePath, errors);
+  if (['knowledge-leaf', 'ontology-concept', 'decision-entry'].includes(kind) && isPlainObject(record)) {
+    const assignments = readAssignments({ record });
+    if (assignments.state === 'invalid') {
+      for (const diagnostic of assignments.diagnostics) {
+        const path = joinPath(basePath, diagnostic.path);
+        // Keep an existing schema shape diagnostic; add the shared reader's
+        // record-local constraints (notably duplicates and sparse array slots).
+        if (!errors.some((error) => error.path === path)) errors.push({ ...diagnostic, path });
+      }
+    }
+  }
 }
 
 /**

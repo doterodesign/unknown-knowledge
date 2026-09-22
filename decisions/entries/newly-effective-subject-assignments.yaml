@@ -1,0 +1,45 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:1184333b-3f64-44c5-8707-ff5f314e72db
+    title: Newly effective subject assignments use current eligibility without granting publication
+    category: governance
+    status: proposed
+    date: "2026-09-19"
+    deciders: [dimitri]
+    context: >
+      Existing effective records can retain historical retired subject IDs,
+      but a draft containing those IDs has not earned effective assignment
+      eligibility. Testing only list differences during first publication
+      would let unchanged draft metadata bypass governance. Conversely,
+      rechecking every retained historical assignment as newly authored would
+      force unrelated rewrites. UCS-1236 therefore composes the shared P1
+      lifecycle and P2 governance contracts without creating a publisher.
+      This is a proposed record of that implemented choice, not acceptance.
+    decision: >
+      The read-only assignment-change helper compares exact typed canonical
+      same-owner rows or an explicit null before. Continued effective records
+      validate newly added IDs; first-effective records validate every
+      candidate ID, including unchanged draft assignments. Unknown lifecycle
+      refuses new-assignment validation, and proposal owners remain
+      unpublished even if their payload asserts an effective status.
+      Inspection uses historical subject meaning; new assignments require
+      current eligibility and never inherit approval through redirects.
+      Original IDs, order, assignment state and diagnostic positions remain
+      intact. The result is explicitly row-local and publicationReady false.
+    consequences: >
+      A null before is not proof of allocation freshness. Zero subject targets
+      need no lookup but cannot waive actual model, occurrence, identity,
+      history, evidence or human publication gates. Those remain caller-owned,
+      using P1/P2/P8 and the existing Git review infrastructure. This rejects
+      both automatic approval from draft presence and automatic rewriting of
+      retained retired IDs. Implementation is
+      payload/engine/lib/assignment-validation.js; lifecycle and eligibility
+      remain in their shared owning modules. Behavioral evidence includes
+      tests/assignment-change.test.js and tests/assignment-validation.test.js,
+      including all three kinds, Decision accepted-to-addressed continuity,
+      retired first-effective refusal and zero-target model binding.
+      docs/agents/ucs-1236-subject-assignments.md states consumer obligations.
+    relates-to:
+      concepts: []
+      leaves: []
+      decisions: [D-000010, proposal:decision:adc0ae03-6d6c-4f3b-8d45-69c1185d0f02]

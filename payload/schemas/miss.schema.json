@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["schema-version", "date", "path", "shape", "status"],
   "properties": {
-    "schema-version": { "type": "integer", "minimum": 1 },
+    "schema-version": { "type": "integer", "enum": [1] },
     "date": { "$ref": "#/$defs/isoDate" },
     "path": {
       "type": "string",
@@ -32,6 +32,21 @@
     "reason": {
       "type": "string",
       "description": "Required on rejection — rejections record the reason (§8)."
+    },
+    "prior-outcomes": {
+      "type": "array",
+      "description": "Helper-owned terminal outcome snapshots appended before reopening, in transition order; not a complete lifecycle journal or authenticated approval. Optional for existing fragments; never backfilled. Each row carries only the reason for rejected or verified date for resolved, enforced by the shared lifecycle convention.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reopened-on", "status"],
+        "properties": {
+          "reopened-on": { "$ref": "#/$defs/isoDate", "description": "Injected reopening date, not the original rejection or resolution date." },
+          "status": { "enum": ["rejected", "resolved"] },
+          "reason": { "type": "string", "description": "Prior rejection reason, subject to the same capture content policy as the current reason." },
+          "verified": { "$ref": "#/$defs/isoDate" }
+        }
+      }
     },
     "occurrences": {
       "type": "array",

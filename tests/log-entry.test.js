@@ -5,11 +5,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, readdirSync, readFileSync, existsSync, statSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readdirSync, readFileSync, writeFileSync, existsSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { load } from 'js-yaml';
+import { load, dump } from 'js-yaml';
 import { validateRecord, SUPPORTED_KEYWORDS, ERROR_CODES } from '../payload/engine/lib/validate-record.js';
 import {
   LOGS, LEGAL_TRANSITIONS, createEntry, transitionStatus,
@@ -19,16 +19,17 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const cliPath = join(repoRoot, 'payload', 'engine', 'log-entry.js');
 const tmpRoot = () => mkdtempSync(join(tmpdir(), 'kk13-'));
 
-const FINDING = { trigger: 'correction', summary: 'concept K-210 was stale per src/tokens.ts' };
+const FINDING = { trigger: 'correction', summary: 'concept O-000210 was stale per src/tokens.ts' };
 const MISS = { path: 'src/registry.generated.ts', shape: 'codegen output; values only in generator config' };
-const GAP = { summary: 'no skill routes retention analytics; nearest concept K-310' };
+const GAP = { summary: 'no skill routes retention analytics; nearest concept O-000310' };
 const FIELDS = { findings: FINDING, misses: MISS, gaps: GAP };
+const FILE_VERSIONS = { finding: 2, miss: 1, gap: 2 };
 
 // --- schema validation: good/bad entries per log kind ------------------------
 
 test('good entries validate for every log kind', () => {
   for (const [log, kind] of Object.entries(LOGS)) {
-    const entry = { 'schema-version': 1, date: '2026-07-08', status: 'open', ...FIELDS[log] };
+    const entry = { 'schema-version': FILE_VERSIONS[kind], date: '2026-07-08', status: 'open', ...FIELDS[log] };
     assert.deepEqual(validateRecord(kind, entry).errors, [], kind);
   }
 });
@@ -45,7 +46,7 @@ test('bad miss entry: missing anchor path and bad status are typed errors', () =
 
 test('bad gap entry: unknown keys are typos, never silent extensions', () => {
   const { errors } = validateRecord('gap', {
-    'schema-version': 1, date: '2026-07-08', status: 'open', ...GAP, transcript: 'verbatim text',
+    'schema-version': 2, date: '2026-07-08', status: 'open', ...GAP, transcript: 'verbatim text',
   });
   assert.deepEqual(errors.map((e) => [e.path, e.code]), [['transcript', 'unknown-property']]);
 });
@@ -61,7 +62,7 @@ test('lifecycle grammar is deep-equal across all three schemas (no cross-schema 
   for (const [kind, schema] of Object.entries(schemas)) {
     assert.deepEqual(schema.properties.status.enum, canonical.properties.status.enum,
       `${kind}: status enum diverges from finding`);
-    for (const field of ['verified', 'reason', 'occurrences']) {
+    for (const field of ['verified', 'reason', 'occurrences', 'prior-outcomes']) {
       assert.deepEqual(schema.properties[field], canonical.properties[field],
         `${kind}: lifecycle field ${field} diverges from finding`);
     }
@@ -79,11 +80,11 @@ test('lifecycle grammar is deep-equal across all three schemas (no cross-schema 
 test('validation: verified travels only with status resolved, both directions', () => {
   for (const [log, kind] of Object.entries(LOGS)) {
     const open = {
-      'schema-version': 1, date: '2026-07-08', status: 'open', verified: '2026-07-08', ...FIELDS[log],
+      'schema-version': FILE_VERSIONS[kind], date: '2026-07-08', status: 'open', verified: '2026-07-08', ...FIELDS[log],
     };
     assert.deepEqual(validateRecord(kind, open).errors.map((e) => [e.path, e.code]),
       [['verified', 'lifecycle-field-mismatch']], `${kind}: open+verified must fail`);
-    const bare = { 'schema-version': 1, date: '2026-07-08', status: 'resolved', ...FIELDS[log] };
+    const bare = { 'schema-version': FILE_VERSIONS[kind], date: '2026-07-08', status: 'resolved', ...FIELDS[log] };
     assert.deepEqual(validateRecord(kind, bare).errors.map((e) => [e.path, e.code]),
       [['verified', 'lifecycle-field-mismatch']], `${kind}: resolved without verified must fail`);
     assert.deepEqual(validateRecord(kind, { ...bare, verified: '2026-07-09' }).errors, [],
@@ -93,7 +94,7 @@ test('validation: verified travels only with status resolved, both directions', 
 
 test('validation: rejected requires a non-empty reason; reason only on rejected', () => {
   for (const [log, kind] of Object.entries(LOGS)) {
-    const rejected = { 'schema-version': 1, date: '2026-07-08', status: 'rejected', ...FIELDS[log] };
+    const rejected = { 'schema-version': FILE_VERSIONS[kind], date: '2026-07-08', status: 'rejected', ...FIELDS[log] };
     assert.deepEqual(validateRecord(kind, rejected).errors.map((e) => [e.path, e.code]),
       [['reason', 'lifecycle-field-mismatch']], `${kind}: rejected without reason must fail`);
     assert.deepEqual(
@@ -103,7 +104,7 @@ test('validation: rejected requires a non-empty reason; reason only on rejected'
       validateRecord(kind, { ...rejected, reason: 'out of scope' }).errors, [],
       `${kind}: rejected+reason is valid`);
     const stray = {
-      'schema-version': 1, date: '2026-07-08', status: 'open', reason: 'stale', ...FIELDS[log],
+      'schema-version': FILE_VERSIONS[kind], date: '2026-07-08', status: 'open', reason: 'stale', ...FIELDS[log],
     };
     assert.deepEqual(validateRecord(kind, stray).errors.map((e) => [e.path, e.code]),
       [['reason', 'lifecycle-field-mismatch']], `${kind}: reason on a non-rejected entry must fail`);
@@ -119,7 +120,7 @@ test('createEntry mints <date>-<hex8>.yaml, stamps schema-version and open statu
   // collisions negligible at realistic scale (D-010's no-conflict claim).
   assert.match(file, /^logs\/findings\/2026-07-08-[0-9a-f]{8}\.yaml$/);
   const onDisk = load(readFileSync(join(root, file), 'utf8'));
-  assert.deepEqual(onDisk, { 'schema-version': 1, date: '2026-07-08', status: 'open', ...FINDING });
+  assert.deepEqual(onDisk, { 'schema-version': 2, date: '2026-07-08', status: 'open', ...FINDING });
   assert.deepEqual(onDisk, entry);
   assert.deepEqual(validateRecord('finding', onDisk).errors, []);
 });
@@ -235,6 +236,75 @@ test('re-opening a rejected entry drops the stale rejection reason', () => {
   assert.ok(!('reason' in resolved.entry));
 });
 
+for (const [log, kind] of Object.entries(LOGS)) {
+  test(`${log}: reopening preserves prior outcomes across later resolution and rejection`, () => {
+    const root = tmpRoot();
+    const { file } = createEntry({ root, log, date: '2026-07-01', fields: FIELDS[log] });
+    const move = (to, date, reason) => transitionStatus({ root, file, to, date, reason });
+    move('proposed', '2026-07-02');
+    move('rejected', '2026-07-03', 'src/policy.md: outside reviewed scope');
+    const reopened = move('open', '2026-07-05');
+    const rejection = {
+      'reopened-on': '2026-07-05', status: 'rejected', reason: 'src/policy.md: outside reviewed scope',
+    };
+    assert.deepEqual(reopened.entry['prior-outcomes'], [rejection]);
+    assert.ok(!Object.hasOwn(reopened.entry, 'reason'));
+    assert.ok(!Object.hasOwn(reopened.entry, 'verified'));
+
+    move('proposed', '2026-07-05');
+    const resolved = move('resolved', '2026-07-05');
+    assert.deepEqual(resolved.entry['prior-outcomes'], [rejection]);
+    move('open', '2026-07-05');
+    move('proposed', '2026-07-05');
+    move('rejected', '2026-07-05', 'src/policy.md: review still required');
+    const final = move('open', '2026-07-06');
+    assert.deepEqual(final.entry['prior-outcomes'], [
+      rejection,
+      { 'reopened-on': '2026-07-05', status: 'resolved', verified: '2026-07-05' },
+      { 'reopened-on': '2026-07-06', status: 'rejected', reason: 'src/policy.md: review still required' },
+    ]);
+    // Same-day operations retain their history, without claiming independent events.
+    assert.deepEqual(final.entry.occurrences, ['2026-07-05', '2026-07-05', '2026-07-06']);
+    assert.deepEqual(load(readFileSync(join(root, file), 'utf8')), final.entry);
+    assert.deepEqual(validateRecord(kind, final.entry).errors, []);
+    assert.deepEqual(readdirSync(join(root, 'logs', log)), [file.split('/').at(-1)]);
+  });
+
+  test(`${log}: creation cannot forge prior outcomes and malformed history cannot transition`, () => {
+    const root = tmpRoot();
+    const prior = { 'reopened-on': '2026-07-05', status: 'rejected', reason: 'src/policy.md' };
+    assert.throws(() => createEntry({
+      root, log, date: '2026-07-01', fields: { ...FIELDS[log], 'prior-outcomes': [prior] },
+    }), /helper-owned/);
+    assert.ok(!existsSync(join(root, 'logs')));
+
+    const { file, entry } = createEntry({ root, log, date: '2026-07-01', fields: FIELDS[log] });
+    const invalid = [
+      { 'reopened-on': '2026-07-05', status: 'rejected' },
+      { ...prior, reason: '' },
+      { ...prior, verified: '2026-07-04' },
+      { 'reopened-on': '2026-07-05', status: 'resolved' },
+      { ...prior, status: 'resolved', verified: '2026-07-04' },
+      { ...prior, 'reopened-on': '2026-02-30' },
+      { 'reopened-on': '2026-07-05', status: 'resolved', verified: '2026-02-30' },
+      { ...prior, status: 'open' },
+      { ...prior, transcript: 'not a supported field' },
+      { status: 'rejected', reason: 'src/policy.md' },
+      { ...prior, reason: 7 },
+      null,
+    ];
+    for (const row of invalid) {
+      const malformed = { ...entry, 'prior-outcomes': [row] };
+      const bytes = dump(malformed);
+      writeFileSync(join(root, file), bytes);
+      assert.equal(validateRecord(kind, malformed).ok, false, JSON.stringify(row));
+      assert.throws(() => transitionStatus({ root, file, to: 'proposed', date: '2026-07-06' }),
+        /does not validate/, JSON.stringify(row));
+      assert.equal(readFileSync(join(root, file), 'utf8'), bytes, 'refusal must not rewrite history');
+    }
+  });
+}
+
 test('transitionStatus rejects fragment paths that escape the root (no sibling-tree writes)', () => {
   const root = join(tmpRoot(), 'kit');
   const { file } = createEntry({ root, log: 'findings', date: '2026-07-01', fields: FINDING });
@@ -288,6 +358,24 @@ function runCli(args, cwd) {
   return spawnSync(process.execPath, [cliPath, ...args], { cwd, encoding: 'utf8' });
 }
 
+test('CLI: reopening returns and persists the same prior outcome as the shared helper', () => {
+  const root = tmpRoot();
+  const { file } = createEntry({ root, log: 'findings', date: '2026-07-01', fields: FINDING });
+  transitionStatus({ root, file, to: 'proposed', date: '2026-07-02' });
+  transitionStatus({ root, file, to: 'rejected', date: '2026-07-03', reason: 'src/policy.md' });
+  const reopened = runCli(['transition', '--root', root, '--file', file, '--to', 'open', '--date', '2026-07-05'], root);
+  assert.equal(reopened.status, 0, reopened.stderr);
+  const { entry } = JSON.parse(reopened.stdout);
+  assert.deepEqual(entry['prior-outcomes'], [
+    { 'reopened-on': '2026-07-05', status: 'rejected', reason: 'src/policy.md' },
+  ]);
+  assert.deepEqual(load(readFileSync(join(root, file), 'utf8')), entry);
+  const bytes = readFileSync(join(root, file), 'utf8');
+  const illegal = runCli(['transition', '--root', root, '--file', file, '--to', 'resolved', '--date', '2026-07-06'], root);
+  assert.equal(illegal.status, 2);
+  assert.equal(readFileSync(join(root, file), 'utf8'), bytes);
+});
+
 test('CLI: create then transition an entry; illegal transition exits 2', () => {
   const root = tmpRoot();
   const created = runCli([
@@ -314,7 +402,7 @@ test('CLI: a finding/gap whose consulted.leaves cite accessions is created verba
   // or re-spelled the ids would silently un-migrate every fragment an agent
   // logs, and no schema check would notice.
   const root = tmpRoot();
-  const consulted = { concepts: ['K-510'], leaves: ['L-000101', 'L-000100'] };
+  const consulted = { concepts: ['O-000510'], leaves: ['K-000101', 'K-000100'] };
 
   // findings and gaps only: a MISS records an anchor the store could not
   // explain (`path` + `shape`), so it has no consulted list to migrate — the
@@ -345,7 +433,7 @@ test('CLI: creating the same accession-citing fragment twice is byte-stable', ()
   const bytes = (root) => {
     const created = runCli([
       'create', '--log', 'gaps', '--date', '2026-07-09',
-      '--entry', JSON.stringify({ ...GAP, consulted: { leaves: ['L-000100'] } }),
+      '--entry', JSON.stringify({ ...GAP, consulted: { leaves: ['K-000100'] } }),
     ], root);
     assert.equal(created.status, 0, created.stderr);
     return readFileSync(join(root, JSON.parse(created.stdout).file), 'utf8');
@@ -363,7 +451,7 @@ const RESIDUE_FINDING = {
   trigger: 'retrieval-miss',
   summary: 'residue from resolve: stencil unresolved',
   residue: ['stencil'],
-  'resolved-context': ['add-token', 'K-110', 'eu-eaa'],
+  'resolved-context': ['add-token', 'O-000110', 'eu-eaa'],
 };
 
 /** A ranked --doc candidate: the document's own residue, section-addressed. */
@@ -371,7 +459,7 @@ const CANDIDATE_FINDING = {
   trigger: 'retrieval-miss',
   summary: 'document candidate: marquee in docs/theming-rules.md',
   residue: ['marquee'],
-  'resolved-context': ['K-110'],
+  'resolved-context': ['O-000110'],
   section: { document: 'docs/theming-rules.md', address: 'Theme types', line: 42 },
 };
 
@@ -408,7 +496,7 @@ test('CLI: each emitted finding carries its resolved context; candidates carry t
     '--entry', JSON.stringify(RESIDUE_FINDING),
   ], root).stdout);
   assert.deepEqual(residue.entry.residue, ['stencil']);
-  assert.deepEqual(residue.entry['resolved-context'], ['add-token', 'K-110', 'eu-eaa'],
+  assert.deepEqual(residue.entry['resolved-context'], ['add-token', 'O-000110', 'eu-eaa'],
     'the resolved context travels in written order, never reordered');
   // Query residue has no document to address, so it carries no locator.
   assert.equal(residue.entry.section, undefined);
@@ -442,7 +530,7 @@ test('UCS-1160 golden: the emitted fragment shape is byte-stable', () => {
   };
 
   assert.equal(bytes(RESIDUE_FINDING, tmpRoot()), [
-    'schema-version: 1',
+    'schema-version: 2',
     "date: '2026-08-16'",
     'status: open',
     'trigger: retrieval-miss',
@@ -451,13 +539,13 @@ test('UCS-1160 golden: the emitted fragment shape is byte-stable', () => {
     '  - stencil',
     'resolved-context:',
     '  - add-token',
-    '  - K-110',
+    '  - O-000110',
     '  - eu-eaa',
     '',
   ].join('\n'));
 
   assert.equal(bytes(CANDIDATE_FINDING, tmpRoot()), [
-    'schema-version: 1',
+    'schema-version: 2',
     "date: '2026-08-16'",
     'status: open',
     'trigger: retrieval-miss',
@@ -465,7 +553,7 @@ test('UCS-1160 golden: the emitted fragment shape is byte-stable', () => {
     'residue:',
     '  - marquee',
     'resolved-context:',
-    '  - K-110',
+    '  - O-000110',
     'section:',
     '  document: docs/theming-rules.md',
     '  address: Theme types',
@@ -492,7 +580,7 @@ test('UCS-1160: residue findings take the ordinary lifecycle — reflect consoli
   // The residue payload survived every transition — it is what the minting
   // decision cites, so losing it mid-lifecycle would strand the evidence.
   assert.deepEqual(entry.residue, ['stencil']);
-  assert.deepEqual(entry['resolved-context'], ['add-token', 'K-110', 'eu-eaa']);
+  assert.deepEqual(entry['resolved-context'], ['add-token', 'O-000110', 'eu-eaa']);
 });
 
 test('UCS-1160: a section locator is line- OR page-addressed, and its shape is closed', () => {

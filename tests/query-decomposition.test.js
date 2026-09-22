@@ -94,7 +94,7 @@ test('golden: a verb-shaped ask joins the operations registry, no noun guessing'
   // the concept "Token" — the phrase test reached it, and the two joins are
   // deliberately kept apart so the published concept ranking is untouched.
   assert.deepEqual(payload.decomposition.concepts, [
-    { id: 'K-101', term: 'Token', match: null, tokens: ['token'] },
+    { id: 'O-000001', term: 'Token', match: null, tokens: ['token'] },
   ]);
 
   // No place was named, so no scope is asserted and nothing can be out of it.
@@ -108,8 +108,8 @@ test('golden: a verb-shaped ask joins the operations registry, no noun guessing'
   assert.deepEqual(
     payload.leaves.map((l) => [l.id, l.score, l.signals.map((s) => `${s.signal}:${s.via}`)]),
     [
-      ['L-000102', 6, ['operation:add-token', 'concept:K-101', 'term:token']],
-      ['L-000213', 4, ['operation:add-token', 'term:token']],
+      ['K-000001', 6, ['operation:add-token', 'concept:O-000001', 'term:token']],
+      ['proposal:knowledge:21321321-3213-4213-8213-213213213213', 4, ['operation:add-token', 'term:token']],
     ],
   );
 
@@ -119,23 +119,23 @@ test('golden: a verb-shaped ask joins the operations registry, no noun guessing'
 });
 
 test('the operation join is STRUCTURAL — it reaches a leaf whose text never says the verb', () => {
-  // Fixture invariant: L-000213 declares `add-token` but its `terms` do not
+  // Fixture invariant: proposal:knowledge:21321321-3213-4213-8213-213213213213 declares `add-token` but its `terms` do not
   // contain the word "add". If a future fixture edit added it, this test would
   // pass for the wrong reason — so the invariant is asserted, not assumed.
   const payload = resolve('add a token');
-  const checklist = leaf(payload, 'L-000213');
+  const checklist = leaf(payload, 'proposal:knowledge:21321321-3213-4213-8213-213213213213');
   assert.ok(
     checklist.signals.some((s) => s.signal === 'operation' && s.via === 'add-token'),
-    'L-000213 must be reached by its declared operation',
+    'proposal:knowledge:21321321-3213-4213-8213-213213213213 must be reached by its declared operation',
   );
   assert.ok(
     !checklist.signals.some((s) => s.signal === 'term' && /add/.test(s.via)),
-    'fixture invariant broken: L-000213 must not match the verb by term text',
+    'fixture invariant broken: proposal:knowledge:21321321-3213-4213-8213-213213213213 must not match the verb by term text',
   );
 });
 
 test('only the operation the ask NAMED scores, not every operation a leaf declares', () => {
-  // L-000213 declares both `add-token` and `retire-token`. An ask that names
+  // proposal:knowledge:21321321-3213-4213-8213-213213213213 declares both `add-token` and `retire-token`. An ask that names
   // one must score it on that one alone — crediting a leaf for every verb it
   // happens to declare would make the score a property of the leaf rather than
   // of the match, and two leaves with different declared breadth would rank by
@@ -143,13 +143,13 @@ test('only the operation the ask NAMED scores, not every operation a leaf declar
   const retiring = resolve('retire a token');
   assert.deepEqual(retiring.decomposition.operations.map((o) => o.value), ['retire-token']);
   assert.deepEqual(
-    leaf(retiring, 'L-000213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
+    leaf(retiring, 'proposal:knowledge:21321321-3213-4213-8213-213213213213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
     ['retire-token'],
   );
 
   const adding = resolve('add a token');
   assert.deepEqual(
-    leaf(adding, 'L-000213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
+    leaf(adding, 'proposal:knowledge:21321321-3213-4213-8213-213213213213').signals.filter((s) => s.signal === 'operation').map((s) => s.via),
     ['add-token'],
   );
 });
@@ -179,7 +179,7 @@ test('golden: a jurisdiction-scoped ask excludes non-applicable leaves WITH the 
   // silently absent.
   assert.deepEqual(payload.exclusions, [
     {
-      id: 'L-000140',
+      id: 'K-000003',
       notation: '600.2',
       heading: 'Archived-theme fallback basis',
       file: 'knowledge/design-system/600.2-archived-theme-fallback-basis.md',
@@ -191,12 +191,12 @@ test('golden: a jurisdiction-scoped ask excludes non-applicable leaves WITH the 
   ]);
 
   // And it is genuinely out of the result set, not merely annotated.
-  assert.ok(!payload.leaves.some((l) => l.id === 'L-000140'));
+  assert.ok(!payload.leaves.some((l) => l.id === 'K-000003'));
 
   // The CA leaf is kept, and so is the leaf declaring NO jurisdictions:
   // empty `applies` is universal, never excluded.
-  assert.deepEqual(payload.leaves.map((l) => l.id), ['L-000133', 'L-000190']);
-  assert.deepEqual(leaf(payload, 'L-000133').applies, []);
+  assert.deepEqual(payload.leaves.map((l) => l.id), ['K-000002', 'K-000004']);
+  assert.deepEqual(leaf(payload, 'K-000002').applies, []);
 });
 
 test('the exclusion is symmetric — scoping the other way excludes the other leaf', () => {
@@ -204,9 +204,9 @@ test('the exclusion is symmetric — scoping the other way excludes the other le
   // special case for one jurisdiction.
   const payload = resolve('export themes in eu eaa');
   assert.deepEqual(payload.exclusions.map((x) => [x.id, x.applies, x.asked]), [
-    ['L-000190', ['us-ca'], ['eu-eaa']],
+    ['K-000004', ['us-ca'], ['eu-eaa']],
   ]);
-  assert.deepEqual(payload.leaves.map((l) => l.id), ['L-000133', 'L-000140']);
+  assert.deepEqual(payload.leaves.map((l) => l.id), ['K-000002', 'K-000003']);
 });
 
 test('an unscoped ask excludes nothing — with no scope asserted there is nothing to be outside of', () => {
@@ -214,7 +214,7 @@ test('an unscoped ask excludes nothing — with no scope asserted there is nothi
   assert.deepEqual(payload.decomposition.jurisdictions, []);
   assert.deepEqual(payload.exclusions, []);
   // Both jurisdiction-bearing leaves are present when no scope was named.
-  assert.deepEqual(payload.leaves.map((l) => l.id).sort(), ['L-000133', 'L-000140', 'L-000190']);
+  assert.deepEqual(payload.leaves.map((l) => l.id).sort(), ['K-000002', 'K-000003', 'K-000004']);
 });
 
 // ------------------------------- AC3: reproducible ranking, demotion, near-miss
@@ -248,7 +248,7 @@ test('the payload carries the scoring table it was ranked with', () => {
 
 test('golden: time-verdict and draft-stage demotions both apply, each with its reason', () => {
   const payload = resolve('add a token');
-  const checklist = leaf(payload, 'L-000213');
+  const checklist = leaf(payload, 'proposal:knowledge:21321321-3213-4213-8213-213213213213');
 
   // Both demotions fired on one leaf, and each is named. A leaf that is draft
   // AND stale must report both — one silently absorbing the other would hide a
@@ -263,34 +263,34 @@ test('golden: time-verdict and draft-stage demotions both apply, each with its r
   // promoted one even though both are reached by the same verb. Currency over
   // confidence.
   assert.deepEqual(payload.leaves.map((l) => [l.id, l.downranked]), [
-    ['L-000102', false], ['L-000213', true],
+    ['K-000001', false], ['proposal:knowledge:21321321-3213-4213-8213-213213213213', true],
   ]);
 });
 
 test('a demoted leaf is never filtered — it is still published, scored, and explained', () => {
   const payload = resolve('add a token');
-  const checklist = leaf(payload, 'L-000213');
+  const checklist = leaf(payload, 'proposal:knowledge:21321321-3213-4213-8213-213213213213');
   assert.equal(checklist.score, 4, 'a demoted leaf keeps its score');
   assert.ok(checklist.signals.length, 'a demoted leaf still shows its joins');
   assert.ok(checklist.time.reason, 'a demotion always travels with a reason');
 });
 
 test('golden: near-misses are reported with the overlap that carried them', () => {
-  // "token registry" names the concept K-101 outright. Both token OPERATIONS
+  // "token registry" names the concept O-000001 outright. Both token OPERATIONS
   // share the token "token" without being asked for — neither ask said "add" or
   // "retire" — so both are near-misses, reported with the token that carried
-  // them. K-103 "Theme status" shares nothing and must be absent: near-miss is a
+  // them. O-000002 "Theme status" shares nothing and must be absent: near-miss is a
   // report of near-relevance, not a list of everything in the store.
   const payload = resolve('token registry');
   assert.deepEqual(payload.decomposition['near-miss'], [
     { kind: 'operation', id: 'add-token', overlap: ['token'] },
     { kind: 'operation', id: 'retire-token', overlap: ['token'] },
   ]);
-  assert.ok(!payload.decomposition['near-miss'].some((m) => m.id === 'K-103'));
+  assert.ok(!payload.decomposition['near-miss'].some((m) => m.id === 'O-000002'));
 });
 
 test('a near-miss reports a verb the ask nearly named', () => {
-  // "theme lifecycle" MATCHES K-103 through its alias "theme" — so the concept
+  // "theme lifecycle" MATCHES O-000002 through its alias "theme" — so the concept
   // is a hit, not a near-miss, which is the distinction being drawn here. The
   // operation `export-theme` needs both its words and got one, so it near-misses
   // on the token that overlapped.
@@ -299,7 +299,7 @@ test('a near-miss reports a verb the ask nearly named', () => {
     { kind: 'operation', id: 'export-theme', overlap: ['theme'] },
   ]);
   // The matched concept is where a match belongs, and is not double-reported.
-  assert.deepEqual(payload.decomposition.concepts.map((c) => c.id), ['K-103']);
+  assert.deepEqual(payload.decomposition.concepts.map((c) => c.id), ['O-000002']);
   assert.ok(!payload.decomposition['near-miss'].some((m) => m.kind === 'concept'));
 });
 
@@ -316,7 +316,7 @@ test('golden: residue is exactly the unconsumed non-stopword tokens, with resolv
 
   // And it arrives with the context that DID resolve, which is what makes the
   // finding actionable: an unresolved token alone localizes nothing.
-  assert.deepEqual(payload.decomposition['resolved-context'], ['add-token', 'K-101', 'eu-eaa']);
+  assert.deepEqual(payload.decomposition['resolved-context'], ['add-token', 'O-000001', 'eu-eaa']);
 
   // The ask still resolved on its resolved fraction — residue is a report, not
   // a failure, and the leaves it did reach are still ranked.
@@ -410,7 +410,7 @@ test('the human surface shows the decomposition, the signals, and the exclusion 
   assert.match(r.stdout, /verb {2}-> operations: export-theme/);
   assert.match(r.stdout, /place -> jurisdictions: us-ca/);
   assert.match(r.stdout, /excluded by scope:/);
-  assert.match(r.stdout, /L-000140/);
+  assert.match(r.stdout, /K-000003/);
   assert.match(r.stdout, /the query is scoped to \[us-ca\]/);
   // The signals print, so the ranking is checkable on the human surface too.
   assert.match(r.stdout, /signals: operation:export-theme \+3/);
@@ -479,8 +479,8 @@ test('the reordered twin is genuinely reordered — the test would be vacuous ot
   // declaration order, the test above would pass while proving nothing.
   const read = (store, file) => readFileSync(join(store, file), 'utf8');
   for (const [file, field] of [
-    ['knowledge/_catalog.yaml', /- id: (L-\d+)/g],
-    ['ontology/classes/100-design-system.yaml', /- id: (K-\d+)/g],
+    ['knowledge/_catalog.yaml', /- id: ((?:K-\d{6}|proposal:knowledge:[0-9a-f-]+))/g],
+    ['ontology/classes/100-design-system.yaml', /- id: (O-\d{6})/g],
     ['knowledge/_registries/operations.yaml', /- value: ([a-z-]+)/g],
     ['knowledge/_registries/jurisdictions.yaml', /- value: ([a-z-]+)/g],
   ]) {
@@ -505,7 +505,7 @@ test('a leaf publishes its declared arrays sorted, not as authored', () => {
   // The direct statement of the fix, so a regression names itself rather than
   // showing up as an opaque payload diff.
   const payload = resolve('add a token');
-  const checklist = leaf(payload, 'L-000213');
+  const checklist = leaf(payload, 'proposal:knowledge:21321321-3213-4213-8213-213213213213');
   // Authored `[retire-token, add-token]` in the reordered twin and
   // `[add-token, retire-token]` here; both publish the sorted form.
   assert.deepEqual(checklist.operations, ['add-token', 'retire-token']);
@@ -528,13 +528,13 @@ test('concept results keep their pre-1152 shape and scores', () => {
   // concept ranking consumers already read. "token" is a whole-query ladder
   // match, so it produces a concept result exactly as it did before.
   const payload = resolve('token');
-  const token = payload.results.find((r) => r.id === 'K-101');
-  assert.ok(token, 'K-101 must still resolve as a concept result');
+  const token = payload.results.find((r) => r.id === 'O-000001');
+  assert.ok(token, 'O-000001 must still resolve as a concept result');
   assert.equal(token.score, 100);
   assert.equal(token.match, 'exact-term');
   // The concept-attached knowledge list is untouched and still published.
   assert.ok(Array.isArray(token.knowledge));
-  assert.ok(token.knowledge.some((k) => k.id === 'L-000102'));
+  assert.ok(token.knowledge.some((k) => k.id === 'K-000001'));
 });
 
 test('a concept reached only by the phrase test gets no invented score', () => {
@@ -542,7 +542,7 @@ test('a concept reached only by the phrase test gets no invented score', () => {
   // ladder did not rank it). Inventing a rung would add concepts the pre-1152
   // engine never returned.
   const payload = resolve('add a token');
-  assert.deepEqual(payload.decomposition.concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(payload.decomposition.concepts.map((c) => c.id), ['O-000001']);
   assert.deepEqual(payload.results, []);
 });
 
@@ -553,7 +553,7 @@ test('--paths mode is unaffected by query decomposition', () => {
   assert.equal(payload.mode, 'paths');
   assert.equal(Object.hasOwn(payload, 'decomposition'), false);
   assert.deepEqual(payload.paths.map((p) => [p.path, p.knowledge.map((k) => k.id)]), [
-    ['src/registry/tokens.ts', ['L-000102']],
+    ['src/registry/tokens.ts', ['K-000001']],
   ]);
 });
 
@@ -621,7 +621,7 @@ test('valuePhrases reads an identifier its own way and opened out', () => {
 test('leafScore totals the table and keeps the working', () => {
   const { score, signals } = leafScore([
     { signal: 'operation', via: 'add-token' },
-    { signal: 'concept', via: 'K-101' },
+    { signal: 'concept', via: 'O-000001' },
     { signal: 'term', via: 'token' },
   ]);
   assert.equal(score, 6);
@@ -651,5 +651,5 @@ test('a store governing no operations resolves no verbs and still runs', () => {
   assert.deepEqual(payload.decomposition.operations, []);
   assert.deepEqual(payload.decomposition.jurisdictions, []);
   // And concepts still resolve, so the pre-registry store is fully usable.
-  assert.ok(payload.results.some((r) => r.id === 'K-120'));
+  assert.ok(payload.results.some((r) => r.id === 'O-000003'));
 });

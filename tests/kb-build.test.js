@@ -10,7 +10,11 @@
 // that survives a migration is worse than one never written: agents obey it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { spawnSync } from 'node:child_process';
+import { load } from 'js-yaml';
+import { prepareReflectionFixture } from '../acceptance/lib/reflection-fixture.js';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assertRealEngineCommands } from './lib/protocol-doc.js';
@@ -58,8 +62,7 @@ test('the skill declares itself thin orchestration over the engine', () => {
   assert.match(doc, /##\s+This skill is thin orchestration/);
   // The commands compute; the skill sequences them and rides exit codes.
   assert.match(doc, /The commands compute; this skill sequences them and stops\s+on their exit\s*\n?\s*codes\./);
-  // The mechanism, not obedience — the ticket's whole thesis.
-  assert.match(doc, /\*\*Protocol compliance is a property of the mechanism, not\s+of\s*\n?\s*agent obedience\*\*/);
+  assert.match(doc, /do not authenticate human approval/);
 });
 
 test('the three judgment fills are named, and named as the ONLY free-form work', () => {
@@ -67,8 +70,8 @@ test('the three judgment fills are named, and named as the ONLY free-form work',
   for (const fill of [/\*\*Prose bodies\*\*/, /\*\*Candidate confirmation\*\*/, /\*\*Mint proposals with warrant evidence\*\*/]) {
     assert.match(doc, fill);
   }
-  // And what is explicitly NOT discretionary — the engine's half.
-  assert.match(doc, /Everything else[^.]*is\s+the engine's/);
+  assert.match(doc, /planAllocations/);
+  assert.match(doc, /planning does not reserve/);
 });
 
 test('every mechanical step names the engine command that performs it', () => {
@@ -105,9 +108,14 @@ test('FACET fills the governed facets from the registries, and never invents a v
   assert.match(doc, /speculative shelving/);
 });
 
-test('entries enter at DRAFT stage — where the moderation pipeline picks them up', () => {
+test('new leaves and content revisions enter at DRAFT stage; classification-only review preserves evidence', () => {
   assert.match(doc, /start at \*\*`draft`\*\*/);
-  assert.match(doc, /Every agent-authored entry\s+enters at draft stage/);
+  assert.match(doc, /New leaves and content or source revisions\s+enter at draft stage/);
+  assert.match(doc, /subjects-only/);
+  assert.match(doc, /preserve.*stage/);
+  assert.match(doc, /classification\s+revision/);
+  assert.match(doc, /same human gate/);
+  assert.doesNotMatch(doc, /Every agent-authored entry\s+enters at draft stage/);
   // Spelled `facets.stage`, because that is where the schema nests it —
   // knowledge-leaf.schema.json has no top-level `stage`, and an unqualified
   // field name in the DRAFT walkthrough is a frontmatter an agent would
@@ -119,11 +127,31 @@ test('entries enter at DRAFT stage — where the moderation pipeline picks them 
   assert.match(doc, /never the author's/);
 });
 
-test('the accession is minted as identity — opaque, sequence-drawn, non-positional', () => {
-  assert.match(doc, /\*\*required on every leaf\*\*, opaque,\s*\n?\s*never reused, never positional/);
-  assert.match(doc, /Mint the next value in the sequence/);
-  // The inversion's payoff, stated: refiling breaks no citation.
-  assert.match(doc, /refiling the leaf later leaves\s*\n?\s*it untouched and breaks no citation/);
+test('unpublished proposals consume no identity; reviewed publication retains ledger continuity', () => {
+  assert.match(doc, /proposal:knowledge:<lowercase-v4-uuid>/);
+  assert.match(doc, /K-000001.*K-999999/);
+  assert.match(doc, /_identity\.yaml/);
+  assert.match(doc, /planAllocations/);
+  assert.match(doc, /reviewed publication/);
+  assert.doesNotMatch(doc, /Mint the next value in the sequence|L-NNNNNN/);
+});
+
+test('the documented gap command actually creates a canonical gap envelope', (t) => {
+  const fixture = mkdtempSync(join(tmpdir(), 'kb-build-command-'));
+  t.after(() => rmSync(fixture, { recursive: true, force: true }));
+  prepareReflectionFixture(fixture);
+  const command = doc.match(/node unknown-knowledge\/engine\/log-entry\.js create --log gaps[\s\S]*?--entry '[^']+'/)?.[0];
+  assert.ok(command, 'the concrete public gap command remains available');
+  const argv = command.replace(/\\\n/g, ' ').match(/'[^']*'|\S+/g).slice(1)
+    .map(token => token.startsWith("'") ? token.slice(1, -1) : token);
+  const result = spawnSync(process.execPath, argv, { cwd: fixture, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  const directory = join(fixture, 'unknown-knowledge/logs/gaps');
+  const files = readdirSync(directory).filter(name => name.endsWith('.yaml'));
+  assert.equal(files.length, 1);
+  const gap = load(readFileSync(join(directory, files[0]), 'utf8'));
+  assert.equal(gap['schema-version'], 2);
+  assert.deepEqual(gap.consulted.leaves, ['K-000001']);
 });
 
 // AC1 (the negative half): the notation-lifecycle prose is GONE. These are

@@ -1,6 +1,6 @@
 ---
-schema-version: 2
-id: L-000117
+schema-version: 3
+id: K-000001
 edition: 1
 domain: design-system
 heading: Icon component sizing quirks
@@ -16,7 +16,7 @@ verified: "2026-08-01"
 volatility: volatile
 terms: [icon, component]
 relates:
-  see-also: ["DES/COM/CON·L-000133"]
+  see-also: ["DES/COM/CON·K-000002"]
 citations:
   - source: Component Kit API v3 §4.2
     accessed: "2026-08-01"

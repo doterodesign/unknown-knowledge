@@ -1,0 +1,34 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba
+    title: Assignment genesis distinguishes canonical absence from unknown classification
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      UCS-1241 needs retained assignment revisions for existing and newly created
+      canonical K/O/D records. An omitted subjects field is unknown classification;
+      an explicit empty list is known-empty. Neither means that the record did not
+      exist. Treating proposal history as canonical history or resetting a baseline
+      would erase that distinction and weaken subsequent revision checks.
+    decision: >
+      Retain a separate additive v2 event family while preserving v1. Existing
+      tracked owners keep immutable ordered baseline declarations and old events.
+      New canonical owners have null before state, capture and revision, created
+      disposition and revision zero. Each birth baseline binds its typed ref,
+      exact authored after state, whole-file Git content capture and immutable
+      creation event origin. One event may create several refs; each ref needs
+      exactly one matching birth row. Malformed own origins never fall back to
+      adoption. Later ordinary revisions retain the birth capture. Reviewed v2
+      known-to-absent withdrawal advances the revision and retains a real reason.
+    consequences: >
+      Pure metadata and chain validation do not prove allocation freshness,
+      actual source membership, proposal consumption, human attention or
+      publication. Separate actual gates establish those obligations. Evidence
+      includes commits 21a87e9 and 7b35f69 and tests/assignment-genesis.test.js;
+      docs/agents/ucs-1241-typed-assignments.md records the wire and limitations.
+      This backfill is proposed and allocates no canonical Decision identity.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000010, D-000014] }

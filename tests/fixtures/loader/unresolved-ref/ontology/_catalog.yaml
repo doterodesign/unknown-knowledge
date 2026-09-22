@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-210
+  - id: O-000001
     title: Design token
     file: classes/200-design-system.yaml

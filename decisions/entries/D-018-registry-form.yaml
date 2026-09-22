@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-018
+  - id: D-000018
     title: Registry form — bare `unknown-knowledge` is canonical; `@unknown-creatives` scope reserved
     category: governance
     status: accepted
@@ -11,7 +11,7 @@ entries:
       KK-28 leaves the bare-vs-scoped call open. The PRD's supply-chain posture
       note (KK-28 item 3) suggests a scoped package, but every documented command
       in the PRD and in every seeded README is `npx unknown-knowledge init` —
-      frozen permanently by D-001/D-016. An unclaimed bare name is therefore the
+      frozen permanently by D-000001/D-000016. An unclaimed bare name is therefore the
       single worst typosquat vector this product could have: a squatter's package
       would execute verbatim from our own shipped documentation.
     decision: >
@@ -32,4 +32,4 @@ entries:
       pointer package can be added additively.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-016, D-017] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000015, D-000016, D-000017] }

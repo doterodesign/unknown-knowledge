@@ -1,6 +1,6 @@
 ---
-schema-version: 2
-id: L-000133
+schema-version: 3
+id: K-000002
 edition: 1
 domain: design-system
 heading: Contrast ratios at token export

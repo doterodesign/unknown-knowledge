@@ -1,5 +1,11 @@
 # A5 walkthrough — /knowledge-bootstrap populates the stores on fixtures/swift-app
 
+> Historical July 2026 command trace. The old-format IDs, class ranges,
+> date-slug proposals, copied empty-store setup, and pasted output below are
+> retained evidence, not current authoring instructions. Use
+> [the canonical bootstrap checklist](A5-canonical-bootstrap-walkthrough.md)
+> for new trials. No output below has been re-labeled as a new execution.
+
 Acceptance criterion A5 (PRD §10): *an agent following only
 `payload/protocol/skills/knowledge-bootstrap.md` executes phase-2 bootstrap
 on a fixture correctly.* This is the scripted checklist for a human to run
@@ -18,7 +24,7 @@ From the kit repo root:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf /tmp/a5-kb && cp -R fixtures/swift-app /tmp/a5-kb && cd /tmp/a5-kb
+rm -rf local-history:a5-kb && cp -R fixtures/swift-app local-history:a5-kb && cd local-history:a5-kb
 # Reset the stores to the empty phase-1 seed — bootstrap POPULATES them.
 # (The fixture ships pre-populated for the A2/A3 criteria.)
 rm -rf unknown-knowledge

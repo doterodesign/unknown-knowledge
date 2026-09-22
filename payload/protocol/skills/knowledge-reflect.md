@@ -1,4 +1,4 @@
-# /knowledge-reflect — findings consolidation (PRD §8, D-019)
+# /knowledge-reflect — findings consolidation (PRD §8, D-000019)
 
 > Paths in this document are client-relative — relative to the vendored kit
 > root after init (`ontology/…`, `engine/…`, `protocol/…`). In the kit repo
@@ -17,7 +17,7 @@ take the **repo root**; `log-entry.js` takes the **kit dir**).
 
 Everything this run produces — applied diffs, transitioned fragments,
 pruned fragments, the stamp — travels together as **one reflect PR**
-(D-010): the improvement loop's own changes pass normal review and CI.
+(D-000010): the improvement loop's own changes pass normal review and CI.
 
 ## The evidence standard
 
@@ -114,7 +114,15 @@ Three rules bind every one of them:
    `templates/decisions/reflect-mint-proposal.yaml`; its `id` and `date`
    are deliberately invalid placeholders, so a proposal pasted unedited
    fails validation rather than reaching the Decisions store with a
-   rationale nobody wrote. A suppression uses the same shape and the same
+   rationale nobody wrote. An unpublished Decision uses an exact
+   `proposal:decision:<lowercase-v4-uuid>` key, not a dated or guessed
+   canonical ID. Its draft consumes no ledger slot. A mint needing a new
+   Decision must include the final canonical `D` identity and exact ledger,
+   record, catalog and reference changes in the reviewed publication. Plan
+   against `_identity.yaml` using a fresh publication UUID and review
+   provenance; preserve existing allocations and recheck the merged candidate
+   before publication. Neither planning nor gate approval alone allocates it.
+   A suppression uses the same shape and the same
    entry: a refused term stays listed with `status: suppressed` so the next
    cycle that clusters the same residue can see it was already considered.
 
@@ -253,7 +261,7 @@ evidence standard**; each item carries:
 Two categories recommend a *handoff*, never a direct diff:
 `knowledge-promotion` items point into the kb-build skill (the sole
 knowledge write path — reflect never writes a leaf); `extractor-draft`
-items point into `protocol/new-kind-pipeline.md` (D-005 — a parser is
+items point into `protocol/new-kind-pipeline.md` (D-000005 — a parser is
 never drafted and wired in the same session, and never by reflect).
 
 Clusters below the threshold get **no item**: they stay `open` and age
@@ -333,8 +341,8 @@ For changed concepts, also re-run **both validators filtered to exactly the
 concepts the diff touched** — an id left off the list is a check that never ran:
 
 ```
-node unknown-knowledge/engine/validate.js --concepts K-110 --root .
-node unknown-knowledge/engine/validate-values.js --concepts K-110 --root .
+node unknown-knowledge/engine/validate.js --concepts O-000110 --root .
+node unknown-knowledge/engine/validate-values.js --concepts O-000110 --root .
 ```
 
 - **All required validators exit 0** — continue to the discovery verification
@@ -418,7 +426,7 @@ outcomes:                     # per-item approval outcome BY CATEGORY, this run
   ssot-repoint: { approved: 0, approved-with-modification: 0, rejected: 1 }
 archived:                     # the rollup note for this run's prune
   - file: logs/findings/2026-04-02-9c11d0aa.yaml
-    summary: "retrieval-struggle: K-130 alias missing"
+    summary: "retrieval-struggle: O-000130 alias missing"
     reason: uncorroborated after 3 reflect cycles
 ```
 

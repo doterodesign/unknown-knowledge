@@ -5,7 +5,7 @@
 # in FULL, so any field that could raise a third would be pinning the wrong
 # thing. An EMPTY registry is not a missing one: it is a vocabulary nothing here
 # has needed warrant for.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values: []

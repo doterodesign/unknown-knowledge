@@ -1,20 +1,20 @@
 # Query-decomposition fixture (UCS-1152). Five leaves, chosen so every
 # structured join and every demotion is observable in one store.
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000102
+  - id: K-000001
     title: Adding a new token
     file: design-system/600.1-adding-a-new-token.md
-  - id: L-000140
+  - id: K-000003
     title: Archived-theme fallback basis
     file: design-system/600.2-archived-theme-fallback-basis.md
-  - id: L-000190
+  - id: K-000004
     title: Contrast disclosure before publish
     file: design-system/600.3-contrast-disclosure.md
-  - id: L-000213
+  - id: proposal:knowledge:21321321-3213-4213-8213-213213213213
     title: Token launch checklist
     file: design-system/600.4-token-launch-checklist.md
-  - id: L-000133
+  - id: K-000002
     title: Theme export rounding rules
     file: engineering/610.1-theme-export-rounding.md

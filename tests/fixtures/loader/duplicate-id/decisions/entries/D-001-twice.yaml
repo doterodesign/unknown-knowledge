@@ -1,7 +1,7 @@
 # The same id minted twice INSIDE one file is the same defect.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-001
+  - id: D-000001
     title: First mint
     category: process
     status: accepted
@@ -9,7 +9,7 @@ entries:
     deciders: [dimitri]
     context: c
     decision: d
-  - id: D-001
+  - id: D-000001
     title: Second mint of the same id
     category: process
     status: accepted

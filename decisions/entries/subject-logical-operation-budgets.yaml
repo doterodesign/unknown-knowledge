@@ -1,0 +1,40 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3
+    title: Subject operations use authentic cumulative logical budgets with explicit accounting exclusions
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Per-helper limits cannot establish a bounded composed operation when owners
+      repeat loading, capture decoding or history validation. Conversely, charging
+      fictitious full-registry work on every eligibility lookup misstates the
+      actual workload. Measured profile refusals require reducing real repeated
+      work rather than silently increasing caps or shrinking fixtures.
+    decision: >
+      Use one privately authenticated operation allowance for raw capture bytes,
+      expanded document nodes and UTF-16 text units, Subject visits, history rows
+      and named logical validation steps. Charge before actual work, latch the
+      first failure across owners and expose copied observations without reset
+      or refund. Raw admission reuses only the same unchanged wrapper/Buffer/
+      content under the same allowance, with integrity verification still separate.
+      Preserve strict authored-data guards and actual wrapper visits; native
+      parsing, allocation and hashing CPU are not instruction-level measurements.
+      Reuse private within-call proof only when the corresponding work is actually
+      removed and its mutation/ownership boundary remains verified. The initial
+      unchanged-topology history optimization retains all row/history checks and
+      repeats full graph validation whenever actual topology changes.
+    consequences: >
+      No whole-process memory, latency, source-I/O or operational-profile fit
+      follows from logical counters or unit tests. Independent creation and
+      promotion retain their specified aggregate capture accounting. Source:
+      docs/agents/ucs-1235-operation-budget.md and
+      payload/engine/lib/subject-validation-budget.js. P2 history optimization
+      1aafd84 improved work but the preserved fixed profiles still refused;
+      later P4 incremental topology and authorizer reuse have separate review
+      and measurement responsibility. P10 retains immutable runtime/fixture/Node
+      manifests and actual API/CLI receipts; do not overwrite earlier failures,
+      infer CLI counters from API observations or change qualification inputs.
+      This proposed rationale neither approves a runtime nor qualifies a workload.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000014, D-000022, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a] }

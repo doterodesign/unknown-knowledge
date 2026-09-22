@@ -105,11 +105,11 @@ function matchesPointer(path, pointerPaths) {
 /** Drafted §3.1 concept record for one unmatched anchor (proposal-first). */
 function draftConcept(path, kinds, today) {
   const record = {
-    // NOT a mintable K-NNN: the human mints the id inside the owning class's
-    // range at PR time (§3.5) — a paste-unedited draft must fail validation.
-    id: 'K-XXX',
+    // An unfilled authoring prompt, never a minted ID or a random engine key.
+    // The authoring boundary supplies the actual proposal UUID before review.
+    id: 'proposal:ontology:<lowercase-v4-uuid>',
     term: basename(path, extname(path)),
-    class: 'TODO — owning class file; mint the id in its declared range (§3.5)',
+    class: 'TODO — owning classification; identity is independent of the class file',
     summary: `TODO — drafted by reverse audit: ${kinds.join(', ')} anchor with no concept pointing at it`,
     'source-of-truth': [path],
     status: 'draft',

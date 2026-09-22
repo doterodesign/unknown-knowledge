@@ -1,9 +1,9 @@
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000410
+  - id: K-000001
     title: Export format windows
     file: design-system/410.1-export-format-windows.md
-  - id: L-000411
+  - id: proposal:knowledge:41141141-1411-4114-8114-411411411411
     title: Supported asset kinds
     file: design-system/410.2-supported-asset-kinds.md

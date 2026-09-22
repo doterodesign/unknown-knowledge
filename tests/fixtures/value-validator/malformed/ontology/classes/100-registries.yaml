@@ -1,9 +1,9 @@
 # KK-07 malformed-descriptor fixture: a non-string value (YAML 1.1 coercion
 # trap) AND a source that names no listed source-of-truth entry. A malformed
 # descriptor is a HARD ERROR, never skipped (PRD §4).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.

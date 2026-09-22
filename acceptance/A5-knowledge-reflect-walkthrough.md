@@ -1,5 +1,11 @@
 # A5 walkthrough — /knowledge-reflect consolidates seeded findings on fixtures/swift-app
 
+> **Historical replay, 2026-07-09.** The captured outputs and legacy identities
+> below are retained as historical evidence, not runnable current-format setup.
+> Use [the canonical CLI replay](A5-canonical-audit-reflect-replay.md) for current
+> identities and actual current-runtime outputs. Full fresh-agent conduct still
+> requires the current installed skill and a separately captured run.
+
 Acceptance criterion A5 (PRD §10): *an agent following only
 `payload/protocol/skills/knowledge-reflect.md` runs a full reflect cycle
 correctly* — clustering, the evidence-gated recommendation list, per-item
@@ -10,7 +16,7 @@ protocols are prose, so their test is a checklist, not CI. Time the run
 (A5 walkthroughs are wall-clock timed).
 
 Every expected observation below was produced by actually running the
-commands (kit @ this branch, 2026-07-09); outputs are pasted byte-honest.
+commands in the historical 2026-07-09 run; outputs are preserved byte-honest.
 Fixed `--suffix` values make the fragment file names deterministic too.
 
 ## Setup (the human, not the agent)
@@ -22,7 +28,7 @@ correction findings in the field. Seed a week of them:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf /tmp/a5-reflect && cp -R fixtures/swift-app /tmp/a5-reflect && cd /tmp/a5-reflect
+rm -rf local-history:a5-reflect && cp -R fixtures/swift-app local-history:a5-reflect && cd local-history:a5-reflect
 git init -q . && git add -A
 mkdir -p unknown-knowledge/logs/findings unknown-knowledge/logs/misses unknown-knowledge/logs/gaps
 
@@ -386,21 +392,32 @@ log-entry: logs/findings/2026-07-05-00000004.yaml: illegal transition open → r
 - [ ] Prune verdict: the K-130 fragment is uncorroborated but this is
   **cycle 1 of N = 3** — it is kept, not archived; nothing is deleted
   this run, and `archived:` stamps empty.
-- [ ] The agent writes `unknown-knowledge/logs/last-reflect.yaml` (reflect
-  output — written directly, the one file this skill hand-writes):
+- [ ] Persist the schema-1 review artifact and immutable proposal/gate evidence
+  under `unknown-knowledge/reviews/reflect/`, following the single Review state
+  contract in `protocol/skills/knowledge-reflect.md`. This example's two approved
+  items qualify as completed only with landed changes and all acceptance evidence.
+  Mark the review completed, then derive `unknown-knowledge/logs/last-reflect.yaml`:
 
 ```yaml
-schema-version: 1
-date: 2026-07-09
-cycles: [2026-07-09]
+schema-version: 2
+date: "2026-07-09"
+cycles: ["2026-07-09"]
+review: reviews/reflect/cycle-a.yaml
 outcomes:
   concept-fix: { approved: 1, approved-with-modification: 0, rejected: 0 }
   mint-proposal: { approved: 1, approved-with-modification: 0, rejected: 0 }
 archived: []
+work: {completed: 2, pending: 0}
 ```
 
 (The K-120 disputed resolution is SSOT-procedure output, not a gated
 recommendation item — it appears in the run report, not in `outcomes:`.)
+
+This is an expected example, not a substitute for actual trial output. Retain
+legacy stamp bytes and their SHA256 binding before adopting schema 2; legacy
+dates never become invented completed reviews. A completed review with an
+accepted but unfinished handoff has pending work, not this example's two
+completed repairs. Later work completion never changes `completed-on`.
 
 - [ ] The agent declares done only now — every gate outcome recorded,
   every close-the-loop re-run green — and reports: 4 clusters, 2

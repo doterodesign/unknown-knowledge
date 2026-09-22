@@ -1,7 +1,7 @@
 # unknown-knowledge — this repo's knowledge base
 
 This directory was seeded once by the [unknown-knowledge](https://github.com/doterodesign/unknown-knowledge)
-kit and is now yours (D-001): three YAML stores that map the system
+kit and is now yours (D-000001): three YAML stores that map the system
 (`ontology/`, `knowledge/`, `decisions/`), a deterministic engine that checks
 the map (`engine/`), and the agent protocol that runs the loop (`protocol/`).
 There is no service, no runtime, and no update channel — everything is files
@@ -40,7 +40,7 @@ and document gather rows. Each reference has these fields:
 | `stage`, `time`, `downranked`, `demotions` | The target's normal lifecycle and freshness metadata; `time.verdict` checks freshness only, not trust |
 | `applies` | Declared jurisdictions, sorted; an empty array means universal |
 
-This is an additive output contract under D-021. Existing fields and scores
+This is an additive output contract under D-000021. Existing fields and scores
 retain their meaning. Authors write only `relates.supersedes` on the successor;
 the loader derives the inverse from the store on every load, without reading
 or storing reciprocal edges in `knowledge/derived/`.
@@ -125,7 +125,7 @@ An unmatched path is a normal result: exit 0 with empty attribution.
 Legacy `--paths a.ts,b.ts` remains supported, including its comma splitting,
 whitespace trimming and backslash conversion. For equivalent ordinary path
 sets, both inputs return the same attribution and deterministic output.
-The repeatable flag is an additive MINOR surface change under D-021.
+The repeatable flag is an additive MINOR surface change under D-000021.
 
 ## How the loop works
 
@@ -134,11 +134,11 @@ in [`protocol/AGENTS.md`](protocol/AGENTS.md). That file is the single
 source of truth for how agents navigate the stores, what a verdict obliges,
 and when findings get appended; start every integration question there. The
 procedures live in the skills under `protocol/skills/`, referenced by name
-(D-019): `/knowledge-bootstrap` (first population), `/knowledge-reflect`
+(D-000019): `/knowledge-bootstrap` (first population), `/knowledge-reflect`
 (consolidating findings into reviewed fixes), `/kb-build` (cited knowledge
 writes), `/knowledge-audit` (the loop's heartbeat report).
 
-## Extractor fixtures and later stacks (D-009)
+## Extractor fixtures and later stacks (D-000009)
 
 Extractor fixtures for the stacks selected at init are included under
 `engine/tests`. If you adopt another stack later, you author your own pack
@@ -209,15 +209,15 @@ Session-level preflight is a sufficient gate for a small team, not for
 hundreds of engineers. At team scale, wire the validators into CI — copyable
 templates and the PR drift-attribution recipe are in
 [`docs/ci-wiring.md`](docs/ci-wiring.md). Init never wires CI for you
-(D-006).
+(D-000006).
 
 ## Version stamp and license
 
 `kit-version` in `kit.manifest.yaml` records the kit version that seeded
-this directory — a birth certificate, not a dependency pin (D-021): it says
+this directory — a birth certificate, not a dependency pin (D-000021): it says
 which schema revision, extractor-kind set, and fixture vintage the seed was
 born with, and implies no update channel. The vendored code is Apache-2.0
-(D-020); the seeded `LICENSE` and `NOTICE` carry the terms and the
+(D-000020); the seeded `LICENSE` and `NOTICE` carry the terms and the
 attribution. Your stores and logs are your own content, not the kit's.
 
 ## Uninstalling
@@ -232,6 +232,6 @@ disagreed — export what you want to keep first.
 
 ## Further reading
 
-- [`docs/ci-wiring.md`](docs/ci-wiring.md) — CI templates + PR drift attribution (D-012)
+- [`docs/ci-wiring.md`](docs/ci-wiring.md) — CI templates + PR drift attribution (D-000012)
 - [`docs/steward-guide.md`](docs/steward-guide.md) — the steward role, cadence, CODEOWNERS, hygiene recipes
 - [`docs/boundaries.md`](docs/boundaries.md) — what the kit guarantees, and what it will never catch

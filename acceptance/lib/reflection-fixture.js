@@ -20,9 +20,20 @@ export function prepareReflectionFixture(root) {
     writeFileSync(join(root, path), text);
   }
   const record = (path, value) => write(`unknown-knowledge/${path}`, yaml.dump(value, { lineWidth: 100 }));
-  const envelope = (store, entries) => ({ 'schema-version': 1, store, entries });
+  const envelope = (store, entries) => ({ 'schema-version': 2, store, entries });
   mkdirSync(root, { recursive: true });
   run(process.execPath, [join(kit, 'cli/init-copy.js'), '--target', root]);
+  // Fixed authority belongs only to this new synthetic installation, before publication.
+  // These are current identities, independent of classification and file placement.
+  record('_identity.yaml', { 'schema-version': 1, 'identity-format': 1,
+    namespace: '12420000-0000-4000-8000-000000000001',
+    allocations: [
+      ['ontology', 'O-000001'], ['ontology', 'O-000002'], ['ontology', 'O-000003'],
+      ['knowledge', 'K-000001'], ['knowledge', 'K-000002'], ['decision', 'D-000001'],
+    ].map(([kind, id]) => ({ kind, id, state: 'allocated', publication: {
+      id: '12420000-0000-4000-8000-000000000002', review: 'fixture:synthetic-baseline',
+    } })),
+  });
   symlinkSync(join(kit, 'node_modules'), join(root, 'node_modules'), 'dir');
   // Runtime dependencies are a symlink here; a directory-only rule does not ignore it.
   write('.gitignore', '/node_modules\n');
@@ -32,30 +43,29 @@ export function prepareReflectionFixture(root) {
   write('src/locales.ts', "export const LOCALES = ['en', 'fr'];\n");
   write('docs/handbook.md', '# Synthetic handbook\n\n## Canvas output\nIn this fixture, canvas output means the export format in src/formats.ts.\nFor artwork that must resize without loss of detail, use vector rather than raster encoding.\n\n## Delivery\nDelivery verification applies to the delivery profile implemented by src/delivery.ts.\nBefore accepting transferred files, compare their checksums with the sender\'s inventory; matching filenames alone does not establish integrity.\n\n## Locale\nThe locale list is owned by src/locales.ts. It is unrelated to canvas output.\n');
   const concepts = [
-    ['K-101', 'Export format', 'src/formats.ts', 'FORMATS', ['png', 'svg']],
-    ['K-102', 'Delivery profile', 'src/delivery.ts', 'DELIVERY', ['archive', 'manifest']],
-    ['K-103', 'Locale', 'src/locales.ts', 'LOCALES', ['en', 'fr']],
+    ['O-000001', 'Export format', 'src/formats.ts', 'FORMATS', ['png', 'svg']],
+    ['O-000002', 'Delivery profile', 'src/delivery.ts', 'DELIVERY', ['archive', 'manifest']],
+    ['O-000003', 'Locale', 'src/locales.ts', 'LOCALES', ['en', 'fr']],
   ].map(([id, term, source, symbol, values]) => ({
-    id, term, class: '100-product', summary: `See ${source}.`,
+    id, term, class: 'product', summary: `See ${source}.`,
     'source-of-truth': [source], status: 'active', 'last-verified': TODAY,
     enumerates: [{ kind: 'ts-const-array', source, symbol, values }],
   }));
-  record('ontology/classes/100-product.yaml', { 'schema-version': 1, entries: concepts });
+  record('ontology/classes/product.yaml', { 'schema-version': 2, entries: concepts });
   record('ontology/_catalog.yaml', envelope('ontology', concepts.map(c => ({
-    id: c.id, title: c.term, file: 'classes/100-product.yaml',
+    id: c.id, title: c.term, file: 'classes/product.yaml',
   }))));
   const leaves = [
-    { id: 'L-000100', heading: 'Image encoding guidance', terms: ['encoding'], concepts: ['K-101'],
+    { id: 'K-000001', file: 'guides/encoding.md', heading: 'Image encoding guidance', terms: ['encoding'], concepts: ['O-000001'],
       body: 'Vector encoding preserves detail when artwork is resized. See docs/handbook.md, Canvas output.' },
-    { id: 'L-000200', heading: 'Packaging checklist', terms: ['packaging'], concepts: [],
+    { id: 'K-000002', file: 'guides/packaging.md', heading: 'Packaging checklist', terms: ['packaging'], concepts: [],
       body: 'Compare file checksums with the sender\'s inventory before accepting a delivery. See docs/handbook.md, Delivery.' },
   ];
-  const leafPath = leaf => `L-00/${leaf.id}.md`;
-  record('knowledge/_catalog.yaml', envelope('knowledge', leaves.map(l => ({ id: l.id, title: l.heading, file: leafPath(l) }))));
+  record('knowledge/_catalog.yaml', envelope('knowledge', leaves.map(l => ({ id: l.id, title: l.heading, file: l.file }))));
   for (const leaf of leaves) {
-    const { body, ...fields } = leaf;
-    write(`unknown-knowledge/knowledge/${leafPath(leaf)}`, `---\n${yaml.dump({
-      'schema-version': 2, ...fields, domain: 'product', edition: 1,
+    const { body, file, ...fields } = leaf;
+    write(`unknown-knowledge/knowledge/${file}`, `---\n${yaml.dump({
+      'schema-version': 3, ...fields, domain: 'product', edition: 1,
       facets: { domain: 'product', form: 'reference', anchor: 'world', stage: 'verified' },
       verified: TODAY, volatility: 'stable', operations: [], applies: { jurisdictions: [] },
       citations: [{ source: 'docs/handbook.md', accessed: TODAY, authority: 'fixture-handbook' }],
@@ -67,18 +77,18 @@ export function prepareReflectionFixture(root) {
   for (const [registry, values] of Object.entries({ domains: ['product'], form: ['reference'],
     anchor: ['world'], stage: ['draft', 'verified'], 'authority-tiers': ['fixture-handbook'] })) {
     record(`knowledge/_registries/${registry}.yaml`, {
-      'schema-version': 1, store: 'knowledge', registry,
+      'schema-version': 2, store: 'knowledge', registry,
       ...(registry === 'domains' ? { hierarchical: true } : {}),
       values: values.map(value => ({ value, gloss: `Fixture ${value}.`,
-        warrant: 'L-000100 and L-000200; draft is used during their reviewed kb-build revisions.', decision: 'D-101', minted: TODAY })),
+        warrant: 'K-000001 and K-000002; draft is used during their reviewed kb-build revisions.', decision: 'D-000001', minted: TODAY })),
     });
   }
-  record('decisions/_catalog.yaml', envelope('decisions', [{ id: 'D-101', title: 'Fixture vocabulary', file: 'entries/D-101.yaml' }]));
-  record('decisions/entries/D-101.yaml', { 'schema-version': 1, entries: [{ id: 'D-101',
+  record('decisions/_catalog.yaml', envelope('decisions', [{ id: 'D-000001', title: 'Fixture vocabulary', file: 'entries/D-000001.yaml' }]));
+  record('decisions/entries/D-000001.yaml', { 'schema-version': 2, entries: [{ id: 'D-000001',
     title: 'Fixture vocabulary', category: 'governance', status: 'accepted', date: TODAY,
     deciders: ['fixture-steward'], context: 'Two synthetic handbook records need classification.',
     decision: 'Mint the fixture classifications for the two cited leaves and their draft revisions.',
-    'relates-to': { leaves: ['L-000100', 'L-000200'] },
+    'relates-to': { leaves: ['K-000001', 'K-000002'] },
   }] });
   let suffix = 0;
   function finding(concept, summary, session, date) {
@@ -87,10 +97,10 @@ export function prepareReflectionFixture(root) {
       '--entry', JSON.stringify({ trigger: 'retrieval-struggle', summary, consulted: { concepts: [concept] }, session })]);
   }
   for (const [i, date] of ['2026-09-07', '2026-09-08', '2026-09-09'].entries()) {
-    finding('K-101', 'K-101 recovered via ontology/_catalog.yaml; docs/handbook.md#canvas-output terminology absent.', `canvas-${i}`, date);
-    finding('K-102', 'K-102 resolved; L-000200 recovered via knowledge/_catalog.yaml; docs/handbook.md#delivery supports relationship.', `delivery-${i}`, date);
+    finding('O-000001', 'O-000001 recovered via ontology/_catalog.yaml; docs/handbook.md#canvas-output terminology absent.', `canvas-${i}`, date);
+    finding('O-000002', 'O-000002 resolved; K-000002 recovered via knowledge/_catalog.yaml; docs/handbook.md#delivery supports relationship.', `delivery-${i}`, date);
   }
-  for (let i = 0; i < 3; i++) finding('K-103', 'K-103 retrieval retried; docs/handbook.md#locale.', 'one-session', '2026-09-09');
+  for (let i = 0; i < 3; i++) finding('O-000003', 'O-000003 retrieval retried; docs/handbook.md#locale.', 'one-session', '2026-09-09');
   run('git', ['init', '-q']);
   run('git', ['config', 'user.name', 'Fixture Steward']);
   run('git', ['config', 'user.email', 'fixture@example.invalid']);

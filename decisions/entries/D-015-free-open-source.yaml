@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-015
+  - id: D-000015
     title: Free and open source — permissive license, public npm; revenue attaches to services, never the code
     category: governance
     status: accepted
@@ -18,9 +18,9 @@ entries:
       recommended; MIT acceptable), public npm, released to the general
       community. Revenue attaches to services, never the code.
     consequences: >
-      OSS converts D-001's ownership promise into a legal fact, opens a
+      OSS converts D-000001's ownership promise into a legal fact, opens a
       community channel for extractor compounding, and makes the kit the
       credibility engine for paid engagements on top.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-001] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001] }

@@ -1,6 +1,6 @@
 ---
-schema-version: 2
-id: L-000162
+schema-version: 3
+id: K-000003
 edition: 1
 domain: engineering
 heading: Bundle-size budget thresholds

@@ -1,7 +1,7 @@
-# §3.5 concurrent-mint collision: this file and 200-branch-b.yaml both mint K-210.
-schema-version: 1
+# §3.5 concurrent-mint collision: this file and 200-branch-b.yaml both mint O-000001.
+schema-version: 2
 entries:
-  - id: K-210
+  - id: O-000001
     term: Design token
     class: 200-design-system
     summary: Minted on branch A.

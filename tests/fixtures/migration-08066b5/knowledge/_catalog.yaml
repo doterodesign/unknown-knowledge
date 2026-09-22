@@ -1,0 +1,21 @@
+schema-version: 1
+store: knowledge
+entries:
+  - id: L-000117
+    title: Icon component sizing quirks
+    file: design-system/icon-component-sizing-quirks.md
+  - id: L-000133
+    title: Contrast ratios at token export
+    file: design-system/contrast-ratios-at-token-export.md
+  - id: L-000162
+    title: Bundle-size budget thresholds
+    file: engineering/bundle-size-budget-thresholds.md
+  - id: L-000171
+    title: Visual regression triage playbook
+    file: engineering/visual-regression-triage-playbook.md
+  - id: L-000213
+    title: Component render budget
+    file: design-system/component-render-budget.md
+  - id: L-000228
+    title: Brand color token table
+    file: brand/brand-color-token-table.md

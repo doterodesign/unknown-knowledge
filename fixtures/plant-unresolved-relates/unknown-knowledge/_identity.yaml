@@ -1,0 +1,16 @@
+schema-version: 1
+identity-format: 1
+namespace: cccccccc-cccc-4ccc-8ccc-cccccccccccc
+allocations:
+  - id: D-000001
+    kind: decision
+    state: allocated
+    publication:
+      id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+      review: fixture:canonical-pilot-unresolved
+  - id: K-000001
+    kind: knowledge
+    state: allocated
+    publication:
+      id: dddddddd-dddd-4ddd-8ddd-dddddddddddd
+      review: fixture:canonical-pilot-unresolved

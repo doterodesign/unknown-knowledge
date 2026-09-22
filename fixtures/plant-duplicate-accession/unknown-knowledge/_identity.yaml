@@ -1,0 +1,25 @@
+{
+  "schema-version": 1,
+  "identity-format": 1,
+  "namespace": "53000000-0000-4000-8000-000000000001",
+  "allocations": [
+    {
+      "id": "D-000001",
+      "kind": "decision",
+      "state": "allocated",
+      "publication": {
+        "id": "54000000-0000-4000-8000-000000000001",
+        "review": "fixture:duplicate-claim-control"
+      }
+    },
+    {
+      "id": "K-000001",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "54000000-0000-4000-8000-000000000001",
+        "review": "fixture:duplicate-claim-control"
+      }
+    }
+  ]
+}

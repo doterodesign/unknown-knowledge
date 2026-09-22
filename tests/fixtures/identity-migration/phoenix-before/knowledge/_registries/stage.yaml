@@ -1,0 +1,10 @@
+schema-version: 1
+store: knowledge
+registry: stage
+hierarchical: false
+values:
+  - value: verified
+    gloss: Reviewed source evidence.
+    warrant: Both retained leaves already carry this stage.
+    decision: D-9
+    minted: "2026-08-01"

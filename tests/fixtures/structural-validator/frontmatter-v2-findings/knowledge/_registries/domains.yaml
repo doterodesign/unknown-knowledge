@@ -1,16 +1,16 @@
 # Frontmatter v2 fixture (UCS-1149) — the hierarchical domains registry.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: domains
 hierarchical: true
 values:
   - value: design-system
     gloss: The shared design system.
-    warrant: L-000901 documents design-system material (its facet values are the planted findings).
-    decision: D-401
+    warrant: K-000001 documents design-system material (its facet values are the planted findings).
+    decision: D-000001
     minted: "2026-08-16"
   - value: design-system/components
     gloss: The component library and the rules its parts obey.
     warrant: The one minted child segment — the leaf's design-system/motion is the planted unminted-segment finding.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"

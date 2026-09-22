@@ -18,12 +18,12 @@
 #     - value: design-system
 #       gloss: The shared design system and the rules its parts obey.
 #       warrant: 362.1 documents component sizing rules and needs a home.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
 #     - value: design-system/components
 #       gloss: The component library specifically.
 #       warrant: 362.1 states the component rules themselves.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
 #
 # A value that was proposed and REFUSED stays listed, marked suppressed, so the
@@ -32,8 +32,8 @@
 #     - value: design-system/motion
 #       warrant: Proposed for 362.4; no material exists, so no warrant was found.
 #       status: suppressed
-#       decision: D-015
-schema-version: 1
+#       decision: <accepted-local-decision-id>
+schema-version: 2
 store: knowledge
 registry: domains
 # Load-bearing: this flag is what turns on segment-by-segment membership.

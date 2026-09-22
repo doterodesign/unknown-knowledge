@@ -1,0 +1,14 @@
+schema-version: 2
+event: P-001
+title: Retained move and carry
+decision: D-000001
+applied: "2026-08-17"
+scope:
+  facet: facets.domain
+  values: [before]
+leaves:
+  - id: K-000001
+    to: after
+    why: The first leaf describes material owned by the destination category.
+  - id: K-000002
+    why: The second leaf was reviewed and deliberately stayed in its original category.

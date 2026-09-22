@@ -1,0 +1,9 @@
+schema-version: 2
+store: knowledge
+entries:
+  - id: K-000001
+    title: Moved evidence
+    file: moved.md
+  - id: K-000002
+    title: Carried evidence
+    file: carried.md

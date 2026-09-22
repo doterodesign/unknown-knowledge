@@ -1,18 +1,18 @@
 # Swift fixture concepts (KK-14). Sources are relative to fixtures/swift-app/.
 # Drift is PLANTED on purpose — FIXTURE.md tabulates every case and the
 # finding it must produce; KK-16's A2/A3 assertions are written against it.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-110
+  - id: O-000001
     term: Canvas tool
     class: 100-app
     summary: A tool users can pick on the canvas (Swift case-name facet).
     aliases: [tool type]
     source-of-truth: [Sources/Canvas/CanvasTool.swift]
     owned-by: canvas
-    used-by: [K-120]
-    confusable-with: [K-130]
-    rationale: [D-001]
+    used-by: [O-000002]
+    confusable-with: [O-000003]
+    rationale: [D-000001]
     status: active
     last-verified: "2026-07-01"
     enumerates:
@@ -25,18 +25,18 @@ entries:
         emit: case-name
         values: [select, frame, pen, textStyle, hand, eyedropper]
 
-  - id: K-120
+  - id: O-000002
     term: Tool shortcut
     class: 100-app
     summary: The keyboard shortcut for a canvas tool (Swift raw-value facet).
     source-of-truth: [Sources/Canvas/CanvasTool.swift]
     owned-by: canvas
-    confusable-with: [K-110]
-    rationale: [D-001]
+    confusable-with: [O-000001]
+    rationale: [D-000001]
     status: active
     last-verified: "2026-07-01"
     enumerates:
-      # CLEAN (A2): raw-value facet of the same anchor as K-110 — proves the
+      # CLEAN (A2): raw-value facet of the same anchor as O-000001 — proves the
       # two swift-enum facets are independent value sets (§3.5 emit).
       - kind: swift-enum
         source: Sources/Canvas/CanvasTool.swift
@@ -44,13 +44,13 @@ entries:
         emit: raw-value
         values: [V, F, P, T, H, C]
 
-  - id: K-130
+  - id: O-000003
     term: Toolbar action
     class: 100-app
     summary: A bulk action the selection toolbar can apply (align, tidy, ...).
     source-of-truth: [Sources/Canvas/Actions.swift]
     owned-by: canvas
-    confusable-with: [K-110]
+    confusable-with: [O-000001]
     status: active
     last-verified: "2026-07-01"
     enumerates:
@@ -61,7 +61,7 @@ entries:
         symbol: supportedActions
         values: [align, distribute, tidy, group, boolean_union, flatten]
 
-  - id: K-140
+  - id: O-000004
     term: App configuration section
     class: 100-app
     summary: A top-level section of the app configuration file.
@@ -76,7 +76,7 @@ entries:
         source: Config/app-config.yaml
         values: [environment, api, regions, telemetry, "on"]
 
-  - id: K-150
+  - id: O-000005
     term: Canvas feature flag
     class: 100-app
     summary: A rollout flag under the canvas flag block.
@@ -92,7 +92,7 @@ entries:
         symbol: flags.canvas
         values: [vector-networks, auto-layout, component-props]
 
-  - id: K-160
+  - id: O-000006
     term: Localization key
     class: 100-app
     summary: User-facing copy keys across both localization formats.
@@ -118,7 +118,7 @@ entries:
           - legal.disclaimer
           - promo.100-templates
 
-  - id: K-170
+  - id: O-000007
     term: Layout density
     class: 100-app
     summary: Claimed display-density modes of the settings screen.
@@ -136,7 +136,7 @@ entries:
         symbol: themeNames
         values: [compact, comfortable, spacious]
 
-  - id: K-180
+  - id: O-000008
     term: Analytics event
     class: 100-app
     summary: Telemetry event names emitted by the app.

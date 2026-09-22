@@ -1,7 +1,7 @@
 # Structural-validator fixture (KK-05) — clean store: every check passes.
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-410
+  - id: O-000001
     title: Gadget
     file: classes/400-gadgets.yaml

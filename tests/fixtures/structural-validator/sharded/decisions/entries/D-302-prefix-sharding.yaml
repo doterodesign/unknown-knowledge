@@ -1,7 +1,7 @@
 # One entry per file; schema per payload/schemas/decision-entry.schema.json.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-302
+  - id: D-000001
     title: Shard the knowledge store by accession-id prefix
     category: architecture
     status: accepted
@@ -22,4 +22,4 @@ entries:
       fanout device for directory size, never a classification.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-510], leaves: [L-000101], decisions: [] }
+    relates-to: { concepts: [O-000001], leaves: [K-000001], decisions: [] }

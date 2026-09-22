@@ -5,7 +5,7 @@ are yours to change. Each section names the decision that pinned it — the
 full record is in the kit's decision log, and the seeded copy of every rule
 below lives in `protocol/AGENTS.md`.
 
-## What the kit will never catch (D-008)
+## What the kit will never catch (D-000008)
 
 The kit catches **conceptual drift**: names, value sets, and pointers — the
 map disagreeing with the artifact. A registry gained a value no concept
@@ -18,13 +18,15 @@ registry whose values are all present and all handled badly. Behavior is
 your test suite's job. Budget your trust accordingly: a green validator run
 means the map matches the code, not that the code is right.
 
-## The engine never executes your code (D-014)
+## The engine never executes your code (D-000014)
 
 The engine only ever **reads your files lexically**. It never imports,
 evals, or runs repo content; JSON and YAML are parsed as data, never
-loaded as code; it makes no network calls. The one child process the
-engine spawns is `git` (in `survey-map.js`, to list tracked files) — it
-reads git's index, never your code. This is the answer to "does this tool
+loaded as code; it makes no network calls. Subprocesses invoke `git` for
+tracked-file navigation, raw snapshots, and isolated candidate object
+preparation. Preparation uses a private index and never advances a ref or
+changes your index/worktree; it does not certify publication. None of these
+operations executes your code. This is the answer to "does this tool
 run our code in CI?": no — guaranteed by design and pinned by a grep test
 in the kit's own CI. Any future adapter that would break it (e.g. a
 remote-config fetch at validate time) must be explicitly opt-in.
@@ -44,7 +46,7 @@ disagreed, not a transcript of the disagreement. The SSOT is the artifact
 the finding points at; anyone judging a finding follows the pointer and
 reads the source.
 
-## Preflight conduct is yours to set (D-011)
+## Preflight conduct is yours to set (D-000011)
 
 Verdicts are deterministic engine facts; **what a session does about a
 verdict is policy in markdown you own**. The place to edit is the

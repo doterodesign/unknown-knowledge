@@ -2,9 +2,9 @@
 # it. Nothing here is exercised: the misfiled category table makes the store
 # fail to load (exit 2), so no entry-level check ever runs against this entry.
 # It is present only so the store shape is realistic.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-204
+  - id: D-000004
     title: Revoke sampling for authority assignments
     category: trust
     status: accepted

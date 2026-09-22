@@ -1,9 +1,9 @@
-# KK-26 drift fixture: K-100's enumerates claim drifted from its source (the
-# acceptance case — quarantined), K-110 is untouched (must stay trusted), and
-# K-130 is draft (unknown, §3.5).
-schema-version: 1
+# KK-26 drift fixture: O-000001's enumerates claim drifted from its source (the
+# acceptance case — quarantined), O-000002 is untouched (must stay trusted), and
+# proposal:ontology:13013013-0130-4130-8130-130130130130 is draft (unknown, §3.5).
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.
@@ -13,7 +13,7 @@ entries:
       - kind: test-lines
         source: src/icons.txt
         values: [grid, list, star]
-  - id: K-110
+  - id: O-000002
     term: Color token
     class: 100-registries
     summary: A base color token.
@@ -23,7 +23,7 @@ entries:
       - kind: test-lines
         source: src/color-tokens.txt
         values: [srgb, p3]
-  - id: K-130
+  - id: proposal:ontology:13013013-0130-4130-8130-130130130130
     term: Draft panel
     class: 100-registries
     summary: A concept still being drafted.

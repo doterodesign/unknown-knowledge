@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-201
+  - id: D-000001
     title: One gadget store
     category: architecture
     status: accepted

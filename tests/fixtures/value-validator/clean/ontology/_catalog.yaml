@@ -1,10 +1,10 @@
 # Synthetic value-validator fixture (KK-07): every enumerates claim agrees.
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-100
+  - id: O-000001
     title: Icon
     file: classes/100-registries.yaml
-  - id: K-130
+  - id: proposal:ontology:13013013-0130-4130-8130-130130130130
     title: Draft panel
     file: classes/100-registries.yaml

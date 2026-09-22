@@ -1,0 +1,92 @@
+{
+  "originalFailedRun": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35735220372",
+  "disposition": "The snapshot-failure hook assertions completed, but temporary Git repository teardown raised ENOTEMPTY on Linux. Recursive removal now uses three bounded retries at 100 ms backoff; final errors remain visible. This follows the existing commit-snapshot cleanup policy and changes no runtime or snapshot-cleanliness assertion.",
+  "focusedValidation": {
+    "command": "node --test tests/commit-gate.test.js",
+    "tests": 27,
+    "pass": 27,
+    "fail": 0,
+    "logSha256": "99c31d918b7b385d779cb29abb91beb39264ce4af4e86167d064fbe11c141001"
+  },
+  "unchanged": "Runtime behavior and every original commit, snapshot cleanup, index and working-tree assertion remain unchanged.",
+  "subsequentFailedRuns": [
+    35737013958,
+    35737252373
+  ],
+  "synchronousMaintenance": {
+    "scope": "Only test-created repository config; automatic maintenance remains enabled.",
+    "originalTraceCommands": [
+      [
+        "git",
+        "maintenance",
+        "run",
+        "--auto",
+        "--quiet",
+        "--detach"
+      ],
+      [
+        "git",
+        "maintenance",
+        "run",
+        "--auto",
+        "--quiet",
+        "--detach"
+      ]
+    ],
+    "correctedTraceCommands": [
+      [
+        "git",
+        "maintenance",
+        "run",
+        "--auto",
+        "--quiet",
+        "--no-detach"
+      ],
+      [
+        "git",
+        "maintenance",
+        "run",
+        "--auto",
+        "--quiet",
+        "--no-detach"
+      ]
+    ],
+    "causalLimit": "Detach invocation observed; local ENOTEMPTY not reproduced. Linux result remains pending.",
+    "focusedTests": {
+      "tests": 27,
+      "pass": 27,
+      "fail": 0
+    },
+    "traceScenarios": {
+      "tests": 2,
+      "pass": 2,
+      "fail": 0
+    },
+    "logs": [
+      {
+        "name": "pr1-maintenance-focused.log",
+        "sha256": "b40073eadd04c9d19533f1a047fa56878cd712b9c5961c30e6f6a7e11d82d33e",
+        "bytes": 2702,
+        "availability": "retained locally; raw paths not exported"
+      },
+      {
+        "name": "pr1-fixture-trace.jsonl",
+        "sha256": "b1491998252964d59e5e1c07028106f0e38d18c82acca5fb7351ebbc5db82ff0",
+        "bytes": 749315,
+        "availability": "retained locally; raw paths not exported"
+      },
+      {
+        "name": "pr1-fixture-synchronous-trace.jsonl",
+        "sha256": "ae8ae8c6381e978b6dcd468e39f3428fb45c79738ae45c6dd363656843294be1",
+        "bytes": 752431,
+        "availability": "retained locally; raw paths not exported"
+      },
+      {
+        "name": "pr1-fixture-synchronous-trace-tests.log",
+        "sha256": "afe2f5d8edbae01b54fd52f49e2d6ab932c55e1019f097b7c6d7e95b8a728f16",
+        "bytes": 306,
+        "availability": "retained locally; raw paths not exported"
+      }
+    ]
+  }
+}

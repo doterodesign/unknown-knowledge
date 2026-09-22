@@ -145,15 +145,13 @@ test('the run-book documents the tag-and-version ordering', () => {
 // ------------------------------------------- the release artifacts agree (UCS-936)
 
 test('the CHANGELOG carries a heading for the version the manifest names', () => {
-  // Three artifacts must name the same release: package.json, the CHANGELOG
-  // heading, and the tag. The guard above holds the tag to the manifest; this
-  // holds the CHANGELOG to it. Publishing 1.0.0 with no 1.0.0 entry ships a
-  // release nobody can read the notes for — and the version is immutable.
+  // PR versions need readable notes before publication. An unpublished version
+  // has an explicit Unreleased heading; the release process supplies its date.
   const { version } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   const changelog = readFileSync(join(root, 'CHANGELOG.md'), 'utf8');
-  const heading = new RegExp(`^## \\[${version.replace(/\./g, '\\.')}\\] - \\d{4}-\\d{2}-\\d{2}$`, 'm');
+  const heading = new RegExp(`^## \\[${version.replace(/\./g, '\\.')}\\] - (?:Unreleased|\\d{4}-\\d{2}-\\d{2})$`, 'm');
   assert.match(changelog, heading,
-    `CHANGELOG.md has no dated heading for ${version} — cut the release section before tagging`);
+    `CHANGELOG.md has no heading for ${version} — label unpublished PR versions Unreleased`);
 });
 
 test('Unreleased sits above the newest release, and is empty after a cut', () => {

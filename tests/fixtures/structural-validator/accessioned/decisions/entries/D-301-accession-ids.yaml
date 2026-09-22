@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-301
+  - id: D-000001
     title: Mint accession ids for leaves
     category: architecture
     status: accepted
@@ -12,4 +12,4 @@ entries:
     supersedes: []
     superseded-by: []
     # relates-to.leaves cites both leaves by accession.
-    relates-to: { concepts: [K-510], leaves: [L-000101, L-000102], decisions: [] }
+    relates-to: { concepts: [O-000001], leaves: [K-000001, K-000002], decisions: [] }

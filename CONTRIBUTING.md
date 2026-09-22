@@ -8,11 +8,11 @@ decisions in [decisions/](decisions/).
 ## Community extractor kinds — the gate
 
 New extractor kinds are the main community contribution surface, and they
-enter through the **same gate as everything else** (D-005: validators run
+enter through the **same gate as everything else** (D-000005: validators run
 only vendored, versioned, tested code — never code authored in the session
 that runs it). A kind PR carries three things, no exceptions:
 
-1. **The parser** — small, deterministic, lexical-only (D-014: never
+1. **The parser** — small, deterministic, lexical-only (D-000014: never
    executes client code, no network).
 2. **A fixture** — a minimal anchor file plus expected output, wired into
    the test suite.
@@ -42,10 +42,27 @@ the demand signal the kind backlog is built from.
 - **Deterministic output**: engine output must be stable across runs and
   machines — no wall-clock, no randomness, no network, no environment
   leakage. Injected dates only.
-- **Changelog**: user-visible changes add a line under `Unreleased` in
-  CHANGELOG.md (Keep a Changelog form; see D-021 for what bumps what).
-- One logical change per PR; decision-worthy choices get a
-  `decisions/entries/` entry (see the existing entries for the format).
+- **Version every PR**, including docs-only changes: advance `package.json`
+  and both root version fields in `package-lock.json` relative to the current
+  target branch. D-000021 defines MAJOR for schema/breaking CLI changes, MINOR
+  for additive surfaces/kinds/fixture vintages, and PATCH for fixes/docs.
+  During an existing prerelease cycle, advance `rc.N` for changes within that
+  planned release; reassess the target version if the release scope changes.
+  Reconcile concurrent bumps before merge. Internal commits/cherry-picks within
+  one PR do not each need a bump.
+- **Changelog**: describe every PR under `## [<version>] - Unreleased` until
+  publication; record the real release date when cutting the release. Preserve
+  older notes and dates. `node scripts/check-pr-version.js <base-commit-sha>`
+  checks version advance, lock consistency and changed versioned notes in CI.
+- **Decisions**: capture every substantive choice in `decisions/entries/` and
+  its catalog, or link the existing decision that covers it. Include rationale,
+  tradeoffs, consequences and implementation/evidence links. Preserve history;
+  use proposal keys until governed canonical publication.
+- **Documentation**: update all affected READMEs, AGENTS/agents files, protocol
+  instructions, API/CLI examples, schemas/manifests and contributor, publishing,
+  migration and acceptance guides in the same PR. Explain unchanged surfaces
+  in the PR checklist. Do not rewrite frozen historical evidence.
+- One logical change per PR. Versioning a PR does not publish a release.
 
 ## Reporting bugs
 

@@ -9,17 +9,17 @@
 # ranking arrives with the resolution pipeline (UCS-1152). Recording the tier
 # now is what makes that possible: a tier nobody wrote down cannot be ranked
 # retroactively.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: authority-tiers
 values:
   - value: vendor-doc
     gloss: The vendor's own published documentation.
-    warrant: L-000117 cites the Component Kit API reference.
-    decision: D-401
+    warrant: K-000001 cites the Component Kit API reference.
+    decision: D-000001
     minted: "2026-08-16"
   - value: interview
     gloss: A conversation with someone who knows, written down.
-    warrant: L-000213 rests on a trading-team interview.
-    decision: D-401
+    warrant: proposal:knowledge:21321321-3213-4213-8213-213213213213 rests on a trading-team interview.
+    decision: D-000001
     minted: "2026-08-16"

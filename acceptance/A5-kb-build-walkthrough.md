@@ -25,7 +25,7 @@ From the kit repo root:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf /tmp/a5-kbb && cp -R fixtures/ts-app /tmp/a5-kbb && cd /tmp/a5-kbb
+rm -rf local-history:a5-kbb && cp -R fixtures/ts-app local-history:a5-kbb && cd local-history:a5-kbb
 # Seed the domain spine the bootstrap interview would have written —
 # kb-build classifies against it (the fixture ships rules: []).
 cat > unknown-knowledge/knowledge/_rules.yaml <<'EOF'

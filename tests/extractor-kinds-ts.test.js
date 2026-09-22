@@ -59,9 +59,9 @@ function runTsApp(...args) {
 }
 
 test('A2 clean extractions: every planted clean anchor agrees — exit 0, zero findings', () => {
-  // K-110/K-111 (dir-modules, KK-10) joined the clean set when the directory
+  // O-000010/O-000011 (dir-modules, KK-10) joined the clean set when the directory
   // kind registered; their option matrix lives in extractor-kinds-dir.test.js.
-  const clean = 'K-101,K-103,K-105,K-106,K-107,K-109,K-110,K-111,K-112,K-114';
+  const clean = 'O-000001,O-000003,O-000005,O-000006,O-000007,O-000009,O-000010,O-000011,O-000012,O-000014';
   const r = runTsApp('--concepts', clean);
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
@@ -71,37 +71,37 @@ test('A2 clean extractions: every planted clean anchor agrees — exit 0, zero f
 });
 
 test('A3 planted drift: exactly the three tabulated findings, nothing else', () => {
-  const r = runTsApp('--concepts', 'K-102,K-104,K-108');
+  const r = runTsApp('--concepts', 'O-000002,O-000004,O-000008');
   assert.equal(r.status, 1, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out['hard-errors'], []);
   assert.deepEqual(
     out.findings.map((f) => [f.concept, f.code, f.value ?? null]),
     [
-      ['K-102', 'value-not-in-source', 'luminosity'],
-      ['K-104', 'source-value-missing', 'video'],
-      ['K-108', 'wrong-pointer', null],
+      ['O-000002', 'value-not-in-source', 'luminosity'],
+      ['O-000004', 'source-value-missing', 'video'],
+      ['O-000008', 'wrong-pointer', null],
     ],
   );
 });
 
 test('§5.1 out-of-envelope anchors HARD-ERROR (exit 2) — never a partial value set', () => {
-  const r = runTsApp('--concepts', 'K-113,K-115,K-116');
+  const r = runTsApp('--concepts', 'O-000013,O-000015,O-000016');
   assert.equal(r.status, 2, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out.findings, []); // no value set was ever claimed checked
   assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [
-    ['K-113', 'out-of-envelope'],
-    ['K-115', 'out-of-envelope'],
-    ['K-116', 'out-of-envelope'],
+    ['O-000013', 'out-of-envelope'],
+    ['O-000015', 'out-of-envelope'],
+    ['O-000016', 'out-of-envelope'],
   ]);
   const messages = out['hard-errors'].map((e) => e.message);
-  assert.match(messages[0], /spread/i); // K-113: ...MOBILE_PRESETS
-  assert.match(messages[2], /re-export/i); // K-116: barrel file
+  assert.match(messages[0], /spread/i); // O-000013: ...MOBILE_PRESETS
+  assert.match(messages[2], /re-export/i); // O-000016: barrel file
 });
 
 test('the .tsx and plain-.js anchors extract clean — kinds describe shape, not file type', () => {
-  const r = runTsApp('--concepts', 'K-107,K-114');
+  const r = runTsApp('--concepts', 'O-000007,O-000014');
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.deepEqual(JSON.parse(r.stdout).findings, []);
 });

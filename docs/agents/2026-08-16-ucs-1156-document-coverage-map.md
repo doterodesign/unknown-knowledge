@@ -1,3 +1,7 @@
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+
+This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
+
 # UCS-1156 — Document coverage map: lexicon scan, pinned salience, suppressions, section locators, idempotence
 
 Branch: `ucs-1156-document-coverage-map-lexicon-scan-pinned-salience`

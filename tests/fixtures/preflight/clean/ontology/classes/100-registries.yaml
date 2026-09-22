@@ -1,9 +1,9 @@
-# KK-26 clean fixture: K-100 and K-110 pass every structural and value check
-# (trusted); K-130 is draft — its would-be value drift is skipped (§3.5), so
+# KK-26 clean fixture: O-000001 and O-000002 pass every structural and value check
+# (trusted); proposal:ontology:13013013-0130-4130-8130-130130130130 is draft — its would-be value drift is skipped (§3.5), so
 # preflight must verdict it unknown, never trusted and never quarantined.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.
@@ -13,7 +13,7 @@ entries:
       - kind: test-lines
         source: src/icons.txt
         values: [grid, list, search]
-  - id: K-110
+  - id: O-000002
     term: Color token
     class: 100-registries
     summary: A base color token.
@@ -23,7 +23,7 @@ entries:
       - kind: test-lines
         source: src/color-tokens.txt
         values: [srgb, p3]
-  - id: K-130
+  - id: proposal:ontology:13013013-0130-4130-8130-130130130130
     term: Draft panel
     class: 100-registries
     summary: A concept still being drafted.

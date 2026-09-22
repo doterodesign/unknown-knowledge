@@ -1,0 +1,88 @@
+{
+  "schema-version": 1,
+  "identity-format": 1,
+  "namespace": "30000000-0000-4000-8000-000000000004",
+  "allocations": [
+    {
+      "id": "D-000001",
+      "kind": "decision",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "D-000002",
+      "kind": "decision",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "K-000001",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "K-000002",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "K-000003",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "O-000001",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "O-000002",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "O-000003",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    },
+    {
+      "id": "O-000004",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    }
+  ]
+}

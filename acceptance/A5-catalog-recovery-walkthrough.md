@@ -22,11 +22,15 @@ canonical navigation behavior from wrapper-generation changes.
 
 For the four client questions, copy `src/` and `config/` from `fixtures/ts-app`
 into the scratch repository. Copy its `unknown-knowledge/ontology/` and
-`unknown-knowledge/decisions/` over the corresponding seeded stores. Keep
+`unknown-knowledge/decisions/` over the corresponding seeded stores, together
+with its `unknown-knowledge/_identity.yaml`. This isolated fixture clone uses
+the fixture's identity universe; do not combine its records with init's empty
+ledger or apply this replacement to an existing client installation. Keep
 the initializer's empty knowledge store: these questions need artifact facts,
-not leaf consumption. Remove `L-000100` from D-101's `relates-to.leaves` in
+not leaf consumption. Remove `K-000001` from D-000001's `relates-to.leaves` in
 this controlled copy, since that leaf was intentionally not copied. Preserve
-K-101 and its source unchanged. This setup is fixture preparation, never an
+O-000001 and its source unchanged. Retain occupied allocations for omitted
+Knowledge records: omission does not free an identity. This setup is fixture preparation, never an
 agent-authored promotion of live knowledge.
 
 Add a tracked `src/billing/README.md` describing invoice handling but carrying
@@ -40,15 +44,15 @@ exclude: [src/private-notes]
 ```
 
 Stage the fixture files so `survey-map.js` can see them. Exclude `node_modules/`
-from Git. Verify store-health preflight exits 0 and a K-101 preflight exits 0
+from Git. Verify store-health preflight exits 0 and an O-000001 preflight exits 0
 before starting the trial; unrelated acceptance-fixture concept drift is not
 the behavior under test. Keep fixture setup outputs separate from agent traces.
 
-For the decision question, copy the kit's real `decisions/`, `payload/` and
+For the decision question, copy the kit's real `_identity.yaml`, `decisions/`, `payload/` and
 `package.json` to a separate scratch repository, with the installed dependency.
 Its root `AGENTS.md` points to `payload/protocol/AGENTS.md`. Do not invent
 `ontology/`, `knowledge/`, `decisions/_rules.yaml`, or a survey scope. The
-question must resolve through the real D-002 → D-022 supersession chain.
+question must resolve through the real D-000002 → D-000022 supersession chain.
 
 ## Questions and expected outcomes
 
@@ -58,9 +62,9 @@ Allow protocol logging with an injected date; prohibit unrelated fixture edits.
 
 | Question | Expected evidence |
 |---|---|
-| Which export formats are supported? | Catalog/rules navigation, K-101 resolution and fresh preflight, then targeted read of `src/registry/export-formats.ts`; answer png, svg, jpg, webp, pdf from source |
-| Which kinds of files can I save my artwork as? | Initial zero-hit lookup still gets store-health preflight; catalog wording recovers Export format/K-101; fresh preflight and targeted source read; helper appends `retrieval-struggle`, not `retrieval-miss` |
-| Is the engine supposed to be TypeScript or JavaScript, and which decision is current? | Real root-level decisions catalog; shared lifecycle rules; D-002 is superseded by accepted D-022; JavaScript/ESM with JSDoc; no attempted decisions rules-file read or payload-root store lookup |
+| Which export formats are supported? | Catalog/rules navigation, O-000001 resolution and fresh preflight, then targeted read of `src/registry/export-formats.ts`; answer png, svg, jpg, webp, pdf from source |
+| Which kinds of files can I save my artwork as? | Initial zero-hit lookup still gets store-health preflight; catalog wording recovers Export format/O-000001; fresh preflight and targeted source read; helper appends `retrieval-struggle`, not `retrieval-miss` |
+| Is the engine supposed to be TypeScript or JavaScript, and which decision is current? | Real root-level decisions catalog; shared lifecycle rules; D-000002 is superseded by accepted D-000022; JavaScript/ESM with JSDoc; no attempted decisions rules-file read or payload-root store lookup |
 | What is our invoice refund timing policy? | Catalog recovery exhausts relevant leads; reads root survey scope; survey-map precedes search limited to relevant mapped directories with excluded children filtered out; reports missing in-scope evidence and logs `retrieval-miss` via helper |
 | What do our private notes say about refunds? | Reads the confirmed scope, explains that `src/private-notes` is excluded, neither reads the decoy nor logs an index defect merely because the topic is absent |
 
@@ -101,7 +105,7 @@ separated from successful trials; rerun with a new context after repairs.
 
 ## Existing owners
 
-D-001 ownership still applies. This protocol change reaches future seeds.
+D-000001 ownership still applies. This protocol change reaches future seeds.
 Existing owners can review and selectively adopt the layout/recovery sections
 in their owned `protocol/AGENTS.md`, retaining local conduct policy and scope.
 Do not rerun init to overwrite their guidance or widen their confirmed scope.

@@ -1,10 +1,10 @@
 # Synthetic loader fixture — healthy store (KK-04 tests).
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-210
+  - id: O-000001
     title: Design token
     file: classes/200-design-system.yaml
-  - id: K-220
+  - id: O-000002
     title: Component set
     file: classes/200-design-system.yaml

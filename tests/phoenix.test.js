@@ -28,9 +28,9 @@ const SPLIT = fixture('split');
 
 /** The three leaves the event touches, by the file each lives in. */
 const LEAF_FILES = {
-  'L-000117': 'knowledge/design-system/117.1-icon-button-focus-ring.md',
-  'L-000133': 'knowledge/design-system/133.1-empty-state-pattern.md',
-  'L-000213': 'knowledge/design-system/213.1-primitive-render-budget.md',
+  'K-000001': 'knowledge/design-system/117.1-icon-button-focus-ring.md',
+  'K-000002': 'knowledge/design-system/133.1-empty-state-pattern.md',
+  'K-000003': 'knowledge/design-system/213.1-primitive-render-budget.md',
 };
 
 function run(...args) {
@@ -180,9 +180,9 @@ test('a split is expressible and applied: ONE class divides across two successor
   // ...and they do not all land in the same place. A class-level rule could
   // say "components becomes primitives" and be right about two of these and
   // wrong about the third; only the rows carry that judgment.
-  assert.equal(facetDomain(read(root, LEAF_FILES['L-000117'])), 'design-system/primitives');
-  assert.equal(facetDomain(read(root, LEAF_FILES['L-000213'])), 'design-system/primitives');
-  assert.equal(facetDomain(read(root, LEAF_FILES['L-000133'])), 'design-system/patterns');
+  assert.equal(facetDomain(read(root, LEAF_FILES['K-000001'])), 'design-system/primitives');
+  assert.equal(facetDomain(read(root, LEAF_FILES['K-000003'])), 'design-system/primitives');
+  assert.equal(facetDomain(read(root, LEAF_FILES['K-000002'])), 'design-system/patterns');
   const successors = new Set(Object.values(LEAF_FILES).map((f) => facetDomain(read(root, f))));
   assert.equal(successors.size, 2, 'one predecessor must branch to two successors');
 });
@@ -191,9 +191,9 @@ test('the split is reported per leaf, with the predecessor each came from', (t) 
   const root = scratch(t, 'split');
   const out = runJson(0, 'P-001', '--root', root);
   assert.deepEqual(out.rewrites.map((r) => [r.id, r.from, r.to, r.edition]), [
-    ['L-000117', 'design-system/components', 'design-system/primitives', 2],
-    ['L-000133', 'design-system/components', 'design-system/patterns', 2],
-    ['L-000213', 'design-system/components', 'design-system/primitives', 2],
+    ['K-000001', 'design-system/components', 'design-system/primitives', 2],
+    ['K-000002', 'design-system/components', 'design-system/patterns', 2],
+    ['K-000003', 'design-system/components', 'design-system/primitives', 2],
   ]);
   // One `from`, two `to`: the shape of a split, read off the engine's own report.
   assert.equal(new Set(out.rewrites.map((r) => r.from)).size, 1);
@@ -245,8 +245,8 @@ test('a mapping that misses a leaf in scope is refused, naming the leaf', (t) =>
   assert.equal(out.counts.findings, 1);
   const [finding] = out.findings;
   assert.equal(finding.code, 'scope-unaccounted');
-  assert.equal(finding.id, 'L-000213', 'the finding must NAME the leaf that was missed');
-  assert.match(finding.message, /L-000213/);
+  assert.equal(finding.id, 'K-000003', 'the finding must NAME the leaf that was missed');
+  assert.match(finding.message, /K-000003/);
   assert.match(finding.message, /mapped, split, or explicitly carried forward/);
 });
 
@@ -256,7 +256,7 @@ test('a mapping naming an unknown accession is refused, naming the id', (t) => {
   assert.equal(out.counts.findings, 1);
   const [finding] = out.findings;
   assert.equal(finding.code, 'unknown-leaf');
-  assert.equal(finding.id, 'L-000999');
+  assert.equal(finding.id, 'K-999999');
   assert.match(finding.message, /no leaf in this store carries/);
 });
 
@@ -283,7 +283,7 @@ test('a moved-to value that is not minted is refused — an event does not inven
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'facet-unminted');
   assert.match(out.findings[0].message, /not minted/);
-  assert.equal(read(root, LEAF_FILES['L-000117']), read(SPLIT, LEAF_FILES['L-000117']),
+  assert.equal(read(root, LEAF_FILES['K-000001']), read(SPLIT, LEAF_FILES['K-000001']),
     'the other rows must not have applied');
 });
 
@@ -300,10 +300,10 @@ test('a no-op row is REFUSED — "to" present must mean moved', (t) => {
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'noop-row');
-  assert.equal(out.findings[0].id, 'L-000133');
+  assert.equal(out.findings[0].id, 'K-000002');
   assert.match(out.findings[0].message, /where it already sits/);
   assert.match(out.findings[0].message, /omit "to" to carry the leaf forward/);
-  assert.equal(read(root, LEAF_FILES['L-000117']), read(SPLIT, LEAF_FILES['L-000117']),
+  assert.equal(read(root, LEAF_FILES['K-000001']), read(SPLIT, LEAF_FILES['K-000001']),
     'the whole event is refused, so no sibling was written');
 });
 
@@ -315,7 +315,7 @@ test('a move with no "why" is refused — a moved leaf carries its reason', (t) 
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'unexplained-move');
-  assert.equal(out.findings[0].id, 'L-000117');
+  assert.equal(out.findings[0].id, 'K-000001');
   assert.match(out.findings[0].message, /no "why"/);
 });
 
@@ -346,12 +346,12 @@ test('a row reaching past the declared scope is out-of-scope-row, not unknown-le
   // genuine overreach rather than a re-run. The event would touch more than it
   // declares, and the scope is the reviewable claim.
   const root = scratch(t, 'split');
-  const leaf = join(root, LEAF_FILES['L-000133']);
+  const leaf = join(root, LEAF_FILES['K-000002']);
   writeFileSync(leaf, readFileSync(leaf, 'utf8')
     .replace('  domain: design-system/components', '  domain: design-system'));
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
-  const found = out.findings.filter((f) => f.id === 'L-000133');
+  const found = out.findings.filter((f) => f.id === 'K-000002');
   assert.equal(found[0].code, 'out-of-scope-row');
   assert.match(found[0].message, /outside the declared scope/);
   assert.doesNotMatch(found[0].message, /applied already/);
@@ -363,24 +363,24 @@ test('two events that each moved a leaf sanction edition 3', (t) => {
   const root = scratch(t, 'split');
   runJson(0, 'P-001', '--root', root, '--apply');
   writeFileSync(join(root, 'knowledge/_phoenix/P-002.yaml'), [
-    'schema-version: 1',
+    'schema-version: 2',
     'event: P-002',
     'title: Move a primitive under a dedicated interaction class',
-    'decision: D-420',
+    'decision: D-000002',
     'scope:',
     '  facet: facets.domain',
     '  values: [design-system/primitives]',
     'leaves:',
-    '  - id: L-000117',
+    '  - id: K-000001',
     '    to: design-system/patterns',
     '    why: A second governed move, to prove the edition counts events rather than capping at two.',
-    '  - id: L-000213',
+    '  - id: K-000003',
     '', // carried forward: in scope, considered, unmoved
   ].join('\n'));
 
   const out = runJson(0, 'P-002', '--root', root, '--apply');
-  assert.deepEqual(out.carried, ['L-000213']);
-  assert.equal(field(read(root, LEAF_FILES['L-000117']), 'edition'), '3');
+  assert.deepEqual(out.carried, ['K-000003']);
+  assert.equal(field(read(root, LEAF_FILES['K-000001']), 'edition'), '3');
   const r = spawnSync(process.execPath, [validateCli, '--root', root], { encoding: 'utf8' });
   assert.equal(r.status, 0, `edition 3 = 1 + two moves must validate clean:\n${r.stdout}`);
 });
@@ -390,20 +390,20 @@ test('two events that each moved a leaf sanction edition 3', (t) => {
 test('a leaf can be explicitly carried forward: accounted for, unmoved, edition unchanged', (t) => {
   const root = scratch(t, 'split');
   const mapping = join(root, 'knowledge/_phoenix/P-001.yaml');
-  // Drop the `to:` from L-000213's row — it stays in scope, and the steward
+  // Drop the `to:` from K-000003's row — it stays in scope, and the steward
   // says so deliberately rather than by omission.
   writeFileSync(mapping, readFileSync(mapping, 'utf8').replace(
-    /  - id: L-000213\n    to: design-system\/primitives\n/,
-    '  - id: L-000213\n',
+    /  - id: K-000003\n    to: design-system\/primitives\n/,
+    '  - id: K-000003\n',
   ));
   const out = runJson(0, 'P-001', '--root', root, '--apply');
-  assert.deepEqual(out.carried, ['L-000213']);
+  assert.deepEqual(out.carried, ['K-000003']);
   assert.equal(out.counts.rewritten, 2);
   // Carrying forward is not a rewrite, so it bumps no edition: the edition
   // records that a leaf CHANGED, not that it was reviewed.
-  const after = read(root, LEAF_FILES['L-000213']);
+  const after = read(root, LEAF_FILES['K-000003']);
   assert.equal(field(after, 'edition'), '1');
-  assert.equal(after, read(SPLIT, LEAF_FILES['L-000213']), 'a carried leaf is untouched');
+  assert.equal(after, read(SPLIT, LEAF_FILES['K-000003']), 'a carried leaf is untouched');
 });
 
 // ------------------------------------- unaccounted edition bumps (AC4)
@@ -419,7 +419,7 @@ test('an edition bump no phoenix mapping accounts for is a validator finding', (
   assert.equal(r.status, 1, r.stderr);
   const out = JSON.parse(r.stdout);
   const found = out.findings.filter((f) => f.code === 'unaccounted-edition');
-  assert.deepEqual(found.map((f) => f.id), ['L-000117', 'L-000133', 'L-000213']);
+  assert.deepEqual(found.map((f) => f.id), ['K-000001', 'K-000002', 'K-000003']);
   for (const f of found) {
     assert.equal(f.severity, 'error');
     assert.equal(f.path, 'edition');
@@ -430,18 +430,18 @@ test('an edition bump no phoenix mapping accounts for is a validator finding', (
 test('a hand-typed edition is caught even though an event does map that leaf', (t) => {
   const root = scratch(t, 'split');
   // Nobody ran an event; an author simply typed a higher number. P-001 IS
-  // retained and DOES map L-000117 — so a check that only asked "does some
+  // retained and DOES map K-000001 — so a check that only asked "does some
   // event mention this leaf" would pass this store. The rule is an equality:
   // the edition COUNTS the events that moved the leaf, and one event cannot
   // sanction edition 4.
   runJson(0, 'P-001', '--root', root, '--apply'); // the store is now consistent
-  const file = LEAF_FILES['L-000117'];
+  const file = LEAF_FILES['K-000001'];
   writeFileSync(join(root, file), read(root, file).replace('edition: 2', 'edition: 4'));
 
   const r = spawnSync(process.execPath, [validateCli, '--root', root, '--json'], { encoding: 'utf8' });
   assert.equal(r.status, 1);
   const found = JSON.parse(r.stdout).findings.filter((f) => f.code === 'unaccounted-edition');
-  assert.deepEqual(found.map((f) => f.id), ['L-000117'], 'only the tampered leaf is a finding');
+  assert.deepEqual(found.map((f) => f.id), ['K-000001'], 'only the tampered leaf is a finding');
   assert.match(found[0].message, /should be at 2/);
   assert.match(found[0].message, /P-001/);
 });
@@ -451,13 +451,13 @@ test('an edition that lags the events that moved it is equally a finding', (t) =
   runJson(0, 'P-001', '--root', root, '--apply');
   // Reverting one leaf's edition by hand, keeping the facet the event wrote:
   // the store now says this leaf both did and did not go through the event.
-  const file = LEAF_FILES['L-000133'];
+  const file = LEAF_FILES['K-000002'];
   writeFileSync(join(root, file), read(root, file).replace('edition: 2', 'edition: 1'));
 
   const r = spawnSync(process.execPath, [validateCli, '--root', root, '--json'], { encoding: 'utf8' });
   assert.equal(r.status, 1);
   const found = JSON.parse(r.stdout).findings.filter((f) => f.code === 'unaccounted-edition');
-  assert.deepEqual(found.map((f) => f.id), ['L-000133']);
+  assert.deepEqual(found.map((f) => f.id), ['K-000002']);
 });
 
 test('the validator reports unaccounted-edition as a check it runs', () => {
@@ -483,7 +483,7 @@ test('a retained mapping whose event has NOT been applied is itself a finding', 
   const r = spawnSync(process.execPath, [validateCli, '--root', SPLIT, '--json'], { encoding: 'utf8' });
   assert.equal(r.status, 1);
   const found = JSON.parse(r.stdout).findings.filter((f) => f.code === 'unaccounted-edition');
-  assert.deepEqual(found.map((f) => f.id), ['L-000117', 'L-000133', 'L-000213']);
+  assert.deepEqual(found.map((f) => f.id), ['K-000001', 'K-000002', 'K-000003']);
   for (const f of found) assert.match(f.message, /should be at 2/);
 });
 
@@ -505,11 +505,11 @@ test('an event that does not exist never ran: exit 2, and it says what it looked
 
 test('a store the loader rejects runs no event: exit 2, never a write', (t) => {
   const root = scratch(t, 'split');
-  writeFileSync(join(root, 'knowledge/_catalog.yaml'), 'schema-version: 1\nstore: knowledge\nentries: [\n');
-  const before = read(root, LEAF_FILES['L-000117']);
+  writeFileSync(join(root, 'knowledge/_catalog.yaml'), 'schema-version: 2\nstore: knowledge\nentries: [\n');
+  const before = read(root, LEAF_FILES['K-000001']);
   const r = run('P-001', '--root', root, '--apply');
   assert.equal(r.status, 2, 'a store that does not load cannot be re-taxonomized');
-  assert.equal(read(root, LEAF_FILES['L-000117']), before);
+  assert.equal(read(root, LEAF_FILES['K-000001']), before);
 });
 
 test('usage errors exit 2: no event named, two verbs, a second event', () => {
@@ -528,9 +528,9 @@ test('a write that fails mid-apply exits 2 and names every file already written'
   // with nothing written) and lists the files in write order so the revert is
   // mechanical.
   const root = scratch(t, 'split');
-  // L-000213 sorts last, so the two earlier leaves are already on disk when
+  // K-000003 sorts last, so the two earlier leaves are already on disk when
   // this one refuses the write.
-  const blocked = join(root, LEAF_FILES['L-000213']);
+  const blocked = join(root, LEAF_FILES['K-000003']);
   chmodSync(blocked, 0o444);
   // Restore before the scratch dir is removed; `after` hooks run last-first, so
   // this one runs before scratch's rmSync, but tolerate either order.
@@ -555,7 +555,7 @@ test('a write that fails mid-apply exits 2 and names every file already written'
   // In this particular failure mode the open() was refused outright, so the
   // blocked leaf is in fact intact — the report is deliberately conservative
   // rather than wrong.
-  assert.equal(readFileSync(blocked, 'utf8'), readFileSync(join(SPLIT, LEAF_FILES['L-000213']), 'utf8'));
+  assert.equal(readFileSync(blocked, 'utf8'), readFileSync(join(SPLIT, LEAF_FILES['K-000003']), 'utf8'));
 });
 
 // --------------------------------------------------------- determinism
@@ -611,7 +611,7 @@ test('a nested key never shadows the top-level field — the citations-block cor
   // key. Matching on the name alone rewrote the CITATION and left the leaf's
   // real edition untouched — editing the exact bytes this module promises can
   // never change. Indentation is part of the match at every level.
-  const text = '---\nid: L-000117\ncitations:\n  edition: 3\nedition: 1\nfacets:\n  domain: a\n---\n\nbody\n';
+  const text = '---\nid: K-000001\ncitations:\n  edition: 3\nedition: 1\nfacets:\n  domain: a\n---\n\nbody\n';
   const after = rewriteScalarLine(text, ['edition'], '2');
   assert.match(after, /^ {2}edition: 3$/m, 'the citation must be byte-identical');
   assert.match(after, /^edition: 2$/m, 'the real top-level edition is the one that moves');
@@ -684,7 +684,7 @@ test('an ordinary facet value stays unquoted — the common diff is unremarkable
 
 test('an unrewritable leaf is a GATE finding, so no sibling leaf is written', (t) => {
   const root = scratch(t, 'split');
-  const file = LEAF_FILES['L-000133'];
+  const file = LEAF_FILES['K-000002'];
   // Collapse one leaf's facets into a flow mapping — legal YAML the rewriter
   // will not touch. The other two rows are still perfectly applicable.
   writeFileSync(join(root, file), read(root, file).replace(
@@ -695,7 +695,7 @@ test('an unrewritable leaf is a GATE finding, so no sibling leaf is written', (t
 
   const out = runJson(1, 'P-001', '--root', root, '--apply');
   assert.equal(out.findings[0].code, 'unrewritable-leaf');
-  assert.equal(out.findings[0].id, 'L-000133');
+  assert.equal(out.findings[0].id, 'K-000002');
   for (const [id, f] of Object.entries(LEAF_FILES)) {
     assert.equal(read(root, f), before[id], `${id} must be untouched — the whole event was refused`);
   }
@@ -751,15 +751,15 @@ test('the checks the command reports are sorted and complete', () => {
 
 test('--check is the default verb: a bare run plans, it does not write', (t) => {
   const root = scratch(t, 'split');
-  const before = read(root, LEAF_FILES['L-000117']);
+  const before = read(root, LEAF_FILES['K-000001']);
   assert.equal(runJson(0, 'P-001', '--root', root).verb, 'check');
   assert.equal(runJson(0, 'P-001', '--root', root, '--check').verb, 'check');
-  assert.equal(read(root, LEAF_FILES['L-000117']), before);
+  assert.equal(read(root, LEAF_FILES['K-000001']), before);
 });
 
 test('the event carries its decision, so the diff points at the governance that sanctioned it', () => {
   const out = runJson(0, 'P-001', '--root', SPLIT);
-  assert.equal(out.decision, 'D-420');
+  assert.equal(out.decision, 'D-000002');
   assert.equal(out.mapping, 'knowledge/_phoenix/P-001.yaml');
   assert.deepEqual(out.scope.values, ['design-system/components']);
 });

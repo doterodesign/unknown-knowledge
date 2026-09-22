@@ -1,19 +1,19 @@
 # Synthetic resolver fixture (KK-06 / A4) — healthy stub store until M4 fixtures land.
-schema-version: 1
+schema-version: 2
 store: ontology
 entries:
-  - id: K-100
+  - id: O-000001
     title: Asset source
     file: classes/100-design.yaml
-  - id: K-110
+  - id: O-000002
     title: Asset target
     file: classes/100-design.yaml
-  - id: K-120
+  - id: O-000003
     title: Export
     file: classes/100-design.yaml
-  - id: K-130
+  - id: proposal:ontology:13013013-0130-4130-8130-130130130130
     title: Export preset
     file: classes/100-design.yaml
-  - id: K-140
+  - id: O-000004
     title: Palette
     file: classes/100-design.yaml

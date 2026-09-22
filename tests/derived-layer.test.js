@@ -77,7 +77,7 @@ test('generation produces browse trees along two axes from one flat store', (t) 
 
   // Every leaf appears in BOTH trees — a projection reorders the store, it
   // never selects from it.
-  for (const id of ['L-000117', 'L-000133', 'L-000162', 'L-000171', 'L-000213', 'L-000228']) {
+  for (const id of ['K-000001', 'K-000002', 'K-000003', 'K-000004', 'proposal:knowledge:17117117-1171-4171-8171-171171171171', 'proposal:knowledge:21321321-3213-4213-8213-213213213213']) {
     assert.ok(domainFirst.includes(id), `${id} is missing from the domain-first tree`);
     assert.ok(formFirst.includes(id), `${id} is missing from the form-first tree`);
   }
@@ -96,27 +96,27 @@ test('the golden domain-first tree — the whole artifact, byte for byte', (t) =
 - time verdicts: checked against --today 2026-08-16 (stale after 365 days for stable, 90 for volatile; static never stales)
 
 Call numbers are synthesized display strings for this projection only. They
-are NOT identities: cite the accession id (L-NNNNNN), never a call number.
+are NOT identities: cite the canonical Knowledge id (K-000001 through K-999999), never a call number.
 
 - **brand/** (1)
   - **identity/** (1)
     - **reference/** (1)
-      - \`BRA/IDE/REF·L-000228\` Brand color token table
+      - \`BRA/IDE/REF·K-000004\` Brand color token table
 - **design-system/** (3)
   - **components/** (3)
     - **constraint/** (2)
-      - \`DES/COM/CON·L-000133\` Contrast ratios at token export
-      - \`DES/COM/CON·L-000213\` Component render budget — **demoted** (stage)
+      - \`DES/COM/CON·K-000002\` Contrast ratios at token export
+      - \`DES/COM/CON·proposal:knowledge:21321321-3213-4213-8213-213213213213\` Component render budget — **demoted** (stage)
         - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)
     - **reference/** (1)
-      - \`DES/COM/REF·L-000117\` Icon component sizing quirks
+      - \`DES/COM/REF·K-000001\` Icon component sizing quirks
 - **engineering/** (2)
   - **frontend/** (2)
     - **constraint/** (1)
-      - \`ENG/FRO/CON·L-000162\` Bundle-size budget thresholds — **demoted** (time)
+      - \`ENG/FRO/CON·K-000003\` Bundle-size budget thresholds — **demoted** (time)
         - time: verified 223 day(s) ago, past the 90-day limit for volatile knowledge (UCS-1150)
     - **runbook/** (1)
-      - \`ENG/FRO/RUN·L-000171\` Visual regression triage playbook — **demoted** (stage, time)
+      - \`ENG/FRO/RUN·proposal:knowledge:17117117-1171-4171-8171-171171171171\` Visual regression triage playbook — **demoted** (stage, time)
         - stage: stage "draft" is pre-promotion — no moderator has certified this leaf's citations (UCS-1149)
         - time: verified 154 day(s) ago, past the 90-day limit for volatile knowledge (UCS-1150)
 `);
@@ -154,13 +154,13 @@ test('call numbers are synthesized into the trees, one per axis', (t) => {
 
   // The SAME leaf carries a different call number in each tree, because a call
   // number describes a POSITION in a projection and that leaf holds two.
-  assert.match(derivedFile(root, 'tree.domain-form.md'), /`DES\/COM\/REF·L-000117`/);
-  assert.match(derivedFile(root, 'tree.form-domain.md'), /`REF\/DES\/COM·L-000117`/);
+  assert.match(derivedFile(root, 'tree.domain-form.md'), /`DES\/COM\/REF·K-000001`/);
+  assert.match(derivedFile(root, 'tree.form-domain.md'), /`REF\/DES\/COM·K-000001`/);
 
   const index = JSON.parse(derivedFile(root, 'index.json'));
-  const leaf = index.leaves.find((l) => l.id === 'L-000117');
-  assert.equal(leaf.positions['domain-form']['call-number'], 'DES/COM/REF·L-000117');
-  assert.equal(leaf.positions['form-domain']['call-number'], 'REF/DES/COM·L-000117');
+  const leaf = index.leaves.find((l) => l.id === 'K-000001');
+  assert.equal(leaf.positions['domain-form']['call-number'], 'DES/COM/REF·K-000001');
+  assert.equal(leaf.positions['form-domain']['call-number'], 'REF/DES/COM·K-000001');
 });
 
 test('no call number is an id in ANY id space — checked against every grammar', (t) => {
@@ -195,7 +195,7 @@ test('the index keys leaves by accession and never by call number', (t) => {
   const index = JSON.parse(derivedFile(root, 'index.json'));
 
   assert.deepEqual(index.leaves.map((l) => l.id),
-    ['L-000117', 'L-000133', 'L-000162', 'L-000171', 'L-000213', 'L-000228']);
+    ['K-000001', 'K-000002', 'K-000003', 'K-000004', 'proposal:knowledge:17117117-1171-4171-8171-171171171171', 'proposal:knowledge:21321321-3213-4213-8213-213213213213']);
   // A lookup table is the most tempting place to reintroduce a second
   // resolvable name for a leaf. There is no top-level map from call number to
   // anything, and the index says so in its own text.
@@ -325,10 +325,10 @@ test('stale and draft leaves are annotated in the trees, never hidden', (t) => {
   for (const axis of AXES) {
     const tree = derivedFile(root, `tree.${axis.key}.md`);
     // Present, and marked.
-    assert.match(tree, /`[^`]*L-000213` Component render budget — \*\*demoted\*\* \(stage\)/);
-    assert.match(tree, /`[^`]*L-000162` Bundle-size budget thresholds — \*\*demoted\*\* \(time\)/);
+    assert.match(tree, /`[^`]*proposal:knowledge:21321321-3213-4213-8213-213213213213` Component render budget — \*\*demoted\*\* \(stage\)/);
+    assert.match(tree, /`[^`]*K-000003` Bundle-size budget thresholds — \*\*demoted\*\* \(time\)/);
     // Both demotions accumulate — neither absorbs the other.
-    assert.match(tree, /`[^`]*L-000171` Visual regression triage playbook — \*\*demoted\*\* \(stage, time\)/);
+    assert.match(tree, /`[^`]*proposal:knowledge:17117117-1171-4171-8171-171171171171` Visual regression triage playbook — \*\*demoted\*\* \(stage, time\)/);
     // The REASON travels with the mark: a demotion is never silent.
     assert.match(tree, /stage "draft" is pre-promotion/);
     assert.match(tree, /past the 90-day limit for volatile knowledge/);
@@ -340,12 +340,12 @@ test('demoted leaves sort last within their node but stay in it', (t) => {
   assert.equal(derive(root, ['--today', TODAY, '--write']).status, 0);
   const tree = derivedFile(root, 'tree.domain-form.md');
 
-  // Inside design-system/components/constraint: the promoted L-000133 precedes the
-  // draft L-000213, and BOTH are in that node. Demotion reorders; it never
+  // Inside design-system/components/constraint: the promoted K-000002 precedes the
+  // draft proposal:knowledge:21321321-3213-4213-8213-213213213213, and BOTH are in that node. Demotion reorders; it never
   // refiles and never omits.
   const constraintNode = tree.slice(tree.indexOf('**constraint/** (2)'));
-  const promoted = constraintNode.indexOf('L-000133');
-  const demoted = constraintNode.indexOf('L-000213');
+  const promoted = constraintNode.indexOf('K-000002');
+  const demoted = constraintNode.indexOf('proposal:knowledge:21321321-3213-4213-8213-213213213213');
   assert.ok(promoted !== -1 && demoted !== -1, 'both leaves stay in the node');
   assert.ok(promoted < demoted, 'the demoted leaf sorts last within its node');
 });
@@ -360,12 +360,12 @@ test('without --today, staleness is skipped and SAID — never a silent pass', (
   assert.match(tree, /- time verdicts: skipped — no evaluation date supplied/);
   // The stale-only leaf is NOT marked stale, because nothing measured it — and
   // the header says why rather than letting it read as fresh.
-  assert.doesNotMatch(tree, /L-000162` Bundle-size budget thresholds — \*\*demoted\*\*/);
+  assert.doesNotMatch(tree, /K-000003` Bundle-size budget thresholds — \*\*demoted\*\*/);
   // Stage demotion needs no date, so it still applies.
-  assert.match(tree, /L-000213` Component render budget — \*\*demoted\*\* \(stage\)/);
+  assert.match(tree, /proposal:knowledge:21321321-3213-4213-8213-213213213213` Component render budget — \*\*demoted\*\* \(stage\)/);
 
   const index = JSON.parse(derivedFile(root, 'index.json'));
-  const stale = index.leaves.find((l) => l.id === 'L-000162');
+  const stale = index.leaves.find((l) => l.id === 'K-000003');
   assert.equal(stale.time.verdict, 'skipped');
   assert.equal(stale.demoted, false);
 });
@@ -384,7 +384,7 @@ test('a leaf declaring no facets files under unclassified, visibly', (t) => {
   // Filed where a steward will SEE it, rather than flattening up a level into
   // the domain node and looking correctly classified.
   assert.match(tree, /- \*\*unclassified\/\*\* \(1\)/);
-  assert.match(tree, /`UNC\/UNC·L-000228` Brand color token table/);
+  assert.match(tree, /`UNC\/UNC·K-000004` Brand color token table/);
   // Still one leaf per tree: an unclassified leaf is projected, never dropped.
   assert.match(tree, /- leaves: 6$/m);
 });
@@ -440,8 +440,8 @@ test('the gate refuses every proposal — nothing probabilistic persists or is c
   // implementation routes through here and gets a refusal; the only way into
   // the store is the ordinary authoring path.
   for (const proposal of [
-    { id: 'L-000117', score: 0.99 },
-    { id: 'L-000133', score: 1 },
+    { id: 'K-000001', score: 0.99 },
+    { id: 'K-000002', score: 1 },
     {},
   ]) {
     const verdict = gateProposal(proposal);

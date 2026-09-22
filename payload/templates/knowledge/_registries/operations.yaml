@@ -10,9 +10,9 @@
 #     - value: reconcile
 #       gloss: Export a component set to a published package.
 #       warrant: 362.1 documents the export procedure.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: operations
 values: []

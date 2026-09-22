@@ -1,9 +1,9 @@
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-201
+  - id: D-000001
     title: One gadget store
     file: entries/D-201-gadget-store.yaml
-  - id: D-205
+  - id: proposal:decision:00000000-0000-4000-8000-000000000205
     title: Graduate authority assignments to sampling
     file: entries/D-205-graduate-gated-category.yaml

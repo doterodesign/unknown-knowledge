@@ -25,7 +25,7 @@ That is the whole event. In particular:
 
 **`id:` does not appear in the diff.** Identity is the accession, and a phoenix
 event never changes one. Every citation into these leaves — the decisions entry
-D-420's `relates-to`, the catalog rows, any leaf cross-reference — is as valid at
+D-000002's `relates-to`, the catalog rows, any leaf cross-reference — is as valid at
 edition 2 as it was at edition 1. Nothing chases a reclassification.
 
 **The citations blocks do not appear in the diff.** Not because the engine is
@@ -45,14 +45,14 @@ they do not all end up in the same place:
 
 | leaf | | successor |
 | --- | --- | --- |
-| L-000117 — icon button focus-ring spec | → | `design-system/primitives` |
-| L-000213 — primitive render budget | → | `design-system/primitives` |
-| L-000133 — empty-state pattern guidance | → | `design-system/patterns` |
+| K-000001 — icon button focus-ring spec | → | `design-system/primitives` |
+| K-000003 — primitive render budget | → | `design-system/primitives` |
+| K-000002 — empty-state pattern guidance | → | `design-system/patterns` |
 
 That is what makes this a split rather than a rename, and it is the reason the
 mapping has to be leaf-granular. A class-level rule could say "components becomes
 primitives" and would be right about two of these leaves and wrong about the
-third. Nothing about the class itself distinguishes them — L-000133 is
+third. Nothing about the class itself distinguishes them — K-000002 is
 composition guidance that was filed under components because it shipped
 alongside one, which is exactly the drift the event exists to fix. Only a
 per-accession row can carry that judgment, and only the row's `why` can explain

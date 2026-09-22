@@ -1,19 +1,19 @@
 # Acceptance-fixture ontology (KK-15) — planted cases are deliberate; the
 # expected finding per concept is tabulated in ../../../FIXTURE.md. Descriptors
 # are always SCHEMA-VALID: drift lives in the values, never in the shape.
-schema-version: 1
+schema-version: 2
 entries:
   # -- clean extractions (A2), adversarial-but-extractable formatting --------
-  - id: K-101
+  - id: O-000001
     term: Export format
     class: 100-product
     summary: A file format the editor can export artboards to.
     aliases: [export type]
     source-of-truth: [src/registry/export-formats.ts]
     owned-by: editor
-    used-by: [K-102]
-    confusable-with: [K-113]
-    rationale: [D-101]
+    used-by: [O-000002]
+    confusable-with: [O-000013]
+    rationale: [D-000001]
     status: active
     last-verified: "2026-07-08"
     enumerates:
@@ -21,7 +21,7 @@ entries:
         source: src/registry/export-formats.ts
         symbol: EXPORT_FORMATS
         values: [png, svg, jpg, webp, pdf]
-  - id: K-103
+  - id: O-000003
     term: Release status
     class: 100-product
     summary: Lifecycle state of a design-library release.
@@ -33,7 +33,7 @@ entries:
         source: src/types/release-status.ts
         symbol: ReleaseStatus
         values: [draft, in-review, published, deprecated]
-  - id: K-105
+  - id: O-000005
     term: Color space
     class: 100-product
     summary: Color spaces the canvas can render in.
@@ -46,7 +46,7 @@ entries:
         symbol: ColorSpace
         emit: names
         values: [SRGB, P3, LAB, LCH]
-  - id: K-106
+  - id: O-000006
     term: Panel
     class: 100-product
     summary: Dockable workspace panels the editor shell can open.
@@ -58,12 +58,12 @@ entries:
         source: src/registry/panels.ts
         symbol: PANELS
         values: [layers-panel, inspector, assets-panel, comments]
-  - id: K-107
+  - id: O-000007
     term: Status color
     class: 100-product
     summary: Badge color assigned to each release status (.tsx anchor).
     source-of-truth: [src/components/StatusBadge.tsx]
-    used-by: [K-103]
+    used-by: [O-000003]
     status: active
     last-verified: "2026-07-08"
     enumerates:
@@ -71,7 +71,7 @@ entries:
         source: src/components/StatusBadge.tsx
         symbol: STATUS_COLORS
         values: [draft, in-review, published, deprecated]
-  - id: K-109
+  - id: O-000009
     term: Feature flag
     class: 100-product
     summary: Runtime feature switches read from app config.
@@ -82,7 +82,7 @@ entries:
       - kind: json-keys
         source: config/features.json
         values: [multiplayer-cursors, version-history, component-variants]
-  - id: K-112
+  - id: O-000012
     term: App dependency
     class: 100-product
     summary: Runtime npm dependencies of the app.
@@ -94,7 +94,7 @@ entries:
         source: package.json
         symbol: dependencies
         values: [react, react-dom, zod]
-  - id: K-110
+  - id: O-000010
     term: Vertical
     class: 100-product
     summary: Product verticals, one module folder each (folder identity).
@@ -105,7 +105,7 @@ entries:
       - kind: dir-modules
         source: src/verticals
         values: [editor, prototyping, whiteboard]
-  - id: K-111
+  - id: O-000011
     term: Route
     class: 100-product
     summary: App routes, one *.route.ts module each (file-based routing).
@@ -118,7 +118,7 @@ entries:
         pattern: "*.route.ts"
         strip: .route.ts
         values: [home, account, files]
-  - id: K-114
+  - id: O-000014
     term: Plan tier
     class: 100-product
     summary: Subscription plan tiers (plain .js anchor — TS kinds read JS too).
@@ -131,12 +131,12 @@ entries:
         symbol: PLAN_TIERS
         values: [free, pro, team, enterprise]
   # -- planted bidirectional drift (A3) ---------------------------------------
-  - id: K-102
+  - id: O-000002
     term: Blend mode
     class: 100-product
     summary: Layer blend modes. DRIFT — claims 'luminosity', absent from source.
     source-of-truth: [src/registry/blend-modes.ts]
-    used-by: [K-101]
+    used-by: [O-000001]
     status: active
     last-verified: "2026-07-08"
     enumerates:
@@ -144,7 +144,7 @@ entries:
         source: src/registry/blend-modes.ts
         symbol: BLEND_MODES
         values: [normal, multiply, screen, overlay, luminosity]
-  - id: K-104
+  - id: O-000004
     term: Asset kind
     class: 100-product
     summary: Library asset kinds. DRIFT — source also has 'video', unclaimed here.
@@ -158,7 +158,7 @@ entries:
         values: [icon, illustration, photo]
   # -- wrong-pointer signature (A3): every claimed value missing from a real
   #    parseable file; the true home is src/registry/locales.ts ---------------
-  - id: K-108
+  - id: O-000008
     term: Locale
     class: 100-product
     summary: Supported locales. WRONG POINTER — descriptor names export-formats.ts.
@@ -171,12 +171,12 @@ entries:
         symbol: EXPORT_FORMATS
         values: [en-US, es-MX, pt-BR]
   # -- out-of-envelope anchors (§5.1): extractor must HARD-ERROR --------------
-  - id: K-113
+  - id: O-000013
     term: Export preset
     class: 100-product
     summary: Export presets across surfaces. UNEXTRACTABLE — spread in the array.
     source-of-truth: [src/registry/export-presets.ts]
-    confusable-with: [K-101]
+    confusable-with: [O-000001]
     status: active
     last-verified: "2026-07-08"
     enumerates:
@@ -184,7 +184,7 @@ entries:
         source: src/registry/export-presets.ts
         symbol: ALL_PRESETS
         values: [web-2x, print]
-  - id: K-115
+  - id: O-000015
     term: Experiment
     class: 100-product
     summary: A/B experiments. UNEXTRACTABLE — computed object key.
@@ -196,12 +196,12 @@ entries:
         source: src/registry/experiments.ts
         symbol: EXPERIMENTS
         values: [quick-insert]
-  - id: K-116
+  - id: O-000016
     term: Release status barrel
     class: 100-product
     summary: Barrel re-export of ReleaseStatus. UNEXTRACTABLE — re-export.
     source-of-truth: [src/types/index.ts]
-    confusable-with: [K-103]
+    confusable-with: [O-000003]
     status: active
     last-verified: "2026-07-08"
     enumerates:

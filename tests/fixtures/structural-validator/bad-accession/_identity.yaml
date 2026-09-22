@@ -1,0 +1,16 @@
+{
+  "schema-version": 1,
+  "identity-format": 1,
+  "namespace": "30000000-0000-4000-8000-000000000001",
+  "allocations": [
+    {
+      "id": "K-000001",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "30000000-0000-4000-8000-000000000010",
+        "review": "fixture:structural-negative-canonical"
+      }
+    }
+  ]
+}

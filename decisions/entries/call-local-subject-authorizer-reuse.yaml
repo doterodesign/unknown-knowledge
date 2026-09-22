@@ -1,0 +1,40 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:5ec051c3-351f-4712-9d53-5c465b7baf2f
+    title: Reuse loaded authorizer resolution only inside one governance call
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      At retained pin 5bad18d the joint fixture loaded then failed repeated corpus
+      admission; the near-byte fixture failed historical-authorizer validation
+      before returning context. Each fixture has 256 events using one qualified
+      Decision and two capture locators. The identity index privately owns detached
+      data, while the model and returned resolver copies are caller-mutable.
+      Correction recorded 2026-09-20: the original context said one capture
+      locator because a static extractor read the wrong authored field name.
+      The corrected count is two; no production memo or retained trial result
+      depended on that count. Original evidence remains preserved in Git and
+      the separate P4 document-text evidence erratum.
+    decision: >
+      Stage A uses a private synchronous-call-local resolver per evaluation and
+      binding, retaining only loaded detached results and current-record digests
+      for exact validated references on one actual index and allowance. Every
+      lookup asserts the budget latch and pays a named validation step. Misses
+      retain P1's strict authored guard, full wrapper guard and clone. Every event
+      still performs its own evidence, assessment and expected digest/status
+      checks. Binding retains all actual mutable model guards/hashes and refuses
+      a replaced model identity index before reusing proof. No cache is caller
+      supplied, exposed in handles, or transferable across calls or allowances.
+    consequences: >
+      Actual absent traversals, clones and hashes require no fabricated debits;
+      work still performed retains its accounting. Direct P1 callers are unchanged.
+      Tests in tests/subject-authorizer-reuse.test.js cover repeated-text savings,
+      corrupt later expectations, malformed references, fresh calls/indexes, model
+      mutation and sticky exhaustion. Docs/agents/ucs-1235-operation-budget.md
+      defines the lookup units and measured test deltas. P1/P2 reviewed the design
+      and P2 reviewed the source; this remains a proposed record, not canonical
+      approval. Parsed-evidence and immutable-corpus reuse remain deferred. No cap,
+      fixture, eligibility change or operational qualification is included.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20, proposal:decision:7e199c03-2618-41ed-97ed-5bee05750a09] }

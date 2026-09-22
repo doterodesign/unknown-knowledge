@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-102
+  - id: O-000001
     term: Freshness boundary
     class: 100-freshness
     summary: Where knowledge stops being fresh and starts being stale.

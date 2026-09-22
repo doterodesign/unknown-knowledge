@@ -4,7 +4,7 @@
 # `_registries/`, so this passes its schema and would otherwise index under a
 # key that contradicts its own path, with a steward following that key opening
 # a different store's directory.
-schema-version: 1
+schema-version: 2
 store: decisions
 table: graduation-categories
 categories:
@@ -15,7 +15,7 @@ categories:
     warrant: >-
       Mechanical: the edit is checkable by reading it against the concept it
       names, and a run of correct ones is evidence about the next one.
-    decision: D-201
+    decision: D-000001
     declared: "2026-07-07"
   - category: authority-assignments
     eligibility: gated
@@ -25,5 +25,5 @@ categories:
       claim about the world rather than about the store. Being right N times
       running says the assigner was careful, not that the N+1th source needs no
       reading.
-    decision: D-201
+    decision: D-000001
     declared: "2026-07-07"

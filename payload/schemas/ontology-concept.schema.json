@@ -2,20 +2,25 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:ontology-concept",
   "title": "Ontology concept (PRD §3.1)",
-  "description": "One concept record inside an ontology class file. Truth anchor: the artifact — source-of-truth pointers reference the repo inward. Prose fields (summary, definition) are navigation, never the fact. IDs are minted at PR time within the class's declared range and are immutable once published (§3.5); range membership, duplicate detection, and ref resolution are loader/structural-validator checks (KK-04/KK-05), not record-local. Class files carry the store-file envelope in $defs/storeFile. Schema evolution is additive-only (§3.5, D-013).",
+  "description": "One concept record inside an Ontology class file. Truth anchor: the artifact. Canonical O-000001 through O-999999 identities are immutable and independent of class names, filenames and reclassification. Unpublished records use typed proposal keys. Source pointers remain the authority; prose is navigation. The active store-file envelope is version 2.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "term", "class", "summary", "status"],
   "properties": {
+    "subjects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/subjectRef" },
+      "description": "Optional whole-record subject assignments, in authored order with no primary position. Absent means unknown; an empty array explicitly records none. IDs must be canonical S identities, including on proposal records. Duplicate IDs are rejected by the engine convention. Assignment shape does not establish registry membership, eligibility or approval."
+    },
     "id": {
       "type": "string",
-      "pattern": "^K-[0-9]+$",
-      "description": "K-NNN, within the class's declared range; immutable once published."
+      "pattern": "^(?:O-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:ontology:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$",
+      "description": "Canonical O identity, or an exact proposal:ontology:<lowercase-v4-uuid> authoring key. Canonical lookup never accepts proposal keys."
     },
     "term": { "type": "string" },
     "class": {
       "type": "string",
-      "description": "Class file this concept belongs to; class files define id ranges. Taxonomy is per-project."
+      "description": "Per-project classification metadata. A class or filename does not allocate an identity range."
     },
     "summary": { "type": "string" },
     "definition": {
@@ -57,10 +62,11 @@
     }
   },
   "$defs": {
-    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
+    "subjectRef": { "type": "string", "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$" },
+    "conceptRef": { "type": "string", "pattern": "^(?:O-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:ontology:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
     "decisionRef": {
       "type": "string",
-      "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$"
+      "pattern": "^(?:D-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:decision:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$"
     },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "enumeratesDescriptor": {
@@ -107,7 +113,7 @@
       "required": ["schema-version", "entries"],
       "description": "Ontology class-file envelope. Every store file carries schema-version (§3.5); evolution is additive-only.",
       "properties": {
-        "schema-version": { "type": "integer", "minimum": 1 },
+        "schema-version": { "type": "integer", "enum": [2] },
         "entries": { "type": "array", "items": { "$ref": "#" } }
       }
     }

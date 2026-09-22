@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-401
+  - id: D-000001
     title: Frontmatter v2 vocabularies
     file: entries/D-401-frontmatter-v2.yaml

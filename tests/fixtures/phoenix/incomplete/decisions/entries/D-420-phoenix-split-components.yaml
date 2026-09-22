@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-420
+  - id: D-000002
     title: "Phoenix: split components into primitives/patterns (edition 2)"
     category: governance
     status: accepted
@@ -30,4 +30,4 @@ entries:
       accession rather than to the shelf.
     supersedes: []
     relates-to:
-      leaves: [L-000117, L-000133, L-000213]
+      leaves: [K-000001, K-000002, K-000003]

@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-201
+  - id: D-000001
     title: Design-system governed vocabularies
     file: entries/D-201-design-system-vocabularies.yaml

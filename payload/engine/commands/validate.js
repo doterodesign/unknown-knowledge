@@ -10,12 +10,9 @@
  * the checks that need the whole model and the working tree:
  *
  *   id-shape          catalog entry id violates the owning store's id grammar
- *                     (K-NNN / dotted notation / D-NNN or provisional draft id)
+ *                     (canonical K/O/D identities or same-kind authoring proposal keys)
  *                     — record-level ids are schema-pattern-checked upstream,
  *                     catalog ids are plain strings there by design
- *   id-range          concept id outside the class file's declared range: the
- *                     numeric filename prefix N declares [N, N+99] (§3.5 ids
- *                     are minted within class ranges, leaving gaps)
  *   missing-path      a declared pointer that does not name a real thing inside
  *                     this repo — a concept source-of-truth path, or a
  *                     knowledge leaf `paths` entry (UCS-1151). Three shapes,
@@ -94,12 +91,12 @@
  * (shared comparator), no timestamps — baseline-diffable (D-012).
  */
 import { realpathSync, statSync } from 'node:fs';
-import { isAbsolute, relative, resolve } from 'node:path';
+import { isAbsolute, relative, resolve, posix } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
 import {
   LEAF_ACCESSION_FIELD, LEAF_PATHS_FIELD, healthSummary, loadStores,
-  normalizeConceptIds, recordId, storeHealth,
+  normalizeConceptIds, recordId, storeHealth, authoringRecords, authoringRecord,
 } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
@@ -108,7 +105,7 @@ import { compare } from '../lib/validate-record.js';
 // Catalog id grammars come from the one module that owns them (UCS-1142), the
 // same source the record-level schema patterns bind to — so a catalog row and
 // the record it points at can never be judged by two different grammars.
-import { ID_GRAMMARS, idPattern } from '../lib/id-grammars.js';
+import { AUTHORING_ID_GRAMMARS } from '../lib/id-grammars.js';
 // The Time facet's field spellings and pinned thresholds (UCS-1150), read from
 // the one module that owns them — the validator's presence check and every
 // surface's staleness verdict must agree about which fields those are.
@@ -125,7 +122,7 @@ export const USAGE = 'usage: node payload/engine/validate.js [--json] [--root <d
 export const CHECKS = Object.freeze([
   'disconnected-revocation', 'gated-category-graduation',
   'graduation-field-shape', 'graduation-not-trust-category',
-  'id-range', 'id-shape', 'index-drift',
+  'id-shape', 'index-drift',
   'malformed-verified', 'missing-authority', 'missing-citation',
   'missing-graduation-table', 'missing-path', 'missing-registry',
   'missing-verified', 'orphan', 'ref-cycle', 'registry-shape-mismatch',
@@ -253,8 +250,8 @@ function realpathOrNull(path) {
  * table is what keeps the distinction available when they diverge.
  */
 const CATALOG_ID_SPACE = Object.freeze({
-  decisions: 'decisions',
-  knowledge: 'leaf-ref',
+  decisions: 'decision',
+  knowledge: 'knowledge',
   ontology: 'ontology',
 });
 
@@ -271,7 +268,7 @@ function checkCatalogs(model, push) {
     if (!idsByFile.has(file)) idsByFile.set(file, new Set());
     idsByFile.get(file).add(id);
   };
-  for (const records of [model.concepts, model.decisions, model.leaves]) {
+  for (const records of [model.concepts, model.decisions, model.leaves, ...Object.values(model.proposals)]) {
     for (const entry of records.values()) addTo(entry.file, recordId(entry));
   }
 
@@ -285,8 +282,8 @@ function checkCatalogs(model, push) {
     // what actually ties the row to a leaf — the grammar only decides whether
     // the row names something of a shape a leaf could have.
     const space = CATALOG_ID_SPACE[store];
-    const grammar = ID_GRAMMARS[space];
-    const pattern = idPattern(space);
+    const grammar = AUTHORING_ID_GRAMMARS[space];
+    const pattern = new RegExp(grammar.pattern);
     catalog.entries.forEach((row, i) => {
       if (!isObject(row) || typeof row.id !== 'string' || typeof row.file !== 'string') return;
       if (!pattern.test(row.id)) {
@@ -305,7 +302,7 @@ function checkCatalogs(model, push) {
         });
         return;
       }
-      const target = `${store}/${row.file}`;
+      const target = posix.normalize(`${store}/${row.file}`);
       if (!model.stores[store].files.includes(target)) {
         push({
           severity: 'error', code: 'index-drift', id: row.id,
@@ -323,21 +320,9 @@ function checkCatalogs(model, push) {
   }
 }
 
-/** Concepts: class-range membership (id-range) + SSOT existence (missing-path). */
+/** Concept source pointers retain their checks; class names allocate no IDs. */
 function checkConcepts(model, push, repoRoot) {
-  for (const { id, file, record } of model.concepts.values()) {
-    // id-range: the class file's numeric prefix N declares [N, N+99] (§3.5).
-    const prefix = /^(\d+)-/.exec(file.split('/').pop());
-    const n = Number(id.slice(2));
-    if (prefix && Number.isInteger(n)) {
-      const lower = Number(prefix[1]);
-      if (n < lower || n > lower + 99) {
-        push({
-          severity: 'error', code: 'id-range', id, file, path: 'id',
-          message: `id "${id}" is outside the class range ${lower}..${lower + 99} declared by ${file} (§3.5: ids are minted within class ranges)`,
-        });
-      }
-    }
+  for (const { id, file, record } of authoringRecords(model, 'ontology').values()) {
     // missing-path: §3.5 deprecated demotes pointer checks to warnings — the
     // escape hatch that lets a source-deletion PR land without dead-ending.
     const severity = record.status === 'deprecated' ? 'warning' : 'error';
@@ -387,7 +372,7 @@ function checkConcepts(model, push, repoRoot) {
  * be a governance decision this ticket has no warrant to make.
  */
 function checkLeafPaths(model, push, repoRoot) {
-  for (const entry of model.leaves.values()) {
+  for (const entry of authoringRecords(model, 'knowledge').values()) {
     const { file, record } = entry;
     strings(record[LEAF_PATHS_FIELD]).forEach((p, i) => {
       const defect = pointerDefect(repoRoot, p);
@@ -417,9 +402,9 @@ function checkOrphans(model, push) {
   // loop (UCS-1142). A leaf's identity is its accession, so that is the field
   // an orphan finding points the author at (UCS-1147).
   const spaces = [
-    ['ontology', model.concepts, () => 'id'],
-    ['knowledge', model.leaves, () => LEAF_ACCESSION_FIELD],
-    ['decisions', model.decisions, () => 'id'],
+    ['ontology', authoringRecords(model, 'ontology'), () => 'id'],
+    ['knowledge', authoringRecords(model, 'knowledge'), () => LEAF_ACCESSION_FIELD],
+    ['decisions', authoringRecords(model, 'decision'), () => 'id'],
   ];
   for (const [store, records, idPath] of spaces) {
     if (!model.stores[store].catalog) continue; // no catalog loaded: loader diagnosed
@@ -727,7 +712,7 @@ function checkRegistryMembership(model, push) {
   for (const [kind, rows] of Object.entries(FACET_REGISTRIES)) {
     // Non-null by construction: assertGovernedKinds refused the table at load
     // if any declared kind lacked a collection.
-    for (const entry of model[GOVERNED_COLLECTIONS[kind]].values()) {
+    for (const entry of authoringRecords(model, { leaves: 'knowledge', concepts: 'ontology', decisions: 'decision' }[GOVERNED_COLLECTIONS[kind]]).values()) {
       checkOneRecord(model, push, entry, rows);
     }
   }
@@ -818,7 +803,7 @@ function checkOneRecord(model, push, entry, rows) {
  */
 function checkCitations(model, push) {
   const tiersGoverned = model.registries.has('knowledge/authority-tiers');
-  for (const leaf of model.leaves.values()) {
+  for (const leaf of authoringRecords(model, 'knowledge').values()) {
     const { file, record } = leaf;
     if (!Array.isArray(record.citations)) continue; // presence is a schema check
     record.citations.forEach((c, i) => {
@@ -886,7 +871,7 @@ function checkCitations(model, push) {
  * the day this ticket lands.
  */
 function checkVerifiedDates(model, push) {
-  for (const leaf of model.leaves.values()) {
+  for (const leaf of authoringRecords(model, 'knowledge').values()) {
     const { file, record } = leaf;
     // Read through the module's own reader rather than testing membership here.
     // A second spelling of "is this a known class" is a second chance to get it
@@ -1080,13 +1065,13 @@ function checkGraduations(model, push) {
   // store as a whole, not about the entry in isolation, so it cannot be
   // answered while looking at one record.
   const graduatedBy = new Map();
-  for (const entry of model.decisions.values()) {
+  for (const entry of authoringRecords(model, 'decision').values()) {
     const block = entry.record.graduation;
     if (!isObject(block) || block.action !== 'graduate') continue;
     if (typeof block.category !== 'string') continue;
     if (!graduatedBy.has(block.category)) graduatedBy.set(block.category, recordId(entry));
   }
-  for (const entry of model.decisions.values()) {
+  for (const entry of authoringRecords(model, 'decision').values()) {
     const { file, record } = entry;
     const graduation = record.graduation;
     if (!isObject(graduation)) continue; // an ordinary decision carries no block
@@ -1182,7 +1167,7 @@ function checkGraduations(model, push) {
     // An UNRESOLVED id is skipped: that is the ref graph's `unresolved-ref` to
     // report, and adding a second finding would double-report one typo.
     if (action === 'revoke' && typeof graduation.revokes === 'string') {
-      const target = model.decisions.get(graduation.revokes);
+      const target = authoringRecord(model, 'decision', graduation.revokes);
       if (target !== undefined) {
         const targetBlock = target.record.graduation;
         const targetIsGraduation = isObject(targetBlock) && targetBlock.action === 'graduate';
@@ -1214,8 +1199,8 @@ function checkLeafSupersessionCycles(model, push) {
   const low = new Map();
   const stack = [];
   const active = new Set();
-  const targets = (id) => strings(model.leaves.get(id)?.record?.relates?.supersedes)
-    .filter((to) => model.leaves.has(to)).sort(compare);
+  const targets = (id) => strings(authoringRecord(model, 'knowledge', id)?.record?.relates?.supersedes)
+    .filter((to) => authoringRecord(model, 'knowledge', to) !== undefined).sort(compare);
 
   const visit = (id) => {
     index.set(id, index.size);
@@ -1243,12 +1228,12 @@ function checkLeafSupersessionCycles(model, push) {
     for (const cyclic of members) {
       push({
         severity: 'error', code: 'ref-cycle', id: cyclic,
-        file: model.leaves.get(cyclic).file, path: 'relates.supersedes',
+        file: authoringRecord(model, 'knowledge', cyclic).file, path: 'relates.supersedes',
         message: `supersedes cycle includes: ${members.join(', ')} — leaf chains must be acyclic (UCS-1226)`,
       });
     }
   };
-  for (const id of [...model.leaves.keys()].sort(compare)) {
+  for (const id of [...authoringRecords(model, 'knowledge').keys()].sort(compare)) {
     if (!index.has(id)) visit(id);
   }
 }
@@ -1261,9 +1246,9 @@ function checkDecisionCycles(model, push) {
   const visit = (id) => {
     color.set(id, 1);
     stack.push(id);
-    const record = model.decisions.get(id)?.record;
+    const record = authoringRecord(model, 'decision', id)?.record;
     for (const to of strings(record?.supersedes).sort(compare)) {
-      if (!model.decisions.has(to)) continue; // unresolved-ref is the loader's
+      if (authoringRecord(model, 'decision', to) === undefined) continue; // unresolved-ref is the loader's
       if (color.get(to) === 1) {
         const cycle = stack.slice(stack.indexOf(to));
         // Canonical rotation: start at the smallest id, attribute to it.
@@ -1275,7 +1260,7 @@ function checkDecisionCycles(model, push) {
           const head = rotated[0];
           push({
             severity: 'error', code: 'ref-cycle', id: head,
-            file: model.decisions.get(head).file, path: 'supersedes',
+            file: authoringRecord(model, 'decision', head).file, path: 'supersedes',
             message: `supersedes chain loops: ${[...rotated, head].join(' -> ')} — decision chains must be acyclic (§3.3)`,
           });
         }
@@ -1287,7 +1272,7 @@ function checkDecisionCycles(model, push) {
     color.set(id, 2);
   };
 
-  for (const id of [...model.decisions.keys()].sort(compare)) {
+  for (const id of [...authoringRecords(model, 'decision').keys()].sort(compare)) {
     if (!color.get(id)) visit(id);
   }
 }
@@ -1343,7 +1328,7 @@ export function runChecks(model, repoRoot = model.root) {
  */
 function decisionProvenance(model) {
   const rows = [];
-  for (const entry of model.decisions.values()) {
+  for (const entry of authoringRecords(model, 'decision').values()) {
     const provenance = entry.record?.provenance;
     if (!isObject(provenance)) continue;
     const author = typeof provenance.author === 'string' ? provenance.author : null;
@@ -1448,7 +1433,7 @@ export function main(argv) {
         // record is exactly what a mid-session check needs to look at).
         const declared = model.stores.ontology.catalog?.entries?.some?.(
           (row) => isObject(row) && row.id === id);
-        if (!model.concepts.has(id) && !declared) {
+        if (authoringRecord(model, 'ontology', id) === undefined && !declared) {
           process.stderr.write(`validate: unknown concept id "${id}" — filtering on a typo must never read as a clean pass\n`);
           return EXIT_CODES.FAILURE;
         }

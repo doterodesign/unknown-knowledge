@@ -2,15 +2,20 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:knowledge-leaf",
   "title": "Knowledge leaf front matter (PRD §3.2)",
-  "description": "The YAML front matter of one knowledge leaf file; the markdown body below it holds the actual knowledge content. Truth anchor: the world — citation-anchored, human-gated writes only. One leaf per file, so the front matter is the store file and carries schema-version (§3.5) — v2-shape leaves stamp schema-version: 2 (UCS-1147). Every leaf carries an opaque accession id (id: L-NNNNNN), minted at PR time and never reused: it is the leaf's identity, what the loader indexes by, and the ONLY shape a citation of a leaf may take. The dotted `notation` is demoted to an optional legacy display label that nothing treats as identity (UCS-1147, retiring the dual-shape citation contract UCS-1144 opened). Because identity is opaque rather than positional, a leaf file may be moved — between prefix shards, between directories — without invalidating a single citation: position on disk carries no meaning. Cross-reference resolution and catalog-index consistency are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013), with one sanctioned exception: frontmatter v2 RETIRED the free-prose `description` field (UCS-1149). A leaf now opens its body with a topic sentence and display prose is DERIVED from it, so the one-line summary can never drift from the content it summarizes. Under additionalProperties:false a leaf still carrying `description` fails as an unknown property — a deliberate break, and the major release D-021 defines for exactly this.",
+  "description": "YAML front matter of one Knowledge leaf, with the evidence-bearing Markdown body below it. World-anchored, citation-backed and human-gated writes remain required. The active file version is 3. Canonical K-000001 through K-999999 identities are permanent and independent of file position; unpublished records use typed proposal keys. Optional dotted notation is a display label and never resolves as identity. Display prose is derived from the body; the retired description field remains forbidden.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema-version", "id", "domain", "heading", "citations"],
   "properties": {
-    "schema-version": { "type": "integer", "minimum": 1 },
+    "subjects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/subjectRef" },
+      "description": "Optional whole-record subject assignments, in authored order with no primary position. Absent means unknown; an empty array explicitly records none. IDs must be canonical S identities, including on proposal records. Duplicate IDs are rejected by the engine convention. Assignment shape does not establish registry membership, eligibility or approval."
+    },
+    "schema-version": { "type": "integer", "enum": [3] },
     "id": {
       "$ref": "#/$defs/accession",
-      "description": "Accession id — opaque, minted at PR time, never reused, never positional (L-NNNNNN). REQUIRED: it is the leaf's identity, the key the loader indexes by, and the only spelling any record may cite this leaf as (UCS-1147). A leaf without one has no identity, so its absence is a missing-required finding and the remedy is to assign one."
+      "description": "Canonical K identity or exact proposal:knowledge:<lowercase-v4-uuid> authoring key. Canonical lookup never accepts proposal keys."
     },
     "notation": {
       "$ref": "#/$defs/notation",
@@ -37,12 +42,12 @@
         "class-elsewhere": {
           "type": "array",
           "items": { "$ref": "#/$defs/leafRef" },
-          "description": "Redirects — must resolve. Cite the target leaf by its accession id (L-NNNNNN)."
+          "description": "Typed Knowledge navigation reference; must resolve under the active identity format."
         },
         "see-also": {
           "type": "array",
           "items": { "$ref": "#/$defs/leafRef" },
-          "description": "Related context — must resolve. Cite the target leaf by its accession id (L-NNNNNN)."
+          "description": "Typed Knowledge context reference; navigation does not establish dependency or approval."
         },
         "including": {
           "type": "array",
@@ -162,10 +167,11 @@
     "contributors": { "type": "array", "items": { "type": "string" } }
   },
   "$defs": {
+    "subjectRef": { "type": "string", "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$" },
     "notation": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)*$" },
-    "accession": { "type": "string", "pattern": "^L-[0-9]{6}$" },
-    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
-    "leafRef": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "accession": { "type": "string", "pattern": "^(?:K-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:knowledge:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
+    "conceptRef": { "type": "string", "pattern": "^(?:O-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:ontology:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
+    "leafRef": { "type": "string", "pattern": "^(?:K-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:knowledge:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "note": {
       "type": "object",

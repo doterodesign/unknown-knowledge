@@ -1,5 +1,11 @@
 # A5 walkthrough — /knowledge-audit reports health on fixtures/ts-app
 
+> **Historical replay, 2026-07-09.** The captured outputs and legacy identities
+> below are retained as historical evidence, not runnable current-format setup.
+> Use [the canonical CLI replay](A5-canonical-audit-reflect-replay.md) for current
+> identities and actual current-runtime outputs. Full fresh-agent conduct still
+> requires the current installed skill and a separately captured run.
+
 Acceptance criterion A5 (PRD §10): *an agent following only
 `payload/protocol/skills/knowledge-audit.md` produces a knowledge-audit
 report on a fixture correctly — heartbeat section present with seeded
@@ -9,7 +15,7 @@ so their test is a checklist, not CI. Time the run (A5 walkthroughs are
 wall-clock timed).
 
 Every expected observation below was produced by actually running the
-commands (kit @ this branch, 2026-07-09); outputs are pasted byte-honest.
+commands in the historical 2026-07-09 run; outputs are preserved byte-honest.
 The fixture ships *planted drift* for the A3 criterion — this walkthrough
 leans on it: a health check demonstrated on a healthy store proves nothing.
 
@@ -21,7 +27,7 @@ fragments, an aging proposed decision; `last-reflect` deliberately ABSENT):
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf /tmp/a5-audit && cp -R fixtures/ts-app /tmp/a5-audit && cd /tmp/a5-audit
+rm -rf local-history:a5-audit && cp -R fixtures/ts-app local-history:a5-audit && cd local-history:a5-audit
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-02 \
   --root unknown-knowledge --suffix aaaa0001 \
   --entry '{"trigger":"quarantine","summary":"preflight quarantined K-108 (wrong-pointer): proceeded degraded, gathered from src/registry/export-formats.ts directly","consulted":{"concepts":["K-108"]}}'
@@ -170,15 +176,31 @@ stale check: checked against --today 2026-07-09 (stale after 90 day(s))
 ## 6. HEARTBEAT — seeded state, graceful absence
 
 ```sh
-cat unknown-knowledge/last-reflect.yaml
+cat unknown-knowledge/logs/last-reflect.yaml
 ```
 
 - [ ] The file is absent (`No such file or directory`) and the agent
-  degrades gracefully — the report line reads **no reflect has run yet**;
-  the line still appears (visible, never silent). (To exercise the other
-  branch, seed a stamp: `echo 'date: "2026-07-04"' >
-  unknown-knowledge/last-reflect.yaml` → the line reads `days since last
-  reflect: 5`.)
+  degrades gracefully — the report line reads **no recorded reflect heartbeat**;
+  absence does not prove that no work happened. The line is visible, never silent.
+  A date-only stamp at this canonical path with `date: "2026-07-04"` permits
+  timestamp age 5 on the injected date, explicitly legacy/age-only; review
+  completion, governed aging and pending-work totals remain unavailable.
+
+Repeat this heartbeat step in independent fixtures, preserving actual fresh-agent
+reads and reports. Follow the single Review state contract in
+`protocol/skills/knowledge-reflect.md`, not a second inferred schema here:
+
+- [ ] A root-level `last-reflect.yaml` decoy is ignored in both vendored and
+  repo-root kit layouts; only `logs/last-reflect.yaml` is authoritative.
+- [ ] Missing, malformed, unreadable and future stamps have distinct diagnostics;
+  none silently becomes age zero or a successful completed review.
+- [ ] A valid schema-2 in-progress review reports the prior completed date (or
+  no completed review), with approved pending work separate from completion.
+- [ ] A completed review with an accepted downstream handoff still reports
+  pending repair work. Same-day reviews never multiply aging days.
+- [ ] Missing/cyclic predecessors, changed proposal digests, absent evidence,
+  inconsistent summaries and exhausted finite traversal limits report incomplete
+  history, with no authoritative totals or aging. Audit continues read-only.
 
 ```sh
 for log in findings misses gaps; do
@@ -241,7 +263,8 @@ grep -rl '^trigger: quarantine' unknown-knowledge/logs/findings 2>/dev/null
 - aging accepted: none
 
 ## Heartbeat
-- days since last reflect: no reflect has run yet
+- heartbeat: no recorded reflect heartbeat
+- review: unavailable; approved work: unavailable
 - open fragments: findings 2, misses 1, gaps 0
 - top quarantined concepts: K-108 (1)
 ```

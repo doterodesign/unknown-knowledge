@@ -68,6 +68,11 @@ test('init gives every platform a first-action protocol pointer before recursive
     const r = spawnSync(process.execPath, [initJs, 'init', '--yes', '--target', target,
       '--root', rootName, '--platforms', ALL_PLATFORMS.join(',')], { encoding: 'utf8' });
     assert.equal(r.status, 0, r.stderr);
+    const contract = readFileSync(join(target, rootName, 'protocol', 'AGENTS.md'), 'utf8')
+      .split('## Layout and command roots')[0];
+    assert.match(contract, /before recursive filename or content\s+discovery,[\s\S]*installed kit, engine and dependency\s+directories/);
+    assert.match(contract, /Locating and reading top-level agent instructions[\s\S]*top-level configuration is permitted/);
+    assert.match(contract, /Use their supplied protocol path rather\s+than recursively searching for runtime files/);
     for (const id of ALL_PLATFORMS) {
       const text = readFileSync(join(target, registry[id].target), 'utf8');
       assert.match(text, /First action[^\n]*read/i, `${id}: the first action must be explicit`);
@@ -75,6 +80,8 @@ test('init gives every platform a first-action protocol pointer before recursive
       assert.ok(text.includes(`\`${rootName}/\``), `${id}: seeded kit location`);
       assert.match(text, /before[\s\S]*recursive[\s\S]*source[\s\S]*discovery/i,
         `${id}: establish order before product-source discovery`);
+      assert.match(text, /This order also applies to recursive searches through the installed kit, engine\s+and dependency directories/,
+        `${id}: installed runtime discovery must follow the same onboarding order`);
     }
   }
 });

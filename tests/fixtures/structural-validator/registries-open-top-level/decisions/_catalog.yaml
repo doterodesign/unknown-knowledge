@@ -1,9 +1,9 @@
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-201
+  - id: D-000001
     title: One gadget store
     file: entries/D-201-gadget-store.yaml
-  - id: D-202
+  - id: D-000002
     title: Mint the logistics top-level domain class
     file: entries/D-202-mint-logistics-domain.yaml

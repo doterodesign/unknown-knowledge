@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-401
+  - id: D-000001
     title: Frontmatter v2 vocabularies
     category: governance
     status: accepted
@@ -12,6 +12,6 @@ entries:
       render-budget constraint — supplies the warrant for each value minted below.
     decision: >
       Mint the domain, form, anchor, stage, operations, and authority-tier
-      values this store's leaves actually use. Adopt D-003's three truth
+      values this store's leaves actually use. Adopt the kit's D-000003 three truth
       anchors and the kit's promotion stages verbatim.
     supersedes: []
