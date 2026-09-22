@@ -1,11 +1,11 @@
 # Draft PR delivery
 
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 | PR | Version | Scope | Availability |
 | --- | --- | --- | --- |
 | 1 | 3.0.0-rc.2 | Canonical identity and store cutover | Present |
-| 2 | 3.0.0-rc.3 | Governed retrieval, intent and derived views | Later PR |
+| 2 | 3.0.0-rc.3 | Governed retrieval, intent and derived views | Present |
 | 3 | 3.0.0-rc.4 | Lifecycle and assignment domain proofs | Later PR |
 | 4 | 3.0.0-rc.5 | Reviewed migration and publication | Later PR |
 | 5 | 3.0.0-rc.6 | Reflection and evidence conduct | Later PR |

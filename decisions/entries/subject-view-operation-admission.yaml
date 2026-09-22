@@ -1,0 +1,47 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:5ec4b5b9-bb23-4904-ab36-afbc582a32a4
+    title: Subject view adapters reuse one authentic query operation and shared CLI policy
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      P4 released an authentic operation/context binding with cumulative input,
+      validation and output admission. P6 route and context adapters must not
+      reset that allowance between phases or turn a caught inner budget error
+      into an ordinary partial domain result. Tree-only rendering must retain
+      its independent module boundary. This records P6's adoption choices;
+      P4 owns the operation implementation and the shared CLI failure policy.
+    decision: >
+      Opt-in route/context commands create one operation and load one actual
+      context through P4. Forward the original operation to every base and
+      extension query, and its real validation resources to P2/P3 calls.
+      Guard route input before compilation and visited enumeration records;
+      assert the operation after adapter work so caught budget diagnostics
+      cannot conceal a latched host failure. Retain separate query and
+      enumeration domain limits. Use the released shared
+      subject-operation-cli.js reporter and bounded boot path, loaded only
+      for opt-in query modes; API callers retain their original exceptions.
+      Admit whole UTF-8 output including the newline before writing. Expected
+      input/capacity refusals and programming exceptions remain distinct;
+      an absent allowance or a receipt that cannot fit yields silent exit 2.
+      Reject the operation flag in tree mode before reads or mutations.
+    consequences: >
+      The adapters cannot replace a bound operation, copy a context to reset
+      work or use unbounded stderr as a fallback. Tree rendering still works
+      without query/operation modules. Ancestry enumeration retains its P2
+      node/edge limits because that API has no operation-budget parameter.
+      Native parsing, hashing and serialization allocations, directory
+      enumeration and uninstrumented work remain outside the stated counters.
+      No production capacities, timing guarantee or complete host profile is
+      claimed. Alternatives rejected were per-extension fresh handles, fake
+      binders, budget exceptions disguised as domain incompleteness, duplicated
+      CLI classification and making basic trees depend on Boolean querying.
+      Evidence is in tests/subject-view-operation.test.js and the shared CLI
+      source guards in tests/exit-code-contract.test.js, cli.test.js and
+      module-load.test.js. The source guard failed before replacing the local
+      classifier and passed after adopting the shared helper. Contracts and
+      exclusions are in docs/agents/ucs-1239-subject-views.md and
+      ucs-1239-subject-contexts.md; existing test receipts are not scale trials.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000011, D-000014, D-000022] }

@@ -1,0 +1,61 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:937723fe-050c-4d01-a699-d58fbf49ff76
+    title: Ordinary retrieval preserves intent without requiring optional Subject authority
+    category: scope
+    status: proposed
+    date: "2026-09-20"
+    deciders: ["integration owner (record review pending)"]
+    context: >
+      The intent protocol broadly directed hosts to inspect subject meanings.
+      Several ordinary public retrieval readers invoked Subject lookup in a
+      healthy installation without the optional registry, received the
+      intended exit-2 refusal and either stopped short of source verification
+      or improperly continued. The actual registry reader permits absent
+      authority; Subject-specific operations correctly refuse without it.
+      General intent preservation had become conflated with that optional
+      typed capability.
+    decision: >
+      Preserve intent, material constraints, unresolved alternatives, source
+      review and selected-record gates for ordinary retrieval. Select the
+      typed Subject lookup, binding and query workflow only when required by
+      the request and supported by actual authority in the established kit
+      layout. Distinguish absent capability from malformed, unreadable or
+      nonregular authority. Required but absent Subject semantics remain
+      unavailable, not a reason to invent authority or silently substitute
+      ordinary retrieval. Never probe availability by intentionally invoking
+      a failing Subject command. Inspect each engine result before the next
+      dependent command; every actual exit 2 still stops the governed task,
+      including metadata navigation in a sequential script.
+      Subsequent public-result review identified repeated qualified binding
+      objects supplied where assigned query predicates require a canonical
+      Subject ID string. Main and P2 agree to clarify the shipped intent and
+      interface guides with the two concrete shapes and installation scope.
+      Keep native strict validation instead of unwrapping objects, broadening
+      the grammar or duplicating it in transport schemas. Native omitted
+      expansion already defaults to direct; an explicitly authored selector
+      still requires its own intent-provenance reference. A stricter evaluation
+      host admission rule is separate from the product's native default.
+      This is a documentation correction justified by observed misuse, not
+      a new runtime behavior or proof of improved agent outcomes. Existing
+      frozen trials and adverse results remain unchanged; evidence is in
+      acceptance/retrieval/PUBLIC-CAMPAIGN-RESULTS.md and native contracts in
+      payload/engine/lib/subject-query.js and tests/intent-query-plan.test.js.
+      P10's subsequent trace-based triage also identified wording that could
+      imply correcting a plan after an actual terminal validation error. Main
+      and P2 agree to make diagnostic use explicitly a proposal for a subsequent
+      authorized attempt, preserving the current task's stop. Keeping an
+      unqualified retry instruction would contradict the existing conduct rule;
+      changing exit behavior instead would weaken that rule. This clarification
+      changes no native error handling or historical trial judgment.
+    consequences: >
+      The minimal correction is protocol routing, not an engine refusal change
+      or a corpus repair. Implementation 9f2c4b8 was integrated as 5bad18d.
+      Its 161 focused tests and documentation pins preserve deterministic
+      absence/refusal behavior but do not establish fresh-host compliance.
+      The failed original and v2 reader results remain immutable; the v3
+      public regression packet requires separate review and dispatch release.
+      Rationale, artifacts and documentation coverage are linked in
+      docs/agents/ucs-1242-retrieval-governance.md. This record remains proposed
+      without canonical identity allocation or an asserted approval.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000011] }

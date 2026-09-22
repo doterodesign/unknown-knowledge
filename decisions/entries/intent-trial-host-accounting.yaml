@@ -1,0 +1,35 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:b10eac52-921c-485c-bcb8-1820a16d53c3
+    title: Intent trial hosting accounts delivered evidence and preserves failed attempts
+    category: process
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      The development host must exercise installed CLI behavior without
+      reader-controlled roots, policies or executable substitution. Output refusal
+      can hide real diagnostics and cannot count as successful exposure or be
+      retrospectively corrected in frozen evidence.
+    decision: >
+      Use the fixed actual CLI adapter with operator-pinned runtime, inputs,
+      captures and policies. Validate output shapes and all exposed record and
+      Subject identities before committing delivery counts. Count repeated
+      delivered bytes and retain command exits and raw-output hashes. Refuse
+      malformed or oversized output without truncation or budget resets.
+      Record explicit original-source delivery separately from record content;
+      do not present it as complete all-channel source exposure. Accept the
+      owner's closed syntax-only validation refusal shape so diagnostics survive
+      delivery. Test that fix separately without changing the original trial.
+    consequences: >
+      Whole-output refusal can prevent a usable workflow within an unchanged
+      host cap. The single guided Dirac attempt at bf78859 stays closed and
+      incomplete for intent-query/full-protocol acceptance: no query execution
+      completed. Later fixes earn no retroactive credit. No new readers, reruns
+      or performance/quality claims follow from this record. Implementation is
+      acceptance/retrieval/intent-host.js, acceptance/retrieval/trial-host.js and
+      acceptance/retrieval/prepare-trial-host.js; tests/retrieval-intent-host.test.js
+      covers actual delivery, drift, exposure and syntax-refusal handling.
+      See docs/agents/ucs-1238-decisions-and-docs.md for scope and limitations.
+      This backfill is a proposal, not approval or rewriting of trial evidence.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000007, D-000010, proposal:decision:a5c52715-cec0-476a-82c6-32e9099e9976, proposal:decision:85820498-82bc-4f84-8e36-67f60ddd1349] }

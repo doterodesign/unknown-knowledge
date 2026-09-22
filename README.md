@@ -14,7 +14,7 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 
 The 3.0 pilot is available explicitly with
@@ -61,9 +61,9 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
-Twelve seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
+Sixteen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
 
 | Command | Purpose |
 | --- | --- |
@@ -79,6 +79,10 @@ Twelve seeded command-line surfaces. JavaScript with JSDoc types, zero build ste
 | `derive.js` | disposable browse artifacts |
 | `commit-check.js` | staged store gate |
 | `reverse-staged.js` | staged attribution |
+| `subject.js` | Subject metadata lookup |
+| `query-subjects.js` | governed Subject query |
+| `subject-view.js` | Subject tree, route and context views |
+| `intent-plan.js` | intent validation and execution |
 
 Engine commands run with `node payload/engine/<command> --root .` in this repository. Installed paths use `<kit-root>/engine/`. Check each command’s help and the protocol before use.
 

@@ -1,4 +1,4 @@
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
 

@@ -148,6 +148,13 @@ and the citable half is the accession inside it. See
 
 ### 1. RESOLVE — request terms → navigation candidates
 
+For combined subject constraints, scope requirements or alternative
+interpretations, follow [Intent, query discovery and source review](intent-retrieval.md).
+Its intent and source obligations apply to ordinary retrieval; its typed Subject
+path is conditional. Scope or ambiguity alone does not require Subject lookup.
+Keep its transient inventory and source requirements alongside this loop;
+query execution does not replace catalog navigation, PREFLIGHT or GATHER.
+
 ```
 node unknown-knowledge/engine/resolve.js "export format" --json --today <YYYY-MM-DD> --root .
 ```
@@ -331,6 +338,11 @@ Report the blocking result; do not continue GATHER/ACT. Store-wide
 failures degrade every requested verdict to `unknown`. Never cache verdicts.
 
 ### 3. GATHER — read the fact, not the map
+
+When using an intent plan, review each retained source requirement as
+supported, limited or unresolved using the [intent workflow](intent-retrieval.md#gate-selected-records-then-review-each-requirement-against-sources).
+Keep the original scope, direction and relaxed constraints visible through
+answer review; a matched record does not establish the requested claim.
 
 Follow each selected concept's `source-of-truth` pointer and **read the
 file**. Knowledge leaves: read the body and follow the citations, including

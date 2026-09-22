@@ -1,4 +1,4 @@
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -50,7 +50,7 @@ existing schemas, truth anchors, source fields and gates.
 | `validateSubjectSplitAssignmentChange(input, {budget,operationBudget})` | Fixed internal continuation using the same row implementation, required redirect/operation allowances and `new-assignment/current` semantics. Checks handle ownership even with no targets; it supplies no split scope or publication proof. |
 
 Implementation: [assignment state/index](../../payload/engine/lib/subject-assignments.js),
-eligibility composition (contract arrives in PR2; see delivery availability),
+[eligibility composition](../../payload/engine/lib/assignment-validation.js),
 [record lifecycle](../../payload/engine/lib/record-lifecycle.js).
 
 Change options accept only explicit `inspect` or `new-assignment` purpose and
@@ -100,7 +100,7 @@ P8's complete event/revision/rationale and physical-file preservation proof.
 P4 evaluates conjunction within one record: both `[A,B]` and `[A,B,C]` satisfy
 `A AND B`; A-only and B-only records do not join. Whole-record co-assignment is
 discovery, not evidence that unrelated source sections establish a joint claim.
-See the retrieval protocol (contract arrives in PR2; see delivery availability) and
+See the [retrieval protocol](../../payload/protocol/intent-retrieval.md) and
 [Knowledge authoring path](../../payload/protocol/skills/kb-build.md).
 
 P8/P1 own typed authoring scope, grouped physical-file preservation, genesis and

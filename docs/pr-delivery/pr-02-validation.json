@@ -1,0 +1,100 @@
+{
+  "base": "62622b3fb8725d20c919b7c7589449483889653e",
+  "version": "3.0.0-rc.3",
+  "scope": "P4/P5/P6: captured Subject queries, strong Kleene unknowns, explicit operation limits, intent validation/execution, metadata lookup, structural trees and route/context views.",
+  "tests": {
+    "tests": 544,
+    "pass": 544,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "files": 323,
+    "failures": 0
+  },
+  "acceptance": {
+    "automated": "A1\u2013A4/A6 passed",
+    "manualA5": "not run"
+  },
+  "logs": [
+    {
+      "name": "pr2-tests.log",
+      "sha256": "10d16f3a2a2924202af0a77d6302fbe3ffc1340c0b02405a051507642bbda731",
+      "bytes": 52653,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr2-lint.log",
+      "sha256": "65e19428cc18f1c64974cf89b438636ab8aa1984771bf50e61bd332f22f39506",
+      "bytes": 97,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr2-acceptance.log",
+      "sha256": "e16a04cf3889cace57da87a1bf0ada93a30a24c9635b582aac3b6f484535f296",
+      "bytes": 7246,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    }
+  ],
+  "historicalReference": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "historicalEvidenceReuse": "Unchanged earlier layers retain their prior receipts. These checks execute the new owning suites and shared inventory/contracts at this assembled tree; they are not a new reader study or full historical rerun.",
+  "testFiles": [
+    "tests/assignment-change.test.js",
+    "tests/assignment-continuation-change.test.js",
+    "tests/assignment-validation.test.js",
+    "tests/captured-input.test.js",
+    "tests/intent-bindings-cli.test.js",
+    "tests/intent-bindings.test.js",
+    "tests/intent-operation.test.js",
+    "tests/intent-plan-admission.test.js",
+    "tests/intent-plan-cli.test.js",
+    "tests/intent-plan.test.js",
+    "tests/intent-protocol-doc.test.js",
+    "tests/intent-query-assessment-cli.test.js",
+    "tests/intent-query-cli.test.js",
+    "tests/intent-query-execution.test.js",
+    "tests/intent-query-plan.test.js",
+    "tests/intent-query-reconsideration-cli.test.js",
+    "tests/subject-cli.test.js",
+    "tests/subject-contexts.test.js",
+    "tests/subject-initial-corpus.test.js",
+    "tests/subject-operation-composition.test.js",
+    "tests/subject-operation.test.js",
+    "tests/subject-query-accounting.test.js",
+    "tests/subject-query-applicability.test.js",
+    "tests/subject-query-cli.test.js",
+    "tests/subject-query-context-input.test.js",
+    "tests/subject-query-context-loader.test.js",
+    "tests/subject-query-context.test.js",
+    "tests/subject-query-delta.test.js",
+    "tests/subject-query-eligibility-reuse.test.js",
+    "tests/subject-query-execution.test.js",
+    "tests/subject-query-files.test.js",
+    "tests/subject-query-output.test.js",
+    "tests/subject-query-promotion-cli.test.js",
+    "tests/subject-query-record.test.js",
+    "tests/subject-query-selection.test.js",
+    "tests/subject-query-validation.test.js",
+    "tests/subject-query-witness.test.js",
+    "tests/subject-query.test.js",
+    "tests/subject-reach.test.js",
+    "tests/subject-reconsideration-query.test.js",
+    "tests/subject-route-impact.test.js",
+    "tests/subject-routes.test.js",
+    "tests/subject-split-assignment-change.test.js",
+    "tests/subject-view-cli.test.js",
+    "tests/subject-view-impact.test.js",
+    "tests/subject-view-operation.test.js",
+    "tests/subject-view-query-cli.test.js",
+    "tests/subject-view-reconsideration-cli.test.js",
+    "tests/subject-views.test.js",
+    "tests/readme.test.js",
+    "tests/context-glossary.test.js",
+    "tests/exit-code-contract.test.js"
+  ],
+  "originalValidatedHead": "4fb81055d215f07c853a7dab721877df6f5d9324",
+  "originalValidatedTree": "b37ca0104d8fb29b1a6841bd4b86064e1ddb1a05",
+  "currentStackBase": "e27c823fe0f5deca1f9ac25e3fbc990963ab7af8",
+  "ancestorCorrection": "PR1 bounded teardown correction merged; runtime bytes unchanged. Original logs retain their original tree binding; focused correction receipts supplement them. Synchronous fixture maintenance inherited after repeat Linux teardown failure; see PR1 correction receipt."
+}

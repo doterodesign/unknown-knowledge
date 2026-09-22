@@ -1,0 +1,37 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c
+    title: Intent plans validate declared coverage without certifying interpretation
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      UCS-1238 and specification r3 section 7 require inspectable interpretation,
+      uncertainty and residual evidence obligations. Lexical residue cannot
+      represent every material relation or scope requirement; schema validity
+      cannot prove that a host understood the original ask.
+    decision: >
+      Use a closed version 1 transient plan with material-unit references,
+      explicit or inferred constraints, typed binding claims, source requirements,
+      clarification and labeled branches. Check declared routing and retain open
+      inventory. Inspect bindings separately using actual identity resolution and
+      Subject lookup; retain all candidates and digest-bound label, alias and
+      definition witnesses. Keep inference, unsupported record-label proof and
+      stale context explicit. Query provenance uses exact semantic paths supplied
+      by the owning query validator and separates authored selectors from generated
+      defaults. Natural-language interpretation and model/network behavior stay
+      in the host. Do not add a second AST walker, normalizer or durable plan store.
+    consequences: >
+      A structured plan is replayable without promising identical prose
+      interpretation or semantic completeness. A binding alone cannot discharge
+      intent; the host must compare inventory with the ask. This trades automatic
+      semantic certification for auditable declared claims. See
+      docs/agents/ucs-1238-intent-plan-s1.md, ucs-1238-intent-bindings.md and
+      ucs-1238-intent-query-plan.md; implementation is in
+      payload/engine/lib/intent-plan.js, payload/engine/lib/intent-bindings.js
+      and payload/engine/lib/intent-query-plan.js. Evidence is in
+      tests/intent-plan.test.js, tests/intent-bindings.test.js and
+      tests/intent-query-plan.test.js. This is implementation-rationale backfill,
+      not canonical approval or Gate D acceptance.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000011, D-000014, D-000022] }

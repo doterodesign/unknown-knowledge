@@ -1,0 +1,55 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:c30ef8a6-a3c5-419a-a6a0-478084c73cd0
+    title: Share complete query assignment outcomes without dropping row evidence
+    category: architecture
+    status: proposed
+    date: "2026-09-21"
+    deciders: [codex]
+    context: >
+      The retained private-file results at dd92900 evaluate 1000 records and count
+      21 strict matches per store, but the global 4096 explanation-node ceiling
+      emits only five Decision rows because each repeats 16 full Subject outcomes.
+      K/O witnesses remain absent despite complete evaluation. Main authorized the
+      lossless versioned representation design and scoped implementation separately
+      from any new operational qualification. This authorization is not publication
+      or canonical acceptance of this proposed Decision.
+    decision: >
+      Native query output version 2 retains complete successful assignment outcomes
+      once per captured query, qualified by namespace, Subject kind, query purpose,
+      policy and original ID. Ordered row assignments reconstruct original IDs,
+      indices and paths; all other row witnesses and provenance remain unchanged.
+      Admit each local explanation and its new table entries atomically, counting
+      every emitted container/scalar honestly. Preserve every actual row/P2/P3
+      validation, cumulative allowance, failure and transport byte limit. Use
+      evaluator fingerprint version 2 and per-operation API output versions;
+      update strict native consumers rather than silently relaxing their shapes.
+      Retirement and split expected-refusal consumers require the exact new
+      output version while retaining their original code/path and full opposite
+      side checks; a new field cannot make a genuine refusal look unavailable.
+      Query and budget input versions stay 1. See the query contract and
+      payload/engine/lib/subject-query.js, payload/engine/api/index.js and
+      acceptance/retrieval/intent-host.js.
+    consequences: >
+      This breaks the old inline assignmentSubjects wire shape explicitly. Old
+      receipts remain historical evidence; current consumers reconstruct through
+      the query-local table and never reuse it as authority. Table entries cannot
+      survive a withheld row unless another emitted row needs them. Counts and
+      page truncation remain independent of explanation completion. Alternatives
+      rejected include dropping warrant/definition fields, hashes instead of
+      evidence, post-query compression and higher capacities. Explicit per-row
+      reference wrappers and whole-bundle interning add unnecessary indirection.
+      Tests cover real three-store page admission, independent complete expansion,
+      corrupted source witnesses, exact node/byte limits and unchanged validation
+      in tests/subject-query-output.test.js, tests/subject-query-witness.test.js,
+      tests/subject-query-files.test.js and tests/engine-interface.test.js. Passing
+      these checks does not certify operational capacity, all strict-set delivery,
+      source adequacy, reader usefulness or whole-process resource bounds.
+    relates-to:
+      concepts: []
+      leaves: []
+      decisions:
+        - proposal:decision:b0ef0f5a-f028-4509-a3b7-a08c6d598349
+        - proposal:decision:dc0d7e8b-9717-46fc-8c48-49f5e172943f
+        - D-000011
+        - D-000022
