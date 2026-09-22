@@ -4,6 +4,8 @@
 
 ## [3.0.0-rc.2] - Unreleased
 
+- CI harness correction: Bound temporary Git fixture cleanup retries while keeping persistent teardown errors and all snapshot assertions visible.
+
 - Permanent typed identities, allocation ledger, optional Subject authority and assignment history; canonical schemas, seed templates and fixture conversion. Existing-store migration is unavailable at this intermediate stage.
 - Review scope, Decisions and validation: [PR 1](docs/pr-delivery/pr-01.md).
 

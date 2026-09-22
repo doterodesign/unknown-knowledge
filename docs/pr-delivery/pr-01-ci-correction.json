@@ -1,0 +1,12 @@
+{
+  "originalFailedRun": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35735220372",
+  "disposition": "The snapshot-failure hook assertions completed, but temporary Git repository teardown raised ENOTEMPTY on Linux. Recursive removal now uses three bounded retries at 100 ms backoff; final errors remain visible. This follows the existing commit-snapshot cleanup policy and changes no runtime or snapshot-cleanliness assertion.",
+  "focusedValidation": {
+    "command": "node --test tests/commit-gate.test.js",
+    "tests": 27,
+    "pass": 27,
+    "fail": 0,
+    "logSha256": "99c31d918b7b385d779cb29abb91beb39264ce4af4e86167d064fbe11c141001"
+  },
+  "unchanged": "Runtime behavior and every original commit, snapshot cleanup, index and working-tree assertion remain unchanged."
+}
