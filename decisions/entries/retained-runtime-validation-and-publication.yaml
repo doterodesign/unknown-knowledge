@@ -1,0 +1,30 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:bc77a31e-0fbb-4fbe-ba20-299bb0095953
+    title: Retained validation separates actual execution from runtime approval and publication
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      UCS-1234 prepared validation must bind checks to actual immutable Git
+      source and candidate trees. A caller report, a content digest or a runtime
+      copied from the candidate cannot establish trusted execution or consent.
+    decision: >
+      Capture the installed fixed engine, schemas and actual dependencies into
+      an owned runtime inventory. Execute literal operation entrypoints with
+      explicit output and deadline limits, then retain exact artifacts and
+      independently verify their bytes, modes, bindings and runtime inventory.
+      Compare the entire retained inventory with a separately approved runtime
+      profile before establishing capability evidence. Preserve actual native
+      Node and Git executable identity as an explicit host trust boundary.
+      Keep human review and final fresh execution plus ref CAS in the publisher.
+    consequences: >
+      Integrity, execution and approval remain distinct claims. A changed engine
+      requires a newly approved complete profile; observed files never approve
+      themselves. Unsupported managed route persistence leaves external routes
+      unknown. Migration adjudications are resupplied privately and unexpected
+      worker output is reduced to static failures. New operations require
+      explicit runner, entrypoint and readback admission rather than falling
+      through an existing branch. Bounded logical work is not a hard heap bound.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:00000000-0000-4000-8000-000000000024] }

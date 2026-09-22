@@ -1,0 +1,34 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:a51231ef-db5b-49d4-a3ee-0bdd363fff75
+    title: Equivalent merges derive complete typed scope and retain protected unknown files
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      A Subject equivalent merge combines registry history and record assignments.
+      A caller-selected subset can omit uses, while treating readable unknown
+      assignments as empty would manufacture semantic completeness. Shared O/D
+      files can also contain a protected authorizer or unclassified sibling.
+    decision: >
+      Invoke P2's fixed actual scope core from P8's privately assembled commit
+      snapshots. Bind the exact operation, registry events, assignment event,
+      expected after arrays and complete Decision tuple. Permit source substitution
+      only for effective allocated canonical K/O/D uses; preserve unrelated ID
+      order and lifecycle. Keep proposals, inactive uses and graph rewrites outside
+      this tranche. Require exact reasoned retention of every unchanged absent-field
+      owner and preserve its whole file. The merge authorizer's whole file also
+      stays unchanged, so selected siblings in either protected file refuse.
+    consequences: >
+      P8 returns raw core and assignment reports without manufacturing combined
+      publication authority. Raw semantic inventory can remain incomplete while
+      explicit-reference closure is complete. P2 separately requires actual reach,
+      a complete generated tree pair and its fixed all-store replay recipe.
+      Managed routes require final runtime capability; external routes remain
+      unknown. Wider runtime bytes require new review, not transferred approval.
+      Evidence includes bdff1af and P2 releases d514792 and 765aa74, plus actual
+      typed merge tests and docs/agents/ucs-1241-subject-use-assignment-gate.md.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:f1369103-65d4-4660-b166-f396e918a67d] }

@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [3.0.0-rc.4] - Unreleased
+
+- CI harness correction: retain exact admission counters while accounting explicitly for the host checkout path length.
+
+- Exact assignment and lifecycle domain checks, typed promotion planning, merge, split, retirement, creation, metadata and reconsideration proofs.
+- Review scope, Decisions and validation: [PR 3](docs/pr-delivery/pr-03.md).
+
 ## [3.0.0-rc.3] - Unreleased
 
 - CI harness correction: Send the large output-budget probe through stdin to preserve its full payload across Linux argument-size limits.

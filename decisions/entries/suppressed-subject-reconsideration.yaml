@@ -1,0 +1,408 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:3d935466-771a-458b-be78-37bec94ec044
+    title: Suppressed Subject reconsideration preserves refusal history and publishes one fresh identity
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      The existing proposal suppression retains the refused meaning and reason,
+      but promotion accepts only an unrefused proposal with empty history.
+      Reopening a suppressed proposal without completing its promotion path would
+      leave it unable to become effective. The specification requires an explicit
+      new Decision, the prior refusal and changed evidence for reconsideration.
+      Existing assessed activation also lacks the independent exact native
+      single-Subject allocation comparison already available for multi-successor
+      splits. Declaring union or reversal in a schema enum does not implement it.
+    decision: >
+      Implement a fixed reconsideration profile that consumes the exact retained
+      suppressed proposal in one assessed activation and creates one fresh
+      canonical Subject. Preserve the full prior history and consumed proposal
+      snapshot, including its refusal and change references. Remove only that
+      verified consumed proposal from current state and topology. Bind the exact
+      prior refusal, a different effective authorizing Decision, reconsideration
+      reason and captured material to the activation review. Keep ordinary
+      proposal promotion unchanged and refuse general disappearance exceptions.
+      Use a separately closed reconsideration-assessment version 1 field,
+      mutually exclusive with ordinary refusal-assessment, to distinguish the
+      selected same-meaning reconsideration from distinct-meaning assessments.
+      Ordinary version-1 refusal assessment does not gain new dispositions.
+      Reuse existing warrant record references and capture primitives. Source
+      material must carry captured bytes as well as its declared locator and
+      revision; an uncaptured mutable URL is not historical evidence. Require
+      reconsideration material to be represented in the final active warrant.
+      Changed evidence and relevance remain explicit reviewed assertions, not a
+      mechanical novelty verdict. Existing unchanged material can be newly
+      considered. Do not require byte inequality, a new typed reference or a
+      changed path as a proxy for a justified reversal; do not claim such changes
+      prove relevance. No new Decision schema or approval engine is introduced.
+      Add fixed single-Subject native allocation verification using complete
+      before/candidate ledger admission and the existing allocator exactly once.
+      Preserve all prior allocations, namespace and lineage; require the entire
+      candidate ledger to equal the native plan. Share concrete comparison
+      mechanics privately with the split profile without weakening its minimum
+      two-successor rule or exposing caller-selected policies and validators.
+      Share the unchanged record-capture and original-assessment-scope schema
+      definitions through root references supported by the existing validator.
+      Add no new schema keywords. Schema admission and reader field mapping
+      establish syntax only; the fixed history/model owner enforces material
+      nonemptiness, exclusive assessment selection and refusal continuity.
+      The schema contract and its negative cases are recorded in
+      docs/agents/ucs-1235-subject-governance.md and
+      tests/subject-reconsideration-schema.test.js.
+      Reject duplicate or unrelated supplied material across the complete retained
+      reconsideration history. Before-state evaluation reuses only that state's
+      relevant already-admitted capture objects on the same allowance. Skip the
+      evaluator's unused-material membership scan when no material is supplied;
+      history validation and missing-evidence refusal remain mandatory. Charge
+      every visited event in scans that are performed, including events without
+      reconsideration material. This preserves the ordinary empty-evidence path
+      without hiding work on the new profile.
+      A reconsidered child requires an active canonical parent at the moment
+      of activation. Evaluate that dependency against retained historical state;
+      a parent's later retirement must not rewrite an earlier valid activation.
+      Evidence availability remains per event. Successful reconsideration proves
+      the selected activation and its required prior refusal; missing evidence
+      for an unrelated existing Subject remains unavailable on the returned
+      governance handle rather than invalidating every independent transition.
+      This does not certify complete historical evidence or publication scope.
+      The fixed model contract, independent-review corrections and focused
+      receipts are documented in
+      docs/agents/ucs-1235-subject-reconsideration-creation.md; integration and
+      affected-file coverage are recorded in docs/change-completeness.md.
+      Continue retained material through the existing read-only query, intent and
+      view consumers using a named material decoder and optional capture-file
+      inputs. Route/context views also receive their original assessment pairs;
+      evidence-independent tree rendering rejects those query evidence flags.
+      Share only private raw/base64 mechanics with existing decoders. Validate
+      the new material transport and raw lists as dense own-data inputs before
+      reading their members, and authenticate a supplied operation before
+      inspecting transport data. Preserve old decoder contracts. Reuse each
+      decoded capture object through admission and governance; separately decoded
+      wrappers consume separate capacity. Missing relevant evidence retains
+      unavailable eligibility; transport must not deduplicate semantic evidence,
+      recover sources, parse a selected record or grant publication authority.
+      Preserve ordinary per-record assignment validation: an unavailable
+      coassigned Subject can refuse a selected record even when the query's
+      other Subject is available. Per-event independence does not waive that
+      record's required checks or make missing evidence a negative match.
+      Preserve the loader's one-attempt operation lifetime even for invalid
+      material input. Admit bounded raw material row populations and metadata
+      before substantive traversal; zero-length byte captures do not make that
+      metadata work free. Skip new transport decoding when its CLI flag is absent,
+      while explicit supplied empty files still receive normal validation.
+      Add a fixed actual-Git reconsideration owner that materializes declared
+      before/candidate commits, calls the existing model validator once on one
+      allowance, and proves that only registry and identity files change.
+      Census every stored canonical and proposed K/O/D owner, preserving absent
+      versus empty assignments and lifecycle metadata. A fresh Subject inherits
+      no assignments, including through parent or related-subject edges; refuse
+      an assignment event or any existing owner assigned to that fresh identity.
+      Corroborate every supplied Decision, assessment and material capture against
+      its declared Git source, plus the mandatory original authorities and whole
+      current authorizer files. Do not fetch omitted unrelated historical
+      witnesses into evaluation or claim complete historical eligibility.
+      Required evidence for the selected transition must still be present.
+      For source-less captures require exact file correspondence in an actual
+      before or candidate snapshot; both members of an assessment pair must
+      correspond to the same side. Preserve their source-less locators rather
+      than inventing historical provenance. Material proof establishes declared
+      typed warrant binding and captured file provenance, not occurrence of the
+      selected record in those bytes or semantic support for reconsideration.
+      This deliberately avoids introducing a new record-content or novelty rule.
+      Keep the owner report non-publishing and scoped to its actual checks;
+      caller models, prior reports and configurable validators are not authority.
+      The core creates one allowance from safely admitted explicit limits. Its
+      fixed input admission reserves raw byte length before making one owned
+      capture copy, preventing caller-buffer mutation during asynchronous
+      snapshot work. Admit that copy with the reservation and reuse the same
+      object through model and source verification. Authenticate the allowance
+      before traversal, and bound metadata work even for zero-byte captures.
+      Use intrinsic Buffer length and reserve capacity before inspecting its
+      byte-index properties. Charge the logical property population and reject
+      extra own properties before copying; a genuine Buffer with a shadowing
+      length getter must not execute that getter during admission.
+      Bound retained proof by admitting fixed authority/proof sections, source
+      and owner rows, unavailable resolutions, unknown-assignment references and
+      changed paths before retention. This is a proof-row capacity, not a whole
+      report byte cap. Preserve actual structural, value and assignment-history
+      checks; their existing internal work lacks shared-budget interfaces and
+      remains explicitly excluded, alongside native materialization/loading.
+      New census and capture work remains charged. These checks cannot grant
+      blanket historical governance approval or fill missing metadata.
+      Match the unique parsed owner occurrence against the actual loader row
+      and already budgeted identity-resolution entry; avoid a second unbudgeted
+      occurrence lookup and clone. Preserve existing warning-only value outcomes
+      rather than promoting advisory findings to errors in this new profile.
+      Preserve and report occupied ledger IDs with neither a stored payload nor
+      a catalog declaration as unresolved. Their absence is not an empty
+      classification and does not free a slot. The census proves all stored
+      owners, not classifications for every historical allocation. Refuse missing
+      declared payloads, including declarations attached to retired or cancelled
+      allocations; a retired resolution alone does not establish no declaration.
+      Compose a fixed reconsideration gate over that actual owner, with mandatory
+      reach, whole-registry tree and finite representative replay checks. Preserve
+      the public core contract and run its native allocation proof once. Use a
+      private fixed handoff after successful core cleanup, then separately owned
+      before and after query operations, one context each. Report these three
+      allowances separately, not as one end-to-end budget. Project before-state
+      material only after the core validates the complete supplied union; reuse
+      exact capture objects and preserve missing-evidence semantics. Share private
+      selector mechanics without changing the existing model's guard/counter path.
+      Add a fixed operation-aware replay entrypoint over the existing private
+      comparator body; preserve the legacy export and forward each actual
+      operation/context pair to native validation and queries. Do not accept
+      caller executors or result oracles.
+      Preserve evidence when an operation-bound query throws: count its attempt
+      before invocation, retain completed pairs and actual partial-side output,
+      and mark unavailable output null rather than fabricate a native result.
+      Stop further queries on that failure and report the failed case and side,
+      fully returned pair count and unassessed suffix. Distinguish calls that
+      never returned from returned calls lacking usage metrics; aggregate only
+      reported usage. Pre-query authentication failure has zero attempted calls.
+      Keep this fixed bounded failure shape separate from the legacy comparator's
+      unchanged contract. This prevents a resource refusal from erasing evidence
+      of work already attempted or completed.
+      Reserve the complete fixed recipe across all original canonical Subjects
+      and present stores, plus the fresh Subject, without eligibility-based
+      population reduction. Distinguish precise expected semantic refusals from
+      incomplete execution, budget failures and truncation. Fresh absence before
+      remains an actual unknown-subject refusal, never an empty set. Absent
+      assignments remain unknown under both positive and negated predicates.
+      Qualify refusals through native query preparation and, only when preparation
+      passes, native assignment validation of the preserved qualified owner.
+      Account these extra attempts and redirects explicitly; reject mixed
+      semantic/resource diagnostics. Use maxQualificationRedirects as aggregate
+      reserved capacity: reserve the query's maxRedirects before each additional
+      preparation or row-validation call, with no refund. Give each row call
+      that explicit native cap. This avoids reconstructing an unavailable
+      original row remainder or treating missing usage as zero. Report reserved
+      capacity separately from reported redirect usage and distinguish attempted,
+      returned, unreported and usage-reporting calls. A thrown call remains an
+      attempted, failed qualification. At most one preparation and one subsequent
+      row call qualify each refused case-side; no row call follows preparation
+      refusal. The conservative reservation may refuse work that would use fewer
+      redirects, but bounds the complete extra episode without invented metrics.
+      Compare complete fresh Boolean cases with
+      their existing native unary baselines, not a duplicate Boolean evaluator.
+      Preserve raw comparisons and unavailable deltas even when the fixed
+      assessment establishes an expected refusal. Missing unrelated historical
+      approval must not be converted into a universal approval requirement.
+      Original predicates must preserve availability as well as membership:
+      require complete results on both sides or exact matching qualified semantic
+      refusals on both sides. A complete/refused mismatch fails. Exact old
+      metadata, owner bytes and relevant retained evidence provide no legitimate
+      reason for such asymmetry in this operation. Fresh-Subject predicates keep
+      their intentional unknown-before versus eligible-after asymmetry. Require
+      fully returned, nonnull query pairs before qualification so partial native
+      failures cannot become exceptions in the assessment code.
+      Require successful fresh snapshot cleanup before gate success. Keep
+      assignments null and do not create an empty assignment event. Retained
+      execution, route capability and publication still require their own stages.
+      The agreed implementation contract and outstanding verification are in
+      docs/agents/ucs-1235-reconsideration-git-core.md and
+      docs/agents/ucs-1235-reconsideration-gate.md.
+      Subsequent retained-publication contract: add fixed subject-reconsideration
+      dispatch and a seven-field wire retaining the existing core/impact input.
+      Decode each supplied capture once under the core allowance and reuse owned
+      evidence, preserving raw API counters and the two separate query-context
+      allowances. Keep core, gate and operation-input digests distinct. Do not
+      predecode evidence in parent, pure predicate or local review. Candidate
+      retention uses two positive registry/identity caps and no assignment event.
+      Implement both actual prepared and final workers together; no stub may
+      satisfy runtime capture. Retain valid failed-owner diagnostics without
+      authority artifacts; final failure uses captures null. Successful-owner
+      capture failure is a typed refusal. Verify actual candidate modes separately
+      from owned artifact mode. Fixed predicates bind original inputs, report
+      shape, core/gate resource and source consistency, justified capture/closure
+      lower bounds and explicit capacities, but do not certify plausible counters
+      as historical measurements. Require actual fresh whole-owner equality.
+      Add subject-reconsideration-publication-v1 with runtime-capability route
+      evidence outside the unchanged gate input. Require independently approved
+      runtime proof, actual reach/tree/replay results and exact candidate captures.
+      Review keeps a nine-field eventless operation-evidence shape and the full
+      current Decision tuple distinct from the retained refusal authorizer.
+      Independently admit exactly four actual before/candidate authority buffers
+      in local review and invoke native one-Subject allocation once. Compare the
+      original pair by complete locators/formats and canonical encoded bytes;
+      do not add local evidence decoding, Decision recapture or identity reindexing.
+      Fresh owner checks prove source and authorizer semantics. Repeat local and
+      fresh final proof at review and publication before the unchanged atomic
+      source/output ref transaction. Preserve source-less semantics, unknown
+      assignments, expected refusals, cleanup failure and publication-unknown.
+      This avoids duplicate evidence/eligibility engines while keeping retained
+      integrity separate from actual execution. The agreed contract is
+      docs/agents/ucs-1240-reconsideration-publication.md; its implementation and
+      actual adversarial publication verification remain required work.
+      Subsequent implementation completes that internal publication profile:
+      fixed prepared/final workers retain exactly the two authority artifacts,
+      independent review checks actual Git files and one native allocation,
+      and fresh final proof precedes the existing publication transaction.
+      A malformed replay comparison or inventory row must produce a refused
+      predicate rather than throw: explicit null-row guards preserve the closed
+      report grammar without treating resealed report counters as execution
+      evidence. The owner four-file suite passed 48/48 and the independent
+      two-file publication/runtime suite passed 36/36 on the same frozen source.
+      Full commands, scoped results and integration verification are recorded in
+      docs/agents/ucs-1240-reconsideration-publication.md and
+      docs/change-completeness.md. These results do not establish later lifecycle
+      continuation, public mutation interfaces or whole-goal acceptance.
+      Subsequent agreed lifecycle continuation uses one own materialCaptures
+      field to select strict three-family evidence; omission preserves the
+      existing profile. Reuse fixed capture admission for one owned copy/decode
+      and the existing authentic governance allowance through model, internal
+      use inventory and assignment rows. Keep wire/event/policy versions, with
+      continued outer lifecycle report version 2 and typed report version 3
+      bound to original input presence. Verify every declared supplied source;
+      preserve actual-side source-less/mixed correspondence, unrelated missing
+      history and native allocation semantics. Continue inventory internally
+      for transition/split owners rather than add a public limit group or
+      duplicate context evaluation. Standalone material inventory remains
+      unsupported work. Typed optional-registry empty/unknown behavior must
+      remain valid without fabricating a context handle; nonempty subjects or
+      material cannot be silently ignored. Reuse existing budgeted row checks
+      when an actual handle exists and guard/charge the native absent-registry
+      path otherwise. Existing impact-loading exclusions remain explicit.
+      Deliver retirement through publication first, then merge/split and typed
+      K/O/D promotion. The agreed contract and verification requirements are
+      docs/agents/lifecycle-material-continuation.md; implementation is pending.
+      Subsequent retirement implementation adds fixed raw/wire admission and
+      internal context/inventory composition under the same allowance, including
+      source checks for all supplied capture families and budgeted withdrawal
+      rows. Fixed workers consume the owned wire directly; retained predicates
+      and fresh review/publication bind outer report version 2 to the original
+      selector. Capacity validation and capture-property work must precede
+      Buffer inspection; exhausted or malformed input cannot begin unadmitted
+      byte work. The successful publication path retains the original policy
+      and ref transaction. Implementation and scoped verification are recorded
+      in the lifecycle continuation contract. Merge/split, typed promotion and
+      standalone material inventory are not completed by this retirement path.
+      Before merge/split continuation, the implementation and review owners
+      confirmed that the native equivalent-merge owner currently requires
+      positive effective absorbed use. Preserve that policy in evidence
+      continuation and explicitly retain zero-use equivalent merge as unsupported
+      lifecycle work; do not claim the continuation completes it. Split must
+      retain its existing zero-use, positive-use and all-empty mapping paths.
+      The split continuation carries the same owned material list into prior
+      and candidate governance evaluations. Preserve the native allocation
+      ordering and invoke its allocation proof once. The original before-pair
+      is already checked by the native split proof; reuse that result rather
+      than compare the pair again in the historical-source verifier. Every
+      other supplied source declaration remains checked. Omitted material
+      retains the original admission and counter behavior; only the selected
+      continued profile adds material admission and evaluation work.
+      Subsequent merge/split implementation adds fixed admitted wire workers,
+      continued inventory and assignment composition, retained version binding
+      and fresh publication checks. An actual retained-unknown-owner control
+      exposed 5432 extra capture bytes missing from continued merge accounting;
+      charge those actual reads while preserving omitted-input accounting.
+      Valid final controls followed by malformed null-impact inputs exposed an
+      unchecked routes access; use a narrow null guard so these inputs refuse
+      without swallowing unexpected exceptions. The frozen owner suite passes
+      11 cases; the subsequent independent and isolated generic checkpoints
+      pass 24 and 414 cases respectively on the same frozen runtime. The
+      lifecycle continuation contract records source custody and exact evidence.
+      This does not complete typed promotion,
+      zero-use merge, standalone inventory or canonical suppression/restoration.
+      The subsequent repository acceptance run exposed stale exact worker-name
+      checks that omitted the implemented prepared/final reconsideration
+      entrypoints. Main verified identical guard and dispatch bytes against the
+      failing isolated c7b055a run. Add only those existing literal entrypoints
+      to the acceptance allowlists, retaining the complete fixed-dispatch checks
+      rather than permitting arbitrary names or changing runtime execution.
+      Root AGENTS records the corresponding maintenance requirement: synchronize
+      these exact acceptance allowlists and run repository acceptance whenever
+      fixed entrypoints change. This makes the observed integration obligation
+      explicit without adding a new approval step or runtime capability.
+      Subsequent homogeneous K/O/D continuation uses one owned three-family
+      admission under the actual governance allowance, fixed direct wire-worker
+      handoff and outer report version 3 selected by the original material field.
+      Omission preserves typed version 2, native allocation/genesis and prior
+      counters. With actual registry authority, reuse its candidate handle for
+      budgeted genesis rows. Without a registry, retain native unknown/empty
+      behavior with charged raw record/reference/file metadata; never fabricate
+      a handle or ignore nonempty material/subjects. The parser entry itself can
+      contain undefined bookkeeping, so guard the substantive raw projection
+      without altering the actual entry passed to native validation. An actual
+      source test exposed an uncharged materialized registry reread; the continued
+      branch charges both physical buffers and leaves omitted behavior unchanged.
+      Fresh final proof, review and unchanged atomic ref publication continue
+      to bind the original wire and actual sources. Helper-level before-only
+      source-less correspondence and full retained historical-source coverage
+      remain distinct claims. The scoped guide and receipts are recorded in
+      docs/agents/ucs-1241-typed-promotion-material.md. This is internal
+      implementation authorization, not new material truth, runtime approval or
+      publication of this proposed Decision.
+      Main and both continuation owners checked remaining scope against r3
+      sections 3 through 5, 9 and 11. Complete affected-use accounting remains
+      required inside composed lifecycle owners; a standalone inventory endpoint
+      is not an additional requirement. Preserve its unsupported status rather
+      than build an unused public API. Existing-record typed assignment
+      publication, actual same-meaning and graph transition coverage, fresh-ID
+      union/broadening, canonical suppression/restoration and zero-use equivalent
+      merge remain distinct domain work. Read-only adapter completion does not
+      imply those domain workflows are finished.
+      A subsequent main/P2/P7 audit explicitly supersedes the earlier inclusion
+      of active-canonical suppression and same-ID restoration as required work.
+      R3 section 4's refusal row preserves a proposal, its refused meaning/term
+      and reason, and requires a new Decision plus changed evidence for reversal;
+      section 12B requires isolation/reversal acceptance. Neither requires the
+      broader active-canonical operations. That extension originated in this
+      team's proposed interpretation at f246a40 and was repeated at 6166a6a;
+      no separately authorized expansion was identified. Preserve those earlier
+      statements as history, but do not use them as current completion criteria.
+      Actual proposal suppression publication and warranted reconsideration
+      acceptance remain required. Ordinary fresh activation/promotion and
+      fresh-ID union/broadening remain required; union can preserve its original
+      subjects and use ordinary creation without a separate merge engine.
+      Broader merge variants require explicit scenario-to-spec adjudication,
+      not an unbounded backlog or blanket waiver. Current requirements and
+      concrete unresolved chain-extension scope are recorded in
+      docs/agents/subject-lifecycle-required-scope.md.
+      Subsequent explicit main authorization adds a bounded ordinary creation
+      publication profile: exactly one fresh Subject, either direct activation or
+      promotion of an exact unrefused proposal. Changed-meaning union is an ordinary
+      fresh activation preserving original meanings, not a separate merge engine.
+      Reuse the native single-ID allocator and creation rules, one authentic
+      composed governance allowance and existing eventless source/preservation
+      mechanics. Keep legacy model exports unchanged. Only registry and identity
+      files may change; assignments remain null and existing records/history exact.
+      Retain original before evidence and candidate registry/identity bytes; actual
+      review verifies the complete Decision tuple, source membership, fresh owner
+      equality and existing ref transaction. No caller executor or policy override
+      is admitted. The alternative of copying the reconsideration pipeline would
+      duplicate source/capture invariants; extract only genuinely shared mechanics
+      behind fixed independent domain boundaries. The scoped implementation and
+      evidence are tracked in docs/agents/ucs-1240-subject-creation.md. This authorizes
+      internal implementation, not runtime approval, customer publication or release.
+      The subsequent 2026-09-21 read-only Gate B audit maps warranted reversal
+      to existing native history and actual SHA-1/SHA-256 publication tests.
+      Their actual suppressed before-state, required prior refusal evidence,
+      distinct new Decision and changed material cover the specification rule.
+      A further chained run through the newer suppression worker is not an
+      additional required behavior. Reuse existing receipts rather than invent
+      an extra workflow or reopen active-canonical restoration. The scope guide
+      links the exact tests; repeated equivalent merge remains separate.
+    consequences: >
+      Reconsideration does not erase a refusal, reactivate a proposal key or
+      automatically restore record assignments. The actual-Git owner provides
+      supplied-file provenance and stored-owner preservation. Complete impact
+      and replay composition, fresh validation and retained publication are
+      implemented as separate stages with scoped verification recorded above;
+      this design record is not runtime or customer-publication approval.
+      Normal query, assignment, intent and view contexts must receive the retained
+      reconsideration material needed for historical eligibility; a successful
+      owner proof without that consumer continuation is incomplete delivery.
+      Active canonical suppression and same-ID restoration remain unsupported
+      extensions, not required by the audited r3 clauses. The superseding scope
+      clarification above does not complete proposal suppression or reversal
+      acceptance. Union or
+      broadening requires a fresh identity when meaning changes, but does not
+      inherently require retiring its original subjects or adding equivalence
+      redirects. Existing fresh activation is partial support, not proof of a
+      completed union publication workflow. Internal implementation authorization
+      does not publish this proposed Decision, approve runtime configuration,
+      authorize customer records, create a PR or release a package. Each actual
+      PR retains the repository's decision, version and documentation obligations.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:c584ac00-a64a-4fc3-bc61-882e68e96e6d, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a] }

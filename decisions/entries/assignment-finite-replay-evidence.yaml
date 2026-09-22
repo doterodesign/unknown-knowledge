@@ -1,0 +1,33 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:f1369103-65d4-4660-b166-f396e918a67d
+    title: Finite replay evidence reserves the complete recipe and preserves unknown results
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      Assignment edits can change both strict and possible query matches,
+      including for Subjects absent from the edited positive lists. Truncated
+      inventories, silent operand exclusions or empty caller coverage can hide
+      relevant differences without establishing actual saved-query completeness.
+    decision: >
+      Keep generic supplied query comparison distinct from fixed operation recipes.
+      Reserve complete case count and canonical inventory bytes before any query;
+      never choose a prefix to fit. Execute the same authored query on both actual
+      bound contexts and retain raw responses and existing candidate deltas.
+      The v1 assignment recipe is Knowledge/current-policy only. Typed existing
+      authoring refuses its reuse as K/O/D proof. Equivalent merges use the
+      separately owned all-store equivalent-policy recipe with original Subject
+      operands, exact source-to-survivor mapping and the mandatory participant pair.
+    consequences: >
+      Unknown, unavailable, partial and unrequested results retain their meanings;
+      they do not become empty arrays or false matches. Finite replay is neither
+      exhaustive affected-use discovery nor semantic equivalence or human approval.
+      Limits remain explicit, with no automatic increase and no performance-fit
+      claim from small fixtures. Evidence includes 7443f06, P2 release 5441fa8,
+      tests/subject-replay-impact.test.js and the owner equivalent-merge replay tests.
+      docs/agents/ucs-1241-assignment-replays.md records the legacy recipe scope.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-000008, D-000011, D-000012, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533] }

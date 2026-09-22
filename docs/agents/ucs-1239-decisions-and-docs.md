@@ -1,4 +1,4 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -46,7 +46,7 @@ failures. No new reader, benchmark, SDK or production data change is introduced.
 
 The [read-only consumer contract](ucs-1237-reconsideration-consumers.md) now
 forwards both assessment and material captures through route/context view modes,
-under the reconsideration Decision (contract arrives in PR3; see delivery availability).
+under the [reconsideration Decision](../../decisions/entries/suppressed-subject-reconsideration.yaml).
 This includes an actual promoted-Subject assessment regression, as well as
 reconsidered-Subject membership and context counts. View/context guides and the
 installed derived-layer protocol describe the new flags; tree mode remains

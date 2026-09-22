@@ -1,10 +1,10 @@
-> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
 # Subject operation budget composition
 
-For ordinary assignment continuation (contract arrives in PR3; see delivery availability), one
+For [ordinary assignment continuation](ucs-1241-assignment-continuation.md), one
 authentic six-counter allowance covers owned raw admission or bounded wire
 decode, metadata checks, both actual governance evaluations and bindings,
 supplied-source checks and continued row eligibility. The same owned captures
@@ -437,7 +437,7 @@ qualify the retained operational workloads.
 
 ## Reconsideration history/model accounting
 
-The reconsideration history/model profile (contract arrives in PR3; see delivery availability)
+The [reconsideration history/model profile](ucs-1235-subject-reconsideration-creation.md)
 shares one authentic allowance across native allocation, original evidence,
 both model evaluations and final eligibility. It admits raw capture objects
 before verification and reuses those objects when projecting before-history
@@ -463,7 +463,7 @@ budget failures retain the existing sticky operation failure. A failed material
 input still consumes the one context-loading attempt. Omitted CLI material flags
 add no synthetic transport-document pass; explicitly supplied empty files do.
 
-The actual-Git owner (contract arrives in PR3; see delivery availability) shares one allowance
+The [actual-Git owner](ucs-1235-reconsideration-git-core.md) shares one allowance
 through owned input admission, its one model invocation, actual evidence
 captures, materialized reads and owner census. Intrinsic Buffer length establishes
 the byte reservation before its separately charged byte-property walk and copy;
@@ -478,14 +478,14 @@ Owner exact-fit/one-short tests and main's 253-test integration passed; exact
 receipts and the independently summed capture/closure basis are in the guide.
 
 Fixed shared capture admission now supplies the core's same raw mechanics and
-the ordinary continuation prerequisite (contract arrives in PR3; see delivery availability).
+the [ordinary continuation prerequisite](ucs-1241-assignment-continuation.md).
 Its new wire path admits base64 text before a linear canonical-alphabet/padding
 check and reserves decoded byte length before one decode. It does not decode
 unbounded and then charge a second raw copy. Raw admission retains the original
 phases and counters. These internal helpers prove owned-byte admission only;
 governance, source membership and eventual publication remain owner checks.
 
-The prepared reconsideration gate (contract arrives in PR3; see delivery availability) keeps that
+The [prepared reconsideration gate](ucs-1235-reconsideration-gate.md) keeps that
 core allowance distinct from two fresh Subject operations, one per actual
 context. Before-material projection guards only the new selector path while
 sharing the old private selection mechanics and preserving model counters.
@@ -499,7 +499,7 @@ and the gate claims no combined end-to-end memory, CPU or I/O bound.
 
 ## Split foundation accounting
 
-The single-Subject creation comparator (contract arrives in PR3; see delivery availability)
+The [single-Subject creation comparator](ucs-1235-subject-creation-allocation.md)
 uses the same private native-comparison mechanics with a fixed count of one.
 Its sole population limit is `maxLedgerRows`; the complete before/candidate row
 sum is admitted atomically before document guards or planning. Successful
@@ -509,7 +509,7 @@ or measured slot visits. The shared authentic governance allowance still covers
 document guards. The split entrypoint retains its separate minimum of two,
 successor limit, field names, diagnostics and accounting contract.
 
-The split allocation helper (contract arrives in PR3; see delivery availability)
+The [split allocation helper](ucs-1235-subject-split-design.md#implemented-history-and-allocation-foundations)
 adds per-invocation ledger/successor population admission before one fixed native
 planner comparison. It reuses the authentic shared governance document allowance;
 its admitted counts are not cumulative internal visits or measured slot probes.
@@ -583,7 +583,7 @@ and binding and every row's eligibility use that same allowance; the candidate
 handle is reused. P8 separately charges each actual authority recapture and
 materialized reread to its assignment capture allowance.
 
-The outer split gate (contract arrives in PR3; see delivery availability) additionally reserves one
+The [outer split gate](ucs-1235-subject-split-gate.md) additionally reserves one
 complete eventless two-path proof against the remaining closure rows and bytes
 before retaining it. The zero branch performs no positive P8 setup. Both branches
 independently reload actual contexts for mandatory impacts; that context work,

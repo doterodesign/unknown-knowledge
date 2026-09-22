@@ -1,0 +1,103 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:ac919c9f-8879-422b-9dce-8b3e04324712
+    title: Typed promotion separates candidate activation from fresh assignment genesis
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      The implemented Decisions-only promotion gate cannot prove classified K/O
+      promotion or append births to existing assignment history. Proposal Subject
+      text is not a prior canonical assignment, and source store health does not
+      prove evidence checks enabled by candidate activation. Reusing a legacy
+      replay or publication profile would overstate its demonstrated scope.
+    decision: >
+      Propose a distinct typed-record-promotion operation, Ontology first and
+      Knowledge next. P1 plans exact committed proposal and catalog changes with
+      fresh per-kind allocation. P8 independently verifies candidate bytes,
+      selected effective preflight, strict null-before P3 assignments, immutable
+      old history plus exact genesis, and the existing unchanged authorizer.
+      Preserve unknown versus empty classification. Require actual unchanged
+      Subject authority for classified candidates; actual absence permits only
+      unknown or empty classification with explicitly inapplicable Subject
+      impacts. Add a fixed all-present-store current-policy finite replay recipe
+      using original operands and complete reservation, with actual reach/tree
+      evidence and raw unknowns. Retain runtime, review and publication proof
+      separately through P7; preserve the first Decision-only contract.
+    consequences: >
+      The initial design deferred the nested result wire and implementation
+      until owner agreement. The first Ontology-only read-only gate implemented
+      that wire, actual capability checks and finite impacts; at that integration,
+      typed P7 publication and the subsequent Knowledge/Decision kinds remained
+      separate unfinished work.
+      Source draft/proposed status must be inspected
+      directly. Ontology targets active; later Knowledge targets verified with an
+      explicit digest-bound date and trusted selected leaf verdicts. No evidence
+      or dates are manufactured. Direct fresh-payload creation, mixed batches,
+      canonical draft activation and shared host-operation resource qualification
+      remain outside scope. The design and acceptance matrix are documented in
+      docs/agents/ucs-1241-typed-promotion-design.md. Owner seam coordination is
+      design evidence, not a passing runtime test or accepted canonical Decision.
+      The proposed exact result and O-first policy digest preimage are recorded
+      there for reconciliation. Completing classified K/O/D promotion also needs
+      the new typed Decision kind with existing history, without widening the
+      original subjectless Decision API or transferring its profile approval.
+      Independent tests/typed-promotion-source-contract.test.js now exercise
+      actual K/O/D source and candidate snapshots, strict new assignments,
+      selected preflight refusals and retained prior history. These passing
+      existing-owner checks originally preceded the typed gate. Its implementation
+      in payload/engine/lib/assignment-gate.js and typed-promotion helper modules
+      is covered by tests/typed-promotion-gate.test.js. Independent integration
+      checks also retain the first Decisions-only gate and publication behavior.
+      Neither these checks nor this proposed Decision grants canonical approval.
+      The subsequent Knowledge slice was agreed between the domain and publication
+      reviewers before implementation. The typed domain policy advances to v2
+      with exactly ontology and knowledge admitted, while wire/report shape
+      versions remain 1. Reuse recordLifecycleState for the correct per-kind
+      lifecycle field and require the exact selected target; dispatch actual
+      Knowledge leaf preflight with digest-bound today and preserve its raw time
+      evidence. Knowledge requires its own store and Decisions, not Ontology.
+      Preserve citation/body/verification-date bytes and old assignment history;
+      never add a revision note or refresh evidence during canonical creation.
+      Existing P1 transformation and P3 strict null-before assignment checks are
+      reused. This avoids a second lifecycle classifier and preserves O behavior.
+      Tests are in tests/knowledge-promotion-gate.test.js, with O/source/ordinary-D
+      regressions and the retained publication suite. Classified D still requires
+      the subsequent reviewed policy disposition. Main reconciles documentation
+      and the unreleased per-PR version; peer agreement is not runtime approval.
+      The subsequent classified-Decision interface was explicitly resolved between
+      main, domain and publication reviewers before implementation. Homogeneous
+      typed K/O/D uses v3 policy and owner report version 2. Reuse the existing
+      Decision planner for actual proposed-to-accepted transformations; do not
+      widen the K/O planner API or select the ordinary Decision gate implicitly.
+      There is no selected-Decision preflight API. After actual creation checks,
+      derive only the exact five-field not-applicable preflight tuple with Decision
+      kind, promoted IDs in row order and null today/result. Input today stays
+      required and digest-bound. Declare per-kind selectedPreflight in policy.
+      Prefer this to adding a redundant applicability field to every report or
+      echoing a date that might imply Decision freshness evaluation. A shared fixed
+      predicate permits this sole exception; every other required check passes,
+      O/K retain actual preflight, and not-performed never qualifies. Preserve
+      source reasoning, strict canonical birth assignments, all prior history,
+      exact changed paths, existing authorizers and full present-store impacts,
+      including known-empty support Decisions in registry-bearing installations.
+      The before authorizer may share a selected file but cannot be newly promoted
+      or edited; unknown coverage remains unknown. Implementation and actual
+      cases are in tests/classified-decision-promotion-gate.test.js and the typed
+      publication suite. Peer agreement and test approvals remain distinct from
+      actual canonical or runtime approval.
+      The expanded Decision tests exposed an ordering mismatch: P1 sorts created
+      references by proposal key, whereas selected preflight IDs preserve reviewed
+      input row order. Do not change either order or silently sort the input.
+      Corroborate nonempty unique complete canonical-reference membership against
+      an independently supplied original selection, then bind the exact preflight
+      tuple to that selection's order. Missing selection refuses; report-derived
+      fallback would turn the order check into self-corroboration. Main passes the
+      admitted selection; retained and fresh publication checks bind the decoded
+      original wire. Reversed valid batches and altered report orders are tested
+      separately. This corrects implementation of the agreed v3 contract without
+      changing its policy descriptor or input/report shapes.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000005, D-000010, proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:f1369103-65d4-4660-b166-f396e918a67d, proposal:decision:53e6b70b-75d3-476b-bd2c-1b11ef075ebc] }

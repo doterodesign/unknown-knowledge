@@ -1,0 +1,146 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533
+    title: Assignment gates derive evidence from actual snapshots and preserve grouped file bytes
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      A caller event or successful report cannot prove actual record scope or
+      unchanged evidence. O/D records may share a file, so checking each selected
+      entry as an independent whole-file edit would reject authorized siblings
+      or accidentally permit changes outside the selected entries.
+    decision: >
+      Use fixed staged and prepared snapshot adapters feeding one private P8
+      history, capture, eligibility, preservation and authorizer pipeline. Accept
+      closed reviewed typed selections only for existing-record authoring and
+      independently corroborate every allocated original occurrence and unchanged
+      effective lifecycle. Group captures by actual physical file and compare the
+      union of selected subjects spans, preserving all other bytes. Only Knowledge
+      receives its exact revision-note suffix. Refuse unsupported YAML layouts
+      rather than reserialize. Derived merge scope and canonical creation enter
+      through separate fixed operation adapters, never caller callbacks or reports.
+      Subsequent cleanup correction: every shared failure-handler invocation
+      clears the overall success flag, including failures after the snapshot
+      callback finishes. Retain completed check evidence and the source failure
+      diagnostic. Reject adapter-specific masking because staged and prepared
+      operations share this invariant.
+      Add one optional own-data continuation object to ordinary assignment inputs,
+      with version 1, required assessmentCaptures and materialCaptures arrays,
+      and limits containing one explicit six-counter governance group. Existing
+      top-level decisionCaptures remains the only Decision evidence location.
+      Genuine omission preserves the existing input, wire, work and version-1
+      result path. Present malformed, inherited or undefined continuation refuses;
+      it cannot fall back to omission. The continuation path uses a version-2
+      owner report with a versioned continuation input digest and actual cumulative
+      governance usage. Existing outer retained/final/review/event versions and
+      publication policy remain unchanged only with exact input-derived version,
+      digest, bounds and approved-runtime checks. Old runtimes must refuse new
+      inputs rather than drop them.
+      Use one authentic allowance for owned raw capture admission or canonical
+      wire decoding, both actual governance evaluations/bindings and continued
+      row eligibility. Reserve raw bytes before one owned copy, or decoded bytes
+      before one wire decode; never decode unbounded and then hide a second copy.
+      Extract only identical fixed capture mechanics shared with reconsideration,
+      preserving its existing refusal codes, phases, ordering and counters.
+      Validate new canonical base64 text with a linear alphabet/padding scan
+      after text admission; a within-budget large-input regression showed that
+      repeated-group regular expressions could exhaust the native stack before
+      decoding. Preserve one decode and distinguish malformed text from budget
+      exhaustion. Do not widen this correction to existing transport decoders.
+      Share that new grammar with retained-report byte accounting through one
+      dependency-free canonical-base64 decoded-length primitive. Keep budgets,
+      source proof, ownership and decoding in their fixed callers. This avoids
+      two independently maintained padding/alphabet rules without introducing
+      configurable transport policies or changing legacy decoders.
+      Keep operation schemas, source proof and publication policy in their owners.
+      Add a fixed continued-row entrypoint sharing the existing private budgeted
+      mechanics, including authentication on empty targets. Keep newly-effective
+      assignment rules and per-record query coassignment checks unchanged.
+      Corroborate every supplied capture without recovering omitted history.
+      Source-less or mixed assessment pairs must correspond to one actual side;
+      when both members carry sources, verify each actual historical source
+      without imposing a blanket current-side constraint. A staged
+      candidate has tree/materialized-file correspondence, not an invented commit.
+      Existing selected-file/record/redirect limits keep their meanings; native
+      loading, scope/history/preservation and impact phases retain explicit
+      accounting exclusions. Refresh continuation usage on all exits and cleanup.
+      Preserve every own input field during metadata copying so closed-shape
+      validation can reject it. Use a null-prototype accumulator: assignment to
+      an ordinary object's special prototype key would otherwise silently erase
+      an unexpected input field. This corrects admission, not source authority,
+      and does not alter the omitted-continuation path.
+      Complete both real workers, retained validation, fresh final, review and
+      publication before claiming delivery of this new ordinary assignment path.
+      The agreed contract is in docs/agents/ucs-1241-assignment-continuation.md;
+      implementation and its validation evidence remain separate obligations.
+      The retained continuation predicate binds the original wire digest and
+      checks closed report structure, minimum admitted bytes and plausible
+      counters within supplied limits. It cannot authenticate historical work
+      merely because counters are plausible or a caller can recompute a hash.
+      Preserve this distinction from the actual captured worker execution and
+      mandatory fresh final owner, which checks source/assignment semantics and
+      reports its own measured usage. Do not describe predicate-only tamper tests
+      as proof of historical execution or a completed publication boundary.
+      Subsequent existing-record typed publication uses the SAME subject-assignment
+      operation and fixed workers. The original own retained operationInputs.selection
+      is the sole typed discriminator, after actual retained member canonical bytes,
+      digest, source, candidate, runtime and injected-input bindings are verified.
+      Add a fixed top-level typedSubjectAssignment policy descriptor with
+      typed-subject-assignment-publication-v1 and typed-assignment-replay-v1;
+      preserve the existing operations.subject-assignment object and digest.
+      This final main choice supersedes discussed distinct-operation and caller
+      policy alternatives. Reuse private fixed mechanics, not public callbacks or
+      policy resolvers. Original mixed K/O/D selection and version-2 existing-subjects
+      events remain authoritative only after actual owner corroboration.
+      Preserve native owner report version 1, or version 2 with original continuation.
+      Carry the three-family owned evidence once, retain original truth-anchor bytes,
+      and require structural/value gates without adding promotion-style today or
+      trusted-preflight requirements. Classification does not certify record truth.
+      Typed replay covers all actually installed stores present on both sides,
+      current/all views and direct/descendant expansion. Its fixed finite recipe
+      has four baseline predicates, two unary predicates per verified eligible
+      Subject and four forms per adjacent eligible pair; reserve the complete
+      inventory before native queries. Membership deltas must stay within actual
+      changed assignment owners; all/none baselines retain membership. Preserve
+      possible matches, incomplete/refused outcomes and rank shifts without a second
+      Boolean evaluator. Fresh final execution at review and publication remains
+      mandatory; atomic ref transactions and the old Knowledge path stay unchanged.
+      Main authorized implementation at 6166a6a638181e99114c2dd6f8852f805bd27357
+      in an isolated checkout. This is not publication of this proposed Decision,
+      runtime approval or customer-record authorization. Verification follows in
+      docs/agents/ucs-1241-typed-assignment-publication.md.
+      The integrated checkpoint later passed 125 of 126 tests; its sole failure
+      expected the now-supported retained typed selector to be rejected. Main,
+      owner and independent reviewer agreed a narrow test correction: keep a
+      valid-descriptor control and require real parent rejection of extra fields,
+      empty refs and duplicates before evidence access. Existing real mixed-store
+      publication controls supply positive execution coverage. The focused test
+      passed; retain the original failed batch and correction separately rather
+      than claiming a repeated all-green batch. No runtime change was required.
+    consequences: >
+      Event parsing does not widen an older gate's authority. Whole changed-path
+      checks, exact source captures and unchanged authorizer records remain
+      mandatory. Actor and skill are retained assertions, not authentication.
+      Capture capacities count actual grouped byte witnesses but do not claim
+      whole-process CPU or memory bounds. Evidence includes 21a87e9, bdff1af,
+      tests/typed-assignment-gate.test.js and tests/typed-assignment-preservation.test.js.
+      The staged, prepared and typed UCS-1241 agent docs describe the separate APIs.
+      Actual staged and prepared cleanup-failure tests first reproduced false
+      success in both modes, then passed after the shared correction. See
+      tests/assignment-gate-cleanup.test.js and the subsequent cleanup evidence
+      in docs/agents/ucs-1241-documentation-audit.md. This does not prove cleanup
+      always succeeds or authorize publication.
+      Subsequent ordinary continuation implements raw staged/prepared admission,
+      both fixed wire workers, retained report checks and fresh final review and
+      publication through the existing Knowledge-only policy. The guide records
+      actual SHA-1/root and SHA-256/nested fixture evidence, source-loss refusals,
+      unknown-field rejection and unchanged ref-CAS semantics. Typed K/O/D owner
+      checks do not establish typed retained publication or later lifecycle
+      continuation. Captured report bounds remain distinct from fresh measured
+      work; see tests/assignment-continuation-prepared.test.js and
+      tests/assignment-continuation-publication.test.js.
+    supersedes: []
+    superseded-by: []
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000014, proposal:decision:00000000-0000-4000-8000-000000000024, proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba, proposal:decision:1184333b-3f64-44c5-8707-ff5f314e72db, proposal:decision:3d935466-771a-458b-be78-37bec94ec044] }

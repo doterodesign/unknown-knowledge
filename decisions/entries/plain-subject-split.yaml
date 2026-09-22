@@ -1,0 +1,160 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:e4a28bbf-8a28-4eea-b32a-b81b15bdc14d
+    title: Subject split preserves original meaning and proves fresh successors and complete mappings
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Stable Subject identity requires a split to retain the original meaning as
+      a tombstone and mint new meanings. Neither equivalent redirection nor plain
+      withdrawal can represent individually reasoned zero/one/several successor
+      assignments. The existing assignment gate also correctly forbids unrelated
+      identity-ledger changes, so split needs an exact dedicated allocation proof.
+    decision: >
+      Compose one atomic candidate with fresh successor activation followed by
+      the source split. Require at least two fresh Subject allocations in exact
+      allocator order, preserve every old ledger row and the original definition,
+      and bind both registry events to the same full Decision evidence tuple.
+      Every actual effective canonical direct owner receives one reasoned ordered
+      successor subset at the removed source position, including explicit empty
+      withdrawal. Preserve unknown and inactive historical owners under complete
+      reviewed closure. Assignment evidence exists exactly when direct owners
+      change. Reuse fixed owner primitives without a caller-selected executor or
+      generic ledger exception. Retain a separate raw candidate identity artifact
+      for the eventual split publication profile, independently corroborating the
+      actual before ledger and exact whole allocator result.
+    consequences: >
+      This records the agreed direction, not a complete split operation or human approval.
+      The initial core/request and replay contracts are agreed in the linked design;
+      their remaining implementations and broader graph
+      disposition details must be reconciled before dependent changes. Initial
+      preserved-edge composition must not claim arbitrary graph redistribution.
+      Automatic all-successor redirects, reuse of the source ID and treating
+      unknown classification as empty are rejected. An exact query delta means
+      complete comparison, not unchanged membership; planned mappings may change
+      membership and unaffected rank positions. Use actual queries and independently
+      proven affected scope rather than duplicate query semantics. Zero use still
+      changes registry and ledger and requires its own preservation proof. Split
+      does not replace required union, suppression/reversal, migration or broader
+      acceptance work. Current design and open implementation obligations are in
+      docs/agents/ucs-1235-subject-split-design.md. This proposal authorizes no real
+      runtime, operator review, canonical Decision promotion or customer publication.
+      The first implemented foundation now validates historical adjacent pairs
+      and makes source verification depend on predecessor activation assessment.
+      The fixed allocation helper admits complete ledger/successor populations
+      under explicit per-invocation bounds, authenticates shared document budgets,
+      calls the unchanged native allocator once and compares the whole planned
+      ledger. A redundant wrapper occupancy count or generic transition pass is
+      unnecessary; exact planner equality already implies the narrower delta.
+      Native exhaustion counts remain visible. Independent review exposed and
+      corrected pre-guard nested getter execution and lost failure counts through
+      actual failing tests. These foundations do not yet compose an actual split
+      owner, assignment gate, impact recipe or publication path. Their verification
+      and precise limits are recorded in the linked design document.
+      The implemented peer-agreed model boundary uses one authentic cumulative allowance
+      across allocation, governance, binding and eligibility. It requires the
+      unchanged selected authorizer to be loaded and accepted/addressed in both
+      actual models and their authentic indexes; candidate-only lookup would let
+      an allocated but previously unloaded Decision authorize its own introduction.
+      The exact supplied before assessment pair occurs once and cannot be replaced
+      by reconstructed model bytes. A completed allocation observation may survive
+      a later refusal, but every overall failure returns no governance handle.
+      This model contract grants no affected-use, actual
+      Git membership or publication authority.
+      Raw evidence admission follows the bounded allocation comparison, so a
+      later evidence-capacity refusal may retain only that non-authoritative
+      allocation observation. Public entry fields for the actual histories'
+      Decision references are admitted as own data before existing binding code
+      reads them, with native Map lookup and charged visits. This prevents
+      accessor execution without scanning unrelated records or imposing the
+      selected current-authorizer rule on archived historical Decisions.
+      Native depth failures in already guarded canonical comparisons and registry
+      capture are adapted only along the fixed private split path. Shared
+      canonical serialization and public legacy entrypoints retain their existing
+      error behavior. This avoids a global catch that would mask unrelated property
+      failures, additional full-document hashes, or an invented nesting limit.
+      Raw parser failures and process-memory guarantees remain outside this adapter.
+      Its corrected focused suite passes 73/73, including real SHA1/nested SHA256
+      models, native near-exhaustion and exact-fit/one-short capacities. Combined
+      integration evidence is recorded in the design without relabeling the
+      preceding full-suite retirement-publication result.
+      The closed request now binds thirteen operation fields, including complete
+      ordered mappings and one explicit parent choice per successor, with null
+      naming a root. Explicit root rows make omitted review distinguishable from
+      deliberate independence. Inherited review remains source-centric with no
+      caller-selected disposition; core derives retained, exposed-by-direct-substitution,
+      or introduced-by-successor-assignment from actual owners and parent paths.
+      This permits a valid successor below an old descendant without mislabeling
+      newly introduced exposure as unchanged history. Other ancestors remain in
+      complete inventory and fixed impacts, not a silently expanded request key.
+      The new event schema requires known existing-owner states and changed rows;
+      it retains the nine existing row fields and shared schema definitions.
+      Metadata and request digests bind authored order, whereas normalized history
+      membership cannot prove the replacement position. The actual core/P8
+      continuation will share one authentic allowance, additionally charge before
+      context setup and row eligibility, and report cumulative final usage.
+      No public caller can supply that internal handoff or an approval report.
+      These additions establish input and metadata checks only; they do not prove
+      actual allocation, mapping closure, Git membership or complete publication.
+      The implemented fixed row continuation asserts actual governance-handle ownership
+      on every invocation, including empty successor choices. A void internal
+      assertion authenticates the active allowance, checks the private evaluation
+      belongs to it and charges one named validation step. Reusing the descriptor
+      reader solely for this check was rejected because it would traverse and copy
+      the whole governance history for every empty row. The assertion grants no
+      authority or new evidence object, and leaves legacy APIs and counters unchanged.
+      The actual Git scope core is now implemented separately from positive P8
+      and outer publication. It consumes materialized original/candidate models,
+      proves the exact original assessment pair once, calls the model allocation
+      composition once, and corroborates actual authority files before publishing
+      any core scope result. Complete owner, retention and source-inherited review
+      sets are compared to actual inventory; raw assignment order is preserved.
+      Authenticated owner-index lookups replace repeated allocation-ledger scans.
+      A failing historical-source test showed that byte integrity alone could
+      leave a false source tree undetected, so every retained source-bearing
+      Decision/assessment capture is independently corroborated. An independent
+      byte-total test exposed omitted materialized rereads; every such new buffer
+      is now admitted separately. Equal content does not erase actual reread cost.
+      The core preserves incomplete unknown coverage and explicitly refuses
+      unsupported graph redistribution. Positive P8 history/file preservation,
+      the zero-use exact two-path proof, mandatory impacts and final publication
+      remain required work; core success is not a substitute for them.
+      Assignment tests use an explicit block-format option in the existing actual
+      Git fixture while preserving its default JSON bytes. Formatting precedes
+      the final original commit and both assessment captures; rewriting an already
+      captured original would invalidate the very provenance under test. Shared
+      fixture edit hooks avoid a second grouped-record serializer. These are test
+      helpers, not production authoring capabilities. The 116-test fixture/core
+      regression and remaining P8 scope are recorded in the design guide.
+      The fixed positive P8 adapter now continues the same authentic core allowance,
+      reuses candidate governance and additionally evaluates and binds the actual
+      before model. It independently recaptures registry and identity source,
+      bytes and modes before granting their narrow path exception. Exact ordered
+      rows, rationale, revisions and the complete Decision tuple join the existing
+      history, adoption and typed preservation checks. A reproduced reporting bug
+      led to deferring the models-passed claim until split structural and binding
+      checks have actually completed. Final counters include refusal and cleanup.
+      The outer read-only gate requires either that positive P8 proof or an actual
+      empty direct-use core plus an atomically charged two-authority changed-path
+      proof. Empty successor subsets remain positive changes, never eventless.
+      Both branches then independently reload and bind actual impact contexts;
+      those additional phase reads and hashes are not charged or claimed under
+      the earlier core counters. Shared reach and tree checks retain their existing
+      semantics through fixed internal dispatch rather than copied comparators.
+      The fixed split replay composes the existing query engine and paired
+      comparator across four complete case classes. It preserves exact expected
+      preparation refusals, raw unavailable deltas and unaffected rank shifts;
+      baseline membership remains unchanged and other original historical changes
+      are confined to independently proven canonical mapped records. Proposal
+      membership changes refuse. A separate expected-result evaluator was rejected
+      to avoid duplicating query semantics. These are finite consistency checks,
+      not exhaustive Boolean coverage or semantic approval of mapping meaning.
+      The ordinary core report is not an authority token. Only the fixed same-pair
+      composition supplies it, with actual context consistency checks and separate
+      preservation prerequisites. No decoded caller report is admitted. One complete
+      replay case and byte reservation precedes every query. The design, dedicated
+      gate/replay guides and owner receipts document the implemented boundaries;
+      retained artifacts, runtime review and final split publication remain unfinished.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000011, D-000012, proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4] }
