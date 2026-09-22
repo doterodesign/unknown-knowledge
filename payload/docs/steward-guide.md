@@ -17,7 +17,7 @@ invokes nothing — the protocol rides along in their sessions. The steward:
   (never blocking), so every draft waits for your judgment;
 - gates `/kb-build` promotions — the knowledge store's only write path is
   cited and human-gated (`protocol/skills/kb-build.md`);
-- accepts decision entries (final `D-NNN` assignment, below).
+- accepts decision entries through reviewed `D-NNNNNN` allocation, below.
 
 The heartbeat is `/knowledge-audit` (`protocol/skills/knowledge-audit.md`):
 days-since-last-reflect, open-fragment counts, top quarantined concepts — a
@@ -44,6 +44,7 @@ Gate the stores, the protocol, and the engine; leave the logs alone:
 
 ```
 # CODEOWNERS — steward review scoped to the governed surfaces.
+/unknown-knowledge/_identity.yaml @your-org/knowledge-stewards
 /unknown-knowledge/ontology/   @your-org/knowledge-stewards
 /unknown-knowledge/knowledge/  @your-org/knowledge-stewards
 /unknown-knowledge/decisions/  @your-org/knowledge-stewards
@@ -59,7 +60,7 @@ Gate the stores, the protocol, and the engine; leave the logs alone:
 
 `unknown-knowledge/suppressions.yaml` silences known-noise audit findings.
 Each entry is **strictly** `{ term, sourcePath, reason, date }`, exact match
-only — no patterns, no expiry (D-013). Two properties to lean on:
+only — no patterns, no expiry (D-000013). Two properties to lean on:
 
 - **Fails open.** A malformed entry (or an unparseable file) warns and
   suppresses nothing, so the findings it would have hidden resurface — a
@@ -70,32 +71,33 @@ only — no patterns, no expiry (D-013). Two properties to lean on:
 The JSON report carries the full suppressed list — sweep it on reflect
 cadence and prune entries whose `reason` no longer holds.
 
-## ID collision — two branches mint the same K-id
+## Concurrent identity allocation
 
-Published IDs are immutable — never renumbered (PRD §3.5). When two
-branches both mint `K-210`, the merge is textually clean and the duplicate
-surfaces on main; the **later-merging PR renumbers its own entry**, never
-the one already published:
+Published IDs and occupied ledger allocations are permanent. Drafts use
+qualified proposal keys, so authoring on two branches does not require choosing
+numbers. Class ranges, filenames, and a visually unused number confer no
+allocation authority.
 
-1. Rebase onto main and run the structural validator — it reports the
-   `duplicate-id` finding:
+If another publication changes the reviewed source or destination before this
+candidate publishes, refuse the stale candidate. Rebuild from the current
+authority, allocate its still-unpublished proposals again, rewrite their exact
+references, and review the resulting candidate. Do not renumber published
+records, release occupied slots, or reuse an approval bound to older bytes.
+Structural validation is necessary but does not prove that publication or
+concurrency checks succeeded:
 
-   ```
-   node unknown-knowledge/engine/validate.js --root .
-   ```
-
-2. Re-mint your entry at a free id within the owning class's range (mint
-   with gaps, per the store's `_rules.yaml`).
-3. Update your branch's own inbound refs to the new id — `used-by`,
-   `relates-to`, and any `consulted:` refs in findings your branch appended.
-4. Re-run both validators; green means the renumber is complete.
+```
+node unknown-knowledge/engine/validate.js --root .
+```
 
 ## Decisions authoring
 
 The write path is the "Decisions-authoring path" in `protocol/AGENTS.md`:
-anyone — agent or human — drafts a `proposed` entry with a provisional
-date-suffixed id through the normal PR gate. Your half is acceptance: assign
-the final `D-NNN` within range, and hold the append-mostly line — status
+anyone — agent or human — drafts a `proposed` entry with an exact
+`proposal:decision:<lowercase-v4-uuid>` key through the normal PR gate.
+Your half is acceptance of the exact candidate through the reviewed publication
+path, which allocates a permanent `D-NNNNNN` and rewrites its proposal refs
+together. A proposed entry consumes no slot. Hold the append-mostly line — status
 transitions never rewrite `context`/`decision`, and supersession chains must
 resolve and stay acyclic.
 
@@ -123,7 +125,7 @@ What to check when you review one:
   the leaf otherwise — it will not half-apply, so a rejected event leaves the
   store exactly as it found it.
 - **Each row's `why` earns its move.** On a split this is the whole substance:
-  the class-level rule cannot say why L-000117 went to ingest and its neighbour
+  the class-level rule cannot say why K-000001 went to ingest and its neighbour
   went to patterns, so the rows have to.
 - **The diff is two lines per leaf.** `edition` and the one facet. If a leaf's
   citations, body, or `id` appear in the diff, something is wrong — the engine
@@ -166,7 +168,7 @@ outcomes by category** (approved / approved-with-modification / rejected).
 
 `decisions/_registries/graduation-categories.yaml` declares every change
 category and its eligibility. It is filed under `decisions/` because
-graduation governs the change *process* — the team's truth anchor (D-003) —
+graduation governs the change *process* — the team's truth anchor (D-000003) —
 not the knowledge itself. Two shapes:
 
 - **`eligible`**, with a threshold **N**: mechanical categories, where the

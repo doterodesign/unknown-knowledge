@@ -3,7 +3,7 @@
 # `design-system/components` SPLITS: its material divides across
 # `design-system/primitives` and `design-system/patterns`. That is why this
 # table is leaf-granular. A class-level rename could express "components becomes
-# primitives" and would then be wrong about L-000133, which is pattern material
+# primitives" and would then be wrong about K-000002, which is pattern material
 # that was filed under components because it shipped alongside a component — the
 # drift this event exists to fix. No rule over the class can say which leaf goes
 # where; only the rows can, and the `why` on each row is what a reviewer reads.
@@ -11,31 +11,31 @@
 # This file is RETAINED in the store after the event applies. It is what lets
 # the structural validator confirm, from the working tree alone, that every
 # edition above 1 was sanctioned by an event rather than typed by hand.
-schema-version: 1
+schema-version: 2
 event: P-001
 title: Split components into primitives and patterns
-decision: D-420
+decision: D-000002
 applied: "2026-08-17"
 scope:
   facet: facets.domain
   values:
     - design-system/components
 leaves:
-  - id: L-000117
+  - id: K-000001
     to: design-system/primitives
     why: A focus-ring spec is primitive material — it describes one control, not a composition.
-  - id: L-000213
+  - id: K-000003
     to: design-system/primitives
     why: >-
       The render budget is spent mounting a single primitive, between token
       lookup and painted node, which is the primitive path end to end.
-  - id: L-000133
+  - id: K-000002
     to: design-system/patterns
     why: >-
       The other side of the split: empty-state guidance is composition advice,
       applied when several primitives are arranged together. It was filed under
       components only because it shipped alongside one, which is the misfiling
       this event fixes.
-  - id: L-000999
+  - id: K-999999
     to: design-system/patterns
     why: A leaf this store does not carry — the defect this fixture exists for.

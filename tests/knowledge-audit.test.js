@@ -10,7 +10,9 @@
 // shared with the AGENTS.md pin — tests/lib/protocol-doc.js).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assertRealEngineCommands } from './lib/protocol-doc.js';
@@ -21,6 +23,28 @@ const doc = readFileSync(skillPath, 'utf8');
 const walkthrough = readFileSync(join(root, 'acceptance', 'A5-knowledge-audit-walkthrough.md'), 'utf8');
 
 const STEPS = ['STRUCTURE', 'VALUES', 'REVERSE', 'KNOWLEDGE', 'DECISIONS', 'HEARTBEAT', 'REPORT'];
+
+test('documented heartbeat reads the reflect stamp, not a root-level decoy', (t) => {
+  const fixture = mkdtempSync(join(tmpdir(), 'heartbeat-path-'));
+  t.after(() => rmSync(fixture, { recursive: true, force: true }));
+  const stamp = 'schema-version: 1\ndate: "2026-09-09"\n';
+  for (const layout of ['unknown-knowledge/', '']) {
+    const kit = join(fixture, layout);
+    mkdirSync(join(kit, 'logs'), { recursive: true });
+    writeFileSync(join(kit, 'logs/last-reflect.yaml'), stamp);
+    writeFileSync(join(kit, 'last-reflect.yaml'), 'date: "2026-09-01"\n');
+    for (const [name, text] of [['audit skill', doc], ['audit walkthrough', walkthrough]]) {
+      const reads = [...text.matchAll(/^cat (\S*last-reflect\.yaml)$/gm)];
+      assert.ok(reads.length, `${name}: missing executable stamp read`);
+      for (const [, path] of reads) {
+        const read = spawnSync('cat', [path.replace('unknown-knowledge/', layout)],
+          { cwd: fixture, encoding: 'utf8' });
+        assert.equal(read.status, 0, read.stderr);
+        assert.equal(read.stdout, stamp, `${name}: must read the writer's logs/last-reflect.yaml`);
+      }
+    }
+  }
+});
 
 test('the skill ships at the §9.1 path (protocol/skills/knowledge-audit.md, D-019 naming)', () => {
   assert.ok(statSync(skillPath).isFile());
@@ -59,7 +83,7 @@ test('the §8 heartbeat is specified with graceful degradation', () => {
   assert.match(doc, /[Tt]op-N quarantined concepts/);
   // The last-reflect stamp is KK-22's; absent must degrade gracefully.
   assert.match(doc, /last-reflect/);
-  assert.match(doc, /no reflect has run yet/);
+  assert.match(doc, /no recorded reflect heartbeat/);
   // A lapsed steward rotation is visible, never silent.
   assert.match(doc, /visible, never silent/);
 });
@@ -95,7 +119,7 @@ test('the A5 walkthrough is registered in the acceptance README index', () => {
 });
 
 test('the A5 walkthrough shows the heartbeat with seeded state and the graceful absence line', () => {
-  assert.match(walkthrough, /no reflect has run yet/);
+  assert.match(walkthrough, /no recorded reflect heartbeat/);
   assert.match(walkthrough, /open fragments: findings 2, misses 1, gaps 0/);
   assert.match(walkthrough, /top quarantined concepts: K-108 \(1\)/);
 });

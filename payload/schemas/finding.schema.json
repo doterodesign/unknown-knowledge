@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["schema-version", "date", "trigger", "summary", "status"],
   "properties": {
-    "schema-version": { "type": "integer", "minimum": 1 },
+    "schema-version": { "type": "integer", "enum": [2] },
     "date": { "$ref": "#/$defs/isoDate" },
     "trigger": {
       "enum": ["correction", "recurrence", "retrieval-struggle", "retrieval-miss", "quarantine"],
@@ -63,6 +63,21 @@
       "type": "string",
       "description": "Required on rejection — rejections record the reason (§8)."
     },
+    "prior-outcomes": {
+      "type": "array",
+      "description": "Helper-owned terminal outcome snapshots appended before reopening, in transition order; not a complete lifecycle journal or authenticated approval. Optional for existing fragments; never backfilled. Each row carries only the reason for rejected or verified date for resolved, enforced by the shared lifecycle convention.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reopened-on", "status"],
+        "properties": {
+          "reopened-on": { "$ref": "#/$defs/isoDate", "description": "Injected reopening date, not the original rejection or resolution date." },
+          "status": { "enum": ["rejected", "resolved"] },
+          "reason": { "type": "string", "description": "Prior rejection reason, subject to the same capture content policy as the current reason." },
+          "verified": { "$ref": "#/$defs/isoDate" }
+        }
+      }
+    },
     "occurrences": {
       "type": "array",
       "items": { "$ref": "#/$defs/isoDate" },
@@ -70,8 +85,8 @@
     }
   },
   "$defs": {
-    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
-    "leafRef": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "conceptRef": { "type": "string", "pattern": "^(?:O-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:ontology:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
+    "leafRef": { "type": "string", "pattern": "^(?:K-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:knowledge:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" }
   }
 }

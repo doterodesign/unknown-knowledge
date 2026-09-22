@@ -1,4 +1,4 @@
-# /kb-build — the sole knowledge write path (PRD §3.2, D-019)
+# /kb-build — the sole knowledge write path (PRD §3.2, D-000019)
 
 > Paths in this document are client-relative — relative to the vendored kit
 > root after init (`ontology/…`, `engine/…`, `protocol/…`). In the kit repo
@@ -57,12 +57,14 @@ only free-form work in the procedure:
 | **Candidate confirmation** | steps 1–2 | confirming a proposed classification or citation against the source, which is a read no command can do for you |
 | **Mint proposals with warrant evidence** | step 3 | proposing a governed vocabulary value, carrying its literary warrant |
 
-Everything else — locating coverage, minting the accession, checking facet
-values against their registries, checking the catalog, the final gate — is
-the engine's. **Protocol compliance is a property of the mechanism, not of
-agent obedience**: the hooks in `hooks/` run the blocking validation and
-the reverse lookup whether or not anyone remembers to, and they propagate
-the engine's exit codes unchanged.
+Use the actual engine commands below for coverage, schema/value checks and
+catalog validation. `engine/lib/identity-ledger.js` exposes `planAllocations`
+for a reviewed publication candidate; planning does not reserve identities
+or publish records. There is no allocation CLI implied by this skill.
+The hooks run blocking structural/value checks and propagate
+the engine's exit codes unchanged. They do not authenticate human approval,
+read citations for you, or establish subject-assignment approval. Those
+review obligations remain explicit even when every mechanical check passes.
 
 Two `--root` conventions, stated once (same as AGENTS.md):
 
@@ -145,7 +147,7 @@ state:
 ```
 node unknown-knowledge/engine/log-entry.js create --log gaps --date 2026-07-09 \
   --root unknown-knowledge \
-  --entry '{"summary":"L-000100 knowledge/_catalog.yaml","consulted":{"leaves":["L-000100"]}}'
+  --entry '{"summary":"K-000001 knowledge/_catalog.yaml","consulted":{"leaves":["K-000001"]}}'
 ```
 
 `--date` is injected, never wall-clock; the summary carries leaf ids,
@@ -170,7 +172,7 @@ refusing an ad-hoc string rather than trusting you not to write one.
 | --- | --- | --- |
 | `domain` | `_registries/domains.yaml` | the hierarchical subject path — every segment minted |
 | `form` | `_registries/form.yaml` | what KIND of knowledge this is |
-| `anchor` | `_registries/anchor.yaml` | which truth anchor settles the claim (artifact, world, team — D-003) |
+| `anchor` | `_registries/anchor.yaml` | which truth anchor settles the claim (artifact, world, team — D-000003) |
 | `stage` | `_registries/stage.yaml` | where the leaf sits in the promotion path |
 
 Two adjacent governed lists are filled the same way, from the same kind of
@@ -202,36 +204,48 @@ paused on a mint proposal awaiting the human.
 ### 4. DRAFT — §3.2 governance frontmatter + body
 
 The frontmatter shape is `schemas/knowledge-leaf.schema.json` — the single
-source of truth; `validate.js` enforces it in step 5. The governance calls
-this skill makes on top of the schema:
+source of truth; the active leaf frontmatter is version 3 and its catalog
+envelope is version 2. `validate.js` checks the active schemas in step 5.
+The governance calls this skill makes on top of the schema:
 
-- **`id`** — the accession (`L-NNNNNN`): **required on every leaf**, opaque,
-  never reused, never positional. It is the leaf's identity, what the loader
-  indexes by, and the only spelling other leaves, the catalog, decisions and
-  log fragments may cite it as. Mint the next value in the sequence; because
-  it says nothing about where the leaf sits, refiling the leaf later leaves
-  it untouched and breaks no citation. A collision is a hard error at step 5,
-  never a silently shared identity.
-- **`facets.stage`** — start at **`draft`**. Every agent-authored entry
-  enters at draft stage; this is not a courtesy, it is where the moderation
-  pipeline picks the leaf up. A draft leaf is downranked in resolver output and
-  verdicted `unknown` by preflight, which is correct and not a defect:
-  nothing has certified it yet. Promotion is a moderator's act after the
-  citations are checked, never the author's.
-  Leaf preflight reports this expected pre-promotion `unknown` with exit 2,
-  which still stops governed retrieval and claim reliance. In this authoring
-  workflow, an explicit human instruction to draft permits committing the
-  unpromoted draft for review after both `validate.js` and `validate-values.js`
-  exit 0 and the normal commit gates pass. Submission does not certify its
-  claims or authorize promotion. Loader errors and failed checks still require
-  repair.
+- **`id`** — new unpublished leaves use an exact
+  `proposal:knowledge:<lowercase-v4-uuid>` key, with no canonical allocation.
+  Published Knowledge identities are `K-000001` through `K-999999` within
+  the installation namespace in `_identity.yaml`. An existing leaf keeps its
+  allocated identity on revision or refiling; paths, notation and subject
+  classifications never allocate or resolve it. Do not derive an identity
+  from a filename, prior label or numeric suffix.
+
+  For a new record, plan the smallest free identity against the authoritative
+  before ledger using `planAllocations`. Retain all occupied rows, including
+  retired/cancelled ones. Present the exact final record, catalog, references
+  and new allocation under a fresh publication UUID with review provenance
+  as one reviewed publication. A draft, plan or approval alone consumes no
+  slot. Recheck the final merged candidate and unchanged before authority
+  before publication; changed reviewed bytes require renewed review. These
+  steps do not claim an automatic human/publication gate already exists.
+- **`facets.stage`** — start at **`draft`** for new content.
+  New leaves and content or source revisions
+  enter at draft stage. A draft is downranked in resolver output and
+  verdicted `unknown` by preflight: nothing has certified its new claims.
+  Promotion is a moderator's act after citations are checked, never the author's.
+  The narrow subjects-only amendment below preserves an existing published
+  record's evidence lifecycle; it does not waive review.
+  Leaf preflight reports expected pre-promotion `unknown` with exit 2,
+  which still stops governed retrieval and claim reliance. An explicit human
+  instruction to draft permits submitting the unpromoted draft after both
+  `validate.js` and `validate-values.js` exit 0 and normal commit gates pass.
+  Submission does not certify claims or authorize canonical publication or
+  promotion. Loader errors and failed checks still require repair.
 - **`notes`** — every leaf carries a `scope` note (what it covers and
   pointedly does not) and every write appends a `revision` note with
   `date` (initial entry, or what changed); add `class-here` when step 1
   flagged the classification as contestable.
-- **`cross-references`** — `class-elsewhere` and `see-also` must resolve to
-  leaves the catalog declares. Cite the target's accession id (`L-NNNNNN`),
-  which is the only legal spelling. `including` is standing room —
+- **`cross-references`** — published/effective `class-elsewhere` and `see-also`
+  references must resolve to catalog-declared canonical Knowledge ids
+  (`K-000001` through `K-999999`). An unpublished draft bundle may reference
+  exact qualified proposal keys permitted by the current schema and authoring
+  gates; those keys never resolve as canonical identities. `including` is standing room —
   candidate topics parked under the heading, not authoritative, never
   citable as fact.
 - **`facets`**, **`operations`**, **`applies.jurisdictions`**,
@@ -240,12 +254,21 @@ this skill makes on top of the schema:
 - **`citations`** — the step-2 survivors, verbatim; at least one.
 - **`terms`** — the words a future resolve should hit; write them for the
   searcher, not the author.
-- **`concepts`** — the ontology concepts (`K-NNN`) this leaf is knowledge
+- **`concepts`** — the ontology concepts (`O-000001` through `O-999999`) this leaf is knowledge
   ABOUT. Declare them even when `terms` already names the concept's term: the
   concept edge is STRUCTURAL, so it keeps working when the concept is renamed
   or when your leaf uses different words than the ontology does. `terms` is a
   text match between two authors' vocabularies; this is a claim. Each must
   resolve — a concept id nothing mints is a blocking finding.
+- **`subjects`** — optional whole-record candidate aboutness, never evidence
+  or a source pointer. Absence means unknown; `[]` explicitly records none;
+  authored order does not select a primary subject. Use canonical `S` identities
+  from the actual installation registry. New effective assignments require
+  actual active, reviewed eligibility, not merely schema-valid IDs or a visible
+  registry row. Retained retired assignments remain historical raw assignments;
+  do not silently redirect them. New-record and proposal-to-canonical
+  publication must check every assignment, without using a prior draft to
+  waive eligibility. A pure eligibility check is not publication approval.
 - **`paths`** — the repo-relative files or directories this leaf governs. A
   directory covers its subtree. This is what makes the leaf surface in the
   reverse lookup, so the files in a diff surface the knowledge that governs
@@ -285,20 +308,35 @@ this skill makes on top of the schema:
   heading, all list, all code — so the failure mode to avoid is opening with
   a bare list or a code block, not writing a fragment.
 
-Then add the catalog row to `knowledge/_catalog.yaml`: `id` (the leaf's
-accession, the same value as its `id` field, and the only legal spelling),
-`title` (the heading, kept in sync on revision), `file` (the leaf path
-relative to `knowledge/`). Leaf files are sharded by accession prefix —
-`knowledge/<L-NN>/<accession>-<slug>.md`, where the prefix is `L-` plus the
-first two digits of the accession's numeric part (`L-000101` files under
-`knowledge/L-00/`). The shard is a fanout device for directory size and
-**carries no meaning**: it makes no claim about the leaf's subject, and
-nothing reads it. `validate.js`'s `index-drift` and `orphan` checks are what
-verify the row against the file — do not audit that pairing by eye.
+**Subjects-only amendment for an existing published leaf.** Keep the change
+proposal unpublished and separate from the record's identity: an off-store
+reviewed diff is not a new `proposal:knowledge:` record. In that candidate,
+preserve the existing `facets.stage`, canonical identity, body, citations,
+source pointers, scope, evidence `verified`/`accessed` dates and Phoenix edition
+and accounting. Do not demote/re-promote or claim fresh evidence just to classify.
+Preserve the original frontmatter `provenance` object exactly and all existing
+`notes` as an immutable prefix. Append only reviewed existing-schema revision
+notes: `{type: revision, date: <injected>, text: <classification review author,
+skill and subject IDs; no source re-verification claim>}`. This classification
+revision supplies the new review's provenance without rewriting earlier authorship.
+Retain separate assignment history in the reviewed event/PR evidence; add no
+new leaf field for it. The allowed leaf delta is `subjects` plus that exact
+reviewed revision-note suffix. Apply the same human gate before actual
+publication. This exception covers only subjects and their classification
+history. Broader content/source changes and new records follow the ordinary
+draft and promotion path above.
 
-**Done when** the leaf file and its catalog row both exist, the body opens
-with a topic sentence, `facets.stage` is `draft`, and every value in the
-frontmatter came from step 2 or step 3.
+Then add or update the catalog row in `knowledge/_catalog.yaml`: exact `id`,
+`title` and file path relative to `knowledge/`. An unpublished record's row
+uses the same typed proposal key as its actual payload; that key does not
+resolve as a canonical identity. Use ordinary file placement suitable for the
+collection, such as `knowledge/guides/encoding.md`; no shard or path assigns an
+identity or meaning. `validate.js` checks the actual catalog/record agreement.
+
+**Done drafting when** the proposed record and catalog agree, new/revised
+content is at `draft`, the subjects-only exception retains evidence state,
+and every authored value has source or classification-review support. This
+is readiness for the human gate, not publication or evidence promotion.
 
 ### 5. VALIDATE — green, then the human gate
 
@@ -326,21 +364,23 @@ Then attribute what you touched, which the `hooks/reverse-lookup` hook does
 automatically over the staged diff and you can run directly:
 
 ```
-node unknown-knowledge/engine/resolve.js --paths knowledge/L-00/L-000110-svg-asset-export-precision.md --json --root .
+node unknown-knowledge/engine/resolve.js --paths unknown-knowledge/knowledge/guides/encoding.md --json --root .
 ```
 
 The skill declares done only on an exit-0 run that saw the final draft —
-a verdict is per-run, never carried (D-011).
+a verdict is per-run, never carried (D-000011).
 
 **Closing the gap happens after drafting.** Structural validation checks
 shape and resolving references; it does not read citations or prove human
 approval. Hand the reviewer the actual sources read, claim-to-source mapping,
 scope and revision notes, provenance, catalog row and applicable typed
-`concepts`/`paths`/`relates` edges. Never add unrelated edges just to fill a
+`concepts`/`paths`/`relates` edges and any reviewed `subjects` change. Never add unrelated edges just to fill a
 field. A citation's authority tier does not itself certify company policy.
 
-After the human approves the cited content and promotion, apply that reviewed
-change through this write path, including any required time metadata. Run
+After the human approves the exact candidate and any required content promotion,
+apply that reviewed change through this write path. A subjects-only approval
+preserves evidence dates; content verification changes time metadata only when
+that verification was actually performed and reviewed. Run
 `validate.js` and `validate-values.js`, then regenerate discovery and check
 it with the same injected date:
 

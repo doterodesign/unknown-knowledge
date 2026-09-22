@@ -1,12 +1,12 @@
-# PLANTED: disconnected-revocation (wrong CATEGORY). `revokes` names D-207,
+# PLANTED: disconnected-revocation (wrong CATEGORY). `revokes` names proposal:decision:00000000-0000-4000-8000-000000000207,
 # which is a real graduation — but of `alias-additions`, while this entry
 # revokes `verified-bumps`. The ref resolves and the target IS a graduation, so
 # neither the ref graph nor a target-kind check can see it: only comparing the
 # two categories reveals that this withdraws a grant that was never made, while
 # leaving the real graduation standing.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-211
+  - id: proposal:decision:00000000-0000-4000-8000-000000000211
     title: Revoke sampling for verified bumps
     category: trust
     status: proposed
@@ -23,7 +23,7 @@ entries:
     graduation:
       action: revoke
       category: verified-bumps
-      revokes: D-207
+      revokes: proposal:decision:00000000-0000-4000-8000-000000000207
       defect: verified date bumped without the source being re-read
     provenance:
       author: dimitri

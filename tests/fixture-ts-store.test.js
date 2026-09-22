@@ -21,12 +21,12 @@ test('the TS fixture store loads with zero diagnostics', () => {
   assert.equal(model.ok, true);
 });
 
-test('every planted concept K-101..K-116 is present and cataloged', () => {
-  // K-111 (dir-modules pattern/strip) landed with KK-10, which ratified the
+test('every planted concept O-000001..O-000016 is present and cataloged', () => {
+  // O-000011 (dir-modules pattern/strip) landed with KK-10, which ratified the
   // pattern/strip descriptor options in the ontology-concept schema.
   const expected = [
-    'K-101', 'K-102', 'K-103', 'K-104', 'K-105', 'K-106', 'K-107', 'K-108',
-    'K-109', 'K-110', 'K-111', 'K-112', 'K-113', 'K-114', 'K-115', 'K-116',
+    'O-000001', 'O-000002', 'O-000003', 'O-000004', 'O-000005', 'O-000006', 'O-000007', 'O-000008',
+    'O-000009', 'O-000010', 'O-000011', 'O-000012', 'O-000013', 'O-000014', 'O-000015', 'O-000016',
   ];
   assert.deepEqual([...model.concepts.keys()], expected);
   const cataloged = model.stores.ontology.catalog.entries.map((e) => e.id).sort();
@@ -36,9 +36,9 @@ test('every planted concept K-101..K-116 is present and cataloged', () => {
 test('every source-of-truth pointer resolves to a real fixture path', () => {
   // Pointers are relative to the fixture repo root (fixtures/ts-app/), not
   // the store root — a real post-init repo nests unknown-knowledge/ inside
-  // the codebase its pointers describe. K-110's folder-identity pointer
+  // the codebase its pointers describe. O-000010's folder-identity pointer
   // (§3.1) is a directory, so this is an existence check, not a read. The
-  // deliberately unhealthy pointer case (K-108) is wrong-VALUES at a real
+  // deliberately unhealthy pointer case (O-000008) is wrong-VALUES at a real
   // file — a dangling path would be a different finding (KK-05's), so no
   // pointer here may dangle.
   for (const [path, ids] of model.pointers) {
@@ -60,32 +60,32 @@ test('every enumerates descriptor names a listed source-of-truth entry (§3.5)',
   }
 });
 
-test('K-108 wrong-pointer: no claimed value appears anywhere in the pointed file', () => {
+test('O-000008 wrong-pointer: no claimed value appears anywhere in the pointed file', () => {
   // The wrong-pointer signature is that ALL claimed values are missing from
   // the pointed file — lexically too: grep-level detectors (and the KK-25
   // pre-scan) work lexically, so even a doc comment naming a claimed value
   // would contaminate the signature.
-  const { record } = model.concepts.get('K-108');
+  const { record } = model.concepts.get('O-000008');
   for (const desc of record.enumerates) {
     const body = readFileSync(join(fixtureRoot, desc.source), 'utf8').toLowerCase();
     for (const value of desc.values) {
       assert.ok(
         !body.includes(String(value).toLowerCase()),
-        `K-108 claimed value "${value}" must not appear lexically in ${desc.source}`,
+        `O-000008 claimed value "${value}" must not appear lexically in ${desc.source}`,
       );
     }
   }
 });
 
-test("K-102 drift: the claimed-but-absent value never appears lexically in the source", () => {
-  // K-102 claims one extra blend mode that the anchored file lacks. The
+test("O-000002 drift: the claimed-but-absent value never appears lexically in the source", () => {
+  // O-000002 claims one extra blend mode that the anchored file lacks. The
   // value-not-in-source signature must hold at grep level: if the source
   // file named the value even in a comment, lexical detectors would see it
   // as present and report a false all-clear.
-  const { record } = model.concepts.get('K-102');
+  const { record } = model.concepts.get('O-000002');
   const [desc] = record.enumerates;
   const body = readFileSync(join(fixtureRoot, desc.source), 'utf8').toLowerCase();
-  assert.ok(desc.values.includes('luminosity'), 'K-102 must still claim the planted drift value');
+  assert.ok(desc.values.includes('luminosity'), 'O-000002 must still claim the planted drift value');
   assert.ok(
     !body.includes('luminosity'),
     `the planted drift value must not appear lexically in ${desc.source}`,

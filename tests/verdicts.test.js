@@ -20,9 +20,9 @@ function copyStore(t, name) {
 
 test('callers can compute a concept verdict directly from a loaded Store', () => {
   const repoRoot = fixture('clean');
-  const result = computeVerdicts(loadStores(repoRoot), { concepts: ['K-100'], repoRoot });
+  const result = computeVerdicts(loadStores(repoRoot), { concepts: ['O-000001'], repoRoot });
   assert.equal(result.storeVerdict, 'trusted');
-  assert.deepEqual(result.verdicts.map(({ concept, verdict }) => [concept, verdict]), [['K-100', 'trusted']]);
+  assert.deepEqual(result.verdicts.map(({ concept, verdict }) => [concept, verdict]), [['O-000001', 'trusted']]);
   assert.deepEqual(result.leafVerdicts, []);
 });
 
@@ -31,11 +31,11 @@ for (const status of ['draft', 'proposed']) {
     const repoRoot = copyStore(t, 'clean');
     const file = join(repoRoot, 'ontology/classes/100-registries.yaml');
     writeFileSync(file, readFileSync(file, 'utf8').replace('status: draft', `status: ${status}`));
-    const result = computeVerdicts(loadStores(repoRoot), { repoRoot, concepts: ['K-130'] });
+    const result = computeVerdicts(loadStores(repoRoot), { repoRoot, concepts: ['proposal:ontology:13013013-0130-4130-8130-130130130130'] });
     assert.equal(result.storeVerdict, 'trusted');
     assert.deepEqual(result.verdicts.map(({ concept, status, verdict, evidence }) =>
       ({ concept, status, verdict, evidence })), [
-      { concept: 'K-130', status, verdict: 'unknown', evidence: [] },
+      { concept: 'proposal:ontology:13013013-0130-4130-8130-130130130130', status, verdict: 'unknown', evidence: [] },
     ]);
     assert.match(result.verdicts[0].reason, /structural checks only/);
   });
@@ -51,11 +51,11 @@ test('structural errors, value drift, and hard errors quarantine only their owni
         source: src/missing.txt
         values: [missing]`));
   const result = computeVerdicts(loadStores(repoRoot), {
-    repoRoot, concepts: ['K-130', 'K-110', 'K-100'],
+    repoRoot, concepts: ['proposal:ontology:13013013-0130-4130-8130-130130130130', 'O-000002', 'O-000001'],
   });
   assert.equal(result.storeVerdict, 'trusted', JSON.stringify(result.health));
   assert.deepEqual(result.verdicts.map(({ concept, verdict }) => [concept, verdict]), [
-    ['K-100', 'quarantined'], ['K-110', 'trusted'], ['K-130', 'unknown'],
+    ['O-000001', 'quarantined'], ['O-000002', 'trusted'], ['proposal:ontology:13013013-0130-4130-8130-130130130130', 'unknown'],
   ]);
   assert.deepEqual(result.verdicts[0].evidence.map(({ check, code, severity }) => [check, code, severity]), [
     ['structural', 'missing-path', 'error'],
@@ -71,7 +71,7 @@ test('evidence has a stable literal order regardless of claim and source orderin
   const file = join(repoRoot, 'ontology/classes/100-registries.yaml');
   const original = readFileSync(file, 'utf8');
   writeFileSync(file, original.replace('[grid, list, star]', '[zebra, grid, star, apple]'));
-  const options = { repoRoot, concepts: ['K-100'] };
+  const options = { repoRoot, concepts: ['O-000001'] };
   const first = computeVerdicts(loadStores(repoRoot), options).verdicts[0].evidence;
   assert.deepEqual(first.map(({ code, value }) => [code, value]), [
     ['source-value-missing', 'list'],
@@ -89,16 +89,16 @@ test('one store-wide failure degrades every requested concept and leaf, includin
   const repoRoot = copyStore(t, 'clean');
   writeFileSync(join(repoRoot, 'ontology/classes/broken.yaml'), 'entries: [\n');
   const result = computeVerdicts(loadStores(repoRoot), {
-    repoRoot, concepts: ['K-999', 'K-130', 'K-100'], leaves: ['L-999999', 'L-000117'],
+    repoRoot, concepts: ['O-999999', 'proposal:ontology:13013013-0130-4130-8130-130130130130', 'O-000001'], leaves: ['K-999999', 'K-000117'],
     today: '2026-08-16',
   });
   assert.equal(result.storeVerdict, 'unknown');
   assert.ok(result.health.errors.some(({ code }) => code === 'parse-error'));
   assert.deepEqual(result.verdicts.map(({ concept, verdict }) => [concept, verdict]), [
-    ['K-100', 'unknown'], ['K-130', 'unknown'], ['K-999', 'unknown'],
+    ['O-000001', 'unknown'], ['O-999999', 'unknown'], ['proposal:ontology:13013013-0130-4130-8130-130130130130', 'unknown'],
   ]);
   assert.deepEqual(result.leafVerdicts.map(({ leaf, verdict }) => [leaf, verdict]), [
-    ['L-000117', 'unknown'], ['L-999999', 'unknown'],
+    ['K-000117', 'unknown'], ['K-999999', 'unknown'],
   ]);
   for (const verdict of [...result.verdicts, ...result.leafVerdicts]) {
     assert.match(verdict.reason, /store-wide failure/);

@@ -15,24 +15,24 @@
 #     - value: reference
 #       gloss: States how something is, for lookup.
 #       warrant: 362.1 states the component sizing rules themselves.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
 #     - value: recipe
 #       gloss: The ordered steps for performing a task.
 #       warrant: 100.1 is the step list for adding an export format.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
 #     - value: runbook
 #       gloss: What to do when something is on fire.
 #       warrant: 121.1 is the feed-outage response procedure.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
 #     - value: constraint
 #       gloss: A rule the system must not violate.
 #       warrant: 133.1 states the token rounding rule.
-#       decision: D-014
+#       decision: <accepted-local-decision-id>
 #       minted: "2026-07-07"
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: form
 values: []

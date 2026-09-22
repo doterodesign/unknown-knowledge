@@ -55,7 +55,7 @@
  * knowledge-catalog descent, PRD §4), and confusable-with surfaced with each
  * referenced concept's term so disambiguation needs no second lookup.
  *
- * Each knowledge entry point publishes `id`, the accession (L-NNNNNN) that IS
+ * Each knowledge entry point publishes `id`, the accession (K-NNNNNN) that IS
  * the leaf's identity and the only spelling anything cites it by (UCS-1147),
  * and `notation`, the optional legacy display label, null when the leaf carries
  * none. Two fields because they answer two questions — which leaf this is, and
@@ -134,7 +134,7 @@
  * vocabularies, and none of them guessing:
  *
  *   verb  -> the `knowledge/operations` registry     "add a token" -> add-token
- *   noun  -> concept terms and aliases               "token"       -> K-101
+ *   noun  -> concept terms and aliases               "token"       -> O-000101
  *   place -> the `knowledge/jurisdictions` registry  "eu eaa"      -> eu-eaa
  *
  * Four sections join the payload, every one a STABLE key that may be empty:
@@ -207,7 +207,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { join, posix, resolve as resolvePath } from 'node:path';
 import {
   LEAF_PATHS_FIELD, RELATES_FIELD, RELATES_KINDS, healthSummary, isPrePromotionStatus,
-  leafIdentityOf, leafStage, loadStores, storeHealth,
+  authoringRecords, authoringRecord, leafStage, loadStores, storeHealth,
 } from '../lib/load-stores.js';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { EXIT_CODES } from '../lib/exit-codes.js';
@@ -232,6 +232,7 @@ import { isCalendarDate } from '../lib/iso-date.js';
 import { buildCoverageMap } from '../lib/coverage.js';
 import { AdaptError, UnsupportedFormatError, adapt, adapterFor } from '../lib/format-adapters.js';
 import { loadSuppressions } from '../lib/suppressions.js';
+import { readLegacyJurisdictions as leafJurisdictions, matchesLegacyJurisdictions } from '../lib/legacy-jurisdictions.js';
 
 export const USAGE = `usage: node payload/engine/resolve.js <query terms...> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
        node payload/engine/resolve.js --paths <file1,file2> [--json] [--root <dir>] [--today <YYYY-MM-DD>]
@@ -250,8 +251,6 @@ const JURISDICTIONS_REGISTRY = 'knowledge/jurisdictions';
 
 /** The leaf front-matter fields the structured joins read. */
 const OPERATIONS_FIELD = 'operations';
-const APPLIES_FIELD = 'applies';
-const JURISDICTIONS_FIELD = 'jurisdictions';
 
 /**
  * The first sentence of a leaf's body, or null when it has none (UCS-1149).
@@ -364,30 +363,11 @@ function matchConcept(query, queryWords, record) {
  */
 const leafOperations = (record) => strings(record?.[OPERATIONS_FIELD]);
 
-/**
- * The jurisdictions a leaf declares itself applicable to (UCS-1152).
- *
- * An EMPTY list is the universal case and is load-bearing: a leaf that declares
- * no jurisdictions applies everywhere and is never scope-excluded. The
- * distinction between "applies to nowhere" and "applies everywhere" is
- * precisely the one an empty array has to carry, and it reads as universal
- * because that is what an author who wrote no jurisdiction meant — the
- * alternative would silently hide every leaf in every store that has not yet
- * adopted the facet.
- *
- * @param {object} record a leaf's front-matter record
- * @returns {string[]}
- */
-function leafJurisdictions(record) {
-  const applies = record?.[APPLIES_FIELD];
-  return isObject(applies) ? strings(applies[JURISDICTIONS_FIELD]) : [];
-}
-
 /** confusable-with ids, each resolved to its term for one-lookup disambiguation. */
 function confusables(model, record) {
   return strings(record['confusable-with'])
     .sort(compare)
-    .map((id) => ({ id, term: model.concepts.get(id)?.record.term ?? null }));
+    .map((id) => ({ id, term: authoringRecord(model, 'ontology', id)?.record.term ?? null }));
 }
 
 /**
@@ -429,7 +409,7 @@ function confusables(model, record) {
  * claim about this leaf. Incoming supersession is published separately as
  * `superseded-by` (UCS-1226), never blended into the leaf's own assertions.
  *
- * Neighbors resolve through `leafIdentityOf`, the one lookup every surface
+ * Neighbors inspect exact authored keys, the same lookup every authoring surface
  * asks — so an edge citing a leaf by its retired notation reaches nothing here
  * for the same reason it fails validation (UCS-1147), rather than through a
  * second rule this function spells itself. An edge that resolves to nothing is
@@ -449,13 +429,13 @@ function relatesNeighborhood(model, record) {
     const seen = new Set();
     const neighbors = [];
     for (const cited of strings(declared[kind])) {
-      const identity = leafIdentityOf(model, cited);
+      const identity = authoringRecord(model, 'knowledge', cited)?.identity;
       // Unresolvable: the loader already reported it as unresolved-ref. A stub
       // here would be a second report of one defect, wearing the shape of a
       // real neighbor.
       if (identity === undefined || seen.has(identity)) continue;
       seen.add(identity);
-      const entry = model.leaves.get(identity);
+      const entry = authoringRecord(model, 'knowledge', identity);
       neighbors.push({
         id: typeof entry.id === 'string' ? entry.id : null,
         notation: typeof entry.notation === 'string' ? entry.notation : null,
@@ -582,7 +562,7 @@ function publishLeaf(model, entry, today) {
     ...leafMetadata(entry, today),
     [RELATES_FIELD]: relatesNeighborhood(model, entry.record),
     'superseded-by': (model.supersedingLeaves.get(entry.identity) ?? []).map((id) => {
-      const successor = model.leaves.get(id);
+      const successor = authoringRecord(model, 'knowledge', id);
       const { excerpt, provenance, ...metadata } = leafMetadata(successor, today);
       return { ...metadata, applies: [...leafJurisdictions(successor.record)].sort(compare) };
     }),
@@ -618,7 +598,7 @@ function knowledgeEntryPoints(model, record, conceptId, today) {
   // the leaf in different words, cannot silently sever them.
   const declaring = new Set(model.leavesByConcept.get(conceptId) ?? []);
   const out = [];
-  for (const entry of model.leaves.values()) {
+  for (const entry of authoringRecords(model, 'knowledge').values()) {
     const { record: leaf } = entry;
     const declared = declaring.has(entry.identity);
     if (declared || strings(leaf.terms).some((t) => names.has(norm(t)))) {
@@ -683,7 +663,7 @@ function decompose(model, query, queryWords, tokens) {
   //           consumers already rank on.
   //   phrase  the token-level phrase test — does the concept's name appear IN
   //           the ask at all? "add a token" does contain "token", and the leaf
-  //           declaring K-101 is a correct answer to it.
+  //           declaring O-000101 is a correct answer to it.
   //
   // Before this ticket only the ladder existed, so a concept the ask genuinely
   // named went unjoined whenever the ask said anything else as well — which is
@@ -692,7 +672,7 @@ function decompose(model, query, queryWords, tokens) {
   // `match` is the ladder's verdict and is null when only the phrase test
   // fired, so a reader can always tell which join reached the concept.
   const concepts = [];
-  for (const { id, file, record } of model.concepts.values()) {
+  for (const { id, file, record } of authoringRecords(model, 'ontology').values()) {
     const match = matchConcept(query, queryWords, record);
     // Which tokens this concept's own vocabulary accounts for. Only the term
     // and aliases are consulted — a `summary-match` consumes nothing, because
@@ -753,7 +733,7 @@ function nearMisses(model, tokens, operations, concepts, jurisdictions) {
   sweepRegistry('jurisdiction', JURISDICTIONS_REGISTRY, jurisdictions);
 
   const matchedConcepts = new Set(concepts.map((c) => c.id));
-  for (const { id, record } of model.concepts.values()) {
+  for (const { id, record } of authoringRecords(model, 'ontology').values()) {
     if (matchedConcepts.has(id)) continue;
     let overlap = [];
     for (const name of [record.term, ...strings(record.aliases)]) {
@@ -796,7 +776,7 @@ function scoreLeaves(model, decomposition, today) {
   }
 
   const scored = [];
-  for (const entry of model.leaves.values()) {
+  for (const entry of authoringRecords(model, 'knowledge').values()) {
     const { record: leaf } = entry;
     // Signals are gathered in DESCENDING weight — operation, concept, term —
     // so the strongest reason a leaf surfaced reads first in the output.
@@ -873,7 +853,7 @@ function applyScope(scored, jurisdictions) {
   const kept = [];
   const excluded = [];
   for (const leaf of scored) {
-    if (!leaf.applies.length || leaf.applies.some((j) => asked.includes(j))) {
+    if (matchesLegacyJurisdictions(leaf.applies, asked)) {
       kept.push(leaf);
       continue;
     }
@@ -1157,7 +1137,7 @@ function resolvePaths(model, rawPaths, repoRoot, today, literal = false) {
       for (const id of ids) {
         if (seen.has(id)) continue; // keep the lexicographically first pointer
         seen.add(id);
-        const record = model.concepts.get(id)?.record;
+        const record = authoringRecord(model, 'ontology', id)?.record;
         concepts.push({
           id,
           term: record?.term ?? null,
@@ -1184,7 +1164,7 @@ function resolvePaths(model, rawPaths, repoRoot, today, literal = false) {
  */
 function leafPathIndex(model) {
   const index = new Map();
-  for (const entry of model.leaves.values()) {
+  for (const entry of authoringRecords(model, 'knowledge').values()) {
     for (const path of strings(entry.record?.[LEAF_PATHS_FIELD])) {
       if (!index.has(path)) index.set(path, []);
       const identities = index.get(path);
@@ -1235,7 +1215,7 @@ function governingLeaves(model, path, concepts, leafPointers, governs, today) {
   }
   const out = [];
   for (const [identity, how] of via) {
-    const entry = model.leaves.get(identity);
+    const entry = authoringRecord(model, 'knowledge', identity);
     if (entry) out.push({ via: how, ...publishLeaf(model, entry, today) });
   }
   return out.sort((a, b) =>

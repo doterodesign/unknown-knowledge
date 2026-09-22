@@ -14,28 +14,28 @@
 # does not verify warrant prose — it is the steward's written reason, checked by
 # review — so a copied warrant that names the wrong leaf is exactly the drift
 # that survives every automated gate.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: authority-tiers
 values:
   - value: vendor-doc
     gloss: The vendor's own published documentation.
     warrant: >-
-      L-000117 cites the Component Kit API reference, and L-000171 the triage
+      K-000001 cites the Component Kit API reference, and proposal:knowledge:17117117-1171-4171-8171-171171171171 the triage
       tool's own guide.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"
   - value: interview
     gloss: A conversation with someone who knows, written down.
-    warrant: L-000213 rests on a platform-team interview.
-    decision: D-401
+    warrant: proposal:knowledge:21321321-3213-4213-8213-213213213213 rests on a platform-team interview.
+    decision: D-000001
     minted: "2026-08-16"
   - value: regulator
     gloss: A regulator's own published text — the highest tier.
     warrant: >-
-      L-000133 cites the WCAG handbook, L-000162 a perf-budget matrix, and
-      L-000228 the ISO 12646 color-token standard.
-    decision: D-401
+      K-000002 cites the WCAG handbook, K-000003 a perf-budget matrix, and
+      K-000004 the ISO 12646 color-token standard.
+    decision: D-000001
     minted: "2026-08-16"
 # No `internal` tier. It was minted here by an earlier copy of this fixture whose
 # warrant named L-000133 as citing an internal design memo — but L-000133

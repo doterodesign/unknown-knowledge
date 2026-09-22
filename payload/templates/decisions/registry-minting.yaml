@@ -5,8 +5,8 @@
 # entry, the registry edit that cites it, and the material that supplied the
 # warrant. Conduct in full: protocol/registry-warrant.md.
 #
-# Draft with a provisional date-suffixed id (D-YYYY-MM-DD-slug) and
-# `status: proposed`; the steward assigns the final D-NNN at acceptance (§3.5).
+# Draft with a proposal:decision:<lowercase-v4-uuid> identity and
+# `status: proposed`; acceptance allocates a permanent D-NNNNNN identity (§3.5).
 # Agents draft; humans approve.
 #
 # The one rule this entry exists to evidence:
@@ -16,11 +16,11 @@
 # The `id` and `date` placeholders below are DELIBERATELY not valid, so this
 # file fails validation until a steward fills them — pasting the template
 # unedited must never produce a Decisions entry, or a registry value would end
-# up carrying a warrant nobody wrote. (Same conduct as the audit's `K-XXX`
+# up carrying a warrant nobody wrote. (Same conduct as the audit's `proposal:ontology:<lowercase-v4-uuid>`
 # drafts.) Every other field is real: fill those two and the entry validates.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-YYYY-MM-DD-mint-example-domain
+  - id: proposal:decision:UUID
     title: Mint <value> in the <registry> registry
     # `governance` — a registry edit changes what the Store may say, not how the
     # engine works.

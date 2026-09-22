@@ -69,7 +69,7 @@ const resolved = (...args) =>
 /** Leaf verdicts for the whole fixture set, in id order. */
 const verdicts = (expectStatus, ...args) =>
   json('preflight.js', expectStatus, '--leaves',
-    'L-000301,L-000302,L-000303,L-000304,L-000305,L-000306,L-000307',
+    'K-000001,K-000002,K-000003,K-000004,K-000005,K-000006,K-000007',
     '--root', CLEAN, ...args)['leaf-verdicts'];
 
 // ---------------- AC1: the thresholds are pinned exactly, at both boundaries
@@ -94,40 +94,40 @@ test('stable flips at the 365/366-day boundary, volatile at 90/91 (golden)', () 
   // either direction fails here rather than silently re-dating every store.
   const byId = Object.fromEntries(resolved('--today', TODAY).map((k) => [k.id, k.time]));
 
-  assert.equal(byId['L-000301'].age, 365, 'fixture must sit exactly at the stable limit');
-  assert.equal(byId['L-000301'].verdict, 'trusted', '365 days is the last fresh day for stable');
-  assert.equal(byId['L-000302'].age, 366, 'fixture must sit exactly one day past it');
-  assert.equal(byId['L-000302'].verdict, 'stale', '366 days is the first stale day for stable');
+  assert.equal(byId['K-000001'].age, 365, 'fixture must sit exactly at the stable limit');
+  assert.equal(byId['K-000001'].verdict, 'trusted', '365 days is the last fresh day for stable');
+  assert.equal(byId['K-000002'].age, 366, 'fixture must sit exactly one day past it');
+  assert.equal(byId['K-000002'].verdict, 'stale', '366 days is the first stale day for stable');
 
-  assert.equal(byId['L-000303'].age, 90, 'fixture must sit exactly at the volatile limit');
-  assert.equal(byId['L-000303'].verdict, 'trusted', '90 days is the last fresh day for volatile');
-  assert.equal(byId['L-000304'].age, 91, 'fixture must sit exactly one day past it');
-  assert.equal(byId['L-000304'].verdict, 'stale', '91 days is the first stale day for volatile');
+  assert.equal(byId['K-000003'].age, 90, 'fixture must sit exactly at the volatile limit');
+  assert.equal(byId['K-000003'].verdict, 'trusted', '90 days is the last fresh day for volatile');
+  assert.equal(byId['K-000004'].age, 91, 'fixture must sit exactly one day past it');
+  assert.equal(byId['K-000004'].verdict, 'stale', '91 days is the first stale day for volatile');
 
   // The threshold is read from the CLASS, not from one global age: 91 days
   // stales a volatile leaf while leaving a stable one comfortably fresh.
-  assert.equal(byId['L-000304'].limit, 90);
-  assert.equal(byId['L-000302'].limit, 365);
+  assert.equal(byId['K-000004'].limit, 90);
+  assert.equal(byId['K-000002'].limit, 365);
 });
 
 test('static NEVER stales, at any age and with no date at all (golden)', () => {
   const byId = Object.fromEntries(resolved('--today', TODAY).map((k) => [k.id, k.time]));
   // Sixteen years old and still trusted. `Infinity` is never exceeded, so the
   // comparison needs no special case and cannot acquire one by accident.
-  assert.ok(byId['L-000305'].age > 6000, 'the fixture must actually be ancient');
-  assert.equal(byId['L-000305'].verdict, 'trusted');
-  assert.equal(byId['L-000305'].stale, false);
+  assert.ok(byId['K-000005'].age > 6000, 'the fixture must actually be ancient');
+  assert.equal(byId['K-000005'].verdict, 'trusted');
+  assert.equal(byId['K-000005'].stale, false);
   // And with no date whatsoever — there is no age at which static would stale,
   // so there is no date that would make it.
-  assert.equal(byId['L-000306'].verified, null);
-  assert.equal(byId['L-000306'].verdict, 'trusted');
+  assert.equal(byId['K-000006'].verified, null);
+  assert.equal(byId['K-000006'].verdict, 'trusted');
 
   // The published limit is an explicit null for static, never `Infinity`:
   // JSON.stringify turns Infinity into null SILENTLY, and the two are the same
   // bytes. What distinguishes "never stales" from "no limit applies" on the
   // wire is `volatility`, which is present either way.
-  assert.equal(byId['L-000305'].limit, null);
-  assert.equal(byId['L-000305'].volatility, 'static');
+  assert.equal(byId['K-000005'].limit, null);
+  assert.equal(byId['K-000005'].volatility, 'static');
 });
 
 test('the fixture dates are the boundary dates, read off the files themselves', () => {
@@ -189,13 +189,13 @@ test('a stale leaf is DEMOTED in resolver ranking, and never hidden (golden)', (
   // used — one ordering rule, not two competing ones.
   const entries = resolved('--today', TODAY);
   assert.deepEqual(entries.map((k) => [k.id, k.downranked]), [
-    ['L-000301', false], // stable, exactly at the limit
-    ['L-000303', false], // volatile, exactly at the limit
-    ['L-000305', false], // static, ancient
-    ['L-000306', false], // static, undated
-    ['L-000307', false], // exempt
-    ['L-000302', true], //  stable, one day past — demoted
-    ['L-000304', true], //  volatile, one day past — demoted
+    ['K-000001', false], // stable, exactly at the limit
+    ['K-000003', false], // volatile, exactly at the limit
+    ['K-000005', false], // static, ancient
+    ['K-000006', false], // static, undated
+    ['K-000007', false], // exempt
+    ['K-000002', true], //  stable, one day past — demoted
+    ['K-000004', true], //  volatile, one day past — demoted
   ]);
   // NEVER a filter. Both stale leaves are still present: stale knowledge is
   // still the best answer when it is the only answer, and hiding it would send
@@ -204,7 +204,7 @@ test('a stale leaf is DEMOTED in resolver ranking, and never hidden (golden)', (
 });
 
 test('the demotion carries its REASON, in JSON and on the human surface (golden)', () => {
-  const stale = resolved('--today', TODAY).find((k) => k.id === 'L-000302');
+  const stale = resolved('--today', TODAY).find((k) => k.id === 'K-000002');
   assert.deepEqual(stale.demotions, [
     {
       reason: 'time',
@@ -230,21 +230,21 @@ test('a stale leaf is demoted in preflight leaf verdicts too — one shared func
   // stale by the resolver cannot be verdicted trusted by preflight — the same
   // discipline isPrePromotionStatus enforces one rung up.
   const byLeaf = Object.fromEntries(verdicts(1, '--today', TODAY).map((v) => [v.leaf, v]));
-  assert.equal(byLeaf['L-000302'].verdict, 'stale');
-  assert.equal(byLeaf['L-000304'].verdict, 'stale');
-  assert.equal(byLeaf['L-000301'].verdict, 'trusted');
-  assert.equal(byLeaf['L-000303'].verdict, 'trusted');
+  assert.equal(byLeaf['K-000002'].verdict, 'stale');
+  assert.equal(byLeaf['K-000004'].verdict, 'stale');
+  assert.equal(byLeaf['K-000001'].verdict, 'trusted');
+  assert.equal(byLeaf['K-000003'].verdict, 'trusted');
 
   // `stale` is its OWN verdict class, not a mapping onto unknown or
   // quarantined: nothing about a stale leaf is broken, and its checks DID run
   // and returned a definite answer. Folding it into either would tell a steward
   // to repair evidence that is fine, or to pass a flag they already passed.
-  assert.deepEqual(byLeaf['L-000302'].evidence, [], 'stale is not an evidence-bearing quarantine');
-  assert.equal(byLeaf['L-000302']['next-action'], 'reverify-leaf');
+  assert.deepEqual(byLeaf['K-000002'].evidence, [], 'stale is not an evidence-bearing quarantine');
+  assert.equal(byLeaf['K-000002']['next-action'], 'reverify-leaf');
 
   // The reason travels here too, and it is the SAME string the resolver
   // published — one verdict function, so one wording.
-  assert.equal(byLeaf['L-000302'].reason, byLeaf['L-000302'].time.reason);
+  assert.equal(byLeaf['K-000002'].reason, byLeaf['K-000002'].time.reason);
 });
 
 test('the resolver and preflight agree leaf-for-leaf on every verdict', () => {
@@ -259,9 +259,9 @@ test('the resolver and preflight agree leaf-for-leaf on every verdict', () => {
 test('a stale verdict gates preflight at exit 1, not 2 — the check DID run', () => {
   // The exit contract's own distinction: 2 means a check never ran, and the
   // time check ran. Rotted knowledge is a finding to fix, not a broken engine.
-  const stale = runCli('preflight.js', '--leaves', 'L-000302', '--root', CLEAN, '--today', TODAY, '--json');
+  const stale = runCli('preflight.js', '--leaves', 'K-000002', '--root', CLEAN, '--today', TODAY, '--json');
   assert.equal(stale.status, 1);
-  const fresh = runCli('preflight.js', '--leaves', 'L-000301', '--root', CLEAN, '--today', TODAY, '--json');
+  const fresh = runCli('preflight.js', '--leaves', 'K-000001', '--root', CLEAN, '--today', TODAY, '--json');
   assert.equal(fresh.status, 0, 'only an all-trusted run reads as clean');
   // Counted in its own column, so a stale leaf is visible in the tally rather
   // than absorbed into a class that means something else.
@@ -283,7 +283,7 @@ test('time demotion COMPOSES with the draft-stage downrank — both reasons, not
     writeFileSync(leaf, text.replace('stage: verified', 'stage: draft'));
 
     const entry = json('resolve.js', 0, 'freshness boundary', '--root', dir, '--today', TODAY)
-      .results[0].knowledge.find((k) => k.id === 'L-000302');
+      .results[0].knowledge.find((k) => k.id === 'K-000002');
     assert.equal(entry.downranked, true);
     assert.deepEqual(entry.demotions.map((d) => d.reason), ['stage', 'time'],
       'both demotions are reported; neither absorbs the other');
@@ -292,7 +292,7 @@ test('time demotion COMPOSES with the draft-stage downrank — both reasons, not
     // asked FIRST, because a leaf no moderator has promoted is unverified for a
     // reason that outranks its age — re-dating a draft would not make it
     // trusted. One verdict per leaf, and it names the more fundamental problem.
-    const verdict = json('preflight.js', 2, '--leaves', 'L-000302', '--root', dir, '--today', TODAY)['leaf-verdicts'][0];
+    const verdict = json('preflight.js', 2, '--leaves', 'K-000002', '--root', dir, '--today', TODAY)['leaf-verdicts'][0];
     assert.equal(verdict.verdict, 'unknown');
     assert.match(verdict.reason, /pre-promotion/);
     assert.equal(verdict.time.verdict, 'stale', 'the stale verdict is still computed and published');
@@ -312,9 +312,9 @@ test('without --today, resolver time verdicts report themselves skipped (golden)
   // leaf as fresh because nobody asked what day it is would be exactly the
   // silent pass this rule exists to prevent.
   const byId = Object.fromEntries(payload.results[0].knowledge.map((k) => [k.id, k.time.verdict]));
-  assert.equal(byId['L-000301'], 'skipped');
-  assert.equal(byId['L-000302'], 'skipped', 'a leaf that IS stale still reads skipped, never trusted');
-  assert.equal(byId['L-000304'], 'skipped');
+  assert.equal(byId['K-000001'], 'skipped');
+  assert.equal(byId['K-000002'], 'skipped', 'a leaf that IS stale still reads skipped, never trusted');
+  assert.equal(byId['K-000004'], 'skipped');
 
   // And nothing is demoted on a run that computed no verdicts — a demotion
   // nobody measured would be a verdict invented rather than derived.
@@ -324,12 +324,12 @@ test('without --today, resolver time verdicts report themselves skipped (golden)
 test('without --today, preflight time verdicts are unknown and the output says so (golden)', () => {
   // Unknown, not trusted: a check that never ran is a blocking defect. It gates
   // at 2, which the expected exit status asserts.
-  const payload = json('preflight.js', 2, '--leaves', 'L-000301,L-000302', '--root', CLEAN);
+  const payload = json('preflight.js', 2, '--leaves', 'K-000001,K-000002', '--root', CLEAN);
   assert.equal(payload['time-check'],
     'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
   assert.deepEqual(payload['leaf-verdicts'].map((v) => [v.leaf, v.verdict, v.time.verdict]), [
-    ['L-000301', 'unknown', 'skipped'],
-    ['L-000302', 'unknown', 'skipped'],
+    ['K-000001', 'unknown', 'skipped'],
+    ['K-000002', 'unknown', 'skipped'],
   ]);
   assert.equal(payload['leaf-verdicts'][0]['next-action'], 'supply-evaluation-date');
 });
@@ -342,7 +342,7 @@ test('the skip notice reaches the HUMAN surface of both projections', () => {
     assert.equal(r.status, 0);
     assert.match(r.stdout, /^time check: skipped — no evaluation date supplied/m, args.join(' '));
   }
-  const pre = runCli('preflight.js', '--leaves', 'L-000301', '--root', CLEAN);
+  const pre = runCli('preflight.js', '--leaves', 'K-000001', '--root', CLEAN);
   assert.match(pre.stdout, /^time check: skipped — no evaluation date supplied/m);
 
   // And when a date IS injected, the same line says what was checked against
@@ -370,8 +370,8 @@ test('the shared skip notice reports the missing input without prescribing condu
 test('a non-static leaf missing its verified date is a finding (golden)', () => {
   const payload = json('validate.js', 1, '--root', FINDINGS);
   assert.deepEqual(payload.findings.map((f) => [f.code, f.id, f.path]), [
-    ['missing-verified', 'L-000401', 'verified'],
-    ['malformed-verified', 'L-000402', 'verified'],
+    ['missing-verified', 'K-000001', 'verified'],
+    ['malformed-verified', 'K-000002', 'verified'],
   ]);
   const [missing, malformed] = payload.findings;
   assert.equal(missing.severity, 'error');
@@ -411,7 +411,7 @@ test('a leaf declaring NO volatility is clean and exempt — the migration case'
   assert.equal(leaf.volatility, undefined);
   assert.equal(leaf.verified, undefined);
 
-  const entry = resolved('--today', TODAY).find((k) => k.id === 'L-000307');
+  const entry = resolved('--today', TODAY).find((k) => k.id === 'K-000007');
   // `exempt`, deliberately NOT `trusted`: a leaf nothing governs has not passed
   // a check. Collapsing the two would report an ungoverned leaf as having sat
   // an exam it never took.
@@ -426,7 +426,7 @@ test('a static leaf still has a malformed date caught — an author who wrote on
     const leaf = join(dir, 'knowledge/freshness/305.1-static-ancient.md');
     writeFileSync(leaf, readFileSync(leaf, 'utf8').replace('verified: "2010-01-01"', 'verified: "2010-13-45"'));
     const payload = json('validate.js', 1, '--root', dir);
-    assert.deepEqual(payload.findings.map((f) => [f.code, f.id]), [['malformed-verified', 'L-000305']]);
+    assert.deepEqual(payload.findings.map((f) => [f.code, f.id]), [['malformed-verified', 'K-000005']]);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -561,7 +561,7 @@ test('the resolver publishes an honest verdict for a leaf the schema would refus
     writeFileSync(leaf, text.replace('volatility: stable', 'volatility: toString'));
 
     const entry = json('resolve.js', 0, 'freshness boundary', '--root', dir, '--today', TODAY)
-      .results[0].knowledge.find((k) => k.id === 'L-000302');
+      .results[0].knowledge.find((k) => k.id === 'K-000002');
     assert.equal(entry.time.verdict, 'exempt');
     assert.equal(entry.time.volatility, null, 'an uninterpretable class is not carried forward');
     // `limit` is PRESENT and null. Before the fix it was absent, because
@@ -601,7 +601,7 @@ test('a leaf under time governance whose age cannot be computed is never trusted
   assert.equal(v.stale, false);
 
   // Exit 1, not 2: quarantine is a finding to fix, and the checks all ran.
-  const verdict = json('preflight.js', 1, '--leaves', 'L-000401', '--root', FINDINGS, '--today', TODAY);
+  const verdict = json('preflight.js', 1, '--leaves', 'K-000001', '--root', FINDINGS, '--today', TODAY);
   const [leaf] = verdict['leaf-verdicts'];
   // Quarantined outranks it here, because the validator raises missing-verified
   // as an error-severity finding attributable to this leaf — evidence of a
@@ -624,7 +624,7 @@ test('--paths reverse lookup demotes stale leaves too — every projection, not 
     writeFileSync(leaf, text.replace('terms: [freshness boundary]', 'terms: [freshness boundary]\npaths: [src/freshness.ts]'));
 
     const payload = json('resolve.js', 0, '--paths', 'src/freshness.ts', '--root', dir, '--today', TODAY);
-    const governing = payload.paths[0].knowledge.find((k) => k.id === 'L-000302');
+    const governing = payload.paths[0].knowledge.find((k) => k.id === 'K-000002');
     assert.equal(governing.time.verdict, 'stale');
     assert.equal(governing.downranked, true);
     assert.deepEqual(governing.demotions.map((d) => d.reason), ['time']);
@@ -646,7 +646,7 @@ test('output stays deterministic: two runs byte-identical, no wall-clock anywher
     const b = runCli('resolve.js', 'freshness boundary', '--root', CLEAN, '--json', ...args);
     assert.equal(a.stdout, b.stdout, `resolve ${args.join(' ')}`);
   }
-  const p1 = runCli('preflight.js', '--leaves', 'L-000302', '--root', CLEAN, '--today', TODAY, '--json');
-  const p2 = runCli('preflight.js', '--leaves', 'L-000302', '--root', CLEAN, '--today', TODAY, '--json');
+  const p1 = runCli('preflight.js', '--leaves', 'K-000002', '--root', CLEAN, '--today', TODAY, '--json');
+  const p2 = runCli('preflight.js', '--leaves', 'K-000002', '--root', CLEAN, '--today', TODAY, '--json');
   assert.equal(p1.stdout, p2.stdout);
 });

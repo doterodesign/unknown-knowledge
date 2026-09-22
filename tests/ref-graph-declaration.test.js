@@ -112,7 +112,7 @@ function withStore(fn) {
     mkdirSync(join(root, 'src', 'design-system', 'tokens'), { recursive: true });
     writeFileSync(join(root, 'src', 'design-system', 'tokens', 'registry.ts'), '// fixture anchor\n');
     mkdirSync(join(root, 'src', 'design-system', 'component-set'), { recursive: true });
-    // L-000362 already exists and is catalog-declared; this rewrites it to
+    // K-000001 already exists and is catalog-declared; this rewrites it to
     // carry the nested `relates` map. `depends-on` names an accession no store
     // mints, so the edge — once declared — has nowhere to resolve.
     //
@@ -125,16 +125,16 @@ function withStore(fn) {
     // do with whether the edge was declared.
     writeFileSync(join(root, 'knowledge', 'engineering', '362.1-preview-deploy-windows.md'), [
       '---',
-      'schema-version: 2',
-      'id: L-000362',
+      'schema-version: 3',
+      'id: K-000001',
       'notation: "362.1"',
       'domain: engineering',
       'heading: Preview deploy windows',
       'cross-references:',
-      '  see-also: [L-000363]',
+      '  see-also: [K-000002]',
       'meta:',
       '  relates:',
-      '    depends-on: [L-000999]',
+      '    depends-on: [K-999999]',
       'citations:',
       '  - source: CI pipeline handbook 2026',
       '---',
@@ -159,7 +159,7 @@ test('an undeclared nested edge is invisible — the control', () => {
   // CLI failure would prove nothing about the declaration.
   assert.equal(before.status, 0, `expected a clean control validation: ${output}`);
   assert.equal(output.includes('unresolved-ref'), false, `an undeclared field must not produce an edge: ${output}`);
-  assert.equal(output.includes('L-000999'), false, 'the dangling target is not referenced by anything');
+  assert.equal(output.includes('K-999999'), false, 'the dangling target is not referenced by anything');
 });
 
 test('one declaration makes the new typed edge real, surfacing at the CLI seam', () => {
@@ -172,7 +172,7 @@ test('one declaration makes the new typed edge real, surfacing at the CLI seam',
   // that never ran is a blocking defect), which is the unchanged seam.
   assert.equal(after.status, 2, `expected the loader-error gate: ${output}`);
   assert.match(output, /unresolved-ref/);
-  assert.match(output, /"L-000999" does not resolve to any knowledge entry or catalog-declared id/);
+  assert.match(output, /"K-999999" does not resolve to any knowledge entry or catalog-declared id/);
 
   // The finding names the edge by its declared path, so an author is pointed
   // at the exact member they wrote — three levels down, index included.

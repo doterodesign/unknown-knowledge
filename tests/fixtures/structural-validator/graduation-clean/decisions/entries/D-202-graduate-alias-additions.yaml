@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-202
+  - id: D-000002
     title: Graduate alias additions to sampling
     category: trust
     status: accepted

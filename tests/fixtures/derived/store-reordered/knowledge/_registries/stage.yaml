@@ -10,17 +10,17 @@
 # store deliberately carries drafts: the demotion tests need real specimens, so
 # `draft` has warrant here where in a healthy store it would be a transient
 # stage nothing sits at for long.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: stage
 values:
   - value: draft
     gloss: Written but not promoted — nothing certifies the claim yet.
     warrant: >-
-      L-000171 (visual regression triage playbook) and L-000213 (component render
+      proposal:knowledge:17117117-1171-4171-8171-171171171171 (visual regression triage playbook) and proposal:knowledge:21321321-3213-4213-8213-213213213213 (component render
       budget) are both unpromoted — the demotion specimens the browse trees
       annotate.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"
   - value: proposed
     gloss: Put forward for promotion and awaiting a moderator.
@@ -29,14 +29,14 @@ values:
       sits here today; it is minted because the shared predicate recognizes it,
       and a value the engine acts on must exist in the vocabulary before a leaf
       can legally claim it.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"
   - value: verified
     gloss: A moderator promoted it — the citations were checked and hold.
     warrant: >-
-      L-000117, L-000133, L-000162 and L-000228 are all promoted; their
+      K-000001, K-000002, K-000003 and K-000004 are all promoted; their
       citations were checked.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"
 # No `deprecated` stage: the concept lifecycle has one with real semantics
 # (§3.5 demotes its findings to warnings), but no leaf surface implements the

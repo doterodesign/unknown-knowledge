@@ -31,11 +31,11 @@ const verdictOf = (out, id) => out.verdicts.find((v) => v.concept === id);
 // -------------------------------------------------------- all trusted (exit 0)
 
 test('clean store: every requested active concept is trusted — exit 0', () => {
-  const out = runJson('clean', 0, '--concepts', 'K-100,K-110');
+  const out = runJson('clean', 0, '--concepts', 'O-000001,O-000002');
   assert.equal(out.ok, true);
   assert.equal(out['store-verdict'], 'trusted');
   assert.deepEqual(out.counts, { trusted: 2, quarantined: 0, unknown: 0, stale: 0 });
-  for (const id of ['K-100', 'K-110']) {
+  for (const id of ['O-000001', 'O-000002']) {
     const v = verdictOf(out, id);
     assert.equal(v.verdict, 'trusted');
     assert.deepEqual(v.evidence, []);
@@ -46,23 +46,23 @@ test('clean store: every requested active concept is trusted — exit 0', () => 
 // --------------------------- drift → quarantined, untouched stay trusted (exit 1)
 
 test('fixture drift: quarantined verdict for the touching concept, trusted for the rest — exit 1', () => {
-  const out = runJson('drift', 1, '--concepts', 'K-100,K-110');
+  const out = runJson('drift', 1, '--concepts', 'O-000001,O-000002');
   assert.equal(out.ok, false);
   assert.deepEqual(out.counts, { trusted: 1, quarantined: 1, unknown: 0, stale: 0 });
-  const bad = verdictOf(out, 'K-100');
+  const bad = verdictOf(out, 'O-000001');
   assert.equal(bad.verdict, 'quarantined');
   const codes = bad.evidence.map((e) => e.code);
   assert.ok(codes.includes('value-not-in-source'), `codes: ${codes}`);
   assert.ok(codes.includes('source-value-missing'), `codes: ${codes}`);
   assert.equal(bad['next-action'], 'repair-evidence');
-  assert.equal(verdictOf(out, 'K-110').verdict, 'trusted');
+  assert.equal(verdictOf(out, 'O-000002').verdict, 'trusted');
 });
 
 // ----------------------------------------- draft/proposed → unknown (§3.5)
 
 test('draft concept verdicts unknown — value checks were skipped, so nothing certifies it', () => {
-  const out = runJson('clean', 2, '--concepts', 'K-130');
-  const v = verdictOf(out, 'K-130');
+  const out = runJson('clean', 2, '--concepts', 'proposal:ontology:13013013-0130-4130-8130-130130130130');
+  const v = verdictOf(out, 'proposal:ontology:13013013-0130-4130-8130-130130130130');
   assert.equal(v.verdict, 'unknown');
   assert.equal(v.status, 'draft');
   assert.equal(v['next-action'], 'review-status');
@@ -70,15 +70,15 @@ test('draft concept verdicts unknown — value checks were skipped, so nothing c
 });
 
 test('an unknown verdict is never exit 0 — only all-trusted reads as clean', () => {
-  // K-100 is trusted here, but K-130's checks never ran: exit 2, not 0.
-  const r = run('--root', fixture('clean'), '--concepts', 'K-100,K-130');
+  // O-000001 is trusted here, but proposal:ontology:13013013-0130-4130-8130-130130130130's checks never ran: exit 2, not 0.
+  const r = run('--root', fixture('clean'), '--concepts', 'O-000001,proposal:ontology:13013013-0130-4130-8130-130130130130');
   assert.equal(r.status, 2, r.stdout + r.stderr);
 });
 
 // --------------------------- store-wide failure → all unknown (exit 2)
 
 test('store-wide parse failure degrades ALL requested verdicts to unknown — exit 2', () => {
-  const out = runJson('malformed', 2, '--concepts', 'K-100,K-110');
+  const out = runJson('malformed', 2, '--concepts', 'O-000001,O-000002');
   assert.equal(out.ok, false);
   assert.equal(out['store-verdict'], 'unknown');
   assert.deepEqual(out.counts, { trusted: 0, quarantined: 0, unknown: 2, stale: 0 });
@@ -93,9 +93,9 @@ test('store-wide parse failure degrades ALL requested verdicts to unknown — ex
 // ------------------------------------------------ never-ran paths (exit 2)
 
 test('--concepts naming an id not in the ontology → exit 2, message on stderr', () => {
-  const r = run('--root', fixture('clean'), '--concepts', 'K-999');
+  const r = run('--root', fixture('clean'), '--concepts', 'O-999999');
   assert.equal(r.status, 2, r.stdout + r.stderr);
-  assert.match(r.stderr, /K-999/);
+  assert.match(r.stderr, /O-999999/);
 });
 
 test('nonexistent root → exit 2 (engine failure), message on stderr', () => {
@@ -150,7 +150,7 @@ test('a runtime crash while rendering computed verdicts reaches the outer guard 
       throw new TypeError('injected preflight output failure');
     };\n`);
     const r = spawnSync(process.execPath, ['--import', pathToFileURL(preload).href,
-      cli, '--root', dir, '--concepts', 'K-100', '--json'], { encoding: 'utf8' });
+      cli, '--root', dir, '--concepts', 'O-000001', '--json'], { encoding: 'utf8' });
     assert.equal(r.status, 2, r.stdout + r.stderr);
     assert.match(r.stderr, /internal failure — the command did not complete/);
     assert.match(r.stderr, /TypeError: injected preflight output failure/);
@@ -160,19 +160,19 @@ test('a runtime crash while rendering computed verdicts reaches the outer guard 
 
 test('--log appends one engine-attributed quarantine finding per quarantined concept (KK-13 schema)', () => {
   withDriftCopy((dir) => {
-    const r = run('--root', dir, '--concepts', 'K-100,K-110', '--log', '--today', '2026-01-05', '--json');
+    const r = run('--root', dir, '--concepts', 'O-000001,O-000002', '--log', '--today', '2026-01-05', '--json');
     assert.equal(r.status, 1, r.stdout + r.stderr);
     const out = JSON.parse(r.stdout);
-    assert.equal(out.logged.length, 1); // K-110 is trusted: no fragment for it
+    assert.equal(out.logged.length, 1); // O-000002 is trusted: no fragment for it
     const [file] = out.logged;
     assert.match(file, /^logs\/findings\/2026-01-05-[0-9a-f]{8}\.yaml$/); // injected date, D-010 one-file-per-entry
     const entry = load(readFileSync(join(dir, file), 'utf8'));
     assert.equal(entry.trigger, 'quarantine');
     assert.equal(entry.status, 'open');
     assert.equal(entry.date, '2026-01-05');
-    assert.deepEqual(entry.consulted, { concepts: ['K-100'] });
+    assert.deepEqual(entry.consulted, { concepts: ['O-000001'] });
     // Capture content policy (§3.4): concept ids, codes, and paths only.
-    assert.match(entry.summary, /K-100/);
+    assert.match(entry.summary, /O-000001/);
     assert.match(entry.summary, /value-not-in-source/);
     assert.match(entry.summary, /src\/icons\.txt/);
   });
@@ -181,11 +181,11 @@ test('--log appends one engine-attributed quarantine finding per quarantined con
 test('a second finding append failure exits 2 and reports incompletion without denying computed verdicts', () => {
   withDriftCopy((dir) => {
     writeFileSync(join(dir, 'src/color-tokens.txt'), 'srgb\nchanged\n');
-    const args = ['--root', dir, '--concepts', 'K-100,K-110', '--json'];
+    const args = ['--root', dir, '--concepts', 'O-000001,O-000002', '--json'];
     const checked = run(...args);
     assert.equal(checked.status, 1, checked.stderr);
     assert.deepEqual(JSON.parse(checked.stdout).verdicts.map(({ concept, verdict }) => [concept, verdict]), [
-      ['K-100', 'quarantined'], ['K-110', 'quarantined'],
+      ['O-000001', 'quarantined'], ['O-000002', 'quarantined'],
     ]);
 
     // Fail only the second finding write at the filesystem boundary. The
@@ -212,7 +212,7 @@ syncBuiltinESMExports();\n`);
     const files = readdirSync(join(dir, 'logs/findings'));
     assert.equal(files.length, 1, 'the first finding survives the second append failure');
     const entry = load(readFileSync(join(dir, 'logs/findings', files[0]), 'utf8'));
-    assert.deepEqual(entry.consulted, { concepts: ['K-100'] });
+    assert.deepEqual(entry.consulted, { concepts: ['O-000001'] });
     assert.equal(entry.trigger, 'quarantine');
     assert.match(entry.summary, /value-not-in-source/);
   });
@@ -220,7 +220,7 @@ syncBuiltinESMExports();\n`);
 
 test('without --log nothing is appended — logging is opt-in, never a side effect', () => {
   withDriftCopy((dir) => {
-    const r = run('--root', dir, '--concepts', 'K-100', '--json');
+    const r = run('--root', dir, '--concepts', 'O-000001', '--json');
     assert.equal(r.status, 1);
     assert.equal(JSON.parse(r.stdout).logged, undefined);
     assert.throws(() => readdirSync(join(dir, 'logs', 'findings')), /ENOENT/);
@@ -228,7 +228,7 @@ test('without --log nothing is appended — logging is opt-in, never a side effe
 });
 
 test('--log requires --today — the finding helper never reads the wall clock', () => {
-  const r = run('--root', fixture('drift'), '--concepts', 'K-100', '--log');
+  const r = run('--root', fixture('drift'), '--concepts', 'O-000001', '--log');
   assert.equal(r.status, 2);
   assert.match(r.stderr, /--log requires --today/);
 });
@@ -260,8 +260,8 @@ test('--json and --log take no value; --root, --concepts, and --today require on
 });
 
 test('--flag value and --flag=value are interchangeable', () => {
-  const a = run('--root', fixture('drift'), '--concepts', 'K-100,K-110', '--json');
-  const b = run(`--root=${fixture('drift')}`, '--concepts=K-100,K-110', '--json');
+  const a = run('--root', fixture('drift'), '--concepts', 'O-000001,O-000002', '--json');
+  const b = run(`--root=${fixture('drift')}`, '--concepts=O-000001,O-000002', '--json');
   assert.equal(a.status, 1);
   assert.equal(b.status, 1);
   assert.deepEqual(JSON.parse(a.stdout), JSON.parse(b.stdout));
@@ -270,7 +270,7 @@ test('--flag value and --flag=value are interchangeable', () => {
 // ------------------------------------------------ determinism & output modes
 
 test('two runs are byte-identical — no verdict caching, no wall-clock timestamps (D-011, D-012)', () => {
-  const args = ['--root', fixture('drift'), '--concepts', 'K-130,K-100,K-110', '--json'];
+  const args = ['--root', fixture('drift'), '--concepts', 'proposal:ontology:13013013-0130-4130-8130-130130130130,O-000001,O-000002', '--json'];
   const a = run(...args);
   const b = run(...args);
   assert.equal(a.stdout, b.stdout);
@@ -281,16 +281,16 @@ test('two runs are byte-identical — no verdict caching, no wall-clock timestam
 });
 
 test('human mode reports each verdict with concept, status, and next action', () => {
-  const r = run('--root', fixture('drift'), '--concepts', 'K-100,K-110');
+  const r = run('--root', fixture('drift'), '--concepts', 'O-000001,O-000002');
   assert.equal(r.status, 1);
-  assert.match(r.stdout, /QUARANTINED {2}K-100/);
-  assert.match(r.stdout, /TRUSTED {2}K-110/);
+  assert.match(r.stdout, /QUARANTINED {2}O-000001/);
+  assert.match(r.stdout, /TRUSTED {2}O-000002/);
   assert.match(r.stdout, /value-not-in-source/);
   assert.match(r.stdout, /next:/);
 });
 
 test('human mode on an all-trusted run says so', () => {
-  const r = run('--root', fixture('clean'), '--concepts', 'K-100,K-110');
+  const r = run('--root', fixture('clean'), '--concepts', 'O-000001,O-000002');
   assert.equal(r.status, 0);
   assert.match(r.stdout, /2 trusted, 0 quarantined, 0 stale, 0 unknown/);
   assert.match(r.stdout, /never cached/);
@@ -298,12 +298,12 @@ test('human mode on an all-trusted run says so', () => {
 
 test('leaf time diagnostics report measurements without prescribing conduct', () => {
   const root = fileURLToPath(new URL('fixtures/structural-validator/time-facet/', import.meta.url));
-  const stale = run('--root', root, '--leaves', 'L-000302', '--today', '2026-08-16', '--json');
+  const stale = run('--root', root, '--leaves', 'K-000002', '--today', '2026-08-16', '--json');
   assert.equal(stale.status, 1, stale.stderr);
   const [v] = JSON.parse(stale.stdout)['leaf-verdicts'];
   assert.equal(v.reason, 'verified 366 day(s) ago, past the 365-day limit for stable knowledge (UCS-1150)');
   assert.equal(v.time.reason, v.reason);
-  const skipped = run('--root', root, '--leaves', 'L-000302', '--json');
+  const skipped = run('--root', root, '--leaves', 'K-000002', '--json');
   assert.equal(skipped.status, 2, skipped.stderr);
   assert.equal(JSON.parse(skipped.stdout)['leaf-verdicts'][0].reason,
     'skipped — no evaluation date supplied; diffable output never reads the wall clock (D-012)');
@@ -322,7 +322,7 @@ test('a legacy missing-stage leaf remains inspectable but cannot establish trust
   const health = run('--root', root, '--json');
   assert.equal(health.status, 0, health.stderr);
   assert.equal(JSON.parse(health.stdout)['store-health'].ok, true);
-  const result = run('--root', root, '--leaves', 'L-000301', '--today', '2026-08-16', '--json');
+  const result = run('--root', root, '--leaves', 'K-000001', '--today', '2026-08-16', '--json');
   assert.equal(result.status, 2, result.stdout);
   const [leaf] = JSON.parse(result.stdout)['leaf-verdicts'];
   assert.equal(leaf.verdict, 'unknown');
@@ -359,7 +359,7 @@ for (const { name, stage, extra = {}, status, verdict, reason, time } of [
       leafText = leafText.replace(new RegExp(`^${key}:.*\\n`, 'm'), value === null ? '' : `${key}: ${value}\n`);
     }
     writeFileSync(path, leafText);
-    const args = ['--root', root, '--leaves', 'L-000301', '--today', '2026-09-10'];
+    const args = ['--root', root, '--leaves', 'K-000001', '--today', '2026-09-10'];
     const result = run(...args, '--json');
     assert.equal(result.status, status, result.stdout + result.stderr);
     const [leaf] = JSON.parse(result.stdout)['leaf-verdicts'];
@@ -380,22 +380,22 @@ for (const { name, stage, extra = {}, status, verdict, reason, time } of [
 }
 
 for (const [name, store, args, status, expected] of [
-  ['trusted and quarantine', 'preflight/drift', ['--concepts', 'K-110,K-100'], 1,
-    [['K-100', 'repair-evidence'], ['K-110', 'proceed']]],
-  ['unknown concept', 'preflight/clean', ['--concepts', 'K-130'], 2,
-    [['K-130', 'review-status']]],
-  ['store degradation for both kinds', 'preflight/malformed', ['--concepts', 'K-110,K-100', '--leaves', 'L-000999'], 2,
-    [['K-100', 'repair-store'], ['K-110', 'repair-store'], ['L-000999', 'repair-store']]],
-  ['trusted and pre-promotion leaves', 'structural-validator/frontmatter-v2', ['--leaves', 'L-000213,L-000117'], 2,
-    [['L-000117', 'proceed'], ['L-000213', 'review-stage']]],
-  ['leaf quarantine', 'structural-validator/frontmatter-v2-findings', ['--leaves', 'L-000901'], 1,
-    [['L-000901', 'repair-evidence']]],
-  ['stale and fresh leaves', 'structural-validator/time-facet', ['--leaves', 'L-000302,L-000301', '--today', '2026-08-16'], 1,
-    [['L-000301', 'proceed'], ['L-000302', 'reverify-leaf']]],
-  ['missing and malformed verification dates', 'structural-validator/time-facet-findings', ['--leaves', 'L-000402,L-000401', '--today', '2026-08-16'], 1,
-    [['L-000401', 'repair-evidence'], ['L-000402', 'repair-evidence']]],
-  ['skipped freshness', 'structural-validator/time-facet', ['--leaves', 'L-000302'], 2,
-    [['L-000302', 'supply-evaluation-date']]],
+  ['trusted and quarantine', 'preflight/drift', ['--concepts', 'O-000002,O-000001'], 1,
+    [['O-000001', 'repair-evidence'], ['O-000002', 'proceed']]],
+  ['unknown concept', 'preflight/clean', ['--concepts', 'proposal:ontology:13013013-0130-4130-8130-130130130130'], 2,
+    [['proposal:ontology:13013013-0130-4130-8130-130130130130', 'review-status']]],
+  ['store degradation for both kinds', 'preflight/malformed', ['--concepts', 'O-000002,O-000001', '--leaves', 'K-999999'], 2,
+    [['O-000001', 'repair-store'], ['O-000002', 'repair-store'], ['K-999999', 'repair-store']]],
+  ['trusted and pre-promotion leaves', 'structural-validator/frontmatter-v2', ['--leaves', 'proposal:knowledge:21321321-3213-4213-8213-213213213213,K-000001'], 2,
+    [['K-000001', 'proceed'], ['proposal:knowledge:21321321-3213-4213-8213-213213213213', 'review-stage']]],
+  ['leaf quarantine', 'structural-validator/frontmatter-v2-findings', ['--leaves', 'K-000001'], 1,
+    [['K-000001', 'repair-evidence']]],
+  ['stale and fresh leaves', 'structural-validator/time-facet', ['--leaves', 'K-000002,K-000001', '--today', '2026-08-16'], 1,
+    [['K-000001', 'proceed'], ['K-000002', 'reverify-leaf']]],
+  ['missing and malformed verification dates', 'structural-validator/time-facet-findings', ['--leaves', 'K-000002,K-000001', '--today', '2026-08-16'], 1,
+    [['K-000001', 'repair-evidence'], ['K-000002', 'repair-evidence']]],
+  ['skipped freshness', 'structural-validator/time-facet', ['--leaves', 'K-000002'], 2,
+    [['K-000002', 'supply-evaluation-date']]],
 ]) {
   test(`next-action codes in JSON and human output: ${name}`, () => {
     const root = fileURLToPath(new URL(`fixtures/${store}/`, import.meta.url));

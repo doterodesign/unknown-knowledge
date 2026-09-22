@@ -34,7 +34,7 @@ test('exact term match scores 100 and ranks first', () => {
   assert.equal(out.mode, 'query');
   assert.equal(out.query, 'export');
   const first = out.results[0];
-  assert.equal(first.id, 'K-120');
+  assert.equal(first.id, 'O-000003');
   assert.equal(first.term, 'Export');
   assert.equal(first.score, 100);
   assert.equal(first.match, 'exact-term');
@@ -44,7 +44,7 @@ test('exact alias match scores 80', () => {
   const out = runJson('swatch');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
-    [['K-100', 80, 'exact-alias']],
+    [['O-000001', 80, 'exact-alias']],
   );
 });
 
@@ -52,17 +52,17 @@ test('prefix/word match in term scores 60; score ties break by id asc', () => {
   const out = runJson('asset');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
-    [['K-100', 60, 'term-match'], ['K-110', 60, 'term-match']],
+    [['O-000001', 60, 'term-match'], ['O-000002', 60, 'term-match']],
   );
 });
 
 test('alias prefix/word match scores 50 — aliases get the same rung treatment as terms', () => {
-  // K-100 has alias "asset variant"; a partial alias query must resolve
+  // O-000001 has alias "asset variant"; a partial alias query must resolve
   // (aliases are the synonyms recorded to cure retrieval-struggle findings).
   const out = runJson('variant');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
-    [['K-100', 50, 'alias-match']],
+    [['O-000001', 50, 'alias-match']],
   );
 });
 
@@ -70,14 +70,14 @@ test('summary word match scores 40', () => {
   const out = runJson('artboards');
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match]),
-    [['K-120', 40, 'summary-match']],
+    [['O-000003', 40, 'summary-match']],
   );
 });
 
 test('matching is case-insensitive; multi-word query terms join into one query', () => {
   const out = runJson('ASSET', 'Variant');
   assert.equal(out.query, 'asset variant');
-  assert.equal(out.results[0].id, 'K-100');
+  assert.equal(out.results[0].id, 'O-000001');
   assert.equal(out.results[0].match, 'exact-alias');
 });
 
@@ -86,16 +86,16 @@ test('one ranked list: exact > summary > downranked prefix (§3.5)', () => {
   assert.deepEqual(
     out.results.map((r) => [r.id, r.score, r.match, r.status]),
     [
-      ['K-120', 100, 'exact-term', 'active'],
-      ['K-140', 40, 'summary-match', 'deprecated'],
-      ['K-130', 30, 'term-match', 'draft'],
+      ['O-000003', 100, 'exact-term', 'active'],
+      ['O-000004', 40, 'summary-match', 'deprecated'],
+      ['proposal:ontology:13013013-0130-4130-8130-130130130130', 30, 'term-match', 'draft'],
     ],
   );
 });
 
 test('draft/proposed concepts are downranked by 30, floored at 1 (§3.5)', () => {
   const windows = runJson('export', 'preset');
-  const draft = windows.results.find((r) => r.id === 'K-130');
+  const draft = windows.results.find((r) => r.id === 'proposal:ontology:13013013-0130-4130-8130-130130130130');
   assert.equal(draft.match, 'exact-term');
   assert.equal(draft.score, 70, 'exact-term 100 - 30 draft downrank');
 });
@@ -105,10 +105,10 @@ test('draft/proposed concepts are downranked by 30, floored at 1 (§3.5)', () =>
 test('results carry SSOT pointers, confusable-with, and knowledge entry points', () => {
   const out = runJson('asset', 'source');
   const method = out.results[0];
-  assert.equal(method.id, 'K-100');
+  assert.equal(method.id, 'O-000001');
   assert.equal(method.summary, 'A place raw graphics are imported from.');
   assert.deepEqual(method['source-of-truth'], ['src/design/assets/registry.ts']);
-  assert.deepEqual(method['confusable-with'], [{ id: 'K-110', term: 'Asset target' }]);
+  assert.deepEqual(method['confusable-with'], [{ id: 'O-000002', term: 'Asset target' }]);
   // The golden for one published knowledge entry point, extended over several
   // tickets. `id` is the leaf's ACCESSION: this fixture's leaves were unminted
   // and published `id: null` under UCS-1144's expand phase, and UCS-1147 made
@@ -124,7 +124,7 @@ test('results carry SSOT pointers, confusable-with, and knowledge entry points',
   assert.deepEqual(method.knowledge, [
     {
       via: 'terms',
-      id: 'L-000411',
+      id: 'proposal:knowledge:41141141-1411-4114-8114-411411411411',
       notation: '410.2',
       heading: 'Supported asset kinds',
       stage: 'draft',
@@ -160,11 +160,11 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
   // The resolver half of the draft-stage contract (UCS-1149). 410.1 is
   // verified and carries provenance; 410.2 is draft and carries none. Each is
   // pinned through the concept whose terms reach it.
-  const exported = runJson('export').results.find((r) => r.id === 'K-120');
+  const exported = runJson('export').results.find((r) => r.id === 'O-000003');
   assert.deepEqual(exported.knowledge, [
     {
       via: 'terms',
-      id: 'L-000410',
+      id: 'K-000001',
       notation: '410.1',
       heading: 'Export format windows',
       stage: 'verified',
@@ -195,7 +195,7 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
   // The draft leaf still SURFACES — a demotion, never a filter: a draft leaf is
   // the best answer when it is the only answer, and hiding it would send the
   // reader off to invent one.
-  const instruments = runJson('asset', 'variant').results.find((r) => r.id === 'K-100');
+  const instruments = runJson('asset', 'variant').results.find((r) => r.id === 'O-000001');
   assert.equal(instruments.knowledge[0].downranked, true);
   assert.equal(instruments.knowledge[0].stage, 'draft');
 
@@ -210,9 +210,9 @@ test('v2: a draft-stage leaf is downranked, and provenance round-trips untouched
 
 test('knowledge entry points come from leaf terms naming the concept term or alias', () => {
   const out = runJson('export');
-  const exported = out.results.find((r) => r.id === 'K-120');
+  const exported = out.results.find((r) => r.id === 'O-000003');
   assert.deepEqual(exported.knowledge.map((k) => k.notation), ['410.1']);
-  const palette = out.results.find((r) => r.id === 'K-140');
+  const palette = out.results.find((r) => r.id === 'O-000004');
   assert.deepEqual(palette.knowledge, []);
 });
 
@@ -221,21 +221,21 @@ test('deprecated concepts are surfaced flagged, in JSON and human output (§3.5)
   assert.equal(json.results[0].status, 'deprecated');
   const human = run('palette', '--root', store);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /K-140/);
+  assert.match(human.stdout, /O-000004/);
   assert.match(human.stdout, /\[deprecated\]/);
 });
 
 test('confusable-with warning is prominent in human output', () => {
   const human = run('asset', 'source', '--root', store);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /confusable-with: K-110 "Asset target"/);
+  assert.match(human.stdout, /confusable-with: O-000002 "Asset target"/);
 });
 
 test('human output is readable: id, term, score, pointers, entry points', () => {
   const human = run('export', '--root', store);
   assert.equal(human.status, 0);
   assert.match(human.stdout, /resolve "export" -> 3 concepts/);
-  assert.match(human.stdout, /K-120 {2}Export {2}\[active\] {2}score 100 \(exact-term\)/);
+  assert.match(human.stdout, /O-000003 {2}Export {2}\[active\] {2}score 100 \(exact-term\)/);
   assert.match(human.stdout, /source-of-truth:\n {4}src\/design\/export\.ts/);
   assert.match(human.stdout, /410\.1 {2}Export format windows/);
 });
@@ -271,12 +271,12 @@ test('--path: repeated complete names preserve commas and edge whitespace', () =
   assert.deepEqual(out.paths, [
     {
       path: 'src/design/targets/ spaced.ts ',
-      concepts: [{ id: 'K-110', term: 'Asset target', status: 'active', pointer: 'src/design/targets' }],
+      concepts: [{ id: 'O-000002', term: 'Asset target', status: 'active', pointer: 'src/design/targets' }],
       knowledge: [],
     },
     {
       path: 'src/design/targets/first,second.ts',
-      concepts: [{ id: 'K-110', term: 'Asset target', status: 'active', pointer: 'src/design/targets' }],
+      concepts: [{ id: 'O-000002', term: 'Asset target', status: 'active', pointer: 'src/design/targets' }],
       knowledge: [],
     },
   ]);
@@ -305,9 +305,9 @@ test('--path: argv transports unusual filenames to their exact pointers without 
   try {
     cpSync(store, dir, { recursive: true });
     writeFileSync(join(dir, 'ontology/classes/100-design.yaml'), JSON.stringify({
-      'schema-version': 1,
+      'schema-version': 2,
       entries: [{
-        id: 'K-120', term: 'Export', class: '100-design', status: 'active',
+        id: 'O-000003', term: 'Export', class: '100-design', status: 'active',
         'source-of-truth': names,
       }],
     }));
@@ -323,7 +323,7 @@ test('--path: argv transports unusual filenames to their exact pointers without 
     for (const name of names) {
       assert.deepEqual(out.paths.find((row) => row.path === name), {
         path: name,
-        concepts: [{ id: 'K-120', term: 'Export', status: 'active', pointer: name }],
+        concepts: [{ id: 'O-000003', term: 'Export', status: 'active', pointer: name }],
         knowledge: [],
       }, JSON.stringify(name));
     }
@@ -347,7 +347,7 @@ test('--path: ordinary path sets have byte-identical legacy attribution, orderin
   assert.deepEqual(JSON.parse(repeated.stdout).paths, [
     {
       path: 'src/design/export.ts',
-      concepts: [{ id: 'K-120', term: 'Export', status: 'active', pointer: 'src/design/export.ts' }],
+      concepts: [{ id: 'O-000003', term: 'Export', status: 'active', pointer: 'src/design/export.ts' }],
       knowledge: [],
     },
     { path: 'src/unmapped/thing.ts', concepts: [], knowledge: [] },
@@ -389,7 +389,7 @@ test('--paths: exact file pointer maps back to its concept', () => {
     {
       path: 'src/design/export.ts',
       concepts: [
-        { id: 'K-120', term: 'Export', status: 'active', pointer: 'src/design/export.ts' },
+        { id: 'O-000003', term: 'Export', status: 'active', pointer: 'src/design/export.ts' },
       ],
       knowledge: [],
     },
@@ -399,18 +399,18 @@ test('--paths: exact file pointer maps back to its concept', () => {
 test('--paths: a file under a folder pointer matches that concept', () => {
   const out = runJson('--paths', 'src/design/targets/stripe.ts');
   assert.deepEqual(out.paths[0].concepts, [
-    { id: 'K-110', term: 'Asset target', status: 'active', pointer: 'src/design/targets' },
+    { id: 'O-000002', term: 'Asset target', status: 'active', pointer: 'src/design/targets' },
   ]);
 });
 
 test('--paths: concepts carry status — a deprecated concept surfaces flagged', () => {
   const out = runJson('--paths', 'src/palette/entries.ts');
   assert.deepEqual(out.paths[0].concepts, [
-    { id: 'K-140', term: 'Palette', status: 'deprecated', pointer: 'src/palette' },
+    { id: 'O-000004', term: 'Palette', status: 'deprecated', pointer: 'src/palette' },
   ]);
   const human = run('--paths', 'src/palette/entries.ts', '--root', store);
   assert.equal(human.status, 0);
-  assert.match(human.stdout, /K-140.*\[deprecated\]/);
+  assert.match(human.stdout, /O-000004.*\[deprecated\]/);
 });
 
 test('--paths: nesting applies only to folder pointers, never file pointers', () => {
@@ -422,22 +422,22 @@ test('--paths: nesting applies only to folder pointers, never file pointers', ()
 });
 
 test('--paths: paths are normalized — .., //, internal ./, backslashes, absolute', () => {
-  // `..` must attribute to the file pointer (K-120), not the folder it detoured through.
+  // `..` must attribute to the file pointer (O-000003), not the folder it detoured through.
   const dotdot = runJson('--paths', 'src/design/targets/../export.ts');
   assert.equal(dotdot.paths[0].path, 'src/design/export.ts');
-  assert.deepEqual(dotdot.paths[0].concepts.map((c) => c.id), ['K-120']);
+  assert.deepEqual(dotdot.paths[0].concepts.map((c) => c.id), ['O-000003']);
 
   const doubled = runJson('--paths', 'src//design/./export.ts');
   assert.equal(doubled.paths[0].path, 'src/design/export.ts');
-  assert.deepEqual(doubled.paths[0].concepts.map((c) => c.id), ['K-120']);
+  assert.deepEqual(doubled.paths[0].concepts.map((c) => c.id), ['O-000003']);
 
   const backslashed = runJson('--paths', 'src\\design\\export.ts');
   assert.equal(backslashed.paths[0].path, 'src/design/export.ts');
-  assert.deepEqual(backslashed.paths[0].concepts.map((c) => c.id), ['K-120']);
+  assert.deepEqual(backslashed.paths[0].concepts.map((c) => c.id), ['O-000003']);
 
   const absolute = runJson('--paths', `${store}/src/design/export.ts`);
   assert.equal(absolute.paths[0].path, 'src/design/export.ts');
-  assert.deepEqual(absolute.paths[0].concepts.map((c) => c.id), ['K-120']);
+  assert.deepEqual(absolute.paths[0].concepts.map((c) => c.id), ['O-000003']);
 });
 
 test('--paths: unmatched path is a normal outcome — empty concepts, exit 0', () => {
@@ -457,7 +457,7 @@ test('--paths: comma-separated list; output deduped and sorted by path asc', () 
     'src/design/export.ts',
     'src/unmapped/thing.ts',
   ]);
-  assert.equal(out.paths[0].concepts[0].id, 'K-120');
+  assert.equal(out.paths[0].concepts[0].id, 'O-000003');
 });
 
 // ------------------------------------------- determinism & store health
@@ -484,7 +484,7 @@ test('unhealthy store still resolves; health surfaced, not fatal (one health mod
   const out = JSON.parse(r.stdout);
   assert.equal(out['store-health'].ok, false);
   assert.ok(out['store-health'].errors > 0);
-  assert.equal(out.results[0].id, 'K-210');
+  assert.equal(out.results[0].id, 'O-000001');
   const human = run('design token', '--root', brokenStore);
   assert.match(human.stdout, /store health: /);
 });
@@ -521,7 +521,7 @@ test('empty/comma-only --paths exits 2 — a lookup that never ran is a failure'
 test('--flag=value equals-forms are accepted for --root and --paths', () => {
   const query = run('export', `--root=${store}`, '--json');
   assert.equal(query.status, 0, query.stderr);
-  assert.equal(JSON.parse(query.stdout).results[0].id, 'K-120');
+  assert.equal(JSON.parse(query.stdout).results[0].id, 'O-000003');
   const paths = run('--paths=src/design/export.ts,src/unmapped/x.ts', `--root=${store}`, '--json');
   assert.equal(paths.status, 0, paths.stderr);
   assert.deepEqual(JSON.parse(paths.stdout).paths.map((p) => p.path), [
@@ -549,7 +549,7 @@ function runJsonAt(root, ...args) {
 
 test('--paths: a DOTTED directory pointer nests — the filesystem decides, not the extension', () => {
   const out = runJsonAt(onDiskStore, '--paths', 'src/api.v2/handler.ts');
-  assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['K-100']);
+  assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['O-000001']);
   assert.equal(out.paths[0].concepts[0].pointer, 'src/api.v2');
 });
 
@@ -558,7 +558,7 @@ test('--paths: a real FILE pointer still never nests — no false attribution', 
   assert.deepEqual(out.paths[0].concepts, []);
   // ...while the exact path still attributes.
   const exact = runJsonAt(onDiskStore, '--paths', 'src/types/model.ts');
-  assert.deepEqual(exact.paths[0].concepts.map((c) => c.id), ['K-110']);
+  assert.deepEqual(exact.paths[0].concepts.map((c) => c.id), ['O-000002']);
 });
 
 test('--paths: a pointer absent from disk falls back to the name — a deleted directory still attributes', () => {
@@ -566,7 +566,7 @@ test('--paths: a pointer absent from disk falls back to the name — a deleted d
   // exactly the diff-names-deleted-paths case: `src/design/targets` has no
   // extension, so it still nests, and the deletion reaches its concept.
   const out = runJson('--paths', 'src/design/targets/stripe.ts');
-  assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['K-110']);
+  assert.deepEqual(out.paths[0].concepts.map((c) => c.id), ['O-000002']);
 });
 
 // ------------------------------------------- empty-value flags (UCS-933)

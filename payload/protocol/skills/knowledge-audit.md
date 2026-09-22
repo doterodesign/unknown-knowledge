@@ -1,4 +1,4 @@
-# /knowledge-audit — the on-demand health check (PRD §8, D-019)
+# /knowledge-audit — the on-demand health check (PRD §8, D-000019)
 
 > Paths in this document are client-relative — relative to the vendored kit
 > root after init (`ontology/…`, `engine/…`, `protocol/…`). In the kit repo
@@ -120,17 +120,36 @@ table.
 Three instruments; every one produces a report line — a lapsed steward
 rotation is **visible, never silent**.
 
-**Days since last reflect.** The reflect skill stamps a `last-reflect`
-state file at the kit root:
+**Days since last reflect.** Use the writer's kit-relative
+`logs/last-reflect.yaml`, never a root-level lookalike:
 
 ```sh
-cat unknown-knowledge/last-reflect.yaml
+cat unknown-knowledge/logs/last-reflect.yaml
 ```
 
-Present → report `<TODAY>` minus the stamped date as
-days-since-last-reflect. Absent (`No such file or directory`) → the report
-line reads **no reflect has run yet** — degrade gracefully; the absence IS
-the datum, and it still prints.
+Read the **Review state contract** in `skills/knowledge-reflect.md` for the
+single authoritative artifact/stamp shape and counting rules. This audit is
+read-only: it diagnoses, never repairs a stale summary or creates a review.
+
+| Observed state | Report |
+|---|---|
+| File absent | **no recorded reflect heartbeat**; absence does not prove no work ran |
+| Valid v1/date-only stamp | Age of recorded timestamp only; completion, governed aging, outcomes and work unavailable |
+| Valid schema 2 | Follow `review`/`previous` and inspect bound proposal/gate/work evidence; report current review in-progress/completed, latest completed-review age, current-cycle gate/archive counts and cumulative retained approved work separately |
+| Schema 2 with `date: null`, `cycles: []` | No completed review yet; current review may be in progress and work may be pending |
+| Malformed/unreadable/future/inconsistent stamp or incomplete referenced evidence | Name the defect; no trustworthy numerical age or authoritative totals; never reinterpret as absence/completion |
+
+Use injected `<TODAY>` and real calendar dates. Validate summary against retained
+artifacts before subtracting a completed-review date. Traverse predecessors with
+a visited-path set and record finite limits/usage: defaults 100 review artifacts,
+1,000 items, 10,000 outcome/work/archive rows, unless this invocation explicitly
+records other finite limits. Missing/cyclic references, changed proposal digest,
+absent gate/check evidence, conflicting replacement or exhausted budget is
+incomplete history, never an empty result. No authoritative totals over partial
+coverage. Rejected/unreviewed proposals are not completed repairs; accepted
+handoffs remain pending until the actual change and acceptance land. Repeated
+same-day cycles do not add aging or duplicate gates. A review marked complete
+with pending work must visibly report that work.
 
 **Open fragments per log.**
 
@@ -150,7 +169,8 @@ grep -rl '^trigger: quarantine' unknown-knowledge/logs/findings 2>/dev/null
 
 Report concept IDs and counts only — fragment summaries stay in the
 fragments (§3.4 rides into reports too). **Done when** all three heartbeat
-lines exist, each carrying a real number or the explicit absence line.
+lines exist, carrying attributable numbers or explicit missing/invalid/incomplete
+states. Keep current-cycle gate counts distinct from cumulative repair counts.
 
 ### 7. REPORT — the fixed shape
 
@@ -171,13 +191,14 @@ never ran:
 ## Knowledge leaves
 ## Decisions lifecycle
 ## Heartbeat
-- days since last reflect: <n>          (or: no reflect has run yet)
+- heartbeat: <completed-review age / legacy timestamp age-only / missing / invalid>
+- review: <in progress / completed / unavailable>; approved work: <completed n, pending n / unavailable>
 - open fragments: findings <n>, misses <n>, gaps <n>
 - top quarantined concepts: K-NNN (<count>), …   (or: none)
 ```
 
 Fill every line from the outputs captured in steps 1–6 — never from memory
-of a previous run: trust is per-run (D-011). Deliver the report in the
+of a previous run: trust is per-run (D-000011). Deliver the report in the
 conversation; the audit commits nothing and edits nothing — anything worth
 fixing routes to its owning path (concept PRs, kb-build, reflect, the
 steward).

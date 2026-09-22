@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-014
+  - id: D-000014
     title: The engine never executes client code — lexical parsing only, no network
     category: trust
     status: accepted

@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000501
+  - id: K-000001
     title: Result ordering
     file: library/501.1-result-ordering.md

@@ -45,12 +45,13 @@ function plantRepo(name, files) {
 
 const ANCHOR_TS = "export const ICONS = ['grid', 'list'];\n";
 const STORE_MIN = {
+  'unknown-knowledge/_identity.yaml': '{"schema-version": 1, "identity-format": 1, "namespace": "71717171-7171-4171-8171-717171717171", "allocations": [{"id": "O-000001", "kind": "ontology", "state": "allocated", "publication": {"id": "72727272-7272-4272-8272-727272727272", "review": "fixture:audit"}}]}',
   'unknown-knowledge/ontology/_catalog.yaml':
-    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Icon\n    file: classes/100-core.yaml\n',
+    'schema-version: 2\nstore: ontology\nentries:\n  - id: O-000001\n    title: Icon\n    file: classes/100-core.yaml\n',
   'unknown-knowledge/ontology/_rules.yaml': 'schema-version: 1\nstore: ontology\nrules: []\n',
   'unknown-knowledge/ontology/classes/100-core.yaml':
-    'schema-version: 1\nentries:\n'
-    + '  - id: K-100\n    term: Icon\n    class: 100-core\n'
+    'schema-version: 2\nentries:\n'
+    + '  - id: O-000001\n    term: Icon\n    class: 100-core\n'
     + '    summary: Product icons.\n    source-of-truth: [src/icons.ts]\n'
     + '    status: active\n    last-verified: "2026-01-10"\n',
 };
@@ -71,9 +72,9 @@ test('ts-app fixture: audit rediscovers the wrong-pointer true home as an unmatc
 test('ts-app fixture: pointed-at anchors are matched, never findings', () => {
   const out = runJson(tsApp, 0);
   const paths = out.findings.map((f) => f.path);
-  // K-101 points at export-formats.ts; K-110's folder identity covers src/verticals/**.
-  assert.ok(!paths.includes('src/registry/export-formats.ts'), `export-formats.ts is pointed at by K-101: ${paths}`);
-  assert.ok(!paths.some((p) => p?.startsWith('src/verticals/')), `src/verticals is K-110 folder identity: ${paths}`);
+  // O-000001 points at export-formats.ts; O-000010's folder identity covers src/verticals/**.
+  assert.ok(!paths.includes('src/registry/export-formats.ts'), `export-formats.ts is pointed at by O-000001: ${paths}`);
+  assert.ok(!paths.some((p) => p?.startsWith('src/verticals/')), `src/verticals is O-000010 folder identity: ${paths}`);
 });
 
 test("ts-app fixture: the kit's own store files are never audit findings", () => {
@@ -99,7 +100,7 @@ test('every unmatched-anchor finding carries a drafted concept proposal ready fo
   for (const field of ['id', 'term', 'class', 'summary', 'status']) {
     assert.ok(field in draft, `draft is missing "${field}": ${finding.draft}`);
   }
-  assert.ok(!/^K-[0-9]+$/.test(draft.id), 'draft id must not be a mintable K-NNN');
+  assert.ok(!/^O-[0-9]{6}$/.test(draft.id), 'draft id must not be a mintable canonical Ontology ID');
   assert.equal(draft.status, 'draft');
   assert.deepEqual(draft['source-of-truth'], ['src/registry/locales.ts']);
 });
@@ -121,8 +122,8 @@ test('identical tree → byte-identical JSON (D-012 diffability, no wall-clock)'
 test('--today flags concepts whose last-verified exceeds --stale-days', () => {
   const out = runJson(tsApp, 0, '--today', '2026-10-09', '--stale-days', '30');
   const stale = out.findings.filter((f) => f.code === 'stale-last-verified');
-  assert.ok(stale.some((f) => f.concept === 'K-101'), JSON.stringify(stale));
-  const k101 = stale.find((f) => f.concept === 'K-101');
+  assert.ok(stale.some((f) => f.concept === 'O-000001'), JSON.stringify(stale));
+  const k101 = stale.find((f) => f.concept === 'O-000001');
   assert.equal(k101['last-verified'], '2026-07-08');
 });
 
@@ -186,8 +187,8 @@ test('an unhealthy store is an engine failure (exit 2) — matching against brok
   const repo = plantRepo('sick', {
     ...STORE_MIN,
     'unknown-knowledge/ontology/classes/900-dupe.yaml':
-      'schema-version: 1\nentries:\n'
-      + '  - id: K-100\n    term: Duplicate\n    class: 900-dupe\n'
+      'schema-version: 2\nentries:\n'
+      + '  - id: O-000001\n    term: Duplicate\n    class: 900-dupe\n'
       + '    summary: Same id minted twice.\n    status: active\n',
     'src/icons.ts': ANCHOR_TS,
   });
@@ -195,8 +196,8 @@ test('an unhealthy store is an engine failure (exit 2) — matching against brok
   assert.equal(r.status, 2, r.stdout);
 });
 
-test('a repo with no stores at all still audits — everything is a proposal', () => {
-  const repo = plantRepo('bare', { 'src/icons.ts': ANCHOR_TS });
+test('an installation with an empty ledger and no stores still audits — everything is a proposal', () => {
+  const repo = plantRepo('bare', { '_identity.yaml': JSON.stringify({ ...JSON.parse(STORE_MIN['unknown-knowledge/_identity.yaml']), allocations: [] }), 'src/icons.ts': ANCHOR_TS });
   const out = runJson(repo, 0);
   assert.ok(out.findings.some((f) => f.code === 'unmatched-anchor' && f.path === 'src/icons.ts'));
 });
@@ -216,7 +217,7 @@ test('a seeded kit dir alongside root-level stores is ambiguous: the audit refus
     'ontology/classes/100-core.yaml': STORE_MIN['unknown-knowledge/ontology/classes/100-core.yaml'],
     'src/icons.ts': ANCHOR_TS,
     // …plus a leftover nested kit dir. Which store is authoritative?
-    'unknown-knowledge/ontology/classes/100-old.yaml': 'schema-version: 1\nentries: []\n',
+    'unknown-knowledge/ontology/classes/100-old.yaml': 'schema-version: 2\nentries: []\n',
   });
   const r = run('--root', repo);
   assert.equal(r.status, 2, `an ambiguous layout is an engine failure: ${r.stdout}`);

@@ -44,9 +44,9 @@ test('the README names every engine surface, and invents none', () => {
     assert.ok(shipped.includes(named), `the README documents ${named}, which no longer exists`);
   }
   // The prose spells the number out; a digit here would fail on style, not fact.
-  const words = { 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve' };
+  const words = { 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen' };
   assert.ok(words[shipped.length], `teach this test the word for ${shipped.length}`);
-  assert.match(readme, new RegExp(`${words[shipped.length]} command-line surfaces`, 'i'),
+  assert.match(readme, new RegExp(`${words[shipped.length]} seeded command-line surfaces`, 'i'),
     `the README must say how many surfaces there are (${shipped.length})`);
 });
 
@@ -75,8 +75,9 @@ test('the README makes no promise that has already been kept', () => {
   assert.doesNotMatch(readme, /lands with KK-/, 'a shipped promise is not a promise');
 });
 
-test('the README limits subprocesses to Git navigation and snapshot reads', () => {
-  assert.match(readme, /subprocesses invoke\s+Git only/);
+test('the README limits subprocesses to Git plumbing and fixed trusted engine checks', () => {
+  assert.match(readme, /subprocesses invoke\s+Git for/);
+  assert.match(readme, /Candidate code is\s+never executed by these checks/);
   const engineDir = join(root, 'payload', 'engine');
   const spawners = [];
   const walk = (dir) => {
@@ -87,12 +88,16 @@ test('the README limits subprocesses to Git navigation and snapshot reads', () =
     }
   };
   walk(engineDir);
-  assert.deepEqual(spawners.sort(), ['commit-snapshot.js', 'survey-map.js'], 'only Git navigation and snapshot orchestration spawn (D-014)');
+  // The fixed historical distribution retains its original two Git modules;
+  // A6 independently checks their exact relative paths and all profile bytes.
+  assert.deepEqual(spawners.sort(), ['captured-source.js', 'commit-snapshot.js', 'survey-map.js'], 'only current fixed Git plumbing spawns');
+  const capture = readFileSync(join(engineDir, 'lib', 'captured-source.js'), 'utf8');
+  assert.match(capture, /spawnSync\('git',/);
+  assert.doesNotMatch(capture, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|write-tree)['"]/);
   const snapshot = readFileSync(join(engineDir, 'lib', 'commit-snapshot.js'), 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
   assert.match(snapshot, /spawnSync\('git',/);
   assert.doesNotMatch(snapshot, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
-
   // Importing child_process is not the claim. WHAT it spawns is.
   //
   // Comments are stripped first: `spawnSync('git', ['status' /* 'ls-files' */])`

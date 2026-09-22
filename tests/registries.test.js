@@ -100,7 +100,7 @@ test('registries are governed META, never records: the leaf walk cannot see them
   // `_rules.yaml`, so the naming grammar does the separating and there is no
   // exception list to keep in sync. Two leaves loaded; the four registry
   // files did not become leaves, nor a skipped-file warning.
-  assert.deepEqual([...model.leaves.keys()], ['L-000601', 'L-000602']);
+  assert.deepEqual([...model.leaves.keys()], ['K-000001', 'K-000002']);
   assert.deepEqual(model.diagnostics, []);
 });
 
@@ -128,7 +128,7 @@ test('a registry with a SCHEMA defect is a hard error too, not a partial vocabul
     // `warrant` is required: a value minted with no material named to fill it
     // is exactly what literary warrant refuses, so the file is refused.
     writeFileSync(join(dir, 'knowledge/_registries/operations.yaml'), [
-      'schema-version: 1',
+      'schema-version: 2',
       'store: knowledge',
       'registry: operations',
       'values:',
@@ -186,12 +186,12 @@ test('a store with NO registries and NO governed facets stays clean — governan
 test('every membership finding names both the value and its registry (golden)', () => {
   const payload = runJson(1, FINDINGS);
   assert.deepEqual(triples(payload), [
-    ['unregistered-value', 'L-000601', 'applies.jurisdictions[1]'],
-    ['unregistered-value', 'L-000601', 'citations[0].authority'],
-    ['unregistered-value', 'L-000601', 'operations[1]'],
-    ['unminted-segment', 'L-000602', 'facets.domain'],
-    ['unminted-segment', 'L-000603', 'facets.domain'],
-    ['suppressed-value', 'L-000604', 'facets.domain'],
+    ['unregistered-value', 'K-000001', 'applies.jurisdictions[1]'],
+    ['unregistered-value', 'K-000001', 'citations[0].authority'],
+    ['unregistered-value', 'K-000001', 'operations[1]'],
+    ['unminted-segment', 'K-000002', 'facets.domain'],
+    ['unminted-segment', 'K-000003', 'facets.domain'],
+    ['suppressed-value', 'K-000004', 'facets.domain'],
   ]);
   for (const f of payload.findings) {
     assert.match(f.message, /knowledge\/(domains|operations|jurisdictions|authority-tiers)/,
@@ -212,13 +212,13 @@ test('hierarchical domains: a child is valid only if EVERY segment is minted', (
   const payload = runJson(1, FINDINGS);
   // An unminted TOP segment: the finding names `sprockets`, not the whole
   // path — the segment is the registry edit the author can actually make.
-  const parent = payload.findings.find((x) => x.id === 'L-000602');
+  const parent = payload.findings.find((x) => x.id === 'K-000002');
   assert.equal(parent.code, 'unminted-segment');
   assert.match(parent.message, /the segment "sprockets" is not minted/);
   assert.match(parent.message, /"sprockets\/care"/, 'the offending value is named too');
 
   // A minted parent with an unminted child: the missing segment is the child.
-  const child = payload.findings.find((x) => x.id === 'L-000603');
+  const child = payload.findings.find((x) => x.id === 'K-000003');
   assert.equal(child.code, 'unminted-segment');
   assert.match(child.message, /the segment "widgets\/packaging" is not minted/);
 
@@ -274,8 +274,8 @@ test('adding a TOP-LEVEL domain class is a registry edit plus a Decisions entry'
   const domains = model.registries.get('knowledge/domains');
   assert.ok(domains.minted.has('logistics'), 'the new top-level class is minted');
   // Its governance is a Decisions entry, exactly as the conduct requires.
-  assert.ok(model.decisions.has('D-202'));
-  assert.match(model.decisions.get('D-202').record.decision, /top-level/i);
+  assert.ok(model.decisions.has('D-000002'));
+  assert.match(model.decisions.get('D-000002').record.decision, /top-level/i);
 });
 
 test('the open top level needs NO schema and NO engine change — proven by diff', () => {
@@ -352,7 +352,7 @@ test('one value declared twice in a registry is refused', () => {
     writeFileSync(file, `${readFileSync(file, 'utf8')}  - value: register
     gloss: A redundant second row for a value already minted above.
     warrant: Duplicate.
-    decision: D-201
+    decision: D-000001
 `);
     const r = run('--root', dir, '--json');
     assert.equal(r.status, 2, 'a registry that declares a value twice never loaded cleanly');
@@ -374,7 +374,7 @@ test('a value both MINTED and SUPPRESSED is refused, never settled by file order
     gloss: The same value, this time refused.
     warrant: Contradicts the minting above.
     status: suppressed
-    decision: D-201
+    decision: D-000001
 `);
     const r = run('--root', dir, '--json');
     assert.equal(r.status, 2);
@@ -413,11 +413,11 @@ test('every registry value MUST cite a Decisions entry, and the citation must re
     // A well-formed id that names no decision: it rides the ordinary ref graph,
     // so it fails as the same unresolved-ref error as any other dangling
     // cross-store citation rather than through bespoke registry machinery.
-    writeFileSync(file, readFileSync(file, 'utf8').replace('decision: D-201', 'decision: D-999'));
+    writeFileSync(file, readFileSync(file, 'utf8').replace('decision: D-000001', 'decision: D-999999'));
     const r = run('--root', dir, '--json');
     assert.equal(r.status, 2);
     assert.match(r.stderr, /unresolved-ref/);
-    assert.match(r.stderr, /D-999/);
+    assert.match(r.stderr, /D-999999/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -600,7 +600,7 @@ test('the minting Decisions template is a decision entry in every field but its 
   // a registry edit changes what the Store may say, not how the engine works.
   assert.equal(entry.status, 'proposed');
   assert.equal(entry.category, 'governance');
-  assert.equal(doc['schema-version'], 1);
+  assert.equal(doc['schema-version'], 2);
 
   // The template carries UNFILLED placeholders on exactly the two fields a
   // steward must supply — and it fails validation because of them, on purpose.
@@ -615,7 +615,7 @@ test('the minting Decisions template is a decision entry in every field but its 
 
   // Everything else is real, so filling those two fields yields a valid entry.
   const filled = load(readFileSync(path, 'utf8'));
-  filled.entries[0].id = 'D-2026-07-08-mint-example-domain';
+  filled.entries[0].id = 'proposal:decision:22222222-2222-4222-8222-222222222222';
   filled.entries[0].date = '2026-07-08';
   assert.deepEqual(validateStoreFile('decision-entry', filled).errors, []);
 });
@@ -632,7 +632,7 @@ test('UCS-1160 golden: a reflect mint proposal pasted UNEDITED fails validation'
   const entry = doc.entries[0];
   assert.equal(entry.status, 'proposed', 'drafted provisionally (§3.5) — agents draft, humans approve');
   assert.equal(entry.category, 'governance', 'minting changes what the Store may say, not how the engine works');
-  assert.equal(doc['schema-version'], 1);
+  assert.equal(doc['schema-version'], 2);
 
   const { errors } = validateStoreFile('decision-entry', doc);
   assert.deepEqual(errors.map((e) => [e.path, e.code]), [
@@ -642,7 +642,7 @@ test('UCS-1160 golden: a reflect mint proposal pasted UNEDITED fails validation'
 
   // Everything else is real, so filling exactly those two yields a valid entry.
   const filled = load(readFileSync(path, 'utf8'));
-  filled.entries[0].id = 'D-2026-08-16-mint-example-from-reflect';
+  filled.entries[0].id = 'proposal:decision:22222222-2222-4222-8222-222222222222';
   filled.entries[0].date = '2026-08-16';
   assert.deepEqual(validateStoreFile('decision-entry', filled).errors, []);
 });
@@ -657,7 +657,7 @@ test('UCS-1160: the mint proposal is honest about which placeholders validate GR
   // matching the file and this fails.
   const path = join(root, 'payload/templates/decisions/reflect-mint-proposal.yaml');
   const filled = load(readFileSync(path, 'utf8'));
-  filled.entries[0].id = 'D-2026-08-16-mint-example-from-reflect';
+  filled.entries[0].id = 'proposal:decision:22222222-2222-4222-8222-222222222222';
   filled.entries[0].date = '2026-08-16';
   assert.deepEqual(validateStoreFile('decision-entry', filled).errors, [],
     'filling the two machine-refused placeholders yields a VALID entry');

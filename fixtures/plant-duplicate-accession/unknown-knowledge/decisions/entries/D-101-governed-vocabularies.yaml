@@ -1,12 +1,12 @@
-# One entry per file (D-010); schema per PRD §3.3.
+# One entry per file (kit decision D-000010); schema per PRD §3.3.
 # Plant store (UCS-1159): the minting decision every registry value cites.
 # Self-contained by design — a plant store carries no ontology, so this entry
 # relates to nothing outside its own store. Reaching for the ts-app decision
-# would drag in K-101/L-000100 refs that do not resolve here, and those
+# would drag in O-000001/K-000001 refs that do not resolve here, and those
 # unresolved-ref errors would pollute the single tabulated plant.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-101
+  - id: D-000001
     title: Governed vocabularies are registry-minted
     category: architecture
     status: accepted

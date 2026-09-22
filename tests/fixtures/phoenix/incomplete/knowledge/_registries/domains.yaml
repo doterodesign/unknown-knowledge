@@ -10,31 +10,31 @@
 # All three leaves sit under `design-system/components`, which is what makes
 # P-001 a genuine SPLIT rather than a rename: one predecessor, two successors,
 # and only the mapping's rows can say which leaf goes to which.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: domains
 hierarchical: true
 values:
   - value: design-system
     gloss: The shared design system.
-    warrant: L-000117, L-000133 and L-000213 all document design-system material.
-    decision: D-401
+    warrant: K-000001, K-000002 and K-000003 all document design-system material.
+    decision: D-000001
     minted: "2026-08-16"
   - value: design-system/components
     gloss: Reusable UI components and the material that ships with them.
     warrant: >-
-      L-000117 states a focus-ring spec, L-000213 the render budget, and
-      L-000133 the empty-state guidance that shipped alongside a component —
-      the drift D-420 splits apart.
-    decision: D-401
+      K-000001 states a focus-ring spec, K-000003 the render budget, and
+      K-000002 the empty-state guidance that shipped alongside a component —
+      the drift D-000002 splits apart.
+    decision: D-000001
     minted: "2026-08-16"
   - value: design-system/primitives
     gloss: The single-control building blocks — how one component is built.
-    warrant: L-000117 (focus-ring spec) and L-000213 (primitive render budget).
-    decision: D-420
+    warrant: K-000001 (focus-ring spec) and K-000003 (primitive render budget).
+    decision: D-000002
     minted: "2026-08-17"
   - value: design-system/patterns
     gloss: Composition guidance — how several primitives are arranged together.
-    warrant: L-000133 (empty-state pattern guidance), split out of components.
-    decision: D-420
+    warrant: K-000002 (empty-state pattern guidance), split out of components.
+    decision: D-000002
     minted: "2026-08-17"

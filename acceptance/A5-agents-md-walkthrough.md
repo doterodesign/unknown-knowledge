@@ -6,6 +6,9 @@
 > current zero-hit conduct: health check, catalog recovery, confirmed scope,
 > bounded search, then classification. The old pasted output is retained as
 > historical command evidence, not a current expected-output assertion.
+> Its old-format identities and date-slug proposals are also historical.
+> Use the current protocol and canonical catalog-recovery/wrapper walkthroughs
+> for new trials; do not rewrite these captured outputs into a new passing run.
 
 Acceptance criterion A5 (PRD §10): *an agent following only
 `payload/protocol/AGENTS.md` executes the loop on a fixture correctly.*
@@ -26,7 +29,7 @@ From the kit repo root:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf /tmp/a5 && cp -R fixtures/ts-app /tmp/a5 && cd /tmp/a5
+rm -rf local-history:a5 && cp -R fixtures/ts-app local-history:a5 && cd local-history:a5
 ```
 
 The fixture is a client repo in §9.1 layout: stores at `unknown-knowledge/`,

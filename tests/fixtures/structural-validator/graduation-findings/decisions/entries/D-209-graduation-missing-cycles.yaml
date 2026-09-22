@@ -3,9 +3,9 @@
 # counted, since v1 computes nothing — and it carries `defect`, which describes
 # a withdrawal rather than a grant. Both are the same defect class: the block's
 # fields disagree with its own action.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-209
+  - id: proposal:decision:00000000-0000-4000-8000-000000000209
     title: Graduate alias additions to sampling
     category: trust
     status: proposed

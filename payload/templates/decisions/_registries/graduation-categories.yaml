@@ -3,7 +3,7 @@
 #
 # Seeded EMPTY, like every other registry, and for the same reason plus one of
 # its own. The shared reason: every row must cite a Decisions entry that
-# resolves, and a seeded repo's decisions store is empty by design (D-001), so
+# resolves, and a seeded repo's decisions store is empty by design (D-000001), so
 # shipped rows would hand every client a broken ref.
 #
 # The reason particular to this table: a graduation-eligible row is a standing
@@ -36,7 +36,7 @@
 # the recorded approved-unmodified counts against by hand; the analytics are
 # manual (docs/steward-guide.md). Citation spot-checks stay in the sampling plan
 # at every trust level, including the most graduated.
-schema-version: 1
+schema-version: 2
 store: decisions
 table: graduation-categories
 categories: []

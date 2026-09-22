@@ -1,81 +1,136 @@
 # decisions/_catalog.yaml — the kit's own decisions store (it eats its own cooking, §9.2)
 # schema-version: 1 (additive-only evolution, D-013 rule generalized — §3.5)
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-025
+  - id: proposal:decision:e9114f58-49dc-4459-9a9d-3d0867c31638
+    title: Reuse current-query Subject eligibility only within its immutable capture and authentic operation
+    file: entries/current-query-eligibility-reuse.yaml
+  - id: proposal:decision:bd38c554-e695-45a0-b6e4-0bea9d74af95
+    title: Contract-first onboarding includes recursive installed-runtime discovery
+    file: entries/onboarding-before-runtime-discovery.yaml
+  - id: proposal:decision:adc0ae03-6d6c-4f3b-8d45-69c1185d0f02
+    title: Optional whole-record subjects retain unknown state and disposable direct indexes
+    file: entries/whole-record-subject-assignments.yaml
+  - id: proposal:decision:1184333b-3f64-44c5-8707-ff5f314e72db
+    title: Newly effective subject assignments use current eligibility without granting publication
+    file: entries/newly-effective-subject-assignments.yaml
+  - id: proposal:decision:b97239f1-4802-4c2a-a8d5-21eeed73c018
+    title: Every PR versions the kit and preserves decisions and documentation
+    file: entries/pr-completeness-and-versioning.yaml
+  - id: proposal:decision:8a17c8a0-8437-4d3c-a26f-46c24adb70ae
+    title: Permanent typed identities use explicit allocation and separate proposal keys
+    file: entries/ucs-1234-identities-runtime-promotion.yaml
+  - id: proposal:decision:00000000-0000-4000-8000-000000000025
     title: Explicit layout selection preserves repository-relative evidence
     file: entries/D-025-explicit-kit-layout.yaml
-  - id: D-024
+  - id: proposal:decision:00000000-0000-4000-8000-000000000024
     title: Commit evidence comes from the Git index; installed runtime stays separate
     file: entries/D-024-commit-snapshot-runtime-separation.yaml
+  - id: proposal:decision:c584ac00-a64a-4fc3-bc61-882e68e96e6d
+    title: One shared Subject authority separates meaning from record identity and eligibility
+    file: entries/subject-governance-contracts.yaml
+  - id: proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a
+    title: Captured Subject governance preserves historical evidence and explicit refusal assessment
+    file: entries/captured-subject-governance-history.yaml
+  - id: proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3
+    title: Subject operations use authentic cumulative logical budgets with explicit accounting exclusions
+    file: entries/subject-logical-operation-budgets.yaml
   # D-001..D-016 are the seed decision set, imported from PRD.html §13 (KK-03).
-  - id: D-001
+  - id: D-000001
     title: Seeded-once-then-owned; no update channel, ever
     file: entries/D-001-seeded-once-then-owned.yaml
-  - id: D-002
+  - id: D-000002
     title: Engine is TypeScript/Node, zero build step, minimal deps
     file: entries/D-002-engine-typescript-node.yaml
-  - id: D-003
+  - id: D-000003
     title: Three stores split by truth anchor (artifact/world/team), uniform YAML rigor
     file: entries/D-003-three-stores-truth-anchor.yaml
-  - id: D-004
+  - id: D-000004
     title: Two-phase init — deterministic CLI scaffold, then agent-run bootstrap
     file: entries/D-004-two-phase-init.yaml
-  - id: D-005
+  - id: D-000005
     title: Validators run only vendored, versioned, tested code — never same-session agent-authored code
     file: entries/D-005-validators-vendored-code.yaml
-  - id: D-006
+  - id: D-000006
     title: CI-agnostic; init never touches CI config
     file: entries/D-006-ci-agnostic.yaml
-  - id: D-007
+  - id: D-000007
     title: Init copies from an explicit payload allowlist; acceptance fixtures and kit tests can never ship
     file: entries/D-007-payload-allowlist.yaml
-  - id: D-008
+  - id: D-000008
     title: Behavioral drift detection is out of scope, stated openly
     file: entries/D-008-behavioral-drift-out-of-scope.yaml
-  - id: D-009
+  - id: D-000009
     title: Extractor fixtures ship per stack selected at init; later stacks are client-authored, warned at init
     file: entries/D-009-extractor-fixtures-per-stack.yaml
-  - id: D-010
+  - id: D-000010
     title: Git-native concurrency — no runtime/server/locks; stores reviewed as code; fragment-based logs
     file: entries/D-010-git-native-concurrency.yaml
-  - id: D-011
+  - id: D-000011
     title: Preflight verdicts are deterministic engine code; conduct-on-verdict is protocol-layer policy
     file: entries/D-011-verdicts-engine-conduct-protocol.yaml
-  - id: D-012
+  - id: D-000012
     title: PR drift attribution via whole-store baseline finding-set diff; git-diff subset scoping rejected for v1
     file: entries/D-012-whole-store-baseline-diff.yaml
-  - id: D-013
+  - id: D-000013
     title: Suppressions ship as a minimal exact-match client-zone file; patterns/expiry/reflect-proposals deferred
     file: entries/D-013-exact-match-suppressions.yaml
-  - id: D-014
+  - id: D-000014
     title: The engine never executes client code — lexical parsing only, no network
     file: entries/D-014-engine-never-executes-client-code.yaml
-  - id: D-015
+  - id: D-000015
     title: Free and open source — permissive license, public npm; revenue attaches to services, never the code
     file: entries/D-015-free-open-source.yaml
-  - id: D-016
+  - id: D-000016
     title: "The product is named `unknown-knowledge`"
     file: entries/D-016-product-name.yaml
-  - id: D-017
+  - id: D-000017
     title: "npm availability & typosquat check for `unknown-knowledge` — name is clean"
     file: entries/D-017-npm-name-availability.yaml
-  - id: D-018
+  - id: D-000018
     title: "Registry form — bare `unknown-knowledge` is canonical; `@unknown-creatives` scope reserved"
     file: entries/D-018-registry-form.yaml
-  - id: D-019
+  - id: D-000019
     title: "Skill names use the `knowledge-` prefix, not `kit-`"
     file: entries/D-019-skill-naming.yaml
-  - id: D-020
+  - id: D-000020
     title: License finalized — Apache-2.0 over MIT; LICENSE + NOTICE at repo root
     file: entries/D-020-license-apache-2.yaml
-  - id: D-021
+  - id: D-000021
     title: Version policy — kit semver semantics, manifest stamp meaning, CHANGELOG discipline
     file: entries/D-021-version-policy.yaml
-  - id: D-022
+  - id: D-000022
     title: Engine is JavaScript with JSDoc types, zero build step, minimal deps
     file: entries/D-022-engine-is-javascript-jsdoc.yaml
-  - id: D-023
+  - id: proposal:decision:00000000-0000-4000-8000-000000000023
     title: Incoming leaf supersession is derived navigation
     file: entries/D-023-incoming-supersession.yaml
+  - id: proposal:decision:b0ef0f5a-f028-4509-a3b7-a08c6d598349
+    title: Captured Subject queries preserve unknowns and governed source witnesses
+    file: entries/captured-subject-query-semantics.yaml
+  - id: proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20
+    title: One Subject operation owns cumulative admission and bounded CLI failure output
+    file: entries/subject-operation-admission.yaml
+  - id: proposal:decision:7e199c03-2618-41ed-97ed-5bee05750a09
+    title: Validate historical Subject topology incrementally within one checked history
+    file: entries/incremental-subject-history-validation.yaml
+  - id: proposal:decision:5ec051c3-351f-4712-9d53-5c465b7baf2f
+    title: Reuse loaded authorizer resolution only inside one governance call
+    file: entries/call-local-subject-authorizer-reuse.yaml
+
+  - id: proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba
+    title: Assignment genesis distinguishes canonical absence from unknown classification
+    file: entries/ucs-1241-assignment-history-and-gates.yaml
+  - id: proposal:decision:7a69353a-0ea1-40b1-8af9-51914458b002
+    title: Reflection approval and completed repair require separate durable evidence
+    file: entries/retrieval-review-state.yaml
+  - id: proposal:decision:84efc561-ed43-47b1-bb5f-154dfe519504
+    title: Retrieval navigation uses the complete resolver envelope
+    file: entries/retrieval-envelope-navigation.yaml
+  - id: proposal:decision:88481c7c-29da-40e0-a5b7-f8331769f765
+    title: Guard actual record results once with strict authored descendants
+    file: entries/single-pass-record-result-admission.yaml
+  - id: proposal:decision:30f04d46-dc02-4b4f-8f7a-c08df6ef8ee3
+    title: Admit initial corpus metadata within the actual loader ownership lifetime
+    file: entries/private-initial-corpus-admission.yaml

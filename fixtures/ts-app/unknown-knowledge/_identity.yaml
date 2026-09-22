@@ -1,0 +1,118 @@
+schema-version: 1
+identity-format: 1
+namespace: aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa
+allocations:
+  - id: D-000001
+    kind: decision
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: K-000001
+    kind: knowledge
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: K-000002
+    kind: knowledge
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000001
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000002
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000003
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000004
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000005
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000006
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000007
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000008
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000009
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000010
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000011
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000012
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000013
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000014
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000015
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app
+  - id: O-000016
+    kind: ontology
+    state: allocated
+    publication:
+      id: bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb
+      review: fixture:canonical-pilot-ts-app

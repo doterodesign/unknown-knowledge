@@ -1,0 +1,40 @@
+schema-version: 1
+identity-format: 1
+namespace: 51000000-0000-4000-8000-000000000001
+allocations:
+  - id: D-000001
+    kind: decision
+    state: allocated
+    publication:
+      id: 52000000-0000-4000-8000-000000000001
+      review: fixture:canonical-source-preservation
+  - id: D-000002
+    kind: decision
+    state: allocated
+    publication:
+      id: 52000000-0000-4000-8000-000000000001
+      review: fixture:canonical-source-preservation
+  - id: K-000001
+    kind: knowledge
+    state: allocated
+    publication:
+      id: 52000000-0000-4000-8000-000000000001
+      review: fixture:canonical-source-preservation
+  - id: K-000002
+    kind: knowledge
+    state: allocated
+    publication:
+      id: 52000000-0000-4000-8000-000000000001
+      review: fixture:canonical-source-preservation
+  - id: K-000003
+    kind: knowledge
+    state: allocated
+    publication:
+      id: 52000000-0000-4000-8000-000000000001
+      review: fixture:canonical-source-preservation
+  - id: O-000001
+    kind: ontology
+    state: allocated
+    publication:
+      id: 52000000-0000-4000-8000-000000000001
+      review: fixture:canonical-source-preservation

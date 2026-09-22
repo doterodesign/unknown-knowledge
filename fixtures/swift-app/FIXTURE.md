@@ -1,7 +1,7 @@
 # Swift fixture app — planted-case manifest (KK-14)
 
 Synthetic Swift codebase for acceptance criteria **A2** (extraction) and
-**A3** (drift), PRD §10. **Never shipped by init** (D-007): nothing under
+**A3** (drift), PRD §10. **Never shipped by init** (kit decision D-000007): nothing under
 `fixtures/` appears in any payload manifest. The Swift never needs to compile;
 it is syntactically plausible input for the regex-level extractors (§5.1).
 
@@ -17,14 +17,14 @@ Every Swift-relevant MVP kind (§5.1 / KK-09) has at least one clean anchor.
 
 | Kind | Anchor | Concept / descriptor | Expected value set |
 |---|---|---|---|
-| `swift-enum` (emit: `case-name`) | `Sources/Canvas/CanvasTool.swift:12-20`, symbol `CanvasTool` | K-110 | `select, frame, pen, textStyle, hand, comment` |
-| `swift-enum` (emit: `raw-value`) | same anchor | K-120 | `V, F, P, T, H, C` |
-| `swift-const-array` | `Sources/Canvas/Actions.swift:9-16`, symbol `supportedActions` | K-130 | `align, distribute, tidy, group, boolean_union, flatten` |
-| `swift-const-array` | `Sources/Settings/Theme.swift:9`, symbol `themeNames` | K-170 (wrong-pointer, §3) | `light, dark, system` |
-| `yaml-keys` | `Config/app-config.yaml` (top level: lines 7, 10, 14, 18, 22) | K-140 | `environment, api, regions, telemetry, on` |
-| `yaml-map-keys` | `Config/feature-flags.yaml:11-14`, path `flags.canvas` | K-150 | `vector-networks, auto-layout, component-props, 2027-preview` |
-| `strings-keys` (.strings) | `Resources/en.lproj/Localizable.strings:7,8,13,14` | K-160 desc 1 | `welcome.title, welcome.subtitle, editor.add, editor.confirm` |
-| `strings-keys` (.xcstrings) | `Resources/Localizable.xcstrings:4,9,14,20` | K-160 desc 2 | `cta.share, cta.export, legal.disclaimer, promo.100-templates` |
+| `swift-enum` (emit: `case-name`) | `Sources/Canvas/CanvasTool.swift:12-20`, symbol `CanvasTool` | O-000001 | `select, frame, pen, textStyle, hand, comment` |
+| `swift-enum` (emit: `raw-value`) | same anchor | O-000002 | `V, F, P, T, H, C` |
+| `swift-const-array` | `Sources/Canvas/Actions.swift:9-16`, symbol `supportedActions` | O-000003 | `align, distribute, tidy, group, boolean_union, flatten` |
+| `swift-const-array` | `Sources/Settings/Theme.swift:9`, symbol `themeNames` | O-000007 (wrong-pointer, §3) | `light, dark, system` |
+| `yaml-keys` | `Config/app-config.yaml` (top level: lines 7, 10, 14, 18, 22) | O-000004 | `environment, api, regions, telemetry, on` |
+| `yaml-map-keys` | `Config/feature-flags.yaml:11-14`, path `flags.canvas` | O-000005 | `vector-networks, auto-layout, component-props, 2027-preview` |
+| `strings-keys` (.strings) | `Resources/en.lproj/Localizable.strings:7,8,13,14` | O-000006 desc 1 | `welcome.title, welcome.subtitle, editor.add, editor.confirm` |
+| `strings-keys` (.xcstrings) | `Resources/Localizable.xcstrings:4,9,14,20` | O-000006 desc 2 | `cta.share, cta.export, legal.disclaimer, promo.100-templates` |
 
 Uncovered-by-design anchors (survey-candidate material, no concept points at
 them): `ToolGroup` enum (`Sources/Canvas/CanvasTool.swift:38-41`),
@@ -38,29 +38,29 @@ Concept store: `unknown-knowledge/ontology/classes/100-app.yaml`.
 
 | Concept | Descriptor | Planted case | Expected finding |
 |---|---|---|---|
-| K-110 | `swift-enum` case-name on `CanvasTool` | claims `eyedropper`; no such case exists | `value-not-in-source`: `eyedropper` |
-| K-110 | same | source case `comment` (`CanvasTool.swift:20`) is unclaimed | `source-value-missing`: `comment` |
-| K-150 | `yaml-map-keys` on `flags.canvas` | source key `2027-preview` (`feature-flags.yaml:14`) is unclaimed | `source-value-missing`: `2027-preview` |
-| K-160 | `strings-keys` on `Localizable.xcstrings` | claims `cta.publish`; no such key exists | `value-not-in-source`: `cta.publish` |
+| O-000001 | `swift-enum` case-name on `CanvasTool` | claims `eyedropper`; no such case exists | `value-not-in-source`: `eyedropper` |
+| O-000001 | same | source case `comment` (`CanvasTool.swift:20`) is unclaimed | `source-value-missing`: `comment` |
+| O-000005 | `yaml-map-keys` on `flags.canvas` | source key `2027-preview` (`feature-flags.yaml:14`) is unclaimed | `source-value-missing`: `2027-preview` |
+| O-000006 | `strings-keys` on `Localizable.xcstrings` | claims `cta.publish`; no such key exists | `value-not-in-source`: `cta.publish` |
 
-Both directions are covered twice (value-not-in-source: K-110, K-160;
-source-value-missing: K-110, K-150) and K-110 drifts both ways at once.
+Both directions are covered twice (value-not-in-source: O-000001, O-000006;
+source-value-missing: O-000001, O-000005) and O-000001 drifts both ways at once.
 
 ## 3. Wrong-pointer case (A3, all-values-missing signature)
 
 | Concept | Descriptor | Planted case | Expected finding |
 |---|---|---|---|
-| K-170 "Layout density" | `swift-const-array`, `Sources/Settings/Theme.swift:9`, symbol `themeNames` | file exists, extraction succeeds (`light, dark, system`) — but ALL claimed values (`compact, comfortable, spacious`) are missing | the wrong-pointer signature: every claimed value `value-not-in-source` (and every source value `source-value-missing`), distinguished from ordinary partial drift |
+| O-000007 "Layout density" | `swift-const-array`, `Sources/Settings/Theme.swift:9`, symbol `themeNames` | file exists, extraction succeeds (`light, dark, system`) — but ALL claimed values (`compact, comfortable, spacious`) are missing | the wrong-pointer signature: every claimed value `value-not-in-source` (and every source value `source-value-missing`), distinguished from ordinary partial drift |
 
 ## 4. Unextractable shapes (§5.1 envelope → hard error + miss-log)
 
 | # | Shape | Location | Why out-of-envelope | Expected behavior |
 |---|---|---|---|---|
-| U1 | `#if DEBUG` conditional compilation inside the enum case span | `Sources/Analytics/Events.swift:11-13`, symbol `AnalyticsEvent` — pointed at by concept **K-180** | Swift `#if` is the declared out-of-envelope sentinel for `swift-enum` (§5.1): a confident parse would silently include or exclude `debugMenuOpened` | extractor HARD-ERRORS (never a value diff); survey logs the shape to `logs/misses/` |
+| U1 | `#if DEBUG` conditional compilation inside the enum case span | `Sources/Analytics/Events.swift:11-13`, symbol `AnalyticsEvent` — pointed at by concept **O-000008** | Swift `#if` is the declared out-of-envelope sentinel for `swift-enum` (§5.1): a confident parse would silently include or exclude `debugMenuOpened` | extractor HARD-ERRORS (never a value diff); survey logs the shape to `logs/misses/` |
 | U2 | computed array — concatenation `core + regional` | `Sources/Payments/Providers.swift:13`, symbol `all` | value set is not a literal; lexical parsing cannot know it | `swift-const-array` pointed here hard-errors; miss-log entry |
 | U3 | dynamic derivation — `all.map { $0.capitalized }` | `Sources/Payments/Providers.swift:16`, symbol `checkoutLabels` | same envelope rule, distinct shape (closure) | hard error; miss-log entry |
 
-U2/U3 are deliberately not referenced by any concept (K-180 covers the
+U2/U3 are deliberately not referenced by any concept (O-000008 covers the
 descriptor-pointed hard-error path; U2/U3 cover the survey/miss-log path).
 
 ## 5. Adversarial-but-extractable shapes (§5.1 — must still parse)
@@ -85,8 +85,8 @@ descriptor-pointed hard-error path; U2/U3 cover the survey/miss-log path).
 
 ## 6. Store summary
 
-- Concepts: K-110..K-180 (8), one class file, catalog + rules present.
-- Cross-refs: `used-by`, `confusable-with`, `rationale` → D-001 all resolve.
-- K-160 exercises multi-entry `source-of-truth` with one descriptor per entry (§3.5).
-- Clean concepts (no planted finding): K-120, K-130, K-140, K-160 desc 1.
+- Concepts: O-000001..O-000008 (8), one class file, catalog + rules present.
+- Cross-refs: `used-by`, `confusable-with`, `rationale` → D-000001 all resolve.
+- O-000006 exercises multi-entry `source-of-truth` with one descriptor per entry (§3.5).
+- Clean concepts (no planted finding): O-000002, O-000003, O-000004, O-000006 desc 1.
 - Knowledge store is present but empty (A2/A3 are ontology-side).

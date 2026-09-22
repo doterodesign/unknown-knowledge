@@ -2,20 +2,21 @@
 
 A minimal knowledge-only store whose **only** defect is UCS-1159 plant 5:
 **a duplicate accession ID**. Acceptance fixture only — never in the init
-payload (D-007).
+payload (kit decision D-000007).
 
 **This store fails to load, by design.** That is the plant, not a bug:
 
 ```sh
 node payload/engine/validate.js --root fixtures/plant-duplicate-accession --json
-# exit 2, exactly one diagnostic:
+# exit 2, one planted defect with two diagnostics:
+#   invalid-identity  knowledge/product/100.1-adding-a-new-export-format.md  identity K-000001: ambiguous
 #   duplicate-id  knowledge/product/100.2-registering-a-new-export-format.md  id
-#   id "L-000100" is already minted in knowledge/product/100.1-adding-a-new-export-format.md
+#   id "K-000001" is already minted in knowledge/product/100.1-adding-a-new-export-format.md
 ```
 
 | Case | Target | Anchor (file:line) | Expected finding |
 |---|---|---|---|
-| duplicate accession ID | `L-000100`, minted twice | `unknown-knowledge/knowledge/product/100.2-registering-a-new-export-format.md:3` | `duplicate-id` at path `id`, **exit 2**, and nothing else |
+| duplicate accession ID | `K-000001`, minted twice | `unknown-knowledge/knowledge/product/100.2-registering-a-new-export-format.md:3` | `invalid-identity` (ambiguous) and `duplicate-id` at path `id`, **exit 2** |
 
 ## Why this store exists at all
 
@@ -35,16 +36,17 @@ So the plant gets its own root, which is what "no plant masks another" and
 
 Both leaves are well-formed and schema-valid. Neither hides behind a
 malformed-descriptor error — the defect is that the accession **value**
-`L-000100` is claimed by two leaves, and published ids are immutable. The
-first mint wins and keeps the identity; the later one loses, never enters the
-index, and its cross-references never enter the ref graph.
+`K-000001` is claimed by two leaves, and published ids are immutable. The
+authoring view retains the first occurrence and excludes the later occurrence's
+cross-references. The canonical identity index marks ownership ambiguous;
+neither occurrence is available as an authoritative canonical resolution.
 
 ## Contents
 
 `unknown-knowledge/knowledge/` — catalog, rules, the seven governed registries,
 and the two colliding leaves. `unknown-knowledge/decisions/` — a
-**self-contained** `D-101` that mints the registry vocabularies. It is not
-copied from `ts-app`: that entry relates to `K-101`/`L-000100`, refs which do
+**self-contained** `D-000001` that mints the registry vocabularies. It is not
+copied from `ts-app`: that entry relates to `O-000001`/`K-000001`, refs which do
 not resolve in a store with no ontology, and the resulting `unresolved-ref`
 noise would pollute this store's single tabulated plant.
 

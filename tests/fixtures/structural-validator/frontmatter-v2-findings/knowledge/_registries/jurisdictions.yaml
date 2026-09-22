@@ -7,7 +7,7 @@
 # a jurisdiction this store recognizes. (An empty `jurisdictions` LIST on a
 # leaf is the separate, legitimate claim that the knowledge holds universally —
 # which is what the clean fixture demonstrates.)
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values: []

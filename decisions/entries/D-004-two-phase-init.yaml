@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3. Imported from PRD §13 (KK-03).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-004
+  - id: D-000004
     title: Two-phase init — deterministic CLI scaffold, then agent-run bootstrap
     category: architecture
     status: accepted

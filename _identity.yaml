@@ -1,0 +1,136 @@
+schema-version: 1
+identity-format: 1
+namespace: 61000000-0000-4000-8000-000000000001
+allocations:
+  - id: D-000001
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000002
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000003
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000004
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000005
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000006
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000007
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000008
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000009
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000010
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000011
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000012
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000013
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000014
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000015
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000016
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000017
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000018
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000019
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000020
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000021
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate
+  - id: D-000022
+    kind: decision
+    state: allocated
+    publication:
+      id: 62000000-0000-4000-8000-000000000001
+      review: cutover:reviewed-repository-data-candidate

@@ -2,7 +2,7 @@
 #
 # Which tiers a project recognizes is the project's own to mint: a tier is a
 # governed value, never an engine-shipped enum.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: authority-tiers
 values:
@@ -13,10 +13,10 @@ values:
   - value: primary
     gloss: The issuing body's own published text.
     warrant: 600.2, 600.3 and 600.4 cite the operating manual, the issuer's own text.
-    decision: D-201
+    decision: D-000001
     minted: "2026-07-07"
   - value: secondary
     gloss: Commentary on a primary source.
     warrant: The gadget trade summaries cited across the widgets division.
-    decision: D-201
+    decision: D-000001
     minted: "2026-07-07"

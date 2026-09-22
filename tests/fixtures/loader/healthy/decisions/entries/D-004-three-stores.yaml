@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD §3.3.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-004
+  - id: D-000001
     title: Three stores split by truth anchor
     category: architecture
     status: accepted
@@ -12,4 +12,4 @@ entries:
     consequences: Three catalogs, one navigational grammar.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-210], leaves: [L-000362], decisions: [] }
+    relates-to: { concepts: [O-000001], leaves: [K-000001], decisions: [] }

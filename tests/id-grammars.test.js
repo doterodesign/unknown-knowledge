@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ID_GRAMMARS, SCHEMA_DEFS, idPattern } from '../payload/engine/lib/id-grammars.js';
+import { ID_GRAMMARS, SCHEMA_DEFS, SCHEMA_REF_KINDS, AUTHORING_ID_GRAMMARS, idPattern } from '../payload/engine/lib/id-grammars.js';
 import { KINDS, validateRecord } from '../payload/engine/lib/validate-record.js';
 
 const schemaDir = fileURLToPath(new URL('../payload/schemas/', import.meta.url));
@@ -56,17 +56,19 @@ test('the shipped schema copies agree with the grammar module', () => {
   // cross-file $ref is outside the keyword subset the engine interprets). The
   // engine binds the module's pattern over them at load, so this test is what
   // keeps the PUBLISHED documents from quietly describing a different grammar.
-  for (const [space, def] of Object.entries(SCHEMA_DEFS)) {
-    const expected = ID_GRAMMARS[space].pattern;
+  const definitions = Object.fromEntries(Object.entries(SCHEMA_DEFS).map(([space, def]) => [def, ID_GRAMMARS[space].pattern]));
+  for (const [def, kind] of Object.entries(SCHEMA_REF_KINDS)) definitions[def] = AUTHORING_ID_GRAMMARS[kind].pattern;
+  for (const [def, expected] of Object.entries(definitions)) {
     let found = 0;
     for (const kind of KINDS) {
       const node = loadSchema(kind).$defs?.[def];
       if (!node) continue;
       found += 1;
-      assert.equal(node.pattern, expected, `${kind}: $defs/${def} disagrees with ID_GRAMMARS.${space}`);
+      assert.equal(node.pattern, expected, `${kind}: $defs/${def} disagrees with its declared grammar`);
     }
     assert.ok(found > 0, `no schema carries $defs/${def}`);
   }
+  assert.equal(loadSchema('ontology-concept').properties.id.pattern, AUTHORING_ID_GRAMMARS.ontology.pattern);
 });
 
 test('the engine validates leaves against the module, not the schema file copy', () => {
@@ -82,8 +84,8 @@ test('the engine validates leaves against the module, not the schema file copy',
   // field. The notation rides along as the optional legacy label it now is, and
   // is still checked when present, which is the property under test.
   const leaf = (notation) => ({
-    'schema-version': 2,
-    id: 'L-000362',
+    'schema-version': 3,
+    id: 'K-000362',
     notation,
     domain: 'test',
     heading: 'test leaf',
@@ -92,7 +94,7 @@ test('the engine validates leaves against the module, not the schema file copy',
   const accepted = validateRecord('knowledge-leaf', leaf('362.1'));
   assert.deepEqual(accepted.errors, [], 'a well-formed notation must validate');
 
-  const rejected = validateRecord('knowledge-leaf', leaf('K-101'));
+  const rejected = validateRecord('knowledge-leaf', leaf('O-000101'));
   assert.deepEqual(
     rejected.errors.map((e) => e.code),
     ['pattern-mismatch'],

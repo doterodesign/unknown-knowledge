@@ -14,6 +14,9 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+
+
 The 3.0 pilot is available explicitly with
 `npx unknown-knowledge@3.0.0-rc.1 init`. The stable `latest` channel remains
 2.1.0. Existing installations should follow the
@@ -58,27 +61,30 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Twelve command-line surfaces. JavaScript with JSDoc types, zero build step, one
-dependency (D-022).
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
-| Command | Answers |
+Twelve seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
+
+| Command | Purpose |
 | --- | --- |
-| `validate.js` | is the store structurally sound? |
-| `validate-values.js` | do the Concepts still match the code they point at? |
-| `commit-check.js` | do both whole-store validators pass the commit gate? |
-| `reverse-staged.js` | what governed each staged path before and after this commit? |
-| `preflight.js` | which Concepts may this agent trust, right now? |
-| `resolve.js` | what does the store know about these terms or paths? |
-| `survey-map.js` | what is in this repo, and what could not be surveyed? |
-| `audit.js` | what looks like knowledge but was never written down? |
-| `log-entry.js` | append a finding, miss or gap — never by hand-editing YAML |
-| `ingest.js` | normalize a document (md, txt, html, pdf) to one intermediate representation |
-| `phoenix.js` | apply a phoenix event: re-file a drifted subtree in bulk, in full or not at all |
-| `derive.js` | regenerate the derived layer: plural browse trees, call numbers, resolution index |
+| `validate.js` | structural validation |
+| `validate-values.js` | source value validation |
+| `preflight.js` | record trust and freshness checks |
+| `resolve.js` | record and path lookup |
+| `survey-map.js` | bounded repository survey |
+| `audit.js` | reverse coverage audit |
+| `log-entry.js` | operational log entries |
+| `ingest.js` | document ingestion |
+| `phoenix.js` | governed reclassification |
+| `derive.js` | disposable browse artifacts |
+| `commit-check.js` | staged store gate |
+| `reverse-staged.js` | staged attribution |
+
+Engine commands run with `node payload/engine/<command> --root .` in this repository. Installed paths use `<kit-root>/engine/`. Check each command’s help and the protocol before use.
 
 ### Exit codes are a contract
 
-Every surface obeys the same three codes, and agents ride them:
+Validation surfaces use three codes, and agents ride them:
 
 | Code | Means |
 | --- | --- |
@@ -86,32 +92,18 @@ Every surface obeys the same three codes, and agents ride them:
 | `1` | the check ran and **found something** |
 | `2` | the check **did not run** — an engine failure |
 
-The distinction between `1` and `2` is the load-bearing one. An agent that reads
-`1` quarantines the affected Concepts and continues. If a crashed command could
-exit `1`, that agent would walk straight past a check that never happened. So a
-crash always exits `2`, and a test enumerates every surface, forces a bug into
-each, and proves it.
-
-The resolver also accepts repeatable `--path` values for lossless filename
-transport, for example `--path 'src/a,b.ts' --path 'src/my file.ts'`. Legacy
-comma-separated `--paths` remains supported; mixing the forms fails with
-exit 2. See the [complete-filename and safe programmatic invocation guide](payload/docs/README.md#reverse-lookup-for-complete-filenames).
-This is an additive MINOR CLI surface change under D-021.
-
-The reverse audit is advisory: its findings are proposals for human review, and
-never a gate. A human may opt in with `--fail-on-findings`, and that is never a
-shipped CI default.
-
 ## Guarantees
 
-- **The engine never executes your code** (D-014). No `eval`, no importing your
+- **The engine never executes your code** (D-000014). No `eval`, no importing your
   modules, no spawning your build. Parsing is lexical; subprocesses invoke
-  Git only, to list tracked files and read the proposed commit snapshot.
+  Git for tracked-file navigation and raw staged snapshots. Candidate code is
+  never executed by these checks. Retained Node worker checks and reviewed
+  candidate publication arrive in PR4.
 - **No network, ever.** Nothing is uploaded, and nothing is fetched.
 - **Deterministic.** Same tree in, byte-identical output out. Dates are
   injected, never read from the wall clock, so a report is reproducible from
   its inputs.
-- **Nothing ships by omission** (D-007). An explicit manifest lists every file
+- **Nothing ships by omission** (D-000007). An explicit manifest lists every file
   `init` seeds; a file it does not name is never copied.
 
 ## Hooks — the protocol, enforced mechanically
@@ -125,7 +117,7 @@ bypass variable, because a hook with an off switch enforces nothing.
 
 The gate reports each check by name. It exits 0 only when both checks pass;
 findings exit 1, and a failed or never-run check exits 2 even if the other check
-is clean or has findings. Both checks always run over the whole store (D-012).
+is clean or has findings. Both checks always run over the whole store (D-000012).
 Reverse lookup is advisory attribution; its results never restrict validation
 or prove that the agent updated the store. It reads NUL-delimited Git records
 and includes additions, modifications, type changes, deletions and both paths
@@ -181,7 +173,7 @@ never fire. Under that wiring, call it explicitly from your `pre-commit`.
 
 ## Seeded once, then owned
 
-After `init`, the seeded directory has no relationship to this kit (D-001).
+After `init`, the seeded directory has no relationship to this kit (D-000001).
 There is no update channel and there never will be one. You own the engine, you
 can read it, and you can change it — it is JavaScript, not a binary.
 
@@ -193,7 +185,7 @@ design.
 
 ## Versioning
 
-Semver, with kit-specific semantics (D-021): **MAJOR** is a store
+Semver, with kit-specific semantics (D-000021): **MAJOR** is a store
 schema-version bump or a breaking change to the engine CLI contract (commands,
 flags, exit codes, output consumed by wrappers); **MINOR** is new extractor
 kinds, new engine surfaces, or a new fixture vintage; **PATCH** is fixes and
@@ -202,16 +194,21 @@ Changelog form).
 
 ## Reading further
 
-- [CONTEXT.md](CONTEXT.md) — the domain glossary. Start here.
-- [decisions/](decisions/) — the kit records its own decisions, in the same
-  format it asks you to use. It eats its own cooking.
-- [docs/publishing.md](docs/publishing.md) — release and supply-chain process
-  (npm provenance, 2FA).
+- [Delivery stages and availability](docs/pr-delivery/README.md)
+- [Contribution rules](CONTRIBUTING.md)
+- [Protocol](payload/protocol/AGENTS.md)
+- [Decisions catalog](decisions/_catalog.yaml)
+- [Migration status](docs/migration-3.md)
 
 ## License and contributing
 
-Licensed under [Apache-2.0](LICENSE) (D-020); redistribution carries the
+Licensed under [Apache-2.0](LICENSE) (D-000020); redistribution carries the
 [NOTICE](NOTICE) file. Contributions are welcome — especially new extractor
 kinds, and field reports of anchors the extractors could not read. See
 [CONTRIBUTING.md](CONTRIBUTING.md) for the gate (parser + fixture + demo run,
-D-005) and PR expectations.
+D-000005) and PR expectations.
+
+Every PR includes a package version increment, changelog notes, decision
+traceability and updates to affected documentation and agent instructions.
+Unreleased versions in the repository are not necessarily available on npm;
+see [publishing](docs/publishing.md) for the separate release process.

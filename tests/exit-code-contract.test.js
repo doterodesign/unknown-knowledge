@@ -50,10 +50,17 @@ const ARGV = {
   // A supported extension, so dispatch succeeds and the injected bug is reached
   // in `main`; an unsupported one would be refused before it ever got there.
   'payload/engine/ingest.js': ['some-document.md'],
+  // Naming a plan reaches path resolution before any file read is attempted.
+  // A readable JSON file gets past input reading to the injected cwd failure;
+  // its content is never treated as a query because context assembly throws.
   // The event to apply. It need not exist: naming one gets past the flag
   // grammar into `main`, where the injected bug waits.
   'payload/engine/phoenix.js': ['P-001'],
+  // Only the pinned OID spelling is needed: cwd's injected failure precedes
+  // source capture, so this object need not exist in the test repository.
   'cli/init-copy.js': ['--target', '.'],
+  // Explicit-path interfaces have no default-root read; their fixed main-time
+  // file access is the crash boundary instead (see preload below).
 };
 
 /** Surfaces that can legitimately return exit 1, and why. */
@@ -120,21 +127,39 @@ test('the enumeration finds every surface, and each one is a shim over a real co
 });
 
 test('a crash in ANY surface exits 2 — never 1', (t) => {
-  // The bug is injected into `process.cwd`, which every surface calls while
-  // resolving its default root. It throws a TypeError from inside `main`, the
-  // deepest place a real bug lives, and nothing about it is mocked: a real
-  // process, a real throw, a real exit code.
+  // Default-root commands reach process.cwd. Explicit-path interfaces reach
+  // their package/request read instead. Inject inside main, not module loading:
+  // a real process, a real throw, and the shared handler's actual exit code.
   const dir = mkdtempSync(join(tmpdir(), 'uk-crash-'));
   t.after(() => rmSync(dir, { recursive: true, force: true }));
   const preload = join(dir, 'crash.mjs');
   writeFileSync(preload, "process.cwd = () => { throw new TypeError('injected runtime bug'); };\n");
+  const filePreload = join(dir, 'file-crash.mjs');
+  writeFileSync(filePreload, `
+    import fs from 'node:fs';
+    import { syncBuiltinESMExports } from 'node:module';
+    import { fileURLToPath } from 'node:url';
+    const method = process.env.UK_TEST_CRASH_METHOD;
+    const original = fs[method];
+    fs[method] = function(path, ...args) {
+      const file = path instanceof URL ? fileURLToPath(path) : path;
+      if (file === ${JSON.stringify(join(repoRoot, 'package.json'))}) {
+        throw new TypeError('injected runtime bug');
+      }
+      return original.call(this, path, ...args);
+    };
+    syncBuiltinESMExports();
+  `);
 
   for (const surface of surfaces()) {
+    const method = surface === 'cli/mcp.js' ? 'readFileSync'
+      : surface === 'payload/engine/invoke.js' ? 'openSync' : null;
     const r = spawnSync(process.execPath, [join(repoRoot, surface), ...(ARGV[surface] ?? [])], {
       encoding: 'utf8',
       timeout: 20_000,
       cwd: repoRoot,
-      env: { ...process.env, NODE_OPTIONS: `--import ${pathToFileURL(preload).href}` },
+      env: { ...process.env, UK_TEST_CRASH_METHOD: method ?? '',
+        NODE_OPTIONS: `--import ${pathToFileURL(method ? filePreload : preload).href}` },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
     assert.notEqual(r.signal, 'SIGTERM', `${surface}: timed out`);

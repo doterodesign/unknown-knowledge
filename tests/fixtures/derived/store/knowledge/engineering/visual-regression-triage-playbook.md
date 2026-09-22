@@ -1,6 +1,6 @@
 ---
-schema-version: 2
-id: L-000171
+schema-version: 3
+id: proposal:knowledge:17117117-1171-4171-8171-171171171171
 edition: 1
 domain: engineering
 heading: Visual regression triage playbook

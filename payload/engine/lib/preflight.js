@@ -10,9 +10,7 @@ import { EXIT_CODES } from './exit-codes.js';
 import { compare } from './validate-record.js';
 import { createEntry } from './log-entry.js';
 import { timeCheckStatus } from './time-verdicts.js';
-
-/** finding.schema.json conceptRef — `consulted` only carries conforming ids. */
-const CONCEPT_REF = /^K-[0-9]+$/;
+import { parseCanonicalId } from './record-identity.js';
 
 // -------------------------------------------- quarantine findings (KK-13)
 
@@ -33,7 +31,7 @@ function logQuarantines(root, verdicts, today) {
         trigger: 'quarantine',
         session: 'engine/preflight.js',
         summary: `preflight quarantined ${v.concept}: ${codes.join(', ')} (${paths.join(', ')})`,
-        ...(CONCEPT_REF.test(v.concept) ? { consulted: { concepts: [v.concept] } } : {}),
+        ...(parseCanonicalId('ontology', v.concept).ok ? { consulted: { concepts: [v.concept] } } : {}),
       },
     });
     logged.push(file);

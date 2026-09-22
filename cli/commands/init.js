@@ -39,6 +39,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import process from 'node:process';
+import { randomUUID } from 'node:crypto';
 import { copyPayload, loadManifest, DEFAULT_ROOT, SeedRefusal } from '../lib/copy-payload.js';
 import { assertKnownPlatforms, generateWrappers } from '../lib/generate-wrappers.js';
 import { EXIT_CODES } from '../../payload/engine/lib/exit-codes.js';
@@ -317,7 +318,7 @@ export async function main(argv, { stdin = process.stdin, stdout = process.stdou
   let wrappers;
   try {
     assertKnownPlatforms(manifest, platforms); // refuse BEFORE seeding
-    result = copyPayload({ kitRoot, targetDir: opts.target, rootName, stacks });
+    result = copyPayload({ kitRoot, namespace: randomUUID(), targetDir: opts.target, rootName, stacks });
     try {
       wrappers = generateWrappers({ kitRoot, targetDir: opts.target, rootName, platforms });
     } catch (error) {

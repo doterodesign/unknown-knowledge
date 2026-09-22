@@ -20,6 +20,7 @@
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import process from 'node:process';
+import { randomUUID } from 'node:crypto';
 import { copyPayload, loadManifest, DEFAULT_ROOT, SeedRefusal } from '../lib/copy-payload.js';
 import { assertKnownPlatforms, generateWrappers } from '../lib/generate-wrappers.js';
 import { EXIT_CODES } from '../../payload/engine/lib/exit-codes.js';
@@ -54,7 +55,7 @@ export function main(argv) {
     // must not leave a half-initialized target behind.
     assertKnownPlatforms(loadManifest(kitRoot), opts.platforms);
     const result = copyPayload({
-      kitRoot, targetDir: opts.target, rootName: opts.root, stacks: opts.stacks,
+      kitRoot, namespace: randomUUID(), targetDir: opts.target, rootName: opts.root, stacks: opts.stacks,
     });
     let wrappers;
     try {

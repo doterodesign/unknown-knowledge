@@ -1,7 +1,7 @@
 # Only the decisions store exists — the kit repo's own shape (§9.2 dogfood).
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-001
+  - id: D-000001
     title: Lone decision
     file: entries/D-001-lone.yaml

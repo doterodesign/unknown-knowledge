@@ -1,10 +1,10 @@
 # Acceptance-fixture store (KK-15) — the operations registry (verbs).
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: operations
 values:
   - value: add-export-format
     gloss: Enter a new export format into the editor's registry.
     warrant: 100.1 is the procedure for exactly this operation.
-    decision: D-101
+    decision: D-000001
     minted: "2026-07-08"

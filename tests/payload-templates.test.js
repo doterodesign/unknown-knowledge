@@ -25,7 +25,7 @@ test('every template exists, parses as YAML, and validates against its schema', 
     const result = validateStoreFile(kind, doc);
     assert.deepEqual(result.errors, [], path);
     assert.equal(doc.store, store, `${path}: wrong store`);
-    assert.equal(doc['schema-version'], 1, `${path}: templates start at schema-version 1`);
+    assert.equal(doc['schema-version'], kind === 'catalog' ? 2 : 1, `${path}: exact current file-kind version`);
   }
 });
 

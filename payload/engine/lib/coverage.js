@@ -45,6 +45,7 @@
  * engine runs. A submissions log would be a second source of truth about what
  * was ingested, and D-012 wants the output to be a pure function of the input.
  */
+import { authoringRecords } from './load-stores.js';
 import { compare } from './validate-record.js';
 import { STOPWORDS, tokenize } from './decomposition.js';
 import { suppressibleBy } from './suppressions.js';
@@ -448,11 +449,11 @@ export function knownVocabulary(model) {
     if (typeof text !== 'string') return;
     for (const word of foldPhrase(text).split(' ')) if (word) words.add(word);
   };
-  for (const { record } of model.concepts.values()) {
+  for (const { record } of authoringRecords(model, 'ontology').values()) {
     add(record.term);
     for (const alias of record.aliases ?? []) add(alias);
   }
-  for (const entry of model.leaves.values()) {
+  for (const entry of authoringRecords(model, 'knowledge').values()) {
     for (const term of entry.record?.terms ?? []) add(term);
   }
   for (const registry of model.registries?.values() ?? []) {

@@ -1,3 +1,7 @@
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+
+This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
+
 # UCS-1224: governed retrieval repair
 
 Requirement: UCS-1224, under UCS-1217. Full issue, parent, comments (empty), and
@@ -82,7 +86,7 @@ kb-build draft promotion approval is preserved. Derivation changed none of the
 ## Evidence and limits
 
 Local evidence bundle:
-`/Users/dimitriotero/.codex/visualizations/2026/09/10/01a088c8-141e-7f70-a4f8-cb7c099dc73e/ucs-1224/`.
+`local-history:ucs-1224`.
 
 Final evidence files are `ucs-1224-verified-before-retrieval-trace.md`,
 `ucs-1224-verified-after-retrieval-trace.md`, `ucs-1224-final-reflect-trace.md`,

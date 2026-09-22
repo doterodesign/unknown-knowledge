@@ -1,0 +1,10 @@
+schema-version: 1
+entries:
+  - id: D-9
+    title: Retained move and carry
+    category: governance
+    status: accepted
+    date: "2026-08-17"
+    deciders: [fixture-steward]
+    context: Two leaves were reviewed together, but only one changed classification.
+    decision: Move the first leaf and explicitly carry the second forward.

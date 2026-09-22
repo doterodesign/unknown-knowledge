@@ -1,10 +1,10 @@
-# K-999 was never minted; D-777 does not exist in decisions/.
-schema-version: 1
+# O-999999 was never minted; D-999777 does not exist in decisions/.
+schema-version: 2
 entries:
-  - id: K-210
+  - id: O-000001
     term: Design token
     class: 200-design-system
     summary: References things that do not exist.
-    used-by: [K-999]
-    rationale: [D-777]
+    used-by: [O-999999]
+    rationale: [D-999777]
     status: active

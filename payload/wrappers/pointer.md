@@ -3,6 +3,8 @@
 **First action on every request: read `{{root}}/protocol/AGENTS.md`** before
 recursive product-source filename or content discovery. Follow that canonical
 navigation contract to reach source through the knowledge base.
+This order also applies to recursive searches through the installed kit, engine
+and dependency directories.
 
 The seeded kit is at `{{root}}/`, relative to the repository root. The protocol
 owns the navigation rules and runtime loop; this wrapper is only its entry

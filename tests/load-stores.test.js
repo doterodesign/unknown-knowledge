@@ -7,8 +7,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import { join } from 'node:path';
-import { mkdtempSync, cpSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { copyPayload } from '../cli/lib/copy-payload.js';
 import {
   loadStores,
   refEdges,
@@ -42,30 +43,30 @@ test('healthy store: ok, zero diagnostics', () => {
 
 test('healthy store: entries indexed by id in each id space', () => {
   const model = fixtureModel('healthy');
-  assert.deepEqual([...model.concepts.keys()], ['K-210', 'K-220']);
+  assert.deepEqual([...model.concepts.keys()], ['O-000001', 'O-000002']);
   // Leaves are keyed by ACCESSION (UCS-1147). This golden read ['362.1',
   // '362.2'] while the notation was a leaf's identity; the fixture minted
-  // L-000362/L-000363 and the notation became the legacy display label, which
+  // K-000001/K-000002 and the notation became the legacy display label, which
   // no index answers to.
-  assert.deepEqual([...model.leaves.keys()], ['L-000362', 'L-000363']);
-  assert.deepEqual([...model.decisions.keys()], ['D-004']);
-  const token = model.concepts.get('K-210');
+  assert.deepEqual([...model.leaves.keys()], ['K-000001', 'K-000002']);
+  assert.deepEqual([...model.decisions.keys()], ['D-000001']);
+  const token = model.concepts.get('O-000001');
   assert.equal(token.record.term, 'Design token');
   assert.equal(token.file, 'ontology/classes/200-design-system.yaml');
-  const leaf = model.leaves.get('L-000362');
+  const leaf = model.leaves.get('K-000001');
   assert.equal(leaf.record.heading, 'Preview deploy windows');
   assert.equal(leaf.notation, '362.1', 'the notation rides along as a published field');
   assert.match(leaf.body, /actual knowledge content/);
-  assert.equal(model.decisions.get('D-004').record.status, 'accepted');
+  assert.equal(model.decisions.get('D-000001').record.status, 'accepted');
 });
 
 test('healthy store: pointer index maps source-of-truth paths to concepts (KK-06 --paths)', () => {
   const model = fixtureModel('healthy');
   assert.deepEqual(
     model.pointers.get('src/design-system/tokens/registry.ts'),
-    ['K-210'],
+    ['O-000001'],
   );
-  assert.deepEqual(model.pointers.get('src/design-system/component-set'), ['K-220']);
+  assert.deepEqual(model.pointers.get('src/design-system/component-set'), ['O-000002']);
 });
 
 test('healthy store: cross-ref graph edges are typed and resolved', () => {
@@ -74,18 +75,16 @@ test('healthy store: cross-ref graph edges are typed and resolved', () => {
   // declaring leaf's identity, and the `to` is the only spelling a citation may
   // take. This golden read notations at both positions before that ticket.
   //
-  // The leaf edge also MOVED, from first row to last, and that is a real
-  // consequence rather than a cosmetic one: `refs` is sorted by `from`, so
-  // re-identifying leaves from "362.1" to "L-000362" re-sorts the published
-  // graph. It is pinned as a golden precisely so a change like that cannot pass
-  // unnoticed (PRD §5 diffability).
+  // Exact canonical kind prefixes determine stable graph order: Decision,
+  // Knowledge, then Ontology. Resolution status preserves the distinction
+  // between a loaded record and a declaration without payload.
   assert.deepEqual(model.refs, [
-    { from: 'D-004', type: 'relates-to.concepts', to: 'K-210', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.concepts[0]', resolved: true },
-    { from: 'D-004', type: 'relates-to.leaves', to: 'L-000362', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.leaves[0]', resolved: true },
-    { from: 'K-210', type: 'rationale', to: 'D-004', file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].rationale[0]', resolved: true },
-    { from: 'K-210', type: 'used-by', to: 'K-220', file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].used-by[0]', resolved: true },
-    { from: 'K-220', type: 'confusable-with', to: 'K-210', file: 'ontology/classes/200-design-system.yaml', path: 'entries[1].confusable-with[0]', resolved: true },
-    { from: 'L-000362', type: 'cross-references.see-also', to: 'L-000363', file: 'knowledge/engineering/362.1-preview-deploy-windows.md', path: 'cross-references.see-also[0]', resolved: true },
+    { from: 'D-000001', type: 'relates-to.concepts', to: 'O-000001', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.concepts[0]', resolution: 'loaded', resolved: true },
+    { from: 'D-000001', type: 'relates-to.leaves', to: 'K-000001', file: 'decisions/entries/D-004-three-stores.yaml', path: 'entries[0].relates-to.leaves[0]', resolution: 'loaded', resolved: true },
+    { from: 'K-000001', type: 'cross-references.see-also', to: 'K-000002', file: 'knowledge/engineering/362.1-preview-deploy-windows.md', path: 'cross-references.see-also[0]', resolution: 'loaded', resolved: true },
+    { from: 'O-000001', type: 'rationale', to: 'D-000001', file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].rationale[0]', resolution: 'loaded', resolved: true },
+    { from: 'O-000001', type: 'used-by', to: 'O-000002', file: 'ontology/classes/200-design-system.yaml', path: 'entries[0].used-by[0]', resolution: 'loaded', resolved: true },
+    { from: 'O-000002', type: 'confusable-with', to: 'O-000001', file: 'ontology/classes/200-design-system.yaml', path: 'entries[1].confusable-with[0]', resolution: 'loaded', resolved: true },
   ]);
 });
 
@@ -134,7 +133,7 @@ test('malformed: schema defects carry the KK-02 codes on the same scale', () => 
 
 test('malformed: a schema-invalid record with a usable id is still indexed (preflight needs it)', () => {
   const model = fixtureModel('malformed');
-  assert.deepEqual([...model.concepts.keys()], ['K-100']);
+  assert.deepEqual([...model.concepts.keys()], ['O-000001']);
 });
 
 test('every diagnostic sits on the one scale: severity/code/file/path/message', () => {
@@ -157,7 +156,7 @@ test('duplicate-id: the same id minted in two files errors on the later file', (
   const conceptDupe = dupes.find((d) => d.file === 'ontology/classes/200-branch-b.yaml');
   assert.ok(conceptDupe, JSON.stringify(dupes));
   assert.equal(conceptDupe.path, 'entries[0].id');
-  assert.match(conceptDupe.message, /K-210/);
+  assert.match(conceptDupe.message, /O-000001/);
   assert.match(conceptDupe.message, /200-branch-a\.yaml/, 'names the first mint');
 });
 
@@ -167,13 +166,13 @@ test('duplicate-id: the same id minted twice within one file is the same defect'
     .find((d) => d.file === 'decisions/entries/D-001-twice.yaml');
   assert.ok(dupe);
   assert.equal(dupe.path, 'entries[1].id');
-  assert.match(dupe.message, /D-001/);
+  assert.match(dupe.message, /D-000001/);
 });
 
 test('duplicate-id: the first mint wins the index; the model is still queryable', () => {
   const model = fixtureModel('duplicate-id');
-  assert.equal(model.concepts.get('K-210').record.term, 'Design token');
-  assert.equal(model.decisions.get('D-001').record.title, 'First mint');
+  assert.equal(model.concepts.get('O-000001').record.term, 'Design token');
+  assert.equal(model.decisions.get('D-000001').record.title, 'First mint');
 });
 
 // ------------------------------------------------- unresolved refs (§3, §4)
@@ -195,22 +194,22 @@ test('unresolved-ref: dangling typed refs error in every store, with paths', () 
 test('unresolved-ref: messages name the missing id and its store', () => {
   const model = fixtureModel('unresolved-ref');
   const messages = byCode(model, 'unresolved-ref').map((d) => d.message).join('\n');
-  assert.match(messages, /"K-999".*ontology/);
-  assert.match(messages, /"D-777".*decisions/);
-  // The dangling leaf target is spelled "L-000999" since UCS-1147 (it was the
+  assert.match(messages, /"O-999999".*ontology/);
+  assert.match(messages, /"D-999777".*decisions/);
+  // The dangling leaf target is spelled "K-999999" since UCS-1147 (it was the
   // notation "999.9"). A notation can no longer reach the ref graph at all —
   // the schema refuses it first — so the specimen for a dangling LEAF ref has
   // to be a well-formed accession that names nothing.
-  assert.match(messages, /"L-000999".*knowledge/);
-  assert.match(messages, /"K-888".*ontology/);
+  assert.match(messages, /"K-999999".*knowledge/);
+  assert.match(messages, /"O-999888".*ontology/);
 });
 
 test('unresolved-ref: catalog-declared pending ids resolve (file check is KK-05)', () => {
   const model = fixtureModel('unresolved-ref');
-  const d005 = model.refs.find((r) => r.to === 'D-005');
+  const d005 = model.refs.find((r) => r.to === 'D-000002');
   assert.equal(d005.resolved, true, 'the catalog never implies a declared id is absent');
   assert.equal(
-    byCode(model, 'unresolved-ref').some((d) => d.message.includes('D-005')),
+    byCode(model, 'unresolved-ref').some((d) => d.message.includes('D-000002')),
     false,
   );
 });
@@ -218,10 +217,10 @@ test('unresolved-ref: catalog-declared pending ids resolve (file check is KK-05)
 test('unresolved-ref: the graph still records dangling edges as resolved: false', () => {
   const model = fixtureModel('unresolved-ref');
   const dangling = model.refs.filter((r) => !r.resolved).map((r) => r.to).sort();
-  // "999.9" became "L-000999" with the fixture's migration (UCS-1147), which
+  // "999.9" became "K-999999" with the fixture's migration (UCS-1147), which
   // also re-sorts it: the leaf target now sorts among the other id spaces
   // rather than ahead of them all.
-  assert.deepEqual(dangling, ['D-777', 'K-888', 'K-999', 'L-000999']);
+  assert.deepEqual(dangling, ['D-999777', 'K-999999', 'O-999888', 'O-999999']);
 });
 
 // ------------------------------------ §3.5 YAML coercion trap, end to end
@@ -243,7 +242,7 @@ test('coercion trap: unquoted true/1.0 in a store FILE hard-error; the model is 
 
 test('coercion trap: scalar types survive parsing — never silently stringified', () => {
   const model = fixtureModel('coercion-trap');
-  const values = model.concepts.get('K-300').record.enumerates[0].values;
+  const values = model.concepts.get('O-000001').record.enumerates[0].values;
   assert.deepEqual(values, ['dark-mode', true, 1.0, 'no']);
 });
 
@@ -260,7 +259,7 @@ test('missing-store: absent store dirs warn, never error — loading is well-def
     ],
   );
   assert.equal(model.stores.ontology.present, false);
-  assert.deepEqual([...model.decisions.keys()], ['D-001']);
+  assert.deepEqual([...model.decisions.keys()], ['D-000001']);
 });
 
 test('missing-catalog: a store dir without its _catalog.yaml is an error', () => {
@@ -270,17 +269,17 @@ test('missing-catalog: a store dir without its _catalog.yaml is an error', () =>
     byCode(model, 'missing-catalog').map(({ severity, file }) => ({ severity, file })),
     [{ severity: 'error', file: 'ontology/_catalog.yaml' }],
   );
-  assert.deepEqual([...model.concepts.keys()], ['K-100'], 'records still load and index');
+  assert.deepEqual([...model.concepts.keys()], ['O-000001'], 'records still load and index');
 });
 
 test('the empty payload templates load healthy with zero diagnostics (post-init state)', () => {
-  const templates = fileURLToPath(new URL('../payload/templates/', import.meta.url));
+  const kitRoot = fileURLToPath(new URL('../', import.meta.url));
   const root = mkdtempSync(join(tmpdir(), 'kk04-templates-'));
   try {
-    // Copy the whole template tree so this test tracks the payload itself —
-    // tests/payload-templates.test.js owns the per-file schema assertions.
-    cpSync(templates, root, { recursive: true });
-    const model = loadStores(root);
+    // Initialization generates the installation ledger alongside the templates.
+    const seeded = copyPayload({ kitRoot, targetDir: root,
+      namespace: '61616161-6161-4161-8161-616161616161' });
+    const model = loadStores(seeded.root);
     assert.deepEqual(model.diagnostics, []);
     assert.equal(model.ok, true);
     assert.deepEqual([...model.concepts.keys()], []);
@@ -321,8 +320,8 @@ const relatesRecord = {
     relates: {
       'depends-on': ['362.2'],
       'see-also': ['362.1', '362.2'],
-      contradicts: ['K-210'],
-      supersedes: ['D-004'],
+      contradicts: ['O-000001'],
+      supersedes: ['D-000001'],
     },
   },
 };
@@ -336,8 +335,8 @@ test('ref graph: declared field paths three levels deep are walked (UCS-1143)', 
     { from: '362.5', type: 'meta.relates.depends-on', to: '362.2', file, path: 'meta.relates.depends-on[0]', space: 'leaves' },
     { from: '362.5', type: 'meta.relates.see-also', to: '362.1', file, path: 'meta.relates.see-also[0]', space: 'leaves' },
     { from: '362.5', type: 'meta.relates.see-also', to: '362.2', file, path: 'meta.relates.see-also[1]', space: 'leaves' },
-    { from: '362.5', type: 'meta.relates.contradicts', to: 'K-210', file, path: 'meta.relates.contradicts[0]', space: 'concepts' },
-    { from: '362.5', type: 'meta.relates.supersedes', to: 'D-004', file, path: 'meta.relates.supersedes[0]', space: 'decisions' },
+    { from: '362.5', type: 'meta.relates.contradicts', to: 'O-000001', file, path: 'meta.relates.contradicts[0]', space: 'concepts' },
+    { from: '362.5', type: 'meta.relates.supersedes', to: 'D-000001', file, path: 'meta.relates.supersedes[0]', space: 'decisions' },
   ]);
 });
 
@@ -394,7 +393,7 @@ test('ref graph: edges nested in a multi-record file carry their entry prefix', 
   // The basePath prefix is how a decisions/ entries file attributes an edge to
   // the right record; deep paths compose with it exactly like shallow ones.
   assert.deepEqual(
-    refEdges(RELATES_ROWS, relatesRecord, { from: 'D-009', file: 'decisions/entries/D-009.yaml', basePath: 'entries[2]' })
+    refEdges(RELATES_ROWS, relatesRecord, { from: 'D-000009', file: 'decisions/entries/D-009.yaml', basePath: 'entries[2]' })
       .map((e) => e.path),
     [
       'entries[2].meta.relates.depends-on[0]',

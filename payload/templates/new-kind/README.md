@@ -5,7 +5,7 @@ of a `logs/misses/` entry. The pipeline it belongs to — SURVEY → MATCH →
 DRAFT → GATE → INTEGRATE → RE-RUN — is documented in
 `protocol/new-kind-pipeline.md` (client-relative; under `payload/` in the kit
 repo). Read that first; in particular the
-**D-005 hard rule**: validators execute only vendored, versioned,
+**D-000005 hard rule**: validators execute only vendored, versioned,
 test-covered code — a kind drafted in a session is NEVER wired into the
 validator in that same session. Everything drafted from this template enters
 through GATE (PR + tests + review).
@@ -30,7 +30,7 @@ demo run:
 | File | Role |
 |---|---|
 | `parser.example.js` | **DRAFT artifact 1, the parser** — pure function `extractValues(text)` + the demo-run CLI; hard-errors on anything outside its declared syntactic envelope |
-| `fixture/sample.list` | **DRAFT artifact 2, the test fixture (input half)** — a sample anchor (D-009) |
+| `fixture/sample.list` | **DRAFT artifact 2, the test fixture (input half)** — a sample anchor (D-000009) |
 | `fixture/EXPECTED.yaml` | **DRAFT artifact 2, the test fixture (expected half)** — the value set the parser must extract from `sample.list` |
 | `fixture/demo-anchor.list` | stand-in "live anchor" for **DRAFT artifact 3, the demo run** (the recorded walkthrough below) |
 | `descriptor.example.yaml` | the `enumerates` descriptor fragment the RE-RUN step validates once the kind is merged |

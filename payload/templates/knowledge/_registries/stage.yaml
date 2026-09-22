@@ -14,7 +14,7 @@
 # vocabulary. Mint from the four below and no others.
 #
 # Empty anyway: a registry value must cite a Decisions entry that RESOLVES, and
-# a freshly seeded repo's decisions store is empty by design (D-001). The
+# a freshly seeded repo's decisions store is empty by design (D-000001). The
 # bootstrap interview mints these with an entry of your own.
 #
 # A leaf at `draft` or `proposed` is downranked in resolver output and verdicted
@@ -47,7 +47,7 @@
 #       warrant: <the first leaf a moderator promoted>
 #       decision: <your entry adopting the lifecycle>
 #       minted: "2026-07-07"
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: stage
 values: []

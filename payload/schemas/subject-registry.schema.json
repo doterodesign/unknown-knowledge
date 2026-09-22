@@ -1,0 +1,831 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unknown-knowledge:schema:subject-registry",
+  "title": "Shared subject authority (subjects/registry.yaml)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema-version",
+    "namespace",
+    "revision",
+    "hierarchy-revision",
+    "subjects",
+    "history"
+  ],
+  "properties": {
+    "schema-version": {
+      "type": "integer",
+      "enum": [
+        1
+      ]
+    },
+    "namespace": {
+      "$ref": "#/$defs/subjectNamespace"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "hierarchy-revision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "subjects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/subjectEntry"
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/subjectChange"
+      }
+    }
+  },
+  "$defs": {
+    "subjectNamespace": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}(?![\\s\\S])$"
+    },
+    "subjectIdentity": {
+      "type": "string",
+      "pattern": "(?:^S-(?!000000)[0-9]{6}(?![\\s\\S])$)|(?:^proposal:subject:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}(?![\\s\\S])$)"
+    },
+    "subjectDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "text",
+        "includes",
+        "excludes"
+      ],
+      "properties": {
+        "text": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "includes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        },
+        "excludes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "subjectAlias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "locale": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "context": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      }
+    },
+    "subjectRelated": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "target"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "association"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$"
+        }
+      }
+    },
+    "subjectEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "definition",
+        "aliases",
+        "related",
+        "status",
+        "changes"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/subjectIdentity"
+        },
+        "label": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "definition": {
+          "$ref": "#/$defs/subjectDefinition"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectAlias"
+          }
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectRelated"
+          }
+        },
+        "parent": {
+          "type": "string",
+          "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "active",
+            "suppressed",
+            "retired"
+          ]
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectNamespace"
+          }
+        },
+        "origin-decision": {
+          "$ref": "#/$defs/subjectDecisionRef"
+        },
+        "warrant": {
+          "$ref": "#/$defs/subjectWarrant"
+        },
+        "retirement": {
+          "$ref": "#/$defs/subjectRetirement"
+        },
+        "refusal": {
+          "$ref": "#/$defs/subjectRefusal"
+        }
+      }
+    },
+    "subjectHexDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])$"
+    },
+    "subjectGitObject": {
+      "type": "string",
+      "pattern": "^(?:[0-9a-f]{40}|[0-9a-f]{64})(?![\\s\\S])$"
+    },
+    "subjectCapture": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "file",
+        "blob",
+        "sha256"
+      ],
+      "properties": {
+        "file": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "blob": {
+          "$ref": "#/$defs/subjectGitObject"
+        },
+        "sha256": {
+          "$ref": "#/$defs/subjectHexDigest"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "commit",
+            "tree"
+          ],
+          "properties": {
+            "commit": {
+              "$ref": "#/$defs/subjectGitObject"
+            },
+            "tree": {
+              "$ref": "#/$defs/subjectGitObject"
+            }
+          }
+        }
+      }
+    },
+    "subjectMaterialRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "namespace": {
+          "$ref": "#/$defs/subjectNamespace"
+        },
+        "kind": {
+          "enum": [
+            "knowledge",
+            "ontology",
+            "decision"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "(?:^K-(?!000000)[0-9]{6}(?![\\s\\S])$)|(?:^O-(?!000000)[0-9]{6}(?![\\s\\S])$)|(?:^D-(?!000000)[0-9]{6}(?![\\s\\S])$)"
+        }
+      }
+    },
+    "subjectDecisionRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "namespace",
+        "kind",
+        "id"
+      ],
+      "properties": {
+        "namespace": {
+          "$ref": "#/$defs/subjectNamespace"
+        },
+        "kind": {
+          "enum": [
+            "decision"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^D-(?!000000)[0-9]{6}(?![\\s\\S])$"
+        }
+      }
+    },
+    "subjectWarrant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "records",
+        "sources"
+      ],
+      "properties": {
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectMaterialRecord"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "locator",
+              "revision"
+            ],
+            "properties": {
+              "locator": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      }
+    },
+    "subjectRetirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "retire",
+            "equivalent-merge",
+            "split"
+          ]
+        },
+        "redirect": {
+          "type": "string",
+          "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$"
+        },
+        "successors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$"
+          }
+        }
+      }
+    },
+    "subjectRefusal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision",
+        "reason"
+      ],
+      "properties": {
+        "decision": {
+          "$ref": "#/$defs/subjectDecisionRef"
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        }
+      }
+    },
+    "subjectState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "definition",
+        "aliases",
+        "related",
+        "status"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "definition": {
+          "$ref": "#/$defs/subjectDefinition"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectAlias"
+          }
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectRelated"
+          }
+        },
+        "parent": {
+          "type": "string",
+          "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "active",
+            "suppressed",
+            "retired"
+          ]
+        },
+        "origin-decision": {
+          "$ref": "#/$defs/subjectDecisionRef"
+        },
+        "warrant": {
+          "$ref": "#/$defs/subjectWarrant"
+        },
+        "retirement": {
+          "$ref": "#/$defs/subjectRetirement"
+        },
+        "refusal": {
+          "$ref": "#/$defs/subjectRefusal"
+        }
+      }
+    },
+    "subjectBeforeState": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "definition",
+        "aliases",
+        "related",
+        "status"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "definition": {
+          "$ref": "#/$defs/subjectDefinition"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectAlias"
+          }
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectRelated"
+          }
+        },
+        "parent": {
+          "type": "string",
+          "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$"
+        },
+        "status": {
+          "enum": [
+            "proposed",
+            "active",
+            "suppressed",
+            "retired"
+          ]
+        },
+        "origin-decision": {
+          "$ref": "#/$defs/subjectDecisionRef"
+        },
+        "warrant": {
+          "$ref": "#/$defs/subjectWarrant"
+        },
+        "retirement": {
+          "$ref": "#/$defs/subjectRetirement"
+        },
+        "refusal": {
+          "$ref": "#/$defs/subjectRefusal"
+        }
+      }
+    },
+    "subjectReview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reference",
+        "accepted-status",
+        "decision-capture",
+        "decision-digest",
+        "change-digest"
+      ],
+      "properties": {
+        "reference": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "accepted-status": {
+          "enum": [
+            "accepted",
+            "addressed"
+          ]
+        },
+        "decision-capture": {
+          "$ref": "#/$defs/subjectCapture"
+        },
+        "decision-digest": {
+          "$ref": "#/$defs/subjectHexDigest"
+        },
+        "change-digest": {
+          "$ref": "#/$defs/subjectHexDigest"
+        }
+      }
+    },
+    "subjectChange": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "action",
+        "decision",
+        "review",
+        "rows"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/subjectNamespace"
+        },
+        "action": {
+          "enum": [
+            "activate",
+            "rename",
+            "clarify",
+            "reparent",
+            "relate",
+            "suppress",
+            "reverse-suppression",
+            "merge-equivalent",
+            "union",
+            "split",
+            "retire"
+          ]
+        },
+        "decision": {
+          "$ref": "#/$defs/subjectDecisionRef"
+        },
+        "review": {
+          "$ref": "#/$defs/subjectReview"
+        },
+        "rows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "before",
+              "after"
+            ],
+            "properties": {
+              "id": {
+                "$ref": "#/$defs/subjectIdentity"
+              },
+              "before": {
+                "$ref": "#/$defs/subjectBeforeState"
+              },
+              "after": {
+                "$ref": "#/$defs/subjectState"
+              },
+              "reason": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        },
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "prior-refusal": {
+          "$ref": "#/$defs/subjectNamespace"
+        },
+        "unchanged-meaning": {
+          "type": "boolean"
+        },
+        "promotes": {
+          "$ref": "#/$defs/subjectPromotion"
+        },
+        "refusal-assessment": {
+          "$ref": "#/$defs/subjectRefusalAssessment"
+        },
+        "reconsideration": {
+          "$ref": "#/$defs/subjectReconsideration"
+        },
+        "reconsideration-assessment": {
+          "$ref": "#/$defs/subjectReconsiderationAssessment"
+        }
+      }
+    },
+    "subjectPromotion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "before"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^proposal:subject:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}(?![\\s\\S])$"
+        },
+        "before": {
+          "$ref": "#/$defs/subjectEntry"
+        }
+      }
+    },
+    "subjectRefusalAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "scope",
+        "coverage",
+        "attestation",
+        "relevant-refusals"
+      ],
+      "properties": {
+        "version": {
+          "enum": [
+            1
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/subjectAssessmentScope"
+        },
+        "coverage": {
+          "enum": [
+            "complete-registry"
+          ]
+        },
+        "attestation": {
+          "enum": [
+            "all-current-suppressed-meanings-assessed"
+          ]
+        },
+        "relevant-refusals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "subject",
+              "refusal",
+              "disposition",
+              "reason"
+            ],
+            "properties": {
+              "subject": {
+                "$ref": "#/$defs/subjectIdentity"
+              },
+              "refusal": {
+                "$ref": "#/$defs/subjectNamespace"
+              },
+              "disposition": {
+                "enum": [
+                  "distinct-meaning"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      }
+    },
+    "subjectMaterialRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "capture"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "#/$defs/subjectMaterialRef"
+        },
+        "capture": {
+          "$ref": "#/$defs/subjectCapture"
+        }
+      }
+    },
+    "subjectAssessmentScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "before-registry",
+        "identity-digest"
+      ],
+      "properties": {
+        "before-registry": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "capture",
+            "document-digest"
+          ],
+          "properties": {
+            "capture": {
+              "$ref": "#/$defs/subjectCapture"
+            },
+            "document-digest": {
+              "$ref": "#/$defs/subjectHexDigest"
+            }
+          }
+        },
+        "identity-digest": {
+          "$ref": "#/$defs/subjectHexDigest"
+        }
+      }
+    },
+    "subjectReconsiderationAssessment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "scope",
+        "coverage",
+        "attestation",
+        "relevant-refusals"
+      ],
+      "properties": {
+        "version": {
+          "enum": [
+            1
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/subjectAssessmentScope"
+        },
+        "coverage": {
+          "enum": [
+            "complete-registry"
+          ]
+        },
+        "attestation": {
+          "enum": [
+            "all-current-suppressed-meanings-assessed"
+          ]
+        },
+        "relevant-refusals": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "subject",
+              "refusal",
+              "disposition",
+              "reason"
+            ],
+            "properties": {
+              "subject": {
+                "$ref": "#/$defs/subjectIdentity"
+              },
+              "refusal": {
+                "$ref": "#/$defs/subjectNamespace"
+              },
+              "disposition": {
+                "enum": [
+                  "distinct-meaning",
+                  "same-meaning-reconsidered"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "pattern": "\\S"
+              }
+            }
+          }
+        }
+      }
+    },
+    "subjectReconsideration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reason",
+        "records",
+        "sources"
+      ],
+      "properties": {
+        "reason": {
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "records": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/subjectMaterialRecord"
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "locator",
+              "revision",
+              "capture"
+            ],
+            "properties": {
+              "locator": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "\\S"
+              },
+              "capture": {
+                "$ref": "#/$defs/subjectCapture"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

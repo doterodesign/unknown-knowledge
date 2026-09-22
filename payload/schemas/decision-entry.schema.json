@@ -2,14 +2,19 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:decision-entry",
   "title": "Decision entry (PRD §3.3)",
-  "description": "One ADR-style record in decisions/entries/. Truth anchor: the team. Append-mostly: status transitions never rewrite context/decision/consequences. Drafted with provisional date-suffixed ids (D-YYYY-MM-DD-slug); the steward assigns the final D-NNN at acceptance (§3.5). Chain resolution and acyclicity are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013).",
+  "description": "One ADR-style record in decisions/entries/. Truth anchor: the team. Status transitions preserve recorded context, decision and consequences. Unaccepted records use typed proposal keys; governed publication assigns a permanent canonical D identity. Identity resolution is separate from authorizer eligibility. The active store-file envelope is version 2.",
   "type": "object",
   "additionalProperties": false,
   "required": ["id", "title", "category", "status", "date", "deciders", "context", "decision"],
   "properties": {
+    "subjects": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/subjectRef" },
+      "description": "Optional whole-record subject assignments, in authored order with no primary position. Absent means unknown; an empty array explicitly records none. IDs must be canonical S identities, including on proposal records. Duplicate IDs are rejected by the engine convention. Assignment shape does not establish registry membership, eligibility or approval."
+    },
     "id": {
       "$ref": "#/$defs/decisionRef",
-      "description": "Final D-NNN (immutable once published) or provisional date-suffixed draft id (§3.5)."
+      "description": "Canonical D-000001 through D-999999 identity, or an exact proposal:decision:<lowercase-v4-uuid> authoring key."
     },
     "title": { "type": "string" },
     "category": {
@@ -56,6 +61,7 @@
     }
   },
   "$defs": {
+    "subjectRef": { "type": "string", "pattern": "^S-(?!000000)[0-9]{6}(?![\\s\\S])$" },
     "graduation": {
       "type": "object",
       "additionalProperties": false,
@@ -101,12 +107,12 @@
         }
       }
     },
-    "conceptRef": { "type": "string", "pattern": "^K-[0-9]+$" },
+    "conceptRef": { "type": "string", "pattern": "^(?:O-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:ontology:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
     "decisionRef": {
       "type": "string",
-      "pattern": "^D-([0-9]+|[0-9]{4}-[0-9]{2}-[0-9]{2}-[a-z0-9-]+)$"
+      "pattern": "^(?:D-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:decision:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$"
     },
-    "leafRef": { "type": "string", "pattern": "^L-[0-9]{6}$" },
+    "leafRef": { "type": "string", "pattern": "^(?:K-(?!000000)[0-9]{6}(?![\\s\\S])|proposal:knowledge:[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})(?![\\s\\S])$" },
     "isoDate": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
     "storeFile": {
       "type": "object",
@@ -114,7 +120,7 @@
       "required": ["schema-version", "entries"],
       "description": "Decision entries-file envelope. Every store file carries schema-version (§3.5); evolution is additive-only.",
       "properties": {
-        "schema-version": { "type": "integer", "minimum": 1 },
+        "schema-version": { "type": "integer", "enum": [2] },
         "entries": { "type": "array", "items": { "$ref": "#" } }
       }
     }

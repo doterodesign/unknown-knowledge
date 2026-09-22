@@ -1,11 +1,11 @@
 ---
-schema-version: 2
-id: L-010501
+schema-version: 3
+id: K-000003
 notation: "701.5"
 domain: widgets
 heading: Widget audit schedule
 cross-references:
-  see-also: [L-000101]
+  see-also: [K-000001]
 citations:
   - source: Widget registry operating manual 2026
     accessed: "2026-07-07"

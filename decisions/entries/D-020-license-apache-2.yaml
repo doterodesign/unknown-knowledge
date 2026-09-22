@@ -1,14 +1,14 @@
 # One entry per file; schema per PRD.html §3.3.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-020
+  - id: D-000020
     title: License finalized — Apache-2.0 over MIT; LICENSE + NOTICE at repo root
     category: governance
     status: accepted
     date: "2026-07-09"
     deciders: [dimitri]
     context: >
-      D-015 resolved the license family (permissive, Apache-2.0 recommended,
+      D-000015 resolved the license family (permissive, Apache-2.0 recommended,
       MIT acceptable) but left the final pick open until packaging. KK-28
       forces the call: the license text ships in every seeded repo, and the
       kit's primary redistributors are agencies initing their clients' repos —
@@ -17,10 +17,10 @@ entries:
     decision: >
       Apache-2.0, finalized. Two properties over MIT decide it: (1) the
       explicit patent grant (§3) eases the enterprise security and procurement
-      reviews this tool will face, exactly the reviews D-015 named; (2) the
+      reviews this tool will face, exactly the reviews D-000015 named; (2) the
       NOTICE mechanism (§4d) gives agencies redistributing seeded repos a
       standard, well-understood attribution vehicle — carry the NOTICE file,
-      done. The trademark carve-out (§6) additionally protects the D-016
+      done. The trademark carve-out (§6) additionally protects the D-000016
       product name. LICENSE (verbatim Apache-2.0 text) and NOTICE (project
       name + copyright holder, Unknown Creatives Studio) live at the repo
       root; package.json declares "license": "Apache-2.0".
@@ -30,7 +30,7 @@ entries:
       this decision). The standard Apache warranty disclaimer comes with the
       license text. Downstream users owe attribution via NOTICE, nothing
       else; copyleft contamination of client repos is impossible, keeping
-      D-001's ownership promise a legal fact.
+      D-000001's ownership promise a legal fact.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-016] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000015, D-000016] }

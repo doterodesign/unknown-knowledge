@@ -1,8 +1,8 @@
-# D-301 is mid-import: the documented pending marker (catalog schema) —
+# D-000001 is mid-import: the documented pending marker (catalog schema) —
 # a warning, never a blocking index-drift.
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-301
+  - id: D-000001
     title: Declared but pending import
     file: pending-import

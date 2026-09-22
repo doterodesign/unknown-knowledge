@@ -11,7 +11,7 @@ shipped kind can read. This document is the governed path from a miss to a new
 kind. It is a trust boundary, not a convenience path: a subtly wrong parser
 produces a false all-clear, which is worse than no check.
 
-> **Hard rule (D-005): validators execute only vendored, versioned,
+> **Hard rule (D-000005): validators execute only vendored, versioned,
 > test-covered code — never code authored in the session that runs it.**
 > A kind drafted in a session is NEVER wired into the validator in that same
 > session. It enters via the GATE step: a PR carrying the parser, its fixture
@@ -28,7 +28,7 @@ parser.
 
 The pipeline consumes `logs/misses/` — the demand-driven extractor backlog.
 A miss entry is **one file per entry** (`logs/misses/<date>-<hex8>.yaml`,
-D-010) so concurrent sessions never merge-conflict, written via the
+D-000010) so concurrent sessions never merge-conflict, written via the
 append/transition helper (`engine/log-entry.js`), never by hand-editing YAML.
 
 Fields, per `schemas/miss.schema.json`:
@@ -44,6 +44,7 @@ Fields, per `schemas/miss.schema.json`:
 | `verified` | — | stamped by the transition helper when the entry resolves (validator re-run passed); removed on re-open |
 | `reason` | — | required on rejection; travels only with `rejected` |
 | `occurrences` | — | re-open dates: recurrences re-open the same entry, never duplicate |
+| `prior-outcomes` | — | helper-owned terminal snapshots retained on reopening: `reopened-on`, prior `status`, and its `reason` or `verified`; optional on older fragments, never backfilled |
 
 Lifecycle invariants. The schema gate (`engine/lib/validate-record.js`)
 enforces exactly two of them on any fragment, hand-edited or not, matching
@@ -52,9 +53,13 @@ gates cannot disagree:
 `verified` ⇔ status `resolved`, both directions; `rejected` ⇒ non-empty
 `reason`, and `reason` travels only with `rejected`.
 The rest is **helper-only**: only the transition helper's write path drops
-`verified`/`reason` on re-open and appends the re-open date to `occurrences`
+`verified`/`reason` on re-open, preserves that terminal outcome in
+`prior-outcomes`, and appends the re-open date to `occurrences`
 — a hand-edited fragment missing an occurrence entry still validates clean,
 which is one more reason fragments are written via the helper, never by hand.
+Historical snapshots obey the same outcome invariants; their dates must be
+real calendar days. They preserve recorded evidence, not authenticated approval
+or a complete lifecycle journal. `reopened-on` is not a rejection timestamp.
 
 **Capture content policy (§3.4):** miss entries carry concept IDs and file
 paths only — never verbatim user text, quoted session content, or secrets.
@@ -67,7 +72,7 @@ Committed fragments are permanent git history.
 2. MATCH     configure concepts from the shipped kind library
 3. DRAFT     for each miss: agent writes the parser
              + a test fixture (sample file → expected values, following
-               the shipped extractor-fixture template, D-009)
+               the shipped extractor-fixture template, D-000009)
              + a demo run against the live anchor it was drafted for
 4. GATE      human review — fast, because the claim is mechanical
 5. INTEGRATE parser lands as versioned, tested code (client zone of their repo;
@@ -116,13 +121,13 @@ For each miss that survives MATCH, the agent drafts, from the shipped template
    out; hard-errors loudly on anything it can't parse, and declares a
    **syntactic envelope**, hard-erroring when out-of-envelope sentinels appear
    in the matched span — a confident wrong parse is a false all-clear, the
-   D-005/D-012 failure class;
+   D-000005/D-000012 failure class;
 2. **a test fixture** — sample file → expected values, following the shipped
-   extractor-fixture template (D-009);
+   extractor-fixture template (D-000009);
 3. **a demo run** against the live anchor the miss recorded (`path`), with the
    output attached to the PR.
 
-The draft NEVER runs inside the validator in this session (D-005). The miss
+The draft NEVER runs inside the validator in this session (D-000005). The miss
 entry transitions `open → proposed` when the draft PR exists.
 
 ### 4. GATE — human review
@@ -138,8 +143,8 @@ re-opens (`rejected → open`) — the backlog keeps the demand signal.
 
 The merged parser lands as versioned, test-covered code in the client zone of
 their repo (the vendor harvests it into the kit library only for *future*
-inits — seeded-once, D-001). It is now vendored code the validator may
-execute: this preserves D-014 (the engine never imports/evals/spawns repo
+inits — seeded-once, D-000001). It is now vendored code the validator may
+execute: this preserves D-000014 (the engine never imports/evals/spawns repo
 *content* at validate time — a new kind enters the engine's own reviewed code,
 it is never dynamically loaded from the store or the scanned tree).
 

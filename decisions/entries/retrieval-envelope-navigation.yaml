@@ -1,0 +1,36 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:84efc561-ed43-47b1-bb5f-154dfe519504
+    title: Retrieval navigation uses the complete resolver envelope
+    category: process
+    status: proposed
+    date: "2026-09-20"
+    deciders: ["integration owner (record review pending)"]
+    context: >
+      A retained reader response had an empty ranked results array but already
+      supplied a matched concept phrase and a useful top-level Knowledge leaf.
+      The host unnecessarily re-queried to obtain a ranked concept hit. The
+      engine already exposed those candidates; a ranking or vocabulary change
+      would not address this host interpretation error. An earlier assertion
+      that the response required zero-hit health recovery was corrected while
+      preserving the original report and actual failed navigation result.
+    decision: >
+      Interpret ranked concepts, first-class leaves, decomposition, material
+      residue and scope exclusions together. Empty ranked results alone do not
+      mean zero resolution. Follow useful returned IDs through required
+      catalogs, rules and entries instead of forcing a concept rank or issuing
+      a narrower query solely to rediscover them. Legitimate recovery for
+      unresolved requirements remains allowed. Both ranked results and leaves
+      empty require store-health-first recovery. Candidate discovery never
+      replaces selected-record preflight or original-source verification.
+    consequences: >
+      Mandatory metadata navigation remains part of correct retrieval and must
+      not be scored as friction merely because it reads a catalog. This adds
+      host interpretation duties without changing scoring, tokenization,
+      aliases, source facts or schemas. The implementation was ff1b0fc,
+      integrated as 557be46; runtime tests already pinned phrase-only concepts
+      and operation leaves. The original public pair and subsequent v2 failed
+      or qualified outcomes remain separate evidence, linked in
+      docs/agents/ucs-1242-retrieval-governance.md. This record is a proposed
+      rationale backfill, not a successful trial or promotion certificate.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000011] }

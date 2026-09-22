@@ -26,8 +26,8 @@ const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const fixture = join(repoRoot, 'tests', 'fixtures', 'derived', 'call-number-citation');
 
 test('a citation-shaped field carrying a call number is a FINDING', () => {
-  // The planted case: L-000117's `relates.see-also` cites the call number
-  // `DES/COM/CON·L-000133` instead of the accession `L-000133`.
+  // The planted case: K-000001's `relates.see-also` cites the call number
+  // `DES/COM/CON·K-000002` instead of the accession `K-000002`.
   const model = loadStores(fixture);
   assert.equal(model.ok, false, 'the store must not load clean with a call number cited');
 
@@ -44,7 +44,7 @@ test('a citation-shaped field carrying a call number is a FINDING', () => {
   assert.deepEqual(diagnostics, ['pattern-mismatch', 'unresolved-ref']);
 
   const shape = model.diagnostics.find((d) => d.code === 'pattern-mismatch' && d.path === 'relates.see-also[0]');
-  assert.match(shape.message, /expected the leaf's accession id \(L-NNNNNN\)/,
+  assert.match(shape.message, /expected K-000001 through K-999999 or proposal:knowledge:/,
     'the finding names the remedy, not just the defect');
 });
 
@@ -61,7 +61,7 @@ test('the validator reports it rather than passing — through the CLI seam', ()
   // never a silent pass.
   assert.equal(r.status, 2);
   assert.match(r.stderr, /pattern-mismatch/);
-  assert.match(r.stderr, /DES\/COM\/CON·L-000133/);
+  assert.match(r.stderr, /DES\/COM\/CON·K-000002/);
   assert.match(r.stderr, /structural checks never ran/);
 });
 
@@ -77,7 +77,7 @@ test('every id space refuses every call number shape the engine can synthesize',
     [],
     ['123', '456'], // a numeric facet path — the shape closest to a dotted notation
   ];
-  const accessions = ['L-000117', 'L-999999', null];
+  const accessions = ['K-000001', 'K-999999', null];
 
   for (const path of paths) {
     for (const accession of accessions) {
@@ -94,6 +94,6 @@ test('every id space refuses every call number shape the engine can synthesize',
 
   // And the accession the call number CONTAINS still resolves as itself, so the
   // tempting thing to paste carries the correct thing to paste.
-  assert.deepEqual(idSpacesMatching('L-000117').sort(), ['accessions', 'leaf-ref']);
+  assert.deepEqual(idSpacesMatching('K-000001').sort(), ['accessions', 'leaf-ref']);
   assert.ok(Object.keys(ID_GRAMMARS).length >= 5);
 });

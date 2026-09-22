@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-024
+  - id: proposal:decision:00000000-0000-4000-8000-000000000024
     title: Commit evidence comes from the Git index; installed runtime stays separate
     category: architecture
     status: proposed
@@ -30,7 +30,7 @@ entries:
       Value validation now refuses escaped source reads before extraction, also
       when called directly outside the commit gate. Engine/runtime edits are
       reviewed separately; this gate certifies governed evidence, not new engine
-      behavior. Clients retain opt-in hook and CI installation under D-006.
+      behavior. Clients retain opt-in hook and CI installation under D-000006.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-005, D-006, D-012, D-014, D-022] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000005, D-000006, D-000012, D-000014, D-000022] }

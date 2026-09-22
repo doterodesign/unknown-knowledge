@@ -1,7 +1,7 @@
 # One entry per file; schema per PRD.html §3.3.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-021
+  - id: D-000021
     title: Version policy — kit semver semantics, manifest stamp meaning, CHANGELOG discipline
     category: process
     status: accepted
@@ -10,7 +10,7 @@ entries:
     context: >
       KK-28's public release policy requires defined semver semantics before
       first publish: the kit version freezes into every seeded repo via the
-      manifest stamp (D-001), so its meaning must be decided before any repo
+      manifest stamp (D-000001), so its meaning must be decided before any repo
       carries one. "Version" here is the kit package version, distinct from
       the per-store schema-version integers (§3.5, additive-only).
     decision: >
@@ -21,7 +21,7 @@ entries:
       flags, additive), or a new fixture vintage. PATCH = fixes and
       documentation. The manifest version stamp in a seeded repo records
       which kit version seeded it — a birth certificate, not a dependency
-      pin: per D-001 there is no update channel, so the stamp exists for
+      pin: per D-000001 there is no update channel, so the stamp exists for
       provenance and support conversations, and any future re-seed/upgrade
       path (deferred, §11.1) would read it as its starting point. CHANGELOG
       discipline: CHANGELOG.md in Keep a Changelog form, an Unreleased
@@ -36,4 +36,4 @@ entries:
       The README documents the stamp's meaning for seeded-repo owners.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-015, D-020] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000015, D-000020] }

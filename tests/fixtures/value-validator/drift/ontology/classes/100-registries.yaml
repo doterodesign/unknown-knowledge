@@ -1,9 +1,9 @@
-# KK-07 drift fixture: K-100 drifts in BOTH directions and its source holds a
-# duplicate; K-110 is clean (the --concepts filter proof); K-120 is deprecated,
+# KK-07 drift fixture: O-000001 drifts in BOTH directions and its source holds a
+# duplicate; O-000002 is clean (the --concepts filter proof); O-000003 is deprecated,
 # so its value findings demote to warnings (§3.5).
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.
@@ -13,7 +13,7 @@ entries:
       - kind: test-lines
         source: src/icons.txt
         values: [grid, list, star]
-  - id: K-110
+  - id: O-000002
     term: Color token
     class: 100-registries
     summary: A base color token.
@@ -23,7 +23,7 @@ entries:
       - kind: test-lines
         source: src/color-tokens.txt
         values: [srgb, p3]
-  - id: K-120
+  - id: O-000003
     term: Legacy breakpoint
     class: 100-registries
     summary: Retired breakpoint registry kept for audits.

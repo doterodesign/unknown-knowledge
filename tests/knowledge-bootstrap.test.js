@@ -1,8 +1,8 @@
 // KK-21: /knowledge-bootstrap — the phase-2 store-population skill (PRD §6,
-// D-019 naming). A light STRUCTURAL pin in the KK-20 pattern, deliberately
+// D-000019 naming). A light STRUCTURAL pin in the KK-20 pattern, deliberately
 // not prose-brittle: the skill ships at the §9.1 path, walks the six steps
 // in order, carries the load-bearing rules verbatim (not-exhaustive,
-// folder-vs-file, no-raw-traversal, D-005), encodes resume semantics per
+// folder-vs-file, no-raw-traversal, D-000005), encodes resume semantics per
 // step, and every engine command it cites names a real engine file using
 // flags that engine file actually implements (probe shared with the
 // AGENTS.md pin — tests/lib/protocol-doc.js).
@@ -17,10 +17,11 @@ const root = fileURLToPath(new URL('..', import.meta.url));
 const skillPath = join(root, 'payload', 'protocol', 'skills', 'knowledge-bootstrap.md');
 const doc = readFileSync(skillPath, 'utf8');
 const walkthrough = readFileSync(join(root, 'acceptance', 'A5-knowledge-bootstrap-walkthrough.md'), 'utf8');
+const canonicalWalkthrough = readFileSync(join(root, 'acceptance', 'A5-canonical-bootstrap-walkthrough.md'), 'utf8');
 
 const STEPS = ['SURVEY', 'GATE', 'EMIT', 'MISS', 'INTERVIEW', 'FINISH'];
 
-test('the skill ships at the §9.1 path (protocol/skills/knowledge-bootstrap.md, D-019 naming)', () => {
+test('the skill ships at the §9.1 path (protocol/skills/knowledge-bootstrap.md, D-000019 naming)', () => {
   assert.ok(statSync(skillPath).isFile());
 });
 
@@ -36,9 +37,9 @@ test('the load-bearing rules are present verbatim', () => {
   // EMIT: the pointer rule and the not-exhaustive discipline.
   assert.match(doc, /point at a folder for identity, at a file for facts/);
   assert.match(doc, /an ontology born complete is born wrong/i);
-  // MISS: bootstrap never wires a session-authored parser (D-005).
+  // MISS: bootstrap never wires a session-authored parser (D-000005).
   assert.match(doc, /never wired into the validator in the same\s+session/);
-  assert.match(doc, /D-005/);
+  assert.match(doc, /D-000005/);
   // INTERVIEW: kb-build is the sole knowledge write path; leaves need citations.
   assert.match(doc, /kb-build\s+skill \(the sole write path\)/);
   assert.match(doc, /every leaf requires citations/);
@@ -78,6 +79,7 @@ test('the engine gate is exit-code honest: green finish, exit 2 stops', () => {
 for (const [name, md, min] of [
   ['knowledge-bootstrap skill', doc, 5],
   ['A5 bootstrap walkthrough', walkthrough, 5],
+  ['A5 canonical bootstrap walkthrough', canonicalWalkthrough, 5],
 ]) {
   test(`${name}: every engine command names a real engine file with implemented flags`, () => {
     assertRealEngineCommands(root, name, md, { minCommands: min });

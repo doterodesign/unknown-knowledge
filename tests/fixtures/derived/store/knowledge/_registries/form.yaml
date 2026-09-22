@@ -2,22 +2,22 @@
 #
 # Three forms, so the form-first axis has real structure to nest and the two
 # axes visibly differ rather than being one tree relabelled.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: form
 values:
   - value: reference
     gloss: States how something is, for lookup.
-    warrant: L-000117 states the component's behaviour for lookup; L-000228 the color token table.
-    decision: D-401
+    warrant: K-000001 states the component's behaviour for lookup; K-000004 the color token table.
+    decision: D-000001
     minted: "2026-08-16"
   - value: constraint
     gloss: A rule the system must not violate.
-    warrant: L-000133, L-000162 and L-000213 each state a rule the system must hold.
-    decision: D-401
+    warrant: K-000002, K-000003 and proposal:knowledge:21321321-3213-4213-8213-213213213213 each state a rule the system must hold.
+    decision: D-000001
     minted: "2026-08-16"
   - value: runbook
     gloss: An ordered procedure for handling a situation.
-    warrant: L-000171 is the procedure for a visual regression.
-    decision: D-401
+    warrant: proposal:knowledge:17117117-1171-4171-8171-171171171171 is the procedure for a visual regression.
+    decision: D-000001
     minted: "2026-08-16"

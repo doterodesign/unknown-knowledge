@@ -2,9 +2,9 @@
 # clean: revocation only ever narrows autonomy. Graduating the same category is
 # the finding (see the graduation-findings fixture) — the asymmetry is the
 # point, so both directions are exercised against one gated row.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-204
+  - id: D-000004
     title: Revoke sampling for authority assignments
     category: trust
     status: accepted

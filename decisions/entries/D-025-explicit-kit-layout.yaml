@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-025
+  - id: proposal:decision:00000000-0000-4000-8000-000000000025
     title: Explicit layout selection preserves repository-relative evidence
     category: architecture
     status: proposed
@@ -23,4 +23,4 @@ entries:
       staged with migration. Custom path discovery and automatic migration are
       outside this change. This proposal records implementation rationale and
       does not claim human acceptance of an imported knowledge store.
-    relates-to: { concepts: [], leaves: [], decisions: [D-001, D-006, D-024] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000006, proposal:decision:00000000-0000-4000-8000-000000000024] }

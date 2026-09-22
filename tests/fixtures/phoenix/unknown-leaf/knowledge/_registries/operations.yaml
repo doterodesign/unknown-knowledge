@@ -1,15 +1,15 @@
 # Frontmatter v2 fixture (UCS-1149) — the operations registry (verbs).
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: operations
 values:
   - value: add-primitive
     gloss: Add a new single-control primitive to the component library.
-    warrant: L-000117 documents what adding a primitive must account for.
-    decision: D-401
+    warrant: K-000001 documents what adding a primitive must account for.
+    decision: D-000001
     minted: "2026-08-16"
   - value: compose-pattern
     gloss: Compose several primitives into a reusable pattern.
-    warrant: L-000133 states the composition rule an empty-state pattern applies.
-    decision: D-401
+    warrant: K-000002 states the composition rule an empty-state pattern applies.
+    decision: D-000001
     minted: "2026-08-16"

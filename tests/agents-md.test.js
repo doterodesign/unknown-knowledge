@@ -35,20 +35,20 @@ test('the doc never tells the agent to bypass a gate', () => {
   // Every mention of bypassing/skipping a gate must be a prohibition — on
   // the same line, so a positive instruction cannot hide behind a distant
   // negation. Audit must stay advisory (the KK-27 governance invariant) and
-  // verdict caching must stay forbidden (D-011).
+  // verdict caching must stay forbidden (D-000011).
   for (const line of doc.split('\n')) {
     if (/bypass|skip the/i.test(line)) {
       assert.match(line, /\b(never|not|do not|NOT)\b/i, `must be a prohibition: ${JSON.stringify(line)}`);
     }
   }
   assert.match(doc, /audit\.js[^.]*\badvisory\b/s, 'audit.js must be presented as advisory, never a gate');
-  assert.match(doc, /never cache/i, 'verdict caching must be forbidden (D-011)');
+  assert.match(doc, /never cache/i, 'verdict caching must be forbidden (D-000011)');
 });
 
-test('conduct-on-verdict is marked client-editable with the D-011 default', () => {
+test('conduct-on-verdict is marked client-editable with the D-000011 default', () => {
   assert.match(doc, /CLIENT-EDITABLE/);
   assert.match(doc, /[Qq]uarantine-and-continue/);
-  assert.match(doc, /D-011/);
+  assert.match(doc, /D-000011/);
 });
 
 test('the five capture triggers are cited with the schema vocabulary', () => {

@@ -1,0 +1,31 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:7e199c03-2618-41ed-97ed-5bee05750a09
+    title: Validate historical Subject topology incrementally within one checked history
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      The preserved joint operational fixtures exhausted repeated full-forest
+      Subject visits. Metadata-only reuse in 1aafd84 still rebuilt on each actual
+      graph change. Raising capacities or shortening fixtures would not remove
+      the repeated work or establish honest operational support.
+    decision: >
+      After one successful full graph check, seed private call-local parent and
+      association-owner maps. Validate each atomic event against its final vertex
+      set and staged parent overlay. Remove all changed old association owners
+      before adding new declarations. Retain every row's metadata, continuity,
+      warrant, action and digest checks. Share structural edge predicates with the
+      full indexer. Charge actual seed, comparison, staging, endpoint, cycle,
+      association and commit work. On structural rejection run the charged full
+      reference validator for diagnostics; a budget failure never falls back.
+    consequences: >
+      No caller or later invocation can borrow partial graph proof. A disagreement
+      with a successful reference check is an implementation error. Releases
+      6831a2a and 7c67e3d include focused and exhaustive transition evidence;
+      docs/agents/ucs-1235-operation-budget.md defines the precise units. Actual
+      5bad18d operational runs progressed beyond history but refused later on
+      document text. Their original evidence and unqualified status are preserved.
+      This retrospective proposal does not claim canonical approval or alter trials.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20] }

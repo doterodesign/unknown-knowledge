@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000901
+  - id: K-000001
     title: Every governed facet violated
     file: design-system/900.1-every-facet-violated.md

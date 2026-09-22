@@ -1,0 +1,41 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:8a17c8a0-8437-4d3c-a26f-46c24adb70ae
+    title: Permanent typed identities use explicit allocation and separate proposal keys
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      UCS-1234 requires Knowledge, Ontology and Decision references to survive
+      file moves, classification changes and retirement. Imported source names
+      cannot establish canonical identity or become aliases in ordinary lookup.
+    decision: >
+      Qualify every canonical reference by installation namespace, record kind
+      and six-digit ID. Allocate positive IDs through the shared ledger; reject
+      zero, exhaustion, collisions and reuse. Proposal keys remain a distinct
+      UUID grammar and consume no permanent identity until reviewed promotion.
+      Resolve only exact typed canonical references against a private captured
+      identity index, preserving missing, ambiguous, retired and loaded outcomes.
+      Keep identity ownership independent of Subject installation and the
+      historical migration executor.
+    consequences: >
+      File names and notation are locators or presentation, not identity. A
+      readable payload does not imply allocation, effective lifecycle or approval.
+      Historical-to-canonical correspondence remains private to migration and
+      does not create an ordinary alias lookup surface. This proposed record
+      captures implementation rationale without claiming human acceptance.
+      PR packaging on 2026-09-22 uses seven dependent prerelease PRs while
+      preserving this proposal key and the original implementation reference.
+      The first canonical cutover is for new installations and development;
+      existing-store migration arrives with the later migration/publication PR.
+      Its staged attribution crosses reader formats: preserve the current
+      reader's unavailable old-format before attribution, then validate and
+      attribute the exact old tree with the public 08066b5 reader and the exact
+      staged canonical tree with its matching reader. Both use the same full
+      changed-path set. Require healthy matching-reader structural/value and
+      attribution results, plus the actual current index commit gate. This
+      packaging evidence treatment adds no legacy fallback, changes no exit
+      code and bypasses no hook. Later canonical bases use normal attribution.
+      See docs/pr-delivery/pr-01.md for the bounded receipts and limitations.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000010, D-000022] }

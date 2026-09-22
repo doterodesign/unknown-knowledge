@@ -61,11 +61,11 @@ function runSwiftApp(...args) {
 }
 
 test('A2 clean extractions: every clean anchor agrees — exit 0, zero findings', () => {
-  // FIXTURE.md §6: concepts with no planted finding are K-120 (swift-enum
-  // raw-value facet), K-130 (swift-const-array), K-140 (yaml-keys). K-160's
+  // FIXTURE.md §6: concepts with no planted finding are O-000002 (swift-enum
+  // raw-value facet), O-000003 (swift-const-array), O-000004 (yaml-keys). O-000006's
   // clean .strings descriptor rides the drift test — the concept as a whole
   // carries the planted .xcstrings finding.
-  const r = runSwiftApp('--concepts', 'K-120,K-130,K-140');
+  const r = runSwiftApp('--concepts', 'O-000002,O-000003,O-000004');
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out.findings, []);
@@ -74,42 +74,42 @@ test('A2 clean extractions: every clean anchor agrees — exit 0, zero findings'
 });
 
 test('A3 planted drift: exactly the tabulated findings, both directions, nothing else', () => {
-  const r = runSwiftApp('--concepts', 'K-110,K-150,K-160');
+  const r = runSwiftApp('--concepts', 'O-000001,O-000005,O-000006');
   assert.equal(r.status, 1, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out['hard-errors'], []);
   assert.deepEqual(
     out.findings.map((f) => [f.concept, f.path, f.code, f.value ?? null]),
     [
-      ['K-110', 'enumerates[0]', 'source-value-missing', 'comment'],
-      ['K-110', 'enumerates[0]', 'value-not-in-source', 'eyedropper'],
-      ['K-150', 'enumerates[0]', 'source-value-missing', '2027-preview'],
-      ['K-160', 'enumerates[1]', 'value-not-in-source', 'cta.publish'],
+      ['O-000001', 'enumerates[0]', 'source-value-missing', 'comment'],
+      ['O-000001', 'enumerates[0]', 'value-not-in-source', 'eyedropper'],
+      ['O-000005', 'enumerates[0]', 'source-value-missing', '2027-preview'],
+      ['O-000006', 'enumerates[1]', 'value-not-in-source', 'cta.publish'],
     ],
   );
 });
 
 test('A3 wrong-pointer: all claimed values missing from a real, parseable file — one finding, no cascade', () => {
-  const r = runSwiftApp('--concepts', 'K-170');
+  const r = runSwiftApp('--concepts', 'O-000007');
   assert.equal(r.status, 1, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out['hard-errors'], []);
-  assert.deepEqual(out.findings.map((f) => [f.concept, f.code]), [['K-170', 'wrong-pointer']]);
+  assert.deepEqual(out.findings.map((f) => [f.concept, f.code]), [['O-000007', 'wrong-pointer']]);
 });
 
 test('§5.1 out-of-envelope anchor (#if in the enum span) HARD-ERRORS (exit 2) — never a partial value set', () => {
-  const r = runSwiftApp('--concepts', 'K-180');
+  const r = runSwiftApp('--concepts', 'O-000008');
   assert.equal(r.status, 2, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out.findings, []); // no value set was ever claimed checked
-  assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['K-180', 'out-of-envelope']]);
+  assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['O-000008', 'out-of-envelope']]);
   assert.match(out['hard-errors'][0].message, /#if/);
 });
 
 test('the two swift-enum facets are independent value sets off the SAME anchor (§3.5 emit)', () => {
-  // K-120 (raw-value) is clean while K-110 (case-name) drifts — the facets
+  // O-000002 (raw-value) is clean while O-000001 (case-name) drifts — the facets
   // cannot be conflated, or the raw-value check would inherit the drift.
-  const r = runSwiftApp('--concepts', 'K-120');
+  const r = runSwiftApp('--concepts', 'O-000002');
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.deepEqual(JSON.parse(r.stdout).findings, []);
 });

@@ -2,12 +2,12 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "urn:unknown-knowledge:schema:catalog",
   "title": "Store catalog (_catalog.yaml)",
-  "description": "The navigational entry point every store shares: _catalog.yaml → _rules.yaml → class files / tree leaves (PRD §3). The map is never the fact — catalogs point at files, they never embed record content. Entry ids follow the owning store's id grammar (K-NNN, notation, D-NNN), so they are plain strings here; id shape and file resolution are structural-validator checks (KK-05). Schema evolution is additive-only (§3.5, D-013).",
+  "description": "Navigational pointers into the three content stores. Canonical IDs and same-kind qualified proposal keys use the active installation namespace; proposal rows remain authoring references and allocate no canonical identity. Shape, actual target agreement and ledger corroboration are reader and structural-validator checks.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema-version", "store", "entries"],
   "properties": {
-    "schema-version": { "type": "integer", "minimum": 1 },
+    "schema-version": { "type": "integer", "enum": [2] },
     "store": { "enum": ["ontology", "knowledge", "decisions"] },
     "entries": {
       "type": "array",

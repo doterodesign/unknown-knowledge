@@ -1,0 +1,40 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:88481c7c-29da-40e0-a5b7-f8331769f765
+    title: Guard actual record results once with strict authored descendants
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      At retained runtime bdd366c, call-local authorizer reuse still leaves the
+      first actual resolution guarding the authored record strictly and then
+      guarding that same record inside the complete permissive wrapper. The joint
+      fixture later refuses governed-registry-view and the near-byte fixture
+      refuses its first historical-authorizer lookup. The shared phase does not
+      identify which of its two guard walks failed. Both fixtures use one qualified
+      authorizer and two capture locators; the earlier one-locator static claim
+      used an incorrect authored YAML field name and is explicitly corrected.
+    decision: >
+      Introduce neutral guardCapturedRecordResult over the existing private
+      iterative visitor, with a closed built-in policy. Require actual own
+      enumerable data entry and record slots, visit the entire result once, allow
+      undefined loader bookkeeping and keep entry.record and all descendant
+      occurrences strict. Preserve expanded alias accounting, ancestor-cycle and
+      descriptor/prototype/array checks, authentic sticky budgets, and strict
+      no-entry results. P1 resolution calls this guard once before its unchanged
+      detached clone. Do not project away authored data, accept caller proof,
+      globally memoize objects, or bundle larger parse/corpus/registry reuse.
+    consequences: >
+      The removed work is one actual duplicate record traversal, not the clone or
+      evidence checks. Wrapper-order traversal changes partial counters and first
+      failures versus record-first traversal; docs/agents/ucs-1235-operation-budget.md
+      documents current and historical units. Actual loaded/retired regression
+      tests in tests/record-identity-index.test.js establish RED to GREEN with a
+      complete single-result allowance. Tests/document-budget.test.js checks
+      strict alias occurrences, malformed slots, deep trees and sticky boundaries;
+      tests/subject-authorizer-reuse.test.js preserves model/event safeguards.
+      P1/P2 agreed the design, and main authorized this bounded implementation;
+      this proposed record still grants no canonical publication or human approval.
+      No capacity, fixture, eligibility or operational qualification change follows.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:5ec051c3-351f-4712-9d53-5c465b7baf2f, proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20] }

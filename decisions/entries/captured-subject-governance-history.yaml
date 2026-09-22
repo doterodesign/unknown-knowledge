@@ -1,0 +1,113 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a
+    title: Captured Subject governance preserves historical evidence and explicit refusal assessment
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Declared active state, review metadata and caller-authored approval booleans
+      cannot establish reviewed source integrity. New meanings must account for
+      retained refusals without pretending that an engine can judge semantic
+      equivalence or authenticate human attention. Historical evidence must not
+      disappear merely because a current authorizer is archived.
+    decision: >
+      Validate append-only participant history, exact state continuity, event and
+      Decision digests and supplied raw capture hashes. Keep the evaluated
+      governance in a private authenticated handle, never a serializable approval
+      DTO. Missing historical bytes yield unavailable verification; corruption or
+      conflicting captures refuse. New events need a current accepted/addressed
+      authorizer, while historical accepted evidence retains its own semantics.
+      Preserve suppressed proposals and their refusal rather than deleting them.
+      Fresh activation and proposal promotion use separate bounded actual-model
+      APIs and a source-bound complete-registry refusal assessment. The reviewed
+      relevant-refusal rows carry exact refusal identities and distinct-meaning
+      reasons; the semantic-completeness attestation remains a human assertion.
+      Bootstrap requires a present actual empty authority, never fabricated absence.
+    consequences: >
+      Raw capture integrity does not establish Git membership, reviewer identity,
+      publication readiness or semantic equivalence. P1/P7 retain committed-source
+      and final publication responsibilities. Compact refusal rows avoid authored
+      repetition but retained registry snapshots can still require O(N times R)
+      bytes; no total storage or human-work reduction is claimed. Ordinary
+      transition validation cannot substitute for activation or promotion.
+      Sources: payload/engine/lib/subject-governance.js, decision-evidence.js,
+      subject-refusal-assessment.js and docs/agents/ucs-1235-subject-governance.md.
+      Same-meaning reversal, broader lifecycle adjudication and complete publication
+      remain staged work. This proposal records rationale without claiming approval.
+      Subsequent internal implementation authorization on 2026-09-21 adds one
+      fixed subject-metadata publication family, not four action engines: one
+      native rename/clarify/reparent/relate event may have atomic multiple rows.
+      Existing canonical active participants preserve identity, history, warrant,
+      origins and every field outside native action scope. Rename/clarify require
+      the native unchanged-meaning assertion; no automatic aliases or homonym
+      suppression. Actual committed before/candidate snapshots may differ only
+      at the registry path, preserving all K/O/D bytes/modes, ledger, assignments,
+      history and current authorizer. Positive assigned users are supported;
+      assignment not-applicable means registry-only-transition, never zero use.
+      One owned D/A/M capture admission and authentic core governance allowance
+      feed a fixed wrapper over existing private transition mechanics. The old
+      unbounded public transition API and counters remain unchanged. Actual
+      supplied provenance and source-less side correspondence remain mandatory;
+      no fetching omitted unrelated history or fabricated global approval.
+      Separate inventory, closure, reach/tree, replay and native query phases
+      retain honest counters/exclusions, not an end-to-end budget claim. All
+      canonical and proposal qualification rows are closure charged. Replay
+      qualifies the full canonical union before filtering to E verified current
+      query-eligible IDs on both sides. All installed stores R must match; native
+      current/all views and direct/descendant expansions reserve
+      C=R*4*(4+2E+4max(E-1,0)) cases and 2C native calls. Stable unavailable is
+      null/unavailable governance with current resolved identity, not false:
+      raw Subject/history/identity must be unchanged, unassigned and unrelated,
+      never a participant. Reparent relevance conservatively includes changed
+      edge endpoints and full before/after ancestor OR descendant closure even
+      unchanged ancestors; relate includes incident endpoints. Rename/clarify
+      impose no blanket ancestor approval. Assigned unavailable Subjects cause
+      native row refusal even for all/none; no exception or owner exclusion.
+      Absent assignment fields keep valid native possible matches. Direct
+      membership is invariant for all actions; descendant membership is invariant
+      except actual reparent deltas with native forest/reach evidence. Resource,
+      incomplete and asymmetric qualification outcomes never become negatives.
+      Fixed 2T native metadata lookups cover actual old/new changed labels/aliases,
+      retain all homonyms and have explicit term/UTF8/match/retained-byte caps;
+      external language terms remain outside finite coverage. Native results,
+      ranks, uncertainty and failures remain visible. One fixed worker pair,
+      registry-only capture, strict original-wire predicate, actual capability,
+      fresh final at review/publication and unchanged candidate-ref CAS complete
+      this family. Predicates and receipts do not create approval. Canonical
+      suppression/restoration and fresh-identity creation/union remain separate.
+      Alternatives rejected: four duplicate engines, caller policy callbacks,
+      empty-delta assumptions, waived native refusals and added public MCP tools.
+      Implementation evidence is recorded in
+      docs/agents/ucs-1240-subject-metadata-publication.md; this proposal remains
+      unpublished and authorizes no runtime/customer publication.
+      Forward proposal suppression publication was separately authorized for
+      implementation on 2026-09-21, after metadata integration. Two fixed internal
+      profiles share registry-only eventless mechanics through private literal
+      selection and named exports; metadata identities, phases and semantics
+      remain unchanged. The new subject-proposal-suppression operation has its
+      own publication, impact and replay policy identities. No public policy
+      resolver, callback framework, CLI/MCP surface or duplicated lifecycle engine
+      is introduced. Only two thin fixed worker entrypoints are new.
+      Suppression delegates the existing native transition using the actual BEFORE
+      model and identity index. It consumes one exact proposed-to-suppressed
+      event, retaining meaning, origin, warrant, parent/related edges and the
+      Decision-bound refusal reason. Selected proposal eligibility remains
+      explicitly ineligible on both sides, with the status transition corroborated
+      by native history and current authorizer proof; it is never query approval.
+      All canonical subjects, ledger, stored records, assignments, original
+      history and direct/descendant query memberships remain invariant. The same
+      owned capture admission and authentic allowance continue into candidate
+      governance evaluation. Actual source membership, full current Decision
+      captures on both sides, strict profile-bound wire/report retention, fresh
+      final at review and publication, capability and unchanged CAS remain
+      mandatory. Rehashed cross-profile reports are not authority.
+      Alternatives rejected: copying eight engines, broadening metadata actions,
+      caller-selected policies, weakening native suppression to use a candidate
+      model, and conflating proposal refusal with active canonical restoration.
+      Canonical suppression/restoration and creation/union remain separate work.
+      This implementation authorization is not approval/publication of this
+      proposed Decision or any customer candidate. Scope and evidence:
+      docs/agents/ucs-1240-subject-proposal-suppression-publication.md.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000011, D-000014, proposal:decision:c584ac00-a64a-4fc3-bc61-882e68e96e6d, proposal:decision:00000000-0000-4000-8000-000000000024] }

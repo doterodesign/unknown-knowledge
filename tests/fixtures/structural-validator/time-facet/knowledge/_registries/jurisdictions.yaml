@@ -15,7 +15,7 @@
 # The registry still ships because the store loads its registries as a set; an
 # EMPTY registry is not a missing one — it is a vocabulary nothing here has
 # needed warrant for.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values: []

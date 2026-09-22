@@ -1,31 +1,31 @@
 # Query-decomposition fixture (UCS-1152) — the hierarchical domains registry.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: domains
 hierarchical: true
 values:
   - value: design-system
     gloss: The shared design system.
-    warrant: L-000102 and L-000140 both document design-system material.
-    decision: D-201
+    warrant: K-000001 and K-000003 both document design-system material.
+    decision: D-000001
     minted: "2026-07-07"
   - value: design-system/tokens
     gloss: The registries the system enumerates its tokens from.
-    warrant: L-000102 documents the token registry edit.
-    decision: D-201
+    warrant: K-000001 documents the token registry edit.
+    decision: D-000001
     minted: "2026-07-07"
   - value: design-system/theming
     gloss: Publishing themes once their tokens resolve.
-    warrant: L-000140 and L-000190 both state theming constraints.
-    decision: D-201
+    warrant: K-000003 and K-000004 both state theming constraints.
+    decision: D-000001
     minted: "2026-07-07"
   - value: engineering
     gloss: Building and shipping the product.
-    warrant: L-000133 states the rounding rule theme export obeys.
-    decision: D-201
+    warrant: K-000002 states the rounding rule theme export obeys.
+    decision: D-000001
     minted: "2026-07-07"
   - value: engineering/frontend
     gloss: Rounding and precision when a theme is exported.
-    warrant: L-000133 states banker's rounding at theme export.
-    decision: D-201
+    warrant: K-000002 states banker's rounding at theme export.
+    decision: D-000001
     minted: "2026-07-07"

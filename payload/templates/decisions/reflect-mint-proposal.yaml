@@ -12,8 +12,8 @@
 # protocol/skills/knowledge-reflect.md (Minting conduct) and
 # protocol/registry-warrant.md.
 #
-# Draft with a provisional date-suffixed id (D-YYYY-MM-DD-slug) and
-# `status: proposed`; the steward assigns the final D-NNN at acceptance (§3.5).
+# Draft with a proposal:decision:<lowercase-v4-uuid> identity and
+# `status: proposed`; acceptance allocates a permanent D-NNNNNN identity (§3.5).
 # Agents draft; humans approve.
 #
 # The two rules this entry exists to evidence:
@@ -30,9 +30,9 @@
 # WHAT THE VALIDATOR CATCHES, AND WHAT ONLY A READER CATCHES.
 #
 # MACHINE-REFUSED — the `id` and `date` placeholders below are DELIBERATELY not
-# valid (`YYYY` is not four digits), so pasting this file unedited fails
+# valid (`UUID` is not a lowercase v4 UUID; `YYYY` is not four digits), so pasting this file unedited fails
 # validation and never produces a Decisions entry. (Same conduct as
-# registry-minting.yaml and the audit's `K-XXX` drafts.)
+# registry-minting.yaml and the audit's `proposal:ontology:<lowercase-v4-uuid>` drafts.)
 #
 # GREEN BUT STILL A PLACEHOLDER — filling those two makes the file VALIDATE,
 # and these five fields still hold <angle-bracket> text that no validator
@@ -50,9 +50,9 @@
 # them would constrain every real Decisions entry in the store, and a validator
 # cannot tell a written warrant from a plausible-looking sentence anyway.
 # Replace every <angle-bracket> before this entry goes to the gate.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-YYYY-MM-DD-mint-example-from-reflect
+  - id: proposal:decision:UUID
     title: Mint <value> in the <registry> registry (reflect cycle <date>)
     # `governance` — minting a vocabulary value changes what the Store may say,
     # not how the engine works.

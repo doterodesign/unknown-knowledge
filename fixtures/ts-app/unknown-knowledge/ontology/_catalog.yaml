@@ -1,52 +1,52 @@
-# Acceptance-fixture store (KK-15) — NEVER shipped by init (D-007).
-schema-version: 1
+# Acceptance-fixture store (KK-15) — NEVER shipped by init (kit decision D-000007).
+schema-version: 2
 store: ontology
 entries:
-  - id: K-101
+  - id: O-000001
     title: Export format
     file: classes/100-product.yaml
-  - id: K-102
+  - id: O-000002
     title: Blend mode
     file: classes/100-product.yaml
-  - id: K-103
+  - id: O-000003
     title: Release status
     file: classes/100-product.yaml
-  - id: K-104
+  - id: O-000004
     title: Asset kind
     file: classes/100-product.yaml
-  - id: K-105
+  - id: O-000005
     title: Color space
     file: classes/100-product.yaml
-  - id: K-106
+  - id: O-000006
     title: Panel
     file: classes/100-product.yaml
-  - id: K-107
+  - id: O-000007
     title: Status color
     file: classes/100-product.yaml
-  - id: K-108
+  - id: O-000008
     title: Locale
     file: classes/100-product.yaml
-  - id: K-109
+  - id: O-000009
     title: Feature flag
     file: classes/100-product.yaml
-  - id: K-110
+  - id: O-000010
     title: Vertical
     file: classes/100-product.yaml
-  - id: K-111
+  - id: O-000011
     title: Route
     file: classes/100-product.yaml
-  - id: K-112
+  - id: O-000012
     title: App dependency
     file: classes/100-product.yaml
-  - id: K-113
+  - id: O-000013
     title: Export preset
     file: classes/100-product.yaml
-  - id: K-114
+  - id: O-000014
     title: Plan tier
     file: classes/100-product.yaml
-  - id: K-115
+  - id: O-000015
     title: Experiment
     file: classes/100-product.yaml
-  - id: K-116
+  - id: O-000016
     title: Release status barrel
     file: classes/100-product.yaml

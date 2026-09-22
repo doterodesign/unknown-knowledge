@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["schema-version", "store", "rules"],
   "properties": {
-    "schema-version": { "type": "integer", "minimum": 1 },
+    "schema-version": { "type": "integer", "enum": [1] },
     "store": { "enum": ["ontology", "knowledge", "decisions"] },
     "rules": { "type": "array" }
   }

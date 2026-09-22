@@ -30,28 +30,28 @@ test('clean store: every claim agrees as a SET (order irrelevant) — exit 0', (
   const out = runJson('clean', 0);
   assert.equal(out.ok, true);
   assert.deepEqual(out.findings, []);
-  // K-100 was actually checked, not skipped.
-  const checked = out.checked.find((c) => c.concept === 'K-100');
+  // O-000001 was actually checked, not skipped.
+  const checked = out.checked.find((c) => c.concept === 'O-000001');
   assert.equal(checked.descriptors, 1);
 });
 
 test('draft concepts are skipped (§3.5 structural checks only), even with a dead source', () => {
-  // K-130 is draft and points at src/missing.txt — must NOT hard-error.
+  // proposal:ontology:13013013-0130-4130-8130-130130130130 is draft and points at src/missing.txt — must NOT hard-error.
   const out = runJson('clean', 0);
-  const skipped = out.checked.find((c) => c.concept === 'K-130');
+  const skipped = out.checked.find((c) => c.concept === 'proposal:ontology:13013013-0130-4130-8130-130130130130');
   assert.equal(skipped.skipped, 'draft');
 });
 
 // ------------------------------------------- both-direction diffing (exit 1)
 
 test('drift store: value-not-in-source AND source-value-missing in one run — exit 1', () => {
-  const out = runJson('drift', 1, '--concepts', 'K-100');
+  const out = runJson('drift', 1, '--concepts', 'O-000001');
   assert.equal(out.ok, false);
   const codes = out.findings.map((f) => f.code);
   assert.ok(codes.includes('value-not-in-source'), `codes: ${codes}`);
   assert.ok(codes.includes('source-value-missing'), `codes: ${codes}`);
   const notInSource = out.findings.find((f) => f.code === 'value-not-in-source');
-  assert.equal(notInSource.concept, 'K-100');
+  assert.equal(notInSource.concept, 'O-000001');
   assert.equal(notInSource.value, 'star');
   assert.equal(notInSource.severity, 'error');
   const missing = out.findings.find((f) => f.code === 'source-value-missing');
@@ -60,7 +60,7 @@ test('drift store: value-not-in-source AND source-value-missing in one run — e
 });
 
 test('duplicate value in the source is a finding (§3.5: values compare as sets)', () => {
-  const out = runJson('drift', 1, '--concepts', 'K-100');
+  const out = runJson('drift', 1, '--concepts', 'O-000001');
   const dup = out.findings.find((f) => f.code === 'duplicate-source-value');
   assert.ok(dup, `findings: ${JSON.stringify(out.findings)}`);
   assert.equal(dup.value, 'list');
@@ -70,7 +70,7 @@ test('equality is byte-exact and case-sensitive — no normalization sneaks in',
   // srgb/p3 match exactly; if comparison lowercased or trimmed this would
   // still pass, so the drift store proves the negative: "star" vs source
   // holding no near-miss. The clean store proves order-insensitivity.
-  const out = runJson('drift', 0, '--concepts', 'K-110');
+  const out = runJson('drift', 0, '--concepts', 'O-000002');
   assert.deepEqual(out.findings, []);
 });
 
@@ -80,7 +80,7 @@ test('ALL claimed values missing from a real parseable file → one wrong-pointe
   const out = runJson('wrong-pointer', 1);
   assert.deepEqual(out.findings.map((f) => f.code), ['wrong-pointer']);
   const [f] = out.findings;
-  assert.equal(f.concept, 'K-100');
+  assert.equal(f.concept, 'O-000001');
   assert.equal(f.source, 'src/registry.txt');
   assert.equal(f.severity, 'error');
 });
@@ -88,33 +88,33 @@ test('ALL claimed values missing from a real parseable file → one wrong-pointe
 // --------------------------------------------- deprecated demotion (§3.5)
 
 test('deprecated concepts: value findings demote to warnings — exit 0 when nothing blocks', () => {
-  const out = runJson('drift', 0, '--concepts', 'K-120');
+  const out = runJson('drift', 0, '--concepts', 'O-000003');
   assert.equal(out.ok, true);
   const [f] = out.findings;
   assert.equal(f.code, 'source-value-missing');
   assert.equal(f.severity, 'warning');
-  assert.equal(f.concept, 'K-120');
+  assert.equal(f.concept, 'O-000003');
 });
 
 // -------------------------------------------------------- --concepts filter
 
 test('--concepts filters to the named ids only', () => {
   const all = runJson('drift', 1);
-  assert.ok(all.findings.some((f) => f.concept === 'K-100'));
-  assert.ok(all.findings.some((f) => f.concept === 'K-120'));
-  const one = runJson('drift', 1, '--concepts', 'K-100');
-  assert.ok(one.findings.every((f) => f.concept === 'K-100'));
+  assert.ok(all.findings.some((f) => f.concept === 'O-000001'));
+  assert.ok(all.findings.some((f) => f.concept === 'O-000003'));
+  const one = runJson('drift', 1, '--concepts', 'O-000001');
+  assert.ok(one.findings.every((f) => f.concept === 'O-000001'));
   // comma list and repeated flag both work
-  const two = runJson('drift', 1, '--concepts=K-100,K-110');
-  assert.ok(two.findings.every((f) => f.concept === 'K-100'));
-  assert.ok(two.checked.some((c) => c.concept === 'K-110'));
-  assert.ok(!two.checked.some((c) => c.concept === 'K-120'));
+  const two = runJson('drift', 1, '--concepts=O-000001,O-000002');
+  assert.ok(two.findings.every((f) => f.concept === 'O-000001'));
+  assert.ok(two.checked.some((c) => c.concept === 'O-000002'));
+  assert.ok(!two.checked.some((c) => c.concept === 'O-000003'));
 });
 
 test('--concepts naming an id that does not exist is a hard error (exit 2) — a check that never ran', () => {
-  const r = run('--root', fixture('drift'), '--concepts', 'K-999');
+  const r = run('--root', fixture('drift'), '--concepts', 'O-999999');
   assert.equal(r.status, 2, r.stdout + r.stderr);
-  assert.match(r.stderr, /K-999/);
+  assert.match(r.stderr, /O-999999/);
 });
 
 // --------------------------------------------------- hard errors (exit 2)
@@ -133,7 +133,7 @@ test('unknown extractor kind → exit 2 with a typed hard error naming the kind'
   const [e] = out['hard-errors'].filter((x) => x.code === 'unknown-kind');
   assert.ok(e, JSON.stringify(out['hard-errors']));
   assert.match(e.message, /no-such-kind/);
-  assert.equal(e.concept, 'K-100');
+  assert.equal(e.concept, 'O-000001');
 });
 
 test('missing source file and out-of-envelope sentinel both hard-error — and BOTH are reported in one run', () => {
@@ -142,7 +142,7 @@ test('missing source file and out-of-envelope sentinel both hard-error — and B
   assert.ok(codes.includes('source-missing'), `codes: ${codes}`);
   assert.ok(codes.includes('out-of-envelope'), `codes: ${codes}`);
   const envelope = out['hard-errors'].find((e) => e.code === 'out-of-envelope');
-  assert.equal(envelope.concept, 'K-110');
+  assert.equal(envelope.concept, 'O-000002');
   assert.match(envelope.message, /@if/);
 });
 
@@ -194,7 +194,7 @@ test('JSON output is stable-sorted and deterministic across runs (no timestamps)
 test('human mode reports findings with concept, code, and source', () => {
   const r = run('--root', fixture('drift'));
   assert.equal(r.status, 1);
-  assert.match(r.stdout, /K-100/);
+  assert.match(r.stdout, /O-000001/);
   assert.match(r.stdout, /value-not-in-source/);
   assert.match(r.stdout, /source-value-missing/);
   assert.match(r.stdout, /src\/icons\.txt/);

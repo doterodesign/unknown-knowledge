@@ -113,15 +113,22 @@
  * A nonexistent/unreadable root THROWS — an engine failure (exit-code 2
  * territory, PRD §5), never a silent diagnostic.
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, resolve } from 'node:path';
-import { load, YAMLException } from 'js-yaml';
+import { readSourceFileSync, assertSourceBudget, SourceBudgetError } from './source-budget.js';
+import { getDocumentBudgetUsage } from './document-budget.js';
+import { readdirSync, statSync } from 'node:fs';
+import { join, resolve, posix } from 'node:path';
+import { parseRecordFile, parseYamlDocument } from './record-file.js';
 import { validateStoreFile, ERROR_CODES, compare } from './validate-record.js';
-// The accession grammar, from the one module that owns it (UCS-1142) — the same
-// source the schemas bind to, so what the loader will INDEX and what the
-// validator will ACCEPT can never be two different notions of a leaf id.
-import { idPattern } from './id-grammars.js';
 import { UsageError } from './usage-error.js';
+import { parseCanonicalId, parseProposalKey, RECORD_KINDS } from './record-identity.js';
+import { validateIdentityLedger } from './identity-ledger.js';
+import { buildIdentityIndex, resolveRecord } from './record-identity-index.js';
+import { readSubjectRegistry, SUBJECT_REGISTRY_DIAGNOSTIC_CODES } from './subject-registry-reader.js';
+import { readAssignmentHistory, ASSIGNMENT_HISTORY_DIAGNOSTIC_CODES } from './assignment-history-reader.js';
+import { validateAssignmentHistory } from './subject-history.js';
+import { indexRegistryValues } from './registry-values.js';
+import { readAssignments } from './subject-assignments.js';
+import { resolveSubject, SubjectError } from './subjects.js';
 
 export const SEVERITIES = Object.freeze(['error', 'warning']);
 
@@ -134,7 +141,7 @@ export const SEVERITIES = Object.freeze(['error', 'warning']);
  * the indexed entry — because it remains a PUBLISHED resolver field (§4), and
  * a published field needs a single spelling as much as an id space does.
  */
-export const LEAF_ID_FIELD = 'notation';
+export { LEAF_ID_FIELD } from './record-file.js';
 
 /**
  * The field a knowledge leaf mints its ACCESSION id in (UCS-1144).
@@ -144,7 +151,7 @@ export const LEAF_ID_FIELD = 'notation';
  * and it IS the leaf's identity: the only key the store indexes by, and the
  * only spelling any record may cite it as.
  */
-export const LEAF_ACCESSION_FIELD = 'id';
+export { LEAF_ACCESSION_FIELD } from './record-file.js';
 
 /**
  * A leaf's identity: its accession, and nothing else (UCS-1147).
@@ -185,12 +192,7 @@ export const LEAF_ACCESSION_FIELD = 'id';
  * @param {object} record a parsed leaf front matter
  * @returns {string|undefined} the leaf's identity, or undefined when it mints none
  */
-export function leafIdentity(record) {
-  const accession = record[LEAF_ACCESSION_FIELD];
-  return typeof accession === 'string' && idPattern('accessions').test(accession)
-    ? accession
-    : undefined;
-}
+export { leafIdentity } from './record-file.js';
 
 /**
  * The id of one indexed record, whatever store it came from.
@@ -205,8 +207,11 @@ export function leafIdentity(record) {
  */
 export const recordId = (entry) => entry.identity ?? entry.id;
 
-export const DIAGNOSTIC_CODES = Object.freeze([
+export const DIAGNOSTIC_CODES = Object.freeze([...new Set([
   ...ERROR_CODES,
+  ...SUBJECT_REGISTRY_DIAGNOSTIC_CODES,
+  ...ASSIGNMENT_HISTORY_DIAGNOSTIC_CODES,
+  'current-state-mismatch', 'duplicate-current-record', 'invalid-current-record', 'missing-current-record',
   'parse-error',
   'read-error',
   'duplicate-id',
@@ -224,7 +229,13 @@ export const DIAGNOSTIC_CODES = Object.freeze([
   'graduation-table-store-mismatch',
   'duplicate-graduation-category',
   'graduation-threshold-shape',
-]);
+  'missing-identity',
+  'invalid-identity',
+  'proposal-lifecycle',
+  'invalid-dependency',
+  'subjects-unavailable',
+  'unknown-subject',
+])]);
 
 /**
  * Freeze a ref-field table through every level it has: the table, each kind's
@@ -372,6 +383,7 @@ const SPACE_TO_STORE = Object.freeze({
   leaves: 'knowledge',
   decisions: 'decisions',
 });
+const SPACE_TO_KIND = Object.freeze({ concepts: 'ontology', leaves: 'knowledge', decisions: 'decision' });
 
 /**
  * The subdirectory a store keeps its governed vocabulary REGISTRIES in
@@ -536,16 +548,7 @@ function sortedMap(map) {
 
 /** Parse one YAML document with scalar types intact (§3.5 coercion trap). */
 function parseYaml(ctx, file, text) {
-  try {
-    return { doc: load(text, { filename: file }) };
-  } catch (error) {
-    const reason = error instanceof YAMLException ? error.reason ?? error.message : error.message;
-    ctx.diagnostics.push({
-      severity: 'error', code: 'parse-error', file, path: '',
-      message: `unparseable YAML: ${reason}`,
-    });
-    return null;
-  }
+  return parseYamlDocument(file, text, ctx.diagnostics, { documentBudget: ctx.documentBudget });
 }
 
 /** Validate a store file via KK-02 and map its errors onto the one scale. */
@@ -567,15 +570,42 @@ function validateInto(ctx, kind, file, doc) {
  */
 function indexRecord(ctx, space, id, file, path, entry) {
   if (typeof id !== 'string') return false; // shape defects already diagnosed by KK-02
-  const existing = ctx[space].get(id);
+  const kind = SPACE_TO_KIND[space];
+  const proposal = parseProposalKey(kind, id).ok;
+  if (!proposal && !parseCanonicalId(kind, id).ok) return false;
+  if (proposal) {
+    const lifecycle = kind === 'knowledge' ? entry.record.facets?.stage : entry.record.status;
+    if (!['draft', 'proposed', 'rejected', 'suppressed'].includes(lifecycle)) {
+      ctx.diagnostics.push({ severity: 'error', code: 'proposal-lifecycle', file, path,
+        message: 'a proposal key cannot represent an effective record; publish through the governed identity gate' });
+    }
+  } else {
+    ctx.identityRecords.push({ kind, entry, locator: { file, path: path === 'id' ? '' : path.slice(0, -3) } });
+  }
+  // Check every occurrence before duplicate IDs collapse into a Map. Historical
+  // lookup observes exact retained meanings; it grants no new-assignment approval.
+  const assignments = readAssignments(entry);
+  if (assignments.state === 'known') {
+    const prefix = path === 'id' ? '' : `${path.slice(0, -3)}.`;
+    for (const [index, subjectId] of assignments.ids.entries()) {
+      try { resolveSubject(ctx.subjectRegistry, subjectId, { policy: 'historical' }); }
+      catch (error) {
+        if (!(error instanceof SubjectError)) throw error;
+        ctx.diagnostics.push({ severity: 'error', code: error.code, file,
+          path: `${prefix}subjects[${index}]`, message: error.message });
+      }
+    }
+  }
+  const records = proposal ? ctx.proposals[kind] : ctx[space];
+  const existing = records.get(id);
   if (existing) {
     ctx.diagnostics.push({
       severity: 'error', code: 'duplicate-id', file, path,
-      message: `id "${id}" is already minted in ${existing.file} — published ids are immutable; the later PR renumbers its own entry (§3.5)`,
+      message: `id "${id}" is already minted in ${existing.file} — refuse the collision and rebuild the unpublished candidate against the current ledger; never renumber published identities`,
     });
     return false;
   }
-  ctx[space].set(id, entry);
+  records.set(id, entry);
   return true;
 }
 
@@ -732,8 +762,9 @@ function collectRefs(ctx, kind, from, file, basePath, record) {
  */
 function readText(ctx, file) {
   try {
-    return readFileSync(join(ctx.root, file), 'utf8');
+    return readSourceFileSync(join(ctx.root, file), { sourceBudget: ctx.sourceBudget, encoding: 'utf8' });
   } catch (error) {
+    if (error instanceof SourceBudgetError) throw error;
     if (error.code !== 'ENOENT') {
       ctx.diagnostics.push({
         severity: 'error', code: 'read-error', file, path: '',
@@ -780,8 +811,21 @@ function loadCatalogAndRules(ctx, store, hasRules) {
     // validly declared pending id into a spurious unresolved-ref cascade.
     onParsed: (doc) => {
       if (!isObject(doc) || !Array.isArray(doc.entries)) return;
-      for (const entry of doc.entries) {
-        if (isObject(entry) && typeof entry.id === 'string') ctx.declared[store].add(entry.id);
+      for (const [i, entry] of doc.entries.entries()) {
+        if (!isObject(entry) || typeof entry.id !== 'string') continue;
+        const kind = store === 'decisions' ? 'decision' : store;
+        if (!parseCanonicalId(kind, entry.id).ok && !parseProposalKey(kind, entry.id).ok) {
+          ctx.diagnostics.push({ severity: 'error', code: 'invalid-identity', file: `${store}/_catalog.yaml`, path: `entries[${i}].id`,
+            message: 'catalog identity must use the active canonical or typed proposal grammar' });
+          continue;
+        }
+        ctx.declared[store].add(entry.id);
+        if (typeof entry.file === 'string' && entry.file) {
+          const declarations = parseCanonicalId(kind, entry.id).ok ? ctx.identityDeclarations : ctx.proposalDeclarations;
+          declarations.push({ kind, id: entry.id,
+            target: entry.file === 'pending-import' ? entry.file : posix.normalize(`${store}/${entry.file}`),
+            locator: { file: `${store}/_catalog.yaml`, path: `entries[${i}]` } });
+        }
       }
     },
   });
@@ -866,45 +910,14 @@ function loadRegistryFiles(ctx, store) {
       });
       continue;
     }
+    const indexed = indexRegistryValues(doc);
+    ctx.diagnostics.push(...indexed.diagnostics.map((d) => ({ severity: 'error', file, ...d })));
     const registry = {
-      name,
-      store,
-      file,
+      name, store, file, document: doc,
       hierarchical: doc.hierarchical === true,
-      minted: new Set(),
-      suppressed: new Set(),
+      minted: indexed.minted, suppressed: indexed.suppressed,
     };
-    // A value is declared ONCE. Two rows claiming one value is a defect
-    // whichever statuses they carry, and the two shapes fail differently:
-    //
-    //   same status twice  — a redundant row. Harmless to the sets, but one of
-    //                        the two warrants is the live one and a reader
-    //                        cannot tell which, so the vocabulary's own record
-    //                        of why a term exists has become ambiguous.
-    //   minted AND suppressed — the value lands in both sets, and `judgeValue`
-    //                        tests suppression first, so a MINTED value silently
-    //                        reads as refused. The registry contradicts itself
-    //                        and the engine resolves it by evaluation order,
-    //                        which is not a governance decision anyone made.
-    //
-    // Both are refused rather than reconciled: "minted or suppressed" is the
-    // one question a registry exists to answer, and a file that answers it
-    // twice must be fixed by a steward, never guessed at here.
-    const declared = new Map(); // value -> the status its first row carried
-    for (const [i, entry] of doc.values.entries()) {
-      if (!isObject(entry) || typeof entry.value !== 'string') continue; // KK-02 diagnosed the shape
-      const status = entry.status === 'suppressed' ? 'suppressed' : 'minted';
-      const first = declared.get(entry.value);
-      if (first !== undefined) {
-        ctx.diagnostics.push({
-          severity: 'error', code: 'duplicate-registry-value', file, path: `values[${i}].value`,
-          message: first === status
-            ? `value "${entry.value}" is declared twice, both times as ${status} — a value is declared once, and a duplicate row leaves two warrants with no way to tell which one governs`
-            : `value "${entry.value}" is declared as both ${first} and ${status} — a registry cannot mint and refuse the same value, and resolving the contradiction by file order would be a governance decision nobody made`,
-        });
-        continue;
-      }
-      declared.set(entry.value, status);
+    for (const { index: i, entry } of indexed.rows) {
       // "Each minting a Decisions entry" (UCS-1148) enforced rather than
       // merely documented: the citation rides the ordinary ref graph, so an
       // id naming no decision is the same `unresolved-ref` error it would be
@@ -923,12 +936,6 @@ function loadRegistryFiles(ctx, store) {
           space: 'decisions',
         });
       }
-      // Absent status means minted; only an explicit suppression withholds a
-      // value. Both sets are kept because they answer different questions: a
-      // suppressed value is not usable, but it IS accounted for, and a finding
-      // that can say so tells an author "this was refused" rather than the far
-      // less useful "this does not exist".
-      registry[status].add(entry.value);
     }
     ctx.registries.set(`${store}/${name}`, registry);
   }
@@ -1176,69 +1183,29 @@ function loadEntriesFiles(ctx, store, { subdir, kind, space, extension, recursiv
     ctx.stores[store].files.push(file);
     const text = readText(ctx, file);
     if (text === null) continue; // read-error already diagnosed
-    const parsed = parseYaml(ctx, file, text);
-    if (!parsed) continue;
-    validateInto(ctx, kind, file, parsed.doc);
-    if (!isObject(parsed.doc) || !Array.isArray(parsed.doc.entries)) continue;
-    parsed.doc.entries.forEach((record, i) => {
-      if (!isObject(record)) return;
-      const basePath = `entries[${i}]`;
-      indexRecord(ctx, space, record.id, file, `${basePath}.id`, { id: record.id, file, record });
-      if (typeof record.id === 'string') collectRefs(ctx, kind, record.id, file, basePath, record);
-    });
+    const parsed = parseRecordFile({ kind: SPACE_TO_KIND[space], file, text, documentBudget: ctx.documentBudget });
+    ctx.diagnostics.push(...parsed.diagnostics);
+    for (const { entry, locator } of parsed.occurrences) {
+      indexRecord(ctx, space, entry.id, file, `${locator.path}.id`, entry);
+      if (typeof entry.id === 'string') collectRefs(ctx, kind, entry.id, file, locator.path, entry.record);
+    }
   }
 }
 
-/** Knowledge leaves: YAML front matter + markdown body, one leaf per file. */
+/** Knowledge leaves: the same file parser used by captured-record selection. */
 function loadLeafFiles(ctx) {
   for (const file of listFiles(ctx, 'knowledge', '.md', true, { skipDirs: [DERIVED_DIR] })) {
     ctx.stores.knowledge.files.push(file);
-    const raw = readText(ctx, file);
-    if (raw === null) continue; // read-error already diagnosed
-    // Editors and autocrlf produce BOMs and CRLF; both are well-formed input.
-    const text = raw.replace(/^﻿/, '').replace(/\r\n/g, '\n');
-    const match = /^---\n([^]*?\n)?---(?:\n|$)([^]*)$/.exec(text);
-    if (!match) {
-      ctx.diagnostics.push({
-        severity: 'error', code: 'parse-error', file, path: '',
-        message: 'knowledge leaf must open with YAML front matter fenced by "---" lines (§3.2)',
-      });
-      continue;
-    }
-    const parsed = parseYaml(ctx, file, match[1] ?? '');
-    if (!parsed) continue;
-    validateInto(ctx, 'knowledge-leaf', file, parsed.doc);
-    const record = parsed.doc;
-    if (!isObject(record)) continue;
-    // The leaf's identity is read through leafIdentity(), never by naming a
-    // field here: that function is the whole seam an id-space change moves
-    // through (UCS-1142, UCS-1144, UCS-1147). `identity` is the neutral key
-    // consumers read; `notation` stays alongside it because it is a PUBLIC
-    // resolver field — the optional legacy display label — and `id` because it
-    // is what the resolver publishes as the leaf's identity.
-    const identity = leafIdentity(record);
-    const entry = {
-      identity,
-      [LEAF_ACCESSION_FIELD]: record[LEAF_ACCESSION_FIELD] ?? null,
-      [LEAF_ID_FIELD]: record[LEAF_ID_FIELD],
-      file,
-      record,
-      body: match[2],
-    };
-    // `leaves` is keyed by the accession alone — one entry per leaf, under the
-    // one name anything may cite it by. A leaf that mints no accession has no
-    // identity to be keyed under, so indexRecord declines it (a non-string id)
-    // and the schema's missing-required on `id` is the finding the author acts
-    // on. Indexing it under its notation instead would put a leaf in every
-    // enumeration that no citation could reach.
-    //
-    // Everything downstream is indexed under this leaf's identity, so it all
-    // hangs on the leaf actually TAKING that identity. A leaf that lost the id
-    // to an earlier file owns nothing, and its cross-references would otherwise
-    // enter the graph as edges the WINNER never declared — worse than the leaf
-    // simply not being there, which is what a losing mint means.
-    if (indexRecord(ctx, 'leaves', identity, file, LEAF_ACCESSION_FIELD, entry)) {
-      collectRefs(ctx, 'knowledge-leaf', identity, file, '', record);
+    const text = readText(ctx, file);
+    if (text === null) continue; // read-error already diagnosed
+    const parsed = parseRecordFile({ kind: 'knowledge', file, text, documentBudget: ctx.documentBudget });
+    ctx.diagnostics.push(...parsed.diagnostics);
+    for (const { entry } of parsed.occurrences) {
+      // Only the winning mint owns graph edges; duplicate occurrences remain
+      // captured separately by indexRecord for identity ambiguity diagnostics.
+      if (indexRecord(ctx, 'leaves', entry.identity, file, 'id', entry)) {
+        collectRefs(ctx, 'knowledge-leaf', entry.identity, file, '', entry.record);
+      }
     }
   }
 }
@@ -1280,10 +1247,13 @@ export function assertReadersResolve(descriptors) {
 
 assertReadersResolve(STORE_DESCRIPTORS);
 
-/** Pointer index: source-of-truth path → concept ids (KK-06 reverse lookup). */
+/**
+ * Source path → exact authored Ontology keys, including explicit proposals.
+ * This navigation index conveys no published identity or approval.
+ */
 function buildPointers(ctx) {
   const pointers = new Map();
-  for (const { id, record } of ctx.concepts.values()) {
+  for (const { id, record } of authoringRecords(ctx, 'ontology').values()) {
     if (!Array.isArray(record['source-of-truth'])) continue;
     for (const path of record['source-of-truth']) {
       if (typeof path !== 'string') continue;
@@ -1323,8 +1293,10 @@ function buildPointers(ctx) {
  * @returns {Map<string, string[]>} concept id -> declaring leaf identities
  */
 function buildLeavesByConcept(ctx) {
+  // Exact authored owners and targets, including proposals. An edge here
+  // never establishes a published or effective target.
   const index = new Map();
-  for (const entry of ctx.leaves.values()) {
+  for (const entry of authoringRecords(ctx, 'knowledge').values()) {
     for (const id of leafConcepts(entry.record)) {
       if (!index.has(id)) index.set(id, []);
       const identities = index.get(id);
@@ -1335,11 +1307,11 @@ function buildLeavesByConcept(ctx) {
   return sortedMap(index);
 }
 
-/** Disposable inverse of the authoritative leaf supersedes edges, one hop. */
+/** One-hop authored supersession claims; proposals convey no effective authority. */
 function buildSupersedingLeaves(ctx) {
   const index = new Map();
   for (const ref of ctx.refs) {
-    if (ref.type !== 'relates.supersedes' || !ctx.leaves.has(ref.from) || !ctx.leaves.has(ref.to)) continue;
+    if (ref.type !== 'relates.supersedes' || !authoringRecord(ctx, 'knowledge', ref.from) || !authoringRecord(ctx, 'knowledge', ref.to)) continue;
     if (!index.has(ref.to)) index.set(ref.to, new Set());
     index.get(ref.to).add(ref.from);
   }
@@ -1350,10 +1322,21 @@ function buildSupersedingLeaves(ctx) {
 function resolveRefs(ctx) {
   for (const ref of ctx.refs) {
     const store = SPACE_TO_STORE[ref.space];
-    // One index, one spelling. The alternate-spelling lookup the expand phase
-    // added (UCS-1144) left with the alias table itself: a leaf answers to its
-    // accession, and a notation-form citation resolves to nothing (UCS-1147).
-    ref.resolved = ctx[ref.space].has(ref.to) || ctx.declared[store].has(ref.to);
+    const kind = SPACE_TO_KIND[ref.space];
+    const proposal = parseProposalKey(kind, ref.to).ok;
+    const target = proposal ? ctx.proposals[kind].get(ref.to) : ctx[ref.space].get(ref.to);
+    ref.resolution = proposal ? (target ? 'proposal' : 'missing') : ctx.identityIndex
+      ? resolveRecord(ctx.identityIndex, { namespace: ctx.identity.namespace, kind, id: ref.to }).status : 'invalid';
+    ref.resolved = ['loaded', 'declared-only', 'retired', 'proposal'].includes(ref.resolution);
+    if (ref.type === 'relates.depends-on') {
+      const owner = ctx.leaves.get(ref.from) ?? ctx.proposals.knowledge.get(ref.from);
+      const stage = target?.record?.facets?.stage;
+      if (['rejected', 'suppressed'].includes(stage)
+          || (proposal && !isPrePromotionStatus(owner?.record?.facets?.stage))) {
+        ctx.diagnostics.push({ severity: 'error', code: 'invalid-dependency', file: ref.file, path: ref.path,
+          message: 'an effective record cannot depend on a proposal, and no dependency may target a rejected or suppressed record' });
+      }
+    }
     if (!ref.resolved) {
       ctx.diagnostics.push({
         severity: 'error', code: 'unresolved-ref', file: ref.file, path: ref.path,
@@ -1366,6 +1349,98 @@ function resolveRefs(ctx) {
     compare(a.from, b.from) || compare(a.type, b.type) || compare(a.to, b.to) || compare(a.path, b.path));
 }
 
+/** Read the required new-format ledger; absent format is never a legacy mode. */
+function loadIdentity(ctx) {
+  const file = '_identity.yaml';
+  const text = readText(ctx, file);
+  if (text === null) {
+    ctx.diagnostics.push({ severity: 'error', code: 'missing-identity', file, path: '',
+      message: 'the active runtime requires an installation identity ledger' });
+    return;
+  }
+  const parsed = parseYaml(ctx, file, text);
+  if (!parsed) return;
+  const checked = validateIdentityLedger(parsed.doc);
+  for (const diagnostic of checked.diagnostics) {
+    ctx.diagnostics.push({ severity: 'error', code: 'invalid-identity', file, path: diagnostic.path,
+      message: `identity ledger: ${diagnostic.code}` });
+  }
+  // Duplicate claims remain available to the diagnostic resolver while model
+  // health refuses normal operations. Other malformed ledgers cannot index.
+  if (checked.diagnostics.every(({ code }) => code === 'duplicate-allocation')) ctx.identity = parsed.doc;
+}
+
+function captureIdentityIndex(ctx) {
+  if (!ctx.identity) return;
+  for (const item of ctx.proposalDeclarations) {
+    const entry = ctx.proposals[item.kind].get(item.id);
+    if (!entry || entry.file !== item.target) {
+      ctx.diagnostics.push({ severity: 'error', code: 'invalid-identity', file: item.locator.file, path: item.locator.path,
+        message: `proposal ${item.id}: catalog must name its actual authoring payload file` });
+    }
+  }
+  ctx.identityIndex = buildIdentityIndex({ identity: ctx.identity, identitySource: { file: '_identity.yaml', path: '' },
+    records: ctx.identityRecords, declarations: ctx.identityDeclarations });
+  const seen = new Set();
+  for (const item of [...ctx.identityRecords.map(({ kind, entry, locator }) => ({ kind, id: recordId(entry), locator })), ...ctx.identityDeclarations]) {
+    const key = `${item.kind}:${item.id}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const result = resolveRecord(ctx.identityIndex, { namespace: ctx.identity.namespace, kind: item.kind, id: item.id });
+    if (['invalid', 'ambiguous', 'missing'].includes(result.status)) {
+      ctx.diagnostics.push({ severity: 'error', code: 'invalid-identity', file: item.locator.file, path: item.locator.path,
+        message: `identity ${item.id}: ${result.reason ?? result.status}` });
+    }
+  }
+}
+
+/** Compare only loaded tracked payloads; retained unavailable history is not a missing current record. */
+function loadAssignmentHistory(ctx) {
+  const source = readAssignmentHistory({ kitDir: ctx.root, identity: ctx.identity, sourceBudget: ctx.sourceBudget, documentBudget: ctx.documentBudget });
+  ctx.diagnostics.push(...source.diagnostics);
+  if (!source.present || !source.ok) return;
+  const history = source.assignmentHistory;
+  ctx.assignmentHistory = history;
+  const keyOf = ({ namespace, kind, id }) => JSON.stringify([namespace, kind, id]);
+  const tracked = new Set(history.baselines.map(({ ref }) => keyOf(ref)));
+  // Keep original occurrences, not Map winners. Existing health defects skip
+  // comparison, but no projection here can conceal a duplicate occurrence.
+  const current = ctx.identityRecords.map(({ kind, entry, locator }) => ({
+    ref: { namespace: history.namespace, kind, id: recordId(entry) }, entry, locator,
+  })).filter(({ ref }) => tracked.has(keyOf(ref)));
+  const loaded = new Map(current.map((item) => [keyOf(item.ref), item]));
+  const unavailableRefs = history.baselines.filter(({ ref }) => !loaded.has(keyOf(ref)))
+    .map(({ ref }) => ({ ...ref })).sort((a, b) => compare(keyOf(a), keyOf(b)));
+  const result = { scope: 'loaded-tracked-records', status: 'not-performed', checkedRefs: [], unavailableRefs };
+  ctx.assignmentHistoryCurrent = result;
+  if (ctx.diagnostics.some(({ severity }) => severity === 'error')) {
+    result.reason = 'loader-errors';
+    return;
+  }
+  if (current.length === 0) {
+    result.reason = 'no-loaded-tracked-records';
+    return;
+  }
+  // Full original sources have already passed replay. Narrow whole per-record
+  // chains for the existing terminal validator; never modify retained sources.
+  const baselines = history.baselines.filter(({ ref }) => loaded.has(keyOf(ref)));
+  const events = history.events.map((event) => ({ ...event,
+    rows: event.rows.filter(({ ref }) => loaded.has(keyOf(ref))),
+  })).filter(({ rows }) => rows.length > 0);
+  const checked = validateAssignmentHistory({ namespace: history.namespace, baselines, events, currentRecords: current });
+  result.status = checked.ok ? 'passed' : 'failed';
+  result.checkedRefs = [...loaded.values()].map(({ ref }) => ({ ...ref }))
+    .sort((a, b) => compare(keyOf(a), keyOf(b)));
+  for (const diagnostic of checked.diagnostics) {
+    const position = /^currentRecords\[(\d+)\]/.exec(diagnostic.path);
+    const owner = position ? current[Number(position[1])] : loaded.get(diagnostic.path);
+    ctx.diagnostics.push({ severity: 'error', ...diagnostic,
+      file: owner?.locator.file ?? history.sources.baselines.file,
+      path: owner ? `${owner.locator.path ? `${owner.locator.path}.` : ''}subjects` : diagnostic.path,
+    });
+  }
+}
+
 /**
  * Load the three stores under `root` into the indexed model described above.
  * @param {string} root kit root directory (the dir containing ontology/,
@@ -1373,25 +1448,38 @@ function resolveRefs(ctx) {
  * @returns the model; `model.ok` is the single health verdict every
  *   downstream surface shares
  */
-export function loadStores(root) {
+export function loadStores(root, { sourceBudget, documentBudget, subjectOperationBudget } = {}) {
+  if (sourceBudget !== undefined) assertSourceBudget(sourceBudget);
+  if (documentBudget !== undefined) getDocumentBudgetUsage(documentBudget);
   const absRoot = resolve(root);
   if (!statSync(absRoot, { throwIfNoEntry: false })?.isDirectory()) {
     throw new Error(`store root is not a readable directory: ${absRoot}`);
   }
   const ctx = {
-    root: absRoot,
+    root: absRoot, sourceBudget, documentBudget,
     stores: Object.fromEntries(STORES.map((store) =>
       [store, { present: false, catalog: null, rules: null, files: [] }])),
     declared: Object.fromEntries(STORES.map((store) => [store, new Set()])),
     concepts: new Map(),
     leaves: new Map(),
     decisions: new Map(),
+    proposals: Object.fromEntries(RECORD_KINDS.map((kind) => [kind, new Map()])),
+    identity: null,
+    identityIndex: null,
+    identityRecords: [],
+    identityDeclarations: [],
+    proposalDeclarations: [],
     registries: new Map(),
     graduations: new Map(),
     phoenix: new Map(),
     refs: [],
     diagnostics: [],
   };
+
+  loadIdentity(ctx);
+  const subjects = readSubjectRegistry({ kitDir: absRoot, identity: ctx.identity, sourceBudget, documentBudget, operationBudget: subjectOperationBudget });
+  ctx.diagnostics.push(...subjects.diagnostics);
+  if (subjects.present && subjects.ok) ctx.subjectRegistry = subjects.subjectRegistry;
 
   for (const store of STORES) {
     const descriptor = STORE_DESCRIPTORS[store];
@@ -1420,13 +1508,20 @@ export function loadStores(root) {
 
   const pointers = buildPointers(ctx);
   const leavesByConcept = buildLeavesByConcept(ctx);
+  captureIdentityIndex(ctx);
   resolveRefs(ctx);
+  loadAssignmentHistory(ctx);
   ctx.diagnostics.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code));
 
   return {
     root: absRoot,
     stores: ctx.stores,
+    identity: ctx.identity,
+    identityIndex: ctx.identityIndex,
+    ...(ctx.subjectRegistry ? { subjectRegistry: ctx.subjectRegistry } : {}),
+    ...(ctx.assignmentHistory ? { assignmentHistory: ctx.assignmentHistory, assignmentHistoryCurrent: ctx.assignmentHistoryCurrent } : {}),
+    proposals: Object.fromEntries(RECORD_KINDS.map((kind) => [kind, sortedMap(ctx.proposals[kind])])),
     concepts: sortedMap(ctx.concepts),
     leaves: sortedMap(ctx.leaves),
     decisions: sortedMap(ctx.decisions),
@@ -1503,8 +1598,8 @@ export class UnknownConceptsError extends UsageError {
 }
 
 /**
- * The `--leaves` counterpart (UCS-1149): an id the knowledge store does not
- * carry, under either of a leaf's two legal spellings. A usage error for the
+ * The `--leaves` counterpart (UCS-1149): an exact authored key the knowledge store does not
+ * carry, whether canonical or an explicit proposal. A usage error for the
  * same reason — the caller named something that does not exist, so the command
  * refused its arguments rather than reporting on nothing. Exit 2, never 1.
  */
@@ -1534,18 +1629,44 @@ export function normalizeConceptIds(raw) {
 }
 
 /**
+ * Exact authored-key projection for diagnostic and authoring surfaces. This
+ * preserves original entries, never mutates canonical Maps and grants no
+ * published identity or approval. It also serves degraded diagnostics, so it
+ * deliberately does not assert model health or store availability.
+ */
+function authoringMaps(model, kind) {
+  const space = { knowledge: 'leaves', ontology: 'concepts', decision: 'decisions' }[kind];
+  if (!space || !(model[space] instanceof Map) || !(model.proposals?.[kind] instanceof Map)) {
+    throw new TypeError(`Authoring inspection requires captured ${kind} canonical and proposal maps.`);
+  }
+  return [model[space], model.proposals[kind]];
+}
+
+export function authoringRecords(model, kind) {
+  const [canonical, proposals] = authoringMaps(model, kind);
+  return new Map([...canonical, ...proposals].sort(([a], [b]) => compare(a, b)));
+}
+
+/** Exact authored-key inspection, never a canonical reference resolver. */
+export function authoringRecord(model, kind, key) {
+  const [canonical, proposals] = authoringMaps(model, kind);
+  return canonical.get(key) ?? proposals.get(key);
+}
+
+/**
  * Select concepts by id (null/undefined = every concept). An unknown id
  * throws UnknownConceptsError: a verdict or finding set "filtered" to a typo
  * would be a check that never ran reading as a silent pass (PRD §5). Every
  * --concepts consumer shares this contract from here.
  */
 export function selectConcepts(model, ids) {
-  if (!ids) return [...model.concepts.values()];
-  const unknown = ids.filter((id) => !model.concepts.has(id));
+  const records = authoringRecords(model, 'ontology');
+  if (!ids) return [...records.values()];
+  const unknown = ids.filter((id) => !records.has(id));
   if (unknown.length) {
     throw new UnknownConceptsError(`--concepts names id(s) not in the ontology: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
   }
-  return ids.map((id) => model.concepts.get(id));
+  return ids.map((id) => records.get(id));
 }
 
 /**
@@ -1566,33 +1687,25 @@ export function selectConcepts(model, ids) {
  * @returns {object[]} the indexed leaf entries, in the order named
  */
 export function selectLeaves(model, ids) {
-  if (!ids) return [...model.leaves.values()];
-  const unknown = ids.filter((id) => leafIdentityOf(model, id) === undefined);
+  const records = authoringRecords(model, 'knowledge');
+  if (!ids) return [...records.values()];
+  const unknown = ids.filter((id) => !records.has(id));
   if (unknown.length) {
     throw new UnknownLeavesError(`--leaves names id(s) not in the knowledge store: ${unknown.join(', ')} — a check that never ran is a blocking defect, never a silent pass (PRD §5)`);
   }
   const seen = new Set();
   const out = [];
   for (const id of ids) {
-    const identity = leafIdentityOf(model, id);
-    if (seen.has(identity)) continue;
-    seen.add(identity);
-    out.push(model.leaves.get(identity));
+    if (seen.has(id)) continue;
+    seen.add(id);
+    out.push(records.get(id));
   }
   return out;
 }
 
 /**
- * The IDENTITY a leaf id names, or undefined when the store has no such leaf.
- *
- * Since UCS-1147 a leaf answers to exactly one spelling, so this no longer
- * TRANSLATES anything — it answers "is this a leaf of this store, and what is
- * its identity". It stays a named function, and exported, because that question
- * is still asked from two places that must answer it identically: preflight's
- * healthy path resolves ids through selectLeaves, and its store-wide-failure
- * path cannot (the verdicts are degraded without selecting anything). Inlining
- * `model.leaves.has(id)` at both would be the same code twice, which is how the
- * two drifted apart the first time.
+ * The canonical identity a leaf ID names, without aliases or proposal lookup.
+ * Authoring inspection uses selectLeaves/authoringRecords separately.
  *
  * @param {object} model the loaded store model
  * @param {string} id a leaf id as the caller spelled it
@@ -1616,23 +1729,5 @@ export function leafIdentityOf(model, id) {
  */
 export const isPrePromotionStatus = (status) => status === 'draft' || status === 'proposed';
 
-/**
- * A leaf's promotion stage, or null when it declares none (UCS-1149).
- *
- * The single reader of the `facets.stage` spelling. Two surfaces ask this
- * question — the resolver, to downrank a provisional leaf, and preflight, to
- * verdict one unknown — and if either reached into the record itself, a later
- * move of the field would leave one of them silently reading `undefined`:
- * a leaf that stopped being downranked, at exit 0, with nothing said.
- *
- * A stage that is not a string is null rather than the raw value: the schema
- * has already reported it, and passing a number into the predicate would just
- * return false, quietly promoting the leaf the defect was meant to hold back.
- *
- * @param {object} record a leaf's front-matter record
- * @returns {string|null}
- */
-export function leafStage(record) {
-  const stage = record?.facets?.stage;
-  return typeof stage === 'string' ? stage : null;
-}
+// One field reader shared with lifecycle-only consumers; preserve this API.
+export { leafStage } from './record-lifecycle.js';

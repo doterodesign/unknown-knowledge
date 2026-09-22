@@ -1,0 +1,39 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:b97239f1-4802-4c2a-a8d5-21eeed73c018
+    title: Every PR versions the kit and preserves decisions and documentation
+    category: process
+    status: proposed
+    date: "2026-09-19"
+    deciders: [dimitri]
+    context: >
+      Dimitri explicitly required capturing every decision, versioning
+      unknown-knowledge for every PR and updating all relevant files,
+      especially documentation, agents.md and README files. D-000021 defines
+      version semantics but previously accumulated notes until release-time
+      versioning. Parallel implementation tasks also need clear ownership of
+      shared version and documentation files.
+    decision: >
+      Every actual PR, including documentation-only work, advances the package
+      version relative to its current target base, synchronizes both root
+      lockfile version fields and records versioned changelog notes. Retain
+      D-000021 semver semantics; advance rc.N within an existing planned
+      prerelease cycle and reassess the target if release scope changes.
+      Capture substantive decisions with rationale, tradeoffs, consequences
+      and evidence, linking existing records when they already cover a choice.
+      Each owner updates affected documentation and agent instructions with
+      its implementation; the integration owner reconciles shared files.
+      CI checks version advance, lock agreement and changed versioned notes;
+      the PR checklist requires decision and documentation coverage review.
+    consequences: >
+      Release-time-only bumps no longer satisfy PR completeness. Internal
+      commits do not each require a version. Unpublished versions remain
+      explicitly Unreleased; version changes do not authorize tagging or
+      publication. Mechanical checks cannot establish complete reasoning or
+      accurate documentation, so reviewers retain that responsibility.
+      Historical decisions and frozen evidence remain intact. This proposal
+      captures the authorized policy without bypassing canonical ID promotion.
+      Implementation is in AGENTS.md, CONTRIBUTING.md,
+      .github/pull_request_template.md, .github/workflows/ci.yml and
+      scripts/check-pr-version.js; checks are in tests/check-pr-version.test.js.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000021, D-000010] }

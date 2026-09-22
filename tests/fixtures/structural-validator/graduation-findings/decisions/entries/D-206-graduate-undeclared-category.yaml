@@ -1,9 +1,9 @@
 # PLANTED: undeclared-category. `see-also-links` is a plausible mechanical
 # category, but the table does not declare it — so this graduation grants
 # autonomy with no written extent, and nothing could later revoke it by name.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-206
+  - id: proposal:decision:00000000-0000-4000-8000-000000000206
     title: Graduate see-also links to sampling
     category: trust
     status: proposed

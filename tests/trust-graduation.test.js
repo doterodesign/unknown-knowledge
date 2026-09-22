@@ -158,15 +158,15 @@ test('A1: the table is its own schema kind, validated like every other store fil
 test('A2: every entry-level graduation defect is a finding, and only those', () => {
   const out = runJson(1, '--root', fixture('graduation-findings'));
   assert.deepEqual(codes(out), [
-    ['gated-category-graduation', 'D-205', 'graduation.category'],
-    ['undeclared-category', 'D-206', 'graduation.category'],
-    ['graduation-not-trust-category', 'D-207', 'category'],
-    ['disconnected-revocation', 'D-208', 'graduation.revokes'],
-    ['graduation-field-shape', 'D-209', 'graduation.defect'],
-    ['graduation-field-shape', 'D-209', 'graduation.observed-cycles'],
-    ['graduation-field-shape', 'D-210', 'graduation.defect'],
-    ['disconnected-revocation', 'D-210', 'graduation.revokes'],
-    ['disconnected-revocation', 'D-211', 'graduation.revokes'],
+    ['gated-category-graduation', 'proposal:decision:00000000-0000-4000-8000-000000000205', 'graduation.category'],
+    ['undeclared-category', 'proposal:decision:00000000-0000-4000-8000-000000000206', 'graduation.category'],
+    ['graduation-not-trust-category', 'proposal:decision:00000000-0000-4000-8000-000000000207', 'category'],
+    ['disconnected-revocation', 'proposal:decision:00000000-0000-4000-8000-000000000208', 'graduation.revokes'],
+    ['graduation-field-shape', 'proposal:decision:00000000-0000-4000-8000-000000000209', 'graduation.defect'],
+    ['graduation-field-shape', 'proposal:decision:00000000-0000-4000-8000-000000000209', 'graduation.observed-cycles'],
+    ['graduation-field-shape', 'proposal:decision:00000000-0000-4000-8000-000000000210', 'graduation.defect'],
+    ['disconnected-revocation', 'proposal:decision:00000000-0000-4000-8000-000000000210', 'graduation.revokes'],
+    ['disconnected-revocation', 'proposal:decision:00000000-0000-4000-8000-000000000211', 'graduation.revokes'],
   ]);
 });
 
@@ -177,12 +177,12 @@ test('A2: a `revokes` that resolves is still checked for WHAT it names', () => {
   const out = runJson(1, '--root', fixture('graduation-findings'));
   const byId = (id) => out.findings.find(
     (f) => f.id === id && f.code === 'disconnected-revocation').message;
-  // D-201 is an ordinary architecture ADR with no graduation block.
-  assert.match(byId('D-210'), /names D-201, which is not a graduation/);
-  assert.match(byId('D-210'), /carries no graduation block at all/);
-  // D-207 IS a graduation — of a different category.
-  assert.match(byId('D-211'), /graduates "alias-additions"/);
-  assert.match(byId('D-211'), /withdraw a grant made for its OWN category/);
+  // D-000001 is an ordinary architecture ADR with no graduation block.
+  assert.match(byId('proposal:decision:00000000-0000-4000-8000-000000000210'), /names D-000001, which is not a graduation/);
+  assert.match(byId('proposal:decision:00000000-0000-4000-8000-000000000210'), /carries no graduation block at all/);
+  // proposal:decision:00000000-0000-4000-8000-000000000207 IS a graduation — of a different category.
+  assert.match(byId('proposal:decision:00000000-0000-4000-8000-000000000211'), /graduates "alias-additions"/);
+  assert.match(byId('proposal:decision:00000000-0000-4000-8000-000000000211'), /withdraw a grant made for its OWN category/);
 });
 
 test('A2: an unresolved `revokes` stays the ref graph\'s finding, not double-reported', () => {
@@ -192,7 +192,7 @@ test('A2: an unresolved `revokes` stays the ref graph\'s finding, not double-rep
   try {
     cpSync(fixture('graduation-clean'), dir, { recursive: true });
     const target = join(dir, 'decisions', 'entries', 'D-203-revoke-alias-additions.yaml');
-    writeFileSync(target, readFileSync(target, 'utf8').replace('revokes: D-202', 'revokes: D-999'));
+    writeFileSync(target, readFileSync(target, 'utf8').replace('revokes: D-000002', 'revokes: D-999999'));
     const model = loadStores(dir);
     const unresolved = model.diagnostics.filter((d) => d.code === 'unresolved-ref');
     assert.equal(unresolved.length, 1, 'the loader reports the dangling id');
@@ -208,21 +208,21 @@ test('A2: action-specific fields are enforced where the schema can only describe
   const byPath = (id, path) => shape.find((f) => f.id === id && f.path === path).message;
   // A graduation with no recorded count is the unreviewable judgment the
   // manual-analytics stance depends on not existing.
-  assert.match(byPath('D-209', 'graduation.observed-cycles'), /v1 computes no counts/);
-  assert.match(byPath('D-209', 'graduation.observed-cycles'), /analytics are manual by design/);
+  assert.match(byPath('proposal:decision:00000000-0000-4000-8000-000000000209', 'graduation.observed-cycles'), /v1 computes no counts/);
+  assert.match(byPath('proposal:decision:00000000-0000-4000-8000-000000000209', 'graduation.observed-cycles'), /analytics are manual by design/);
   // Withdrawal vocabulary on a grant.
-  assert.match(byPath('D-209', 'graduation.defect'), /describes a WITHDRAWAL/);
+  assert.match(byPath('proposal:decision:00000000-0000-4000-8000-000000000209', 'graduation.defect'), /describes a WITHDRAWAL/);
   // A revocation with no defect names no trigger.
-  assert.match(byPath('D-210', 'graduation.defect'), /revocation is automatic ON A DEFECT/);
+  assert.match(byPath('proposal:decision:00000000-0000-4000-8000-000000000210', 'graduation.defect'), /revocation is automatic ON A DEFECT/);
 });
 
 test('A2: an entry that moves the trust boundary must be filed under category `trust`', () => {
-  // D-207 is an otherwise-valid graduation of a declared, eligible category —
+  // proposal:decision:00000000-0000-4000-8000-000000000207 is an otherwise-valid graduation of a declared, eligible category —
   // filed under `process`. Anyone auditing the trust boundary by decision
   // category would never see it.
   const out = runJson(1, '--root', fixture('graduation-findings'));
   const finding = out.findings.find((f) => f.code === 'graduation-not-trust-category');
-  assert.equal(finding.id, 'D-207');
+  assert.equal(finding.id, 'proposal:decision:00000000-0000-4000-8000-000000000207');
   assert.match(finding.message, /filed under category "process"/);
   assert.match(finding.message, /auditing that boundary by category/);
 });
@@ -230,21 +230,21 @@ test('A2: an entry that moves the trust boundary must be filed under category `t
 test('A2: a revocation disconnected from a standing graduation is a finding', () => {
   const out = runJson(1, '--root', fixture('graduation-findings'));
   const finding = out.findings.find((f) => f.code === 'disconnected-revocation');
-  assert.equal(finding.id, 'D-208');
+  assert.equal(finding.id, 'proposal:decision:00000000-0000-4000-8000-000000000208');
   // The finding names the graduation the reader would otherwise have to hunt for.
-  assert.match(finding.message, /D-207 graduates that category/);
+  assert.match(finding.message, /proposal:decision:00000000-0000-4000-8000-000000000207 graduates that category/);
 });
 
 test('A2: omitting `revokes` is CLEAN when no graduation for the category exists', () => {
-  // The rule is coherence with the store, not a mandatory field. D-204 in the
+  // The rule is coherence with the store, not a mandatory field. D-000004 in the
   // clean fixture revokes a never-graduated gated category — a legitimate
   // standing-position entry with nothing to point at — and the store validates
   // clean (asserted in A1). Demanding a ref there would demand a citation of
   // something that does not exist.
   const model = loadStores(fixture('graduation-clean'));
-  const d204 = model.decisions.get('D-204').record.graduation;
+  const d204 = model.decisions.get('D-000004').record.graduation;
   assert.equal(d204.action, 'revoke');
-  assert.equal(d204.revokes, undefined, 'D-204 deliberately names no graduation');
+  assert.equal(d204.revokes, undefined, 'D-000004 deliberately names no graduation');
   const graduated = [...model.decisions.values()]
     .map((e) => e.record.graduation)
     .filter((g) => g && g.action === 'graduate')
@@ -262,9 +262,9 @@ test('A2: the gated refusal explains that a streak does not make judgment mechan
 test('A2: REVOCATION of a gated category is clean — revoking only ever narrows autonomy', () => {
   // The asymmetry is the design. Graduating a gated category is refused;
   // revoking one is legitimate, because refusing it would be refusing the safe
-  // direction. The clean fixture carries exactly that entry (D-204).
+  // direction. The clean fixture carries exactly that entry (D-000004).
   const model = loadStores(fixture('graduation-clean'));
-  const revocation = model.decisions.get('D-204').record.graduation;
+  const revocation = model.decisions.get('D-000004').record.graduation;
   assert.equal(revocation.action, 'revoke');
   assert.equal(revocation.category, 'authority-assignments');
   const table = model.graduations.get('decisions/graduation-categories');
@@ -275,15 +275,15 @@ test('A2: REVOCATION of a gated category is clean — revoking only ever narrows
 test('A2: an entry moving the trust boundary with no table at all is a finding', () => {
   const out = runJson(1, '--root', fixture('graduation-no-table'));
   assert.deepEqual(codes(out), [
-    ['missing-graduation-table', 'D-205', 'graduation.category'],
+    ['missing-graduation-table', 'proposal:decision:00000000-0000-4000-8000-000000000205', 'graduation.category'],
   ]);
   assert.match(out.findings[0].message, /a check that never ran is a blocking defect/);
 });
 
 test('A2: a revocation names the graduation it withdraws, resolved as an ordinary ref', () => {
   const model = loadStores(fixture('graduation-clean'));
-  assert.equal(model.decisions.get('D-203').record.graduation.revokes, 'D-202');
-  const edge = model.refs.find((r) => r.from === 'D-203' && r.to === 'D-202');
+  assert.equal(model.decisions.get('D-000003').record.graduation.revokes, 'D-000002');
+  const edge = model.refs.find((r) => r.from === 'D-000003' && r.to === 'D-000002');
   assert.ok(edge, 'the withdrawal and the thing withdrawn stay connected in the record');
   assert.equal(edge.resolved, true);
 });
@@ -303,19 +303,19 @@ test('A3: decision-entry provenance validates and is surfaced in validator outpu
   const out = runJson(0, '--root', fixture('graduation-clean'));
   assert.deepEqual(out.provenance, [
     {
-      id: 'D-202',
+      id: 'D-000002',
       file: 'decisions/entries/D-202-graduate-alias-additions.yaml',
       author: 'dimitri',
       'skill-version': 'knowledge-reflect@1.4.0',
     },
     {
-      id: 'D-203',
+      id: 'D-000003',
       file: 'decisions/entries/D-203-revoke-alias-additions.yaml',
       author: 'dimitri',
       'skill-version': 'knowledge-reflect@1.4.0',
     },
     {
-      id: 'D-204',
+      id: 'D-000004',
       file: 'decisions/entries/D-204-revoke-gated-category.yaml',
       author: 'dimitri',
       'skill-version': 'knowledge-reflect@1.4.0',
@@ -332,25 +332,25 @@ test('A3: provenance makes a bad skill revision traceable across entries', () =>
   // The 1.3.0 vintage wrote exactly one entry; asserting that exactly, and the
   // rest only by discrimination, keeps this test about traceability rather
   // than about how many entries the fixture happens to carry.
-  assert.deepEqual(byVersion('knowledge-reflect@1.3.0'), ['D-206']);
+  assert.deepEqual(byVersion('knowledge-reflect@1.3.0'), ['proposal:decision:00000000-0000-4000-8000-000000000206']);
   const later = byVersion('knowledge-reflect@1.4.0');
   assert.ok(later.length > 1, 'the other vintage wrote the rest');
-  assert.ok(!later.includes('D-206'), 'and the two vintages do not overlap');
+  assert.ok(!later.includes('proposal:decision:00000000-0000-4000-8000-000000000206'), 'and the two vintages do not overlap');
 });
 
 test('A3: provenance is surfaced in the human renderer too, not only in JSON', () => {
   const r = run('--root', fixture('graduation-clean'));
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /decision provenance \(author \/ skill version\)/);
-  assert.match(r.stdout, /D-202\s+dimitri\s+knowledge-reflect@1\.4\.0/);
+  assert.match(r.stdout, /D-000002\s+dimitri\s+knowledge-reflect@1\.4\.0/);
 });
 
 test('A3: entries without provenance are omitted rather than padded with nulls', () => {
-  // D-201 carries none — the installed base predates the field (D-001: no
+  // D-000001 carries none — the installed base predates the field (D-001: no
   // update channel), so a list padded with an entry per un-migrated record
   // would bury the ones that can actually be traced.
   const out = runJson(1, '--root', fixture('graduation-findings'));
-  assert.ok(!out.provenance.some((p) => p.id === 'D-201'));
+  assert.ok(!out.provenance.some((p) => p.id === 'D-000001'));
 });
 
 test('A3: provenance output is stable-sorted and free of timestamps (D-012)', () => {
@@ -392,7 +392,7 @@ test('A4: both templates parse, carry the typed block, and are DELIBERATELY inva
     const entry = doc.entries[0];
     assert.equal(entry.category, 'trust', `${file}: the third store governs the trust boundary`);
     assert.equal(entry.graduation.action, action);
-    assert.match(entry.id, /^D-YYYY-MM-DD-/, `${file}: placeholder id must not validate`);
+    assert.match(entry.id, /^proposal:decision:UUID$/, `${file}: placeholder id must not validate`);
     assert.equal(entry.date, 'YYYY-MM-DD', `${file}: placeholder date must not validate`);
     assert.ok(entry.provenance, `${file}: templates model provenance`);
   }

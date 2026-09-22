@@ -1,6 +1,6 @@
 # ontology/_catalog.yaml — navigational entry point (catalog -> rules -> class files).
-# Empty seed: init copies it; /knowledge-bootstrap (D-019) fills entries after the taxonomy gate.
+# Empty seed: init copies it; /knowledge-bootstrap (D-000019) fills entries after the taxonomy gate.
 # Shape: payload/schemas/catalog.schema.json. schema-version evolves additively (§3.5).
-schema-version: 1
+schema-version: 2
 store: ontology
 entries: []

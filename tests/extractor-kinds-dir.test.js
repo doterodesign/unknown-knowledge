@@ -8,7 +8,7 @@
 //   3. the option matrix at the extract seam — plain listing / pattern only /
 //      strip only / pattern+strip — plus the glob grammar, strip hard-error,
 //      symlink envelope, and determinism guarantees;
-//   4. the value-validator CLI: K-110 (plain) and K-111 (pattern+strip)
+//   4. the value-validator CLI: O-000010 (plain) and O-000011 (pattern+strip)
 //      extract clean from fixtures/ts-app, and a missing directory is
 //      source-missing (exit 2), same as an unreadable file.
 import { test } from 'node:test';
@@ -179,8 +179,8 @@ function runCli(rootDir, ...args) {
   return spawnSync(process.execPath, [cli, '--root', rootDir, '--json', ...args], { encoding: 'utf8' });
 }
 
-test('fixtures/ts-app: K-110 (plain) and K-111 (pattern+strip) extract clean — exit 0, zero findings', () => {
-  const r = runCli(join(root, 'fixtures', 'ts-app'), '--concepts', 'K-110,K-111');
+test('fixtures/ts-app: O-000010 (plain) and O-000011 (pattern+strip) extract clean — exit 0, zero findings', () => {
+  const r = runCli(join(root, 'fixtures', 'ts-app'), '--concepts', 'O-000010,O-000011');
   assert.equal(r.status, 0, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
   assert.deepEqual(out.findings, []);
@@ -195,12 +195,13 @@ function plantStore(descriptorYaml, plantFiles = {}) {
     mkdirSync(dirname(join(repo, rel)), { recursive: true });
     writeFileSync(join(repo, rel), content);
   };
+  write('_identity.yaml', '{"schema-version": 1, "identity-format": 1, "namespace": "91919191-9191-4191-8191-919191919191", "allocations": [{"id": "O-000001", "kind": "ontology", "state": "allocated", "publication": {"id": "92929292-9292-4292-8292-929292929292", "review": "fixture:dir-modules"}}]}');
   write('ontology/_catalog.yaml',
-    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Module\n    file: classes/100-core.yaml\n');
+    'schema-version: 2\nstore: ontology\nentries:\n  - id: O-000001\n    title: Module\n    file: classes/100-core.yaml\n');
   write('ontology/_rules.yaml', 'schema-version: 1\nstore: ontology\nrules: []\n');
   write('ontology/classes/100-core.yaml',
-    'schema-version: 1\nentries:\n'
-    + '  - id: K-100\n    term: Module\n    class: 100-core\n'
+    'schema-version: 2\nentries:\n'
+    + '  - id: O-000001\n    term: Module\n    class: 100-core\n'
     + '    summary: Per-module folders.\n    source-of-truth: [src/modules]\n'
     + '    status: active\n'
     + descriptorYaml);
@@ -216,7 +217,7 @@ test('a missing directory is source-missing (exit 2) — same envelope as an unr
   const r = runCli(repo);
   assert.equal(r.status, 2, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
-  assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['K-100', 'source-missing']]);
+  assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['O-000001', 'source-missing']]);
   assert.deepEqual(out.findings, []);
 });
 
@@ -225,7 +226,7 @@ test('a dir-modules source that is a FILE (ENOTDIR) is source-missing too — ne
   const r = runCli(repo);
   assert.equal(r.status, 2, r.stdout + r.stderr);
   const out = JSON.parse(r.stdout);
-  assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['K-100', 'source-missing']]);
+  assert.deepEqual(out['hard-errors'].map((e) => [e.concept, e.code]), [['O-000001', 'source-missing']]);
 });
 
 test('the CLI diffs dir-modules like any kind: drift in both directions surfaces as findings', () => {

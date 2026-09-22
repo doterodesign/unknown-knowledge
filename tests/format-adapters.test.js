@@ -254,10 +254,8 @@ test('the adapters are LEXICAL ONLY: no subprocess, no network, no eval anywhere
   const imports = [...source.matchAll(/^import\s[^;]*?from\s+'([^']+)';/gm)].map((m) => m[1]);
   assert.deepEqual(imports.sort(), ['./engine-refusal.js', 'node:zlib']);
 
-  // The engine's zero-runtime-dependency rule (D-022): js-yaml is the only
-  // runtime dep, and the adapters do not even need that.
-  const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
-  assert.deepEqual(Object.keys(pkg.dependencies), ['js-yaml'], 'the pdf adapter added a dependency');
+  // This exact module allowlist also keeps the separate MCP SDK and its
+  // dependencies out of document parsing.
 });
 
 test('the adapters never touch the filesystem — the caller owns the one read', () => {

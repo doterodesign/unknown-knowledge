@@ -1,8 +1,8 @@
 # Leaf refs must be resolvable AND refusable: every dangling accession is its
 # own unresolved-ref error (UCS-1147).
-schema-version: 1
+schema-version: 2
 store: knowledge
 entries:
-  - id: L-000101
+  - id: K-000001
     title: Widget registry rules
     file: widgets/700.1-widget-registry.md

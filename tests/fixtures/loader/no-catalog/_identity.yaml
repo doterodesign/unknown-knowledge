@@ -1,0 +1,10 @@
+schema-version: 1
+identity-format: 1
+namespace: 60000000-0000-4000-8000-000000000007
+allocations:
+  - id: O-000001
+    kind: ontology
+    state: allocated
+    publication:
+      id: 70000000-0000-4000-8000-000000000001
+      review: fixture:loader-canonical-case

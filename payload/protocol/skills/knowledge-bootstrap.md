@@ -1,4 +1,4 @@
-# /knowledge-bootstrap — phase-2 store population (PRD §6, D-019)
+# /knowledge-bootstrap — phase-2 store population (PRD §6, D-000019)
 
 > Paths in this document are client-relative — relative to the vendored kit
 > root after init (`ontology/…`, `engine/…`, `protocol/…`). In the kit repo
@@ -85,8 +85,8 @@ is how I read your codebase":
    the map disclosed. The kit dir itself belongs in the excludes: the map is
    never the territory.
 2. **Taxonomy** — the proposed top-level ontology class spine
-   (per-project, derived from the surveyed structure), with an id range per
-   class.
+   (per-project, derived from the surveyed structure). Classes describe
+   subject matter; they do not own identity ranges.
 
 On confirmation, write both artifacts:
 
@@ -94,8 +94,8 @@ On confirmation, write both artifacts:
   `schemas/survey-scope.schema.json` — `schema-version`, `include` with at
   least one prefix, optional `exclude`; exclude wins; `.` covers root-level
   files only; trailing slashes are normalized away).
-- `ontology/_rules.yaml` — one rule per class with its `id-range`
-  (`{ class: 100-…, id-range: [K-100, K-199] }`).
+- `ontology/_rules.yaml` — one classification rule per class
+  (`{ class: 100-canvas }`). Do not assign numeric identity ranges.
 
 Then re-run survey-map and confirm the output header reads
 `scope (survey-scope.yaml): …` — the map is now bounded.
@@ -112,7 +112,13 @@ confirmed; on resume it is never re-asked.
 
 Walk the in-scope anchor candidates and emit §3.1 concept records into
 `ontology/classes/`, catalog rows into `ontology/_catalog.yaml`. Every
-concept is born knowing its rung — emit at the **highest checkable** one:
+concept is born knowing its rung — emit at the **highest checkable** one.
+Use envelope/catalog schema version 2 and an exact
+`proposal:ontology:<lowercase-v4-uuid>` authoring key with `status: draft`
+or `proposed`. Preserve init’s `_identity.yaml`; proposals consume no
+allocation. Class and file names cannot mint a permanent `O-NNNNNN`.
+
+The proposed checkability rungs are:
 
 - **Rung 2 (value agreement)** — a shipped extractor kind fits the anchor:
   emit an `enumerates` descriptor (`kind` / `source` / `values`, plus
@@ -135,13 +141,21 @@ prose concepts; the reverse audit (`engine/audit.js`, advisory) grows the
 map proposal-first from there. Skipping a candidate is a normal triage
 outcome, not a gap.
 
-Verify each emitted batch immediately (repo-root `--root`; the
+Validate draft structure immediately. Draft/proposed value checks are
+explicitly skipped: exit 0 with skipped records is not source verification.
+Before active use, a human reviews the exact candidate and a supported
+publication path allocates canonical identities, rewrites proposal references,
+and changes lifecycle together. Scope/taxonomy approval alone does not approve
+that later candidate. If publication is unavailable, retain the proposals and
+report bootstrap incomplete; do not hand-mint IDs or edit the ledger to finish.
+
+After publication, verify each emitted batch (repo-root `--root`; the
 `--concepts` list is EXACTLY the ids the batch emitted — an id left off the
 list is a check that never ran):
 
 ```
-node unknown-knowledge/engine/validate.js --concepts K-100,K-110,K-120 --root .
-node unknown-knowledge/engine/validate-values.js --concepts K-100,K-110,K-120 --root .
+node unknown-knowledge/engine/validate.js --concepts O-000001,O-000002,O-000003 --root .
+node unknown-knowledge/engine/validate-values.js --concepts O-000001,O-000002,O-000003 --root .
 ```
 
 Exit 1 = the draft disagrees with the source — fix the draft (re-read the
@@ -177,7 +191,7 @@ node unknown-knowledge/engine/log-entry.js create --log misses --date 2026-07-08
 (§3.4). This backlog feeds the governed §5.2 pipeline
 (`protocol/new-kind-pipeline.md`): agents draft parsers there, humans gate
 them, and a kind you author is **never wired into the validator in the same
-session** (D-005). Do not write a bespoke parser during bootstrap.
+session** (D-000005). Do not write a bespoke parser during bootstrap.
 
 **On resume:** an open miss for the path already IS the demand signal —
 leave it; never mint a sibling (`open → open` is illegal, and the helper
@@ -205,10 +219,11 @@ interview happened; do not re-ask it.
 
 Bootstrap surfaced decisions — the taxonomy acceptance, any scope
 trade-offs. Record them through the §3.5 decisions path: draft entries in
-`decisions/entries/` with provisional date-suffixed ids
-(`D-2026-07-08-<slug>`), `status: proposed`, `relates-to` refs to the
-concepts they touch, plus catalog rows. The steward mints final `D-NNN`s at
-acceptance — never the agent.
+`decisions/entries/` with exact qualified keys
+(`proposal:decision:<lowercase-v4-uuid>`), `status: proposed`, and `relates-to`
+refs to the concepts they touch, plus schema-version-2 catalog rows.
+Acceptance allocates a permanent `D-NNNNNN` through the reviewed publication
+path; a draft has no allocation slot.
 
 Then the whole-store gate — the skill declares done **only** when both
 validators run clean, unfiltered:
@@ -218,12 +233,13 @@ node unknown-knowledge/engine/validate.js --root .
 node unknown-knowledge/engine/validate-values.js --root .
 ```
 
-Exit 0 + 0 = done: report the confirmed scope, the class spine, the
+Exit 0 + 0 with every intended active concept actually checked = done: report
+the confirmed scope, the class spine, the
 concepts emitted per rung, the misses logged, and the KB skeleton — all of
 it lands through the normal PR gate (agents draft; humans approve). Exit 1
 = fix the store, re-run. Exit 2 = **stop and report**; never declare
 bootstrap done over a check that never ran.
 
 **On resume:** an existing proposed bootstrap decision is not re-drafted —
-but the validator run is never skipped: verdicts are per-run (D-011), so a
+but the validator run is never skipped: verdicts are per-run (D-000011), so a
 resumed session always re-runs both validators before declaring done.

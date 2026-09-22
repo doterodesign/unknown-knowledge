@@ -37,17 +37,19 @@ function decisions() {
 test('the engine is JavaScript, and no build step exists', () => {
   const ts = readdirSync(engineDir, { recursive: true }).filter((f) => String(f).endsWith('.ts'));
   const js = readdirSync(engineDir, { recursive: true }).filter((f) => String(f).endsWith('.js'));
-  assert.deepEqual(ts, [], 'the engine carries no TypeScript');
+  // The fixed historical dependency ships its original declarations, not a
+  // TypeScript implementation. Exact inventory keeps new source files visible.
+  assert.deepEqual(ts, [], 'only the fixed historical dependency declaration is permitted');
   assert.ok(js.length >= 20, `the engine is JavaScript (${js.length} files)`);
 
   const { scripts } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
   assert.ok(!Object.hasOwn(scripts, 'build'), 'zero build step — there is nothing to build');
 });
 
-test('D-002 is superseded, and its reasoning was preserved rather than rewritten', () => {
-  const d002 = decisions().get('D-002');
+test('D-000002 is superseded, and its reasoning was preserved rather than rewritten', () => {
+  const d002 = decisions().get('D-000002');
   assert.equal(d002.status, 'superseded');
-  assert.deepEqual(d002['superseded-by'], ['D-022']);
+  assert.deepEqual(d002['superseded-by'], ['D-000022']);
   // Status transitions never rewrite recorded reasoning (§3.3). The original
   // context and decision must still say what was decided, and why, in 2026-07.
   assert.match(d002.context, /Node is ubiquitous in CI/, 'the original context stands');
@@ -55,10 +57,10 @@ test('D-002 is superseded, and its reasoning was preserved rather than rewritten
   assert.equal(d002.date, '2026-07-07', 'the original date is untouched');
 });
 
-test('D-022 supersedes D-002 and carries its reasoning forward', () => {
-  const d022 = decisions().get('D-022');
+test('D-000022 supersedes D-000002 and carries its reasoning forward', () => {
+  const d022 = decisions().get('D-000022');
   assert.equal(d022.status, 'accepted');
-  assert.deepEqual(d022.supersedes, ['D-002']);
+  assert.deepEqual(d022.supersedes, ['D-000002']);
   assert.deepEqual(d022['superseded-by'], []);
   assert.match(d022.decision, /JavaScript/);
   assert.match(d022.decision, /JSDoc/);
@@ -88,7 +90,7 @@ test('the catalog names every decision file, and every file is catalogued', () =
   const catalog = load(readFileSync(join(root, 'decisions', '_catalog.yaml'), 'utf8'));
   const catalogued = new Set(catalog.entries.map((e) => e.id));
   for (const id of decisions().keys()) assert.ok(catalogued.has(id), `${id} is not in the catalog`);
-  assert.ok(catalogued.has('D-022'), 'D-022 is catalogued');
+  assert.ok(catalogued.has('D-000022'), 'D-000022 is catalogued');
 });
 
 // ---------------------------------------------- the glossary matches the code
@@ -97,7 +99,7 @@ test('the Engine term no longer claims TypeScript', () => {
   assert.doesNotMatch(context, /TypeScript/i,
     'CONTEXT.md must not claim a language the engine does not use');
   assert.match(context, /JavaScript \(ESM\) with JSDoc types/);
-  assert.match(context, /D-022/, 'and it cites the decision that says so');
+  assert.match(context, /D-000022/, 'and it cites the decision that says so');
 });
 
 test('the Engine term names every shipped engine surface', () => {
@@ -121,8 +123,14 @@ test('the Engine term names every shipped engine surface', () => {
     audit: 'reverse audit',
     'log-entry': 'log-entry helper',
     ingest: 'document ingest',
+    'intent-plan': 'intent-plan validation',
     phoenix: 'phoenix events',
     derive: 'derived layer',
+    'migrate-identity': 'offline identity inventory',
+    subject: 'subject metadata lookup',
+    'subject-view': 'disposable subject-view artifacts',
+    'query-subjects': 'governed subject queries',
+    invoke: 'shared API invocation',
   };
   for (const surface of shipped) {
     assert.ok(Object.hasOwn(prose, surface),

@@ -1,7 +1,7 @@
 # Fixture: a well-formed trust graduation category table (UCS-1155).
 # One eligible category with a threshold, one permanently gated category with
 # no threshold — the two shapes the mechanism turns on.
-schema-version: 1
+schema-version: 2
 store: decisions
 table: graduation-categories
 categories:
@@ -12,9 +12,9 @@ categories:
     warrant: >-
       Mechanical: the edit is checkable by reading it against the concept it
       names, and a run of correct ones is evidence about the next one.
-    decision: D-201
+    decision: D-000001
     declared: "2026-07-07"
-  # Declared so the wrong-CATEGORY revocation (D-211) isolates that defect
+  # Declared so the wrong-CATEGORY revocation (proposal:decision:00000000-0000-4000-8000-000000000211) isolates that defect
   # rather than compounding it with an undeclared-category finding.
   - category: verified-bumps
     eligibility: eligible
@@ -23,7 +23,7 @@ categories:
     warrant: >-
       Mechanical: the edit is checkable against the source it claims to have
       re-read.
-    decision: D-201
+    decision: D-000001
     declared: "2026-07-07"
   - category: authority-assignments
     eligibility: gated
@@ -33,5 +33,5 @@ categories:
       claim about the world rather than about the store. Being right N times
       running says the assigner was careful, not that the N+1th source needs no
       reading.
-    decision: D-201
+    decision: D-000001
     declared: "2026-07-07"

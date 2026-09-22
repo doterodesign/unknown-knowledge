@@ -1,7 +1,7 @@
 # Acceptance-fixture store (KK-15).
-schema-version: 1
+schema-version: 2
 store: decisions
 entries:
-  - id: D-101
+  - id: D-000001
     title: Export-format registry is a const array
     file: entries/D-101-export-format-registry-const-array.yaml

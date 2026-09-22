@@ -1,0 +1,39 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:bd38c554-e695-45a0-b6e4-0bea9d74af95
+    title: Contract-first onboarding includes recursive installed-runtime discovery
+    category: process
+    status: proposed
+    date: "2026-09-20"
+    deciders: ["integration owner (record review pending)"]
+    context: >
+      The public v3 reader t04 recursively located installed engine and
+      dependency filenames before reading its entry instructions and canonical
+      contract. The old product-source wording did not explicitly identify
+      these directories. Controller and independent reviewer interpretations
+      differed; the unsupported full-conduct pass was withdrawn, preserving
+      the original attempt and failed result. The integration owner authorized
+      this prospective clarification after reviewing the requirements diagnosis.
+      Implementation authorization is separate from canonical Decision approval.
+    decision: >
+      Make the existing contract-first obligation explicitly include recursive
+      filename and content discovery through installed kit, engine and dependency
+      directories. Preserve permission to locate and read top-level agent
+      instructions and necessary top-level configuration, and use their supplied
+      protocol path. State the boundary in the canonical contract and both thin
+      wrapper templates. Keep the existing catalog, selected-record gate, source
+      and fallback rules. Check delivery through the existing generated-init
+      matrix for all platforms and default and renamed roots.
+    consequences: >
+      Leaving product-source as the sole qualifier would retain the observed
+      ambiguity. Treating recursive runtime discovery as an exception would
+      conflict with the owner-approved onboarding boundary. A host firewall or
+      engine change is unnecessary for this conduct clarification. Generated
+      output assertions verify wording and delivery, not agent compliance.
+      Existing clients remain seeded-once and require owner-reviewed adoption.
+      No frozen criteria, attempts or acceptance outcomes change; v3 remains
+      failed and the original repair remains pending. No new reader trial is
+      authorized. Source: payload/protocol/AGENTS.md, payload/wrappers/pointer.md,
+      payload/wrappers/cursor.mdc and tests/init-wrappers.test.js. Diagnosis and
+      retained evidence are indexed in docs/agents/ucs-1242-retrieval-governance.md.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000011] }

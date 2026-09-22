@@ -1,6 +1,8 @@
 // UCS-1227: the public seam is a real commit with the actual seeded hook.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { load } from 'js-yaml';
+import { planAllocations } from '../payload/engine/lib/identity-ledger.js';
 import { spawnSync } from 'node:child_process';
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -9,9 +11,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const source = "export const FORMATS = ['png', 'svg'];\n";
-const ontology = `schema-version: 1
+const ontology = `schema-version: 2
 entries:
-  - id: K-101
+  - id: O-000001
     term: Export format
     class: 100-product
     summary: Formats available for export.
@@ -24,6 +26,15 @@ entries:
         values: [png, svg]
 `;
 const conceptPath = 'unknown-knowledge/ontology/classes/100-product.yaml';
+
+function allocateOntology(repo, write, count, publicationId) {
+  const ledger = load(readFileSync(join(repo, 'unknown-knowledge/_identity.yaml'), 'utf8'));
+  const plan = planAllocations(ledger, { kind: 'ontology', count,
+    publication: { id: publicationId, review: 'fixture:installed-hook-allocation' } });
+  assert.equal(plan.ok, true, JSON.stringify(plan));
+  write('unknown-knowledge/_identity.yaml', JSON.stringify(plan.ledger));
+  return plan.ids;
+}
 
 function setup(t) {
   const repo = mkdtempSync(join(tmpdir(), 'ucs-1227-'));
@@ -52,7 +63,8 @@ function setup(t) {
   ok(run(process.execPath, [join(root, 'cli/init.js'), 'init', '--yes', '--target', repo, '--stacks', 'ts', '--platforms', 'codex']));
   write('src/formats.ts', source);
   write(conceptPath, ontology);
-  write('unknown-knowledge/ontology/_catalog.yaml', 'schema-version: 1\nstore: ontology\nentries:\n  - id: K-101\n    title: Export format\n    file: classes/100-product.yaml\n');
+  allocateOntology(repo, write, 1, '81818181-8181-4181-8181-818181818181');
+  write('unknown-knowledge/ontology/_catalog.yaml', 'schema-version: 2\nstore: ontology\nentries:\n  - id: O-000001\n    title: Export format\n    file: classes/100-product.yaml\n');
   const hook = join(repo, 'unknown-knowledge/hooks/pre-commit');
   chmodSync(hook, 0o755);
   symlinkSync('../../unknown-knowledge/hooks/pre-commit', join(repo, '.git/hooks/pre-commit'));
@@ -101,7 +113,7 @@ test('unstaged source repair cannot conceal staged source-value drift', (t) => {
   const staged = git('ls-files', '--stage', '-z').stdout;
   const result = git('commit', '-qm', 'hidden source drift');
   assert.notEqual(result.status, 0);
-  assert.match(result.stdout + result.stderr, /source-value-missing.*K-101.*pdf/);
+  assert.match(result.stdout + result.stderr, /source-value-missing.*O-000001.*pdf/);
   assert.equal(git('rev-parse', 'HEAD').stdout, base);
   assert.equal(git('ls-files', '--stage', '-z').stdout, staged);
   assert.equal(readFileSync(join(repo, 'src/formats.ts'), 'utf8'), source);
@@ -156,7 +168,7 @@ test('a candidate source cannot read through a path outside the snapshot', (t) =
   assert.equal(git('add', conceptPath).status, 0);
   const result = git('commit', '-qm', 'outside evidence');
   assert.notEqual(result.status, 0);
-  assert.match(result.stdout + result.stderr, /source-missing.*K-101/);
+  assert.match(result.stdout + result.stderr, /source-missing.*O-000001/);
   assert.match(result.stdout + result.stderr, /outside the repo root/);
 });
 
@@ -231,8 +243,8 @@ syncBuiltinESMExports();\n`);
     assert.notEqual(result.status, 0);
     if (fault === 'snapshot') assert.match(result.stderr, /snapshot.*git cat-file failed.*injected Git read failure/);
     if (fault === 'dependency') {
-      assert.match(result.stderr, /validate: failure \(exit 2\)/);
-      assert.match(result.stderr, /validate-values: failure \(exit 2\)/);
+      assert.match(result.stderr, /commit-check: internal failure — the engine could not be loaded/);
+      assert.match(result.stderr, /ERR_MODULE_NOT_FOUND/);
     }
     if (fault === 'escaping-link') assert.match(result.stderr, /snapshot.*symlink.*outside/);
     if (fault === 'gitlink') assert.match(result.stderr, /snapshot.*unsupported Git entry.*160000/);
@@ -315,7 +327,7 @@ test('non-UTF-8 symlink bytes cannot become a different candidate source', (t) =
 
 test('an ambiguous candidate layout fails with stable snapshot diagnostics', (t) => {
   const { git, write, run } = setup(t);
-  write('ontology/_catalog.yaml', 'schema-version: 1\nstore: ontology\nentries: []\n');
+  write('ontology/_catalog.yaml', 'schema-version: 2\nstore: ontology\nentries: []\n');
   assert.equal(git('add', 'ontology').status, 0);
   const first = run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']);
   const second = run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']);
@@ -344,7 +356,7 @@ test('installed gate refuses an added source value with value-drift evidence', (
   write('src/formats.ts', "export const FORMATS = ['png', 'svg', 'pdf'];\n");
   const result = commit();
   assert.notEqual(result.status, 0, result.stdout + result.stderr);
-  assert.match(result.stdout + result.stderr, /source-value-missing.*K-101.*pdf/);
+  assert.match(result.stdout + result.stderr, /source-value-missing.*O-000001.*pdf/);
   assert.equal(git('rev-parse', 'HEAD').stdout, base, 'refused commit must leave HEAD unchanged');
 });
 
@@ -410,7 +422,7 @@ test('failure dominates findings while preserving both check diagnostics', (t) =
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /validate: failure \(exit 2\)/);
   assert.match(result.stderr, /validate-values: findings \(exit 1\)/);
-  assert.match(result.stdout + result.stderr, /source-value-missing.*K-101.*pdf/);
+  assert.match(result.stdout + result.stderr, /source-value-missing.*O-000001.*pdf/);
   assert.equal(run(process.execPath, ['unknown-knowledge/engine/commit-check.js', '--root', '.']).status, 2);
 });
 
@@ -426,7 +438,7 @@ test('whole-store gate refuses existing drift when only an unrelated file is sta
   assert.equal(git('add', 'note.txt').status, 0);
   const result = git('commit', '-qm', 'unrelated change');
   assert.notEqual(result.status, 0);
-  assert.match(result.stdout + result.stderr, /source-value-missing.*K-101.*pdf/);
+  assert.match(result.stdout + result.stderr, /source-value-missing.*O-000001.*pdf/);
   assert.equal(git('rev-parse', 'HEAD').stdout, driftHead);
 });
 

@@ -1,0 +1,22 @@
+schema-version: 1
+identity-format: 1
+namespace: 10000000-0000-4000-8000-000000000004
+allocations:
+  - id: K-000001
+    kind: knowledge
+    state: allocated
+    publication:
+      id: 20000000-0000-4000-8000-000000000001
+      review: fixture:preflight-structural-canonical
+  - id: O-000001
+    kind: ontology
+    state: allocated
+    publication:
+      id: 20000000-0000-4000-8000-000000000001
+      review: fixture:preflight-structural-canonical
+  - id: O-000002
+    kind: ontology
+    state: allocated
+    publication:
+      id: 20000000-0000-4000-8000-000000000001
+      review: fixture:preflight-structural-canonical

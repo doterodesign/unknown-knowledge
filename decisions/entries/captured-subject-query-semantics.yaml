@@ -1,0 +1,44 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:b0ef0f5a-f028-4509-a3b7-a08c6d598349
+    title: Captured Subject queries preserve unknowns and governed source witnesses
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      UCS-1237 needs a deterministic query over actual K/O/D canonical and proposal
+      collections. Missing assignments, missing retained historical authority and
+      incomplete traversal cannot honestly become ordinary negative matches.
+    decision: >
+      Validate the complete authored predicate and actual governance/model binding
+      before execution. Use strong Kleene truth, distinguish missing assignments
+      from an explicit empty list, and run actual assignment validation even for
+      an all predicate. Counts and results share one scan. Preserve original
+      assignment IDs and requested IDs alongside separate redirect and descendant
+      witnesses. Current view uses documented lifecycle states; rank by typed ID,
+      not inferred relevance. Hash full captured authored inputs and governance.
+      Keep unsupported profiles explicit; legacy Knowledge jurisdiction matching
+      uses the shared actual registry and any-overlap rule without implying truth
+      or source adequacy. Retained assessment transport complements Decision bytes
+      without granting approval. See docs/agents/ucs-1237-subject-query.md.
+      Final E01 evidence clarification, 2026-09-21: both the historical and
+      current resolver return their full ranked matches; neither has a native
+      top-k option. The concrete cutoff is the registered evaluator's top ten.
+      Test Subject eligibility independently of that window using twelve real
+      equally matched Knowledge records: only the literal eleventh record has
+      the requested Subject. Verify the actual resolver's complete literal order
+      and the Subject query's sole qualified result, exact witness and complete
+      counts. This closes the explicit later-record proof without introducing
+      a lexical prefilter or claiming a native resolver truncation. The added
+      test and independently reviewed receipt are documented in
+      acceptance/retrieval/FINAL-DETERMINISTIC-COVERAGE.md. The initial fixture
+      omitted the resolver's terms field and its failure remains retained;
+      correcting fixture input required no product runtime change.
+    consequences: >
+      Invalid or ineligible assignments refuse the entire query; bounded traversal
+      exposes incompleteness and cannot justify unsupported negatives. Query limits
+      describe named logical units, not whole-process resources. Independent source
+      witnesses are exercised in tests/subject-query-witness.test.js. This backfill
+      records implemented choices as a proposal, not canonical human approval.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000011, D-000014, D-000022] }

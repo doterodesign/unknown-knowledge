@@ -1,8 +1,8 @@
 # KK-07 unknown-kind fixture: the descriptor names an extractor kind the
 # registry does not carry — the check can never run, so it hard-errors.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.

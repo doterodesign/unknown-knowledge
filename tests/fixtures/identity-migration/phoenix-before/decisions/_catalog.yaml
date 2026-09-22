@@ -1,0 +1,6 @@
+schema-version: 1
+store: decisions
+entries:
+  - id: D-9
+    title: Retained move and carry
+    file: entries/retained.yaml

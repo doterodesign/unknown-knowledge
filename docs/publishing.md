@@ -1,3 +1,7 @@
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+
+This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
+
 # Publishing `unknown-knowledge`
 
 ## Current pilot release
@@ -62,6 +66,15 @@ before the first publish:
 
 ## Release-time steps (in-repo, deliberate)
 
+Every PR already advances the package and lockfile versions and records notes
+under a version heading marked `Unreleased`; see [CONTRIBUTING.md](../CONTRIBUTING.md).
+This includes documentation-only PRs. Within the current 3.0 candidate cycle,
+advance `rc.N` and reconcile against the latest target branch before merge.
+These working versions do not imply npm publication. Keep published install
+examples tied to actual published versions. At release time, select the final
+version and retain notes for intervening unpublished versions explicitly as
+unpublished history; do not invent publication dates for them.
+
 1. Confirm `package.json` does not have `"private": true`. UCS-955 removes
    the initial publish guard for the 2.1.0 release.
 2. Set the release version in `package.json` and both root version fields in
@@ -69,8 +82,8 @@ before the first publish:
    (MAJOR = store schema-version bump or breaking engine CLI contract;
    MINOR = new extractor kinds / engine surfaces / fixture vintage;
    PATCH = fixes/docs).
-3. Move the CHANGELOG's Unreleased entries under the new version heading
-   with today's date.
+3. Finalize the selected version's CHANGELOG notes with the actual release
+   date, including relevant changes since the previous published release.
 4. Run lint, tests, acceptance, `npm audit`, and `npm pack --dry-run`.
    Verify the tarball's allowlist and all payload-manifest source files.
 5. Merge the release change, then tag `vX.Y.Z` (or `vX.Y.Z-rc.N`) at the merged commit and push
@@ -142,3 +155,15 @@ version, the wrapper exists, and LICENSE/NOTICE were seeded. Inspect the
 registry tarball downloaded by `npm pack` above,
 and verify the provenance statement identifies this repository, tag, and
 publish workflow. Only then close the release issue.
+
+## MCP interface packaging
+
+The npm package includes `unknown-knowledge-engine` (the shared request-file
+CLI) and `unknown-knowledge-mcp` (local stdio). MCP server/Zod dependencies are
+runtime npm dependencies; the SDK client is development-only for actual
+transport tests. The SDK is not copied into seeded repositories. Installed
+engine files and the interface protocol guide are manifest-covered. Before
+release, run the interface tests and verify package bin/lock metadata alongside
+the normal installation checks. See the
+interface contract (contract arrives in PR6; see delivery availability) for its operation
+inventory, framing limits and remaining unimplemented bindings.

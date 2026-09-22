@@ -6,9 +6,9 @@
 #
 # The category named happens to be one the OTHER fixtures gate, but that is
 # incidental — with no table present, its eligibility is unknowable.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-205
+  - id: proposal:decision:00000000-0000-4000-8000-000000000205
     title: Graduate authority assignments to sampling
     category: trust
     status: proposed

@@ -13,17 +13,17 @@
 # "eaa 2025". A vocabulary meant to be joined against human asks has to be
 # spelled in the words humans use; per-value alias lists are a registry feature
 # this ticket does not introduce.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: jurisdictions
 values:
   - value: us-ca
     gloss: California, governed by its state accessibility statute.
     warrant: 600.3 states the US-CA contrast disclosure constraint.
-    decision: D-201
+    decision: D-000001
     minted: "2026-07-07"
   - value: eu-eaa
     gloss: The EU EEA, governed by the European Accessibility Act.
     warrant: 600.2 states the EU archived-theme fallback constraint.
-    decision: D-201
+    decision: D-000001
     minted: "2026-07-07"

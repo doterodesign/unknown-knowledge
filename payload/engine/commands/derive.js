@@ -44,6 +44,7 @@ import {
 import { dirname, join, resolve } from 'node:path';
 import { locateKitRoot } from '../lib/kit-root.js';
 import { loadStores, storeHealth, healthSummary, DERIVED_DIR } from '../lib/load-stores.js';
+import { iterateCurrentRecords, iterateProposalRecords } from '../lib/record-identity.js';
 import {
   AXES, DERIVED_BANNER, RECALL_SLOT, demotionsFor, deriveArtifacts,
 } from '../lib/derived.js';
@@ -270,7 +271,13 @@ export function main(argv) {
     return EXIT_CODES.FAILURE;
   }
 
-  const artifacts = deriveArtifacts(model.leaves.values(), opts.today);
+  // Browse preserves all authored leaves, including unpublished drafts. This
+  // array never becomes a canonical index or a proposal lookup alias.
+  const entries = model.stores.knowledge.present ? [
+    ...iterateCurrentRecords(model, { kinds: ['knowledge'] }),
+    ...iterateProposalRecords(model, { kinds: ['knowledge'] }),
+  ].map(({ entry }) => entry) : [];
+  const artifacts = deriveArtifacts(entries, opts.today);
 
   let findings = [];
   if (opts.write) {
@@ -312,7 +319,7 @@ export function main(argv) {
   // Counted off the same predicate the trees annotate with, so the summary
   // cannot report a different number of demoted leaves than the artifacts show.
   let demoted = 0;
-  for (const entry of model.leaves.values()) {
+  for (const entry of entries) {
     if (demotionsFor(entry.record, opts.today).length) demoted += 1;
   }
 
@@ -324,7 +331,7 @@ export function main(argv) {
     axes: AXES.map((a) => ({ key: a.key, label: a.label, audience: a.audience })),
     'recall-slot': RECALL_SLOT,
     'store-health': healthSummary(storeHealth(model)),
-    counts: { leaves: model.leaves.size, demoted, findings: findings.length },
+    counts: { leaves: entries.length, demoted, findings: findings.length },
     artifacts: artifacts.map((a) => a.path),
     findings,
   };

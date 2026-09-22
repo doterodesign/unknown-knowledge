@@ -1,7 +1,7 @@
-# One entry per file (D-010); schema per payload/schemas/decision-entry.schema.json.
-schema-version: 1
+# One entry per file (kit decision D-000010); schema per payload/schemas/decision-entry.schema.json.
+schema-version: 2
 entries:
-  - id: D-101
+  - id: D-000001
     title: Export-format registry is a const array
     category: architecture
     status: accepted
@@ -18,4 +18,4 @@ entries:
       diff that the value validator can cross-check against the ontology.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [K-101], leaves: [L-000100], decisions: [] }
+    relates-to: { concepts: [O-000001], leaves: [K-000001], decisions: [] }

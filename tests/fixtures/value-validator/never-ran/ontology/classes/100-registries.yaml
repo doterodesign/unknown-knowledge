@@ -1,10 +1,10 @@
-# KK-07 check-never-ran fixture: K-100 points at a file that does not exist;
-# K-110's source carries an out-of-envelope sentinel. Both are hard errors on
+# KK-07 check-never-ran fixture: O-000001 points at a file that does not exist;
+# O-000002's source carries an out-of-envelope sentinel. Both are hard errors on
 # active concepts — a check that never ran is a blocking defect (PRD §5) —
 # and BOTH are reported in one run.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.
@@ -14,7 +14,7 @@ entries:
       - kind: test-lines
         source: src/missing.txt
         values: [grid]
-  - id: K-110
+  - id: O-000002
     term: Color token
     class: 100-registries
     summary: A base color token.

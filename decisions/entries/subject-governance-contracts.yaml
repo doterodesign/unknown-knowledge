@@ -1,0 +1,111 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:c584ac00-a64a-4fc3-bc61-882e68e96e6d
+    title: One shared Subject authority separates meaning from record identity and eligibility
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      UCS-1235 needs shared aboutness across Knowledge, Ontology and Decisions
+      without deriving identity from labels, file placement or a Knowledge domain
+      path. Homonyms, proposals and retired meanings must remain inspectable
+      without silently granting effective query or assignment eligibility.
+    decision: >
+      Use the optional subjects/registry.yaml as one installation-scoped authority
+      with ledger-allocated canonical S identities and separate unpublished
+      proposal keys. Keep exact identities distinct from versioned label lookup:
+      normalize label Unicode and whitespace, preserve every matching homonym and
+      its locale/context witnesses, and never infer equivalence from a label.
+      Model hierarchy as a single-parent forest. An association has exactly one
+      authored undirected declaration, supplies inverse inspection witnesses,
+      and implies no transitivity, ancestry, assignment or trust. Preserve original
+      requested IDs under explicit current, historical and equivalent lifecycle
+      policies; a split reports unresolved alternatives. Structural inspection
+      remains separate from captured evidence and effective eligibility.
+    consequences: >
+      Missing authority is unavailable, while a valid present empty authority is
+      inspectable. Derived views are disposable and never loaded as authority.
+      Aliases and hierarchy do not allocate records or authenticate meaning.
+      P1 retains ledger allocation and P3 retains record-assignment semantics.
+      This rejects duplicated per-store subject vocabularies and name-based
+      identity in exchange for an explicit shared governance boundary. Sources:
+      payload/engine/lib/subjects.js, subject-registry-reader.js and
+      docs/agents/ucs-1235-subject-governance.md. Tests cover lookup, traversal,
+      related edges, lifecycle resolution and actual optional authority loading.
+      This proposal records implementation rationale, not canonical acceptance.
+      Subsequent internal implementation authorization on 2026-09-21 adds one
+      fixed subject-metadata publication family, not four action engines: one
+      native rename/clarify/reparent/relate event may have atomic multiple rows.
+      Existing canonical active participants preserve identity, history, warrant,
+      origins and every field outside native action scope. Rename/clarify require
+      the native unchanged-meaning assertion; no automatic aliases or homonym
+      suppression. Actual committed before/candidate snapshots may differ only
+      at the registry path, preserving all K/O/D bytes/modes, ledger, assignments,
+      history and current authorizer. Positive assigned users are supported;
+      assignment not-applicable means registry-only-transition, never zero use.
+      One owned D/A/M capture admission and authentic core governance allowance
+      feed a fixed wrapper over existing private transition mechanics. The old
+      unbounded public transition API and counters remain unchanged. Actual
+      supplied provenance and source-less side correspondence remain mandatory;
+      no fetching omitted unrelated history or fabricated global approval.
+      Separate inventory, closure, reach/tree, replay and native query phases
+      retain honest counters/exclusions, not an end-to-end budget claim. All
+      canonical and proposal qualification rows are closure charged. Replay
+      qualifies the full canonical union before filtering to E verified current
+      query-eligible IDs on both sides. All installed stores R must match; native
+      current/all views and direct/descendant expansions reserve
+      C=R*4*(4+2E+4max(E-1,0)) cases and 2C native calls. Stable unavailable is
+      null/unavailable governance with current resolved identity, not false:
+      raw Subject/history/identity must be unchanged, unassigned and unrelated,
+      never a participant. Reparent relevance conservatively includes changed
+      edge endpoints and full before/after ancestor OR descendant closure even
+      unchanged ancestors; relate includes incident endpoints. Rename/clarify
+      impose no blanket ancestor approval. Assigned unavailable Subjects cause
+      native row refusal even for all/none; no exception or owner exclusion.
+      Absent assignment fields keep valid native possible matches. Direct
+      membership is invariant for all actions; descendant membership is invariant
+      except actual reparent deltas with native forest/reach evidence. Resource,
+      incomplete and asymmetric qualification outcomes never become negatives.
+      Fixed 2T native metadata lookups cover actual old/new changed labels/aliases,
+      retain all homonyms and have explicit term/UTF8/match/retained-byte caps;
+      external language terms remain outside finite coverage. Native results,
+      ranks, uncertainty and failures remain visible. One fixed worker pair,
+      registry-only capture, strict original-wire predicate, actual capability,
+      fresh final at review/publication and unchanged candidate-ref CAS complete
+      this family. Predicates and receipts do not create approval. Canonical
+      suppression/restoration and fresh-identity creation/union remain separate.
+      Alternatives rejected: four duplicate engines, caller policy callbacks,
+      empty-delta assumptions, waived native refusals and added public MCP tools.
+      Implementation evidence is recorded in
+      docs/agents/ucs-1240-subject-metadata-publication.md; this proposal remains
+      unpublished and authorizes no runtime/customer publication.
+      Forward proposal suppression publication was separately authorized for
+      implementation on 2026-09-21, after metadata integration. Two fixed internal
+      profiles share registry-only eventless mechanics through private literal
+      selection and named exports; metadata identities, phases and semantics
+      remain unchanged. The new subject-proposal-suppression operation has its
+      own publication, impact and replay policy identities. No public policy
+      resolver, callback framework, CLI/MCP surface or duplicated lifecycle engine
+      is introduced. Only two thin fixed worker entrypoints are new.
+      Suppression delegates the existing native transition using the actual BEFORE
+      model and identity index. It consumes one exact proposed-to-suppressed
+      event, retaining meaning, origin, warrant, parent/related edges and the
+      Decision-bound refusal reason. Selected proposal eligibility remains
+      explicitly ineligible on both sides, with the status transition corroborated
+      by native history and current authorizer proof; it is never query approval.
+      All canonical subjects, ledger, stored records, assignments, original
+      history and direct/descendant query memberships remain invariant. The same
+      owned capture admission and authentic allowance continue into candidate
+      governance evaluation. Actual source membership, full current Decision
+      captures on both sides, strict profile-bound wire/report retention, fresh
+      final at review and publication, capability and unchanged CAS remain
+      mandatory. Rehashed cross-profile reports are not authority.
+      Alternatives rejected: copying eight engines, broadening metadata actions,
+      caller-selected policies, weakening native suppression to use a candidate
+      model, and conflating proposal refusal with active canonical restoration.
+      Canonical suppression/restoration and creation/union remain separate work.
+      This implementation authorization is not approval/publication of this
+      proposed Decision or any customer candidate. Scope and evidence:
+      docs/agents/ucs-1240-subject-proposal-suppression-publication.md.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000010, D-000011, D-000022] }

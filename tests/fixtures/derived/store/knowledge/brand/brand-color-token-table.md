@@ -1,6 +1,6 @@
 ---
-schema-version: 2
-id: L-000228
+schema-version: 3
+id: K-000004
 edition: 1
 domain: brand
 heading: Brand color token table

@@ -46,13 +46,13 @@ test('every engine command the client docs cite is a real CLI with real flags', 
   }
 });
 
-test('the honest boundary (D-008) and the no-code-execution guarantee (D-014) ship', () => {
+test('the honest boundary (D-000008) and the no-code-execution guarantee (D-000014) ship', () => {
   const boundaries = read('docs/boundaries.md');
-  assert.match(boundaries, /D-008/, 'boundaries doc must name D-008');
+  assert.match(boundaries, /D-000008/, 'boundaries doc must name D-000008');
   assert.match(boundaries, /behavioral drift/i, 'boundaries doc must name the class it does not catch');
   assert.match(boundaries, /never.*catch|catch.*never/is, 'the boundary must say what the kit will never catch');
-  assert.match(boundaries, /D-014/, 'boundaries doc must name D-014');
+  assert.match(boundaries, /D-000014/, 'boundaries doc must name D-000014');
   assert.match(boundaries, /never (executes|imports)/i, 'the no-code-execution guarantee must be stated');
-  assert.match(boundaries, /D-011/, 'the preflight policy note must name D-011');
+  assert.match(boundaries, /D-000011/, 'the preflight policy note must name D-000011');
   assert.match(read('docs/README.md'), /uninstall/i, 'the seeded README carries the uninstall paragraph');
 });

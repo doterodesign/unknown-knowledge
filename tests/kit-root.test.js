@@ -45,14 +45,17 @@ function plant(files) {
 
 const RULES = 'schema-version: 1\nstore: ontology\nrules: []\n';
 const catalog = (id, title, file) =>
-  `schema-version: 1\nstore: ontology\nentries:\n  - id: ${id}\n    title: ${title}\n    file: ${file}\n`;
+  `schema-version: 2\nstore: ontology\nentries:\n  - id: ${id}\n    title: ${title}\n    file: ${file}\n`;
 const concept = (id, term, pointer) =>
-  `schema-version: 1\nentries:\n  - id: ${id}\n    term: ${term}\n    class: 100-a\n`
+  `schema-version: 2\nentries:\n  - id: ${id}\n    term: ${term}\n    class: 100-a\n`
   + `    summary: A concept used to tell two stores apart.\n    status: active\n`
   + (pointer ? `    source-of-truth: [${pointer}]\n` : '');
 
 /** A store whose single concept id identifies which Store was read. */
 const storeAt = (prefix, id, term, pointer) => ({
+  [`${prefix}_identity.yaml`]: JSON.stringify({ 'schema-version': 1, 'identity-format': 1,
+    namespace: 'a1a1a1a1-a1a1-41a1-81a1-a1a1a1a1a1a1', allocations: [{ id, kind: 'ontology',
+      state: 'allocated', publication: { id: 'a2a2a2a2-a2a2-42a2-82a2-a2a2a2a2a2a2', review: 'fixture:kit-root' } }] }),
   [`${prefix}ontology/_rules.yaml`]: RULES,
   [`${prefix}ontology/_catalog.yaml`]: catalog(id, term, 'classes/100-a.yaml'),
   [`${prefix}ontology/classes/100-a.yaml`]: concept(id, term, pointer),
@@ -64,7 +67,7 @@ const ANCHOR = "export const FORMATS = ['png', 'svg'];\n";
 // ------------------------------------------------------- the locator itself
 
 test('a seeded kit dir alone is the Kit; the kit dir is the kit zone', () => {
-  const repo = plant(storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested'));
+  const repo = plant(storeAt(`${KIT_DIR_DEFAULT}/`, 'O-000002', 'Nested'));
   const { kitRoot, kitPrefixes } = locateKit(repo);
   assert.equal(kitRoot, join(repo, KIT_DIR_DEFAULT));
   assert.deepEqual(kitPrefixes, [KIT_DIR_DEFAULT]);
@@ -72,7 +75,7 @@ test('a seeded kit dir alone is the Kit; the kit dir is the kit zone', () => {
 });
 
 test('stores at the root and no seeded dir: the root is the Kit, and the stores are kit zone', () => {
-  const repo = plant(storeAt('', 'K-100', 'Root'));
+  const repo = plant(storeAt('', 'O-000001', 'Root'));
   const { kitRoot, kitPrefixes } = locateKit(repo);
   assert.equal(kitRoot, repo);
   for (const zone of ['ontology', 'knowledge', 'decisions', 'logs']) {
@@ -85,7 +88,7 @@ test('a decisions store at the root does not make the root a Kit — the kit rep
   // beside them must resolve to the seeded dir, not refuse.
   const repo = plant({
     'decisions/_catalog.yaml': 'schema-version: 1\nstore: decisions\nentries: []\n',
-    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested'),
+    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'O-000002', 'Nested'),
   });
   assert.equal(locateKitRoot(repo), join(repo, KIT_DIR_DEFAULT));
 });
@@ -99,8 +102,8 @@ test('no stores anywhere: the root is the Kit — an unseeded repo still audits'
 
 test('a seeded kit dir AND root-level stores refuses, naming both candidates', () => {
   const repo = plant({
-    ...storeAt('', 'K-100', 'Root'),
-    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested'),
+    ...storeAt('', 'O-000001', 'Root'),
+    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'O-000002', 'Nested'),
   });
   assert.throws(() => locateKit(repo), AmbiguousKitLayout);
   assert.throws(() => locateKit(repo), /two candidate kit roots/);
@@ -122,7 +125,7 @@ const SURFACES = [
 const spawn = (args) => spawnSync(process.execPath, args, { encoding: 'utf8' });
 
 test('one repo, every surface, one Store: every surface reads the seeded Kit', () => {
-  // The nested store carries K-200 and points it at the anchor. A decisions
+  // The nested store carries O-000002 and points it at the anchor. A decisions
   // store sits at the root — the kit's own dogfood shape — which must not
   // tempt any surface into reading the root as the Kit.
   //
@@ -132,7 +135,7 @@ test('one repo, every surface, one Store: every surface reads the seeded Kit', (
   const repo = plant({
     'decisions/_catalog.yaml': 'schema-version: 1\nstore: decisions\nentries: []\n',
     'src/a.ts': ANCHOR,
-    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested', 'src/a.ts'),
+    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'O-000002', 'Nested', 'src/a.ts'),
   });
 
   // No surface may fail: the layout is unambiguous.
@@ -144,15 +147,15 @@ test('one repo, every surface, one Store: every surface reads the seeded Kit', (
   // The concept-filtering surfaces resolve an id that exists ONLY in the
   // seeded store. Reading the root would hard-error "not in the ontology".
   for (const cli of ['validate.js', 'validate-values.js', 'preflight.js']) {
-    const r = spawn([engine(cli), '--concepts', 'K-200', '--root', repo, '--json']);
-    assert.notEqual(r.status, 2, `${cli} did not find K-200 in the seeded Store: ${r.stderr}`);
-    assert.ok(r.stdout.includes('K-200'), `${cli} did not report on the seeded Store's concept`);
+    const r = spawn([engine(cli), '--concepts', 'O-000002', '--root', repo, '--json']);
+    assert.notEqual(r.status, 2, `${cli} did not find O-000002 in the seeded Store: ${r.stderr}`);
+    assert.ok(r.stdout.includes('O-000002'), `${cli} did not report on the seeded Store's concept`);
   }
 
   // The reverse lookup attributes the anchor to the seeded store's concept.
   const rev = spawn([engine('resolve.js'), '--paths', 'src/a.ts', '--root', repo, '--json']);
   assert.equal(rev.status, 0, rev.stderr);
-  assert.ok(rev.stdout.includes('K-200'), 'resolve read a Store without K-200');
+  assert.ok(rev.stdout.includes('O-000002'), 'resolve read a Store without O-000002');
 
   // And the audit, riding the same Store, sees the anchor as already mapped.
   const audit = spawn([engine('audit.js'), '--root', repo, '--json']);
@@ -167,8 +170,8 @@ test('one repo, every surface, one Store: every surface reads the seeded Kit', (
 test('one repo, every surface, one refusal: an ambiguous layout fails identically', () => {
   const repo = plant({
     'src/a.ts': 'export const A = 1;\n',
-    ...storeAt('', 'K-100', 'Root'),
-    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-200', 'Nested'),
+    ...storeAt('', 'O-000001', 'Root'),
+    ...storeAt(`${KIT_DIR_DEFAULT}/`, 'O-000002', 'Nested'),
   });
   for (const [name, argv] of SURFACES) {
     const r = spawn(argv(repo));
@@ -181,12 +184,12 @@ test('one repo, every surface, one refusal: an ambiguous layout fails identicall
 
 
 test('explicit layout preserves repo-relative evidence across all surfaces', () => {
-  for (const [kitRoot, id] of [['unknown-knowledge', 'K-101'], ['.', 'K-100']]) {
+  for (const [kitRoot, id] of [['unknown-knowledge', 'O-000002'], ['.', 'O-000001']]) {
     const repo = plant({
       '.unknown-knowledge.json': JSON.stringify({ kitRoot }),
       'src/a.ts': ANCHOR,
-      ...storeAt('', 'K-100', 'Root', 'src/a.ts'),
-      ...storeAt(`${KIT_DIR_DEFAULT}/`, 'K-101', 'Nested', 'src/a.ts'),
+      ...storeAt('', 'O-000001', 'Root', 'src/a.ts'),
+      ...storeAt(`${KIT_DIR_DEFAULT}/`, 'O-000002', 'Nested', 'src/a.ts'),
     });
     for (const [name, argv] of SURFACES) {
       const result = spawn(argv(repo));
@@ -198,13 +201,13 @@ test('explicit layout preserves repo-relative evidence across all surfaces', () 
     const reverse = spawn([engine('resolve.js'), '--root', repo, '--paths', 'src/a.ts', '--json']);
     assert.equal(reverse.status, 0, reverse.stderr);
     assert.ok(reverse.stdout.includes(id));
-    assert.ok(!reverse.stdout.includes(id === 'K-101' ? 'K-100' : 'K-101'));
+    assert.ok(!reverse.stdout.includes(id === 'O-000002' ? 'O-000001' : 'O-000002'));
   }
 });
 
 test('invalid or missing explicit layout refuses rather than falling back', () => {
   for (const config of ['{', 'null', '{}', '{"kitRoot":"../outside"}', '{"kitRoot":"unknown-knowledge"}', '{"kitRoot":".","typo":true}']) {
-    const repo = plant({ '.unknown-knowledge.json': config, ...storeAt('', 'K-100', 'Root') });
+    const repo = plant({ '.unknown-knowledge.json': config, ...storeAt('', 'O-000001', 'Root') });
     const result = spawn([engine('validate.js'), '--root', repo, '--json']);
     assert.equal(result.status, 2, config + result.stdout);
     assert.match(result.stderr, /unknown-knowledge.json/);

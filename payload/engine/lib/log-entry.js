@@ -17,7 +17,7 @@
  * open (appending the date to `occurrences`), never mints a sibling.
  * `transitionStatus` enforces the legal table and THROWS on an illegal move;
  * resolving stamps `verified`, rejecting requires a `reason`, re-opening
- * drops both — the old outcome no longer holds.
+ * drops both from current state, preserving the old outcome in prior-outcomes.
  *
  * Dates are injectable — callers pass the ISO date; nothing in here reads the
  * wall clock, so diffable output never depends on when a test ran (PRD §5).
@@ -38,7 +38,7 @@ import { randomBytes } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve, sep } from 'node:path';
 import { load, dump } from 'js-yaml';
-import { validateRecord } from './validate-record.js';
+import { validateRecord, schemaVersionFor } from './validate-record.js';
 import { isCalendarDate } from './iso-date.js';
 
 /** Log directory name (under logs/) → record kind / schema document. */
@@ -56,9 +56,8 @@ export const LEGAL_TRANSITIONS = Object.freeze({
   resolved: Object.freeze(['open']),
 });
 
-const SCHEMA_VERSION = 1;
 /** Keys the helper stamps itself; hand-supplying one is a caller bug. */
-const HELPER_OWNED = ['schema-version', 'date', 'status', 'verified', 'reason', 'occurrences'];
+const HELPER_OWNED = ['schema-version', 'date', 'status', 'verified', 'reason', 'occurrences', 'prior-outcomes'];
 
 function assertDate(date, what = 'date') {
   // A real day, not just four-two-two: the date is stamped into the fragment's
@@ -102,10 +101,11 @@ function serialize(entry) {
  */
 export function createEntry({ root, log, date, fields = {}, suffix } = {}) {
   const kind = kindFor(log);
+  const schemaVersion = schemaVersionFor(kind);
   assertDate(date);
   for (const key of HELPER_OWNED) {
     if (Object.hasOwn(fields, key)) {
-      throw new Error(`field "${key}" is helper-owned — createEntry stamps it; entries are born open with schema-version ${SCHEMA_VERSION}`);
+      throw new Error(`field "${key}" is helper-owned — createEntry stamps it; entries are born open with schema-version ${schemaVersion}`);
     }
   }
   if (suffix !== undefined && !/^[0-9a-f]{8}$/.test(suffix)) {
@@ -113,7 +113,7 @@ export function createEntry({ root, log, date, fields = {}, suffix } = {}) {
   }
   const id = suffix ?? randomBytes(4).toString('hex');
   const file = `logs/${log}/${date}-${id}.yaml`;
-  const entry = { 'schema-version': SCHEMA_VERSION, date, status: 'open', ...fields };
+  const entry = { 'schema-version': schemaVersion, date, status: 'open', ...fields };
   assertValid(kind, entry, file);
   mkdirSync(join(root, 'logs', log), { recursive: true });
   // 'wx' = exclusive create: a suffix collision is a hard error, never an
@@ -159,9 +159,16 @@ const STATUS_EFFECTS = Object.freeze({
   },
   open: {
     // Re-open, not duplicate: same entry, occurrence date appended; the old
-    // resolution/rejection outcome (verified, reason) no longer holds.
+    // outcome is retained as history, not as current verification/rejection.
     drop: ['verified', 'reason'],
-    stamp: ({ date, entry }) => ({ occurrences: [...(entry.occurrences ?? []), date] }),
+    stamp: ({ date, entry }) => ({
+      occurrences: [...(entry.occurrences ?? []), date],
+      'prior-outcomes': [...(entry['prior-outcomes'] ?? []), {
+        'reopened-on': date,
+        status: entry.status,
+        ...(entry.status === 'rejected' ? { reason: entry.reason } : { verified: entry.verified }),
+      }],
+    }),
   },
 });
 
@@ -187,9 +194,11 @@ export function transitionStatus({ root, file, to, date, reason } = {}) {
     throw new Error(`${file}: illegal transition ${from} → ${to} (legal from ${from}: ${LEGAL_TRANSITIONS[from].join(', ') || 'none'}) — the lifecycle is open → proposed → resolved/rejected; re-open-not-duplicate (§3.4)`);
   }
   const effects = STATUS_EFFECTS[to];
+  // Capture from the validated before-state, before changing status or dropping fields.
+  const stamped = effects.stamp?.({ file, date, reason, entry });
   entry.status = to;
   for (const key of effects.drop ?? []) delete entry[key];
-  Object.assign(entry, effects.stamp?.({ file, date, reason, entry }));
+  Object.assign(entry, stamped);
   assertValid(kind, entry, file);
   writeFileSync(absolute, serialize(entry));
   return { file, entry };

@@ -41,12 +41,13 @@ function plantRepo(name, files) {
 }
 
 const STORE_MIN = {
+  'unknown-knowledge/_identity.yaml': '{"schema-version": 1, "identity-format": 1, "namespace": "71717171-7171-4171-8171-717171717171", "allocations": [{"id": "O-000001", "kind": "ontology", "state": "allocated", "publication": {"id": "72727272-7272-4272-8272-727272727272", "review": "fixture:audit"}}]}',
   'unknown-knowledge/ontology/_catalog.yaml':
-    'schema-version: 1\nstore: ontology\nentries:\n  - id: K-100\n    title: Icon\n    file: classes/100-core.yaml\n',
+    'schema-version: 2\nstore: ontology\nentries:\n  - id: O-000001\n    title: Icon\n    file: classes/100-core.yaml\n',
   'unknown-knowledge/ontology/_rules.yaml': 'schema-version: 1\nstore: ontology\nrules: []\n',
   'unknown-knowledge/ontology/classes/100-core.yaml':
-    'schema-version: 1\nentries:\n'
-    + '  - id: K-100\n    term: Icon\n    class: 100-core\n'
+    'schema-version: 2\nentries:\n'
+    + '  - id: O-000001\n    term: Icon\n    class: 100-core\n'
     + '    summary: Product icons.\n    source-of-truth: [src/icons.ts]\n'
     + '    status: active\n    last-verified: "2026-01-10"\n',
 };
@@ -126,11 +127,11 @@ test('stale-last-verified findings suppress by concept id in BOTH fields (a conc
   const repo = plantRepo('stale', {
     ...STORE_MIN, ...ANCHORS,
     'unknown-knowledge/suppressions.yaml':
-      '- term: K-100\n  sourcePath: K-100\n  reason: verification scheduled for Q4\n  date: "2026-07-01"\n',
+      '- term: O-000001\n  sourcePath: O-000001\n  reason: verification scheduled for Q4\n  date: "2026-07-01"\n',
   });
   const out = runJson(repo, 0, '--today', '2026-10-09', '--stale-days', '30');
   assert.ok(!out.findings.some((f) => f.code === 'stale-last-verified'), JSON.stringify(out.findings));
-  assert.ok(out.suppressions.suppressed.some((f) => f.code === 'stale-last-verified' && f.concept === 'K-100'));
+  assert.ok(out.suppressions.suppressed.some((f) => f.code === 'stale-last-verified' && f.concept === 'O-000001'));
 });
 
 test('--fail-on-findings honors suppression: a fully suppressed run exits 0', () => {
@@ -213,6 +214,7 @@ test('missing suppressions.yaml is a plain no-op: no warnings, nothing suppresse
 
 test('stores-at-root layout: suppressions.yaml sits at the root beside survey-scope.yaml and is kit zone, never a finding', () => {
   const repo = plantRepo('atroot', {
+    '_identity.yaml': STORE_MIN['unknown-knowledge/_identity.yaml'],
     'ontology/_catalog.yaml': STORE_MIN['unknown-knowledge/ontology/_catalog.yaml'],
     'ontology/_rules.yaml': STORE_MIN['unknown-knowledge/ontology/_rules.yaml'],
     'ontology/classes/100-core.yaml': STORE_MIN['unknown-knowledge/ontology/classes/100-core.yaml'],

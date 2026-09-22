@@ -1,9 +1,9 @@
 # PLANTED: gated-category-graduation. `authority-assignments` is declared
 # `gated` in the table, and a graduation of it must be refused however long the
 # streak — the refusal the whole mechanism exists for.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: D-205
+  - id: proposal:decision:00000000-0000-4000-8000-000000000205
     title: Graduate authority assignments to sampling
     category: trust
     status: proposed

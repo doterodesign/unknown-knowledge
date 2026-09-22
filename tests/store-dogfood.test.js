@@ -41,7 +41,7 @@ test("the kit's own decisions/_catalog.yaml validates against catalog", () => {
 test('the catalog lists the full seed set D-001..D-018 individually', () => {
   const ids = new Set(catalog.entries.map((e) => e.id));
   for (let n = 1; n <= 18; n += 1) {
-    const id = `D-${String(n).padStart(3, '0')}`;
+    const id = `D-${String(n).padStart(6, '0')}`;
     assert.ok(ids.has(id), `${id} must be cataloged individually (no range placeholders)`);
   }
 });
@@ -82,10 +82,11 @@ test('every entry file on disk is cataloged exactly once', () => {
   }
 });
 
-test('each entry file declares exactly the D-NNN id its filename carries', () => {
+test('each stable entry filename contains exactly its catalog-assigned identity', () => {
   for (const file of entryFiles) {
-    const id = file.match(/^(D-[0-9]{3})-/)?.[1];
-    assert.ok(id, `${file} must be named D-NNN-<slug>.yaml (three-digit id grammar)`);
+    const rows = catalog.entries.filter((row) => row.file === `entries/${file}`);
+    assert.equal(rows.length, 1, `${file} has one exact catalog locator`);
+    const id = rows[0].id;
     assert.deepEqual(
       entryDocs.get(file).entries.map((e) => e.id),
       [id],
@@ -113,8 +114,15 @@ test('the kit repo loads through the store loader with zero errors', () => {
 
 test("the kit's own decision entries are indexed and their refs resolve", () => {
   const ids = [...model.decisions.keys()];
-  assert.ok(ids.includes('D-017'), JSON.stringify(ids));
-  assert.ok(ids.includes('D-018'), JSON.stringify(ids));
+  assert.ok(ids.includes('D-000017'), JSON.stringify(ids));
+  assert.ok(ids.includes('D-000018'), JSON.stringify(ids));
+  assert.equal(model.identity.allocations.length, 22);
+  assert.deepEqual(
+    [...model.proposals.decision.keys()].sort(),
+    catalog.entries.map(({ id }) => id).filter((id) => id.startsWith('proposal:decision:')).sort(),
+    'every cataloged proposal is indexed without allocating a canonical identity',
+  );
+  assert.ok([...model.proposals.decision.values()].every(({ record }) => record.status === 'proposed'));
   assert.ok(model.refs.length > 0);
   assert.ok(model.refs.every((r) => r.resolved), 'catalog-declared pending ids resolve');
 });

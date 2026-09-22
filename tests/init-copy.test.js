@@ -5,6 +5,8 @@
 // constructional leakage guards, stack-conditional inclusion per selection
 // combination (none/ts/swift/both), the version stamp, root-dir naming
 // rules, existing/partial-seed refusal, and byte-for-byte determinism.
+import { load } from 'js-yaml';
+import { loadStores } from '../payload/engine/lib/load-stores.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
@@ -17,6 +19,7 @@ import {
   DEFAULT_ROOT, ROOT_FILE_ALLOWLIST, SeedRefusal,
 } from '../cli/lib/copy-payload.js';
 
+const namespace = '11111111-1111-4111-8111-111111111111';
 const kitRoot = fileURLToPath(new URL('..', import.meta.url));
 const initCopyJs = join(kitRoot, 'cli', 'init-copy.js');
 
@@ -144,7 +147,7 @@ test('usage errors exit 2: missing --target, unknown flag, flag without value', 
 test('deterministic by construction: two runs with identical inputs seed byte-identical trees (A1 substrate)', () => {
   const [a, b] = [freshDir(), freshDir()];
   for (const target of [a, b]) {
-    assert.equal(runInitCopy('--target', target, '--stacks', 'swift,ts').status, 0);
+    copyPayload({ kitRoot, targetDir: target, namespace, stacks: ['swift', 'ts'] });
   }
   const files = walk(join(a, DEFAULT_ROOT));
   assert.deepEqual(walk(join(b, DEFAULT_ROOT)), files);
@@ -270,14 +273,14 @@ test('root-files (LICENSE/NOTICE) are seeded when present at the kit root and sk
     'zones: { seeded: [engine], client: [] }',
   ].join('\n'));
 
-  const absent = copyPayload({ kitRoot: miniKit, targetDir: freshDir() });
-  assert.deepEqual(absent.files, ['engine/a.js', 'kit.manifest.yaml'],
+  const absent = copyPayload({ kitRoot: miniKit, targetDir: freshDir(), namespace });
+  assert.deepEqual(absent.files, ['_identity.yaml', 'engine/a.js', 'kit.manifest.yaml'],
     'absent root-files are skipped (required only at publish), not errors');
   assert.equal(absent.version, '9.9.9', 'stamp reads the kit package.json');
 
   writeFileSync(join(miniKit, 'LICENSE'), 'MIT-ish\n');
-  const present = copyPayload({ kitRoot: miniKit, targetDir: freshDir() });
-  assert.deepEqual(present.files, ['LICENSE', 'engine/a.js', 'kit.manifest.yaml'],
+  const present = copyPayload({ kitRoot: miniKit, targetDir: freshDir(), namespace });
+  assert.deepEqual(present.files, ['LICENSE', '_identity.yaml', 'engine/a.js', 'kit.manifest.yaml'],
     'a present root-file MUST ship (required-at-publish, KK-28)');
   assert.equal(readFileSync(join(present.root, 'LICENSE'), 'utf8'), 'MIT-ish\n');
 });
@@ -308,4 +311,44 @@ test('the ESM marker ships through the manifest, never by omission (D-007)', () 
   const manifest = loadManifest(kitRoot);
   const expanded = expandManifest(manifest, []).map((e) => e.to);
   assert.ok(expanded.includes('package.json'), 'the marker must be a manifest entry');
+});
+
+
+test('installation identity is required, exact, generated once by the CLI and never regenerated', () => {
+  for (const invalid of [undefined, '', '11111111-1111-1111-8111-111111111111', namespace + '\n']) {
+    const targetDir = freshDir();
+    assert.throws(() => copyPayload({ kitRoot, targetDir, namespace: invalid }), /namespace/);
+    assert.deepEqual(readdirSync(targetDir), [], 'invalid namespace refuses before creating any files');
+  }
+  const namespaces = [];
+  for (const targetDir of [freshDir(), freshDir()]) {
+    const result = runInitCopy('--target', targetDir, '--json');
+    assert.equal(result.status, 0, result.stderr);
+    const root = join(targetDir, DEFAULT_ROOT);
+    const bytes = readFileSync(join(root, '_identity.yaml'), 'utf8');
+    const identity = load(bytes);
+    assert.deepEqual(identity, { 'schema-version': 1, 'identity-format': 1, namespace: identity.namespace, allocations: [] });
+    assert.match(identity.namespace, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    namespaces.push(identity.namespace);
+    const stamp = load(readFileSync(join(root, 'kit.manifest.yaml'), 'utf8'));
+    assert.equal(stamp['schema-version'], 1, 'seed provenance version is independent');
+    assert.ok(stamp.files.includes('_identity.yaml'));
+    assert.ok(stamp.zones.client.includes('_identity.yaml'));
+    assert.equal(loadStores(root).ok, true, JSON.stringify(loadStores(root).diagnostics));
+    assert.equal(runInitCopy('--target', targetDir).status, 2);
+    assert.equal(readFileSync(join(root, '_identity.yaml'), 'utf8'), bytes);
+  }
+  assert.notEqual(namespaces[0], namespaces[1]);
+});
+
+test('generated authority paths are reserved before the first write', () => {
+  for (const field of ['copy', 'create']) {
+    const manifestPath = join(freshDir(), 'manifest.yaml');
+    const targetDir = freshDir();
+    writeFileSync(manifestPath, field === 'copy'
+      ? 'schema-version: 1\nunconditional:\n  test:\n    - { from: engine/validate.js, to: _identity.yaml }\n'
+      : 'schema-version: 1\ncreate: [_identity.yaml]\n');
+    assert.throws(() => copyPayload({ kitRoot, targetDir, namespace, manifestPath }), /generated by the engine/);
+    assert.deepEqual(readdirSync(targetDir), []);
+  }
 });

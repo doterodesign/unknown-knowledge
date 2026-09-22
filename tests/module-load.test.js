@@ -119,10 +119,9 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
   // The seeded kit resolves js-yaml from the CLIENT's node_modules (§9.1). A
   // client who never installed it must get an engine failure, not findings.
   //
-  // ingest.js is the one surface that reaches no YAML: it adapts a document to
-  // IR (UCS-1153) and never loads a store, so js-yaml's absence is invisible to
-  // it. That is a real property, not an exemption — it still must never exit 1,
-  // which the loop below asserts for every surface either way.
+  // ingest and default-mode intent-plan do not load YAML stores, so js-yaml's
+  // absence is invisible to them. That is a real property, not an exemption — they must
+  // still never exit 1, which the loop asserts for every surface either way.
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
     let checkRoot = fixture;
@@ -138,23 +137,23 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
     }
     const r = run(dir, surface, '--root', checkRoot);
     assertNeverFindings(r, surface, 'with js-yaml absent');
-    if (surface === 'ingest.js') {
-      // ingest reaches no YAML, so it LOADS here rather than failing to. That
-      // is asserted positively rather than skipped: it must still exit 2, and
-      // it must do so by reaching its own flag grammar (`--root` is not a flag
-      // it takes) — proving the engine came up, which is the opposite of the
+    if (['ingest.js', 'intent-plan.js'].includes(surface)) {
+      // These commands reach no YAML, so they LOAD rather than failing to.
+      // Assert this positively rather than skipping: they still exit 2, and
+      // it must do so by reaching its own usage validation (intent-plan now
+      // knows --root, but still requires a plan file) — proving the engine
+      // came up, which is the opposite of the
       // other surfaces' outcome and would otherwise go unverified.
       assert.doesNotMatch(r.stderr, /the engine could not be loaded/,
-        'ingest has no YAML dependency, so a missing js-yaml must not stop it loading');
-      assert.match(r.stderr, /unknown flag --root/,
-        'ingest must have loaded far enough to parse flags');
+        `${surface} has no YAML dependency, so a missing js-yaml must not stop it loading`);
+      assert.match(r.stderr, surface === 'intent-plan.js' ? /name exactly one transient JSON plan file/ : /unknown flag --root/,
+        `${surface} must have loaded far enough to parse flags`);
       continue;
     }
     if (surface === 'commit-check.js') {
-      // Orchestration loads without YAML; each validator then fails separately.
-      // Both failures must remain visible and the aggregate must still be 2.
-      assert.match(r.stderr, /validate: failure \(exit 2\)/);
-      assert.match(r.stderr, /validate-values: failure \(exit 2\)/);
+      // Ledger continuity now parses YAML during command loading. Missing the
+      // parser still refuses at exit 2 before any candidate can be checked.
+      assert.match(r.stderr, /internal failure — the engine could not be loaded/);
     } else if (surface === 'reverse-staged.js') {
       assert.match(r.stderr, /internal failure — the command did not complete/);
     } else {

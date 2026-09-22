@@ -1,3 +1,7 @@
+> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+
+This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
+
 # UCS-954 fresh-agent conduct walkthroughs
 
 Three initial fresh agents ran on isolated fixtures with the implementation in
@@ -61,7 +65,7 @@ benchmark was captured for the initial runs.
 ## Evidence and reproduction
 
 Preserved evidence directory for this task:
-`/Users/dimitriotero/.codex/visualizations/2026/09/10/01a088f4-1165-7e11-a981-b53d740fa3c1/ucs-954/`.
+`local-history:ucs-954`.
 Each `trials/{artifact,unknown,stale,artifact-repeat,stale-repeat}/trace.md`
 contains actual commands, outputs,
 consulted paths, final answer, and limitations. `trial-manifest.json` records

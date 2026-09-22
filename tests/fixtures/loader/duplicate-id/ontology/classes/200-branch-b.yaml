@@ -1,6 +1,6 @@
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-210
+  - id: O-000001
     term: Component
     class: 200-design-system
     summary: Minted on branch B — textually clean merge, duplicate id on main.

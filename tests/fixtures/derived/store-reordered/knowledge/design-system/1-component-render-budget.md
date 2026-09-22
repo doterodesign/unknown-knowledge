@@ -1,6 +1,6 @@
 ---
-schema-version: 2
-id: L-000213
+schema-version: 3
+id: proposal:knowledge:21321321-3213-4213-8213-213213213213
 edition: 1
 domain: design-system
 heading: Component render budget

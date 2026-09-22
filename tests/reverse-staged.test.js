@@ -1,6 +1,8 @@
 // UCS-1230: real Git commits through both opt-in installed hooks.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { load } from 'js-yaml';
+import { planAllocations } from '../payload/engine/lib/identity-ledger.js';
 import { spawnSync } from 'node:child_process';
 import { chmodSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -9,7 +11,16 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const kit = fileURLToPath(new URL('..', import.meta.url));
 const conceptFile = 'unknown-knowledge/ontology/classes/100-product.yaml';
-const concept = (path) => `schema-version: 1\nentries:\n  - id: K-101\n    term: Export format\n    class: 100-product\n    summary: Available export formats.\n    status: active\n    source-of-truth: [${JSON.stringify(path)}]\n`;
+const concept = (path) => `schema-version: 2\nentries:\n  - id: O-000001\n    term: Export format\n    class: 100-product\n    summary: Available export formats.\n    status: active\n    source-of-truth: [${JSON.stringify(path)}]\n`;
+
+function allocateOntology(repo, write, count, publicationId) {
+  const ledger = load(readFileSync(join(repo, 'unknown-knowledge/_identity.yaml'), 'utf8'));
+  const plan = planAllocations(ledger, { kind: 'ontology', count,
+    publication: { id: publicationId, review: 'fixture:installed-hook-allocation' } });
+  assert.equal(plan.ok, true, JSON.stringify(plan));
+  write('unknown-knowledge/_identity.yaml', JSON.stringify(plan.ledger));
+  return plan.ids;
+}
 
 function setup(t, { initial = true } = {}) {
   const repo = mkdtempSync(join(tmpdir(), 'ucs-1230-'));
@@ -35,7 +46,8 @@ function setup(t, { initial = true } = {}) {
   }
   write('src/formats.ts', 'export const formats = ["png"];\n');
   write(conceptFile, concept('src/formats.ts'));
-  write('unknown-knowledge/ontology/_catalog.yaml', 'schema-version: 1\nstore: ontology\nentries:\n  - id: K-101\n    title: Export format\n    file: classes/100-product.yaml\n');
+  allocateOntology(repo, write, 1, '81818181-8181-4181-8181-818181818181');
+  write('unknown-knowledge/ontology/_catalog.yaml', 'schema-version: 2\nstore: ontology\nentries:\n  - id: O-000001\n    title: Export format\n    file: classes/100-product.yaml\n');
   const commit = () => { ok(git('add', '-A')); return git('commit', '-qm', 'fixture change'); };
   if (initial) ok(commit());
   return { repo, scratch, env, run, git, write, commit, ok };
@@ -62,9 +74,9 @@ test('deleting a governed file and repairing its pointer retains before attribut
   const records = attribution(result);
   assert.ok(records.before, 'hook must expose pre-change attribution');
   assert.equal(records.before.tree, beforeTree);
-  assert.deepEqual(records.before.paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(records.before.paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['O-000001']);
   assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/formats.ts').concepts, []);
-  assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/replacement.ts').concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/replacement.ts').concepts.map((c) => c.id), ['O-000001']);
   assert.deepEqual(readdirSync(scratch).filter((name) => name.startsWith('unknown-knowledge-commit-')), [], 'before and candidate evidence is cleaned');
 });
 
@@ -75,8 +87,8 @@ test('a copied file reports the source and destination without changing their id
   const result = commit();
   assert.equal(result.status, 0, result.stdout + result.stderr);
   const records = attribution(result);
-  assert.deepEqual(records.before.paths.find((p) => p.path === 'src/formats.ts')?.concepts.map((c) => c.id), ['K-101']);
-  assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/copy.ts')?.concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(records.before.paths.find((p) => p.path === 'src/formats.ts')?.concepts.map((c) => c.id), ['O-000001']);
+  assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/copy.ts')?.concepts.map((c) => c.id), ['O-000001']);
 });
 
 test('rename and staged pointer repair retain both origins despite conflicting unstaged pointers', (t) => {
@@ -96,10 +108,10 @@ test('rename and staged pointer repair retain both origins despite conflicting u
   for (const origin of ['before', 'candidate']) {
     assert.deepEqual(records[origin].paths.map((p) => p.path), ['src/formats.ts', 'src/renamed.ts', conceptFile]);
   }
-  assert.deepEqual(records.before.paths[0].concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(records.before.paths[0].concepts.map((c) => c.id), ['O-000001']);
   assert.deepEqual(records.before.paths[1].concepts, []);
   assert.deepEqual(records.candidate.paths[0].concepts, []);
-  assert.deepEqual(records.candidate.paths[1].concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(records.candidate.paths[1].concepts.map((c) => c.id), ['O-000001']);
   assert.equal(readFileSync(join(repo, conceptFile), 'utf8'), concept('src/unstaged.ts'));
   assert.deepEqual(readdirSync(scratch).filter((name) => name.startsWith('unknown-knowledge-commit-')), []);
 });
@@ -108,13 +120,14 @@ test('valid unusual filenames survive Git, installed hooks and complete-path res
   const { repo, git, write, commit } = setup(t);
   const names = ['comma,name.ts', 'tab\tname.ts', 'line\nname.ts', ' spaces.ts ', '   ', '"quotes".ts', "single'quote.ts", '--option.ts', '雪.ts', '$(touch PWNED).ts', '`touch PWNED`.ts', 'back\\slash.ts'];
   for (const [i, name] of names.entries()) write(name, `file ${i}\n`);
-  write(conceptFile, `schema-version: 1\nentries:\n${names.map((name, i) => `  - id: K-${110 + i}\n    term: Fixture ${i}\n    class: 100-product\n    summary: Governed filename fixture.\n    status: active\n    source-of-truth: [${JSON.stringify(name)}]\n`).join('')}`);
-  write('unknown-knowledge/ontology/_catalog.yaml', `schema-version: 1\nstore: ontology\nentries:\n${names.map((_, i) => `  - id: K-${110 + i}\n    title: Fixture ${i}\n    file: classes/100-product.yaml\n`).join('')}`);
+  allocateOntology(repo, write, names.length, '82828282-8282-4282-8282-828282828282');
+  write(conceptFile, `schema-version: 2\nentries:\n${names.map((name, i) => `  - id: O-${String(i + 2).padStart(6, '0')}\n    term: Fixture ${i}\n    class: 100-product\n    summary: Governed filename fixture.\n    status: active\n    source-of-truth: [${JSON.stringify(name)}]\n`).join('')}`);
+  write('unknown-knowledge/ontology/_catalog.yaml', `schema-version: 2\nstore: ontology\nentries:\n${names.map((_, i) => `  - id: O-${String(i + 2).padStart(6, '0')}\n    title: Fixture ${i}\n    file: classes/100-product.yaml\n`).join('')}`);
   const added = commit();
   assert.equal(added.status, 0, added.stdout + added.stderr);
   const paths = attribution(added).candidate.paths;
   for (const [i, name] of names.entries()) {
-    assert.deepEqual(paths.find((p) => p.path === name)?.concepts.map((c) => c.id), [`K-${110 + i}`]);
+    assert.deepEqual(paths.find((p) => p.path === name)?.concepts.map((c) => c.id), [`O-${String(i + 2).padStart(6, '0')}`]);
     assert.equal(git('show', `HEAD:${name}`).stdout, `file ${i}\n`);
   }
   const oldName = 'line\nname.ts';
@@ -124,8 +137,8 @@ test('valid unusual filenames survive Git, installed hooks and complete-path res
   const renamed = commit();
   assert.equal(renamed.status, 0, renamed.stdout + renamed.stderr);
   const records = attribution(renamed);
-  assert.deepEqual(records.before.paths.find((p) => p.path === oldName)?.concepts.map((c) => c.id), ['K-112']);
-  assert.deepEqual(records.candidate.paths.find((p) => p.path === newName)?.concepts.map((c) => c.id), ['K-112']);
+  assert.deepEqual(records.before.paths.find((p) => p.path === oldName)?.concepts.map((c) => c.id), ['O-000004']);
+  assert.deepEqual(records.candidate.paths.find((p) => p.path === newName)?.concepts.map((c) => c.id), ['O-000004']);
   assert.equal(readdirSync(repo).includes('PWNED'), false, 'filenames never execute shell syntax');
 });
 
@@ -136,12 +149,12 @@ test('type changes and modifications remain attributable without narrowing the w
   symlinkSync('target.ts', join(repo, 'src/formats.ts'));
   const typed = commit();
   assert.equal(typed.status, 0, typed.stdout + typed.stderr);
-  for (const origin of ['candidate', 'before']) assert.deepEqual(attribution(typed)[origin].paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['K-101']);
+  for (const origin of ['candidate', 'before']) assert.deepEqual(attribution(typed)[origin].paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['O-000001']);
   write(conceptFile, concept('src/target.ts'));
   write('src/target.ts', 'modified target\n');
   const modified = commit();
   assert.equal(modified.status, 0, modified.stdout + modified.stderr);
-  assert.deepEqual(attribution(modified).candidate.paths.find((p) => p.path === 'src/target.ts').concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(attribution(modified).candidate.paths.find((p) => p.path === 'src/target.ts').concepts.map((c) => c.id), ['O-000001']);
   assert.equal(git('show', 'HEAD:src/target.ts').stdout, 'modified target\n');
 });
 
@@ -236,7 +249,7 @@ test('an initial staged commit has candidate attribution and no invented before 
   assert.equal(result.status, 0, result.stdout + result.stderr);
   const records = attribution(result);
   assert.equal(records.before, undefined);
-  assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(records.candidate.paths.find((p) => p.path === 'src/formats.ts').concepts.map((c) => c.id), ['O-000001']);
 });
 
 test('copy attribution is independent of the local Git rename limit', (t) => {
@@ -260,5 +273,5 @@ test('copy attribution is independent of the local Git rename limit', (t) => {
   assert.equal(git('config', 'diff.renameLimit', '1').status, 0);
   const result = git('commit', '-qm', 'copy attribution with local limit');
   assert.equal(result.status, 0, result.stdout + result.stderr);
-  assert.deepEqual(attribution(result).before.paths.find((p) => p.path === 'src/original-0.ts').concepts.map((c) => c.id), ['K-101']);
+  assert.deepEqual(attribution(result).before.paths.find((p) => p.path === 'src/original-0.ts').concepts.map((c) => c.id), ['O-000001']);
 });

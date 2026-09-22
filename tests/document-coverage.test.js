@@ -200,13 +200,13 @@ test('GOLDEN: the coverage map has the prototype\'s shape', () => {
   // The US-CA leaf is reached by a document scoped to the EU EAA, and the
   // mismatch is FLAGGED rather than the leaf being filtered away: "this
   // constraint is for another jurisdiction" is a finding, not an absence.
-  const outOfScope = map.gather.find((g) => g.id === 'L-000190');
+  const outOfScope = map.gather.find((g) => g.id === 'K-000004');
   assert.ok(outOfScope, 'the out-of-scope leaf is still published');
   assert.match(outOfScope['scope-mismatch'], /us-ca/);
   assert.match(outOfScope['scope-mismatch'], /eu-eaa/);
 
   // Time verdicts travel from the shared verdict module, demotions and all.
-  const stale = map.gather.find((g) => g.id === 'L-000213');
+  const stale = map.gather.find((g) => g.id === 'proposal:knowledge:21321321-3213-4213-8213-213213213213');
   assert.equal(stale.verdict, 'stale');
   assert.deepEqual(stale.demotions.map((d) => d.reason).sort(), ['stage', 'time']);
 

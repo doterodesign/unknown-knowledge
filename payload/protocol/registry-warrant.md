@@ -22,7 +22,7 @@ The knowledge store's four registries:
 
 Membership could have been a JSON Schema `enum`, and deliberately is not.
 
-An enum is **kit-vendored code**. Under D-001 (seeded once, then owned) a
+An enum is **kit-vendored code**. Under D-000001 (seeded once, then owned) a
 seeded repo has no update channel, so a vocabulary living in the schema would
 be frozen at seed time for the life of that repo — a Store could never name a
 subject its own material actually covers. A registry is **client data**: it

@@ -6,7 +6,7 @@
 > against every CI product** — adapt runners, images, and paths to your
 > setup, then watch the first run.
 
-The kit never wires CI at init (D-006) — CI systems churn; your pipeline is
+The kit never wires CI at init (D-000006) — CI systems churn; your pipeline is
 yours. But at team scale CI stops being optional in practice: session-level
 preflight is a sufficient gate for a small team, not for hundreds of
 engineers. Wire the two validators in.
@@ -106,7 +106,7 @@ node "$CI_PRIMARY_REPOSITORY_PATH/unknown-knowledge/engine/validate.js" --root "
 node "$CI_PRIMARY_REPOSITORY_PATH/unknown-knowledge/engine/validate-values.js" --root "$CI_PRIMARY_REPOSITORY_PATH"
 ```
 
-## PR drift attribution (D-012) — whose findings are these?
+## PR drift attribution (D-000012) — whose findings are these?
 
 Filtering validation down to the concepts a PR touched is rejected by
 design: any gap in the reverse index (folder pointers, renames, module
@@ -116,16 +116,16 @@ finding set at the PR's merge-base against the set at HEAD. Both validators
 emit stable, sorted JSON precisely so this diff means something.
 
 ```sh
-git worktree add /tmp/kk-base "$(git merge-base HEAD origin/main)"
+git worktree add local-history:kk-base "$(git merge-base HEAD origin/main)"
 
 # Exit 1 just means findings exist — attribution wants the sets, not the gate.
-node unknown-knowledge/engine/validate.js --json --root /tmp/kk-base > /tmp/base.json || true
-node unknown-knowledge/engine/validate.js --json --root . > /tmp/head.json || true
+node unknown-knowledge/engine/validate.js --json --root local-history:kk-base > local-history:base.json || true
+node unknown-knowledge/engine/validate.js --json --root . > local-history:head.json || true
 
 # Right side only = drift this PR introduced; left side only = drift it fixed.
-diff <(jq -S '.findings' /tmp/base.json) <(jq -S '.findings' /tmp/head.json)
+diff <(jq -S '.findings' local-history:base.json) <(jq -S '.findings' local-history:head.json)
 
-git worktree remove /tmp/kk-base
+git worktree remove local-history:kk-base
 ```
 
 Run the same pair with `engine/validate-values.js` for value drift. In a CI

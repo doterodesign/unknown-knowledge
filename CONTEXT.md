@@ -1,6 +1,6 @@
 # Context — unknown-knowledge
 
-Glossary for the standalone open-source product (D-015/D-016: free, permissive
+Glossary for the standalone open-source product (D-000015/D-000016: free, permissive
 license, public npm; named for the Unknown Creatives studio family) that stands
 up self-improving knowledge-base + ontology structures in any codebase.
 
@@ -20,18 +20,15 @@ as there are axes worth browsing.
 ## Terms
 
 **Kit** — The product itself: a free, open-source CLI (permissive license,
-public npm — D-015) that scaffolds the three stores, engine, and agent
+public npm — D-000015) that scaffolds the three stores, engine, and agent
 protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. Twelve command-line surfaces —
-structural validator, value validator, preflight, resolver, survey map, reverse
-audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate,
-staged attribution — over a store loader, an extractor library, and a format-adapter library.
-JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-022).
+**Engine** — The vendored deterministic code. 12 command-line surfaces: structural validator, value validator, preflight, resolver, survey map, reverse audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate, staged attribution. See the exact [command inventory](README.md#the-engine) and [delivery availability](docs/pr-delivery/README.md).
+JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-000022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
-not decide what to do about them (D-011).
+not decide what to do about them (D-000011).
 
 **Store** — One of three governed YAML repositories of facts, distinguished by
 truth anchor:
@@ -43,20 +40,39 @@ truth anchor:
   lifecycle-tracked (proposed → accepted → addressed → archived), append-mostly:
   status transitions never rewrite recorded reasoning.
 
-**Accession ID** — A knowledge leaf's identity (`L-NNNNNN`): opaque, minted from
-a sequence, never reused, never positional. It is what the loader indexes by and
+**Accession ID** — A record's canonical identity: `K-NNNNNN` for Knowledge,
+`O-NNNNNN` for Ontology and `D-NNNNNN` for Decisions. Each ranges from
+000001 to 999999 within its type and installation. It is opaque,
+allocated permanently in the installation's `_identity.yaml`, never reused,
+never positional.
+Unpublished records use `proposal:<kind>:<lowercase-v4-uuid>` and consume no
+canonical allocation. It is what the loader indexes by and
 the only spelling a citation resolves through — the catalog, other leaves,
 decisions and log fragments all name a leaf this way. Because it says nothing
 about where the leaf sits, refiling the leaf changes no citation, which is the
 whole reason identity was inverted away from notation. A dotted **notation** may
 still ride along as a legacy display label; nothing indexes by it.
 
+**Subject** — Optional shared classification for all three stores. Canonical
+`S-NNNNNN` identities resolve through `subjects/registry.yaml`, independently of
+record identity, filenames and labels. Records can carry multiple `subjects`;
+list order assigns no primary subject. An absent field means unknown, while
+`subjects: []` means explicitly empty. A parent expresses narrower/broader
+meaning; typed related-subject links do not imply ancestry or membership.
+Readable paths and indexes are derived views. Labels alone do not establish
+approved query or assignment eligibility. See the
+[assignment contract](docs/agents/ucs-1236-subject-assignments.md) and
+[governance contract](docs/agents/ucs-1235-subject-governance.md).
+
 **Facet** — One governed axis of a leaf's classification, filled from a
 **registry** rather than invented: `domain` (the hierarchical subject path),
 `form` (what kind of knowledge it is), `anchor` (which truth anchor settles it),
 and `stage` (where it sits in the promotion path). Faceting is what replaced the
 single positional slot: a leaf is described along several axes at once instead of
-being filed at one address, so no axis has to carry every question.
+being filed at one address, so no axis has to carry every question. These
+existing Knowledge metadata fields are separate from the optional shared
+Subject registry; Subject classification does not require company-specific
+dimensions or a primary/secondary subject convention.
 
 **Registry** — A warrant-governed vocabulary file under
 `knowledge/_registries/` (domains, form, anchor, stage, operations,
@@ -128,7 +144,7 @@ it does not prove a store update. Both are **thin wrappers** — each invokes on
 exits with its code, unchanged, with no bypass variable to read. Real Git commit
 tests exercise the installed gate, including partial staging and preservation
 of local work. They seed but do not install: `init` never writes `.git/`, so the
-client hangs the gate the kit ships (D-006).
+client hangs the gate the kit ships (D-000006).
 
 **Runtime loop** — The per-request agent protocol: resolve → preflight →
 gather (JIT reads of SSOT files; the map is never the fact) → act (concept
@@ -147,11 +163,11 @@ a `section` locator when it came from a document candidate.
 
 **Verdict** — Preflight's per-concept output: `trusted / quarantined /
 unknown`. Computed deterministically by the engine; what an agent does about
-a verdict is protocol-layer policy the client owns (D-011).
+a verdict is protocol-layer policy the client owns (D-000011).
 
 **Suppression** — A client-zone record (term, sourcePath, reason, date)
 telling the reverse audit "this is deliberately not a concept." Exact-match
-only in v1 — can only under-suppress, never falsely silence (D-013).
+only in v1 — can only under-suppress, never falsely silence (D-000013).
 Rejection memory for the steward.
 
 **Steward** — The person or rotation owning the improvement loop in a client
@@ -214,7 +230,7 @@ and sorted last, never hidden** — omitting them would report an empty shelf
 where the truth is a rotted one.
 
 **Call number** — A synthesized display string naming a leaf's position in one
-browse tree (`SPO/ODD/REF·L-000117`). It is **never an identity**: no id grammar
+browse tree (`SPO/ODD/REF·K-000001`). It is **never an identity**: no id grammar
 accepts one, no citation resolves through one, and it differs between axes
 because it describes a position rather than a record. The accession it contains
 is the citable half.

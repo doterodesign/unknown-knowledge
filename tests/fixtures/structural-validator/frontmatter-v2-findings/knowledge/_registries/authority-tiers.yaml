@@ -1,18 +1,20 @@
+# Historical warrant prose below is retained from the original source fixture.
+# Its L-000117/L-000213 labels name absent source records, not local identities.
 # Frontmatter v2 fixture (UCS-1149) — the citation authority tiers.
 #
 # The tier is what lets two leaves citing different sources be RANKED when they
 # disagree, which is why a citation with no tier is its own finding.
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: authority-tiers
 values:
   - value: vendor-doc
     gloss: The vendor's own published documentation.
     warrant: L-000117 cites the Component Kit API reference.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"
   - value: interview
     gloss: A conversation with someone who knows, written down.
     warrant: L-000213 rests on a platform-team interview.
-    decision: D-401
+    decision: D-000001
     minted: "2026-08-16"

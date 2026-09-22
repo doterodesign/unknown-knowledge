@@ -1,10 +1,10 @@
-# KK-07 clean fixture: K-100 agrees with its source (values are compared as
-# SETS — the source lists them in a different order); K-130 is draft, so its
+# KK-07 clean fixture: O-000001 agrees with its source (values are compared as
+# SETS — the source lists them in a different order); proposal:ontology:13013013-0130-4130-8130-130130130130 is draft, so its
 # enumerates are skipped (§3.5 structural checks only) even though its source
 # file does not exist.
-schema-version: 1
+schema-version: 2
 entries:
-  - id: K-100
+  - id: O-000001
     term: Icon
     class: 100-registries
     summary: An icon the product's icon set ships.
@@ -14,7 +14,7 @@ entries:
       - kind: test-lines
         source: src/icons.txt
         values: [grid, list, search]
-  - id: K-130
+  - id: proposal:ontology:13013013-0130-4130-8130-130130130130
     term: Draft panel
     class: 100-registries
     summary: A panel still being drafted.

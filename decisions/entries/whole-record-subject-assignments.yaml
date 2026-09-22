@@ -1,0 +1,41 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:adc0ae03-6d6c-4f3b-8d45-69c1185d0f02
+    title: Optional whole-record subjects retain unknown state and disposable direct indexes
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [dimitri]
+    context: >
+      UCS-1236 requires shared retrieval aboutness across Knowledge, Ontology
+      and Decisions without merging their truth anchors or weakening their
+      existing fields and gates. Treating omitted classification as an empty
+      set would manufacture negative query evidence. A primary subject or an
+      authoritative reverse index would make navigation layout change record
+      meaning. This record backfills the implemented r3 choice for review;
+      implementation and ticket completion are not canonical approval.
+    decision: >
+      Each record may author one ordered subjects list of exact canonical
+      Subject IDs. No own field means unknown with reason absent; an explicit
+      empty list means known empty. Malformed, duplicate and unknown targets
+      are diagnosed without normalization. Canonical and proposal record
+      owners remain distinct typed rows retaining original store entries.
+      One shared accessor supplies this state to consumers. The disposable
+      reverse index contains direct authored assignments only, with unknown
+      records separate; it never establishes negative coverage, hierarchy,
+      eligibility or evidence. Additional subjects preserve positive
+      conjunction, evaluated on one record at a time. Co-assignment identifies
+      candidate whole-record aboutness, not a joined source claim.
+    consequences: >
+      The alternative of defaulting absent subjects to an empty list is
+      rejected because NOT predicates would gain unsupported certainty.
+      In-memory indexing can be rebuilt or omitted without losing authored
+      classification. Store-specific schemas, source gates and identities
+      remain intact. Shared implementation is in
+      payload/engine/lib/subject-assignments.js and the three record schemas;
+      validate-record.js shares the accessor for duplicate diagnostics because
+      its schema interpreter does not enforce uniqueItems. Evidence includes
+      tests/subject-assignments.test.js, tests/assignment-schema.test.js,
+      tests/identity-reader.test.js and tests/subject-query-record.test.js.
+      docs/agents/ucs-1236-subject-assignments.md maps the contract and limits.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003] }

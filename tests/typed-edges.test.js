@@ -117,9 +117,9 @@ test('golden: an unresolvable concepts target and an unresolvable relates target
   assert.equal(r.status, 2, `expected the loader-error gate: ${r.stdout}${r.stderr}`);
   const out = `${r.stdout}${r.stderr}`;
   assert.match(out, /unresolved-ref {2}knowledge\/library\/501\.1-result-ordering\.md {2}concepts\[0\]/);
-  assert.match(out, /"K-999" does not resolve to any ontology entry or catalog-declared id/);
+  assert.match(out, /"O-999999" does not resolve to any ontology entry or catalog-declared id/);
   assert.match(out, /unresolved-ref {2}knowledge\/library\/501\.1-result-ordering\.md {2}relates\.depends-on\[0\]/);
-  assert.match(out, /"L-000999" does not resolve to any knowledge entry or catalog-declared id/);
+  assert.match(out, /"K-999999" does not resolve to any knowledge entry or catalog-declared id/);
   // Exactly two: the store's other edges all resolve, so nothing is
   // over-reported and the two findings are attributable to the two dangles.
   assert.equal((out.match(/unresolved-ref/g) ?? []).length, 2, out);
@@ -132,7 +132,7 @@ test('golden: an unresolvable paths target is a missing-path finding at the vali
   const payload = json('validate.js', 1, '--root', PATH_FINDINGS);
   assert.deepEqual(
     payload.findings.map((f) => [f.code, f.severity, f.id, f.path]),
-    [['missing-path', 'error', 'L-000501', 'paths[1]']],
+    [['missing-path', 'error', 'K-000001', 'paths[1]']],
   );
   // The index points at the entry an author would edit — the FIRST path in the
   // same list exists, so the finding is per-entry rather than per-leaf.
@@ -233,11 +233,11 @@ test('a leaf path naming the repo root is refused — a pointer at everything at
   // would pass just as well against an empty result.
   assert.deepEqual(
     resolved.paths[0].knowledge.map((k) => [k.via, k.id]),
-    [['direct', 'L-000510'], ['concept', 'L-000511']],
+    [['direct', 'K-000006'], ['concept', 'K-000007']],
   );
   // ...and the root-pointer leaf is not among them.
   assert.equal(
-    resolved.paths[0].knowledge.some((k) => k.id === 'L-000501'), false,
+    resolved.paths[0].knowledge.some((k) => k.id === 'K-000001'), false,
     'a root pointer must not attribute its leaf to every path',
   );
 });
@@ -300,7 +300,7 @@ test('concept source-of-truth pointers are held to the same containment rule', (
   });
   assert.deepEqual(
     payload.findings.map((f) => [f.code, f.id, f.path]),
-    [['missing-path', 'K-202', 'source-of-truth[0]']],
+    [['missing-path', 'O-000002', 'source-of-truth[0]']],
   );
   assert.match(payload.findings[0].message, /resolves outside the repo root/);
 });
@@ -338,21 +338,21 @@ test('the loader derives concept -> leaves from the leaf-side declaration', () =
   assert.equal(model.ok, true);
   // Authored ONCE, leaf-side, because deciding what a leaf is about is
   // curatorial work under the human write gate...
-  assert.deepEqual(leafConcepts(model.leaves.get('L-000501').record), ['K-201']);
+  assert.deepEqual(leafConcepts(model.leaves.get('K-000001').record), ['O-000001']);
   // ...and traversable from the other end, which is what the reverse index is.
-  assert.deepEqual(model.leavesByConcept.get('K-201'), ['L-000501']);
-  assert.deepEqual(model.leavesByConcept.get('K-202'), ['L-000510', 'L-000511']);
+  assert.deepEqual(model.leavesByConcept.get('O-000001'), ['K-000001']);
+  assert.deepEqual(model.leavesByConcept.get('O-000002'), ['K-000006', 'K-000007']);
   // Sorted, so the index is byte-stable regardless of file walk order.
   const keys = [...model.leavesByConcept.keys()];
   assert.deepEqual(keys, [...keys].sort());
 });
 
 test('golden: resolving a concept surfaces its declaring leaves with NO term match', () => {
-  // The acceptance criterion, stated as a fixture property first: K-201's term
+  // The acceptance criterion, stated as a fixture property first: O-000001's term
   // and summary vocabulary appears in no leaf's `terms`, so the pre-1151
   // textual join reaches nothing at all.
   const model = loadStores(CLEAN);
-  const concept = model.concepts.get('K-201').record;
+  const concept = model.concepts.get('O-000001').record;
   // Both sides lowercased: the join this guards is case-INSENSITIVE, so a
   // Title-Case alias compared raw would slip past the invariant and leave the
   // test claiming a textual miss that had actually become a hit.
@@ -363,7 +363,7 @@ test('golden: resolving a concept surfaces its declaring leaves with NO term mat
     for (const term of leaf.record.terms ?? []) {
       assert.equal(
         names.has(term.toLowerCase()), false,
-        `fixture invariant broken: leaf term "${term}" now matches K-201 textually, which would make this test prove nothing`,
+        `fixture invariant broken: leaf term "${term}" now matches O-000001 textually, which would make this test prove nothing`,
       );
     }
   }
@@ -371,23 +371,23 @@ test('golden: resolving a concept surfaces its declaring leaves with NO term mat
   // And the leaf surfaces anyway, because it DECLARED the concept. This is the
   // whole point: rename the concept's term, or write the leaf in different
   // words, and the two still find each other.
-  const knowledge = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'K-201');
+  const knowledge = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'O-000001');
   assert.deepEqual(
     knowledge.map((k) => [k.via, k.id, k.heading]),
-    [['declared', 'L-000501', 'Result ordering']],
+    [['declared', 'K-000001', 'Result ordering']],
   );
 });
 
 test('the textual join still fires, and the structural claim wins a tie', () => {
-  // K-202 is reachable BOTH ways. L-000510 declares it AND names it in `terms`;
-  // L-000511 only declares it. Both surface, and both report `declared` —
+  // O-000002 is reachable BOTH ways. K-000006 declares it AND names it in `terms`;
+  // K-000007 only declares it. Both surface, and both report `declared` —
   // the structural edge is the stronger claim and the one that survives a
   // concept rename, so it wins the tie rather than being masked by the weaker
   // one that happens to also hold.
-  const knowledge = entryPoints(json('resolve.js', 0, 'index', 'build', '--root', CLEAN), 'K-202');
+  const knowledge = entryPoints(json('resolve.js', 0, 'index', 'build', '--root', CLEAN), 'O-000002');
   assert.deepEqual(
     knowledge.map((k) => [k.via, k.id]),
-    [['declared', 'L-000510'], ['declared', 'L-000511']],
+    [['declared', 'K-000006'], ['declared', 'K-000007']],
   );
 
   // A leaf reached ONLY by term text still reports `terms` — the pre-1151 join
@@ -395,7 +395,7 @@ test('the textual join still fires, and the structural claim wins a tie', () => 
   // resolver fixture, whose leaves declare no concepts at all.
   const legacy = entryPoints(
     json('resolve.js', 0, 'export', '--root', join(root, 'tests/fixtures/resolver/store')),
-    'K-120',
+    'O-000003',
   );
   assert.deepEqual(legacy.map((k) => k.via), ['terms']);
 });
@@ -415,13 +415,13 @@ test('golden: a diff-shaped path list surfaces its governing leaves, stable-sort
       p.knowledge.map((k) => [k.via, k.id]),
     ]),
     [
-      // src/index/build.ts is a FILE pointer named by both K-202's
-      // source-of-truth and L-000510's `paths`. L-000511 arrives through the
-      // concept hop alone — it declares K-202 and names no path of its own.
-      ['src/index/build.ts', ['K-202'], [['direct', 'L-000510'], ['concept', 'L-000511']]],
+      // src/index/build.ts is a FILE pointer named by both O-000002's
+      // source-of-truth and K-000006's `paths`. K-000007 arrives through the
+      // concept hop alone — it declares O-000002 and names no path of its own.
+      ['src/index/build.ts', ['O-000002'], [['direct', 'K-000006'], ['concept', 'K-000007']]],
       // src/retrieval is a FOLDER pointer on both sides, so a file beneath it
       // nests exactly as concept pointers already did (§3.1).
-      ['src/retrieval/rank.ts', ['K-201'], [['direct', 'L-000501']]],
+      ['src/retrieval/rank.ts', ['O-000001'], [['direct', 'K-000001']]],
     ],
   );
 });
@@ -445,29 +445,29 @@ test('the human surface names the governing knowledge and how it was reached', (
   const human = runCli('resolve.js', '--paths', 'src/index/build.ts', '--root', CLEAN);
   assert.equal(human.status, 0, human.stderr);
   assert.match(human.stdout, /governing knowledge:/);
-  assert.match(human.stdout, /L-000510 {2}502\.1 {2}Index build batch {2}\[via direct\]/);
-  assert.match(human.stdout, /L-000511 {2}502\.2 {2}Index freshness window {2}\[via concept\]/);
+  assert.match(human.stdout, /K-000006 {2}502\.1 {2}Index build batch {2}\[via direct\]/);
+  assert.match(human.stdout, /K-000007 {2}502\.2 {2}Index freshness window {2}\[via concept\]/);
 });
 
 // -------------------- AC4: one-hop relates neighborhood, and exactly one hop
 
 test('golden: a hit carries its one-hop neighborhood, typed and labeled by kind', () => {
-  const [hit] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'K-201');
+  const [hit] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'O-000001');
   assert.deepEqual(hit[RELATES_FIELD], {
     'depends-on': [{
-      id: 'L-000502',
+      id: 'K-000002',
       notation: '501.2',
       heading: 'Score computation',
       file: 'knowledge/library/501.2-score-computation.md',
     }],
     'see-also': [{
-      id: 'L-000504',
+      id: 'K-000004',
       notation: '501.4',
       heading: 'Ordering rationale',
       file: 'knowledge/library/501.4-ordering-rationale.md',
     }],
     contradicts: [{
-      id: 'L-000505',
+      id: 'K-000005',
       notation: '501.5',
       heading: 'Recency ordering',
       file: 'knowledge/library/501.5-recency-ordering.md',
@@ -482,12 +482,12 @@ test('golden: a hit carries its one-hop neighborhood, typed and labeled by kind'
 test('the hop is exactly ONE — a neighbor\'s neighbors are absent', () => {
   // The fixture is a three-leaf chain: 501.1 -depends-on-> 501.2
   // -depends-on-> 501.3. Depth 1 from 501.1 reaches 501.2 and stops.
-  const [hit] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'K-201');
+  const [hit] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'O-000001');
   const reached = Object.values(hit[RELATES_FIELD]).flat().map((n) => n.id);
-  assert.ok(reached.includes('L-000502'), 'the direct neighbor is present');
+  assert.ok(reached.includes('K-000002'), 'the direct neighbor is present');
   assert.equal(
-    reached.includes('L-000503'), false,
-    'L-000503 is two hops away and must be absent — the hop is one, not "one or more"',
+    reached.includes('K-000003'), false,
+    'K-000003 is two hops away and must be absent — the hop is one, not "one or more"',
   );
   // ...and it really is reachable at depth 2, so its absence is the boundary
   // rather than a broken fixture: the middle leaf does declare it. The declared
@@ -495,8 +495,8 @@ test('the hop is exactly ONE — a neighbor\'s neighbors are absent', () => {
   // spellings were legal (UCS-1144), and the fixture migrated with UCS-1147.
   const model = loadStores(CLEAN);
   assert.deepEqual(
-    model.leaves.get('L-000502').record[RELATES_FIELD]['depends-on'],
-    ['L-000503'],
+    model.leaves.get('K-000002').record[RELATES_FIELD]['depends-on'],
+    ['K-000003'],
   );
 });
 
@@ -515,18 +515,18 @@ test('a neighbor is published by IDENTITY, and its notation is only a label', ()
   // the interesting half is that `notation` is still published and is still not
   // what anything resolves through.
   const model = loadStores(CLEAN);
-  assert.deepEqual(model.leaves.get('L-000502').record[RELATES_FIELD]['depends-on'], ['L-000503']);
-  assert.equal(model.leaves.get('L-000503').notation, '501.3',
+  assert.deepEqual(model.leaves.get('K-000002').record[RELATES_FIELD]['depends-on'], ['K-000003']);
+  assert.equal(model.leaves.get('K-000003').notation, '501.3',
     'the target keeps its legacy label — the citation simply does not use it');
   assert.equal(model.leaves.has('501.3'), false,
     'and nothing is indexed under that label, so no lookup can reach it');
 
   // The claim, asserted where it is actually observable: the middle leaf
-  // reaches the resolver as a one-hop neighbor of L-000501, published under its
+  // reaches the resolver as a one-hop neighbor of K-000001, published under its
   // accession with its notation riding along.
-  const [head] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'K-201');
+  const [head] = entryPoints(json('resolve.js', 0, 'retrieval', 'ranking', '--root', CLEAN), 'O-000001');
   assert.deepEqual(head[RELATES_FIELD]['depends-on'], [{
-    id: 'L-000502',
+    id: 'K-000002',
     notation: '501.2',
     heading: 'Score computation',
     file: 'knowledge/library/501.2-score-computation.md',
@@ -540,7 +540,7 @@ test('a neighbor is published by IDENTITY, and its notation is only a label', ()
 test('every leaf the resolver publishes carries a neighborhood, in both modes', () => {
   // "Any resolver hit" means any: the neighborhood is attached where the leaf
   // is published, not per mode, so a mode added later cannot forget it.
-  const query = entryPoints(json('resolve.js', 0, 'index', 'build', '--root', CLEAN), 'K-202');
+  const query = entryPoints(json('resolve.js', 0, 'index', 'build', '--root', CLEAN), 'O-000002');
   const paths = json('resolve.js', 0, '--paths', 'src/index/build.ts', '--root', CLEAN).paths[0].knowledge;
   for (const leaf of [...query, ...paths]) {
     assert.deepEqual(
@@ -553,8 +553,8 @@ test('every leaf the resolver publishes carries a neighborhood, in both modes', 
 test('the human surface labels each neighborhood by edge kind', () => {
   const human = runCli('resolve.js', 'retrieval', 'ranking', '--root', CLEAN);
   assert.equal(human.status, 0, human.stderr);
-  assert.match(human.stdout, /depends-on: L-000502 "Score computation"/);
-  assert.match(human.stdout, /contradicts: L-000505 "Recency ordering"/);
+  assert.match(human.stdout, /depends-on: K-000002 "Score computation"/);
+  assert.match(human.stdout, /contradicts: K-000005 "Recency ordering"/);
   // Empty kinds are omitted from the HUMAN surface (the opposite of the JSON
   // contract, on purpose): four "(none)" lines per leaf bury the real hits.
   assert.doesNotMatch(human.stdout, /supersedes:/);

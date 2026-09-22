@@ -1,10 +1,10 @@
 # Acceptance-fixture store (KK-15) — the citation authority tiers (UCS-1148).
-schema-version: 1
+schema-version: 2
 store: knowledge
 registry: authority-tiers
 values:
   - value: internal
     gloss: The team's own repo, docs, or working agreements.
     warrant: 100.1 cites src/registry/export-formats.ts — the team's own source file.
-    decision: D-101
+    decision: D-000001
     minted: "2026-07-08"
