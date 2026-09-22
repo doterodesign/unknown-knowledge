@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -137,7 +137,7 @@ unavailable versus corrupt evidence, deterministic output and untouched dirty/in
 state. Main owns the integrated full suite and publication acceptance.
 ## Continued retirement evidence
 
-The lifecycle material profile (contract arrives in PR4; see delivery availability) adds an
+The [lifecycle material profile](lifecycle-material-continuation.md) adds an
 internal continued-inventory entry for the retirement owner. It accepts already
 owned evidence and the enclosing authentic governance allowance. Actual model
 evaluation, binding and additional reads debit that owner; the inventory's

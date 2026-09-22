@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -45,7 +45,7 @@ These links are rationale, not a claim that the new proposals have been accepted
 | [Assignment replay](ucs-1241-assignment-replays.md) | Clarified legacy input transport versus current shared loader and the separately owned equivalent-merge recipe. |
 | [Merge assignment adapter](ucs-1241-subject-use-assignment-gate.md) | Documented effective K/O/D grouping, no O/D notes, protected whole-file conflicts and the stricter merge authorizer boundary. |
 | [Decision promotion](ucs-1241-decision-promotion-gate.md) | Linked the capability/creation proposal; exact DTO, actual evidence, admission failure semantics and resource limits retained. |
-| [P2 merge contract](ucs-1235-equivalent-merge-dto.md), [P1 planner](ucs-1234-decision-promotion.md), P7 final publication (contract arrives in PR4; see delivery availability) and candidate review (contract arrives in PR4; see delivery availability) | Other owners maintain these contracts; P8 links them and sends scope changes through handoff, without concurrent edits. |
+| [P2 merge contract](ucs-1235-equivalent-merge-dto.md), [P1 planner](ucs-1234-decision-promotion.md), P7 [final publication](ucs-1240-final-publication.md) and [candidate review](ucs-1240-candidate-review.md) | Other owners maintain these contracts; P8 links them and sends scope changes through handoff, without concurrent edits. |
 | Root README, version/changelog, CONTRIBUTING, root AGENTS/agent index, PR template, CI and publishing files | Main-owned. Handoff must describe the four read-only gate variants, typed merge limits and subjectless first promotion. No P8 root edits or independent version bump. |
 | Installed protocol AGENTS, adapter/extractor READMEs, package payload guide | No new writer protocol, adapter, extractor or executable CLI was introduced by this maintenance change. Broader onboarding/publication changes stay with main/P9/P7. No new AGENTS file is needed merely to restate the API docs. |
 | Frozen runtime, benchmark inputs/results, reviewer receipts and experiment artifacts | No modifications, reruns, retuning or retrospective relabeling. Current docs state limitations separately. |
@@ -71,7 +71,7 @@ classified and subjectless canonical births with preserved prior history. It
 requires the actual present-store union, unchanged registry or absence on both
 sides, strict new-assignment eligibility, selected preflight and finite typed
 impacts. Unknown reach stays unknown. Its read-only success cannot substitute
-for P7's separate typed retained/publication profile (contract arrives in PR4; see delivery availability), now implemented for Ontology/Knowledge under v2 policies. Four new engine
+for P7's separate [typed retained/publication profile](ucs-1240-final-record-promotion.md), now implemented for Ontology/Knowledge under v2 policies. Four new engine
 modules are covered by the existing engine-directory manifest entry. Root
 README/changelog, prepared-validation guide and shared coverage describe the
 same boundary; no CLI, schema or agent workflow is introduced.
@@ -107,7 +107,7 @@ expectation produced 7/7 K tests in 15104.23325ms; an additional static-age case
 passed in 2258.611333ms. No production gate was weakened. Original receipts remain
 separate evidence; the final integration run covers the complete updated tests.
 
-The O/K publication guide (contract arrives in PR4; see delivery availability), P7 audit, current
+The [O/K publication guide](ucs-1240-final-record-promotion.md), P7 audit, current
 P8 design, README/changelog and shared coverage describe the same v2 boundary.
 Historical O-only evidence remains pinned, and classified D/lifecycle/operational
 acceptance remain unfinished. No public CLI/MCP or authoring-protocol change is
@@ -212,8 +212,8 @@ or the remaining P1–P11 acceptance scope.
 
 ## Subsequent retirement publication integration
 
-The retained retirement profile (contract arrives in PR4; see delivery availability) and its
-Decision (contract arrives in PR4; see delivery availability) now add
+The [retained retirement profile](ucs-1240-final-retirement.md) and its
+[Decision](../../decisions/entries/ucs-1240-retirement-publication.yaml) now add
 the event-independent authorizer, exact original-input proof, separate raw
 capture caps, fixed workers, fresh owner equality and shared ref transaction.
 The earlier owner-only evidence above remains tied to its original snapshot.
@@ -275,7 +275,7 @@ are updated together. Existing installed AGENTS, wrappers, CLI/MCP commands,
 schemas and manifest directory entries remain applicable; no retained split
 worker/publication profile is claimed. Per-PR version obligations are unchanged.
 
-The subsequent split review/publication profile (contract arrives in PR4; see delivery availability)
+The subsequent [split review/publication profile](ucs-1240-split-review-publication.md)
 uses the existing P8 preservation proof and actual fresh owner at both boundaries.
 Positive use retains its event even when every selected successor subset is
 empty; zero use retains no event and still verifies both authorities. The new

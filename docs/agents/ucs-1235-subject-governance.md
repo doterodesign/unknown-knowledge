@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -7,14 +7,14 @@ This contract includes final design and historical checkpoints. See [stage avail
 P2 provides structural authority reading, captured lifecycle resolution,
 review-evidence checks and the bounded domain operations described below. These
 operations do not authenticate a human reviewer or publish an installation.
-The separate metadata publication profile (contract arrives in PR4; see delivery availability)
+The separate [metadata publication profile](ucs-1240-subject-metadata-publication.md)
 now composes actual Git evidence, unchanged assignments, native reach/tree/query
 effects, fresh review and publication for rename/clarify/reparent/relate.
 The separate [actual equivalent-merge gate](ucs-1235-equivalent-merge-dto.md)
 composes registry, assignment and impact owners over committed trees.
 The separate [plain-retirement gate](ucs-1235-plain-retirement-dto.md) checks
 exact withdrawals or a proven zero-use branch, preserving reviewed historical
-and inherited uses. Its separate final publication profile (contract arrives in PR4; see delivery availability)
+and inherited uses. Its separate [final publication profile](ucs-1240-final-retirement.md)
 adds retained review, fresh evidence and the candidate-ref transaction.
 Rationale and documentation coverage are indexed in the
 [P2 decision audit](ucs-1235-decisions-and-docs.md).
@@ -26,7 +26,7 @@ assignment-event metadata. A separate actual Git core now proves mapping and
 retention scope from original/candidate snapshots. Request shape alone does not
 establish that closure. The [prepared split gate](ucs-1235-subject-split-gate.md)
 now composes the fixed P8 preservation, eventless proof and mandatory impacts.
-The separate split review/publication profile (contract arrives in PR4; see delivery availability)
+The separate [split review/publication profile](ucs-1240-split-review-publication.md)
 verifies actual authority and allocation before fresh owner checks and the
 candidate-ref transaction. Ordinary transition validation still refuses new splits.
 
@@ -112,25 +112,25 @@ gate supports one equivalent merge across effective canonical K/O/D direct uses,
 including grouped O/D files under its explicit protected-file restrictions.
 Ordinary transition validation still cannot authorize it. The equivalent-merge
 publication profile is separate. Plain retirement now has a dedicated read-only
-gate and a separate final publication profile (contract arrives in PR4; see delivery availability).
+gate and a separate [final publication profile](ucs-1240-final-retirement.md).
 Union and proposal refusal require complete creation/refusal composition.
 Other retirement/merge variants retain their documented limits and need explicit
-scenario-to-spec adjudication under the required scope (contract arrives in PR4; see delivery availability).
+scenario-to-spec adjudication under the [required scope](subject-lifecycle-required-scope.md).
 Structural split resolution
 returns explicit alternatives, and historical split-event governance is now
 implemented. The [actual-model and Git scope boundaries](ucs-1235-subject-split-design.md)
 are implemented and now feed the dedicated split assignment/preservation and
-impact composition and the retained split publication profile (contract arrives in PR4; see delivery availability).
+impact composition and the [retained split publication profile](ucs-1240-split-review-publication.md).
 Suppressed-proposal reconsideration has a separate
 [history/model validator](ucs-1235-subject-reconsideration-creation.md);
 its [query/intent/view consumers](ucs-1237-reconsideration-consumers.md) receive
-retained material. The retained publication profile (contract arrives in PR4; see delivery availability)
+retained material. The [retained publication profile](ucs-1240-reconsideration-publication.md)
 now provides actual-Git review and fresh candidate-ref publication. The
-material-continuation contract (contract arrives in PR4; see delivery availability) carries
+[material-continuation contract](lifecycle-material-continuation.md) carries
 that evidence through retirement, positive-use equivalent merge, split and
 K/O/D promotion. The [typed existing-record assignment profile](ucs-1241-typed-assignment-publication.md)
 now provides retained and fresh publication for mixed K/O/D selections. The
-zero-use equivalent-merge profile (contract arrives in PR4; see delivery availability) also proves
+[zero-use equivalent-merge profile](ucs-1240-equivalent-merge-zero.md) also proves
 registry-only changes and publishes without an assignment event. Ordinary fresh
 creation, union/broadening and complete proposal refusal/reversal acceptance
 remain separate required work. Active-canonical suppression/restoration remains
@@ -243,7 +243,7 @@ The candidate retains the proposal with its new event reference. One event
 increments the registry revision once; preserved parents leave the hierarchy
 revision unchanged. Canonical carry-forward rows are not accepted in suppression.
 
-The fixed proposal-suppression publication profile (contract arrives in PR4; see delivery availability)
+The fixed [proposal-suppression publication profile](ucs-1240-subject-proposal-suppression-publication.md)
 now composes this native before-model rule with actual Git source capture,
 registry-only preservation, unchanged canonical query memberships, retained
 validation and fresh review/publication. Its
@@ -298,7 +298,7 @@ bounded operations; it is not part of an authored authorization DTO.
 
 ## Bounded fresh activation and bootstrap
 
-The separate ordinary creation publication profile (contract arrives in PR4; see delivery availability)
+The separate [ordinary creation publication profile](ucs-1240-subject-creation.md)
 composes one fresh activation or unrefused-proposal promotion over actual Git
 sources, the native one-Subject allocation, eventless owner preservation and
 fresh retained review. Its scoped verification is recorded there. The legacy

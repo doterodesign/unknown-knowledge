@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -12,7 +12,7 @@ capture. It renders declared lifecycle and semantic parent paths; it does not
 evaluate approval or certify a subject as eligible for querying or assignment.
 The registry remains authority. Files under `subjects/derived/` are disposable.
 
-The shared interface (contract arrives in PR6; see delivery availability) exposes a
+The [shared interface](../../payload/protocol/engine-interface.md) exposes a
 read-only `subject.tree` preview (MCP `subject_tree`) using this same artifact
 factory. Input is `{budget:{nodes,edges,rows},maxBytes}` and output is the native
 `{status,metadata,artifacts}` result, including complete generated text. It does
@@ -70,7 +70,7 @@ structural tree artifact/generator versions are unchanged.
 
 ## Governed route and context modes
 
-The shared API/CLI/MCP interface (contract arrives in PR6; see delivery availability)
+The [shared API/CLI/MCP interface](../../payload/protocol/engine-interface.md)
 also exposes these owners as `subject.route` and `subject.contexts`. Its input
 contains the same request below, all three wire evidence arrays and explicit
 operation limits. It preserves the native CLI result envelope and requires

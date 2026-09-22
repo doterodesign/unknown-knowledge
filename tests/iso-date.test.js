@@ -149,7 +149,7 @@ test('audit measures staleness only from a day that exists', () => {
 
 // ------------------------------------------------------ the rule lives once
 
-test('ISO_DATE is defined exactly once in the engine', async () => {
+test('ISO_DATE is defined once per current and fixed historical runtime', async () => {
   const { readdir, readFile } = await import('node:fs/promises');
   const engineDir = join(repoRoot, 'payload', 'engine');
   const definers = [];
@@ -163,6 +163,10 @@ test('ISO_DATE is defined exactly once in the engine', async () => {
     }
   };
   await walk(engineDir);
-  assert.deepEqual(definers, ['payload/engine/lib/iso-date.js'],
-    `the date rule is stated in more than one place: ${definers.join(', ')}`);
+  // Preserve the historical runtime byte-for-byte; neither runtime may gain
+  // another definition. This scans the whole tree without directory exemptions.
+  assert.deepEqual(definers.sort(), [
+    'payload/engine/compatibility/identity-migration-08066b5/engine/lib/iso-date.js',
+    'payload/engine/lib/iso-date.js',
+  ], `unexpected date-rule definitions: ${definers.join(', ')}`);
 });

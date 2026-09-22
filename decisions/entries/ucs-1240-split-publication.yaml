@@ -1,0 +1,105 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:8b93636f-c539-4791-adef-c472741ec7bb
+    title: Split publication separates retained byte evidence from actual allocation and fresh authority
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Prepared split validation now proves the actual domain operation, but its
+      serialized report does not grant publication authority. Split changes both
+      registry and identity, even without direct assignments. The existing
+      retirement profile cannot retain or independently corroborate this new
+      identity artifact. Nested assignment reports contain refs, eligibility and
+      preservation, not the raw mapping reasons or revisions.
+      Inspection also needs authentic failed-owner diagnostics. Treating missing
+      success captures as the only failure signal would discard those reports;
+      treating failed reports as success would misstate their authority. Parent
+      temporary cleanup occurs after evidence retention, so changing a returned
+      cleanup flag cannot make the retained bundle attest that later cleanup.
+    decision: >
+      Introduce a fixed split publication profile while preserving existing
+      version-1 envelopes and older operation contracts. Retain original owner
+      wire and report, explicit positive registry/identity/event capture limits,
+      raw candidate registry and identity on both branches, and an assignment
+      event only for positive use. The identity cap covers the candidate artifact
+      only. Require the original before registry/identity evidence pair exactly
+      once without recapture repair or deduplication. Keep parsed-report and
+      original-wire consistency distinct from verified candidate byte capture,
+      later actual original/candidate Git corroboration and fresh owner execution.
+      Bind raw event order, reasons, revisions and the common five-field Decision
+      tuple at the byte-aware boundary; never invent missing report fields.
+      Use a new fixed split decoder over private shared wire mechanics, leaving
+      the older decoder's accepted actions and diagnostics unchanged. Use a new
+      fixed identity reader over private shared bounded read mechanics, leaving
+      the old registry/event reader's paths and refusal behavior unchanged.
+      Reuse the registry parser with the strictly decoded candidate ledger only
+      for structural metadata checks; do not infer actual allocation authority.
+      Later independent review allocates a fresh authentic allowance from the
+      original governance/allocation limits, admits each actual ledger capture,
+      and invokes the existing split allocation comparator once. It does not
+      reset or overwrite completed owner counters. Fresh review and publication
+      checks precede the existing atomic candidate-ref transaction.
+      Keep split verification in one fixed candidate-review-split module. Shared
+      review code retains its envelope, fixed artifact resolution, authorization
+      and receipt machinery. The adapter uses one fresh governance allowance for
+      the four actual before/candidate registry and identity captures, plus the
+      actual assignment event only for positive use. Admit each capture once and
+      reuse its bytes. Guard raw registry/event documents and charge named
+      history, mapping and original-pair inspection work in that allowance. The
+      existing allocation helper alone guards identities, successors and derived
+      publication, admits their populations and computes the native plan and
+      identity digests. Do not add registry-model loading or a second ledger pass.
+      Independently compare exact raw history prefix/suffix, modes, original
+      evidence and common Decision tuples. Normalized registry semantics,
+      current authorizer semantics and declared historical Decision provenance
+      remain mandatory fresh-owner checks at both review recording and
+      publication; do not add a redundant sixth
+      local Decision recapture or claim the adapter independently proves it.
+      The fixed adapter receives resolved artifact rows, not caller-selected
+      callbacks, policies, budgets or executable paths. Keep the existing atomic
+      source verification and candidate-ref compare-and-swap unchanged.
+      For split validation, retain a completed valid failed owner report only as
+      diagnostics when the exact emitted bytes and exit status agree; retain no
+      successful registry, identity or assignment artifacts on that branch.
+      Refuse malformed, interrupted or contradictory execution and any unexpected
+      authority artifact, including broken symlinks. A successful owner report
+      does not waive separate structural and value checks at the final gate.
+      Retain the same diagnostic stream buffers whose byte/exit association was
+      verified; a later reread must not substitute different bytes. Validate
+      worker check structure before dispatching report inspection, and translate
+      native encoding-depth refusals only at the affected encoding boundary.
+      If split parent cleanup fails after retention, reject call acknowledgement
+      while preserving retained evidence. That bundle is not a parent-cleanup
+      attestation; no new receipt or final-input field is introduced. Fresh final
+      cleanup independently revokes final success. Preserve older operation
+      cleanup and diagnostic behavior in this slice.
+    consequences: >
+      A pure report predicate has no Git or filesystem authority. Candidate
+      capture receives a verified candidate snapshot root, not the original
+      repository, so it cannot prove original source membership from descriptors.
+      Actual original/candidate source and whole-ledger verification remain later
+      review and fresh-owner obligations. Additional physical reads are charged
+      separately; no extra allocation plan, occupancy recount or generic identity
+      transition pass is introduced within that independent review invocation.
+      Existing aggregate wire decoding and retained-artifact limits remain
+      separate from native parsing, Git allocation and whole-process resources.
+      Private extraction serves concrete existing and new fixed readers without
+      exposing an arbitrary-path API or untrusted validator dispatch. Zero use
+      forbids a retained event, including empty files or broken symlinks; it does
+      not waive either authority artifact or its strict positive capacity.
+      A nine-field split operation-evidence record includes detached identity
+      evidence separately from repository locators. Operator authorization stays
+      distinct from the registry review reference used for allocation. Fixed
+      workers, runtime evidence, final review and publication are separate slices;
+      the next runtime slice includes both real workers and the final retained
+      gate because runtime capture requires both workers. Reuse owned bounded
+      readback for the fixed artifacts so capacity is checked before allocation.
+      Transport alone cannot mark them complete. Qualified reach and expected
+      query refusals remain qualified. The implementation state and evidence are
+      documented in docs/agents/ucs-1240-prepared-split-transport.md,
+      docs/agents/ucs-1240-split-review-publication.md and the split design.
+      This proposed record grants no actual runtime approval, operator
+      authorization, canonical Decision promotion, release or customer publication.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:e4a28bbf-8a28-4eea-b32a-b81b15bdc14d, proposal:decision:451f33be-ce10-4701-99c9-a42463d7d930] }

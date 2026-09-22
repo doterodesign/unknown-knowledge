@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -34,7 +34,7 @@ publication authority, and it does not complete the broader acceptance scope.
 | P8 | Implemented `runPreparedRecordPromotionGate` for K/O/D: derive actual capabilities, invoke P1, verify identity/bytes/history, run P3, kind-specific selected preflight and the fixed typed-current impact recipe. Its result stays read-only. |
 | P2/P3 | Use actual governance evidence and existing strict new-assignment validation; no assignment API change. No registry lifecycle change belongs to promotion. |
 | P4/P6 | Reuse actual query validation/execution and generic candidate deltas, reach and generated tree. The new operation recipe belongs to P8; it does not widen the legacy Knowledge or equivalent-merge recipe. |
-| P7 | Implemented the distinct K/O/D publication profile (contract arrives in PR4; see delivery availability): exact input/result, runtime capability, review and fresh final CAS under the explicit v3 policy. |
+| P7 | Implemented the distinct [K/O/D publication profile](ucs-1240-final-record-promotion.md): exact input/result, runtime capability, review and fresh final CAS under the explicit v3 policy. |
 
 P1/P3/P4/P6 have confirmed these conceptual seams in owner coordination; P7
 requires the distinct operation and exact retained digest binding. Main authorized
@@ -384,7 +384,7 @@ then `{used,failure}` from the authentic shared owner budget. Other work keeps
 its existing raw owner counters. Diagnostics use `{code,path,message}` and
 optional owner details, with snapshot paths normalized to stable placeholders.
 Unexpected implementation errors continue to throw. No planned buffers belong
-in this public report. The P7 transport (contract arrives in PR4; see delivery availability) retains this exact envelope without replacing it with the assignment report.
+in this public report. The [P7 transport](ucs-1240-final-record-promotion.md) retains this exact envelope without replacing it with the assignment report.
 
 A passed gate cannot supply human attention,
 retained runtime approval, managed-route capability or publication. P7 requires

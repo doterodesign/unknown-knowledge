@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -19,7 +19,7 @@ material captures through `loadSubjectQueryContext`. The
 those inputs to `subject-view.js --mode contexts`. Context counting itself does
 not decode evidence or bypass unavailable Subject/assignment checks.
 
-The shared interface (contract arrives in PR6; see delivery availability) now forwards
+The [shared interface](../../payload/protocol/engine-interface.md) now forwards
 `subject.contexts` / MCP `subject_contexts` to this same owner with one original
 operation/context. It retains incomplete enumeration, exact zero counts and
 native resource accounting; no alternate context algorithm or index is added.

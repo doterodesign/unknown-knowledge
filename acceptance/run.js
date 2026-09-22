@@ -580,7 +580,38 @@ criterion('A6', [
     // The fixed historical distribution is still inspected by every code guard.
     // Its complete file inventory additionally binds unchanged reviewed bytes.
     const historicalRoot = 'payload/engine/compatibility/identity-migration-08066b5/';
-    const preparedLaunches = new Map(); // No prepared workers ship before PR4.
+    const historicalProfile = JSON.parse(readFileSync(join(root, 'payload/engine/policies/identity-migration-08066b5.json'), 'utf8'));
+    const historicalFiles = payloadFiles().filter((file) => relative(root, file).startsWith(historicalRoot));
+    assert.deepEqual(historicalFiles.map((file) => relative(root, file)),
+      historicalProfile.files.map((row) => `payload/${row.path}`));
+    for (const row of historicalProfile.files) {
+      const bytes = readFileSync(join(root, 'payload', row.path));
+      assert.equal(bytes.length, row.size, `${row.path}: reviewed historical size`);
+      assert.equal(createHash('sha256').update(bytes).digest('hex'), row.sha256, `${row.path}: reviewed historical bytes`);
+    }
+    // These fixed launch points run installed engine code, never candidate code.
+    // The real candidate-engine nonexecution regression lives in prepared-validation.test.js.
+    const preparedLaunches = new Map([
+      ['prepared-runtime.js', { method: 'spawnSync', call: /spawnSync\(path, args, \{ env, cwd: work,/,
+        boundaries: [/node: realpathSync\(process\.execPath\), git: realpathSync\('\/usr\/bin\/git'\)/,
+          /version: probe\(path, \['--version'\]\)/, /probe\(paths\.git, \['--exec-path'\]\)/] }],
+      ['prepared-worker-process.js', { method: 'spawn', call: /spawn\(runtime\.manifest\.executables\.node\.path,/,
+        boundaries: [/join\(runtime\.root, entrypoint\), jobFile/,
+          /if \(!\['validation', 'final-assignment', 'final-migration', 'final-equivalent-merge', 'final-subject-retirement', 'final-subject-split', 'final-subject-reconsideration', 'final-subject-metadata', 'final-subject-proposal-suppression', 'final-subject-creation', 'final-promotion', 'final-record-promotion'\]\.includes\(kind\)\)/,
+          /kind === 'validation'\s*\? 'engine\/lib\/prepared-validation-worker\.js' : kind === 'final-assignment'\s*\? 'engine\/lib\/final-assignment-check\.js' : kind === 'final-migration'\s*\? 'engine\/lib\/final-migration-check\.js' : kind === 'final-equivalent-merge'\s*\? 'engine\/lib\/final-equivalent-merge-check\.js' : kind === 'final-subject-retirement'\s*\? 'engine\/lib\/final-subject-retirement-check\.js' : kind === 'final-subject-split'\s*\? 'engine\/lib\/final-subject-split-check\.js' : kind === 'final-subject-reconsideration'\s*\? 'engine\/lib\/final-subject-reconsideration-check\.js' : kind === 'final-subject-metadata'\s*\? 'engine\/lib\/final-subject-metadata-check\.js' : kind === 'final-subject-proposal-suppression'\s*\? 'engine\/lib\/final-subject-proposal-suppression-check\.js' : kind === 'final-subject-creation'\s*\? 'engine\/lib\/final-subject-creation-check\.js' : kind === 'final-record-promotion'\s*\? 'engine\/lib\/final-record-promotion-check\.js' : 'engine\/lib\/final-promotion-check\.js'/,
+          /cwd: runtime\.root, env: runtime\.env, detached: true/] }],
+      ['prepared-engine-process.js', { method: 'spawn', call: /spawn\(manifest\.executables\.node\.path, \[join\(runtime, entrypoint\), \.\.\.args\]/,
+        boundaries: [/Object\.hasOwn\(entries, check\.kind\)/,
+          /const args = invocation\(check\); const entrypoint = entries\[check\.kind\]/,
+          /cwd: runtime, env: process\.env, stdio:/,
+          /const entries = Object\.freeze\(\{\s*structural: 'engine\/validate\.js',\s*values: 'engine\/validate-values\.js',\s*assignment: 'engine\/lib\/prepared-assignment-check\.js',\s*migration: 'engine\/lib\/prepared-migration-check\.js',\s*promotion: 'engine\/lib\/prepared-promotion-check\.js',\s*'record-promotion': 'engine\/lib\/prepared-record-promotion-check\.js',\s*'equivalent-merge': 'engine\/lib\/prepared-equivalent-merge-check\.js',\s*'subject-split': 'engine\/lib\/prepared-subject-split-check\.js',\s*'subject-metadata': 'engine\/lib\/prepared-subject-metadata-check\.js',\s*'subject-proposal-suppression': 'engine\/lib\/prepared-subject-proposal-suppression-check\.js',\s*'subject-reconsideration': 'engine\/lib\/prepared-subject-reconsideration-check\.js',\s*'subject-creation': 'engine\/lib\/prepared-subject-creation-check\.js',\s*'subject-retirement': 'engine\/lib\/prepared-subject-retirement-check\.js',\s*'historical-structural': 'engine\/compatibility\/identity-migration-08066b5\/engine\/validate\.js',\s*'historical-values': 'engine\/compatibility\/identity-migration-08066b5\/engine\/validate-values\.js',\s*'ordinary-historical': 'engine\/compatibility\/identity-migration-08066b5\/engine\/resolve\.js',\s*'ordinary-current': 'engine\/resolve\.js',\s*'historical-audit': 'engine\/compatibility\/identity-migration-08066b5\/engine\/audit\.js',\s*'current-audit': 'engine\/audit\.js',\s*\}\)/] }],
+    ].map(([name, checks]) => [join('payload', 'engine', 'lib', name), checks]));
+    const validationWorker = readFileSync(join(root, 'payload/engine/lib/prepared-validation-worker.js'), 'utf8');
+    assert.match(validationWorker, /const runtime = fileURLToPath\(new URL\('\.\.\/\.\.\/', import\.meta\.url\)\)/);
+    assert.match(validationWorker, /for \(const entry of VALIDATION_ENTRYPOINTS\) await runCheck\(entry, candidate\.root\)/);
+    assert.match(validationWorker, /await runCheck\(ASSIGNMENT_ENTRYPOINT, candidate\.root\)/);
+    assert.match(validationWorker, /await runCheck\(MIGRATION_ENTRYPOINT, candidate\.root\)/);
+    assert.match(validationWorker, /executePreparedEngineCheck\(runtime, job\.manifest, job\.limits, selected\)/);
     for (const file of payloadFiles()) {
       if (!/\.(js|mjs|cjs)$/.test(file)) continue;
       const rel = relative(root, file);

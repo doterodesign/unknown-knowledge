@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -592,7 +592,7 @@ Reach/tree/replay retain their separate counters and explicit phase limits. No
 global workload, CPU or process-memory bound is inferred from these reports.
 ## Continued retirement accounting
 
-The retirement material profile (contract arrives in PR4; see delivery availability) uses the
+The [retirement material profile](lifecycle-material-continuation.md) uses the
 existing governance capacities for one raw/wire capture admission and the actual
 source, model, internal inventory and assignment-row work. Malformed capacities
 or exhausted property work refuse before inspecting capture buffers. Existing

@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.0.0-rc.5] - Unreleased
+
+- Isolated migration and complete-runtime cutover, fixed retained validation workers, fresh review and bounded candidate-reference publication.
+- Review scope, Decisions and validation: [PR 4](docs/pr-delivery/pr-04.md).
+
 ## [3.0.0-rc.4] - Unreleased
 
 - CI harness correction: retain exact admission counters while accounting explicitly for the host checkout path length.

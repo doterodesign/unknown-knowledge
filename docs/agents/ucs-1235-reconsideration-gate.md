@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -6,7 +6,7 @@ This contract includes final design and historical checkpoints. See [stage avail
 
 Status: implemented internal prepared gate. Retained execution and publication
 are implemented as separate stages described in the
-publication continuation contract (contract arrives in PR4; see delivery availability).
+[publication continuation contract](ucs-1240-reconsideration-publication.md).
 The [existing Decision](../../decisions/entries/suppressed-subject-reconsideration.yaml)
 records the choices before dependent code. The implemented
 [actual-Git core](ucs-1235-reconsideration-git-core.md) remains a separate proof:

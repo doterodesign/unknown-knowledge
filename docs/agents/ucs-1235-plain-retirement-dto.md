@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -7,7 +7,7 @@ This contract includes final design and historical checkpoints. See [stage avail
 `runPreparedSubjectRetirementGate(input)` in
 [`subject-retirement-gate.js`](../../payload/engine/lib/subject-retirement-gate.js)
 checks an actual committed before/candidate pair. It performs no writes and
-always reports `publicationReady: false`. The separate retained publication profile (contract arrives in PR4; see delivery availability)
+always reports `publicationReady: false`. The separate [retained publication profile](ucs-1240-final-retirement.md)
 adds fresh runtime, source capture, operator review and candidate-ref checks. The [Decision](../../decisions/entries/plain-subject-retirement.yaml)
 and [design history](ucs-1235-plain-retirement-design.md) retain the agreed scope
 and earlier alternatives.
@@ -22,7 +22,7 @@ local repository path. No caller contexts, reports, executors or approval flags
 are accepted.
 
 An own `evidence.materialCaptures` array selects the
-continued-material profile (contract arrives in PR4; see delivery availability), including when
+[continued-material profile](lifecycle-material-continuation.md), including when
 the array is empty. It preserves reconsideration history through later retirement
 and reports outer version 2. Omission preserves the original version-1 path.
 Decision, assessment and material evidence are owned once under the existing

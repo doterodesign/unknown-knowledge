@@ -1,10 +1,10 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
 # Retained material in typed K/O/D promotion
 
-This implements step 3 of the lifecycle continuation contract (contract arrives in PR4; see delivery availability)
+This implements step 3 of the [lifecycle continuation contract](lifecycle-material-continuation.md)
 and the [reconsideration Decision](../../decisions/entries/suppressed-subject-reconsideration.yaml).
 The fixed homogeneous Knowledge, Ontology and Decisions promotion owners retain
 their existing allocation, source transformation, genesis, preflight and impact
@@ -93,11 +93,11 @@ every source profile has independent end-to-end coverage.
 
 The owner implementation was verified in the isolated worktree from
 `7b274784b2d283c8616491af1e76c5326e3b5d1e`. The owner test is
-record-promotion-material.test.js (contract arrives in PR4; see delivery availability),
+[record-promotion-material.test.js](../../tests/record-promotion-material.test.js),
 the shared actual fixture is
-record-promotion-material-fixture.js (contract arrives in PR4; see delivery availability),
+[record-promotion-material-fixture.js](../../tests/helpers/record-promotion-material-fixture.js),
 and the independent suite is
-record-promotion-material-review.test.js (contract arrives in PR4; see delivery availability).
+[record-promotion-material-review.test.js](../../tests/record-promotion-material-review.test.js).
 The frozen owner suite passed **10/10** in **102518.544333 ms**, session
 66369 closed with exit 0. It covers actual raw and full retained publication for
 each K/O/D family, raw/wire one-copy admission and exact capacities, strict
@@ -113,7 +113,7 @@ freeze and custody reports are
 `local-history:unknown-knowledge-typed-material-freeze.json` and
 `local-history:unknown-knowledge-typed-material-owner-custody.json`.
 An additional owner suite,
-record-promotion-material-optional.test.js (contract arrives in PR4; see delivery availability),
+[record-promotion-material-optional.test.js](../../tests/record-promotion-material-optional.test.js),
 passed **3/3** in **73348.365333 ms**, session 82737 closed with exit 0.
 It exercises actual prepared/final/review/publication for K/O/D without a Subject
 registry, including Decisions without companion stores. These are separate runs,
@@ -154,7 +154,7 @@ are ready for shared documentation/version reconciliation and integration.
 
 This does not complete ordinary creation, union/broadening, proposal refusal/reversal
 acceptance, runtime/customer approval or remaining P1–P11 qualification. See the
-clarified lifecycle scope (contract arrives in PR4; see delivery availability); zero-use merge
-now has a separate implemented profile (contract arrives in PR4; see delivery availability).
+[clarified lifecycle scope](subject-lifecycle-required-scope.md); zero-use merge
+now has a separate [implemented profile](ucs-1240-equivalent-merge-zero.md).
 Standalone material inspection and external mutation interfaces are
 not added; r3 does not require a public endpoint for every internal helper.

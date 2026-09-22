@@ -39,7 +39,9 @@ test('the engine is JavaScript, and no build step exists', () => {
   const js = readdirSync(engineDir, { recursive: true }).filter((f) => String(f).endsWith('.js'));
   // The fixed historical dependency ships its original declarations, not a
   // TypeScript implementation. Exact inventory keeps new source files visible.
-  assert.deepEqual(ts, [], 'only the fixed historical dependency declaration is permitted');
+  assert.deepEqual(ts, [
+    'compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.d.ts',
+  ], 'only the fixed historical dependency declaration is permitted');
   assert.ok(js.length >= 20, `the engine is JavaScript (${js.length} files)`);
 
   const { scripts } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));

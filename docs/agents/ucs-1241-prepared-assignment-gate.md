@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -96,8 +96,8 @@ prepared validation still checks the supplied immutable commits and preserves
 the user's current index, worktree and HEAD. Disposable tree paths are normalized
 only in diagnostic display, not in captured evidence bytes.
 
-The ordinary Knowledge runner (contract arrives in PR4; see delivery availability) and
-final review/publication profile (contract arrives in PR4; see delivery availability) provide the
+The ordinary Knowledge [runner](ucs-1234-prepared-validation.md) and
+[final review/publication profile](ucs-1240-final-publication.md) provide the
 separate retained evidence and ref-CAS boundaries. The
 [typed publication profile](ucs-1241-typed-assignment-publication.md) now extends
 the same operation with an original bound selection, a separate fixed policy

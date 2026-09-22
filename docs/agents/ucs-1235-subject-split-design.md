@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -7,14 +7,14 @@ This contract includes final design and historical checkpoints. See [stage avail
 Status: the internal [prepared split gate](ucs-1235-subject-split-gate.md) now
 composes history, allocation, actual-model, request/event metadata, actual Git
 scope, positive P8 preservation, eventless proof and mandatory impacts. Focused
-integration verification is recorded below. The separate review/publication profile (contract arrives in PR4; see delivery availability)
+integration verification is recorded below. The separate [review/publication profile](ucs-1240-split-review-publication.md)
 adds actual authority/allocation verification and fresh final checks before the
 candidate-ref transaction. The [domain Decision](../../decisions/entries/plain-subject-split.yaml)
-and publication Decision (contract arrives in PR4; see delivery availability)
+and [publication Decision](../../decisions/entries/ucs-1240-split-publication.yaml)
 record the rationale. Earlier receipts below retain their original slice scope;
 broader graph dispositions and full-goal acceptance remain separate work.
 
-The material-continuation profile (contract arrives in PR4; see delivery availability) extends
+The [material-continuation profile](lifecycle-material-continuation.md) extends
 this composition for reconsidered subjects. It preserves the original allocation,
 before-pair proof and zero/positive/all-empty mapping semantics, while carrying
 retained material through actual governance and publication checks.
@@ -473,11 +473,11 @@ the [outer gate](ucs-1235-subject-split-gate.md),
 [assignment adapter](ucs-1241-subject-split-assignment-gate.md) and
 [replay guide](ucs-1235-subject-split-replays.md).
 
-- The fixed transport (contract arrives in PR4; see delivery availability) now checks original
+- The [fixed transport](ucs-1240-prepared-split-transport.md) now checks original
   wire/report consistency and captures bounded raw candidate registry, identity
-  and optional event bytes. Its publication Decision (contract arrives in PR4; see delivery availability)
+  and optional event bytes. Its [publication Decision](../../decisions/entries/ucs-1240-split-publication.yaml)
   separates that evidence from actual source verification and fresh authority.
-- Fixed split workers and the final retained gate (contract arrives in PR4; see delivery availability)
+- [Fixed split workers and the final retained gate](ucs-1240-prepared-split-validation.md)
   now dispatch the actual owner, persist original wire/report/artifacts, and
   require fresh owner/capture equality. Parent authority-artifact reads use
   existing owned bounded readback. Their focused/adversarial verification is
