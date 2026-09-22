@@ -1,0 +1,924 @@
+{
+  "reviewer": "independent-source-review-policy-manufacturing",
+  "status": "semantic-metadata-proposal-not-executable-schema",
+  "sourceFiles": [
+    "acceptance/retrieval/pilot/sources/policy.md",
+    "acceptance/retrieval/development-v2/sources/policy.md",
+    "acceptance/retrieval/pilot/sources/manufacturing.md",
+    "acceptance/retrieval/development-v2/sources/manufacturing.md"
+  ],
+  "reviewedInventory": "acceptance/retrieval/development-v2/record-inventory.json",
+  "priorProposalInput": "Relevant policy/manufacturing rows only from acceptance/retrieval/pilot/tasks.json; proposals were checked against source rather than inherited as truth.",
+  "interpretationRules": [
+    "All ids preserve provisional inventory attribution; no runtime allocation, record promotion, or schema-ready storage is asserted.",
+    "Lifecycle is source-supported standing compatible with the provisional kind vocabulary. Null means source evidence does not establish that kind's lifecycle; it is not a factual-task failure.",
+    "SourceStanding distinguishes source approval/review/activity from runtime record lifecycle. Current-view conversion to active/accepted/verified needs separately declared fixture decisions.",
+    "Scope keys below are semantic applicability proposals, not implemented profile/filter syntax. Null preserves missing applicability; no record has an explicitly global/no-restriction scope [] supported here.",
+    "Subject assignments are proposed semantic topics, not assertions that the source authored registry entries. Explicitly missing classification omits subjectKeys; no source here explicitly declares subjectKeys:[].",
+    "Multiple topics are valid co-membership. Scope components and jointWarrant qualify claim combination rather than suppressing legitimately discussed topics.",
+    "Partial VIP supersession is scoped. D-000002 and D-000003 remain accepted for ordinary West tickets."
+  ],
+  "records": [
+    {
+      "id": "policy/decisions/D-000001",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "predecessor",
+      "lifecycle": "superseded",
+      "scope": [
+        "region-west-support-tickets"
+      ],
+      "sourceStanding": "approved historical decision explicitly superseded",
+      "metadataReason": "Source directly gives West support-ticket scope and supersession by D-000002 and D-000003. The superseded lifecycle describes this decision, not an absence of historical evidentiary value.",
+      "supersededBy": [
+        "policy/decisions/D-000002",
+        "policy/decisions/D-000003"
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "support"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000002",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "successor-a",
+      "lifecycle": "accepted",
+      "scope": [
+        "region-west-support-tickets"
+      ],
+      "sourceStanding": "accepted and reviewed; still in force for ordinary West tickets",
+      "metadataReason": "Pilot scope covers West support tickets. The expanded VIP successor supersedes this decision only for VIP tickets; do not replace its whole lifecycle with superseded.",
+      "effectiveScope": [
+        "region-west-ordinary-support-tickets"
+      ],
+      "scopeQualifications": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "vip-successor",
+          "qualification": "D-000006 supersedes this decision only for West VIP tickets."
+        }
+      ],
+      "supersedes": [
+        "policy/decisions/D-000001"
+      ],
+      "ambiguities": [
+        "Current applicability must represent the VIP exclusion separately from the decision's original broader scope; a flat whole-record lifecycle cannot do so."
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "support"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000003",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "successor-b",
+      "lifecycle": "accepted",
+      "scope": [
+        "region-west-support-tickets"
+      ],
+      "sourceStanding": "accepted and reviewed; still in force for ordinary West tickets",
+      "metadataReason": "Accepted West support-ticket decision remains in conflict with D-000002 for ordinary tickets; later date is not precedence. VIP-only supersession is scoped, not whole-record.",
+      "effectiveScope": [
+        "region-west-ordinary-support-tickets"
+      ],
+      "scopeQualifications": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "vip-successor",
+          "qualification": "D-000006 supersedes this decision only for West VIP tickets."
+        }
+      ],
+      "supersedes": [
+        "policy/decisions/D-000001"
+      ],
+      "ambiguities": [
+        "Current applicability needs a VIP exclusion or scoped relationship, not a global superseded lifecycle."
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "support",
+        "governance"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000004",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "east-policy",
+      "lifecycle": "accepted",
+      "scope": [
+        "region-east-support-tickets"
+      ],
+      "sourceStanding": "accepted East retention policy",
+      "metadataReason": "Pilot source explicitly establishes accepted Region East scope excluding West. Expanded east-vip-note identifies this unchanged policy as support-ticket retention. Prior pilot subjectKeys:[] was not a declaration of unclassified status.",
+      "supportingEvidence": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "east-vip-note",
+          "contribution": "Explicitly identifies the unchanged accepted East 14-day rule as support-ticket policy."
+        }
+      ],
+      "ambiguities": [
+        "The section itself says retention policy without naming record type; support-ticket classification is corroborated by the named expanded East note."
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "support"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000005",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "council-note",
+      "lifecycle": "proposed",
+      "scope": [
+        "region-west-support-ticket-policy-conflict"
+      ],
+      "sourceStanding": "proposed council agenda without approval",
+      "metadataReason": "Source explicitly proposes discussion of the competing West policies and supplies no accepted resolution.",
+      "allocationStatus": "unresolved-proposal-storage",
+      "ambiguities": [
+        "Inventory ID is an attribution handle and D-000005 is source-authored text; neither proves allocated canonical runtime storage. P4 separates unallocated proposals from canonical records."
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "governance"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000006",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "vip-successor",
+      "lifecycle": "accepted",
+      "scope": [
+        "region-west-vip-support-tickets"
+      ],
+      "sourceStanding": "accepted 2026-09-16 with explicit partial supersession",
+      "metadataReason": "Directly accepted West VIP ticket rule. Its normative scope excludes East; ordinary West conflict remains. Related ordinary-ticket statements are scoped corroboration, not expansion of the VIP rule.",
+      "scopedSupersedes": [
+        {
+          "target": "policy/decisions/D-000002",
+          "scope": [
+            "region-west-vip-support-tickets"
+          ]
+        },
+        {
+          "target": "policy/decisions/D-000003",
+          "scope": [
+            "region-west-vip-support-tickets"
+          ]
+        }
+      ],
+      "scopeComponents": [
+        {
+          "role": "operative-rule",
+          "scope": [
+            "region-west-vip-support-tickets"
+          ],
+          "claim": "45-day retention."
+        },
+        {
+          "role": "ordinary-ticket-status-corroboration",
+          "scope": [
+            "region-west-ordinary-support-tickets"
+          ],
+          "claim": "Earlier 60-day and 90-day decisions remain in unresolved conflict."
+        }
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "support",
+        "governance"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000007",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "privacy-proposal",
+      "lifecycle": "proposed",
+      "scope": [
+        "meridian-support-team-external-privacy-analysis-activation"
+      ],
+      "sourceStanding": "proposed authorization not accepted",
+      "metadataReason": "The proposal concerns support-team activation of an external privacy-analysis service. Its proposed standing is direct nonapproval evidence, never a present operational authorizer.",
+      "allocationStatus": "unresolved-proposal-storage",
+      "ambiguities": [
+        "D-000007 is a quoted source ID and provisional inventory identity, not evidence of current runtime allocation; allocation/storage treatment of a proposal is unresolved."
+      ],
+      "subjectKeys": [
+        "privacy-analysis",
+        "support",
+        "governance"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000008",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "unlocated-deletion",
+      "lifecycle": "accepted",
+      "scope": null,
+      "sourceStanding": "accepted preservation of an archived transcription",
+      "metadataReason": "Acceptance applies to preservation of the transcription. Original department, record type, and jurisdiction for the ten-day rule are missing, so quoted-rule applicability remains unknown.",
+      "acceptanceObject": "preservation of the transcription",
+      "quotedRuleStanding": null,
+      "scopeComponents": [
+        {
+          "role": "preservation-decision",
+          "knownContext": "council preservation of this archived transcription",
+          "normativeRuleScope": null
+        },
+        {
+          "role": "quoted-ten-day-deletion-instruction",
+          "scope": null,
+          "unknownDimensions": [
+            "department",
+            "record-type",
+            "jurisdiction"
+          ]
+        }
+      ],
+      "ambiguities": [
+        "Do not derive West ticket scope from surrounding file context or accepted lifecycle.",
+        "A future representation must distinguish the known archival preservation act from the unknown applicability of the quoted deletion instruction."
+      ],
+      "subjectKeys": [
+        "record-deletion",
+        "archives"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000009",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "home-office",
+      "lifecycle": "accepted",
+      "scope": [
+        "meridian-employees-home-office-desk-purchases"
+      ],
+      "sourceStanding": "accepted home-office purchase policy",
+      "metadataReason": "Accepted status and employee/home-office desk purchase scope are explicit; subject classification is explicitly missing, so subjectKeys is omitted rather than [].",
+      "classificationStatus": "missing",
+      "ambiguities": [
+        "Do not auto-fill a home-office topic assignment from text when the source explicitly says its subject classification is missing."
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000010",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "staff-retention",
+      "lifecycle": "accepted",
+      "scope": [
+        "meridian-new-employee-mentoring"
+      ],
+      "sourceStanding": "accepted staff-retention program",
+      "metadataReason": "Source explicitly sets mentoring every 14 days for new employees and excludes record-retention/deletion meaning.",
+      "subjectKeys": [
+        "staff-retention",
+        "mentoring"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000011",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "archive-correction",
+      "lifecycle": "accepted",
+      "scope": [
+        "historical-region-west-support-tickets-d-000001"
+      ],
+      "sourceStanding": "accepted archival clarification",
+      "metadataReason": "Accepted clarification verifies historical West support-ticket D-000001 and does not reinstate its period. This clarification remains accepted while its described predecessor is superseded.",
+      "describedRecord": "policy/decisions/D-000001",
+      "describedRecordStanding": "superseded",
+      "currentRuleAuthority": false,
+      "subjectKeys": [
+        "ticket-retention",
+        "archives"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000012",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "visitor-minimum",
+      "lifecycle": "accepted",
+      "scope": [
+        "region-west-visitor-access-logs"
+      ],
+      "sourceStanding": "accepted minimum obligation without recorded successor",
+      "metadataReason": "Direct accepted >=21-day requirement for West visitor-access logs. No successor or exception is recorded; incompatibility with the maximum does not erase acceptance.",
+      "subjectKeys": [
+        "visitor-log-retention"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000013",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "visitor-maximum",
+      "lifecycle": "accepted",
+      "scope": [
+        "region-west-visitor-access-logs"
+      ],
+      "sourceStanding": "accepted maximum obligation without supersession of the minimum",
+      "metadataReason": "Direct accepted <=14-day requirement for the same West visitor logs. Later acceptance does not supersede D-000012; preserve both accepted incompatible obligations.",
+      "doesNotSupersede": [
+        "policy/decisions/D-000012"
+      ],
+      "subjectKeys": [
+        "visitor-log-retention"
+      ]
+    },
+    {
+      "id": "policy/decisions/D-000014",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "east-vip-note",
+      "lifecycle": "rejected",
+      "scope": [
+        "region-east-vip-support-tickets"
+      ],
+      "sourceStanding": "rejected proposal to extend West VIP period into East",
+      "metadataReason": "Rejection applies to the proposed East VIP extension. Its observation that accepted East policy remains 14 days is separate status evidence, not approval of the rejected 45-day extension.",
+      "scopeComponents": [
+        {
+          "role": "rejected-extension",
+          "scope": [
+            "region-east-vip-support-tickets"
+          ],
+          "claim": "Proposed 45-day extension rejected."
+        },
+        {
+          "role": "unchanged-policy-status",
+          "scope": [
+            "region-east-support-tickets"
+          ],
+          "claim": "Accepted 14-day East policy remains unchanged."
+        }
+      ],
+      "subjectKeys": [
+        "ticket-retention",
+        "support",
+        "governance"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "north-seal",
+      "lifecycle": null,
+      "scope": [
+        "north-model-r-sealing-pressure-at-head"
+      ],
+      "sourceStanding": "active North Model R packaging specification",
+      "metadataReason": "Source explicitly establishes active specification, North-only Model R scope, sealing pressure, and sealing-head point. It does not explicitly establish a knowledge-record review lifecycle.",
+      "ambiguities": [
+        "Knowledge lifecycle vocabulary is reviewed/proposed/retired, while source says active. Prior pilot reviewed was a proposal, not new source evidence. A separately declared fixture-record review/promotion decision is needed before assigning reviewed."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "sealing",
+        "north"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000002",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "south-seal",
+      "lifecycle": null,
+      "scope": [
+        "south-model-r-sealing-pressure-at-head"
+      ],
+      "sourceStanding": "active South Model R packaging specification",
+      "metadataReason": "Source explicitly establishes active South-only Model R scope. Its measurement point is the same as North's sealing head; resolving that reference does not merge the two plant scopes. Reviewed knowledge standing is not stated.",
+      "supportingEvidence": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal",
+          "contribution": "Resolves the explicitly referenced measurement point to the sealing head."
+        }
+      ],
+      "ambiguities": [
+        "Source active is not an explicit reviewed knowledge lifecycle; prior pilot reviewed needs separate promotion adjudication."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "sealing",
+        "south"
+      ]
+    },
+    {
+      "id": "manufacturing/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "controller-limit",
+      "lifecycle": null,
+      "scope": [
+        "model-r-controller-input-ceiling"
+      ],
+      "sourceStanding": "device-limit artifact stating the Model R controller accepts up to 400 kPa",
+      "metadataReason": "Scope is a Model R controller's input ceiling, not a site operating process. No North association is stated; discard the prior pilot's unsupported north topic. Artifact standing is not expressly active/proposed/retired.",
+      "ambiguities": [
+        "Ontology kind is plausible for a device constraint but not explicitly declared by this source; inventory kind remains provisional.",
+        "Do not infer active lifecycle merely because the source describes a present device capability.",
+        "Known model/device scope must not be replaced by null solely because no site is specified; no site operating authority is asserted."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "controllers"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000003",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "obsolete-north",
+      "lifecycle": "retired",
+      "scope": [
+        "historical-north-model-q-pressure"
+      ],
+      "sourceStanding": "retired North Model Q specification",
+      "metadataReason": "Retired lifecycle, North Model Q scope, and historical pressure are explicit. The prior pilot empty subjectKeys is unsupported by any explicit unclassified declaration.",
+      "ambiguities": [
+        "The pilot section does not itself specify a measurement point; do not import head measurement into this source record unless recording separate corroboration from q-retirement."
+      ],
+      "subjectKeys": [
+        "model-q",
+        "north",
+        "operating-pressure",
+        "maintenance"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000004",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "seal-note",
+      "lifecycle": null,
+      "scope": [
+        "purchasing-seal-terminology"
+      ],
+      "sourceStanding": "purchasing note, review standing unspecified",
+      "metadataReason": "Known narrow scope is this purchasing use of the word seal for a gasket part; no plant/model or globally applicable part standard is stated. Its note status does not establish reviewed lifecycle.",
+      "ambiguities": [
+        "Prior pilot reviewed and scope:[] are not source-backed: no review or explicitly global/no-restriction statement is present.",
+        "Purchasing terminology is known; specific plant/model applicability is unknown and must not be inferred.",
+        "No explicit missing/unclassified topic declaration exists, so semantic proposed topics are permitted."
+      ],
+      "subjectKeys": [
+        "gaskets",
+        "purchasing"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000005",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "east-model-r",
+      "lifecycle": "reviewed",
+      "scope": [
+        "east-model-r-sealing-pressure-at-head"
+      ],
+      "sourceStanding": "reviewed active East Model R sealing specification",
+      "metadataReason": "Reviewed knowledge standing and active source specification are explicit. Its operative scope is East only. Additional quality-review classification is explicitly present and must be retained.",
+      "scopeComponents": [
+        {
+          "role": "operative-specification",
+          "scope": [
+            "east-model-r-sealing-pressure-at-head"
+          ],
+          "claim": "225 kPa."
+        },
+        {
+          "role": "other-site-corroboration",
+          "scope": [
+            "north-model-r-sealing-pressure"
+          ],
+          "claim": "North remains at 240 kPa; no North measurement point established here."
+        },
+        {
+          "role": "other-site-corroboration",
+          "scope": [
+            "south-model-r-sealing-pressure"
+          ],
+          "claim": "South remains at 210 kPa; no South measurement point established here."
+        }
+      ],
+      "ambiguities": [
+        "References to North and South corroborate values but do not expand the East specification's governing scope."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "sealing",
+        "east",
+        "quality-review"
+      ]
+    },
+    {
+      "id": "manufacturing/ontology/O-000002",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "gasket-standard",
+      "lifecycle": null,
+      "scope": [
+        "north-model-r-replacement-gasket"
+      ],
+      "sourceStanding": "accepted purchased-part standard",
+      "metadataReason": "Source expressly accepts a North Model R silicone SG-8 spare-gasket standard, not an operating-pressure rule. The provisional ontology identity has a lifecycle vocabulary that lacks accepted.",
+      "ambiguities": [
+        "Provisional kind/standing mismatch: accepted standard could be represented as a decision or as an ontology definition supported by acceptance, but source alone does not authorize silent accepted-to-active conversion.",
+        "Retain O-000002 as the inventory attribution handle pending explicit kind/lifecycle representation adjudication; do not silently reallocate to another kind."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "north",
+        "gaskets",
+        "purchasing"
+      ]
+    },
+    {
+      "id": "manufacturing/ontology/O-000003",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "gasket-decoy",
+      "lifecycle": "active",
+      "scope": [
+        "south-model-q-gasket"
+      ],
+      "sourceStanding": "active South Model Q gasket",
+      "metadataReason": "Source explicitly says active South Plant Model Q gasket, nitrile NQ-3; it excludes North Model R spare and setpoint applicability.",
+      "ambiguities": [
+        "Ontology kind remains a provisional representation of this part definition; source active describes the specified gasket rather than a runtime record promotion."
+      ],
+      "subjectKeys": [
+        "model-q",
+        "south",
+        "gaskets"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000006",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "pressure-draft",
+      "lifecycle": "proposed",
+      "scope": [
+        "north-model-r-sealing-pressure-trial"
+      ],
+      "sourceStanding": "proposed unaccepted and undeployed North Model R trial",
+      "metadataReason": "The primary artifact is a proposed trial raising pressure to 260 kPa. It separately corroborates the active North baseline of 240 kPa at the sealing head; proposal status must not turn that quoted baseline into a proposed value.",
+      "allocationStatus": "unresolved-proposal-storage",
+      "scopeComponents": [
+        {
+          "role": "proposed-trial",
+          "scope": [
+            "north-model-r-sealing-pressure-trial"
+          ],
+          "claim": "260 kPa; unaccepted and undeployed.",
+          "sourceStanding": "proposed"
+        },
+        {
+          "role": "active-baseline-corroboration",
+          "scope": [
+            "north-model-r-sealing-pressure-at-head"
+          ],
+          "claim": "240 kPa remains active.",
+          "sourceStanding": "active baseline statement"
+        }
+      ],
+      "ambiguities": [
+        "Provisional canonical K-000006 inventory ID does not prove allocated runtime storage for this proposal.",
+        "A whole-record lifecycle gate may exclude useful active-baseline corroboration; represent claim standing separately or explicitly accept that retrieval limitation, rather than promoting the trial."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "north",
+        "sealing"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000007",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "unlocated-tolerance",
+      "lifecycle": "reviewed",
+      "scope": null,
+      "sourceStanding": "reviewed transcription of archived process note",
+      "metadataReason": "Review confirmed transcription only. Originating plant, model, and measurement point are unknown, so the quoted +/-5 kPa tolerance has scope:null and no approved North applicability.",
+      "reviewObject": "transcription accuracy/preservation",
+      "quotedRuleStanding": null,
+      "unknownScopeDimensions": [
+        "plant",
+        "model",
+        "measurement-point"
+      ],
+      "ambiguities": [
+        "Reviewed does not mean the quoted tolerance is reviewed for operational use or approved for North Model R.",
+        "The term process note supports a process/tolerance topic, not a specific sealing-process assignment."
+      ],
+      "subjectKeys": [
+        "operating-pressure",
+        "tolerances",
+        "archives"
+      ]
+    },
+    {
+      "id": "manufacturing/ontology/O-000004",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "west-controller",
+      "lifecycle": null,
+      "scope": [
+        "west-model-r-controller-input-ceiling"
+      ],
+      "sourceStanding": "West equipment inventory identifies controller ownership and ceiling",
+      "metadataReason": "Known West Model R device scope and 400 kPa ceiling are explicit. Inventory contains no approved sealing-process setpoint. It does not expressly assign an active/proposed/retired ontology lifecycle.",
+      "ambiguities": [
+        "Ontology kind is a provisional device-inventory representation, not an explicit source declaration.",
+        "Ownership/present inventory is not an explicit runtime active promotion; keep lifecycle unresolved.",
+        "Do not repurpose the known controller scope as an approved West sealing-process scope."
+      ],
+      "subjectKeys": [
+        "model-r",
+        "west",
+        "controllers"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000008",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "cross-line-book",
+      "lifecycle": "reviewed",
+      "scope": [
+        "north-model-r-seal-material",
+        "south-model-q-operating-pressure"
+      ],
+      "sourceStanding": "reviewed maintenance book containing independent pages",
+      "metadataReason": "Both page topics and their known scopes are retained. Topic conjunction means recorded co-membership, not a joint observation or instruction. The silicone North R seal and 190 kPa South Q operation remain independent facts.",
+      "scopeCombination": "disjoint-source-components-not-cartesian-conjunction",
+      "jointWarrant": false,
+      "scopeComponents": [
+        {
+          "component": "north-page",
+          "scope": [
+            "north-model-r-seal-material"
+          ],
+          "subjectKeys": [
+            "north",
+            "model-r",
+            "gaskets"
+          ],
+          "claim": "North Model R uses a silicone seal.",
+          "measurementPoint": null
+        },
+        {
+          "component": "south-page",
+          "scope": [
+            "south-model-q-operating-pressure"
+          ],
+          "subjectKeys": [
+            "south",
+            "model-q",
+            "operating-pressure"
+          ],
+          "claim": "South Model Q operates at 190 kPa.",
+          "measurementPoint": null
+        }
+      ],
+      "ambiguities": [
+        "An eventual scope representation must preserve page/claim grouping; an ungrouped set of sites and models cannot authorize their Cartesian product.",
+        "Do not strip recorded topic assignments to avoid AND retrieval; interpretation must reject a joined North R 190 kPa instruction after retrieval.",
+        "Neither page supplies a measurement point or a joint sealing-pressure instruction."
+      ],
+      "subjectKeys": [
+        "north",
+        "south",
+        "model-r",
+        "model-q",
+        "gaskets",
+        "operating-pressure",
+        "maintenance"
+      ]
+    },
+    {
+      "id": "manufacturing/decisions/D-000001",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "q-retirement",
+      "lifecycle": "accepted",
+      "scope": [
+        "historical-north-model-q-sealing-pressure-at-head"
+      ],
+      "sourceStanding": "accepted retirement record",
+      "metadataReason": "The retirement decision/record is accepted; its described North Model Q equipment is retired. Explicit historical pressure is 190 kPa at the sealing head, inapplicable to active Model R.",
+      "describedEquipmentStanding": "retired",
+      "ambiguities": [
+        "Accepted event/decision standing must not be replaced by retired merely because the equipment described has retired. Inventory decisions kind is compatible with the accepted retirement act but remains a fixture representation."
+      ],
+      "subjectKeys": [
+        "model-q",
+        "north",
+        "equipment-retirement",
+        "operating-pressure"
+      ]
+    },
+    {
+      "id": "manufacturing/knowledge/K-000009",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "unclassified-gauge",
+      "lifecycle": "reviewed",
+      "scope": [
+        "north-model-r-pressure-gauge-at-head-after-stabilization"
+      ],
+      "sourceStanding": "reviewed active North Model R gauge procedure",
+      "metadataReason": "Review, source active standing, North/Model R scope, sealing-head reading, and after-stabilization timing are explicit. Subject classification is explicitly missing; omit subjectKeys rather than declaring [].",
+      "classificationStatus": "missing",
+      "ambiguities": [
+        "Heading unclassified-gauge does not override the prose statement that classification is missing; this is absence, not an explicit empty classification set."
+      ]
+    }
+  ],
+  "subjectRegistryProposals": [
+    {
+      "organization": "policy",
+      "roots": [
+        "ticket-retention",
+        "staff-retention",
+        "support",
+        "governance",
+        "privacy-analysis",
+        "record-deletion",
+        "archives",
+        "mentoring",
+        "visitor-log-retention"
+      ],
+      "parents": {},
+      "aliases": [
+        {
+          "alias": "retention",
+          "subject": "ticket-retention",
+          "context": "support-ticket records"
+        },
+        {
+          "alias": "retention",
+          "subject": "staff-retention",
+          "context": "staff continuity and new-employee mentoring"
+        }
+      ],
+      "reason": "Expanded source explicitly requires a flat vocabulary. All roots name observed source subjects; broad bare retention is ambiguous. Home-office classification remains missing, so no subject is assigned to D-000009.",
+      "ambiguities": [
+        "Prior pilot empty East subject set was unsupported; expanded East note supplies record-type corroboration.",
+        "These semantic roots are proposed registry names, not observed canonical source registry IDs."
+      ]
+    },
+    {
+      "organization": "manufacturing",
+      "roots": [
+        "manufacturing",
+        "sites",
+        "equipment",
+        "gaskets",
+        "purchasing",
+        "quality-review",
+        "maintenance",
+        "archives"
+      ],
+      "parents": {
+        "packaging": "manufacturing",
+        "sealing": "packaging",
+        "operating-pressure": "manufacturing",
+        "tolerances": "operating-pressure",
+        "north": "sites",
+        "south": "sites",
+        "east": "sites",
+        "west": "sites",
+        "model-r": "equipment",
+        "model-q": "equipment",
+        "controllers": "equipment",
+        "equipment-retirement": "equipment"
+      },
+      "aliases": [
+        {
+          "alias": "seal",
+          "subject": "sealing",
+          "context": "process engineering and sealing operation"
+        },
+        {
+          "alias": "seal",
+          "subject": "gaskets",
+          "context": "purchasing and replacement part"
+        }
+      ],
+      "reason": "Explicit packaging/sealing, plant, equipment, purchasing/gasket, quality-review, pressure/tolerance, maintenance, and archive topics motivate these proposed names. Orthogonal site/model/process topics remain separate. The current packaging/sealing hierarchy is one curator proposal, not a source-authored or approved taxonomy. The prior intermediate assembly node is not automatically inherited. Its inclusion remains open to separate review of its local definition, broader/narrower relations, and inherited topic warrant; absence of a literal assembly taxonomy label in source prose does not by itself invalidate that node or require a flatter hierarchy.",
+      "ambiguities": [
+        "Parent relationships are semantic proposals for review, not claims that source documents define an actual registry hierarchy.",
+        "No cross-site/model related edge is proposed to create applicability. Shared topics or parents cannot supply a process approval.",
+        "Missing gauge classification is retained despite plainly recognizable site/model/content scope."
+      ]
+    }
+  ],
+  "scopeKeyDefinitions": {
+    "region-west-support-tickets": "Original support-ticket policy scope in Region West.",
+    "region-west-ordinary-support-tickets": "Ordinary, non-VIP West support tickets after D-000006's limited supersession.",
+    "region-west-vip-support-tickets": "VIP support tickets in Region West only.",
+    "region-east-support-tickets": "Region East support tickets; excludes West.",
+    "region-east-vip-support-tickets": "VIP subset in Region East, the target of a rejected extension.",
+    "region-west-support-ticket-policy-conflict": "Council deliberation about the competing West support-ticket decisions.",
+    "meridian-support-team-external-privacy-analysis-activation": "Proposed authorization for Meridian support team's activation of the named external service.",
+    "meridian-employees-home-office-desk-purchases": "Meridian employees' home-office desk reimbursement purchases.",
+    "meridian-new-employee-mentoring": "Staff-retention mentor check-ins for new employees.",
+    "historical-region-west-support-tickets-d-000001": "Historical D-000001's Region West support tickets before supersession.",
+    "region-west-visitor-access-logs": "Region West visitor-access logs, not support tickets.",
+    "north-model-r-sealing-pressure-at-head": "North Plant Model R sealing pressure measured at the sealing head.",
+    "south-model-r-sealing-pressure-at-head": "South Plant Model R sealing pressure at the measurement point explicitly shared with North's sealing head.",
+    "model-r-controller-input-ceiling": "Model R controller device input ceiling; no plant operating instruction.",
+    "historical-north-model-q-pressure": "Retired North Plant Model Q historical pressure; this key does not assert a sealing process or measurement point absent from the pilot section.",
+    "purchasing-seal-terminology": "The purchasing note's use of seal to mean a gasket; not global plant/equipment applicability.",
+    "east-model-r-sealing-pressure-at-head": "East Plant Model R sealing pressure measured at its sealing head.",
+    "north-model-r-sealing-pressure": "North Plant Model R sealing pressure, without a measurement-point claim in the corroborating passage.",
+    "south-model-r-sealing-pressure": "South Plant Model R sealing pressure, without a measurement-point claim in the corroborating passage.",
+    "north-model-r-replacement-gasket": "North Plant Model R replacement gasket material and part identity.",
+    "north-model-r-sealing-pressure-trial": "Proposed North Plant Model R sealing-pressure change, not an approved operation.",
+    "west-model-r-controller-input-ceiling": "West Plant's Model R controller ceiling and inventory, not an approved process setpoint.",
+    "north-model-r-seal-material": "North Plant Model R silicone seal observation on one maintenance-book page.",
+    "south-model-q-operating-pressure": "South Plant Model Q operating-pressure observation on a separate maintenance-book page.",
+    "historical-north-model-q-sealing-pressure-at-head": "Retired North Plant Model Q historical pressure explicitly at its sealing head.",
+    "north-model-r-pressure-gauge-at-head-after-stabilization": "Reviewed North Model R gauge procedure: read at sealing head after the line stabilizes.",
+    "south-model-q-gasket": "South Plant Model Q active nitrile gasket, part NQ-3; not a North Plant Model R spare or setpoint authority."
+  },
+  "scopedRelationships": [
+    {
+      "type": "supersedes",
+      "from": "policy/decisions/D-000002",
+      "to": "policy/decisions/D-000001",
+      "scope": [
+        "region-west-support-tickets"
+      ]
+    },
+    {
+      "type": "supersedes",
+      "from": "policy/decisions/D-000003",
+      "to": "policy/decisions/D-000001",
+      "scope": [
+        "region-west-support-tickets"
+      ]
+    },
+    {
+      "type": "supersedes-only-in-scope",
+      "from": "policy/decisions/D-000006",
+      "to": "policy/decisions/D-000002",
+      "scope": [
+        "region-west-vip-support-tickets"
+      ]
+    },
+    {
+      "type": "supersedes-only-in-scope",
+      "from": "policy/decisions/D-000006",
+      "to": "policy/decisions/D-000003",
+      "scope": [
+        "region-west-vip-support-tickets"
+      ]
+    },
+    {
+      "type": "unresolved-conflict",
+      "between": [
+        "policy/decisions/D-000002",
+        "policy/decisions/D-000003"
+      ],
+      "scope": [
+        "region-west-ordinary-support-tickets"
+      ]
+    },
+    {
+      "type": "unresolved-incompatibility",
+      "between": [
+        "policy/decisions/D-000012",
+        "policy/decisions/D-000013"
+      ],
+      "scope": [
+        "region-west-visitor-access-logs"
+      ]
+    },
+    {
+      "type": "measurement-point-reference",
+      "from": "manufacturing/knowledge/K-000002",
+      "to": "manufacturing/knowledge/K-000001",
+      "scope": [
+        "south-model-r-sealing-pressure-at-head"
+      ],
+      "reason": "South explicitly uses the same measurement point as North; values and authority remain plant-specific."
+    }
+  ],
+  "unresolvedStorageAndPromotionIssues": [
+    "Proposal-only D-000005, D-000007, and K-000006 require explicit treatment under the P4 distinction between unallocated proposals and canonical records; quoted source IDs/provisional inventory IDs do not prove allocation.",
+    "North/South active specifications do not themselves establish reviewed knowledge-record lifecycle. Seal-note has no review standing.",
+    "Model R controller-limit and West controller inventory have useful known device scope, but no explicit active ontology standing.",
+    "Accepted gasket-standard is provisionally an ontology record. Accepted-to-active conversion or a kind change requires explicit adjudication; no ID was changed.",
+    "Accepted decisions preserving transcriptions or archival facts must not confer current operating authority on their quoted historical/unlocated instructions.",
+    "Missing classifications on home-office and unclassified-gauge remain absent; no source-backed empty subject sets are proposed.",
+    "Claim/component representation is needed for the maintenance book's disjoint pages and for artifacts containing operative, historical, proposed, or corroborating facts of different scopes/standings."
+  ],
+  "crossReviewResolutions": [
+    {
+      "id": "C1",
+      "status": "applied-to-semantic-proposal",
+      "reviewArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-crossreview-policy-manufacturing.json",
+      "recordId": "manufacturing/ontology/O-000003",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "gasket-decoy",
+      "resolution": "Changed scope key and definition from south-model-q-replacement-gasket to south-model-q-gasket. Source establishes an active South Model Q gasket but no South spare/replacement role. Preserved ID, standing, kind caveat, topics, and exclusion of North Model R applicability."
+    },
+    {
+      "id": "G1",
+      "status": "rationale-clarified-no-taxonomy-approval",
+      "reviewArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-crossreview-policy-manufacturing.json",
+      "location": "subjectRegistryProposals[organization=manufacturing].reason",
+      "resolution": "Clarified that the present hierarchy is one curator proposal; an assembly intermediate awaits separate semantic/governance review rather than being rejected for lack of verbatim taxonomy wording. No node or edge was restored or approved."
+    }
+  ]
+}

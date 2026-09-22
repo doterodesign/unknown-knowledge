@@ -1,0 +1,280 @@
+{
+  "reviewer": "independent-engineering-cultural-reviewer cross-reviewing policy/manufacturing",
+  "status": "semantic-draft-agreement-with-one-bounded-scope-correction-and-one-governance-rationale-clarification; no executable approval",
+  "reviewedArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-policy-manufacturing.json",
+  "reviewedArtifactSha256": "7c8239a96b73df484c588cae7d76a0e3c0d7b0a6b40bb209c8f9dd1729524ac3",
+  "reviewBoundary": {
+    "read": [
+      "acceptance/retrieval/pilot/sources/policy.md",
+      "acceptance/retrieval/development-v2/sources/policy.md",
+      "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "acceptance/retrieval/development-v2/record-inventory.json (policy and manufacturing only)",
+      "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-policy-manufacturing.json"
+    ],
+    "notRead": [
+      "pilot/tasks.json",
+      "private files",
+      "runtime implementation or outputs",
+      "source judgments",
+      "sealed S4 or heldout artifacts"
+    ],
+    "limitation": "Prior pilot metadata comparisons quoted by the author were not independently checked against tasks.json. This review checks proposed metadata against allowed public passages and inventory."
+  },
+  "checks": {
+    "recordCount": 28,
+    "sourceAttribution": "All 28 unique IDs exactly match public inventory source/passage locators; every passage heading exists.",
+    "lifecycleVersusDescribedObject": "Accepted archival/transcription/retirement records remain distinct from superseded/retired/unlocated described objects. Proposed pressure change remains distinct from its quoted active baseline. Source/record/kind mismatch flags remain explicit.",
+    "vipPartialSupersession": "D-000006 supersedes D-000002 and D-000003 only for West VIP tickets. Both predecessors remain accepted and conflicting for ordinary West tickets; dates supply no precedence.",
+    "unknownScopeAndComponents": "Unknown deletion and tolerance applicability remains null. Known preservation context, component scopes, and explicit measurement-point references are retained without importing neighboring authority.",
+    "flatPolicyRegistry": "Policy parents are empty, as explicitly required by the source; all policy topics remain flat and contextual retention aliases stay policy-owned.",
+    "organizationOwnership": "Policy and manufacturing registries remain separate; the repeated archives label creates no shared identity. Every proposed subject, parent, alias target, component topic, and relation endpoint resolves appropriately.",
+    "missingVersusEmpty": "Neither scope nor subjectKeys uses unsupported []. Explicitly missing home-office and gauge classifications stay omitted.",
+    "independentMaintenancePages": "Cross-line-book retains valid topic co-membership, per-page scopes and jointWarrant:false; retrieval does not establish joint operational instruction.",
+    "sourceRelationshipReferences": "All quoted supportingEvidence/scopeQualifications headings and scoped relation endpoints validate against allowed source/inventory locators."
+  },
+  "recordReviews": [
+    {
+      "id": "policy/decisions/D-000001",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "predecessor",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: the decision is explicitly superseded by both successors, while its 30-day historical fact remains available."
+    },
+    {
+      "id": "policy/decisions/D-000002",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "successor-a",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted original West scope and current ordinary-ticket scope are distinguished. VIP exclusion is explicitly attributed to vip-successor; no global superseded lifecycle is inferred."
+    },
+    {
+      "id": "policy/decisions/D-000003",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "successor-b",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: later date does not resolve conflict with D-000002; accepted standing continues for ordinary West tickets after scoped VIP supersession."
+    },
+    {
+      "id": "policy/decisions/D-000004",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "east-policy",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted East-only policy is preserved; support-ticket interpretation is separately attributed to east-vip-note rather than silently imported from file proximity."
+    },
+    {
+      "id": "policy/decisions/D-000005",
+      "source": "acceptance/retrieval/pilot/sources/policy.md",
+      "passage": "council-note",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: proposed agenda resolves no conflict, and the source-quoted/provisional ID does not allocate a canonical runtime decision."
+    },
+    {
+      "id": "policy/decisions/D-000006",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "vip-successor",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted 45-day rule applies only to West VIP tickets; separate components retain the ordinary-ticket conflict and no East extension is inferred."
+    },
+    {
+      "id": "policy/decisions/D-000007",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "privacy-proposal",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: proposed authorization is not an operational authorizer or approval to activate the service; allocation remains flagged."
+    },
+    {
+      "id": "policy/decisions/D-000008",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "unlocated-deletion",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted preservation/transcription does not approve the quoted ten-day instruction for present departments. Unknown department/type/jurisdiction remains scope:null, with known preservation context separately identified."
+    },
+    {
+      "id": "policy/decisions/D-000009",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "home-office",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted employee/purchase scope is retained, and explicitly missing subject classification is omitted rather than inferred or made empty."
+    },
+    {
+      "id": "policy/decisions/D-000010",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "staff-retention",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted employee mentoring program is distinct from record retention; contextual retention aliases preserve that distinction."
+    },
+    {
+      "id": "policy/decisions/D-000011",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "archive-correction",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted clarification describes a superseded predecessor and does not reinstate that policy. Accepted record and superseded described object remain distinct."
+    },
+    {
+      "id": "policy/decisions/D-000012",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "visitor-minimum",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted West visitor-log minimum remains in force without a recorded successor; it is not support-ticket policy."
+    },
+    {
+      "id": "policy/decisions/D-000013",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "visitor-maximum",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted later maximum conflicts with the minimum and does not supersede it. No invented precedence or compromise period."
+    },
+    {
+      "id": "policy/decisions/D-000014",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "east-vip-note",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: rejected extension and unchanged accepted East policy are represented as distinct components/standings; no 45-day East authority is inferred."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "north-seal",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: active North-only source specification and missing reviewed-knowledge standing remain distinct. Site/model/process/head measurement are source-supported."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000002",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "south-seal",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: active South-only specification retains missing reviewed-knowledge standing. Head measurement resolves an explicit reference to North, without transferring North pressure or authority."
+    },
+    {
+      "id": "manufacturing/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "controller-limit",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: known Model R device ceiling is preserved despite unknown lifecycle; no North classification or plant process authority is imported."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000003",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "obsolete-north",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: retired North Model Q history remains retired. No head measurement is imported from the separately attributed retirement source."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000004",
+      "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "passage": "seal-note",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: purchasing/gasket terminology supports proposed topics and narrow naming context, without inventing reviewed standing, plant/model applicability, or global scope."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000005",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "east-model-r",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: reviewed active East specification remains East-only, with additional quality-review assignment and separately bounded North/South value corroboration."
+    },
+    {
+      "id": "manufacturing/ontology/O-000002",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "gasket-standard",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted purchased-part standard is distinct from pneumatic setpoint authority; accepted-to-active ontology conversion/kind remains unresolved explicitly."
+    },
+    {
+      "id": "manufacturing/ontology/O-000003",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "gasket-decoy",
+      "outcome": "correction requested",
+      "reason": "Correction C1: South Model Q gasket, active source standing, nitrile and NQ-3 are supported. A South replacement/spare role is not explicit and should not be built into the scope label."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000006",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "pressure-draft",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: proposed 260 kPa trial and active 240 kPa baseline corroboration retain separate component standing. Proposal allocation remains unresolved."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000007",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "unlocated-tolerance",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: reviewed transcription does not authenticate originating plant/model/measurement point or North operating tolerance; applicability remains null."
+    },
+    {
+      "id": "manufacturing/ontology/O-000004",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "west-controller",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: known West ownership and device ceiling do not yield an active ontology lifecycle or an approved sealing-process setpoint."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000008",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "cross-line-book",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: legitimate multiple subjects and known page-specific scopes are preserved with jointWarrant:false. No Cartesian combination of site/model/part/pressure or inferred head measurement."
+    },
+    {
+      "id": "manufacturing/decisions/D-000001",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "q-retirement",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: the retirement record is accepted while the described Model Q equipment is retired. Its historical 190 kPa/head fact does not govern active Model R."
+    },
+    {
+      "id": "manufacturing/knowledge/K-000009",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "unclassified-gauge",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: reviewed active gauge source and explicit North/Model R/head/timing applicability are retained while missing classification remains absent."
+    }
+  ],
+  "corrections": [
+    {
+      "id": "C1",
+      "priority": "narrow semantic scope correction before freeze",
+      "recordId": "manufacturing/ontology/O-000003",
+      "passage": "gasket-decoy",
+      "issue": "The source specifies South Plant Model Q’s active nitrile NQ-3 gasket and says it is not a spare for North Model R. It does not explicitly designate a replacement/spare gasket role for South. The scope label currently adds that role.",
+      "currentScope": [
+        "south-model-q-replacement-gasket"
+      ],
+      "proposedScope": [
+        "south-model-q-gasket"
+      ],
+      "scopeDefinitionChange": {
+        "remove": "south-model-q-replacement-gasket",
+        "add": {
+          "south-model-q-gasket": "South Plant Model Q active nitrile gasket, part NQ-3; not a North Plant Model R spare or setpoint authority."
+        }
+      },
+      "preserve": [
+        "active source-standing proposal",
+        "provisional ontology-kind/runtime-promotion caveat",
+        "South/Model Q/gasket subject assignments",
+        "explicit exclusion of North Model R applicability"
+      ],
+      "status": "not applied to author artifact"
+    }
+  ],
+  "governanceRationaleClarifications": [
+    {
+      "id": "G1",
+      "location": "subjectRegistryProposals[organization=manufacturing].reason",
+      "issue": "The rationale says the source does not establish the pilot intermediate assembly classification, so it is not inherited. This is acceptable as a refusal to auto-inherit a prior proposal, but absence of literal source taxonomy is not evidence that an intermediate assembly node is semantically invalid or that the taxonomy must be flatter.",
+      "requestedClarification": "Describe the current packaging/sealing hierarchy as one curator proposal. Explicitly leave any assembly intermediate for review of its local definition, broader/narrower relation and inherited topic warrant; do not auto-restore or auto-approve it, and do not reject it solely because source prose omits taxonomy labels.",
+      "reviewLimit": "The prior tasks metadata was outside this cross-review, so no exact prior assembly edge or semantic validity is asserted here.",
+      "status": "governance clarification only; author artifact unchanged"
+    }
+  ],
+  "outstandingGovernance": [
+    "Null source-kind/lifecycle mappings remain semantic draft gaps pending explicitly declared record verification and kind decisions. They are not an executable lifecycle enum.",
+    "Quoted source IDs and inventory attributions are not runtime allocation evidence; proposal records need the actual governed proposal identity path before any materialization.",
+    "Effective scopes, scopeComponents, and scoped supersession are semantic proposals. A real applicability representation must preserve VIP exclusions and independent claim scope rather than flatten them into whole-record status.",
+    "The flat policy vocabulary is explicit source context. Manufacturing hierarchy is a curator proposal; broader/narrower relations and meanings such as tolerances under operating-pressure need local definitions and governance, not literal taxonomy sentences in source documents.",
+    "Accepted fixture curation may later review source-derived metadata or declare an empty recorded set, but no such approval is created here and explicitly missing classification must remain absent."
+  ],
+  "conclusion": "Acceptable as a reviewable semantic draft with C1 requested before freeze and G1 clarifying taxonomy rationale. All 28 attributions agree; no lifecycle, VIP precedence, missing-classification, or independent-page warrant correction was found. This cross-review is not governance-owner approval, executable applicability/schema validation, runtime allocation/testing, or a source/judgment change."
+}

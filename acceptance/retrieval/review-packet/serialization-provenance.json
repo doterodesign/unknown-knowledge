@@ -1,0 +1,11 @@
+{
+  "status": "Additive provenance clarification; no export edits or numerical/judgment changes",
+  "wording": "User authorized coordination/report review; Main chose fresh-alias/field serialization under that authority, not the user personally prescribing serialization.",
+  "mainReceipt": {
+    "path": "./heldout-final-report-main-acceptance.json",
+    "sha256": "ec7bc0ad060210d6324f94ab1c81d6529ea34067ef19d9ebc6bbf084c5a5b746",
+    "bytes": 1335
+  },
+  "originalApprovedExportsPreserved": true,
+  "newReviewGate": false
+}

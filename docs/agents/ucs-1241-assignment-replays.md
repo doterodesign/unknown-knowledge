@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # Representative assignment replay
 
 Proposed rationale `f1369103-65d4-4660-b166-f396e918a67d` is in [the P8 decision records](../../decisions/entries/assignment-finite-replay-evidence.yaml). The [documentation audit](ucs-1241-documentation-audit.md) records the distinct operation coverage and preserved evidence limits.

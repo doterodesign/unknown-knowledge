@@ -10,7 +10,7 @@ established. Use only the controlled evidence supplied below.
 Run `npm ci`, then from the kit repository:
 
 ```sh
-node acceptance/setup-knowledge-gap.js local-history:a5-knowledge-gap
+node acceptance/setup-knowledge-gap.js /tmp/a5-knowledge-gap
 ```
 
 Choose a new directory; setup refuses an existing one. It reuses the clean

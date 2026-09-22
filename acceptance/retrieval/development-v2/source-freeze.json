@@ -1,0 +1,89 @@
+{
+  "version": "development-v2-source-freeze-1",
+  "scope": "source review only; record metadata and executable fixtures pending",
+  "tasks": 48,
+  "answerableAfterScriptedClarification": 39,
+  "recordSourceAttributions": 82,
+  "files": [
+    {
+      "file": "acceptance/retrieval/development-v2/ADJUDICATION.md",
+      "sha256": "23c94e66fdd1270325365af5bf0ad4cbf1c2355a17aee4665aee441603303754"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/README.md",
+      "sha256": "5a0c708fe306af5872adb208e5252dc79db1b091276d314f60e82efc5afb98b9"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/record-inventory.json",
+      "sha256": "26bb044e86adf0140566423e52d81e3b5b90e4fbe034647797b690f59d4f6865"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/source-judgments/engineering-culture.json",
+      "sha256": "3ca51a4e179f2461e3d37744ba3b530c9983324ef0cbbe7ca7c6949a7c6b1f7c"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/source-judgments/policy-manufacturing.json",
+      "sha256": "47cb54fb1038a97ea88e618257c413a78a04d158aba621bc6ec2dacaaf81d44d"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/source-judgments/services-holding.json",
+      "sha256": "bacb0da52bc0687e9fcff09810966a77823a46388efe81abfa758cd3d3a45410"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/source-review.json",
+      "sha256": "1bfe66ef1a21d618d0c19cca9e566935c27d565cb026bd3f6c1397ab9f668ab9"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "sha256": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "sha256": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "sha256": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "sha256": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/sources/policy.md",
+      "sha256": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "sha256": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+    },
+    {
+      "file": "acceptance/retrieval/development-v2/tasks.json",
+      "sha256": "982af7dfd85cdf948e910af286ebb8674fdf0f166da024de968ce3c63977e162"
+    },
+    {
+      "file": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "sha256": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+    },
+    {
+      "file": "acceptance/retrieval/pilot/sources/engineering.md",
+      "sha256": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+    },
+    {
+      "file": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "sha256": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+    },
+    {
+      "file": "acceptance/retrieval/pilot/sources/manufacturing.md",
+      "sha256": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+    },
+    {
+      "file": "acceptance/retrieval/pilot/sources/policy.md",
+      "sha256": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+    },
+    {
+      "file": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "sha256": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+    }
+  ]
+}

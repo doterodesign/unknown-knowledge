@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # UCS-1238 — decisions, documentation and acceptance boundaries
 
 P5's structural plan, binding inspection, exact query provenance, admitted
@@ -44,13 +40,13 @@ Existing decisions already govern the surrounding choices:
 | [Shipped AGENTS](../../payload/protocol/AGENTS.md) | Existing RESOLVE/GATHER links and source obligations already cover P5. No additional edit needed for this rationale backfill. Main owns shared routing changes. |
 | [Root README](../../README.md), [CONTEXT](../../CONTEXT.md), [CHANGELOG](../../CHANGELOG.md) | Already describe the command and explicit modes. Main reconciles shared current-version notes and README wording; this patch does not change command behavior. |
 | [Manifest](../../cli/kit.manifest.yaml) | Already ships the focused protocol and engine directory. Decision backfills and developer guides do not add payload files. |
-| Acceptance README (contract arrives in PR7; see delivery availability) | P10-owned rubric, custody and experiment boundaries remain unchanged. P5's host contract is summarized below; frozen fixtures, reader prompts, ledgers and runtime copies are untouched. |
+| [Acceptance README](../../acceptance/retrieval/README.md) | P10-owned rubric, custody and experiment boundaries remain unchanged. P5's host contract is summarized below; frozen fixtures, reader prompts, ledgers and runtime copies are untouched. |
 | Root AGENTS, CONTRIBUTING, PR template, CI, package/lock versions, publishing guide | Main-owned PR policy/version integration. No scoped P5 edits or independent bump; no tag/publish authorization. |
 | Schemas, templates, IDE wrappers and migration guides | No wire-format, template, wrapper or migration behavior changed by this documentation patch. Existing wrappers continue to point to shipped AGENTS. |
 
 ## Actual test-host contract
 
-The acceptance-only intent host (contract arrives in PR7; see delivery availability)
+The acceptance-only [intent host](../../acceptance/retrieval/intent-host.js)
 invokes the fixed installed CLI. Reader requests choose Subject lookup or a
 plan mode: structural, inspect-bindings, validate-queries or execute-queries.
 Executable, root, captures and admission policies remain operator controlled.
@@ -65,7 +61,7 @@ original-source file reads are a separate counter; source quotations inside
 records mean that counter is not total source exposure. Private command receipts
 retain actual exit/signal/error, captured-buffer sizes and hashes; truncated
 capture is not described as full raw output. See
-host tests (contract arrives in PR7; see delivery availability).
+[host tests](../../tests/retrieval-intent-host.test.js).
 
 The original single guided Dirac demonstration at `bf78859` is closed. It used
 catalog/source fallback and completed no query execution. A syntax-refusal shape

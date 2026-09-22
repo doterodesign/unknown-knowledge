@@ -28,7 +28,7 @@ correction findings in the field. Seed a week of them:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf local-history:a5-reflect && cp -R fixtures/swift-app local-history:a5-reflect && cd local-history:a5-reflect
+rm -rf /tmp/a5-reflect && cp -R fixtures/swift-app /tmp/a5-reflect && cd /tmp/a5-reflect
 git init -q . && git add -A
 mkdir -p unknown-knowledge/logs/findings unknown-knowledge/logs/misses unknown-knowledge/logs/gaps
 

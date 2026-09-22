@@ -1,0 +1,130 @@
+{
+  "version": "pilot-1",
+  "status": "development-source-pilot",
+  "evaluationDate": "2026-09-18",
+  "baselineRuntime": "08066b5f527b9d7d9705a3367bc26dcf080271ad",
+  "queryVersion": null,
+  "registryVersion": null,
+  "budgets": null,
+  "tasks": [
+    {
+      "id": "engineering-01",
+      "organization": "engineering",
+      "split": "development",
+      "family": "positive-intersection-with-extra-assignment",
+      "prompt": "For Aurora Web 4, how must the CSS exporter represent the semitransparent accent color, including its token name and alpha handling? Use the active serialization contract relevant to accessibility inspection.",
+      "source": "sources/engineering.md",
+      "stores": ["ontology"],
+      "subjectlessVariant": true,
+      "subjectParents": {"software":"engineering","frontend":"software","design-systems":"frontend","design-tokens":"design-systems","color-tokens":"design-tokens","color-serialization":"color-tokens","css-color-serialization":"color-serialization"},
+      "subjectRoots": ["engineering", "accessibility", "release-engineering"],
+      "related": [["accessibility", "design-systems"]],
+      "records": [
+        {"id":"engineering/ontology/O-000001","passage":"css-export","subjectKeys":["css-color-serialization","accessibility","release-engineering"],"lifecycle":"active","scope":["aurora-web-4"]},
+        {"id":"engineering/ontology/O-000002","passage":"opaque-export","subjectKeys":["css-color-serialization"],"lifecycle":"active","scope":["aurora-web-4-opaque-only"]},
+        {"id":"engineering/ontology/O-000003","passage":"focus-ring","subjectKeys":["accessibility"],"lifecycle":"active","scope":["aurora-web-4"]},
+        {"id":"engineering/ontology/O-000004","passage":"prior-export","subjectKeys":[],"lifecycle":"retired","scope":["aurora-web-3"]},
+        {"id":"engineering/ontology/O-000005","passage":"unclassified-note","lifecycle":"active","scope":[]}
+      ]
+    },
+    {
+      "id": "cultural-research-01",
+      "organization": "cultural-research",
+      "split": "development",
+      "family": "residual-perception-country-intent",
+      "prompt": "In this research collection, does using red improve adults' attention in a Southeast Asian country? Distinguish perceptual effects from symbolic meaning, identify the country and context the evidence actually covers, and avoid a region-wide claim.",
+      "source": "sources/cultural-research.md",
+      "stores": ["knowledge"],
+      "subjectParents": {"red":"color","blue":"color","visual-attention":"perception","color-symbolism":"culture"},
+      "subjectRoots": ["color", "perception", "culture", "projects"],
+      "subjectAliases": [{"alias":"Rouge","subject":"red","context":"French color term"},{"alias":"Rouge","subject":"projects","context":"project name"}],
+      "related": [["color","perception"],["color","culture"],["perception","culture"],["red","projects"]],
+      "records": [
+        {"id":"cultural-research/knowledge/K-000001","passage":"red-attention","subjectKeys":["red","visual-attention"],"lifecycle":"reviewed","scope":["vietnam-adult-notifications"]},
+        {"id":"cultural-research/knowledge/K-000002","passage":"blue-symbolism","subjectKeys":["blue","culture","color-symbolism"],"lifecycle":"reviewed","scope":["thailand-adult-packaging"]},
+        {"id":"cultural-research/knowledge/K-000003","passage":"rouge-terms","lifecycle":"reviewed","scope":[]},
+        {"id":"cultural-research/knowledge/K-000004","passage":"earlier-pilot","subjectKeys":[],"lifecycle":"proposed","scope":["children-toy-packaging"]}
+      ]
+    },
+    {
+      "id": "policy-01",
+      "organization": "policy",
+      "split": "development",
+      "family": "decisions-only-conflicting-successors",
+      "prompt": "What is the currently approved retention period for support tickets in Region West? If the decisions do not establish one authoritative period, explain the unresolved conflict instead of choosing by date.",
+      "source": "sources/policy.md",
+      "stores": ["decisions"],
+      "subjectParents": {},
+      "subjectRoots": ["ticket-retention", "staff-retention", "support", "governance"],
+      "subjectAliases": [{"alias":"retention","subject":"ticket-retention","context":"support records"},{"alias":"retention","subject":"staff-retention","context":"staff continuity"}],
+      "related": [],
+      "records": [
+        {"id":"policy/decisions/D-000001","passage":"predecessor","subjectKeys":["ticket-retention"],"lifecycle":"superseded","scope":["region-west"]},
+        {"id":"policy/decisions/D-000002","passage":"successor-a","subjectKeys":["ticket-retention","support"],"lifecycle":"accepted","scope":["region-west"],"supersedes":["policy/decisions/D-000001"]},
+        {"id":"policy/decisions/D-000003","passage":"successor-b","subjectKeys":["ticket-retention","support"],"lifecycle":"accepted","scope":["region-west"],"supersedes":["policy/decisions/D-000001"]},
+        {"id":"policy/decisions/D-000004","passage":"east-policy","subjectKeys":[],"lifecycle":"accepted","scope":["region-east"]},
+        {"id":"policy/decisions/D-000005","passage":"council-note","lifecycle":"proposed","scope":["region-west"]}
+      ]
+    },
+    {
+      "id": "manufacturing-01",
+      "organization": "manufacturing",
+      "split": "development",
+      "family": "comparison-requires-scoped-evidence-bundle",
+      "prompt": "Compare the active Model R sealing-pressure setpoints at North Plant and South Plant. Give each plant's value and measurement point; do not substitute the controller limit for an operating setpoint.",
+      "source": "sources/manufacturing.md",
+      "stores": ["knowledge", "ontology"],
+      "subjectParents": {"assembly":"manufacturing","packaging":"assembly","sealing":"packaging","north":"sites","south":"sites","model-r":"equipment"},
+      "subjectRoots": ["manufacturing", "sites", "equipment", "gaskets"],
+      "subjectAliases": [{"alias":"seal","subject":"sealing","context":"process"},{"alias":"seal","subject":"gaskets","context":"purchased part"}],
+      "related": [["sealing","model-r"],["north","model-r"],["south","model-r"]],
+      "records": [
+        {"id":"manufacturing/knowledge/K-000001","passage":"north-seal","subjectKeys":["model-r","sealing","north"],"lifecycle":"reviewed","scope":["north-model-r"]},
+        {"id":"manufacturing/knowledge/K-000002","passage":"south-seal","subjectKeys":["model-r","sealing","south"],"lifecycle":"reviewed","scope":["south-model-r"]},
+        {"id":"manufacturing/ontology/O-000001","passage":"controller-limit","subjectKeys":["model-r","north"],"lifecycle":"active","scope":null},
+        {"id":"manufacturing/knowledge/K-000003","passage":"obsolete-north","subjectKeys":[],"lifecycle":"retired","scope":["north-model-q"]},
+        {"id":"manufacturing/knowledge/K-000004","passage":"seal-note","lifecycle":"reviewed","scope":[]}
+      ]
+    },
+    {
+      "id": "professional-services-01",
+      "organization": "professional-services",
+      "split": "development",
+      "family": "in-scope-gap-versus-excluded-decoy",
+      "prompt": "What refund deadline has Project Atlas approved for the Orion client? Use only the agreed source scope; distinguish a refund deadline from invoice-payment terms.",
+      "source": "sources/professional-services.md",
+      "excludedSources": ["sources/private/refund-draft.md"],
+      "stores": ["decisions", "knowledge"],
+      "subjectParents": {"atlas-project":"client-projects","orion":"clients","research":"practices","atlas-practice":"research","invoices":"finance","refunds":"finance"},
+      "subjectRoots": ["client-projects", "clients", "practices", "finance"],
+      "subjectAliases": [{"alias":"Atlas","subject":"atlas-project","context":"Orion engagement"},{"alias":"Atlas","subject":"atlas-practice","context":"research practice"}],
+      "related": [["atlas-project","orion"],["atlas-practice","refunds"]],
+      "records": [
+        {"id":"professional-services/decisions/D-000001","passage":"atlas-engagement","subjectKeys":["atlas-project","orion"],"lifecycle":"accepted","scope":["orion-atlas"]},
+        {"id":"professional-services/knowledge/K-000001","passage":"payment-handbook","subjectKeys":["invoices"],"lifecycle":"reviewed","scope":["firm-invoices"]},
+        {"id":"professional-services/decisions/D-000002","passage":"atlas-practice","subjectKeys":[],"lifecycle":"rejected","scope":["atlas-practice"]},
+        {"id":"professional-services/knowledge/K-000002","passage":"clarification-note","lifecycle":"reviewed","scope":["orion-atlas"]}
+      ]
+    },
+    {
+      "id": "holding-company-01",
+      "organization": "holding-company",
+      "split": "development",
+      "family": "disconnected-namespace-refusal",
+      "prompt": "Treat North and South subsidiaries' O-000001 as one group record and return its combined supported export formats. Both installations are independently owned; no import or federation has been enabled.",
+      "source": "sources/holding-company.md",
+      "stores": ["ontology", "decisions", "knowledge"],
+      "installations": ["cedar-north", "cedar-south", "cedar-holding"],
+      "subjectParents": {"north-software-export":"north-technical","south-documents":"south-operations","south-software-export":"south-documents"},
+      "subjectRoots": ["north-technical", "south-operations", "group-governance", "international-trade"],
+      "subjectAliases": [{"alias":"export","subject":"north-software-export","context":"North software"},{"alias":"export","subject":"international-trade","context":"shipping goods"}],
+      "related": [],
+      "records": [
+        {"id":"cedar-north/ontology/O-000001","passage":"north-contract","subjectKeys":["north-software-export"],"lifecycle":"active","scope":["cedar-north"]},
+        {"id":"cedar-south/ontology/O-000001","passage":"south-contract","subjectKeys":["south-software-export"],"lifecycle":"active","scope":["cedar-south"]},
+        {"id":"cedar-holding/decisions/D-000001","passage":"historical-import","subjectKeys":[],"lifecycle":"rejected","scope":["group-import"]},
+        {"id":"cedar-holding/knowledge/K-000001","passage":"group-note","lifecycle":"reviewed","scope":[]}
+      ]
+    }
+  ]
+}

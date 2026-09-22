@@ -18,8 +18,8 @@ later protocol changes do not reclassify them as successful runs.
 From the kit checkout, after `npm ci`, create two new scratch directories:
 
 ```sh
-node acceptance/lib/reflection-fixture.js local-history:reflection-before
-node acceptance/lib/reflection-fixture.js local-history:reflection-after
+node acceptance/lib/reflection-fixture.js /tmp/reflection-before
+node acceptance/lib/reflection-fixture.js /tmp/reflection-after
 ```
 
 The preparer uses the public init/log-entry/derive CLIs, supplies two cited

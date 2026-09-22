@@ -17,7 +17,7 @@ Networking belongs to host tools, never the engine or deterministic CI.
 Generate a separate client for each row:
 
 ```sh
-node acceptance/source-evidence-fixture.js local-history:source-evidence-mixed verified http://127.0.0.1:PORT/vendor
+node acceptance/source-evidence-fixture.js /tmp/source-evidence-mixed verified http://127.0.0.1:PORT/vendor
 ```
 
 The overlay reuses the runtime-preflight/time-facet fixture. The local artifact

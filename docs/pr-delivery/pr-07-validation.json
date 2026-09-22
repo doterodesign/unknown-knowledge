@@ -1,0 +1,12 @@
+{
+  "status": "pending committed-candidate rerun",
+  "base": "5ac00e46c177f89f08c91da38140b7185f1f78d6",
+  "version": "3.0.0-rc.8",
+  "initialAttempt": {
+    "tests": 99,
+    "pass": 98,
+    "fail": 1,
+    "logSHA256": "b68173bb3c5992266d0ba9f14cd725c521effa01d53b321858d34d7947a0f325",
+    "disposition": "Real Git replacement test clones current committed HEAD, which was still PR6 and lacked the new retrieval harness directory. Commit the local PR7 candidate, then rerun unchanged tests at that exact head; no assertion or test behavior changed."
+  }
+}

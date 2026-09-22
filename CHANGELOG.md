@@ -1,6 +1,22 @@
 # Changelog
 
+All notable changes to the `unknown-knowledge` kit are documented here.
+
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and the project adheres to [Semantic Versioning](https://semver.org/) with the
+kit-specific semantics recorded in decision D-000021 (`decisions/entries/`):
+MAJOR = store schema-version bump or breaking engine CLI contract change;
+MINOR = new extractor kinds, new engine surfaces, or a new fixture vintage;
+PATCH = fixes and documentation. Every PR advances the package version and
+records notes under its version heading marked Unreleased. Publication adds
+the actual release date; unpublished versions never receive invented dates.
+
 ## [Unreleased]
+
+## [3.0.0-rc.8] - Unreleased
+
+- Retain the completed bounded evaluation, adverse public and held-out outcomes, sanitized approved reports and exact cross-stack ownership ledger.
+- Review scope, Decisions and validation: [PR 7](docs/pr-delivery/pr-07.md).
 
 ## [3.0.0-rc.7] - Unreleased
 
@@ -37,6 +53,426 @@
 
 - Permanent typed identities, allocation ledger, optional Subject authority and assignment history; canonical schemas, seed templates and fixture conversion. Existing-store migration is unavailable at this intermediate stage.
 - Review scope, Decisions and validation: [PR 1](docs/pr-delivery/pr-01.md).
+
+### Original integrated implementation notes (historical pending rc.2)
+
+
+
+### Changed
+
+- Consolidate implementation and evaluation evidence, including observed critical-
+  category coverage, adverse completion/friction results and explicitly unavailable
+  metrics; preserve frozen failures and the limits of operational qualification.
+- Clarify canonical Subject strings in query predicates versus qualified intent
+  binding objects, explain provenance for explicitly authored defaults, and
+  keep correction proposals separate from tasks stopped by validation errors.
+- Record completed public evaluation, adverse agent answer-quality results and
+  explicit internal-handoff authorization; keep final acceptance pending.
+- Bind final held-out preparation to a fixed runtime and unchanged scope; record
+  causal triage and incomplete critical-event judgments without inferring a pass.
+- Clarify candidate critical-error qualification while retaining baseline and
+  historical violations and requiring independent adjudication of uncertain cases.
+- Complete critical-event adjudication of the retained public campaign, preserving
+  noncritical errors and adverse quality results alongside the bounded zero-critical result.
+- Release the independently prepared held-out comparison and accept the narrow
+  corrected-condition repair target while retaining historical failed outcomes.
+- Reconcile delivered strict-versus-possible results and update acceptance coverage,
+  preserving unknown witness status for host-withheld native outputs.
+- Record the reviewed evaluation-operator handoff and six bounded native-output
+  recovery calls, preserving reader privacy boundaries and historical outcomes.
+- Complete byte-exact recovery and independent witness review of the six withheld
+  outputs, establishing all 123 public strict-result witnesses without regrading trials.
+- Record all 36 held-out observed results, including lower current task completion,
+  and release five bounded output reconstructions while preserving original outcomes.
+- Complete the five reconstructions and independent missing-witness review,
+  establishing 59/59 held-out strict-result witnesses without changing reader scores.
+- Record final-runtime timing and memory results, including the near-byte public
+  query refusal and partial-context limits, without discarding instrumentation failures.
+- Release the reviewed prospective agent-evaluation continuation with separate
+  instruction versions and unchanged tasks, sources, limits and scoring.
+- Correct historical repair-result interpretation using the complete resolver
+  response, retaining actual failures and distinguishing machine probes from
+  prospective source-separation questions. Adjudicate retained negative evidence
+  without adding an unnecessary historical reader matrix.
+- Bind existing corrected-protocol reader evidence to its narrow navigation
+  requirement and retain historical failures. Complete another bounded manual
+  source-accounting review and distinguish host refusals from engine stop rules.
+- Correct a test-host budget instruction gap for the remaining unrun readers
+  with a reviewed policy-file instruction; retain earlier attempts and version
+  strata without changing host limits or product behavior.
+- Bind existing reflection pending-handoff and same-day conduct evidence to the
+  acceptance mapping, keeping the unverified positive archival boundary explicit.
+- Record the independently reviewed archival boundary test and its sequential
+  execution gates, preserving synthetic-input and pending-work limitations.
+- Accept the executed archival threshold and history-preservation check, with
+  independent evidence review and no runtime changes; narrow stale pending-work
+  summaries to the remaining governed repair and retrieval evaluation gates.
+- Record independently verified observed-exposure counts for a truncated public
+  trial, preserving omitted-content uncertainty and the original trial verdicts.
+- Record the completed 60-case matched corpus-growth evaluation and preserve
+  its separate source review, original failures and limits on quality claims.
+- Map the final deterministic requirements to named assertions and distinguish
+  remaining behavioral evaluation from implemented lifecycle and interface work.
+- Verify that Subject eligibility reaches a record beyond the registered
+  lexical top-ten evaluation window without relying on lexical candidate ranking.
+- Preserve the failed initial agent-evaluation checkpoint and distinguish host
+  usage, delivery accounting and factual adequacy before any revised continuation.
+- Align regression expectations with the implemented optional typed replay,
+  eighteen engine surfaces, exact installation inventory and MCP dependencies.
+- Permit a reviewed equivalent Subject merge to extend a preserved redirect
+  from A→B to A→B→C, retaining original meanings, history, ledger and assignment
+  evidence. Native governance verifies both chains before publication.
+- Separate synthetic corpus-growth construction from lifecycle publication in
+  retrieval evaluation. Preserve original fixture bytes and container rows,
+  allocate additions natively, and judge source relevance before search runs.
+- Support reviewed Subject proposal suppression through a fixed registry-only
+  publication profile. Preserve refused meanings and reasons, canonical subjects,
+  assignments and query memberships; retain distinct policy binding and fresh
+  source/authorizer checks through shared metadata publication mechanics.
+- Support reviewed fresh Subject activation and unrefused proposal promotion
+  through a fixed internal publication profile. Broader meanings receive fresh
+  IDs while original subjects, records and assignments remain unchanged; shared
+  source, capture and publication checks preserve reconsideration behavior.
+- Support reviewed Subject rename, clarification, reparenting and related-link
+  publication through one internal profile, preserving IDs and assignments and
+  retaining native query effects, ambiguity and unavailable evidence.
+- Reconcile Subject lifecycle scope with r3: proposal refusal/reversal and fresh
+  union creation are required; active-canonical suppression/restoration was
+  an unsupported team expansion, now explicitly superseded in the Decision.
+- Support equivalent Subject merge with proven zero direct source uses through
+  existing review/publication, preserving registry-only changes and genuine
+  query impacts without fabricating an assignment event.
+- Extend finite migration with an exact seeded-installation profile for reviewed
+  runtime, rules, suppressions, wrappers and consumers. Observe supported local
+  activation separately from candidate publication; preserve custom/unknown
+  consumer refusals and original seed provenance.
+- Extend reviewed existing-record subject assignments to mixed K/O/D selections,
+  with original-input policy binding, retained material and fixed all-store
+  replay checks before fresh review and candidate publication.
+- Share full Subject assignment outcomes once per query in explicit output
+  version 2, preserving record evidence and validation under unchanged limits.
+  Advertise output versions per API operation and update strict consumers.
+- Expose the existing read-only Subject tree preview through the shared API,
+  request CLI and MCP, retaining native incomplete results and output limits.
+- Carry retained Subject material through K/O/D promotion, final review and
+  candidate publication. Preserve native unknown/empty assignments without a
+  registry, refuse unsupported nonempty evidence, and account for actual reads.
+- Clarify canonical-cutover recovery: discard unpublished candidates, preserve
+  allocated IDs during post-publication repair, and isolate prior-format readers.
+- Extend finite migration publication to healthy optional-store and Decisions-only
+  sources. Bind actual presence and authored counts through fresh review and
+  publication, preserve absence, and compare empty views without creating stores.
+- Update the exact fixed-worker acceptance allowlists for the implemented
+  reconsideration workers, preserving restrictions on executable selection.
+- Correct current resolver comments to use Knowledge `K-NNNNNN` and Ontology
+  `O-NNNNNN` examples; preserve historical migration fixtures.
+- Clear assignment-gate success when snapshot cleanup fails after completed
+  checks, retaining the source diagnostic and completed check evidence in both
+  staged and prepared modes.
+- Clarify that contract-first onboarding also precedes recursive discovery
+  through installed kit, engine and dependency directories. Preserve top-level
+  instruction/configuration discovery and existing source-navigation rules.
+- Require a version increment, matching lockfile, decision traceability and
+  affected documentation/agent-instruction updates for every PR, including
+  docs-only work. Add a PR version CI check and review checklist.
+
+### Added
+
+- Record the 60-call varied retrieval baseline: 39 passing checks and 21 retained
+  unavailable-store refusals caused by incorrect successful-query expectations.
+  A separate store-selection correction passes 21/21; original results remain
+  unchanged and the other 39 passing receipts are reused with provenance.
+- Document the missing unused held-out pool and agreed six-case source-first
+  curation and independent acceptance after focused corrections, preserving
+  independent custody and historical exposure disclosures.
+- Record four native-v2 retrieval checks delivering complete requested K/O/D
+  pages and source-verified explanations under unchanged limits; preserve
+  page truncation, historical failures and unqualified broader acceptance.
+- Record prospective retrieval-quality targets, paired denominators and hard
+  correctness gates before final trials, preserving historical failures and limits.
+
+- Record the results-mode qualification: five independently verified Decision
+  witnesses per query, with explicit Knowledge/Ontology withholding under the
+  original explanation allowance. Preserve incomplete cross-store coverage.
+
+- Carry reconsideration material through equivalent merge and split, including
+  fixed wire workers, original-input/report binding and fresh review/publication.
+  Preserve native split allocation and zero/positive/all-empty mappings; charge
+  extra continued merge captures and refuse null impact reports normally.
+
+- Record four complete private-file count queries at the original corpus and
+  operation limits, including exact expected counts, API/CLI parity, custody
+  receipts and retained missing-rules warnings. Preserve the frozen evaluator's
+  false result and all prior refusals; make no broader capacity or timing claim.
+
+- Carry retained reconsideration material through retirement admission, actual
+  source/model checks, use inventory, assignment withdrawals and prepared/final
+  review/publication. Share the existing governance allowance and bind the
+  continued report version to the original input; keep standalone material
+  inventory and later lifecycle continuation explicitly separate.
+
+- Add a versioned read-only API with subject lookup/query and intent-plan
+  validation, inspection and execution; expose the same operations through a
+  bounded request-file CLI and the official SDK's local MCP stdio transport.
+  Preserve native partial reports, evidence obligations and existing CLI output.
+  Seed the interface guide; keep MCP dependencies outside the seeded engine.
+  Lifecycle/publication bindings and full operational qualification remain open.
+- Bind existing intersection-route and context-count operations to that shared
+  API/CLI/MCP interface, preserving native coverage and counts. Expose the two
+  shipped usage guides as fixed, bounded MCP documentation resources.
+- Expose the existing Ontology/Knowledge preflight through the same API/CLI/MCP
+  interface. Preserve native findings, unknown/refused distinctions, injected
+  dates and next actions; keep logging disabled and specialized CLI exits intact.
+
+- Implement the reconsideration publication contract: one bounded wire
+  admission, actual prepared/final workers, two eventless authority artifacts,
+  four independent review captures and fresh proof before unchanged ref CAS.
+  Preserve diagnostic-only failed owners and reject cleanup/source/receipt drift.
+  This adds internal publication support, not a public mutation operation.
+- Carry ordinary assignment assessment/material evidence through staged and
+  prepared gates, fixed wire workers, retained report validation and fresh
+  review/publication. Use one governance allowance and one owned capture decode;
+  preserve omitted-input behavior and the Knowledge-only retained profile.
+  Refresh usage on all owner exits and preserve unexpected own metadata fields
+  for rejection. Verify actual sources again before the existing candidate-ref
+  transaction; report shape and plausible counters alone do not prove execution.
+- Add the fixed prepared reconsideration gate with fresh operation-bound contexts,
+  mandatory reach/tree/replay evidence, unchanged original query availability and
+  explicit fresh-before refusal. Preserve attempted-query and partial-result
+  evidence on resource failure, count additional native qualification separately,
+  and require successful cleanup. This internal gate adds no retained publication
+  profile or public CLI/MCP operation.
+- Share fixed owned-capture admission between reconsideration and the ordinary
+  assignment continuation prerequisite, preserving existing raw-input behavior
+  and counters. Add a single-decode canonical wire path with a linear text check
+  that handles large admitted captures without native regular-expression stack
+  exhaustion. The complete ordinary continuation is recorded above.
+- Record the agreed ordinary assignment evidence-continuation contract and
+  reconsideration impact/replay composition choices, including explicit resource
+  accounting and retained-publication boundaries. Their scoped implementation
+  evidence is recorded in the agent guides; no new public operation is advertised.
+- Add the fixed actual-Git reconsideration owner: verify exact original evidence,
+  supplied-capture provenance, source-less current correspondence and complete
+  preservation of stored record assignments. Reserve owned capture copies under
+  one allowance, preserve warning-only outcomes and unresolved undeclared occupied
+  IDs, and refuse missing declared payloads. Require exact registry/identity-only
+  changes and successful cleanup. Impact/replay composition, retained workers and
+  publication remain separate; this adds no public CLI or MCP operation.
+- Carry retained reconsideration material through query context/file APIs and
+  query/intent/view CLIs with `--material-captures`. Route/context views also
+  accept original assessment captures. Add strict material-only transport and
+  raw-input admission while preserving one-attempt context lifetime, per-record
+  eligibility and shared capture accounting. Update installed agent protocols;
+  tree mode remains evidence-independent. Assignment/lifecycle publication
+  integration and supported MCP delivery remain separate work.
+- Add a fixed suppressed-proposal reconsideration history/model validator with
+  separate version-1 assessments and captured record/source material. Preserve
+  the exact prior refusal, require a distinct effective Decision and verify one
+  native fresh allocation. Check parent eligibility at activation time, reject
+  unrelated material and share the cumulative operation allowance. Ordinary
+  promotion remains separate. Normal-consumer evidence integration and actual-Git
+  review/publication remain pending; file integrity does not prove relevance.
+- Add a fixed single-Subject allocation comparator using the native planner and
+  exact whole-ledger equality. Admit both ledger populations before planning and
+  share private comparison mechanics with the existing split entrypoint while
+  preserving its two-successor minimum and accounting. Record the separate
+  suppressed-proposal reconsideration design; this primitive does not complete
+  reconsideration, governance or publication.
+- Add fixed internal split review and candidate-ref publication: independently
+  capture actual before/candidate registry and identity, verify native allocation
+  once under one fresh review allowance, and retain the complete Decision tuple
+  on positive and eventless branches. Require fresh owner equality at review and
+  publication, preserving source-less Decision evidence and the existing atomic
+  ref transaction. This does not add a public CLI or MCP operation.
+- Add fixed prepared and fresh-final split workers, explicit runtime registration
+  and bounded owned artifact retention. Keep failed-owner diagnostics separate
+  from successful captures; require exact fresh report/capture agreement and
+  independent runtime capability. Split cleanup failure refuses acknowledgement.
+  Review recording and candidate-ref publication use the separate fixed profile.
+- Add fixed split report/wire transport and bounded raw candidate registry,
+  identity and event capture. Preserve original evidence and legacy decoder/read
+  boundaries; candidate identity capacity is independent of original wire size.
+  Capture the separate actual-Git review and fresh-publication obligations in a
+  proposed Decision. Workers and publication use separate fixed profiles.
+- Compose the internal prepared Subject split gate: exact positive K/O/D
+  assignment preservation, eventless registry/identity proof and mandatory
+  reach, tree and fixed replay checks. Preserve actual refusal results and
+  cumulative assignment governance usage. Retained split publication uses its
+  separate fixed profile.
+- Add block-YAML split fixtures that retain original commit/capture bindings and
+  exercise exact Knowledge and grouped Ontology/Decision preservation spans.
+- Add Subject split foundations: validate historical activation/split pairs and
+  their assessment dependency, and check exact fresh Subject-only allocation
+  under bounded admission. Compose actual before/candidate models with an unchanged
+  authorizing Decision, original assessment evidence and one shared allowance.
+  Refuse malformed input and native capture-depth failures through the fixed split
+  path. Admit closed, digest-bound split requests with explicit ordered per-record
+  choices and successor parents, plus a separate nonempty assignment-event schema.
+  Add fixed split-row eligibility on the same authentic operation allowance,
+  including an ownership check for empty withdrawals without copying history.
+  Verify actual Git mapping/retention scope, source-bearing historical evidence,
+  original assessment provenance and separately charged file correspondence reads.
+  Preserve ordinary transition refusal; retained split publication uses its
+  separate fixed profile.
+- Validate prepared plain Subject retirement through actual K/O/D use discovery,
+  exact nonempty withdrawal history or a registry-only zero-use proof. Preserve
+  historical owners and parent/inherited relationships, require bounded reach,
+  tree and historical/refusal replay assessments, and retain unknown coverage.
+  Add a closed retirement event schema and a separate retained publication
+  profile. Bind event-independent Decision authority, preserve explicit zero-use
+  evidence, recapture the exact owner/runtime and source files, and reuse the
+  reviewed candidate-ref transaction. Test actual SHA1/SHA256 Git fixtures.
+  No public CLI/MCP or installed agent workflow is added.
+- Add classified Decision promotion through the existing Decision planner and
+  typed governance/history/impact path. Explicit v3 policies admit homogeneous
+  K/O/D; owner report v2 marks selected Decision preflight inapplicable while
+  requiring all other checks. Preserve exact reasoning and unchanged authorizers,
+  existing history and raw unknown coverage; retain the original Decision profile.
+- Extend typed promotion to homogeneous Knowledge batches under explicit v2
+  domain/publication policies. Verify actual leaf stage and selected citation/date
+  evidence, preserve original evidence bytes and prior assignment history, and
+  support Knowledge installations without Ontology. Retain Ontology behavior and
+  the separate Decisions-only profile. The subsequent v3 policy above adds typed D.
+- Validate Ontology proposal promotion through a distinct read-only typed gate:
+  exact committed changes, fresh canonical assignment history, trusted selected
+  preflight, unchanged registry and retained retrieval/tree evidence. Preserve
+  the original Decisions-only gate; subsequent v3 support is described above.
+- Retain and publish reviewed Ontology promotion candidates through a distinct
+  typed operation and explicit O-only policy. Bind the original owner input,
+  report, raw creation event and capture limit; rerun subject impacts and exact
+  runtime checks before the shared atomic candidate-ref transaction. The subsequent
+  v2 and v3 policies above add Knowledge and classified Decisions explicitly.
+- Reuse verified current-query Subject eligibility within the same immutable
+  governance capture and authentic operation allowance. Preserve fresh record,
+  assignment and model binding checks; charge actual lookup and miss work and
+  keep other policies, unavailable evidence and failed operations uncached.
+- Compose bounded file-based Subject queries in one private load-through-query
+  operation, omitting only duplicate corpus admission while retaining all other
+  validation and limits. Keep full re-admission for exposed in-memory contexts;
+  existing CLI flags and result contracts remain unchanged.
+- Plan exact Knowledge and Ontology proposal promotion through fixed store
+  lifecycle policies and the shared permanent-ID allocator. Preserve source
+  evidence and unrelated bytes; typed validation and publication remain separate
+  gates, and the existing Decisions-only publication profile is unchanged.
+- Require actual historical/current validation of retained Phoenix and finding,
+  gap and miss documents before migration publication. Preserve operational
+  references and edition accounting through the version-3 publication policy;
+  keep the finite source-profile and activated-consumer limits explicit.
+- Admit initial Subject corpus metadata within the synchronous loader's private
+  lifetime, avoiding a second traversal of already validated record/body data.
+  Retain actual body/count limits, unfamiliar-wrapper fallback, and full public
+  re-admission after return; document the changed work accounting.
+- Publish reviewed Decisions-only promotion candidates through the unchanged
+  domain gate, retained raw creation-event evidence, fresh validation and one
+  atomic candidate-ref transaction. This profile excludes K/O promotion and
+  classified records; broader authoring remains separate work.
+- Publish reviewed equivalent-merge candidates only after fresh owner checks,
+  exact registry/event recapture and runtime-capability verification, followed
+  by one atomic candidate-ref transaction. Preserve qualified unknown coverage.
+- Guard complete identity-resolution results in one traversal with strict
+  authored descendants, retaining detached copies and per-event evidence checks.
+  Document changed logical accounting and first-failure order.
+- Validate equivalent Subject merges for effective canonical Ontology and
+  Decision records through the shared typed assignment pipeline, including
+  grouped-file preservation and actual before/after retrieval comparisons.
+- Prove finite historical/current retrieval and generated-view preservation
+  before reviewed migration candidate publication by atomic ref comparison.
+  This first profile supports pre-Subject installations; unsupported formats
+  and incomplete evidence refuse publication.
+- Validate Decisions-only proposal promotion against exact committed changes
+  and canonical creation history, separately from final publication.
+- Capture implementation decisions and ownership/evidence boundaries for
+  identity, assignment, query, runtime validation, governance, evaluation and
+  interface-planning behavior; reconcile glossary and migration guidance with
+  permanent K/O/D identity and no required legacy lookup compatibility.
+- Reuse private authorizer resolution within each governance call while
+  retaining per-event evidence checks and mutable model binding checks.
+- Share an optional captured-operation allowance across intent-plan validation
+  and execution, including input reads, capture admission and bounded output,
+  while preserving existing plan reservations and domain results.
+- Opt into one shared input, validation and output allowance for Subject route
+  and context-count commands, with bounded host-failure receipts and preserved
+  domain limits. Structural tree generation retains its independent limits.
+- Inspect intent bindings through an explicit installed CLI mode, preserving
+  homonyms, stale lookup contexts and unavailable evidence without granting
+  query eligibility or source approval.
+- Guide intent-based discovery through declared plans, existing record gates
+  and source review for each requirement, with separate ambiguity, recovery
+  and evidence limits.
+- Execute declared intent-plan queries with separate whole-plan validation and
+  execution reservations, preserving alternative/recovery results and captured
+  input checks. Incomplete execution stops later branches; source review remains
+  a separate requirement.
+- Run fixed trusted checks on prepared commits with captured runtime bytes,
+  actual command results, and immutable detached evidence bundles. Operation
+  coverage remains explicit; the runner does not publish refs or approve changes.
+- Reopen retained validation bundles with bounded integrity and durability checks,
+  preserving actual failed, incomplete, and null evidence without implying approval.
+- Validate transient intent plans with `intent-plan.js`; inspect captured
+  subject and record bindings with explicit ambiguity and stale-context results.
+  These checks do not establish complete intent, approval, or executable queries.
+- Inventory a pinned pre-cutover Git commit with `migrate-identity.js`, preserving
+  exact typed source locations and reporting unresolved references without
+  changing the checkout, index, or store records.
+- Add shared canonical identity, subject lookup, Boolean matching, assignment
+  history, and structural tree modules for the coordinated identity cutover.
+  Canonical records and unpublished proposals have separate typed interfaces.
+- Add independently reviewed development retrieval cases and disposable fixtures
+  using the pinned original runtime, with explicit evaluation budget accounting.
+- Check captured subject governance against the exact identity ledger and retained
+  Decision evidence, with separate inspection, query and new-assignment policies.
+  Subject lifecycle publication remains a separate governed operation.
+- Prepare migration candidates with reviewed original-byte ID/reference edits;
+  candidates still require target-runtime and whole-installation validation.
+- Execute captured subject queries and intersection routes through one governed
+  evaluator, with explicit incomplete results and shared result/count semantics.
+  Inspect before/after direct and inherited subject impacts for lifecycle review.
+- Read the optional `subjects/registry.yaml` authority using its schema and shared
+  identity/history checks. Structural metadata does not establish approval.
+- Count suggested subject contexts through the same governed query evaluator,
+  with separate candidate-enumeration and per-query limits and explicit partial
+  coverage. Counts describe recorded classification, not factual support.
+- Validate exact query provenance in intent plans and optionally reserve aggregate
+  branch allowances before query validation. Unobserved work remains explicit;
+  these checks do not execute the plan or establish faithful intent interpretation.
+- Retain independently reviewed development source and metadata artifacts, and
+  bound delivery through the pinned-runtime trial host. Executable fixture
+  approval and completed retrieval trials remain separate acceptance gates.
+- Look up declared subjects with `subject.js`, execute governed queries with
+  `query-subjects.js`, and inspect disposable trees, intersection routes and
+  context counts with `subject-view.js`. Intent query validation requires an
+  explicit whole-plan admission policy and does not execute the plan.
+- Compare supplied routes and regenerated tree artifacts across actual bound
+  captures, retaining incomplete coverage and unavailable deltas explicitly.
+- Read retained assignment history and corroborate loaded records against its
+  terminal state. Event metadata binds before inputs and candidate record bytes;
+  scope, captured evidence, review and publication require separate checks.
+
+### Changed
+
+- **Breaking record format:** canonical Knowledge, Ontology and Decision records
+  use permanent six-digit K/O/D IDs with an installation allocation ledger.
+  Unpublished proposals use qualified UUID keys. The active reader, writers,
+  repository records and fixtures use the new format together; normal lookup
+  has no legacy-ID aliases or compatibility mode. Offline migration preparation
+  remains separate from a complete validated publication.
+- Classification-only Knowledge proposals retain identity, lifecycle, source
+  dates and body while appending reviewed revision notes and assignment history.
+  New content and source changes retain their ordinary review and promotion gates.
+- Reflect persists reviewed proposals, gate evidence and resumable work accounting.
+  Audit reads the canonical heartbeat and distinguishes completed reviews from
+  pending repairs; incomplete history cannot establish authoritative aging totals.
+
+### Fixed
+
+- Reconcile older reconsideration model/core/consumer guides with the delivered
+  impact gate and ordinary assignment continuation. Preserve historical receipts
+  and distinguish remaining lifecycle and reconsideration publication work.
+- Reopening a finding, extractor miss, or skill gap preserves its previous
+  rejection reason or verification date in optional `prior-outcomes` history
+  (UCS-1242). Current resolution fields are still cleared. Use the updated
+  helper and schemas together; older strict validators reject the new field.
+
 
 ## [3.0.0-rc.1] - 2026-09-12
 

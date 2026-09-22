@@ -1,0 +1,817 @@
+{
+  "reviewer": "independent-source-review-policy-manufacturing",
+  "sourceFiles": [
+    "acceptance/retrieval/pilot/sources/policy.md",
+    "acceptance/retrieval/development-v2/sources/policy.md",
+    "acceptance/retrieval/pilot/sources/manufacturing.md",
+    "acceptance/retrieval/development-v2/sources/manufacturing.md"
+  ],
+  "defaultJudgment": {
+    "grade": 0,
+    "applicable": false
+  },
+  "tasks": [
+    {
+      "id": "policy-01",
+      "answerable": true,
+      "answerSummary": "West VIP support tickets have an accepted 45-day period under D-000006. Ordinary West support tickets remain subject to unresolved accepted 60-day and 90-day decisions. Limited explicit supersession resolves VIP only; do not select an ordinary-ticket period by date.",
+      "missingRequestedFact": "No single authoritative period for all West support tickets, and no resolved ordinary-West period; this does not negate answerability of the explicitly requested scoped conflict explanation.",
+      "requiredDetails": [
+        "Region West VIP support tickets: 45 days under accepted D-000006.",
+        "D-000006 supersedes D-000002 and D-000003 only for VIP tickets.",
+        "Ordinary West support tickets retain the unresolved 60-day versus 90-day conflict.",
+        "Do not claim one current period for all West tickets or resolve the ordinary conflict by later date."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "vip-successor",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies VIP 45, limited supersession, and ordinary West unresolved 60/90; adequate alone."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "successor-a",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted 60-day side of the ordinary West conflict, interpreted with the expanded VIP-only supersession."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "successor-b",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted 90-day side and explicit date/non-supersession rule, interpreted with the VIP-only supersession."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "council-note",
+          "grade": 2,
+          "applicable": true,
+          "reason": "The proposed agenda contains no accepted resolution of the requested ordinary West conflict."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "predecessor",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Historical 30-day predecessor and its replacement provide lifecycle background, not a current period."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "archive-correction",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Archival confirmation of predecessor history; does not reinstate a current policy."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "vip-successor"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "policy-02",
+      "answerable": true,
+      "answerSummary": "Accepted D-000006 sets West VIP support-ticket retention to 45 days and supersedes both earlier West decisions only for VIP tickets. It does not apply to or replace East policy. East's accepted 14-day policy remains unchanged; cite the East evidence if volunteering that value.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "West VIP support tickets: currently accepted 45 days.",
+        "Explicit supersession of D-000002/D-000003 is limited to West VIP tickets.",
+        "The West VIP rule does not replace Region East policy."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "vip-successor",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly answers both required facts: accepted West VIP 45 days and no application to East."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "east-vip-note",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes that the East extension was rejected and East's accepted 14-day policy remains unchanged."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "east-policy",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Establishes the distinct accepted 14-day East policy and its exclusion of West; useful partial evidence for the regional distinction."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "vip-successor"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "policy-03",
+      "answerable": true,
+      "answerSummary": "No. The external privacy-analysis authorization D-000007 remains proposed, has not been accepted, and does not approve activation.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "D-000007 is proposed rather than accepted.",
+        "The council has not approved use or activation of the service.",
+        "A proposed authorizer cannot serve as accepted operational authorization."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "privacy-proposal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct nonapproval/status evidence; applicable to the asked status response, not as authorization to activate."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "privacy-proposal"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "policy-04",
+      "answerable": true,
+      "answerSummary": "No. D-000008 preserves an accepted transcription of an archived ten-day instruction, not a ten-day policy for current West support tickets. Department, record type, and jurisdiction are missing, so applicability is unknown.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Acceptance preserved the transcription; it did not adopt a present general ten-day policy.",
+        "Original department, record type, and jurisdiction are unknown.",
+        "The archived instruction does not establish a ten-day West support-ticket policy."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "unlocated-deletion",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supports the requested scoped negative applicability judgment; its embedded ten-day value cannot govern West tickets."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "unlocated-deletion"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "policy-05",
+      "answerable": true,
+      "answerSummary": "Meridian employees may be reimbursed for one home-office desk up to 300 credits after submitting an itemized receipt.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Meridian employee home-office purchases.",
+        "One desk, capped at 300 credits.",
+        "An itemized receipt must be submitted before reimbursement.",
+        "Use the explicitly scoped accepted policy despite its missing subject classification."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "home-office",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted reimbursement and evidence requirements; missing classification does not remove applicability."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "home-office"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "policy-06",
+      "answerable": true,
+      "answerSummary": "After the fixed clarification selecting the staff-retention mentoring program for new employees: a mentor check-in every 14 days. This is a mentoring cadence, not a record-retention or deletion period. Evaluate initial neutral clarification separately.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Initially clarify which meaning of retention is intended; do not assume the scripted branch before it is delivered.",
+        "After the fixed staff-program reply: new employees receive a mentor check-in every 14 days.",
+        "Do not describe the 14-day mentoring cadence as a record-deletion interval."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "staff-retention",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct post-clarification 14-day staff mentoring cadence and explicit lexical ambiguity; adequate for the fixed final branch."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "staff-retention"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": true
+    },
+    {
+      "id": "policy-07",
+      "answerable": true,
+      "answerSummary": "D-000001 historically established 30-day retention for Region West support tickets before D-000002 and D-000003 superseded it; the archival clarification does not reinstate it.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "30 days for Region West support tickets.",
+        "D-000001 is the historical predecessor, superseded by D-000002 and D-000003.",
+        "Do not present the historical period as current policy."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "predecessor",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct predecessor value, scope, and superseded lifecycle."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "archive-correction",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted historical confirmation of the value and successors without reinstatement."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "successor-a",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Useful partial historical evidence that D-000002 superseded D-000001; does not supply the predecessor value."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "successor-b",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Useful partial historical evidence that D-000003 superseded D-000001; does not supply the predecessor value."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/policy.md",
+            "passage": "predecessor"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "archive-correction"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "policy-08",
+      "answerable": true,
+      "answerSummary": "No period satisfies both accepted obligations for the same West visitor-access logs: keep at least 21 days versus delete no later than day 14. The later maximum decision does not supersede the minimum, and no accepted resolution is recorded.",
+      "missingRequestedFact": "No feasible single retention period satisfies both obligations; the explicitly requested incompatibility explanation is fully answerable.",
+      "requiredDetails": [
+        "Same Region West visitor-access logs are covered by both accepted obligations.",
+        "D-000012 requires keeping logs at least 21 days.",
+        "D-000013 requires deletion no later than day 14.",
+        "The obligations are incompatible; later acceptance does not supersede D-000012 and no accepted resolution is recorded.",
+        "Do not invent a satisfying period, average, range, or date-based precedence."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "visitor-minimum",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted minimum obligation for the requested same log scope."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "visitor-maximum",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted maximum obligation and unresolved non-supersession; combines with minimum to establish incompatibility."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "visitor-minimum"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/policy.md",
+            "passage": "visitor-maximum"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-01",
+      "answerable": true,
+      "answerSummary": "Active Model R sealing pressure is 240 kPa at North Plant and 210 kPa at South Plant, both at the sealing head. The controller limit is not an operating setpoint.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "North Plant active Model R: 240 kPa.",
+        "South Plant active Model R: 210 kPa.",
+        "Both measurements are at the sealing head; resolve South's reference to North's measurement point.",
+        "Do not substitute the controller's 400 kPa ceiling or another model/site/draft value."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct North active value and sealing-head point."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "south-seal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct South active value; measurement point is explicitly relational to North."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "east-model-r",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly corroborates North 240 and South 210; its East measurement statement does not independently establish North/South points."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "pressure-draft",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly confirms current North 240 kPa at the sealing head while proposed 260 remains unaccepted; contributes to North comparison facts."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "unclassified-gauge",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Direct North Model R sealing-head measurement evidence despite missing subject classification."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "controller-limit",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Direct device-limit versus site-operating-setpoint distinction expressly requested by the prompt."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "north-seal"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "south-seal"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "pressure-draft"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "south-seal"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "east-model-r"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "south-seal"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "unclassified-gauge"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-02",
+      "answerable": false,
+      "answerSummary": "No approved operating-pressure tolerance for North Plant Model R is established in this collection. The archived plus-or-minus 5 kPa note has unknown plant, model, and measurement point; review confirmed only its transcription.",
+      "missingRequestedFact": "An approved operating-pressure tolerance for North Plant Model R is absent from the permitted collection.",
+      "requiredDetails": [
+        "The collection does not establish an approved North Model R operating tolerance.",
+        "The candidate plus-or-minus 5 kPa note lacks originating plant, model, and measurement point.",
+        "Reviewed transcription does not establish applicability or approval.",
+        "Do not join a known North setpoint/gauge procedure to the unlocated note to infer tolerance scope."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "unlocated-tolerance",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct evidence for the scoped refusal and missing provenance; applicable to that response, never as an approved North tolerance."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Actual background distinguishing a known nominal North setpoint from an unstated operating tolerance."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "unclassified-gauge",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Actual background establishing a known North measurement point, without supplying the archived tolerance's missing provenance."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "unlocated-tolerance"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-03",
+      "answerable": true,
+      "answerSummary": "No. North's active Model R sealing setpoint is 240 kPa, above 230; South's is 210 kPa, below 230. Both are measured at the sealing head.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Answer no to whether both are below 230 kPa.",
+        "North Plant active Model R: 240 kPa, above 230.",
+        "South Plant active Model R: 210 kPa, below 230.",
+        "Both measurements are at the sealing head.",
+        "Preserve North's counterexample rather than returning only the site satisfying the threshold."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct North counterexample value and measurement point."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "south-seal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct South comparison value and relational measurement point."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "east-model-r",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicit North/South numeric corroboration contributes to the threshold comparison; East's own value/point is not the requested comparison."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "pressure-draft",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicit active North 240 at the sealing head supplies the above-threshold counterexample."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "unclassified-gauge",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Direct North sealing-head measurement evidence contributes to the explicitly requested point."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "north-seal"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "south-seal"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "pressure-draft"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "south-seal"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "east-model-r"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "south-seal"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "unclassified-gauge"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-04",
+      "answerable": false,
+      "answerSummary": "The collection establishes no approved West Plant Model R sealing-process operating setpoint. West's 400 kPa controller input ceiling is not an operating instruction; other plants' settings do not govern West.",
+      "missingRequestedFact": "An approved West Plant Model R operating sealing-pressure setpoint is absent from the permitted collection.",
+      "requiredDetails": [
+        "No approved West Model R sealing-process setpoint is supplied by the collection.",
+        "400 kPa is a controller input ceiling, not an approved operating pressure.",
+        "Other plants' setpoints do not govern West; do not recommend a borrowed or computed value."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "west-controller",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct evidence of the missing approved West setpoint and why its controller ceiling cannot answer the requested operating value."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "controller-limit",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Useful partial evidence for the refusal: device maxima are not site process setpoints; cannot independently establish West's source gap."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "west-controller"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-05",
+      "answerable": true,
+      "answerSummary": "After the fixed clarification selecting North Plant Model R's replacement gasket: the accepted purchased-part standard specifies a silicone gasket, part SG-8. It specifies the spare part, not a pneumatic operating pressure. Evaluate initial neutral clarification separately.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Initially clarify the equipment/model, site, and whether seal means the sealing operation or replacement gasket.",
+        "After the fixed reply: North Plant Model R replacement gasket.",
+        "Accepted purchased-part standard: silicone, part SG-8.",
+        "Do not substitute the South Model Q nitrile NQ-3 gasket or an operating-pressure specification."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "gasket-standard",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct fixed-branch North Model R silicone SG-8 part specification and explicit purchase/process meaning distinction."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "cross-line-book",
+          "grade": 2,
+          "applicable": true,
+          "reason": "The North Model R page independently corroborates a silicone seal, a useful material fact for the clarified gasket request; its separate South Model Q pressure cannot be joined to that fact."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "gasket-standard"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": true
+    },
+    {
+      "id": "manufacturing-06",
+      "answerable": true,
+      "answerSummary": "No. 260 kPa is an unaccepted and undeployed proposed trial. The active North Plant Model R sealing specification remains 240 kPa at the sealing head pending review and qualified validation.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "260 kPa is proposed, not accepted or deployed.",
+        "North Plant Model R currently remains at 240 kPa at the sealing head.",
+        "Do not treat a proposed value or a value below the controller maximum as operational approval."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "pressure-draft",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct proposal status plus accepted-current baseline; applicable to asked status, not authorization for 260."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct active North 240-at-head baseline supports the requested current-pressure status."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "east-model-r",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly corroborates North remaining at 240; partial evidence about the asked current North value."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "pressure-draft"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-07",
+      "answerable": true,
+      "answerSummary": "The reviewed active East Plant Model R sealing setpoint is 225 kPa at the sealing head, governing East only.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "East Plant, Model R, active sealing specification.",
+        "225 kPa.",
+        "Measured at the sealing head.",
+        "The extra quality-review classification does not exclude explicitly matching scope."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "east-model-r",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct active East value, measurement point, and site scope."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "east-model-r"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "manufacturing-08",
+      "answerable": true,
+      "answerSummary": "Retired North Plant Model Q used 190 kPa; active North Plant Model R uses 240 kPa. Preserve the model and lifecycle distinction. Both were measured at the sealing head if the historical measurement point is additionally supported with the retirement record.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Retired North Plant Model Q: 190 kPa.",
+        "Active North Plant Model R: 240 kPa.",
+        "Keep model, North site, and historical versus active lifecycle paired with each value.",
+        "The retired Model Q value does not govern Model R.",
+        "Measurement points are optional for this prompt; if supplied for historical North Q, cite the retirement record."
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "obsolete-north",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct historical North Model Q value and retired lifecycle."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "q-retirement",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct historical North Model Q value, retired status, and optional sealing-head measurement."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct active North Model R value and scope."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "pressure-draft",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly confirms active North Model R 240-at-head while its proposed trial remains unaccepted."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "east-model-r",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly corroborates unchanged North Model R 240 as a useful numeric contribution; East's own value cannot replace either North comparison value."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "obsolete-north"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "north-seal"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "q-retirement"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "north-seal"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+            "passage": "obsolete-north"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "pressure-draft"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "q-retirement"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+            "passage": "pressure-draft"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    }
+  ]
+}

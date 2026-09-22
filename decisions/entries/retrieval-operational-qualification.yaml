@@ -1,0 +1,443 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:0632b8e9-01c0-46f6-aa76-1446017f67ef"
+    title: "Operational qualification preserves one budget and retains all refusals"
+    category: "scope"
+    status: "proposed"
+    date: "2026-09-20"
+    deciders: ["P10 evaluator (proposal author; acceptance pending)"]
+    context: >
+      Per-component checks and historical flat-fixture timings do not prove a
+      complete operation at the proposed corpus limits. Repeated history, source
+      capture and document admission consume cumulative work. Moving the first
+      failure is not completing the operation.
+    decision: >
+      Freeze named runtime, Node, fixtures, queries, dependency provenance and
+      approved operation budgets before each explicitly released qualification.
+      Use one genuine operation context without resetting counters. Count combined
+      registry/assignment events, declaration rows including repetitions and
+      baselines using the recorded history-unit amendment. Preserve base and
+      near-source-byte fixtures and independently expected query/context counts.
+      Gate timing on actual operation completion; distinguish cold parse, query,
+      context counts and complete-CLI high-water RSS. Retain failures and all
+      samples. Separate historical characterization from supported limits. Any
+      further qualification requires reviewed authorization; documentation
+      backfill neither raises thresholds nor dispatches readers or benchmarks.
+      Subsequent main/P2 agreement at dd929005f25afd60b63e93e4b08c6c9cd26e1990
+      authorizes preparation of a new private-file-counts-v1 profile, followed
+      by controller review and a separate execution release. It proposes exactly
+      four untimed calls: querySubjectFiles and the actual bounded CLI once each
+      on the preserved joint and near-byte fixtures. Preserve original query,
+      operation capacities, Node/dependency bytes and all earlier refusals. The
+      private file lifetime differs from the original exposed-context profile;
+      do not relabel historical results or claim that exposed-context admission
+      is fixed. Bind the exact serialized output and newline to the same
+      operation allowance; retain native coverage/diagnostics and collect any
+      counter telemetry separately after output admission or refusal. Freeze
+      the controller, four-entry input manifest and immutable runtime export,
+      checking custody and dependency resolution around every call. Independent
+      authored expectations are 21 strict and zero possible per K/O/D store,
+      with exclusions 312/312/313 and 1000 total evaluated, conditional on actual
+      governance. Count agreement proves neither identity witnesses nor source
+      support. No timing, retry, additional historical control, reader, capacity
+      increase or fixture replacement is authorized by this preparation.
+      Subsequent current-P2 review accepted preparation v2 after correcting
+      the controller to retain an original query exception separately from a
+      later output exception. Main inspected the controller and manifest and
+      verified syntax and custody without executing queries. Main now releases
+      exactly the four original untimed calls, bound to freeze SHA256
+      f0f5740163277cad8b6d762b92ac959ba4605975c240374f3ba5c44b674c60df
+      and input manifest SHA256
+      7ec1ed88e471e1c3e5e6ca77188d5c80e7d6ab474282397eabe7e4779be9e561.
+      The separate execution record is
+      /private/tmp/ucs1243-private-file-counts-v1-execution-release.json.
+      This authorizes the reviewed experiment under the implementation goal;
+      it is not Decision publication, acceptance of results or permission to
+      alter the inputs, limits, runtime or no-retry rule. Both earlier controller
+      preparations and all prior refusals remain preserved.
+      The four released calls subsequently completed natively within those
+      limits and matched the independent count oracle. Preserve the frozen
+      evaluator's false result for missing-rules context warnings. Review of
+      the pinned loader and query source distinguishes complete lifecycle-only
+      membership counts from unavailable rules-dependent behavior; do not remove
+      warnings, rerun the experiment or rewrite its pass criterion. The evidence
+      and limits of that interpretation are in
+      acceptance/retrieval/PRIVATE-FILE-COUNTS.md. Counts completion does not
+      establish source witnesses, shared-interface capacity or timing targets.
+      Main and current P2 next agree preparation, not execution, of
+      private-file-results-v1 at the same runtime, fixtures, query and capacities:
+      four calls change only API collection to results and omit CLI counts mode.
+      Independent source arithmetic predicts 818 explanation nodes per row;
+      the shared 4096-node allowance and D/K/O traversal permit only five Decision
+      rows, with 4090 nodes used, while Knowledge/Ontology pages are withheld.
+      Record this as a prediction until observed. Freeze independent candidate
+      identities, complete assignment outcomes and historical authorizer/witness
+      expectations before controller execution; preserve the actual incomplete
+      explanation/page flags and original limits. This tests a limitation and
+      cannot complete K/O or full strict-result witness coverage. The two exact
+      missing-rules warning dispositions apply only to the new profile; retain
+      both warnings and the prior evaluator's false result. Separate reviewed
+      controller and execution release remain required. Proposal and manifest
+      hashes are 507023d21b258c3b299457fadf78ce43f0c744dc200b638ff0207193bae190e7
+      and 267ac12a87a2d829f88354ae7ef251549d8eff133a688c8070ecfd28649a1bb4.
+      Current P2 subsequently accepted the actual controller deltas and the
+      independently source-bound expectations. Main inspected the builder and
+      deltas, passed syntax and custody-only verification, and separately
+      released exactly those four calls. The controller freeze SHA256 is
+      8397d70185f2fb54206374401850efa119e56e66f970c2b909e1ba0bfc716b57;
+      input manifest SHA256 is
+      d6144499621107bc0d4007592f95e3e23a502a623bea74a3c532d1f793cb642b;
+      independent expectations SHA256 is
+      ccc9ca60fa727e459cce069f57f86cbdacf1a948ea46dc37813665409cfcc3c6.
+      The separate release is
+      /private/tmp/ucs1243-private-file-results-v1-execution-release.json.
+      Execution outcomes remain pending; reviewed predictions and authorization
+      do not establish observed witness correctness or wider acceptance.
+      The subsequent four results-mode calls matched the independent five-row
+      witness and withholding contract. Each returned exactly five Decisions,
+      with 4090 explanation nodes and 215340 output bytes, while K/O pages stayed
+      empty. All scoped dimensions passed, but cross-store/full strict witness
+      coverage explicitly remains incomplete. Preserve this observed limitation,
+      all raw warnings and earlier results. Investigate lossless factoring of
+      repeated explanation data before choosing an output-contract change; no
+      such implementation or cap increase is authorized by the observed pass.
+      Exact receipts and source-verification scope are recorded in
+      acceptance/retrieval/PRIVATE-FILE-RESULTS.md.
+      Main subsequently reviewed P4's complete source-bound design and agreed
+      implementation of native query outputVersion 2 in an isolated checkout.
+      Factor complete successful assignment outcomes once per captured query
+      context, namespace, query purpose, policy and original Subject ID; preserve
+      each record's ordered assignments and all other evidence. Every original
+      validation and work debit still runs. Admit local explanations and newly
+      shared table entries atomically, charging all actually serialized nodes
+      and transport bytes without changing limits. Update evaluator fingerprints,
+      per-operation discovery versions and strict downstream decoders together.
+      Independent expansion must recover every original outcome and position.
+      Static sizing predicts improved page coverage but is not runtime evidence.
+      This scoped implementation authorization does not release another P10
+      experiment or establish full-set delivery, relevance or performance.
+      On 2026-09-21, main reviewed and agreed the evaluator's prospective
+      quality targets before their trials. Keep zero critical violations,
+      complete deterministic/preservation coverage and closure of every claimed
+      repair target as hard gates. Use zero-margin descriptive paired
+      nonregression targets for relevance, adequate evidence, abstention and
+      steps, with explicit common denominators and missing/completion ledgers.
+      Adverse deltas require evidence-based adjudication; aggregate improvement
+      is not a new prerequisite and inconclusive capability stays visible.
+      Preserve per-store rankings separately from the total-ten evidence bundle,
+      prospective source judgments, unchanged operation budgets and recorded
+      hardware targets. The compact plan preserves all required scenario coverage
+      with 24 selected tasks, three repetitions, six public four-variant sentinels
+      and separately sealed cases; counts are not evidence of coverage. The
+      versioned contract is acceptance/retrieval/QUALITY-TARGETS.md. This target
+      agreement authorizes no reader or benchmark execution and leaves original
+      preparations and historical failed studies unchanged.
+      Main and current P2 subsequently reviewed the independent native-v2
+      decoder and actual controller deltas, with no actionable finding. The
+      evaluator expands only emitted query-local references and compares every
+      complete outcome and ordered witness against the prior source-authored
+      pool. It charges actual native table/local nodes and distinguishes requested
+      page coverage from the complete strict set. Sixteen evaluator-only tests
+      passed before any product call. Main verified the exact rendered template,
+      unchanged controller/decoder, Node/dependencies and full bound custody:
+      1829 runtime files, two 1008-file fixtures and 176 preserved evidence files.
+      Release exactly four untimed API/CLI results calls at
+      79c3efc0803963c6308ce483235c1d1d1d7f2b24 under the unchanged query and limits,
+      with no retry or presumed thirty-row success. Freeze SHA256 is
+      7ab6658dc1e2f338751f9f87f82c17aa6f840c8721f526855d41d97615086422;
+      input-manifest SHA256 is
+      d06aa554918e50f7d0061e62a0d2898db84064403b1e4b51bd5643d624e2f398.
+      The separate exact release is
+      /private/tmp/ucs1243-private-file-results-v2-execution-release.json.
+      The aborted preparation before runtime creation remains preserved and
+      is not a product refusal or execution. This release establishes no result,
+      performance qualification, reader quality or production approval.
+      Those four calls subsequently completed once and passed every scoped
+      independent check: ten K/O/D rows each, 1745 explanation nodes and 87431
+      output bytes under unchanged limits. Exact counts remain 21 strict per
+      store, so complete requested pages do not establish full-set delivery.
+      Main verified all 21 receipt hashes, eight custody outcomes and both
+      API/CLI byte comparisons. Preserve the two warnings, all prior refusals
+      and the fullStrictWitnessCoverageComplete false result. The result and
+      exact hashes are in acceptance/retrieval/PRIVATE-FILE-RESULTS-V2.md.
+      This supplies observed cross-store witnesses for the fixed fixtures,
+      not timing, agent quality or complete operational qualification.
+      Continue preparation of the agreed varied-corpus batch at that same pin:
+      40 baseline API queries, eight exact replays, eight contexts and four CLI
+      representatives. Reuse reviewed fixtures, source expectations and the
+      accepted decoder, review only changed controller/admission code, then
+      release the exact manifest once. This preparation dispatches no readers
+      and does not execute the batch before that release.
+      Main and current P2 accepted the changed varied-corpus evaluator,
+      controller and source-only preparation after independent review, with no
+      concrete blocker. The accepted native-v2 decoder is unchanged. Main
+      independently verified all 68 sealed package files, the namespace-only
+      negative control, and custody of 1829 runtime files, 13 dependency files,
+      four fixtures containing 1008/1008/255/20 files and 292 preserved evidence
+      files. The custody-only controller completed with zero acceptance calls.
+      Release exactly 60 untimed top-level calls once at
+      79c3efc0803963c6308ce483235c1d1d1d7f2b24: 40 baseline API queries, eight
+      exact replays, eight contexts and four CLI representatives. The 52
+      conditional internal context queries are accounted separately. Preserve
+      expected incomplete context enumeration and separate requested-page from
+      full-set availability. No retries, limit changes, readers, growth calls
+      or timing qualification are authorized by this release. Freeze SHA256 is
+      41f82edb886ef42f2ca122c01c6181611e4645c8fed0a2bb385b35d53f0343e6;
+      input-manifest SHA256 is
+      384d3b65d61275636cffd11d235ee2bb704653980bf138ba0ccc11026f08ed6d.
+      The separate exact release is
+      /private/tmp/ucs1243-varied-baseline-v1-execution-release.json.
+      This records permission to execute, not an observed product result.
+      The released batch subsequently completed exactly once: 39 of 60 scoped
+      assessments passed. All 21 failures explicitly selected an absent Ontology
+      store in three installations and received unavailable-store at /stores,
+      consistent with spec r3 section 6. Preserve the incorrect successful-query
+      expectations and failed result, not a retrospectively green baseline.
+      All 120 custody checks passed; main rehashed all 299 receipts. Thirty-two
+      successful queries delivered complete source-verified pages, five contexts
+      preserved incomplete enumeration with complete known counts, and two
+      expected refusals passed. All ten replay/parity pairs are byte-identical,
+      but three are refused pairs rather than semantic successes. The exact
+      result and proposed narrow plan correction are recorded in
+      acceptance/retrieval/VARIED-BASELINE.md. No new execution is authorized
+      by that proposed correction.
+      Main and the evaluator then agreed preparation of a separate 21-call
+      correction: only the 15 affected plans select their actual installed
+      Knowledge and Decisions stores, with three exact replays and three
+      context calls. Independently derive selected-universe expectations from
+      unchanged source records before execution. Preserve every predicate,
+      lifecycle/scope selector, ranking, limit, decoder and runtime; reuse the
+      unaffected 39 receipts. Keep 20 conditional internal context queries
+      separate from top-level calls. Propagate corrected scope explicitly to
+      dependent growth/reader plans. This authorizes preparation only; execution
+      still needs its exact frozen release and the failed 60-call run remains.
+      Main and current P2 subsequently accepted that bounded correction after
+      reviewing the changed preparation and exact schedule. Independently
+      verified all 39 sealed files, all 15 store-only query changes and unchanged
+      source truth, decoder, witness checker and capacities. Main custody-only
+      verification passed with zero acceptance calls, 1829 runtime files,
+      13 dependencies, four unchanged fixtures and 665 preserved evidence files.
+      Release exactly those 21 untimed calls once at unchanged 79c3efc, with no
+      retry, CLI, reader, growth or timing run. Freeze SHA256 is
+      5f9bd27d8da5083acd7d3837b4cc5865c8b8d3d837d1c30f525ba1e08747fb1d;
+      input-manifest SHA256 is
+      8b6701b5de19df7a2aaa24c4ae423315a0ab6f5191ffd7e58e4bf497acbd6722.
+      The separate exact release is
+      /private/tmp/ucs1243-varied-loaded-stores-v1-execution-release.json.
+      Preserve the original failed baseline and report the correction separately;
+      this release makes no claim about its future result.
+      The correction subsequently completed once with all 21 scoped assessments
+      passing: 18 complete query pages and three expected incomplete-enumeration
+      contexts with complete known counts. Observed internal context calls were
+      7/10/3, all three replay pairs matched and all 42 custody checks passed.
+      Main independently rehashed 108 receipts. Combine these with the unaffected
+      39 original passing receipts only as corrected-plan coverage with explicit
+      provenance; never relabel the original 39/60 result. Exact hashes and
+      unqualified broader scope remain in acceptance/retrieval/VARIED-BASELINE.md.
+      For the 2026-09-21 corpus-growth preparation, hold runtime 79c3efc and
+      matched corrected query scopes fixed. A sixteen-source synthetic copied
+      fixture overlay may be prepared separately from typed publication, using
+      actual native allocation and validation with no additional support records
+      required solely for evaluator setup. Preserve the previous publication-route
+      analysis as history. Construction checks do not authorize ranking, replay,
+      timing, a new runtime or a changed operation budget; independent fidelity
+      and final growth judgments precede query release.
+      Main subsequently reviewed the full growth helper and all construction
+      inputs, accepted forty-eight unblinded source-level judgments and four
+      conditional additional bundles, and released construction separately.
+      The first attempt refused before product imports when macOS injected an
+      additional environment variable. Preserve that failure; v2 pins the exact
+      observed variable with unchanged helper, source truth, runtime and budgets.
+      V2 construction completed once with sixteen records and zero new support
+      Decisions. Main then read every actual record and verified all original
+      baseline bytes, retained container rows, source fidelity and identities.
+      Neither construction nor fidelity review ran a query. Exact plan, release,
+      materialization and review hashes are recorded in
+      acceptance/retrieval/GROWTH-CONSTRUCTION.md; finalized qualified judgments
+      and a separate matched replay release remain required.
+      Main subsequently accepted the complete qualified growth projection:
+      270 preserved original judgments plus 48 source-reviewed additions and
+      four conditional bundles. P2 accepted the narrow fixed-controller changes;
+      main verified all sealed inputs, unchanged query bytes and independent
+      added-record predicates before releasing exactly sixty untimed calls.
+      All sixty scoped checks passed, with ten byte-identical replay/API-CLI
+      comparisons and the eight expected incomplete context outcomes. Main
+      independently rehashed 300 receipts and verified 120 custody checks.
+      Preserve all earlier failures and distinguish this fixed-query result
+      from agent quality, relevance improvement and performance qualification.
+      Exact hashes and denominators are in acceptance/retrieval/GROWTH-CONSTRUCTION.md.
+      Final-runtime measurement preparation, 2026-09-21: freeze 6605402 with
+      unchanged fixtures/query/caps and five observations for each of two CLI,
+      two exposed loaded-query and one context condition. Separate private CLI
+      composition from exposed-context re-admission; prior private success is
+      not exposed-path qualification. Exclude fixture generation and distinguish
+      load, operation, delivery, full-child wall and final CLI peak memory.
+      Main verified the named M4 Pro/14-core/Darwin25.4/Node24.19 machine.
+      The first phase was explicitly interrupted after fourteen terminal wrappers
+      failed a sandbox-restricted clockrate query, with all 28 custody checks
+      passing. Preserve fourteen instrumentation failures and eleven unattempted
+      slots; do not infer native process exits or missing memory. A no-op control
+      then verified measurement permissions without executing a product query.
+      Main reviewed and released a separate 25-observation phase, changing only
+      fresh output paths, execution permission mode and phase metadata. Preserve
+      the original failures; if corrected execution completes the combined
+      attempted denominator is 39. No sandbox fallback, cap change or silent
+      retry is authorized. Measurement methods, exact hashes and pending result
+      status are documented in acceptance/retrieval/PERFORMANCE-6605402.md.
+      The corrected phase subsequently completed all 25 observations once,
+      fifteen exits 0 and ten exits 2, with fifty passing custody checks and no
+      instrumentation errors. Main verified all 194 retained files, actual exits,
+      output hashes, peak memory and twenty historical output byte matches.
+      Both CLI conditions meet the unchanged latency and 512 MiB memory targets;
+      the joint loaded query meets its operation latency target. The near-byte
+      exposed operation refuses documentTextUnits admission in all five attempts;
+      its refusal timing cannot qualify successful retrieval. Engineering context
+      returns the expected partial known-count result in all five observations;
+      complete enumeration remains unqualified. Preserve 39 combined attempts
+      and the original eleven unattempted slots. Exact values and narrower
+      qualification supersede only the pending measurement status, not historical
+      failures or unsupported broader claims. See PERFORMANCE-6605402.md.
+      P2's bounded source/spec review confirms this near-byte refusal follows
+      the documented public mutable-context re-admission contract. Private file
+      composition alone avoids the second pass within an unchanged lexical
+      lifetime. Existing fixed-file-subject-query-composition.yaml preserves
+      that choice. No incorrect query result, unintended extra debit or required
+      new optimization was established; the required action is explicit failed
+      qualification for that exposed workload, with narrower successful profiles
+      named. Do not infer equal capacity from API/CLI semantic parity.
+      Final critical-event review exposes ambiguity in section 12's unqualified
+      bounded-suite wording. Main, P2 and P10 agree to state explicitly that the
+      qualifying current/candidate cohort must have zero adjudicated critical
+      violations, while retaining baseline and historical occurrences separately.
+      Applying old-runtime defects as an automatic current-runtime failure would
+      obscure the comparative question; treating only newly introduced defects
+      as blocking would excuse critical defects still present in current. Neither
+      alternative is adopted. No-new-critical held-out regression remains an
+      additional condition, not a waiver of the candidate's zero-critical gate.
+      This is a present scope clarification, not a reconstructed predeclared
+      arm qualification or numerical severity rubric. Judge actual assertions,
+      reliance and actions against existing qualified-identity, scope, authority
+      and source-evidence invariants; retain corrections and independently review
+      ambiguous/critical cases. Missing coverage stays unavailable. The bounded
+      review reuses all 162 retained public attempts and opens raw trace windows
+      only where coverage or candidate-event evidence requires it; no new reader
+      or duplicate accounting experiment is introduced. Detailed criteria are in
+      acceptance/retrieval/QUALITY-TARGETS.md; this records no passing outcome.
+      The subsequent retained-public review completes all 162 primary coverage
+      rows and independent adjudication of nineteen candidate issues. Main
+      verifies 805 artifact bindings, the full attempt sequence and category
+      arithmetic, accepting zero critical events in each of the four categories
+      for that bounded campaign. Nine noncritical operational false attributions,
+      nine preferred-label contract episodes and one scope omission remain;
+      three binding defects continued uncorrected through execution. Distinguish
+      real-alias contract errors from fabricated provenance rather than treating
+      an unsupported-basis diagnostic alone as a critical semantic event. Preserve
+      all 54 original and 108 current-variant trials, failed outcomes, version
+      strata, and the adverse answer-quality result. This uses existing retained
+      evidence without new readers or regrading. It does not qualify the new
+      52a6270 runtime, held-out results or every other acceptance gate. Final
+      manifest SHA256 is
+      69784c4e729ad14badc212d1f29738063988bcfff85e9de1cd13cac9cf598a02;
+      acceptance/retrieval/PUBLIC-CAMPAIGN-RESULTS.md records the result and limits.
+      The strict-result denominator review separately establishes 111 delivered
+      strict occurrences with valid witnesses and 39 delivered possible/unknown
+      occurrences, not 39 unchecked strict results. Six native query outputs
+      were withheld by the host and their complete original bytes were not
+      retained; length and SHA256 commitments plus exact inputs remain. Do not
+      narrow the every-emitted-result requirement to the delivered subset.
+      P2 reviews the original native path and exact six recipes; main verifies
+      the concrete packet, 2462 input-file bindings, pinned Node and original
+      limits, then releases one forensic native call per case. Accept recovered
+      bytes only on full original stdout length and SHA256 equality, exit zero
+      and empty stderr. No mismatch retries, normalization, clock/date/limit
+      injection, trial-host invocation, counter reset or historical regrade.
+      Preserve available Git custody without inventing an uncaptured historical
+      index or environment. After equality, enumerate strict rows in every
+      branch, including recovery, and possible rows separately; independently
+      check only missing source/witness evidence. This closes an original-output
+      evidence gap if successful, not a failed reader trial or quality score.
+      Release SHA256 is
+      05bb828a8d5b671b999a75b56bd701e06dcb4767e5fdc44ee64c9d370b0c7b23;
+      acceptance/retrieval/PUBLIC-CAMPAIGN-RESULTS.md links the exact receipt.
+      All six permitted calls subsequently reproduce the complete original
+      stdout, with unchanged retained input and host-state custody. Main checks
+      120 artifact bindings and every output branch; P2 independently accepts
+      the twelve added strict source/predicate witnesses, including one recovery
+      result. Reusing the prior 111 strict and 39 possible checks establishes
+      123 of 123 native strict occurrences across 53 outputs, with no unknown
+      output denominator. This closes the historical public witness gap without
+      granting reader-delivery credit or changing failures and answer-quality
+      scores. A recovery predicate does not satisfy its stricter original, and
+      classification membership does not transfer approval or combine unrelated
+      passage claims. The alternative of treating recovered bytes as a successful
+      reader trial is rejected. Separate final-runtime held-out and release
+      obligations remain. The recovery manifest and independent delta receipt
+      are linked in acceptance/retrieval/PUBLIC-CAMPAIGN-RESULTS.md.
+      The final held-out run separately retains all 36 sessions and independent
+      observed review. Main accepts the explicit adverse summary: source-supported
+      task completion is 15 of 18 original versus 10 of 18 current, with seven
+      paired regressions and two improvements. Six truncated deliveries retain
+      incomplete accounting; five operational refusals are not correct abstentions.
+      Its complete native-command inventory has 221 retained bodies and five
+      missing bodies. Reuse the exact-byte forensic approach only after review
+      of the current query path, all five recipes and 2168 private input bindings.
+      Main releases one immutable attempt per prepared body, bound to manifest
+      68a18579df92bc33d9a41a0e35a0bf97f7044120a1c95660b03cdb7c2d1639ed.
+      Require original full stdout hash and length, exit zero, empty stderr and
+      unchanged custody before reviewing only the missing witness delta. Recovery
+      does not repair reader delivery, accounting or quality scores. Retain all
+      failures rather than substitute new trials or infer omitted output. The
+      available 43 strict witnesses pass; the complete emitted denominator remains
+      unknown until recovery and independent review. The release, observed results
+      and remaining reporting are in acceptance/retrieval/HELDOUT-RESULTS.md.
+      The five released calls subsequently reproduce all original bytes with
+      unchanged custody, exit zero and empty stderr, without retries or failures.
+      Independent review accepts sixteen missing-delta strict occurrences;
+      combined coverage is 59 of 59 valid, zero invalid and zero unavailable
+      across all native branches. Main verifies release and receipt bindings
+      and count arithmetic. This closes the emitted-witness gap only: all 36
+      observed outcomes and six incomplete accounting records remain unchanged.
+      The held-out results page links the independent disposition; complete
+      critical-category and metric reporting are still separate requirements.
+      Final reporting subsequently closes those evidence requirements using
+      existing independently reviewed observations only. The approved anonymous
+      report covers all 36 action/reliance/final sequences and six repeated-case
+      summaries, with zero observed events in each critical category and 59 of
+      59 strict witnesses. Unseen context, missing rankings/accounting and the
+      unfrozen operational-inclusion rule for false abstention remain null.
+      Main verifies the safe manifest, aggregate partitions and paired arithmetic.
+      Preserve seven paired completion regressions: four host delivery failures,
+      two incomplete source bundles and one incomplete source-absence refusal.
+      The two improvements and nine ties remain equally visible. These outcomes
+      leave a usability limitation; they establish neither a wrong admitted query
+      result nor an overall quality improvement. Under the prospectively agreed
+      targets, conclude bounded implementation and evaluation completion while
+      explicitly declining a nonregression or better-retrieval claim. The
+      alternative of enlarging the study, inflating limits or inventing a runtime
+      repair solely to obtain favorable outcomes is rejected. No additional
+      evaluation is an implementation prerequisite; deployment and publication
+      remain separately authorized actions. User permission covers coordination
+      and report review; main selected the anonymous serialization under that
+      authority, rather than attributing its exact fields to the user. Exact
+      evidence, regression dispositions, supported performance profiles and
+      remaining limitations are in acceptance/retrieval/FINAL-RESULTS.md.
+    consequences: >
+      This rejects smaller replacement fixtures, cap inflation, eligibility
+      changes hidden as measurement and discarding refused attempts. All sixteen
+      probes across four runtime pins refused; the latest four at
+      5bad18d8199f7f00a765d74352b9edab67b2e032 failed document-text admission,
+      with zero completed queries. Current fixtures do not qualify P8
+      assignment-history capacity. Recorded M4 Pro/Node 24.19 targets and 512 MiB
+      complete-CLI RSS remain unqualified; an approved project-wide numeric
+      relevance target table was unavailable to the audit. OPERATIONAL-FIXTURES.md
+      provides preparation evidence; public profile amendments, qualification
+      status and full remaining matrix are linked in
+      acceptance/retrieval/DECISIONS-AND-EVIDENCE.md. Every
+      deterministic/preservation and critical-error release condition remains
+      binding.
+      The later measurements and final review supersede only these initial
+      unavailable qualification statuses: both named CLI profiles and the joint
+      loaded query qualify, while near-byte exposed queries, complete context
+      enumeration and assignment-history capacity remain unqualified. Historical
+      failures, proposed publication status and the adverse agent results remain.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000014"]}

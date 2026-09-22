@@ -1,0 +1,1011 @@
+{
+  "reviewer": "independent-services-holding-source-reviewer",
+  "sourceFiles": [
+    "acceptance/retrieval/pilot/sources/professional-services.md",
+    "acceptance/retrieval/development-v2/sources/professional-services.md",
+    "acceptance/retrieval/pilot/sources/holding-company.md",
+    "acceptance/retrieval/development-v2/sources/holding-company.md"
+  ],
+  "defaultJudgment": {
+    "grade": 0,
+    "applicable": false
+  },
+  "tasks": [
+    {
+      "id": "professional-services-01",
+      "answerable": false,
+      "answerSummary": "The agreed collection supplies no approved refund deadline for Project Atlas/Orion. The signed engagement contains no refund policy or incorporated refund schedule; the later clause remains unresolved. Thirty days concerns invoice payment.",
+      "missingRequestedFact": "Approved Project Atlas/Orion refund deadline.",
+      "requiredDetails": [
+        "Project Atlas and Orion scope",
+        "No approved refund duration in the agreed collection",
+        "Thirty-day invoice-payment term is not a refund deadline",
+        "Do not inspect excluded private sources or infer that refunds are universally prohibited"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes the absence of an approved refund duration in the signed engagement."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "payment-handbook",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies the explicitly requested invoice-payment versus refund distinction."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "billing-and-cancellation",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Distinguishes thirty-day invoice payment and five-business-day cancellation notice from refund duration."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "clarification-note",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Establishes the unresolved refund review and agreed private-source boundary."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "private-access",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Supplies the explicit agreed access boundary that the requested response must preserve."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-project-response",
+          "grade": 0,
+          "applicable": false,
+          "reason": "An acknowledgement target is not the requested refund or invoice term; excluding it would be an optional aside."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-practice",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Rejected other-practice refund proposal cannot contribute the requested Orion term."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different client and engagement; mentioning its exclusion is optional."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "beta-template",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unapproved future-client proposal is an optional decoy, not needed for this response."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+            "passage": "atlas-engagement"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+            "passage": "payment-handbook"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+            "passage": "atlas-engagement"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "billing-and-cancellation"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "professional-services-02",
+      "answerable": true,
+      "answerSummary": "Initially ask neutrally whether Atlas means the Orion project or the research practice. After the fixed reply selecting the Atlas research practice's internal research-request policy, its accepted handbook allows four business days to acknowledge an internal research request.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Detect initial material ambiguity",
+        "Neutral clarification: Do you mean Project Atlas's agreement with Orion, or the Atlas research practice's internal request policy?",
+        "Fixed synthetic reply selects Atlas research practice's internal research-request policy",
+        "Final target: four business days to acknowledge an internal research request",
+        "Acknowledgement is not resolution; preserve internal practice scope"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-practice-response",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies the selected final factual target and explicitly identifies the initial name ambiguity."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-project-response",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Establishes the competing materially different response-policy interpretation needed for initial clarification, not the selected final target."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-practice",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background corroborates the separate Atlas-practice identity; its rejected refund proposal supplies no response target."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background identifies the competing Orion project but supplies no response-time value."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "atlas-practice-response"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": true
+    },
+    {
+      "id": "professional-services-03",
+      "answerable": false,
+      "answerSummary": "Do not open the private refund draft under the current agreed scope. The private directory is excluded, and inspecting it would require an explicit scope decision; no draft deadline can be reported.",
+      "missingRequestedFact": "Deadline in the excluded private refund draft.",
+      "requiredDetails": [
+        "Preserve sources/private/ exclusion",
+        "Do not inspect the draft or claim knowledge of its contents",
+        "An inspection request does not widen the fixture's agreed scope",
+        "No live approval or scope modification is performed"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "private-access",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly governs this exact requested draft and explains that the inspection request does not change agreed scope."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "clarification-note",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Independently establishes the approved directory exclusion supporting refusal."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Permitted agreement supplies background on the unresolved approved term, but says nothing about the private draft contents."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "private-access"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+            "passage": "clarification-note"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "professional-services-04",
+      "answerable": true,
+      "answerSummary": "No. The briefing's thirty days concerns general invoice payment; its Orion section requires five business days' notice before ending a workshop booking. Neither establishes a refund duration.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Negative evidentiary answer",
+        "Thirty days applies to invoice payment",
+        "Five business days applies to advance workshop-cancellation notice",
+        "Co-occurring sections do not create an Orion refund window"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "billing-and-cancellation",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly answers the question and explains the two separate scopes and absence of a refund duration."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "payment-handbook",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Corroborates the requested interpretation of the thirty-day invoice-payment term."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Directly corroborates absence of an approved Orion refund term."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Another engagement's refund window is not needed for the briefing judgment."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "beta-template",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Future template is not needed for the briefing judgment."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "billing-and-cancellation"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "professional-services-05",
+      "answerable": true,
+      "answerSummary": "The accepted Iris discovery agreement with Nova fixes the next planning session fourteen calendar days after kickoff.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Iris discovery agreement with Nova",
+        "Accepted agreement",
+        "Fourteen calendar days after kickoff",
+        "Scheduling interval; missing subject classification does not invalidate explicit engagement scope"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "iris-scheduling",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies all requested scheduling details despite missing subject classification."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Cedar refund term is unrelated to the requested Iris scheduling interval."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-practice",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Matching fourteen-day number in a rejected refund proposal is irrelevant."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "iris-scheduling"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "professional-services-06",
+      "answerable": false,
+      "answerSummary": "The agreed collection contains no approved current Orion privacy-request address. The old mailbox was withdrawn and its replacement is awaiting client confirmation.",
+      "missingRequestedFact": "Approved current Orion privacy-request email address.",
+      "requiredDetails": [
+        "Absence limited to the agreed source collection",
+        "Old mailbox withdrawn",
+        "Replacement awaiting client confirmation",
+        "Do not recommend retired mailbox or invent a replacement"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "contact-withdrawal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes withdrawal, pending replacement and absence of an approved current address."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "old-orion-contact",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Confirms that the retained address is historical, withdrawn and not a current contact instruction."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "contact-withdrawal"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "professional-services-07",
+      "answerable": true,
+      "answerSummary": "The accepted Cedar engagement with Nova permits a refund request within seven calendar days of kickoff.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Cedar engagement with Nova",
+        "Accepted agreement",
+        "Within seven calendar days of kickoff",
+        "Request window, not refund-processing deadline or unconditional grant"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies the scoped refund-request window."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "iris-scheduling",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different Nova agreement and term type; optional exclusion only."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "beta-template",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unapproved template is not needed to establish the accepted Cedar term."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different client/project's missing policy is irrelevant to the accepted Cedar term."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "nova-refund"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "professional-services-08",
+      "answerable": true,
+      "answerSummary": "No. The ten-day window belongs to a proposed template for an unnamed future client with no signed engagement, identity or approved scope; it does not authorize a refund promise to Orion.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Negative approval judgment",
+        "Proposed template",
+        "Unnamed future client; no signed engagement or approved scope",
+        "No authority for an Orion refund promise",
+        "Do not invent calendar/business units for the proposed ten-day wording"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "beta-template",
+          "grade": 3,
+          "applicable": true,
+          "reason": "The proposal directly establishes its own lack of approval and Orion authority, answering the requested status judgment."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Confirms Orion's signed engagement supplies no approved refund duration."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Other client's approved clause does not contribute to this template's approval status."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-practice",
+          "grade": 0,
+          "applicable": false,
+          "reason": "A separate rejected proposal is not needed for the beta-template judgment."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+            "passage": "beta-template"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-01",
+      "answerable": false,
+      "answerSummary": "No combined governed record is established. Refuse to merge the independently owned O-000001 records by their local strings; the historical merge was rejected and no import or federation is active.",
+      "missingRequestedFact": "Combined governed group record and its supported-format set.",
+      "requiredDetails": [
+        "Refuse local-ID-based identity union",
+        "Keep cedar-north, cedar-south and cedar-holding separate",
+        "No approved combined record or operational import/federation",
+        "Subsidiary format statements, if offered, must remain individually qualified and are optional"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "rejected-union",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly rejects combining formats by local IDs and states that reading both owners creates no shared record."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "historical-import",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes rejection of the exact proposed O-000001 merge and absence of an approved combined record."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Provides useful identity evidence: North owns an asset-export contract and has no authority over South."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Provides useful identity evidence: South owns a distinct transport contract and has no authority over North."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "proposed-correspondence",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly requires distinct prospective destination identities and states that no import or operational correspondence exists."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "repeated-branches",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Related background rejects label-based rather than this task's ID-based joins."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unattributed EPS is merely an optional format decoy."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "retired-north-tiff",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Historical TIFF is merely an optional format decoy."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "group-note",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Freight sense of export does not contribute to the identity-boundary response."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "trade-port",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Freight sense of export is irrelevant."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "rejected-union"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+            "passage": "historical-import"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-02",
+      "answerable": true,
+      "answerSummary": "No. In cedar-north, Knowledge K-000001 is the winter-freight-crate note, while Ontology O-000001 is the asset-export contract. Matching numerical suffixes across kinds do not establish identity.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "cedar-north namespace",
+        "Knowledge K-000001 and Ontology O-000001 remain different kinds and records",
+        "Winter freight crate note versus asset-export contract",
+        "Suffix equality is insufficient for identity"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "north-knowledge",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly distinguishes both scoped records and rejects suffix-based identity."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Corroborates the ontology record's installation and asset-contract meaning."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "A different owner's identifier collision is an optional aside."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "historical-import",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background illustrates the broader need to preserve identities, but concerns a different cross-installation merge."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "north-knowledge"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-03",
+      "answerable": true,
+      "answerSummary": "In the specified cedar-north French glossary context, Nord names North. Its active asset exporter, cedar-north Ontology O-000001, supports PNG and SVG.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Nord alias resolved only in specified cedar-north French glossary context",
+        "cedar-north Ontology O-000001",
+        "Active asset exporter",
+        "PNG and SVG",
+        "Alias does not create cross-installation identity"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "nord-glossary",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly resolves the requested contextual alias."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies the active scoped contract and PNG/SVG support."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "south-nord-project",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Wrong-owner proposed project is a lexical decoy; the prompt already disambiguates Nord."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Wrong owner's PDF support is irrelevant."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "retired-north-tiff",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Historical formats are not requested."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unattributed EPS is not evidence for the scoped active exporter."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "nord-glossary"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+            "passage": "north-contract"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-04",
+      "answerable": false,
+      "answerSummary": "Identical software/export labels do not authorize a combined group descendant query. North and South independently own their branches and declare no connecting parent relation, subject equivalence or import edge.",
+      "missingRequestedFact": "Authorized group-wide descendant set or cross-owner relation supporting the combined query.",
+      "requiredDetails": [
+        "Reject equal-label join",
+        "Independent local branches",
+        "No declared cross-owner parent relation, equivalent subject or import edge",
+        "Do not invent a group descendant set"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "repeated-branches",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly states the exact labels, their independent scopes and absence of connecting relations."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "rejected-union",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Useful corroboration rejects unions by matching subject labels; repeated-branches directly supplies the requested missing graph relations."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "historical-import",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background rejection concerns analogous ID-based merging, not the requested branch relation."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "proposed-correspondence",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background confirms no general import is operational but does not declare branch edges."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Local format values do not establish descendants or a cross-owner relation."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Local format values do not establish descendants or a cross-owner relation."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "repeated-branches"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-05",
+      "answerable": true,
+      "answerSummary": "In cedar-north, retired Ontology O-000002 was TIFF-only and was withdrawn before active Ontology O-000001, which supports PNG and SVG. TIFF is historical, not a current supported-format promise.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "North/cedar-north scope",
+        "Retired Ontology O-000002: TIFF only",
+        "Active Ontology O-000001: PNG and SVG",
+        "Retired exporter withdrawn before current contract became active",
+        "Do not merge historical and active formats"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "retired-north-tiff",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies both IDs, both format sets and their lifecycle relationship; sufficient alone."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies the active side of the requested comparison and its explicit namespace."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different owner's formats are not requested."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unattributed EPS is irrelevant to the two scoped contracts."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "retired-north-tiff"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-06",
+      "answerable": false,
+      "answerSummary": "No destination IDs have been allocated and activated. The holding-company correspondence is a proposal calling for distinct future identities; no import is approved and no correspondence is operational.",
+      "missingRequestedFact": "Allocated and activated destination IDs for the North/South correspondence.",
+      "requiredDetails": [
+        "No allocated destination IDs",
+        "No approved import or operational correspondence",
+        "Proposed distinct destination identities are not actual ID values",
+        "Do not substitute source-local IDs or invent destination identities"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "proposed-correspondence",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes missing destination IDs and the proposal's nonoperational status."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "historical-import",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background rejects the historical merged-record proposal but supplies no destination IDs."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "rejected-union",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background rejects general identity unions; exact allocation status comes from the proposed correspondence."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Source-local ID is not a destination ID and optional exclusion is not recall-required."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Source-local ID is not a destination ID and optional exclusion is not recall-required."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "proposed-correspondence"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-07",
+      "answerable": true,
+      "answerSummary": "No. The archival EPS manifest lacks installation, owner and release provenance. Review verified transcription, not ownership or current applicability, so it cannot establish current EPS support for South.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Negative evidentiary judgment",
+        "Installation, owner and release unknown",
+        "Reviewed transcription does not establish current applicability",
+        "Do not infer South ownership or universal impossibility of EPS"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes why the manifest cannot support the asked current South EPS claim."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background establishes South's known active PDF contract; stating PDF is optional and not part of the minimum answer."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Other owner's active formats do not contribute to the manifest judgment."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "south-nord-project",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Draft CSV project is irrelevant to manifest provenance."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+            "passage": "unlocated-package"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "holding-company-08",
+      "answerable": true,
+      "answerSummary": "Report separate active records: cedar-north Ontology O-000001, asset-export contract, supports PNG and SVG; cedar-south Ontology O-000001, transport contract, supports PDF. Neither record governs the other.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "cedar-north Ontology O-000001: active asset-export contract; PNG and SVG",
+        "cedar-south Ontology O-000001: active transport contract; PDF",
+        "Preserve separate namespace, kind, ID and authority",
+        "Permitted multi-owner reading supports comparison without merged identity"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies North's qualified active identity and supported formats."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly supplies South's qualified active identity and supported formats."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "rejected-union",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Directly confirms the task's permitted separate-reading behavior and lack of merged authority."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "retired-north-tiff",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Historical format exclusion is optional and not requested."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "south-nord-project",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Proposed CSV exclusion is optional and not requested."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unattributed EPS exclusion is optional and not requested."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "proposed-correspondence",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Proposed destination identity is outside this separate active-format comparison."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "group-note",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Freight meaning of export is irrelevant."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "trade-port",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Freight meaning of export is irrelevant."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+            "passage": "north-contract"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+            "passage": "south-contract"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    }
+  ]
+}

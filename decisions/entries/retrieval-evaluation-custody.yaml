@@ -1,0 +1,42 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:f06142c9-77a3-4be3-ade7-35b5b8942c5b
+    title: Retrieval trials preserve independent dimensions and complete input custody
+    category: trust
+    status: proposed
+    date: "2026-09-20"
+    deciders: ["integration owner (record review pending)"]
+    context: >
+      Ranking, source adequacy, navigation, gates, accounting and completed
+      repair are different outcomes. Public trials exposed correct answers
+      with navigation failures, truthful but incomplete engine stops,
+      post-refusal commands, and self-reported source totals that included
+      instructions. Later pre-dispatch review found twenty shipped nested
+      compatibility dependencies omitted by a blanket node_modules exclusion.
+      Listed-file hash equality alone did not establish complete custody.
+    decision: >
+      Freeze expected judgments, prompts, source truths, runtime, caps,
+      accounting and acceptance rules before dispatch, with independent review
+      and fresh isolated reader histories. Preserve every fixed attempt and
+      first failure without steering, repair, replacement or retrospective
+      threshold changes. Judge source completion, navigation, gates/conduct
+      and limits/integrity separately. Reconcile actual launches, delivered
+      source spans, wrapper errors, selected records and unknown measurements
+      manually from ordered traces. Inventory all shipped files, including
+      nested dependencies, against exact tracked-file sets; cover the external
+      top-level dependency link separately. Keep versioned corrections and
+      rejected preparation evidence. Future public regression runs do not
+      replace previous failed trials or sealed private evaluations.
+    consequences: >
+      Full custody and manual review cost more than a ranking-only scoreboard.
+      Documentation tests do not requalify host behavior, a synthetic review
+      is not human approval, and a known public case is not held-out evidence.
+      Unknown delivery, encrypted dispatch plaintext and delayed prechecks stay
+      disclosed. A later fix may justify a new prospectively reviewed trial,
+      never an edited historical success. This choice extends D-000007's
+      explicit inventory principle and D-000010's retained review evidence
+      without adding a runtime firewall. Public artifact hashes, unchanged
+      failure conclusions and v3 preparation correction are indexed in
+      docs/agents/ucs-1242-retrieval-governance.md. This is a proposed record;
+      it neither authorizes readers nor promotes a Decision.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000007, D-000010, D-000011] }

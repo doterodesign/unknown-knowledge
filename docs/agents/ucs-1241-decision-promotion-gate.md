@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # Actual Decision promotion gate
 
 Proposed rationale `53e6b70b-75d3-476b-bd2c-1b11ef075ebc` is in [the P8 decision records](../../decisions/entries/subjectless-decision-promotion-proof.yaml). See the [scope and documentation audit](ucs-1241-documentation-audit.md) for evidence, version ownership and remaining creation coverage.

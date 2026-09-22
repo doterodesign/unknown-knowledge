@@ -1,0 +1,403 @@
+{
+  "classification": "BLINDED approved aggregate metrics and observed critical-category export",
+  "utc": "2026-09-21T23:28:08.059696+00:00",
+  "scope": {
+    "newSourceCases": 6,
+    "organizations": 6,
+    "scheduledReaders": 36,
+    "terminalReviewed": 36,
+    "arms": 2,
+    "repetitions": 3,
+    "pairs": 18,
+    "maximumConcurrency": 2,
+    "additionalReaderTrials": 0
+  },
+  "pins": {
+    "original": "08066b5f527b9d7d9705a3367bc26dcf080271ad",
+    "current": "52a62703c77ee159703a1018d21a0abe356912cb"
+  },
+  "armStrata": [
+    {
+      "arm": "original",
+      "stratum": "all",
+      "n": 18,
+      "sourceSupportedTaskComplete": 15,
+      "semanticCorrectTrue": 18,
+      "semanticUnavailable": 0,
+      "criticalCount": 0,
+      "accountingComplete": 18,
+      "taskAndAccountingComplete": 15
+    },
+    {
+      "arm": "original",
+      "stratum": "answerable",
+      "n": 9,
+      "sourceSupportedTaskComplete": 9,
+      "semanticCorrectTrue": 9,
+      "semanticUnavailable": 0,
+      "criticalCount": 0,
+      "accountingComplete": 9,
+      "taskAndAccountingComplete": 9
+    },
+    {
+      "arm": "original",
+      "stratum": "notFullyAnswerable",
+      "n": 9,
+      "sourceSupportedTaskComplete": 6,
+      "semanticCorrectTrue": 9,
+      "semanticUnavailable": 0,
+      "criticalCount": 0,
+      "accountingComplete": 9,
+      "taskAndAccountingComplete": 6
+    },
+    {
+      "arm": "current",
+      "stratum": "all",
+      "n": 18,
+      "sourceSupportedTaskComplete": 10,
+      "semanticCorrectTrue": 13,
+      "semanticUnavailable": 5,
+      "criticalCount": 0,
+      "accountingComplete": 12,
+      "taskAndAccountingComplete": 8
+    },
+    {
+      "arm": "current",
+      "stratum": "answerable",
+      "n": 9,
+      "sourceSupportedTaskComplete": 3,
+      "semanticCorrectTrue": 5,
+      "semanticUnavailable": 4,
+      "criticalCount": 0,
+      "accountingComplete": 6,
+      "taskAndAccountingComplete": 3
+    },
+    {
+      "arm": "current",
+      "stratum": "notFullyAnswerable",
+      "n": 9,
+      "sourceSupportedTaskComplete": 7,
+      "semanticCorrectTrue": 8,
+      "semanticUnavailable": 1,
+      "criticalCount": 0,
+      "accountingComplete": 6,
+      "taskAndAccountingComplete": 5
+    }
+  ],
+  "criticalCategories": {
+    "wrongScope": {
+      "observedCriticalEvents": 0,
+      "observedAffectedAttempts": 0,
+      "reviewedAttempts": 36,
+      "coverage": "Observed outer actions, expressed evidence reliance and final texts",
+      "unobservedContextDisposition": null,
+      "unobservedContextNullReason": "Latent attention and unseen/truncated text cannot be inferred"
+    },
+    "trustTransfer": {
+      "observedCriticalEvents": 0,
+      "observedAffectedAttempts": 0,
+      "reviewedAttempts": 36,
+      "coverage": "Observed outer actions, expressed evidence reliance and final texts",
+      "unobservedContextDisposition": null,
+      "unobservedContextNullReason": "Latent attention and unseen/truncated text cannot be inferred"
+    },
+    "silentIdentityCollision": {
+      "observedCriticalEvents": 0,
+      "observedAffectedAttempts": 0,
+      "reviewedAttempts": 36,
+      "coverage": "Observed outer actions, expressed evidence reliance and final texts",
+      "unobservedContextDisposition": null,
+      "unobservedContextNullReason": "Latent attention and unseen/truncated text cannot be inferred"
+    },
+    "falseAttribution": {
+      "observedCriticalEvents": 0,
+      "observedAffectedAttempts": 0,
+      "reviewedAttempts": 36,
+      "coverage": "Observed outer actions, expressed evidence reliance and final texts",
+      "unobservedContextDisposition": null,
+      "unobservedContextNullReason": "Latent attention and unseen/truncated text cannot be inferred"
+    }
+  },
+  "criticalCategoriesPerArm": {
+    "original": {
+      "reviewedAttempts": 18,
+      "observedViolationCounts": {
+        "wrongScope": 0,
+        "trustTransfer": 0,
+        "silentIdentityCollision": 0,
+        "falseAttribution": 0
+      }
+    },
+    "current": {
+      "reviewedAttempts": 18,
+      "observedViolationCounts": {
+        "wrongScope": 0,
+        "trustTransfer": 0,
+        "silentIdentityCollision": 0,
+        "falseAttribution": 0
+      }
+    }
+  },
+  "criticalDisposition": "No observed wrong-scope, trust-transfer, silent identity-collision or false-attribution violations in reviewed actions/reliance/finals. This is not a guarantee about unobserved context.",
+  "ranking": {
+    "requestedOwnerStoreObservationCells": 114,
+    "availableOrderedStoreCells": 30,
+    "numericRecallAndNDCGCells": 24,
+    "unavailableStoreCells": 84,
+    "nonapplicableRegisteredStoreCells": 30,
+    "attemptedNativeRankingEvents": 48,
+    "completeOriginalNativeRankingBodies": 43,
+    "pairedOwnerStoreObservationCells": 57,
+    "commonValidPairedRecallCells": 9,
+    "commonValidPairedNDCGCells": 9,
+    "overallRecallDelta": null,
+    "overallNDCGDelta": null,
+    "overallNullReason": "Owner/store cells remain separate and some are unavailable; no cross-store ranking/reducer or whole-cohort value invented. Detailed permitted anonymous case/store values follow separately.",
+    "availabilityRule": "Single complete original event or invariant complete native ordered lists, with unchanged qualified identity/positions and frozen judgments. Post-observation mathematical availability clarification, not a preregistered reducer.",
+    "forensicBodiesUsed": false
+  },
+  "bundleAt10": {
+    "original": {
+      "scheduledApplicable": 9,
+      "demonstratedComplete": 9,
+      "verifiedIncomplete": 0,
+      "unobservable": 0,
+      "nonapplicable": 9
+    },
+    "current": {
+      "scheduledApplicable": 9,
+      "demonstratedComplete": 3,
+      "verifiedIncomplete": 2,
+      "unobservable": 4,
+      "nonapplicable": 9
+    },
+    "scheduledDemonstratedSuccessDifference": -0.6666666666666666,
+    "metric": "At most10 total distinct qualified selected evidence records across stores; actual original-source witness required. Unobservable bundles remain null, with no demonstrated success on full scheduled denominator."
+  },
+  "abstention": {
+    "primaryFalseAbstentionRate": null,
+    "primaryFalseAbstentionNullReason": "No frozen operational-inclusion rule beyond QUALITY-TARGETS43–47; custodian confirms none known. Do not invent a posthoc primary numerator.",
+    "primaryFalseAbstentionAmongExplicitAbstentions": null,
+    "explicitSourceAbsenceErrorEventsObserved": 0,
+    "operationalNonAnswerAmongAnswerable": {
+      "original": {
+        "count": 0,
+        "denominator": 9
+      },
+      "current": {
+        "count": 4,
+        "denominator": 9
+      }
+    },
+    "correctSourceGroundedScopedAbstention": {
+      "original": {
+        "count": 6,
+        "denominator": 9
+      },
+      "current": {
+        "count": 7,
+        "denominator": 9
+      }
+    },
+    "incompleteSourceRefusalAmongNoAnswer": {
+      "original": 3,
+      "current": 1
+    },
+    "operationalInabilityAmongNoAnswer": {
+      "original": 0,
+      "current": 1
+    },
+    "partialAnswerAmongAnswerable": {
+      "original": 0,
+      "current": 2
+    }
+  },
+  "steps": {
+    "jointlySourceAdequate": {
+      "pairs": 8,
+      "currentMinusOriginalMean": 4,
+      "currentMinusOriginalMedian": 4.5,
+      "unit": "charged outer host/tool action",
+      "limitation": "Report alongside full36 source-supported completion and accounting; incomplete accounting does not become complete. First source adequacy is separate from later preflight/scope conduct."
+    },
+    "jointlySourceAdequateAndAccountingComplete": {
+      "pairs": 6,
+      "meanPairedDelta": 3.8333333333333335,
+      "medianPairedDelta": 4.5,
+      "unit": "Charged outer host/tool actions"
+    },
+    "fullCohortAdequateCounts": {
+      "original": 15,
+      "current": 10,
+      "denominatorPerArm": 18
+    },
+    "missingReason": "At least one arm never demonstrated frozen source adequacy; no failure-as-speedup."
+  },
+  "accounting": {
+    "scope": "Mechanical counts from36 accepted frozen accounting audits; missing values remain unavailable",
+    "arms": [
+      {
+        "arm": "original",
+        "scheduled": 18,
+        "fields": {
+          "outerCalls": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 295,
+            "wholeArmTotal": 295
+          },
+          "shellInvocations": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 293,
+            "wholeArmTotal": 293
+          },
+          "sourceBytes": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 75548,
+            "wholeArmTotal": 75548
+          },
+          "toolTextBytes": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 927572,
+            "wholeArmTotal": 927572
+          },
+          "finalAnswerBytes": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 17264,
+            "wholeArmTotal": 17264
+          },
+          "selectedRecords": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 32,
+            "wholeArmTotal": 32
+          },
+          "exposedRecords": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 225,
+            "wholeArmTotal": 225
+          },
+          "fullRecords": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 46,
+            "wholeArmTotal": 46
+          }
+        }
+      },
+      {
+        "arm": "current",
+        "scheduled": 18,
+        "fields": {
+          "outerCalls": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 343,
+            "wholeArmTotal": 343
+          },
+          "shellInvocations": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 342,
+            "wholeArmTotal": 342
+          },
+          "sourceBytes": {
+            "observed": 12,
+            "unavailable": 6,
+            "totalOnObserved": 35332,
+            "wholeArmTotal": null
+          },
+          "toolTextBytes": {
+            "observed": 12,
+            "unavailable": 6,
+            "totalOnObserved": 2674364,
+            "wholeArmTotal": null
+          },
+          "finalAnswerBytes": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 18393,
+            "wholeArmTotal": 18393
+          },
+          "selectedRecords": {
+            "observed": 18,
+            "unavailable": 0,
+            "totalOnObserved": 23,
+            "wholeArmTotal": 23
+          },
+          "exposedRecords": {
+            "observed": 12,
+            "unavailable": 6,
+            "totalOnObserved": 145,
+            "wholeArmTotal": null
+          },
+          "fullRecords": {
+            "observed": 12,
+            "unavailable": 6,
+            "totalOnObserved": 18,
+            "wholeArmTotal": null
+          }
+        }
+      }
+    ],
+    "limits": {
+      "outerCalls": 60,
+      "shellInvocations": 60,
+      "sourceBytes": 65536,
+      "toolTextBytes": 262144,
+      "finalAnswerBytes": 8192,
+      "selectedRecords": 10,
+      "exposedRecords": 32,
+      "fullRecords": 32
+    },
+    "countsAreNotTaskSuccess": true
+  },
+  "regression": {
+    "pairs": 18,
+    "currentLowerSourceSupportedCompletion": 7,
+    "currentHigher": 2,
+    "ties": 9,
+    "supportedDisposition": "Current end-to-end source-supported completion regresses:10/18 versus15/18 original. Answerable3/9versus9/9; not-fully-answerable7/9versus6/9. Joint task+accounting8/18versus15/18. Positive available-ranking subsets cannot establish whole-cohort nonregression.",
+    "statisticalOrPopulationClaim": false
+  },
+  "emittedWitnesses": {
+    "valid": 59,
+    "invalid": 0,
+    "unavailable": 0,
+    "recoveredBodies": 5,
+    "readerRedeliveryRegradeCredit": false
+  },
+  "limitations": [
+    "Zero means no observed category violation in the already reviewed actions/reliance/finals; it is not a guarantee about unobserved context.",
+    "All36 retained final texts and outer action sequences were inspected in the original independent observed reviews. Six original delivered output streams contain explicit truncation; complete original source/tool-text accounting remains unavailable in those attempts.",
+    "Actual serialized initial prompt equality and independent plaintext injection proof remain unavailable for all36. Prepared prompt hashes are not such proof. Historical ambient environment and exhaustive prior exposure are unknown.",
+    "Five exactly reconstructed outputs close emitted native witnesses only. They do not supply original delivery, attention, source reads, accounting, ranking or regrading credit.",
+    "Three unsupported display-truncation assertions remain reporting limitations in existing reviews, not evidence of fabricated source attribution or retroactive missing payloads.",
+    "Critical categories do not replace source adequacy, absence coverage, selected preflight, operational conduct or accounting; those separate failures remain.",
+    "Task-level holdouts on the existing public synthetic source corpus only; no unseen organization/corpus or complete exposure-history claim. Shared OS custody is not full isolation.",
+    "Actual serialized prompt equality unavailable; requested model/profile and recorded model/effort are distinct from unavailable backend version.",
+    "Canonical delivery/source accounting incomplete in6 current attempts; observed source adequacy can still be supported separately.",
+    "Forensic bodies used only for emission witness closure, never ranking/answer/redelivery/attention/accounting credit.",
+    "No cross-store ranking or invented event reducer. Single/invariant-list availability is explicitly a post-observation mathematical clarification.",
+    "Common-valid ranking and step subsets cannot support whole-cohort nonregression;18 original pairs stay in task-completion denominator.",
+    "Primary false-abstention numerator remains undefined where operational inability inclusion was not frozen; operational nonanswers reported separately.",
+    "Task-level holdout novelty only on existing public synthetic corpus; exhaustive historical exposure unavailable.",
+    "Three repetitions are descriptive only; no statistical significance or population claim.",
+    "Shared OS custody is not strict isolation; original failures/refusals and all private review bytes are preserved."
+  ],
+  "independentEvidence": {
+    "privateReportingManifestPath": "unpublished-location:abd4986fbc0193ab",
+    "privateReportingManifestSHA256": "52c604dc60145612c54ccd90ca0e9d869413c55dac3cff3c1892c98c7d1c183f",
+    "criticalReportSHA256": "bba07814594774b38a9d7ad0eba75e3d8b73dc17058fd0ee99a569534bc754c2",
+    "rankTranslationSHA256": "2fb69b5391b765a3b4dcaff0faa69c3eb37ad433e68cf262f7550d9cbefb9492",
+    "stepAbstentionSHA256": "47f02ef048513e381676d910bcf308e949607c473dd1d1d0ba45aa15750a0fe0",
+    "draftTranslationSHA256": "562173db76a9981643b2abffeacde71d0d5444f804d0691882b76957c2750e98",
+    "access": "Private references are hash-only for main/P10."
+  },
+  "anonymousDetailedExport": "Final serialization/custody refinement pending; accepted arithmetic unchanged"
+}

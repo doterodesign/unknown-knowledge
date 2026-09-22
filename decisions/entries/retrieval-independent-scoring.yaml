@@ -1,0 +1,35 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:162296c8-e179-49fd-823d-046422cea782"
+    title: "Retrieval scores preserve independent relevance and missing evidence"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-20"
+    deciders: ["P10 evaluator (proposal author; acceptance pending)"]
+    context: >
+      Executor correctness, source relevance, source inspection and agent conduct
+      answer different questions. Pooling store ranks or treating unavailable
+      evidence as zero would manufacture a result. This backfill records
+      previously implemented evaluation choices; it does not approve runtime
+      activation.
+    decision: >
+      Keep test-only scoring outside the payload. Judge source relevance and
+      applicability before ranking; use grades 0–3 and applicable grades 2–3 for
+      Recall@10, with exponential graded nDCG. Keep qualified
+      installation/kind/record identities opaque and separate per-store rank
+      lists. Refuse duplicate or unjudged input. An explicit empty list is
+      observed; omitted execution is missing. No-answer recall/nDCG remain
+      undefined. Bundle inspection requires an independently judged complete
+      alternative with actual passage evidence and at most ten total distinct
+      inspected records. Catalog recovery may support inspection but does not
+      invent a global rank or bundle-present@10. Assess answer adequacy, scope,
+      abstention, protocol, witness and cost independently.
+    consequences: >
+      This rejects a single success score inferred from hits, cross-store rank
+      pooling and treating schema validity as retrieval acceptance. Score
+      arithmetic cannot authenticate tool delivery or conduct. Independent literal
+      scorer tests establish only their assertions. Implementation and rationale:
+      acceptance/retrieval/evaluate.js, acceptance/retrieval/README.md and
+      tests/retrieval-acceptance.test.js. Full-spec scope and public results are
+      indexed in acceptance/retrieval/DECISIONS-AND-EVIDENCE.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000007", "D-000011"]}

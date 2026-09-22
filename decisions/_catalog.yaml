@@ -206,6 +206,23 @@ entries:
   - id: proposal:decision:937723fe-050c-4d01-a699-d58fbf49ff76
     title: Ordinary retrieval preserves intent without requiring optional Subject authority
     file: entries/optional-subject-retrieval-routing.yaml
+  - id: proposal:decision:f06142c9-77a3-4be3-ade7-35b5b8942c5b
+    title: Retrieval trials preserve independent dimensions and complete input custody
+    file: entries/retrieval-evaluation-custody.yaml
+
+  - id: proposal:decision:162296c8-e179-49fd-823d-046422cea782
+    title: "Retrieval scores preserve independent relevance and missing evidence"
+    file: entries/retrieval-independent-scoring.yaml
+  - id: proposal:decision:768020f6-acd8-4577-9d55-724d93365dc2
+    title: "Retrieval fixtures use independently reviewed sources and pinned trial custody"
+    file: entries/retrieval-fixture-custody.yaml
+  - id: proposal:decision:1e9f760f-6a23-42ef-a76d-f828bdd007e5
+    title: "Governed repair reports retain failures and separate evidence from improvement"
+    file: entries/retrieval-repair-evidence.yaml
+  - id: proposal:decision:0632b8e9-01c0-46f6-aa76-1446017f67ef
+    title: "Operational qualification preserves one budget and retains all refusals"
+    file: entries/retrieval-operational-qualification.yaml
+
   - id: proposal:decision:d3ac3274-bb5e-4d45-824b-bc2a5ef63687
     title: Keep P11 bindings separate from the adjacent supported interface prerequisite
     file: entries/ucs-1244-supported-interface-scope.yaml

@@ -10,7 +10,7 @@ repo, its runtime protocol, the task below, and the evaluation date.
 Install the kit's locked dependencies, then generate a new scratch client:
 
 ```sh
-node acceptance/runtime-preflight-fixture.js local-history:runtime-preflight-mixed verified
+node acceptance/runtime-preflight-fixture.js /tmp/runtime-preflight-mixed verified
 ```
 
 The destination must not exist. The script overlays the existing time-facet

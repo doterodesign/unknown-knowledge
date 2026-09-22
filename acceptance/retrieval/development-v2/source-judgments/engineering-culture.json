@@ -1,0 +1,971 @@
+{
+  "reviewer": "independent-source-reviewer-engineering-culture",
+  "sourceFiles": [
+    "acceptance/retrieval/pilot/sources/engineering.md",
+    "acceptance/retrieval/development-v2/sources/engineering.md",
+    "acceptance/retrieval/pilot/sources/cultural-research.md",
+    "acceptance/retrieval/development-v2/sources/cultural-research.md"
+  ],
+  "defaultJudgment": {
+    "grade": 0,
+    "applicable": false,
+    "reason": "Unlisted passage does not independently contribute to the exact requested postclarification response."
+  },
+  "reviewScope": "Synthetic source-only review of sixteen development tasks, normalized using ADJUDICATION.md and frozen clarification scripts. No records, registry, runtime outputs, ranks, other reviewers, private or heldout content inspected; not live human approval or runtime/agent acceptance.",
+  "rankingConvention": "Score the final postclarification requested response. Explicit source-supported negative yes/no answers are answerable with defined rank metrics. A missing requested value is unanswerable with undefined factual-answer rank metrics even when bounded-refusal evidence is direct. Relevance and applicability are independent from lifecycle; bundles are minimal sufficient alternatives, not a demand to retrieve every grade-2/3 passage.",
+  "clarificationBehavior": {
+    "engineering-02": {
+      "initialFactualTarget": "unresolved",
+      "neutralQuestion": "By Éclat, do you mean the French name for Aurora Web 4’s semitransparent accent color, or the proposed Android animation project?",
+      "scriptedReply": "I mean the French color alias in Aurora Web 4.",
+      "ambiguityEvidence": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "eclat-color"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "eclat-project"
+        }
+      ],
+      "scoring": "Score initial ambiguity detection and neutral clarification separately; the task passage grades below concern the selected French-color response."
+    },
+    "cultural-research-02": {
+      "initialFactualTarget": "unresolved",
+      "neutralQuestion": "Do you mean rouge as the French word for red, or Project Rouge, the museum brochure-title study?",
+      "scriptedReply": "I mean the museum brochure-title project.",
+      "ambiguityEvidence": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "rouge-terms"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "rouge-project"
+        }
+      ],
+      "scoring": "Score initial ambiguity detection and neutral clarification separately; the task passage grades below concern the selected museum project response."
+    }
+  },
+  "tasks": [
+    {
+      "id": "engineering-01",
+      "answerable": true,
+      "answerSummary": "The active Aurora Web 4 CSS exporter emits --accent-soft as rgba(r, g, b, a), preserving original alpha without flattening or compositing onto the background.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Active Aurora Web 4 CSS scope",
+        "Semitransparent accent token --accent-soft",
+        "rgba(r, g, b, a) serialization",
+        "Retain original alpha; do not flatten/composite onto background",
+        "No numeric color components or alpha value are specified"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "css-export",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct active contract supplies every requested fact."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "css-audit",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Accepted active Web 4 CSS audit expressly confirms the contract and independently supplies every requested fact; the prompt does not require a uniquely named artifact."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "opaque-export",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background distinguishes alpha-one-only hex mode from the requested nonopaque serialization; not answer evidence."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "palette-mail",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unreviewed message lacks product/release and cannot change the requested contract."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "web5-proposal",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different proposed release does not contribute to the requested active Web 4 serialization."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/engineering.md",
+            "passage": "css-export"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "css-audit"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "engineering-02",
+      "answerable": true,
+      "answerSummary": "After the frozen French-color clarification, éclat names Aurora Web 4 semitransparent accent role --accent-soft; export it as rgba with original alpha and no background flattening.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Postclarification meaning: French color alias in Aurora Web 4",
+        "Alias maps to existing semitransparent accent role and --accent-soft",
+        "Serialization is defined by active CSS contract: rgba(r, g, b, a)",
+        "Original alpha retained; no compositing or flattening"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "eclat-color",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly resolves the selected alias to the Web 4 role and token; glossary delegates serialization to contract."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "css-export",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct serialization and alpha requirements for the selected role."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "css-audit",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Independent accepted active-contract confirmation supplies serialization and alpha requirements."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "eclat-project",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different meaning after clarification; its contribution to initial ambiguity detection is scored separately."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "eclat-color"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/engineering.md",
+            "passage": "css-export"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "eclat-color"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "css-audit"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": true
+    },
+    {
+      "id": "engineering-03",
+      "answerable": true,
+      "answerSummary": "Approved production Aurora Web 4 cards have a 6 px corner radius; the 12 px preview rule has not replaced production.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "6 px approved card radius",
+        "Aurora Web 4 production scope",
+        "Experimental preview builds excluded"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "production-theme",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Accepted production contract directly supplies radius, scope, and preview exclusion; additional release classification does not invalidate it."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "preview-theme",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Explicitly corroborates production’s 6 px rule and preview-only 12 px boundary, but does not independently identify Web 4 scope or state production acceptance; useful partial evidence."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "production-theme"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "engineering-04",
+      "answerable": true,
+      "answerSummary": "No. The notebook separately observes Android viewer acceptance of P3 images and desktop CSS alpha serialization as rgba; it reports no Android CSS P3-with-alpha qualification.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Source-supported negative answer about notebook qualification",
+        "Android image viewer accepts P3 images",
+        "Desktop CSS exporter serializes alpha colors as rgba",
+        "Independent observations cannot establish joint Android CSS P3-with-alpha support",
+        "Absence of qualification is not proof of technical impossibility"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "cross-platform-notebook",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Explicitly supplies both observations and the missing joint-test boundary, directly answering the scoped yes/no question."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "screenshot-limit",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Android image width is irrelevant to the requested joint color-export qualification."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "web5-proposal",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different proposed release does not qualify the Android exporter."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "cross-platform-notebook"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "engineering-05",
+      "answerable": true,
+      "answerSummary": "Accepted active Aurora Web 4 keyboard screenshots must retain the two-pixel focus outline and two-pixel offset despite missing subject classification.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Screenshots of keyboard focus states",
+        "Retain two-pixel outline",
+        "Retain two-pixel offset",
+        "Accepted active Web 4 source remains authoritative despite incomplete subject classification"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "keyboard-capture",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct accepted capture obligation, dimensions, active scope, and explicit missing-classification rule."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "focus-ring",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Supplies both requested dimensions but lacks the active Web 4 screenshot obligation and approval/classification context."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "screenshot-limit",
+          "grade": 0,
+          "applicable": false,
+          "reason": "4096-pixel Android screenshot width is unrelated to Web 4 focus-state preservation."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "keyboard-capture"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "engineering-06",
+      "answerable": true,
+      "answerSummary": "For historical debugging, the retired Aurora Web 3 exporter flattened transparent colors to opaque hexadecimal values; this is not the active Web 4 contract.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Retired Aurora Web 3 historical scope",
+        "Transparent colors flattened to opaque hexadecimal values",
+        "Do not apply this behavior to active Web 4",
+        "No historical hex digit count, background, or exact compositing algorithm is specified"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "prior-export",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct historical behavior and explicit separation from active Web 4; retired standing is appropriate to this question."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "css-export",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Direct current-contract side of the explicitly requested lifecycle separation, if current behavior is described."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "css-audit",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Accepted active Web 4 contrast confirms preserved alpha rather than historical flattening."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "opaque-export",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Alpha-one-only Web 4 mode is not the requested transparent-color historical behavior."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/engineering.md",
+            "passage": "prior-export"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "engineering-07",
+      "answerable": true,
+      "answerSummary": "No. color(display-p3 ...) is only a proposed Web 5 change; it has not been accepted or shipped and does not supersede active Web 4 rgba.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Proposed Web 5 serialization only",
+        "Review has not accepted it",
+        "No implementation has shipped",
+        "No supersession of active Web 4 rgba",
+        "Negative answer bounded to this collection"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "web5-proposal",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct nonapproval/nonshipping evidence answers the requested status; proposed standing permits this contribution but not authorization."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "css-export",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background on still-active Web 4, not evidence of Web 5 approval or shipping."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "css-audit",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background corroborates Web 4 only."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "cross-platform-notebook",
+          "grade": 0,
+          "applicable": false,
+          "reason": "P3 viewer observation on another platform does not answer Web 5 status."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "web5-proposal"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "engineering-08",
+      "answerable": true,
+      "answerSummary": "Yes. The active Web 4 CSS contract and its accepted audit both identify --accent-soft, rgba serialization, preservation of alpha, and no background flattening/compositing.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Agreement on token --accent-soft",
+        "Agreement on rgba representation retaining original alpha",
+        "Agreement on no background flattening/compositing",
+        "Cite both distinct active-contract and accepted-audit artifacts"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "css-export",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct first artifact required for two-source agreement."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "css-audit",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct second artifact required for two-source agreement; explicitly independently confirms the contract."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "palette-mail",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unapproved unspecific message is not a competing scoped contract and is unnecessary to requested agreement."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/engineering.md",
+            "passage": "css-export"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+            "passage": "css-audit"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-01",
+      "answerable": true,
+      "answerSummary": "In the invented 2025 Vietnam trial, 40 adult recruits detected red-bordered software notifications more often than otherwise identical gray-bordered notifications. This is task-specific detection, not measured symbolism or a Southeast Asia-wide effect.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Country Vietnam and adult recruited sample",
+        "Software notifications with red borders versus otherwise identical gray borders",
+        "More frequent detection in this task; no invented effect size",
+        "Distinguish measured detection from unmeasured symbolic meaning",
+        "Do not generalize to all adults, other media, or Southeast Asia",
+        "The original trial reports 40 adults and 2025; preserve these details if included"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct scoped effect, country, population, medium, comparator, outcome, and explicit symbolism/region limits; adequate alone."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "split-study-notebook",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Section A independently supports Vietnam adult software-alert detection direction but does not supply the original trial’s fuller context or explicit symbolism boundary."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "vietnam-symbolism",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Useful partial evidence for the explicitly requested perceptual/symbolic distinction; optional festive-symbolism enrichment is not mandatory in every answer."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Useful partial scoped contrary comparison supporting the explicitly requested non-generalization; optional for a sufficient singular-country Vietnam answer."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "future-region-study",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background that regional research is only proposed; no actual perceptual result."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "blue-symbolism",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Blue packaging symbolism does not establish red detection or red meaning."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "unlocated-observation",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unknown country and medium cannot supply the requested identified-country result."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "preliminary-poster",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Withdrawn confounded Laos claim cannot establish a current color-alone benefit."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+            "passage": "red-attention"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-02",
+      "answerable": true,
+      "answerSummary": "After the frozen museum-project clarification, no: Project Rouge studied recall of the brochure title Morning Harbor, manipulated no color, and performed no visual-attention test.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Postclarification meaning: museum brochure-title Project Rouge",
+        "Title-memory/naming study of Morning Harbor",
+        "No color manipulation",
+        "No visual-attention test; do not convert title recall into the requested attention result"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "rouge-project",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly establishes the selected project’s study and explicit absence of visual-attention/color testing; sufficient for supported negative yes/no answer."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "rouge-terms",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Naming background distinguishes project name from French color term; does not independently describe the project’s attention testing."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Red color trial is the unselected meaning after clarification; not evidence about Project Rouge."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Separate color experiment does not answer the clarified project question."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "rouge-project"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": true
+    },
+    {
+      "id": "cultural-research-03",
+      "answerable": true,
+      "answerSummary": "đỏ means red and identifies the color in the Vietnam adult software-notification trial; the 40 adult recruits detected red-bordered notifications more often than otherwise identical gray ones. The glossary adds naming, not a new effect.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "đỏ means red",
+        "Glossary connects the word to the existing Vietnam trial, not a new experiment",
+        "Adults recruited in Vietnam viewed software notifications",
+        "Red-bordered versus otherwise identical gray-bordered notifications; more detection of red",
+        "Task/sample-limited detection; no region-wide or symbolism result",
+        "Original trial reports 40 adults in 2025; do not invent numeric detection rates"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "do-glossary",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct requested word meaning and explicit link to the existing trial; no extra experimental result."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct experimental result and original country/sample/medium/comparator/outcome boundaries."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "split-study-notebook",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Provides partial Vietnam adult red-versus-gray alert result but not full original trial detail."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "vietnam-symbolism",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Symbolism interviews do not contribute to requested notification detection result or word definition."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Different-country comparison is not requested here."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "do-glossary"
+          },
+          {
+            "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+            "passage": "red-attention"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-04",
+      "answerable": true,
+      "answerSummary": "No universal Southeast Asian attention benefit is established. The Vietnam finding is sample/task-limited; the separate Thai sample showed no advantage within reported precision, and the proposed all-country study has no results. Do not claim a universal null either.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Source-supported negative about whether universal benefit is established",
+        "Preserve study-specific limits of cited results",
+        "Do not equate local null within precision with universal absence of an effect",
+        "No results may be attributed to the unstarted regional proposal"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Directly limits the local positive study to Vietnam adults and excludes other-country or region-wide measurement; useful partial evidence."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct available adult notification result with no detection advantage and explicit scope limits is sufficient to reject an established all-country benefit without asserting universal null."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "future-region-study",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Direct evidence that the planned all-country comparison has not recruited and has no results; contributes to regional evidence coverage."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "unlocated-observation",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Directly says unknown geographic scope cannot establish a named-country or Southeast Asia-wide result; useful partial coverage limitation, not required in every bundle."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "poster-retraction",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background on withdrawal of another local claim; does not by itself adjudicate all-country coverage."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "vietnam-symbolism",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Symbolism is not attention evidence."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "thailand-null"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+            "passage": "red-attention"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "future-region-study"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-05",
+      "answerable": true,
+      "answerSummary": "No. The notebook separately records Vietnam adults noticing red software alerts more than gray and Vietnam children preferring blue toy packages over green; no red-packaging child-attention test or joint comparison was performed.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Scoped negative about notebook support",
+        "Section A: adults, Vietnam, red versus gray software alerts, noticing",
+        "Section B: children, Vietnam, blue versus green toy packaging, preference",
+        "No section tests red toy packaging attention in children",
+        "Do not join independent color/age/medium/outcome observations"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "split-study-notebook",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Directly identifies both unrelated observations and expressly denies the claimed joint test; sufficient negative-answer evidence."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 1,
+          "applicable": true,
+          "reason": "Background on the separate adult result, not evidence of the notebook’s claimed joint study."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "earlier-pilot",
+          "grade": 0,
+          "applicable": false,
+          "reason": "An unperformed proposal for another country cannot answer what this notebook establishes."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "split-study-notebook"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-06",
+      "answerable": true,
+      "answerSummary": "The Laos color-only attention conclusion was withdrawn: red and gray poster sizes differed, preventing attribution to color. The accepted correction provides no replacement effect estimate; the preliminary positive remains historical.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Current standing: color-only conclusion withdrawn",
+        "Laos poster study",
+        "Poster size and color changed together, confounding attribution",
+        "Do not invent a replacement effect estimate; if explicitly stating none was supplied, cite the accepted correction",
+        "Retired preliminary positive cannot be presented as current finding"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "poster-retraction",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Accepted correction directly supplies current withdrawal, confound, and no replacement estimate; sufficient alone."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "preliminary-poster",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct history, confound, and explicit owner withdrawal establish current standing independently; the accepted correction is needed only for its additional explicit no-replacement-estimate statement."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Independent Vietnam finding is not a replacement Laos estimate."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Independent Thailand sample does not adjudicate Laos confounding."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "poster-retraction"
+          }
+        ],
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "preliminary-poster"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-07",
+      "answerable": true,
+      "answerSummary": "The invented Vietnam trial of 40 adult recruits found more detection of red-bordered versus otherwise identical gray-bordered software notifications; the separate Thailand study of 36 adults found equal rates within reported precision. Neither result is universal, and Thailand does not refute the separate Vietnam sample.",
+      "missingRequestedFact": null,
+      "requiredDetails": [
+        "Two distinct recruited adult samples: Vietnam 40, Thailand 36",
+        "Both concern red-bordered versus gray-bordered software notification detection",
+        "Vietnam: red detected more often",
+        "Thailand: equal rates within reported precision, no detection advantage in task",
+        "Do not treat samples as identical, infer universal effects/null, or claim Thailand refutes Vietnam",
+        "No invented numeric rates, significance tests, cross-country causal explanation, or Thailand date"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct Vietnam comparison arm with sample, context, comparator, and limits."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct Thailand comparison arm with sample, precision caveat, and explicit distinct-sample/universal-null limits."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "split-study-notebook",
+          "grade": 2,
+          "applicable": true,
+          "reason": "Partial corroboration of Vietnam adult alert detection direction, without fuller sample details."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "blue-symbolism",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Blue-packaging symbolism is not the Thailand notification result."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "vietnam-symbolism",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Interviewed symbolic meaning is not a causal explanation of cross-sample detection differences."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "unlocated-observation",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Unknown geography cannot be assigned to either comparison arm."
+        }
+      ],
+      "bundles": [
+        [
+          {
+            "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+            "passage": "red-attention"
+          },
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "thailand-null"
+          }
+        ]
+      ],
+      "explanationBundles": [],
+      "clarificationRequired": false
+    },
+    {
+      "id": "cultural-research-08",
+      "answerable": false,
+      "answerSummary": "No country can be supplied: the reviewed transcription records an observation but omits country, medium, and sampling method; review did not recover the missing scope.",
+      "missingRequestedFact": "Country of the unlocated red-label observation is not recorded; no Southeast Asian country can be established from it.",
+      "requiredDetails": [
+        "Requested country absent from source",
+        "Country, medium, and sampling method not recorded",
+        "Review verified transcription, not missing experimental details",
+        "Cannot establish any named-country or Southeast Asia-wide benefit",
+        "Do not infer Vietnam or Thailand from nearby studies, or invent an unstated comparator"
+      ],
+      "passageJudgments": [
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "unlocated-observation",
+          "grade": 3,
+          "applicable": true,
+          "reason": "Direct explicit missing-country evidence supports bounded refusal but cannot supply the requested country value."
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Separate Vietnam study cannot donate geography to the unlocated observation."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Separate Thailand study cannot donate geography to the unlocated observation."
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "split-study-notebook",
+          "grade": 0,
+          "applicable": false,
+          "reason": "Shared topic and nearby Vietnam mentions do not locate this distinct observation."
+        }
+      ],
+      "bundles": [],
+      "explanationBundles": [
+        [
+          {
+            "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+            "passage": "unlocated-observation"
+          }
+        ]
+      ],
+      "clarificationRequired": false
+    }
+  ]
+}

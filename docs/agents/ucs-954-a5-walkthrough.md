@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # UCS-954 fresh-agent conduct walkthroughs
 
 Three initial fresh agents ran on isolated fixtures with the implementation in
@@ -65,7 +61,7 @@ benchmark was captured for the initial runs.
 ## Evidence and reproduction
 
 Preserved evidence directory for this task:
-`local-history:ucs-954`.
+`/Users/dimitriotero/.codex/visualizations/2026/09/10/01a088f4-1165-7e11-a981-b53d740fa3c1/ucs-954/`.
 Each `trials/{artifact,unknown,stale,artifact-repeat,stale-repeat}/trace.md`
 contains actual commands, outputs,
 consulted paths, final answer, and limitations. `trial-manifest.json` records

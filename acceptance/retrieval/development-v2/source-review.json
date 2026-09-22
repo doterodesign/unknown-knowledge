@@ -1,0 +1,31 @@
+{
+  "version": "development-v2-source-review-1",
+  "status": "independent-source-judgments-reviewed-before-runtime",
+  "taskCount": 48,
+  "recordSourceCount": 82,
+  "recordMetadataStatus": "source-attribution-only; kinds/lifecycle/scope/subject registry not yet independently accepted or executable",
+  "sourceOnly": true,
+  "implementationAndRanksSeenByReviewers": false,
+  "privateAndHeldoutContentRead": false,
+  "normalization": "ADJUDICATION.md",
+  "reviews": [
+    {
+      "file": "source-judgments/engineering-culture.json",
+      "sha256": "3ca51a4e179f2461e3d37744ba3b530c9983324ef0cbbe7ca7c6949a7c6b1f7c",
+      "reviewer": "independent-source-reviewer-engineering-culture",
+      "taskCount": 16
+    },
+    {
+      "file": "source-judgments/policy-manufacturing.json",
+      "sha256": "47cb54fb1038a97ea88e618257c413a78a04d158aba621bc6ec2dacaaf81d44d",
+      "reviewer": "independent-source-review-policy-manufacturing",
+      "taskCount": 16
+    },
+    {
+      "file": "source-judgments/services-holding.json",
+      "sha256": "bacb0da52bc0687e9fcff09810966a77823a46388efe81abfa758cd3d3a45410",
+      "reviewer": "independent-services-holding-source-reviewer",
+      "taskCount": 16
+    }
+  ]
+}

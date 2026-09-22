@@ -27,7 +27,7 @@ fragments, an aging proposed decision; `last-reflect` deliberately ABSENT):
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf local-history:a5-audit && cp -R fixtures/ts-app local-history:a5-audit && cd local-history:a5-audit
+rm -rf /tmp/a5-audit && cp -R fixtures/ts-app /tmp/a5-audit && cd /tmp/a5-audit
 node "$KIT/engine/log-entry.js" create --log findings --date 2026-07-02 \
   --root unknown-knowledge --suffix aaaa0001 \
   --entry '{"trigger":"quarantine","summary":"preflight quarantined K-108 (wrong-pointer): proceeded degraded, gathered from src/registry/export-formats.ts directly","consulted":{"concepts":["K-108"]}}'

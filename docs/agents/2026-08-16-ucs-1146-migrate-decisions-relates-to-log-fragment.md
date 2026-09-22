@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # UCS-1146 — Migrate: decisions relates-to and log-fragment leaf references to accession IDs
 
 Branch: `ucs-1146-migrate-decisions-relates-to-and-log-fragment-leaf` (base `faceted-store-v2` @ 2abae19)

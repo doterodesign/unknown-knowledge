@@ -1,0 +1,12 @@
+{
+  "recordRows": 82,
+  "installations": 8,
+  "subjects": 98,
+  "parents": 54,
+  "aliases": 18,
+  "associations": 12,
+  "allSourceFreezeFilesUnchanged": 20,
+  "coverage": "All assigned record keys defined in their owning installation; no cross-owner edges, cycles or duplicate authored association pairs",
+  "sourceReferences": "Every warrant and alias evidence locator verified against actual public source headings",
+  "reviewBoundary": "Mechanical provenance/coverage checks plus source-only editorial review; P2 exact-definition review pending"
+}
