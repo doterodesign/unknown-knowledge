@@ -102,6 +102,6 @@
   ],
   "originalValidatedHead": "4ccb321",
   "originalValidatedTree": "940e73c80b483989a58b9c7c8da02ed86d036c26",
-  "currentStackBase": "07987e63a5e9be5285b56b3d99ad5ff40e8858a8",
-  "ancestorCorrection": "PR1/PR2 test-only corrections merged; runtime bytes identical to original validated tree. Original684-test log binding retained; focused27/27 and24/24 correction receipts supplement it."
+  "currentStackBase": "66e74b468170e9ed90b1a8f0aca15efc783b73ab",
+  "ancestorCorrection": "PR1/PR2 test-only corrections merged; runtime bytes identical to original validated tree. Original684-test log binding retained; focused27/27 and24/24 correction receipts supplement it. Synchronous fixture maintenance and PR3 exact host-coordinate counter correction have their own focused receipts; PR1 Linux CI passed at e27c823."
 }

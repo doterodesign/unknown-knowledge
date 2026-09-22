@@ -95,6 +95,6 @@
   ],
   "originalValidatedHead": "4fb81055d215f07c853a7dab721877df6f5d9324",
   "originalValidatedTree": "b37ca0104d8fb29b1a6841bd4b86064e1ddb1a05",
-  "currentStackBase": "5899858634f3e53a92ba45681610f386cb645e22",
-  "ancestorCorrection": "PR1 bounded teardown correction merged; runtime bytes unchanged. Original logs retain their original tree binding; focused correction receipts supplement them."
+  "currentStackBase": "e27c823fe0f5deca1f9ac25e3fbc990963ab7af8",
+  "ancestorCorrection": "PR1 bounded teardown correction merged; runtime bytes unchanged. Original logs retain their original tree binding; focused correction receipts supplement them. Synchronous fixture maintenance inherited after repeat Linux teardown failure; see PR1 correction receipt."
 }
