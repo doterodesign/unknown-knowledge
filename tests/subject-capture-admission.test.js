@@ -16,11 +16,13 @@ const api = () => import('../payload/engine/lib/subject-capture-admission.js');
 
 test('actual pre-extraction input retains exact admission counters and failure phases', t => {
   const f = subjectReconsiderationCoreFixture(t);
+  // Checkout coordinates are metadata text; their host-dependent length is charged once.
+  const rootTextUnits = f.input().repoRoot.length;
   const expected = {
-    success: { used: [4546, 69, 1782, 4558], change: {} },
-    bytes: { used: [0, 42, 1023, 3], change: { maxCaptureBytes: 0 }, phase: 'reconsideration-input-owned-copy', attempted: 704 },
+    success: { used: [4546, 69, 1696 + rootTextUnits, 4558], change: {} },
+    bytes: { used: [0, 42, 937 + rootTextUnits, 3], change: { maxCaptureBytes: 0 }, phase: 'reconsideration-input-owned-copy', attempted: 704 },
     nodes: { used: [0, 0, 0, 1], change: { maxDocumentNodes: 0 }, phase: 'reconsideration-input-metadata', attempted: 1 },
-    steps: { used: [0, 33, 757, 1], change: { maxValidationSteps: 1 }, phase: 'reconsideration-input-capture-rows', attempted: 1 },
+    steps: { used: [0, 33, 671 + rootTextUnits, 1], change: { maxValidationSteps: 1 }, phase: 'reconsideration-input-capture-rows', attempted: 1 },
   };
   for (const [name, row] of Object.entries(expected)) {
     const budget = createSubjectValidationBudget({ ...f.limits.governance, ...row.change });

@@ -1,0 +1,28 @@
+{
+  "originalFailedRun": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35737383456",
+  "scope": "Test-only host checkout coordinate accounting; runtime and strict assertions unchanged.",
+  "fixedMetadataTextUnits": {
+    "success": 1696,
+    "captureByteRefusal": 937,
+    "validationStepRefusal": 671
+  },
+  "rootTerm": "input.repoRoot.length, exactly once for phases that admit root metadata; zero-node refusal remains zero.",
+  "baselineEvidence": {
+    "macOSRootLength": 86,
+    "linuxRootLength": 42,
+    "successMacOS": 1782,
+    "successLinux": 1738,
+    "fixedEightUnitCoordinate": {
+      "success": 1704,
+      "captureByteRefusal": 945,
+      "validationStepRefusal": 679
+    }
+  },
+  "focusedValidation": {
+    "command": "node --test tests/subject-capture-admission.test.js",
+    "tests": 9,
+    "pass": 9,
+    "fail": 0,
+    "logSha256": "bedd7460ec0493a9ec2947d68d60b78335b4132c788fa99d99b6f46f43105c3a"
+  }
+}
