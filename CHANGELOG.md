@@ -14,6 +14,8 @@
 
 ## [3.0.0-rc.5] - Unreleased
 
+- Make historical-runtime test directories portable and keep split-publication fault fixtures in loose Git storage; verify that source deletion takes effect before refusal checks.
+
 - Isolated migration and complete-runtime cutover, fixed retained validation workers, fresh review and bounded candidate-reference publication.
 - Review scope, Decisions and validation: [PR 4](docs/pr-delivery/pr-04.md).
 

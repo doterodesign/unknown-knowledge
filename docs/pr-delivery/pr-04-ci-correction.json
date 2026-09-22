@@ -1,0 +1,203 @@
+{
+  "scope": "Three test files only: platform temporary paths; fixture-local automatic collection/maintenance disabled before first commit; explicit cat-file missing-source assertion preserves existing real fault/refusal/restoration.",
+  "changedTestFiles": [
+    "tests/migration-historical-runtime.test.js",
+    "tests/helpers/subject-split-history-fixture.js",
+    "tests/subject-split-publication.test.js"
+  ],
+  "originalFailures": [
+    {
+      "pr": 80,
+      "head": "febfa8d594dcc77b904e8a90f658f4d7453d2cc5",
+      "runURL": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35775345693",
+      "conclusion": "failure",
+      "counts": {
+        "tests": 3819,
+        "pass": 3811,
+        "fail": 8,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failedTests": [
+        "the actual captured historical distribution exactly matches its complete fixed subset",
+        "a missing local dependency refuses instead of resolving an ambient package",
+        "changed same-version dependency bytes refuse even with a rehashed caller manifest",
+        "extra unmanifested modules and empty directories are rejected",
+        "a dependency directory symlink cannot supply reviewed bytes",
+        "a profile artifact changed independently of the implementing fixed profile refuses",
+        "the captured historical runtime actually validates, resolves and derives the original legacy fixture",
+        "historical resolver exit zero does not hide an unhealthy source from the compatibility predicate"
+      ],
+      "log": {
+        "name": "pr4-ci-failure.log",
+        "sha256": "ee08ea898a5d5b61f5b80dd013983c746930456de3c4aabae90d112bc31cb8e6",
+        "bytes": 2111443,
+        "availability": "Original retained locally; source run URL and portable results retained here."
+      }
+    },
+    {
+      "pr": 81,
+      "head": "3bf63f16fadc2847fb67ccc37f6ee4b6b75e2159",
+      "runURL": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35775420378",
+      "conclusion": "failure",
+      "counts": {
+        "tests": 3819,
+        "pass": 3809,
+        "fail": 10,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failedTests": [
+        "the actual captured historical distribution exactly matches its complete fixed subset",
+        "a missing local dependency refuses instead of resolving an ambient package",
+        "changed same-version dependency bytes refuse even with a rehashed caller manifest",
+        "extra unmanifested modules and empty directories are rejected",
+        "a dependency directory symlink cannot supply reviewed bytes",
+        "a profile artifact changed independently of the implementing fixed profile refuses",
+        "the captured historical runtime actually validates, resolves and derives the original legacy fixture",
+        "historical resolver exit zero does not hide an unhealthy source from the compatibility predicate",
+        "actual split publication sha1, zero=false: receipt, fresh provenance and exact CAS",
+        "actual split publication sha256, zero=false: receipt, fresh provenance and exact CAS"
+      ],
+      "log": {
+        "name": "pr5-ci-failure.log",
+        "sha256": "5d7de5e389175ce0d23e35235543e5a4977fca336d30f42de6c7ce1b46064929",
+        "bytes": 2114314,
+        "availability": "Original retained locally; source run URL and portable results retained here."
+      }
+    },
+    {
+      "pr": 82,
+      "head": "5ac00e46c177f89f08c91da38140b7185f1f78d6",
+      "runURL": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35775466466",
+      "conclusion": "failure",
+      "counts": {
+        "tests": 3853,
+        "pass": 3844,
+        "fail": 9,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failedTests": [
+        "the actual captured historical distribution exactly matches its complete fixed subset",
+        "a missing local dependency refuses instead of resolving an ambient package",
+        "changed same-version dependency bytes refuse even with a rehashed caller manifest",
+        "extra unmanifested modules and empty directories are rejected",
+        "a dependency directory symlink cannot supply reviewed bytes",
+        "a profile artifact changed independently of the implementing fixed profile refuses",
+        "the captured historical runtime actually validates, resolves and derives the original legacy fixture",
+        "historical resolver exit zero does not hide an unhealthy source from the compatibility predicate",
+        "actual split publication sha256, zero=false: receipt, fresh provenance and exact CAS"
+      ],
+      "log": {
+        "name": "pr6-ci-failure.log",
+        "sha256": "9a4d2d5d477ce46642d1220a0228cfb59dbca4aa434ea2484c4447861bd2f087",
+        "bytes": 2132226,
+        "availability": "Original retained locally; source run URL and portable results retained here."
+      }
+    },
+    {
+      "pr": 83,
+      "head": "1c739ed465ace57c0e9c750d446dd7ade92d8a42",
+      "runURL": "https://github.com/doterodesign/unknown-knowledge/actions/runs/35775504147",
+      "conclusion": "failure",
+      "counts": {
+        "tests": 3907,
+        "pass": 3893,
+        "fail": 14,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "failedTests": [
+        "the actual captured historical distribution exactly matches its complete fixed subset",
+        "a missing local dependency refuses instead of resolving an ambient package",
+        "changed same-version dependency bytes refuse even with a rehashed caller manifest",
+        "extra unmanifested modules and empty directories are rejected",
+        "a dependency directory symlink cannot supply reviewed bytes",
+        "a profile artifact changed independently of the implementing fixed profile refuses",
+        "the captured historical runtime actually validates, resolves and derives the original legacy fixture",
+        "historical resolver exit zero does not hide an unhealthy source from the compatibility predicate",
+        "the pinned original runtime loads a real decisions-only conflict fixture",
+        "all six organizations load in eight isolated original-format installations",
+        "runtime drift refuses fixture preparation before creating an installation",
+        "an added runtime module refuses fixture preparation before creating an installation",
+        "a real Git replacement cannot alter the pinned baseline export",
+        "actual resolver and selected preflight retain status and count returned metadata"
+      ],
+      "log": {
+        "name": "pr7-ci-failure.log",
+        "sha256": "18d12ff908cce3f83a3c84b210dc87d7d60d5708e1bbd5bc59bf5ed6a78cc5b5",
+        "bytes": 2171773,
+        "availability": "Original retained locally; source run URL and portable results retained here."
+      }
+    }
+  ],
+  "focusedChecks": [
+    {
+      "log": {
+        "name": "pr4-ci-portability-tests.log",
+        "sha256": "0430c06fb6d973a947acd7bcfb5c0674774a7b3fc744ef6ff2b1c47a2ebb801c",
+        "bytes": 2543,
+        "availability": "Original retained locally; source run URL and portable results retained here."
+      },
+      "tests": 20,
+      "pass": 20,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    {
+      "log": {
+        "name": "pr4-ci-split-fixture-tests.log",
+        "sha256": "aa4953016945fc69f1dcdc707b515b7d35d4121a6073bd06d487e428dcc78fee",
+        "bytes": 9595,
+        "availability": "Original retained locally; source run URL and portable results retained here."
+      },
+      "tests": 113,
+      "pass": 113,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0
+    }
+  ],
+  "inducedReproduction": {
+    "script": {
+      "name": "reproduce-packed-authorizer.mjs",
+      "sha256": "5ffcec39441d811a428d93bb792adb1ee2524154899763a08f814b32aa208667",
+      "bytes": 1392,
+      "availability": "Original retained locally; source run URL and portable results retained here."
+    },
+    "log": {
+      "name": "reproduce-packed-authorizer.log",
+      "sha256": "bd7d70b7b8608a0f17ee20ec9d0785712a46dc3c357cd089e31435690c6a61d7",
+      "bytes": 310,
+      "availability": "Original retained locally; source run URL and portable results retained here."
+    },
+    "result": "Actual sha256/nested/nonzero fixture passed before deliberate repack. Repack removed loose source file while Git resolved identical commit bytes; direct read reproduced ENOENT.",
+    "limits": "The original CI packing mechanism was not observed. A local fixture had 72 loose objects and no packs; this does not establish default maintenance threshold as cause."
+  },
+  "lint": {
+    "name": "pr4-ci-portability-lint.log",
+    "sha256": "5b6abf85068c2ca09bfb6b8d3bb83744b0298ab8f4b75e827b2b282ab06cb072",
+    "bytes": 97,
+    "availability": "Original retained locally; source run URL and portable results retained here."
+  },
+  "acceptance": {
+    "name": "pr4-ci-portability-acceptance.log",
+    "sha256": "2e84fa19cfa789c4165364efb6c8969d70c8da08733cf0b73fdf5a5988fdd55a",
+    "bytes": 7246,
+    "availability": "Original retained locally; source run URL and portable results retained here."
+  },
+  "versionCheck": {
+    "name": "pr4-ci-portability-version.log",
+    "sha256": "d0bb03b31145dc0838b12e16ac8283c6f237a44eb0d5713c9de8278a75089238",
+    "bytes": 75,
+    "availability": "Original retained locally; source run URL and portable results retained here."
+  },
+  "version": "3.0.0-rc.5",
+  "runtimeChanges": false,
+  "assertionsRemoved": false,
+  "freshFullCI": "Pending new corrected head; original runs remain failures.",
+  "authorization": "User requested merging the reviewed stack; coordinator reviewed these narrow fixture/CI corrections. Existing proposed Decisions retain status and keys.",
+  "evidenceLimits": "No new agent experiment, changed evaluated pin, retrieval improvement or overall nonregression claim. No tag/npm publication/customer migration."
+}
