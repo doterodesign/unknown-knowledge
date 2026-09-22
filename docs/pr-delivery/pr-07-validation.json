@@ -103,5 +103,10 @@
       }
     ],
     "newReaderOrFullSuiteExperiment": false
+  },
+  "ciCorrection": {
+    "receipt": "pr-07-ci-correction.json",
+    "historicalBindingsPreserved": true,
+    "runtimeChanges": false
   }
 }

@@ -328,4 +328,14 @@ entries:
       DEVELOPMENT-BUDGETS.md; implementation: materialize.js,
       materialize-development.js and trial-host.js in that directory. Frozen
       fixture files remain unchanged.
+      PR7 Linux CI exposed six deterministic fixture failures because the default
+      shallow checkout omitted the pinned original commit. The engine-test job
+      now fetches complete Git history before running the unchanged baseline
+      export, digest and replacement-object checks. Fetching history is test
+      preparation; it publishes no archive ref, changes no evaluated pin and
+      releases no new reader experiment. Changing the baseline or skipping its
+      checks would invalidate compatibility evidence. The original failed run
+      and focused shallow/full-history reproduction remain separately bound in
+      docs/pr-delivery/pr-07-ci-correction.json. Coordinator authorization covers
+      this CI setup correction, not acceptance of this proposed Decision.
     relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000007", "D-000014"]}
