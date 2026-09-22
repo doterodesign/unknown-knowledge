@@ -9,10 +9,14 @@
 
 ## [3.0.0-rc.3] - Unreleased
 
+- CI harness correction: Send the large output-budget probe through stdin to preserve its full payload across Linux argument-size limits.
+
 - Captured Subject queries, strong Kleene unknowns, bounded intent execution, lookup, generated trees and context/route views.
 - Review scope, Decisions and validation: [PR 2](docs/pr-delivery/pr-02.md).
 
 ## [3.0.0-rc.2] - Unreleased
+
+- CI harness correction: Bound temporary Git fixture cleanup retries while keeping persistent teardown errors and all snapshot assertions visible.
 
 - Permanent typed identities, allocation ledger, optional Subject authority and assignment history; canonical schemas, seed templates and fixture conversion. Existing-store migration is unavailable at this intermediate stage.
 - Review scope, Decisions and validation: [PR 1](docs/pr-delivery/pr-01.md).

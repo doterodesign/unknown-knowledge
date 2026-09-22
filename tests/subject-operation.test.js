@@ -75,8 +75,8 @@ function outputProbe({ text, capacity, close = false }) {
     ${close ? 'closeSync(1);' : ''}
     let failure=null;try{writeSubjectOperationOutput(operation,${JSON.stringify(text)});}catch(error){failure=error.code;}
     process.stderr.write(JSON.stringify({failure,usage:getSubjectOperationUsage(operation)}));`;
-  const result = spawnSync(process.execPath, ['--input-type=module', '-e', code], { encoding: 'utf8' });
-  assert.equal(result.status, 0, result.stderr);
+  const result = spawnSync(process.execPath, ['--input-type=module'], { input: code, encoding: 'utf8' });
+  assert.equal(result.status, 0, result.error?.message ?? result.stderr);
   return { ...result, report: JSON.parse(result.stderr) };
 }
 

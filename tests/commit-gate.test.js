@@ -38,7 +38,8 @@ function allocateOntology(repo, write, count, publicationId) {
 
 function setup(t) {
   const repo = mkdtempSync(join(tmpdir(), 'ucs-1227-'));
-  t.after(() => rmSync(repo, { recursive: true, force: true }));
+  // Retry transient recursive-removal races; persistent cleanup failures still fail the test.
+  t.after(() => rmSync(repo, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 }));
   const env = { ...process.env };
   for (const key of Object.keys(env)) if (key.startsWith('GIT_')) delete env[key];
   delete env.KIT_DIR;
