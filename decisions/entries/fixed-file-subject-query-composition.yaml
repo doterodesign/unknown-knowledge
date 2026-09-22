@@ -1,0 +1,41 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:dc0d7e8b-9717-46fc-8c48-49f5e172943f
+    title: Keep file-based Subject query loading and execution in one private lifetime
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      At measured b118c12 both contexts return, but near-byte public query admission
+      exhausts document text before governance binding. The exposed model remains
+      mutable, and its canonical identity-index snapshot cannot prove all records,
+      proposals, bodies and metadata unchanged. Joint instead exhausts repeated
+      Subject eligibility visits, which is a separate P2-owned design.
+    decision: >
+      Add querySubjectFiles over an authentic operation and closed primitive file
+      options. Read and guard actual query and capture files, decode evidence,
+      load the actual context and execute synchronously before any model exposure.
+      Only this lexical fixed sequence may omit its redundant second corpus pass.
+      Retain initial unique limits and every remaining grammar, binding, index,
+      fingerprint, P3 assignment, eligibility, query and output check. Route the
+      bounded CLI through it without new flags. Public exposed-context, unbounded,
+      intent, P5 and P6 paths remain available with existing admission behavior.
+      Reject caller models, receipts, loader callbacks, executors and skip flags.
+    consequences: >
+      Terminal return transfers nested result ownership without claiming a full
+      clone; no model, context, mutable alias or continuation remains for later
+      internal work. Shared governance Subjects remain deeply frozen. Future
+      internal payload mutation, callback, await or exposure invalidates this
+      proof and requires re-admission. Actual omitted second-pass visits and steps
+      are not charged or refunded; initial counts and all remaining debits retain
+      their meanings. tests/subject-query-files.test.js establishes real CLI RED
+      to GREEN at the allowance excluding one full corpus pass, exact counter
+      differences, sticky failures and result/public-context isolation. See
+      docs/agents/ucs-1237-subject-query.md and docs/agents/ucs-1235-operation-budget.md.
+      P1/P2/P4 agreed the design and main authorized implementation; proposed status
+      grants no canonical publication or human approval. All 28 prior refusals
+      remain. This new file composition profile cannot relabel the old two-step
+      API trial; any later qualification requires a new frozen named controller.
+      No capacity, fixture, operational probe or controller change is included.
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:30f04d46-dc02-4b4f-8f7a-c08df6ef8ee3, proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20] }

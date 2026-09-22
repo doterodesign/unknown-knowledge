@@ -1,0 +1,41 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:a5c52715-cec0-476a-82c6-32e9099e9976
+    title: Intent execution preserves separate branches and cumulative operation allowances
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      Multiple interpretation/recovery branches multiply query work. Validation
+      is not execution, and query limits do not bound loading, captured evidence
+      processing or emitted bytes. Consumers must not hide partial work or reset
+      allowances between phases.
+    decision: >
+      Pre-admit explicit whole-plan validation and execution reservations for
+      all authored branches, including duplicates and branches never reached;
+      do not prune, refund or rewrite budgets. Validate every branch before
+      executing actual owner queries separately in authored order. Retain
+      strict/alternative/recovery labels, compare each execution fingerprint with
+      its own validation and stop at the first refusal or incomplete result,
+      keeping prior results for inspection only. Optional bounded operations guard
+      plans and policies before traversal and forward the same authentic
+      context-bound operation through every nested validation and execution.
+      CLI reads, capture decoding, loading and full rendered output share its
+      allowance. Delegate receipts and exits to the shared reporter and boot
+      harness; preserve original exceptions for programmatic callers.
+    consequences: >
+      Conservative reservations can refuse work that might fit after pruning,
+      but failed branches cannot buy fresh capacity. Missing observations stay
+      null. Refused, incomplete, complete zero-hit, possible matches and page or
+      explanation loss remain distinct. Whole error receipts must fit remaining
+      output capacity or exit 2 is silent, without smaller fallback. Execution
+      does not certify evidence, atomic external snapshots, native CPU/RSS bounds
+      or production capacity. See docs/agents/ucs-1238-intent-query-plan.md,
+      payload/engine/lib/intent-query-admission.js,
+      payload/engine/lib/intent-query-plan.js and
+      payload/engine/commands/intent-plan.js. Evidence is in
+      tests/intent-plan-admission.test.js, tests/intent-query-execution.test.js,
+      tests/intent-operation.test.js and tests/intent-query-assessment-cli.test.js.
+      This rationale proposal does not approve numeric operating limits.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000011, D-000022, proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c] }

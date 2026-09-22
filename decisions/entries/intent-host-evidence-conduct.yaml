@@ -1,0 +1,34 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:85820498-82bc-4f84-8e36-67f60ddd1349
+    title: Intent evidence obligations remain host conduct under existing store gates
+    category: governance
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      Query eligibility, rank and whole-record conjunction cannot establish an
+      answer-bearing relationship or source applicability. Existing protocol
+      separates deterministic verdicts from conduct and requires original sources.
+    decision: >
+      Supplement the existing retrieval loop with a focused intent protocol.
+      Preserve direction, meaning, use context, scope and source requirements;
+      Culture is an optional interpretation, never a mandatory inferred filter.
+      Keep ambiguity and recovery visible. Require existing fresh O/K gates,
+      actual Decision lifecycle review and original sources for each relied-upon
+      record, including selected successors. Retain contradictions and review
+      residual requirements as supported, limited or unresolved against
+      answer-bearing passages. Keep raw requests, plans and source content out
+      of production findings. Do not add another trust engine, evidence store
+      or semantic entailment certificate.
+    consequences: >
+      Host judgments are reviewable but not certified by structural tests.
+      Country-specific evidence cannot establish regional effects; unrelated
+      sections cannot prove conjunction. Accepted Decisions express team authority,
+      not external truth. Existing exit-2 stop rules remain. The shipped workflow
+      is payload/protocol/intent-retrieval.md, linked from
+      payload/protocol/AGENTS.md and cli/kit.manifest.yaml. D-000011 remains the
+      conduct foundation. Fresh host/source-review evidence is required for
+      Gate D. This records P5's implemented extension as a proposal, not approval
+      of source claims or replacement governance.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000007, D-000011, proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c] }

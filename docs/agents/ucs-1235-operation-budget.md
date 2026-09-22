@@ -1,4 +1,4 @@
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -389,7 +389,7 @@ fit, timing result, new capacity, fixture reduction or eligibility change follow
 
 ## Fixed file-query sequencing
 
-The fixed file-to-query API (contract arrives in PR2; see delivery availability)
+The [fixed file-to-query API](ucs-1237-subject-query.md#fixed-file-to-query-api)
 keeps the actual model private from file loading through one query. It accepts
 only an authentic operation and closed primitive path/options data. Source JSON
 reads, document guards, raw transport admission and initial unique corpus checks
@@ -454,7 +454,7 @@ history validation and unavailable-evidence outcomes still run. Normal empty-lis
 histories gain no union-scan charge. This change does not qualify an operational
 workload or change earlier snapshot-bound measurements.
 
-The read-only material transport (contract arrives in PR2; see delivery availability) reserves
+The [read-only material transport](ucs-1237-reconsideration-consumers.md) reserves
 decoded bytes before allocation and reuses each admitted capture object through
 context loading and governance. Its bounded raw-list path reserves the logical
 row population at `material-context-rows`, then guards Buffer-free metadata at
@@ -603,7 +603,7 @@ refusal and cleanup paths.
 
 ## Native query output version 2
 
-The lossless query output contract (contract arrives in PR2; see delivery availability)
+The [lossless query output contract](ucs-1237-subject-query.md#lossless-output-version-2)
 counts the actual serialized assignment-evidence table once plus every emitted
 row-local explanation value/container. It preserves the numeric query limit and
 all source, capture, corpus, binding, P3/P2 and traversal validation charges.

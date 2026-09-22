@@ -51,6 +51,7 @@ unconditional:
     # Also the declared position of embedding recall — a slot and a gate, with
     # the implementation deliberately absent.
     - { from: protocol/derived-layer.md, to: protocol/derived-layer.md }
+    - { from: protocol/intent-retrieval.md, to: protocol/intent-retrieval.md }
     # Protocol skills (D-019 names) — the phase-2 procedures agents run.
     - { from: protocol/skills/knowledge-bootstrap.md, to: protocol/skills/knowledge-bootstrap.md }
     - { from: protocol/skills/knowledge-reflect.md, to: protocol/skills/knowledge-reflect.md }

@@ -1,4 +1,4 @@
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
 
@@ -81,9 +81,9 @@ preservation. Its version-3 publication policy requires that additional evidence
 the original mechanical input contract and isolated historical runtime remain
 unchanged. Broader installation-wide consumer inventory remains open.
 
-The fixed file-query composition (contract arrives in PR2; see delivery availability)
+The [fixed file-query composition](agents/ucs-1237-subject-query.md#fixed-file-to-query-api)
 now keeps loading and execution in one private lifetime, under its
-recorded decision (contract arrives in PR2; see delivery availability).
+[recorded decision](../decisions/entries/fixed-file-subject-query-composition.yaml).
 The bounded CLI uses this sequence; exposed-context query and validation,
 unbounded CLI, intent plans and views retain their existing paths. Its accounting
 guide, README and changelog describe the distinction. No flag, query schema,
@@ -144,9 +144,9 @@ pending at that owner-only snapshot; no PR, tag, release, runtime approval or cu
 | P1 identity, validation and promotion | [Identity](../decisions/entries/ucs-1234-identities-runtime-promotion.yaml), runtime evidence (contract arrives in PR3; see delivery availability), promotion rationale (contract arrives in PR3; see delivery availability), validation (contract arrives in PR4; see delivery availability), promotion (contract arrives in PR3; see delivery availability) |
 | P2 Subject governance | [Coverage audit](agents/ucs-1235-decisions-and-docs.md) |
 | P3 record assignments | [Assignment contract and decisions](agents/ucs-1236-subject-assignments.md) |
-| P4 query and operation limits | Query contract (contract arrives in PR2; see delivery availability), [query rationale](../decisions/entries/captured-subject-query-semantics.yaml), [operation admission](../decisions/entries/subject-operation-admission.yaml), [history validation](../decisions/entries/incremental-subject-history-validation.yaml), [call-local reuse](../decisions/entries/call-local-subject-authorizer-reuse.yaml) |
-| P5 agent intent | Coverage audit (contract arrives in PR2; see delivery availability) |
-| P6 generated views | Coverage audit (contract arrives in PR2; see delivery availability) |
+| P4 query and operation limits | [Query contract](agents/ucs-1237-subject-query.md), [query rationale](../decisions/entries/captured-subject-query-semantics.yaml), [operation admission](../decisions/entries/subject-operation-admission.yaml), [history validation](../decisions/entries/incremental-subject-history-validation.yaml), [call-local reuse](../decisions/entries/call-local-subject-authorizer-reuse.yaml) |
+| P5 agent intent | [Coverage audit](agents/ucs-1238-decisions-and-docs.md) |
+| P6 generated views | [Coverage audit](agents/ucs-1239-decisions-and-docs.md) |
 | P7 migration, review and publication | Coverage audit (contract arrives in PR4; see delivery availability) |
 | P8 assignment history and gates | Coverage audit (contract arrives in PR3; see delivery availability) |
 | P9 reflection and retrieval conduct | Coverage audit (contract arrives in PR5; see delivery availability) |
@@ -821,7 +821,7 @@ remain required next work. No package release or customer migration is implied.
 
 ## Reconsideration evidence in read-only consumers
 
-The consumer contract (contract arrives in PR2; see delivery availability) now carries
+The [consumer contract](agents/ucs-1237-reconsideration-consumers.md) now carries
 retained material through the real context loader, bounded file-query API and
 query/intent/view CLIs. Route/context views also accept original assessment pairs;
 an actual promoted-Subject regression verifies that repaired omission. Tree mode

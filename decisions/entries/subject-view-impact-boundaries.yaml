@@ -1,0 +1,44 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:af9b885b-fddb-4a68-8b23-6844fb132605
+    title: Subject impact comparisons preserve supplied coverage and actual outputs
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      Lifecycle review needs separate route validity, display, candidate and
+      regenerated artifact changes. A missing saved-route inventory cannot
+      prove that an installation has no routes, and a partial query result
+      cannot prove a complete set difference. The P6 comparators support P8
+      composition but do not own discovery or publication. This proposal
+      records the implemented boundary without granting canonical approval.
+    decision: >
+      Accept explicit caller inventories and authenticate both canonical
+      captured models against their actual P2 governance handles, including
+      explicit empty inventories. Require one installation namespace. Preserve
+      caller capture labels as labels, not proof of committed provenance.
+      Execute the same authored query specification on both sides through P4;
+      compare candidates through one shared exact-output delta helper. Require
+      complete evaluation, rank, page and explanation coverage before exact
+      requested-category deltas. Compare regenerated views by invoking the
+      same artifact factory as the CLI with identical explicit options, keeping
+      raw text, UTF-8 byte hashes, statuses and resource counters. Incomplete
+      outputs retain null delta collections rather than empty differences.
+      Keep absent, partial and explicit complete-empty inventories distinct.
+    consequences: >
+      Complete supplied coverage is not complete installation discovery.
+      Required inventory classes, actual committed-source provenance, runtime
+      capability evidence and publication authorization remain with the
+      composing owners. A final policy may reject the generic comparator's
+      valid complete-empty diagnostic result. There is no fabricated historical
+      context, legacy-to-canonical fallback, saved-route catalog or automatic
+      authored-data rewrite. Alternatives rejected were inferring absence from
+      missing inventory, comparing only result prefixes, regenerating a second
+      implementation and promoting partial artifact lists into exact removal
+      claims. Evidence is in tests/subject-route-impact.test.js,
+      subject-view-impact.test.js and subject-query-delta.test.js. Contracts are
+      docs/agents/ucs-1239-route-impact.md and ucs-1239-regenerated-view-impact.md.
+      Consistency remains captured-model; no atomic filesystem snapshot or
+      full resource qualification is inferred from fingerprints.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000011, D-000022] }

@@ -1,0 +1,47 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:1fb58e0b-9e3f-48aa-bf35-114a56e216b0
+    title: Subject views separate semantic trees from contextual intersections
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      UCS-1239 and specification r3 sections 5, 8 and 11 require readable
+      Subject navigation without turning a display route into identity,
+      semantic ancestry or evidence approval. Reusing the Knowledge facet
+      renderer would couple the new registry to one content store. Persisting
+      every assignment subset would multiply output and make stale derived
+      state a tempting source of query truth. This record backfills rationale
+      for the explicitly released P6 implementation; implementation authority
+      does not promote this proposal or authenticate human review.
+    decision: >
+      Use one declared-lifecycle Subject forest and its existing P2 ancestor
+      traversal, with exact IDs beside readable labels. Keep semantic-path
+      objects distinct from explicit intersection objects. Compile ordered
+      intersection IDs into the existing P4 assigned/AND predicate rather
+      than implementing another evaluator. For one-step context counts,
+      enumerate assigned IDs in the selected record universe, adding actual
+      ancestors only in descendant mode; preserve the original predicate,
+      stores, lifecycle and applicability in each extra conjunction. Count
+      through P4's unpaged count sink. Keep zero counts explicit, order by
+      Subject ID and report candidate enumeration separately from count
+      completeness; do not claim global top contexts or materialize a powerset.
+      Generate only subjects/derived/tree.md and metadata.json through the
+      shared artifact factory. Compare freshly derived bytes for checks;
+      publish no artifact bundle on incomplete projection/rendering. Queries
+      consume captured authority independently of generated files.
+    consequences: >
+      Structural trees can run without Boolean query modules. Intersections
+      and counts inherit P4's real eligibility, unknown and ranking semantics;
+      co-assignment does not establish a joint source claim. Tree fingerprints
+      bind the full captured registry and rendering options; query fingerprints
+      additionally bind the relevant record inputs. Deleting generated files
+      preserves identity, assignments, history and query capability. Alternatives
+      rejected were a second predicate implementation, implicit label-path
+      resolution, permanent saved-context authority and eager subset trees.
+      Evidence is in tests/subject-views.test.js, subject-routes.test.js,
+      subject-contexts.test.js and subject-view-query-cli.test.js. Contracts are
+      docs/agents/ucs-1239-subject-views.md and ucs-1239-subject-contexts.md.
+      Fixture limits establish behavior, not production scale or retrieval quality.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000011, D-000022] }

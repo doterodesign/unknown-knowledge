@@ -1,4 +1,4 @@
-> Packaging stage 1/7, version `3.0.0-rc.2`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 2/7, version `3.0.0-rc.3`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -123,7 +123,7 @@ are implemented and now feed the dedicated split assignment/preservation and
 impact composition and the retained split publication profile (contract arrives in PR4; see delivery availability).
 Suppressed-proposal reconsideration has a separate
 history/model validator (contract arrives in PR3; see delivery availability);
-its query/intent/view consumers (contract arrives in PR2; see delivery availability) receive
+its [query/intent/view consumers](ucs-1237-reconsideration-consumers.md) receive
 retained material. The retained publication profile (contract arrives in PR4; see delivery availability)
 now provides actual-Git review and fresh candidate-ref publication. The
 material-continuation contract (contract arrives in PR4; see delivery availability) carries
