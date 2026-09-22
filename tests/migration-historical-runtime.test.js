@@ -3,6 +3,7 @@ import { test } from 'node:test';
 import { chmodSync, cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, symlinkSync, unlinkSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { capturePreparedRuntime } from '../payload/engine/lib/prepared-runtime.js';
 import { canonicalSha256 } from '../payload/engine/lib/canonical-json.js';
 import { rawSha256 } from '../payload/engine/lib/prepared-evidence.js';
@@ -11,7 +12,7 @@ import { verifyMigrationHistoricalRuntime } from '../payload/engine/lib/migratio
 const prefix = 'engine/compatibility/identity-migration-08066b5';
 const profile = JSON.parse(readFileSync(new URL('../payload/engine/policies/identity-migration-08066b5.json', import.meta.url)));
 function captured(t) {
-  const work = mkdtempSync('/private/tmp/migration-historical-runtime-');
+  const work = mkdtempSync(join(tmpdir(), 'migration-historical-runtime-'));
   t.after(() => rmSync(work, { recursive: true, force: true }));
   return capturePreparedRuntime(work, { maxRuntimeFiles: 1500, maxRuntimeBytes: 30000000,
     maxOutputBytesPerCheck: 1000000, maxCheckMilliseconds: 10000 }, 'identity-migration');
@@ -67,7 +68,7 @@ test('a profile artifact changed independently of the implementing fixed profile
 });
 
 function legacyFixture(t) {
-  const root = mkdtempSync('/private/tmp/migration-historical-source-');
+  const root = mkdtempSync(join(tmpdir(), 'migration-historical-source-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   cpSync(new URL('./fixtures/migration-08066b5/', import.meta.url), root, { recursive: true });
   return root;

@@ -349,5 +349,10 @@
     ],
     "disposition": "Required fixed installation guide moved from PR6 into PR4 and included in manifest; explicit notice and heading defer callable interfaces until PR6. All listed fixed assets verified present. Engine runtime bytes unchanged; cli/kit.manifest.yaml is the only engine/cli difference from the preserved initial tree. Every failed suite plus affected migration, installation, prepared-runtime and shared doc/init contracts rerun; original full run is not relabeled green."
   },
-  "validationScope": "Corrected affected suites plus preserved initial owning-suite results; no second full901-test run is claimed."
+  "validationScope": "Corrected affected suites plus preserved initial owning-suite results; no second full901-test run is claimed.",
+  "ciCorrection": {
+    "receipt": "pr-04-ci-correction.json",
+    "historicalBindingsPreserved": true,
+    "runtimeChanges": false
+  }
 }
