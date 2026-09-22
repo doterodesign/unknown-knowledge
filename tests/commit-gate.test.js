@@ -57,6 +57,9 @@ function setup(t) {
     writeFileSync(join(repo, path), text);
   };
   ok(git('init', '-q'));
+  // Keep automatic Git maintenance inside the command lifetime before teardown.
+  ok(git('config', 'gc.autoDetach', 'false'));
+  ok(git('config', 'maintenance.autoDetach', 'false'));
   ok(git('config', 'user.name', 'Hook Test'));
   ok(git('config', 'user.email', 'hook@example.test'));
   symlinkSync(join(root, 'node_modules'), join(repo, 'node_modules'), 'dir');
