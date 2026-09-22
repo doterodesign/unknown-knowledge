@@ -25,7 +25,7 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. 17 command-line surfaces: structural validator, value validator, preflight, resolver, survey map, reverse audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate, staged attribution, subject metadata lookup, governed subject queries, disposable subject-view artifacts, intent-plan validation, offline identity inventory. See the exact [command inventory](README.md#the-engine) and [delivery availability](docs/pr-delivery/README.md).
+**Engine** — The vendored deterministic code. 18 command-line surfaces: structural validator, value validator, preflight, resolver, survey map, reverse audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate, staged attribution, subject metadata lookup, governed subject queries, disposable subject-view artifacts, intent-plan validation, offline identity inventory, shared API invocation. See the exact [command inventory](README.md#the-engine) and [delivery availability](docs/pr-delivery/README.md).
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-000022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
 not decide what to do about them (D-000011).

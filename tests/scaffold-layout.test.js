@@ -54,7 +54,7 @@ test('package.json follows D-022 / D-016 conventions', () => {
   assert.ok(pkg.scripts?.lint, 'missing lint script');
   assert.deepEqual(
     Object.keys(pkg.dependencies ?? {}),
-    ['js-yaml'],
+    ['@modelcontextprotocol/server', 'js-yaml', 'zod'],
     'package dependencies are limited to YAML and the approved MCP transport',
   );
 });

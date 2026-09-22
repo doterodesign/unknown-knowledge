@@ -1,0 +1,160 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:7253be98-5bf4-4cfb-a13a-cdb28663d2f0
+    title: Proposed first interface preserves real lookup behavior and existing CLI output
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [pending-steward-review]
+    provenance: { author: codex-ucs-1244 }
+    context: >
+      P11 reviewed the actual lookup CLI at 1d00a01, query CLI at 945fe37,
+      governed view CLI at 644373a and intent validation CLI at 9efc3af.
+      Their command implementations were unchanged in combined source 819ef85.
+      These commands expose different JSON shapes and success meanings.
+      Engine-root JavaScript files are process shims under the existing
+      module-load and exit-code contracts, so a normal root api.js would conflict
+      with that convention. The following fields and mappings are unapproved
+      recommendations for an adjacent owner; this is not a supported API.
+    decision: >
+      Propose engine/api/index.js exporting ENGINE_INTERFACE_VERSION 1 and
+      async invoke. Require the closed request interfaceVersion, operation,
+      inputVersion, absolute repository root and input; refuse unknown fields,
+      unsupported versions and operation names before model loading. Use a
+      private static table with actual handlers and colocated metadata, first
+      engine.capabilities with empty input and later subject.lookup with text
+      and optional options containing P2 locale/context. This grouped input
+      refines the earlier unshipped flat locale/context proposal to match the
+      actual P2 signature. Discovery distinguishes an absent registration from
+      registered but unavailable authority. Healthy empty registry and completed
+      zero matches differ from absent, invalid or unreadable authority. Propose
+      an outer envelope with interfaceVersion, operation, outputVersion, status,
+      diagnostics and optional context/data; statuses are completed, refused or
+      failed. Malformed operation is null and an unselected output version is
+      null. Data exists only on completion; expected failures preserve owner
+      diagnostics and unexpected bugs retain their rejection identity.
+      Delegate all label normalization, matching and lifecycle semantics to P2,
+      retaining every candidate, proposal ID, status, definition and witness.
+      Keep the actual lookup CLI flags, human output, success JSON shape and
+      exit meanings through a documented projection from the new envelope.
+      Do not adapt the other CLIs or advertise their internal operations as
+      part of the first lookup slice.
+    consequences: >
+      The proposed nested entry preserves lazy CLI shims without changing the
+      root process guard. Shared domain execution prevents divergent matching
+      implementations; transport projection avoids an unnecessary CLI JSON
+      break. Successful lookup still establishes neither governed eligibility
+      nor evidence readiness. Static registration excludes dynamic callbacks,
+      caller code and unimplemented handlers. The public envelope, names and
+      failure mapping need explicit owner agreement and acceptance before any
+      implementation; future query/intent mappings must preserve their own
+      incomplete, refused and readiness states rather than inherit lookup
+      semantics. Detailed tables and examples remain in the P11 interface
+      decision-proposals artifact indexed by
+      docs/agents/ucs-1244-interface-preparation.md. No new dependency,
+      public operation, version bump or implementation is asserted here.
+
+      2026-09-20: Following explicit user authorization for API/MCP/CLI delivery,
+      integration and P2 agreed to implement the closed invoke envelope and
+      static registrations now, superseding the earlier adjacent-owner hold.
+      Add subject.query with explicit operationLimits, query, collect and all
+      three canonical wire evidence arrays. A completed outer envelope means
+      the native owner returned a report, not that its result is complete,
+      approved or eligible: preserve refused/incomplete native reports and
+      their counts, coverage and diagnostics in data. Admission or loading
+      refusals have no report; unexpected exceptions propagate. Each governed
+      invocation owns one allowance and one captured context, with no default
+      capacities. Keep existing CLIs stable and add a request-file CLI sharing
+      invoke. The npm MCP adapter will call this same API with a server-pinned
+      repository root; its official SDK dependency stays outside the seeded
+      engine. This avoids distributing transport dependencies into every kit.
+      Lookup remains declared metadata, without claiming governed operation
+      budgets. Protocol framing and serialized output limits must be described
+      separately from domain evaluation costs. Intent operations follow these
+      same owners; this delivery does not claim all P11 operations complete.
+      Evidence: payload/engine/api/index.js, tests/engine-interface.test.js;
+      implementation evidence is recorded after execution, not inferred from
+      this agreement. Publication status remains proposed.
+      Actual SDK review found that Zod record parsing removes an own __proto__
+      key from native documents, making an invalid query succeed only through
+      MCP. The adapter therefore passes query, plan, admission, operation policy
+      and lookup-request documents unchanged to their native validators, while
+      retaining strict outer tool argument schemas. This trades a generic
+      nested transport schema for faithful native validation; transport parsing
+      must never silently repair or broaden a refused query. The permanent
+      actual-client regression is in tests/engine-interface.test.js.
+      Subsequent P6 binding agreement: add subject.route and subject.contexts
+      with closed request/evidence/operationLimits input. Load one governed
+      context and invoke the existing intersection or context-count owner once;
+      do not pre-execute a query, duplicate predicate compilation or create an
+      extra allowance. Preserve the existing mode/result/contextDiagnostics
+      output, native coverage, zero counts and per-call accounting. The MCP
+      request is passed unchanged. This completes the read-only contextual
+      navigation bindings without exposing tree writes or new mutation powers.
+      Tests: tests/engine-interface-views.test.js. Existing P6 domain decisions
+      remain authoritative for meaning and limits; this adds transport only.
+      To make those formats discoverable outside an IDE, publish two fixed
+      read-only MCP resources for the package's engine-interface and
+      intent-retrieval guides. Map exact registered URIs to fixed package URLs;
+      never resolve a request URI against repository files. Label documentation
+      separately from evidence and apply the same explicit result-byte capacity
+      to the complete resource payload. Test real SDK list/read against the
+      shipped bytes, unknown-URI refusal and output-cap refusal. This avoids a
+      general file-read tool and keeps native input validation authoritative.
+      Subsequent preflight binding agreed by integration and P2: register
+      record.preflight with exact concepts and leaves string arrays and an
+      explicit today calendar date or null. Admit dense own-data arrays before
+      existing ID normalization. Load the selected installation freshly and
+      call runPreflight once with logging disabled. Preserve its complete native
+      payload, including store degradation, unknown/stale/quarantined verdicts,
+      skipped freshness and next-action codes. Empty selections retain native
+      store-health-only meaning; they do not establish individual record trust.
+      Do not reject a degraded model before its owner constructs that report.
+      The shared CLI maps native ok false to exit 2 and MCP to isError; the
+      specialized CLI retains its existing 0/1/2 contract. No logging option,
+      Decisions verdict, source-gather capability or Subject operation-budget
+      claim is introduced. This exposes the existing O/K trust check outside
+      the IDE without duplicating verdict logic. Native source review and
+      protocol conduct remain required. Implementation and transport evidence
+      belong in tests/engine-interface-preflight.test.js and the interface guide.
+      2026-09-21: Integration and P11 agreed the finite read-only adapter
+      frontier: the ten existing shared operations plus subject.tree, P4's
+      per-operation output-version work and integrated parity/documentation
+      closure. Add subject.tree with exact budget nodes/edges/rows and maxBytes
+      input, one real healthy-model load and the unchanged P6
+      deriveSubjectTreeArtifacts result. Expose the same preview through the
+      existing request CLI and subject_tree MCP tool. Native incomplete reports
+      remain in data under outer completed, with shared CLI exit 2 and MCP
+      isError true; only native complete is transport success. Missing or
+      invalid authority does not become an empty tree. Preserve raw native
+      budget fields through MCP and reject unknown or accessor fields at the
+      interface boundary. The preview returns artifact text but never reads,
+      writes or checks saved derived files; the specialized CLI retains its
+      distinct drift and mutation behavior. Native maxBytes covers rendered
+      tree text including its banner, while transport caps bound full response
+      serialization. This closes the missing structural browsing consumer path
+      without publishing internal helper tools or implying governed operation
+      accounting, source approval or atomic snapshots. Domain mutation delivery
+      remains required under its owners; mutation MCP tools, Decision search,
+      general source access and the entire adjacent project are not adapter
+      prerequisites. The initial unsupported-operation failure, transport-success
+      mapping failure and missing MCP registration failure are retained as
+      development receipts. Native/API/request-CLI/official-SDK, copied-engine,
+      incomplete/empty/absent/corrupt-authority, exact output-capacity and no-write
+      evidence is in tests/engine-interface-tree.test.js. Root version and final
+      combined acceptance remain integration-owned. Publication status remains
+      proposed; this implementation agreement assigns no canonical approval.
+      The final interface checkpoint exposed a test assumption that every CLI
+      resolves a default root through process.cwd. MCP and invoke deliberately
+      require explicit paths, so their crash controls now target the exact
+      main-time package/request file access with valid arguments. Preserve the
+      internal-failure and injected-marker assertions: usage and module-load
+      errors must not pass as handler proof. Both commands use the repository's
+      shared parseFlags import convention without changing the parser. A source
+      export lacking Git metadata cannot run the tracked-fixture audit control;
+      rerun the affected exit-code suite in the actual Git checkout rather than
+      weaken its finding expectations. Preserve the original failed checkpoint.
+    relates-to:
+      concepts: []
+      leaves: []
+      decisions: [proposal:decision:d3ac3274-bb5e-4d45-824b-bc2a5ef63687, D-000007, D-000014, D-000021, D-000022]
