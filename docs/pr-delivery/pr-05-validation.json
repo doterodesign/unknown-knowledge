@@ -1,0 +1,50 @@
+{
+  "base": "febfa8d594dcc77b904e8a90f658f4d7453d2cc5",
+  "version": "3.0.0-rc.6",
+  "scope": "P9: durable reflection review, evidence accounting, resume/heartbeat and source-review conduct. Canonical logging and prior outcomes already arrived with PR1.",
+  "tests": {
+    "tests": 64,
+    "pass": 64,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "files": 668,
+    "failures": 0
+  },
+  "acceptance": {
+    "automated": "A1\u2013A4/A6 passed",
+    "manualA5": "not run"
+  },
+  "logs": [
+    {
+      "name": "pr5-tests.log",
+      "sha256": "1aafbc753778e042c3b635fa3f69f1496038d9889f741415a178f791f4a96250",
+      "bytes": 6086,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr5-lint.log",
+      "sha256": "d937dd19926b301f18951ead1531557a3b4d4d6f97d912c02fc45c560eb52045",
+      "bytes": 97,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr5-acceptance.log",
+      "sha256": "557f3d56de5875218312a35b0c1f0f206177c61405e491f38a58b2c5da3c739d",
+      "bytes": 7246,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    }
+  ],
+  "historicalReference": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "historicalEvidenceReuse": "Unchanged earlier layers retain their prior receipts. These checks execute the new owning suites and shared inventory/contracts at this assembled tree; they are not a new reader study or full historical rerun.",
+  "testFiles": [
+    "tests/context-glossary.test.js",
+    "tests/exit-code-contract.test.js",
+    "tests/init.test.js",
+    "tests/knowledge-reflect.test.js",
+    "tests/readme.test.js",
+    "tests/scaffold-layout.test.js"
+  ]
+}

@@ -8,7 +8,7 @@ protocol. Preserve fresh-agent traces; do not mark boxes from a prompt assertion
 All source documents and steward decisions below are synthetic fixtures, never
 approval to change live company knowledge.
 
-The UCS-1242 decision and evidence note (contract arrives in PR5; see delivery availability)
+The [UCS-1242 decision and evidence note](../docs/agents/ucs-1242-retrieval-governance.md)
 links the later durable-review, navigation and optional-Subject rationale.
 Historical run reports remain evidence for their own frozen runtime and inputs;
 later protocol changes do not reclassify them as successful runs.

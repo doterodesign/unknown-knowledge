@@ -14,7 +14,7 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
-> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+> Packaging stage 5/7, version `3.0.0-rc.6`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 
 The 3.0 pilot is available explicitly with
@@ -61,7 +61,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+> Packaging stage 5/7, version `3.0.0-rc.6`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 Seventeen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
 
