@@ -12,9 +12,37 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Quickstart
+## Planned 3.0.0-rc.8 — unreleased
 
-See the [versioned draft delivery stack](docs/pr-delivery/README.md) for current packaging status.
+`unknown-knowledge@3.0.0-rc.8` is the planned prerelease represented by the
+[seven-PR delivery stack](docs/pr-delivery/README.md). Merging the stack into
+`main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1
+installations. The install commands below remain unchanged.
+
+The prepared implementation adds:
+
+- Permanent six-digit record IDs (`K-NNNNNN`, `O-NNNNNN`, `D-NNNNNN`) within each
+  installation, plus optional stable Subjects. A record can have multiple
+  Subject assignments; each Subject has at most one parent, with typed related
+  links kept separate from ancestry.
+- Governed Subject queries and intent execution, with eleven read operations
+  shared by the API, request-file CLI and local stdio MCP server.
+
+Existing stores require the explicit [reviewed migration process](docs/migration-3.md)
+before adopting the new identity format; check its supported source profiles.
+Backward ID aliases are not supported.
+
+**The bounded held-out evaluation regressed:** source-supported task completion
+fell from **15/18 to 10/18**, across 36 sessions: six cases, three runs per
+condition. This compares the pinned original and evaluated implementation in
+the report, not npm 2.1.0 directly against an rc.8 package. Deterministic contract
+tests check engine behavior; they do not establish that an agent interprets a
+request correctly or inspects adequate source evidence. Retrieval improvement
+and production or overall nonregression qualification have not been established.
+See the [approved report](acceptance/retrieval/review-packet/REPORT.md) and
+[qualification limits](acceptance/retrieval/FINAL-RESULTS.md).
+
+## Quickstart
 
 The 3.0 pilot is available explicitly with
 `npx unknown-knowledge@3.0.0-rc.1 init`. The stable `latest` channel remains

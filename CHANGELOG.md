@@ -15,6 +15,8 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [3.0.0-rc.8] - Unreleased
 
+- Clarify the planned unreleased rc.8 package, identity/interface changes, reviewed migration requirements and bounded held-out completion regression near the top of the README.
+
 - Retain the completed bounded evaluation, adverse public and held-out outcomes, sanitized approved reports and exact cross-stack ownership ledger.
 - Review scope, Decisions and validation: [PR 7](docs/pr-delivery/pr-07.md).
 

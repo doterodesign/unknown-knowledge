@@ -32,4 +32,15 @@ entries:
       acceptance/retrieval/evaluate.js, acceptance/retrieval/README.md and
       tests/retrieval-acceptance.test.js. Full-spec scope and public results are
       indexed in acceptance/retrieval/DECISIONS-AND-EVIDENCE.md.
+      PR7 adds a prominent README overview of the planned unreleased rc.8
+      package and the evaluated implementation's bounded held-out completion
+      regression. Keep the pinned implementation comparison separate from npm
+      version claims, and deterministic contract checks separate from agent
+      interpretation and source-supported completion. This makes the existing
+      evidence limits visible before installation guidance; it establishes no
+      production qualification, retrieval improvement or overall nonregression.
+      The user-requested clarification is documentation authorization, not
+      acceptance or publication of this proposed Decision. Supporting evidence:
+      README.md, acceptance/retrieval/review-packet/REPORT.md and
+      acceptance/retrieval/FINAL-RESULTS.md.
     relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000007", "D-000011"]}

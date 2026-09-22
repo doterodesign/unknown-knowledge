@@ -3,8 +3,8 @@
   "reference": "2491646386ee88d48891a3ed92845f1066bd59f7",
   "referenceTree": "77d2a68c775fc7450b1dbc49e96a3d433d796a60",
   "intendedPaths": 1580,
-  "matchingFinalPaths": 1529,
-  "explicitExceptions": 51,
+  "matchingFinalPaths": 1528,
+  "explicitExceptions": 52,
   "unexpectedImplementationDifferences": [],
   "unrelatedBaselineChanges": [],
   "ownership": "Each integration path has one owning PR; shared file transitions are enumerated separately, including early compatibility changes before final ownership. New review artifacts live only under docs/pr-delivery and acceptance/retrieval/review-packet. The final head/tree and complete added-artifact inventory are supplied by the terminal GitHub checkpoint to avoid a self-referential tree hash.",
@@ -3417,7 +3417,7 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "3fc914d1c6eaf0f75e66ad1a71107fa162253047"
+        "blob": "5f625055ba2add81227f4d96cbc357ed2ac977cd"
       },
       "matchesReference": false,
       "exception": "Seven Unreleased prerelease entries and same-PR CI correction notes; rc1 and older history remains byte-identical.",
@@ -3496,12 +3496,12 @@
           },
           "after": {
             "mode": "100644",
-            "blob": "3fc914d1c6eaf0f75e66ad1a71107fa162253047"
+            "blob": "5f625055ba2add81227f4d96cbc357ed2ac977cd"
           }
         }
       ],
       "referenceSHA256": "defd2bd7f53ec0b56d33997c91dc4a9e0e878509198a6444302b22a1319f392a",
-      "finalSHA256": "0479cf49b358c3772fd138ec301ec7da17dd33fbbbcc72a9ce5fb088d6888b74"
+      "finalSHA256": "85009c5cd99201bdb7961b2cc172aed2e691cf1af5897c91673dd8083f0d9eb1"
     },
     {
       "path": "CONTEXT.md",
@@ -3610,10 +3610,10 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "4caf50883cb5c55df5f49a9c49ff14cc65f013e4"
+        "blob": "8689548937d5aec44ca7723d6e85e5e5c5f3de63"
       },
       "matchesReference": false,
-      "exception": "One delivery-stack navigation paragraph added; remaining README exactly reference.",
+      "exception": "Exact near-top planned rc8 overview: release status, identity/interface scope, reviewed migration, bounded regression and evidence links; installation commands and remaining README exactly reference.",
       "transitions": [
         {
           "pr": 1,
@@ -3689,12 +3689,12 @@
           },
           "after": {
             "mode": "100644",
-            "blob": "4caf50883cb5c55df5f49a9c49ff14cc65f013e4"
+            "blob": "8689548937d5aec44ca7723d6e85e5e5c5f3de63"
           }
         }
       ],
       "referenceSHA256": "3907259ae6eaa011b34bb557dd448f215577c64980ee2db6209eb6972e02cb44",
-      "finalSHA256": "e9b977725e6ad9d8be6d01e94a9ff9bbf4e37a22ef5ca0c4b778cc981a84934b"
+      "finalSHA256": "53831f39a728c8e46e33c42473fa264b4fb83160b438cc9440cc749322928b98"
     },
     {
       "path": "_identity.yaml",
@@ -7905,20 +7905,22 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "f68da526f8187be319ae80f6a6fe3c029f4c518a"
+        "blob": "31cde71124acf4bba36e85deba629f42dff904f2"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Exact appended README evidence-scope rationale in existing proposed Decision; original content/key/status/catalog preserved.",
       "transitions": [
         {
           "pr": 7,
           "before": null,
           "after": {
             "mode": "100644",
-            "blob": "f68da526f8187be319ae80f6a6fe3c029f4c518a"
+            "blob": "31cde71124acf4bba36e85deba629f42dff904f2"
           }
         }
-      ]
+      ],
+      "referenceSHA256": "445aed0a4ce740b57556724f410af286596cb0ff4d4ca8764d10c874015b6fc2",
+      "finalSHA256": "f80dc0abda815e3f469a262f6048a875b98f2388e53fe2b456b09643732092a0"
     },
     {
       "path": "decisions/entries/retrieval-operational-qualification.yaml",

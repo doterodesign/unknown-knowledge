@@ -1,7 +1,7 @@
 {
   "base": "5ac00e46c177f89f08c91da38140b7185f1f78d6",
   "version": "3.0.0-rc.8",
-  "scope": "P10 and cross-stack evidence: independent deterministic evaluation tools, public synthetic corpus, preserved public/held-out results and the approved anonymous portable final packet.",
+  "scope": "P10 and cross-stack evidence: independent deterministic evaluation tools, public synthetic corpus, preserved public/held-out results and the approved anonymous portable final packet. Prominent README overview of the planned unreleased rc.8 package, migration requirements and bounded evaluation regression.",
   "tests": {
     "tests": 99,
     "pass": 99,
@@ -59,11 +59,11 @@
     "logSHA256": "b68173bb3c5992266d0ba9f14cd725c521effa01d53b321858d34d7947a0f325",
     "disposition": "Real Git replacement test clones current committed HEAD, which was still PR6 and lacked the new retrieval harness directory. Commit the local PR7 candidate, then rerun unchanged tests at that exact head; no assertion or test behavior changed."
   },
-  "candidateDisposition": "Unchanged99 tests pass at the committed candidate; the final follow-up changes only delivery evidence. Original98/99 precommit failure is retained and not relabeled.",
+  "candidateDisposition": "Unchanged99 tests pass at the committed candidate; the 9b228c3 follow-up records evidence. The later README overview and proposed Decision clarification receive separate focused documentation checks; historical tests and agent results are not rerun or relabeled.",
   "coverage": {
     "intendedPaths": 1580,
-    "matchingReference": 1529,
-    "explicitExceptions": 51,
+    "matchingReference": 1528,
+    "explicitExceptions": 52,
     "unexpectedImplementationDifferences": 0,
     "unrelatedBaselineChanges": 0,
     "restoredHistoricalDocumentPaths": 37,
@@ -75,5 +75,33 @@
     "allOriginalAndPortableHashesVerified": true,
     "sourceBindingsOpened": false,
     "privacy": "No private questions, answers, judgments, journals or reader children opened/exported."
+  },
+  "readmeOverview": {
+    "priorHead": "9b228c3be253bcd8cdc95902b5fb0b8fe7184711",
+    "scope": "Near-top planned/unreleased package status, identity and interface changes, reviewed migration and pinned-evaluation regression; existing proposed scoring Decision records evidence distinctions.",
+    "tests": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "command": "node --test tests/readme.test.js"
+    },
+    "localReadmeLinks": "all resolve",
+    "existingFencedCommandBlocks": "byte-identical to prior head",
+    "versionGuard": "3.0.0-rc.7 \u2192 3.0.0-rc.8; both lock fields and changelog agree",
+    "readmeSHA256": "53831f39a728c8e46e33c42473fa264b4fb83160b438cc9440cc749322928b98",
+    "decisionSHA256": "f80dc0abda815e3f469a262f6048a875b98f2388e53fe2b456b09643732092a0",
+    "logs": [
+      {
+        "name": "pr7-readme-rc8-tests.log",
+        "sha256": "c1e5bf7b2af468ec0aced1c837e750e571fec98ed107f0c65a5718e11afc6cdf",
+        "bytes": 720
+      },
+      {
+        "name": "pr7-readme-rc8-version.log",
+        "sha256": "1d3ff302029c3504c859cd82595a77715887ee41b59b9510a3786e23a287e726",
+        "bytes": 75
+      }
+    ],
+    "newReaderOrFullSuiteExperiment": false
   }
 }
