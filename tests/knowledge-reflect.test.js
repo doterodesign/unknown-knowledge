@@ -71,9 +71,9 @@ test('the §8 hygiene rules: archived-with-a-rollup-note after N cycles; dispute
   assert.match(doc, /the map is never the fact/);
 });
 
-test('the last-reflect stamp: engine-readable, per-item approval outcome by category', () => {
+test('the last-reflect summary carries current-cycle gate outcomes by category', () => {
   assert.ok(doc.includes('logs/last-reflect.yaml'));
-  assert.match(doc, /outcomes:\s+# per-item approval outcome BY CATEGORY/);
+  assert.match(doc, /outcomes: \{\}\s+# per-item approval outcome BY CATEGORY/);
   assert.match(doc, /days-since-last-reflect/);
   // The closed change-category vocabulary the graduation trigger measures.
   for (const category of ['concept-fix', 'alias-addition', 'ssot-repoint', 'scope-widen', 'knowledge-promotion', 'extractor-draft', 'mint-proposal']) {
@@ -116,7 +116,7 @@ test('"three distinct fragments" is defined ONCE, and counts events rather than 
   assert.match(doc, /\*\*independent resolution\s+events, not files\.\*\*/);
   // The case ruled out, and the case admitted, both stated.
   assert.match(doc, /That is \*\*one\*\* data point wearing three\s+filenames/);
-  assert.match(doc, /Each date in `occurrences` is a\s+genuinely separate occasion/);
+  assert.match(doc, /rows alone do not prove independence/);
   // Defined once: the evidence standard points at the definition instead of
   // restating it, so the two cannot drift.
   assert.match(doc, /defined in full under Minting conduct below/);

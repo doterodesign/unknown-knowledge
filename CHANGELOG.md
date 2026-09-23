@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.0.0-rc.6] - Unreleased
+
+- Preserve prior finding outcomes when reopening and document governed reflection, durable review and source/evidence conduct.
+- Review scope, Decisions and validation: [PR 5](docs/pr-delivery/pr-05.md).
+
 ## [3.0.0-rc.5] - Unreleased
 
 - Make historical-runtime test directories portable and keep split-publication fault fixtures in loose Git storage; verify that source deletion takes effect before refusal checks.

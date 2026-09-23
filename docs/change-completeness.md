@@ -1,4 +1,4 @@
-> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+> Packaging stage 5/7, version `3.0.0-rc.6`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
 
@@ -149,7 +149,7 @@ pending at that owner-only snapshot; no PR, tag, release, runtime approval or cu
 | P6 generated views | [Coverage audit](agents/ucs-1239-decisions-and-docs.md) |
 | P7 migration, review and publication | [Coverage audit](agents/ucs-1240-decision-and-documentation-audit.md) |
 | P8 assignment history and gates | [Coverage audit](agents/ucs-1241-documentation-audit.md) |
-| P9 reflection and retrieval conduct | Coverage audit (contract arrives in PR5; see delivery availability) |
+| P9 reflection and retrieval conduct | [Coverage audit](agents/ucs-1242-retrieval-governance.md) |
 | P10 evaluation | Decisions, evidence and remaining acceptance (contract arrives in PR7; see delivery availability) |
 | P11 interface preparation | Proposed contracts and unresolved scope (contract arrives in PR6; see delivery availability) |
 
