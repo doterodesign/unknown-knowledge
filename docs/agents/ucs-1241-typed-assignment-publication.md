@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -30,7 +30,7 @@ continuation uses version 2, its original digest and actual cumulative allowance
 Event schema version 2 and `operation: existing-subjects` remain unchanged.
 
 The fixed workers carry the original selection into the existing owner. At final
-execution and review, prepared-assignment-binding.js (contract arrives in PR4; see delivery availability)
+execution and review, [prepared-assignment-binding.js](../../payload/engine/lib/prepared-assignment-binding.js)
 first verifies canonical retained input bytes, the actual source/candidate/runtime
 bindings and the completed operation's injected-input digest. Only then does own
 selection presence choose the top-level `typedSubjectAssignment` descriptor:
@@ -167,13 +167,13 @@ and the original 125/126 receipt is not relabeled as an all-green batch.
 The freeze
 at `local-history:unknown-knowledge-typed-assignment-freeze.json` pins 322 native
 runtime/dependency files, 15 source/helper/test overlays and Node/Git executables.
-Owner tests are typed-assignment-publication.test.js (contract arrives in PR4; see delivery availability)
-and typed-assignment-retained-binding.test.js (contract arrives in PR4; see delivery availability);
-the independent file is typed-assignment-publication-review.test.js (contract arrives in PR4; see delivery availability).
+Owner tests are [typed-assignment-publication.test.js](../../tests/typed-assignment-publication.test.js)
+and [typed-assignment-retained-binding.test.js](../../tests/typed-assignment-retained-binding.test.js);
+the independent file is [typed-assignment-publication-review.test.js](../../tests/typed-assignment-publication-review.test.js).
 
 Fresh-identity union/broadening, proposal refusal/reversal acceptance and remaining
 registry-transition publication remain separate required work under the
-clarified lifecycle scope (contract arrives in PR4; see delivery availability). The separate
-zero-use equivalent-merge profile (contract arrives in PR4; see delivery availability) is now implemented.
+[clarified lifecycle scope](subject-lifecycle-required-scope.md). The separate
+[zero-use equivalent-merge profile](ucs-1240-equivalent-merge-zero.md) is now implemented.
 Standalone material inventory is not an additional public
 completion gate. This evidence grants no runtime/customer approval or release.

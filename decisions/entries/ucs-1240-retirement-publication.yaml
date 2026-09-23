@@ -1,0 +1,41 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:451f33be-ce10-4701-99c9-a42463d7d930
+    title: Retirement publication binds event-independent authority and exact fresh owner evidence
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      Plain retirement has both nonempty assignment withdrawal and actual zero-use
+      branches. Requiring an assignment event for every publication would invent
+      history for zero use; taking authority only from that event would omit the
+      Decision that authorizes a registry-only retirement.
+    decision: >
+      Add the fixed subject-retirement-publication-v1 profile while retaining the
+      original owner wire/report. Require the same five-field Decision tuple in
+      the raw selected registry event, owner evidence and positive assignment
+      event. Bind the original input and both explicit raw capture limits. Zero
+      use requires a registry-only preservation proof, empty affected sets and
+      explicit null assignment evidence; positive use requires the complete
+      nested assignment proof. Retain the registry on both branches and the event
+      only on the positive branch. Recompute the actual owner and complete raw
+      captures under the exact reviewed runtime before review and publication,
+      then reuse the shared final candidate-ref compare-and-swap transaction.
+    consequences: >
+      Operator authorization remains separate from the registry review reference.
+      Receipts use the verified Decision independently of event presence. Fixed
+      success admission checks original-input binding, exact check outcomes,
+      resource consistency and branch-specific evidence. Deep JSON exhaustion
+      refuses locally; parsed JSON is the transport precondition. Share only
+      lifecycle wire decoding with equivalent merge, preserving its old refusal
+      behavior; do not add a generic policy executor or relax merge proof rules.
+      Missing runtime entrypoints refuse rather than fall back to old v1 reports.
+      Qualified reach and expected refusal evidence remain qualified. Raw capture
+      caps do not claim bounds on earlier parsing or native Git allocations.
+      Tests use actual SHA1 and SHA256 repositories, including nested kits, not
+      padded hashes. No public CLI/MCP or agent workflow is added. See
+      docs/agents/ucs-1240-final-retirement.md and its verification record.
+      This implementation decision remains proposed and grants no actual runtime
+      approval, operator authorization, release or customer publication.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4, proposal:decision:2ecdcbd2-7c95-40e7-a4e0-2cbe7959b822] }

@@ -27,4 +27,18 @@ entries:
       worker output is reduced to static failures. New operations require
       explicit runner, entrypoint and readback admission rather than falling
       through an existing branch. Bounded logical work is not a hard heap bound.
+      Linux CI on 2026-09-22 exposed test setup assumptions. Historical-runtime
+      fixtures now use the platform temporary directory rather than a macOS-only
+      path. Split-publication fixtures disable automatic Git collection and
+      maintenance before their first commit because deliberate loose-object
+      deletion needs stable storage; an explicit cat-file refusal confirms the
+      selected source is unavailable before checking fresh publication refusal.
+      Induced repacking reproduced the loose-file assumption while preserving
+      the commit through Git, but the original CI packing mechanism was not
+      observed. Keeping detached maintenance synchronous would still permit
+      packing; skipping packed objects would not exercise the intended fault.
+      Runtime bytes and original missing-source/refusal/restoration assertions
+      remain unchanged. See docs/pr-delivery/pr-04-ci-correction.json for failed
+      run bindings and focused evidence. Coordinator review authorized this
+      fixture correction, not acceptance or publication of this Decision.
     relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:00000000-0000-4000-8000-000000000024] }

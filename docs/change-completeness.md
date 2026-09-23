@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
 
@@ -32,7 +32,7 @@ The shared interface increment records subsequent decisions in the existing
 P11 contract (contract arrives in PR6; see delivery availability),
 with its existing exact catalog row. It updates package/lock dependency and bin
 metadata, README, CONTEXT, protocol AGENTS, the seeded
-interface guide (contract arrives in PR6; see delivery availability), manifest, P11 status,
+[interface guide](../payload/protocol/engine-interface.md), manifest, P11 status,
 publishing guidance and this coverage record. Existing query/store schemas are
 unchanged because the adapters call their owners. Root AGENTS and platform
 wrappers already delegate to the canonical protocol, so their instructions
@@ -57,13 +57,13 @@ derive the proposal set from the catalog so adding a decision does not require
 maintaining a second fixed inventory in test code.
 
 Later integrated work records [single-pass identity-result admission](../decisions/entries/single-pass-record-result-admission.yaml)
-and equivalent-merge publication (contract arrives in PR4; see delivery availability)
+and [equivalent-merge publication](../decisions/entries/ucs-1240-equivalent-merge-publication.yaml)
 separately. Their owner contracts describe the changed accounting and the exact
 publication evidence; neither establishes operational capacity or broader
 lifecycle completion.
 
-The Decisions-only promotion publication profile (contract arrives in PR4; see delivery availability)
-extends the existing reviewed-publication rationale (contract arrives in PR4; see delivery availability).
+The [Decisions-only promotion publication profile](agents/ucs-1240-final-promotion.md)
+extends the existing [reviewed-publication rationale](../decisions/entries/ucs-1240-reviewed-candidate-publication.yaml).
 It preserves the original domain proof and adds retained/fresh evidence through
 the final candidate-ref transaction. This change adds internal library support;
 it introduces no public CLI, MCP tool, schema or agent-wrapper workflow.
@@ -75,7 +75,7 @@ retains full public re-admission and explicit limits; reduced duplicate work
 does not establish operational qualification. Query schema, CLI flags, generated
 views, and agent instructions retain their existing contracts.
 
-The finite migration profile (contract arrives in PR4; see delivery availability) now includes
+The [finite migration profile](agents/ucs-1240-final-migration.md) now includes
 actual historical/current operational-log validation and Phoenix edition
 preservation. Its version-3 publication policy requires that additional evidence;
 the original mechanical input contract and isolated historical runtime remain
@@ -106,7 +106,7 @@ implements exact withdrawal and zero-use validation under its
 [recorded decision](../decisions/entries/plain-subject-retirement.yaml). It preserves
 old history and reviewed historical/inherited uses, and requires actual reach,
 tree and fixed historical/refusal replay evidence. The ordinary assignment and
-merge contracts remain separate. The later retirement publication profile (contract arrives in PR4; see delivery availability)
+merge contracts remain separate. The later [retirement publication profile](agents/ucs-1240-final-retirement.md)
 adds the independently reviewed retention and final transaction boundaries.
 
 Affected README, changelog, P2 governance/design/audit, P8 event/replay/audit and
@@ -141,13 +141,13 @@ pending at that owner-only snapshot; no PR, tag, release, runtime approval or cu
 
 | Area | Rationale, contracts and scope limits |
 | --- | --- |
-| P1 identity, validation and promotion | [Identity](../decisions/entries/ucs-1234-identities-runtime-promotion.yaml), [runtime evidence](../decisions/entries/retained-runtime-validation-and-publication.yaml), [promotion rationale](../decisions/entries/ordinary-decision-promotion-proof.yaml), validation (contract arrives in PR4; see delivery availability), [promotion](agents/ucs-1234-decision-promotion.md) |
+| P1 identity, validation and promotion | [Identity](../decisions/entries/ucs-1234-identities-runtime-promotion.yaml), [runtime evidence](../decisions/entries/retained-runtime-validation-and-publication.yaml), [promotion rationale](../decisions/entries/ordinary-decision-promotion-proof.yaml), [validation](agents/ucs-1234-prepared-validation.md), [promotion](agents/ucs-1234-decision-promotion.md) |
 | P2 Subject governance | [Coverage audit](agents/ucs-1235-decisions-and-docs.md) |
 | P3 record assignments | [Assignment contract and decisions](agents/ucs-1236-subject-assignments.md) |
 | P4 query and operation limits | [Query contract](agents/ucs-1237-subject-query.md), [query rationale](../decisions/entries/captured-subject-query-semantics.yaml), [operation admission](../decisions/entries/subject-operation-admission.yaml), [history validation](../decisions/entries/incremental-subject-history-validation.yaml), [call-local reuse](../decisions/entries/call-local-subject-authorizer-reuse.yaml) |
 | P5 agent intent | [Coverage audit](agents/ucs-1238-decisions-and-docs.md) |
 | P6 generated views | [Coverage audit](agents/ucs-1239-decisions-and-docs.md) |
-| P7 migration, review and publication | Coverage audit (contract arrives in PR4; see delivery availability) |
+| P7 migration, review and publication | [Coverage audit](agents/ucs-1240-decision-and-documentation-audit.md) |
 | P8 assignment history and gates | [Coverage audit](agents/ucs-1241-documentation-audit.md) |
 | P9 reflection and retrieval conduct | Coverage audit (contract arrives in PR5; see delivery availability) |
 | P10 evaluation | Decisions, evidence and remaining acceptance (contract arrives in PR7; see delivery availability) |
@@ -167,7 +167,7 @@ read-only proof for O records, including positive assignments and retained histo
 The subsequent v3 profile adds classified Decision promotion and its exact
 retained publication path. Broader lifecycle, bootstrap and acceptance obligations
 remain distinct from this implemented homogeneous proposal-promotion support. P7's separate
-K/O/D publication profile (contract arrives in PR4; see delivery availability) now
+[K/O/D publication profile](agents/ucs-1240-final-record-promotion.md) now
 retains and reruns the actual O proof through review and the candidate-ref CAS. The gate's
 [decision](../decisions/entries/ucs-1241-typed-promotion-design.yaml) records the
 approved implementation boundary and the remaining work.
@@ -225,11 +225,11 @@ The subsequent full integration run at
 `3f8edc04375b52ac6ffa7b4f8b9c343658784f85` passed **2411/2411 tests**,
 including the Ontology gate and retained publication path. Lint (467 files),
 structural/value validation and automated A1–A4/A6 acceptance passed; A5 remains
-manual. The P7 audit (contract arrives in PR4; see delivery availability)
+manual. The [P7 audit](agents/ucs-1240-decision-and-documentation-audit.md)
 records the exact tested commit, original failures and current version check.
 The broader open scope above remains open.
 
-The subsequent O/K v2 profile (contract arrives in PR4; see delivery availability) adds
+The subsequent [O/K v2 profile](agents/ucs-1240-final-record-promotion.md) adds
 Knowledge with actual leaf lifecycle/preflight and exact retained evidence.
 The existing domain and reviewed-publication decisions record peer agreement
 and policy changes; the catalog entries retain their identities. Current README,
@@ -244,7 +244,7 @@ passed **2422/2422 tests**, with no failures, cancellations or skips. Lint check
 acceptance passed, and 152 changed-document local links resolved. A5 remains
 manual. These results do not complete the remaining P1–P11 scope.
 
-The K/O/D v3 profile (contract arrives in PR4; see delivery availability) adds classified
+The [K/O/D v3 profile](agents/ucs-1240-final-record-promotion.md) adds classified
 Decisions through the existing planner and typed history/impact checks. Its owner
 report v2 records the exact Decision-only preflight inapplicability; it does not
 invent a verdict or waive other checks. Existing domain/publication Decisions
@@ -264,8 +264,8 @@ operational/agent acceptance requirements are not declared complete by this run.
 
 ## Retirement publication follow-up
 
-The publication Decision (contract arrives in PR4; see delivery availability)
-and contract (contract arrives in PR4; see delivery availability) record the later eventless
+The [publication Decision](../decisions/entries/ucs-1240-retirement-publication.yaml)
+and [contract](agents/ucs-1240-final-retirement.md) record the later eventless
 retirement proof, mandatory Decision tuple, shared decoder mechanics and fixed
 publication policy. Earlier full-suite results above remain historical owner
 verification, not proof of this later implementation. Current verification is
@@ -473,10 +473,10 @@ test and acceptance logs retain the same `unknown-knowledge-split-gate-` prefix.
 
 ## Prepared split transport
 
-The publication Decision (contract arrives in PR4; see delivery availability)
+The [publication Decision](../decisions/entries/ucs-1240-split-publication.yaml)
 and its single catalog row capture the agreed phase separation, original
 evidence preservation, candidate-only identity capacity and fixed private reuse.
-The transport guide (contract arrives in PR4; see delivery availability) describes the
+The [transport guide](agents/ucs-1240-prepared-split-transport.md) describes the
 implemented wire/report and actual candidate-byte boundaries. Shared README,
 changelog, split design, prepared-runner guidance and P7 audit now agree on this
 scope. Workers, artifact persistence, actual original Git/allocation review,
@@ -500,7 +500,7 @@ This is evidence of the cap distinction, not original-source publication proof.
 Final focused integration passed **113/113** in 33299.164792ms (session 37908,
 exit 0), including all three new test files. Legacy decoder, reader, retirement
 and equivalent-merge transport regression passed **89/89** in 23178.189583ms
-(session 97418, exit 0). The transport receipt (contract arrives in PR4; see delivery availability)
+(session 97418, exit 0). The [transport receipt](agents/ucs-1240-prepared-split-transport.md#stage-1-validation-receipt)
 records exact commands and log paths; earlier overlapping runs are not summed.
 Lint checked 534 files with zero failures; structural/value checks have no
 findings with expected missing-store warnings. Automated A1–A4/A6 passed; A5
@@ -512,9 +512,9 @@ approval, PR, release or customer publication is inferred.
 
 ## Split workers and fresh final verification
 
-The publication Decision (contract arrives in PR4; see delivery availability)
+The [publication Decision](../decisions/entries/ucs-1240-split-publication.yaml)
 now also records failed-owner diagnostic retention and cleanup acknowledgement.
-The implemented slice (contract arrives in PR4; see delivery availability) includes
+The [implemented slice](agents/ucs-1240-prepared-split-validation.md) includes
 real prepared/final split workers, fixed runtime registration, retained artifacts
 and the fresh final gate. Scoped verification is recorded below; it does not
 establish review recording or publication completion.
@@ -622,9 +622,9 @@ shared fixtures were unchanged.
 
 ## Split review and publication
 
-The publication Decision (contract arrives in PR4; see delivery availability)
+The [publication Decision](../decisions/entries/ucs-1240-split-publication.yaml)
 records the fixed adapter and independent evidence responsibilities. The
-review/publication guide (contract arrives in PR4; see delivery availability) describes
+[review/publication guide](agents/ucs-1240-split-review-publication.md) describes
 the four actual authority captures, fifth positive-use event capture, one fresh
 local allowance and single native allocation comparison. Current authorizer
 semantics and declared historical Decision provenance are checked by the actual
@@ -686,7 +686,7 @@ all four format/branch controls, original-pair/source/allocation/mode/raw-tuple
 checks, named local budget refusals and exact four/five-capture admission. Nine
 mixed K/O/D owners with all-empty replacements and a source-less Decision pass
 actual review and publication to the exact temporary candidate ref. The
-owner receipt (contract arrives in PR4; see delivery availability)
+[owner receipt](agents/ucs-1240-split-review-publication.md#validation-evidence)
 records the command and test-only adversarial fixture corrections. These owner,
 independent and shared results are separate runs; their earlier overlapping
 receipts are not added. All sessions are closed and runtime/tests are frozen.
@@ -1088,7 +1088,7 @@ matched both the workspace and isolated archive after the 215-test run.
 ## Reconsideration publication contract agreement
 
 After ordinary integration `81520d1`, the implementation and independent test
-owners agreed the next publication contract (contract arrives in PR4; see delivery availability).
+owners agreed the [next publication contract](agents/ucs-1240-reconsideration-publication.md).
 The existing reconsideration Decision now records the fixed wire/capture/worker/
 review choices and their limits before dependent code. The gate guide, README
 and changelog link the contract explicitly as unimplemented. No schema, command,
@@ -1135,7 +1135,7 @@ is claimed for a current-status correction.
 
 ## Reconsideration retained publication integration
 
-The publication profile (contract arrives in PR4; see delivery availability) now
+The [publication profile](agents/ucs-1240-reconsideration-publication.md) now
 implements fixed wire admission, prepared/final workers, eventless retained
 authority capture, independent actual-Git review and fresh final verification
 before the existing ref transaction. The
@@ -1214,7 +1214,7 @@ both runtime changes without an actionable finding. Receipt paths and developmen
 failures are indexed in the P11 guide (contract arrives in PR6; see delivery availability).
 
 Separately, the implementation and review owners agreed the
-lifecycle material contract (contract arrives in PR4; see delivery availability) before
+[lifecycle material contract](agents/lifecycle-material-continuation.md) before
 dependent code. Its choices are appended to the existing reconsideration
 Decision and linked from the consumer guide. It specifies one owned evidence
 admission, internal inventory accounting and complete retirement/merge/split/
@@ -1234,7 +1234,7 @@ guard confirms rc.1 to rc.2 with aligned manifests/changelog.
 
 ## Retirement material continuation
 
-The continued lifecycle contract (contract arrives in PR4; see delivery availability)
+The [continued lifecycle contract](agents/lifecycle-material-continuation.md)
 now has a complete retirement implementation: one owned raw/wire admission,
 actual supplied-source correspondence, governed context/inventory and withdrawal
 rows, retained prepared/final workers, review and the existing ref transaction.
@@ -1655,7 +1655,7 @@ The isolated owner passed 15/15; independent review passed 13/13, including
 SHA-1/root and SHA-256/nested material publication, historical source loss and
 restoration, same-tree/different-commit source CAS and output CAS. Their exact
 receipts and original REDs are in the
-zero-use guide (contract arrives in PR4; see delivery availability). Both frozen source
+[zero-use guide](agents/ucs-1240-equivalent-merge-zero.md). Both frozen source
 checks reported zero mismatches. Main ran six affected suites on combined
 installation/typed-assignment/zero-merge source, including the old positive-use
 publication and retirement-core regressions: **76/76 passed** in
@@ -1722,7 +1722,7 @@ Those unsupported extensions are not marked implemented. Actual proposal
 suppression publication, warranted reversal acceptance, fresh activation and
 fresh-ID union/broadening remain required. Broader merge limits require concrete
 scenario adjudication, not an unbounded backlog or a blanket waiver. The
-current scope (contract arrives in PR4; see delivery availability) records that boundary.
+[current scope](agents/subject-lifecycle-required-scope.md) records that boundary.
 
 Root README/changelog and current governance, reconsideration, typed promotion,
 typed assignment, material continuation and P2 audit guides now agree. Historical
@@ -1745,7 +1745,7 @@ protocol or claimed performance changed.
 ## Same-meaning Subject metadata publication
 
 The existing governance/history Decisions and new
-metadata profile (contract arrives in PR4; see delivery availability) cover one
+[metadata profile](agents/ucs-1240-subject-metadata-publication.md) cover one
 internal operation for rename, clarification, reparent and related-link changes.
 One authentic core allowance, owned evidence, actual committed snapshots and
 registry-only changed paths preserve identities and every stored record. Native
@@ -1782,7 +1782,7 @@ The existing reconsideration/creation Decision now explicitly records the fixed
 ordinary creation profile and the reason for sharing concrete eventless source,
 capture, retained proof and publication mechanics. Its existing catalog row
 remains exact, with proposed status unchanged. The new
-creation guide (contract arrives in PR4; see delivery availability) documents fresh activation,
+[creation guide](agents/ucs-1240-subject-creation.md) documents fresh activation,
 unrefused proposal promotion and broader-meaning creation that preserves the
 original subjects. Only registry and identity files change; prior K/O/D payloads,
 assignments and history remain exact.
@@ -1817,7 +1817,7 @@ The existing governance and captured-history Decisions record the fixed
 proposal-suppression profile, native BEFORE authority, registry-only retention
 and shared mechanical implementation. Their exact catalog rows and proposed
 status remain unchanged. The
-suppression guide (contract arrives in PR4; see delivery availability)
+[suppression guide](agents/ucs-1240-subject-proposal-suppression-publication.md)
 preserves the owner REDs, test corrections and independent publication receipts.
 Main verified all 27 handoff paths and reconciled shared creation/metadata
 dispatch. One frozen nine-suite checkpoint passed **60/60**, exit 0, in
@@ -1839,7 +1839,7 @@ approval or customer publication was performed.
 ## Repeated equivalent merge and evaluation setup
 
 The existing merge Decision and scoped/domain/publication guides record the
-narrow preserved-redirect extension. The repeated-merge guide (contract arrives in PR4; see delivery availability)
+narrow preserved-redirect extension. The [repeated-merge guide](agents/ucs-1240-repeated-equivalent-merge.md)
 links independent actual sequential publication and the main **43/43** frozen
 five-suite checkpoint, exit 0, with zero drift across 2,960 files. Existing
 metadata, creation and suppression gate regressions are included. Root README

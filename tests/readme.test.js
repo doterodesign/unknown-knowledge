@@ -77,7 +77,8 @@ test('the README makes no promise that has already been kept', () => {
 
 test('the README limits subprocesses to Git plumbing and fixed trusted engine checks', () => {
   assert.match(readme, /subprocesses invoke\s+Git for/);
-  assert.match(readme, /Candidate code is\s+never executed by these checks/);
+  assert.match(readme, /Node for fixed checks from the captured trusted installed\s+engine/);
+  assert.match(readme, /Candidate code is never used as the validation runtime/);
   const engineDir = join(root, 'payload', 'engine');
   const spawners = [];
   const walk = (dir) => {
@@ -90,7 +91,13 @@ test('the README limits subprocesses to Git plumbing and fixed trusted engine ch
   walk(engineDir);
   // The fixed historical distribution retains its original two Git modules;
   // A6 independently checks their exact relative paths and all profile bytes.
-  assert.deepEqual(spawners.sort(), ['captured-source.js', 'commit-snapshot.js', 'survey-map.js'], 'only current fixed Git plumbing spawns');
+  assert.deepEqual(spawners.sort(), ['candidate-ref-transaction.js', 'captured-source.js', 'commit-snapshot.js', 'commit-snapshot.js', 'identity-migration-source.js',
+    'migration-activation.js', 'migration-consumer-proof.js',
+    'prepare-candidate.js', 'prepared-engine-process.js', 'prepared-migration-gate.js', 'prepared-runtime.js', 'prepared-worker-process.js',
+    'survey-map.js', 'survey-map.js'], 'only Git plumbing and fixed trusted engine checks spawn (D-014)');
+  const migration = readFileSync(join(engineDir, 'lib', 'identity-migration-source.js'), 'utf8');
+  assert.match(migration, /spawnSync\('git',/);
+  assert.doesNotMatch(migration, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|write-tree)['"]/);
   const capture = readFileSync(join(engineDir, 'lib', 'captured-source.js'), 'utf8');
   assert.match(capture, /spawnSync\('git',/);
   assert.doesNotMatch(capture, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|write-tree)['"]/);
@@ -98,6 +105,14 @@ test('the README limits subprocesses to Git plumbing and fixed trusted engine ch
     .replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
   assert.match(snapshot, /spawnSync\('git',/);
   assert.doesNotMatch(snapshot, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
+  const preparation = readFileSync(join(engineDir, 'lib', 'prepare-candidate.js'), 'utf8');
+  assert.match(preparation, /spawnSync\('git',/);
+  assert.doesNotMatch(preparation, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|update-ref|reset|stash|add)['"]/);
+  const gate = readFileSync(join(engineDir, 'lib', 'prepared-migration-gate.js'), 'utf8');
+  assert.match(gate, /spawnSync\('git',/);
+  assert.equal([...gate.matchAll(/\bspawnSync\s*\(/g)].length, 1);
+  assert.doesNotMatch(gate, /shell\s*:|['"](?:checkout|checkout-index|archive|write-tree|update-ref|hash-object|fetch|pull)['"]/);
+
   // Importing child_process is not the claim. WHAT it spawns is.
   //
   // Comments are stripped first: `spawnSync('git', ['status' /* 'ls-files' */])`

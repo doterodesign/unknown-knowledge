@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -17,7 +17,7 @@ Retirement material continuation is implemented with verification recorded in
 the separate contract below. Later merge, split and typed-promotion evidence
 propagation remains required; the read-only receipts here do not certify those
 paths.
-Their agreed lifecycle continuation contract (contract arrives in PR4; see delivery availability)
+Their agreed [lifecycle continuation contract](lifecycle-material-continuation.md)
 preserves one evidence admission and distinguishes internal inventory support
 from the still unsupported standalone material inventory.
 
@@ -114,8 +114,8 @@ These inputs establish byte transport into the existing verifier. They do not
 fetch Git/source history, authenticate reviewers, parse a selected record from
 arbitrary material, judge novelty or grant publication authority. The separate
 ordinary assignment continuation, impact/replay gate and reconsideration
-retained publication profile (contract arrives in PR4; see delivery availability) now supply
-their own proofs. The shared API/CLI/MCP interface (contract arrives in PR6; see delivery availability)
+[retained publication profile](ucs-1240-reconsideration-publication.md) now supply
+their own proofs. The [shared API/CLI/MCP interface](../../payload/protocol/engine-interface.md)
 exposes read-only retrieval and contextual navigation. Later lifecycle and
 typed-promotion material propagation remain required work. The
 [actual-Git owner](ucs-1235-reconsideration-git-core.md)

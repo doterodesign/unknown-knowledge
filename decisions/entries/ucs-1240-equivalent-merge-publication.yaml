@@ -1,0 +1,49 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:2ecdcbd2-7c95-40e7-a4e0-2cbe7959b822
+    title: Equivalent merge publication preserves owner evidence and recaptures both source files
+    category: architecture
+    status: proposed
+    date: "2026-09-20"
+    deciders: [codex]
+    context: >
+      A joint equivalent merge changes registry history and typed assignments.
+      Its domain report cannot prove that detached bytes still equal the actual
+      candidate, and its qualified reach report may legitimately retain reviewed
+      unknown assignments. A semantic event digest omits review metadata.
+    decision: >
+      Keep the owner input and report unchanged. Bind separate explicit raw
+      registry/event retention limits in the runner envelope, independently
+      corroborate both files against actual candidate Git locators, and require a
+      fresh whole-result comparison plus raw recapture under the exact reviewed
+      runtime at review recording and publication. Establish route applicability
+      through actual externally approved runtime capability. Preserve qualified
+      incomplete reach instead of rewriting it as complete. Reuse the exact
+      retained review and single final candidate-ref transaction policy.
+    consequences: >
+      Caller assertions, raw review-only owner reports and missing captures cannot
+      authorize publication. Limits cover retention reads rather than earlier
+      parsing or native allocation. Domain publicationReady remains false;
+      operator approval is externally supplied. The alternative of relabeling Git
+      locators as retained bytes or accepting a summary loses raw review metadata
+      binding. The alternative of requiring unconditional complete reach erases
+      the owner-approved retained-unknown semantics. Evidence and implementation
+      are documented in docs/agents/ucs-1240-final-equivalent-merge.md,
+      payload/engine/lib/final-prepared-equivalent-merge.js and
+      tests/equivalent-merge-publication.test.js. This proposal does not approve
+      a production candidate or runtime profile.
+      Subsequent 2026-09-21 eventless extension preserves the operation, policy,
+      envelope and fixed workers. Original bound wire assignmentEvent null
+      selects the strict zero version-3 predicate and registry-only retention;
+      reject unexpected event artifacts, including broken symlinks. Candidate
+      capture and fresh final retain an explicit null event rather than empty
+      bytes. Review keeps its existing operationEvidence keys, matches the full
+      selected raw registry Decision tuple to the fresh owner and feeds the
+      existing decision receipt path. Fresh final proof remains mandatory at
+      review and publication; existing candidate-ref CAS remains unchanged.
+      Policy/runtime/source/candidate/injected-input bindings precede reliance
+      on retained evidence. Old positive behavior is unchanged; no claim that
+      old runtime supports the new branch. Shape predicates confer no authority.
+      See docs/agents/ucs-1240-equivalent-merge-zero.md for scoped evidence and
+      limitations. Internal implementation authorization grants no approval.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014] }

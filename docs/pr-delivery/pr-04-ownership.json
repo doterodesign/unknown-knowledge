@@ -1,0 +1,2489 @@
+{
+  "stage": 4,
+  "version": "3.0.0-rc.5",
+  "reference": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "referencePaths": [
+    {
+      "path": "decisions/entries/ucs-1240-equivalent-merge-publication.yaml",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0e660a9e751e9b97b179d6ecc6e253bf33fdb9e6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/ucs-1240-finite-migration-preservation.yaml",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c538f0dc110d7f47cc878c6173c9660437ea2fc7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/ucs-1240-retirement-publication.yaml",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a6cb621ce8f88f9ba30b72dfe99a1ccea5060ee8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/ucs-1240-reviewed-candidate-publication.yaml",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "99402c17056a990232518647883729d798d61360",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "decisions/entries/ucs-1240-split-publication.yaml",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1d07dc7bbf3dd2fd599f7ba56fdc002e4c04453a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/lifecycle-material-continuation.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2b18d80d229b0e4c789e5c301dfa3ee6477b04bd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/subject-lifecycle-required-scope.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "597e1bc2e7ad5ab6480620c92062700a69aee1a2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1234-prepared-validation.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6c35ed8ea93f3f05141e30e2d22e727652f163e9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-candidate-ref-transaction.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "96e1b8a181a6bfb7f40d9191ae843011681243eb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-candidate-review.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "78cc6b827a657ea4bed9037fc713f37f69181c5b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-decision-and-documentation-audit.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "88a4f065b45f0b271db86aa9384d22bc3acd1b35",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-equivalent-merge-zero.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d0925e7c453ffa7c8081404956df9c949d5d2f1a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-final-equivalent-merge.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8b593a8d7367c6028ea05a7d66a4f2ef133a694e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-final-migration.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c93cd76f77d8559e102c75e00e6c6183b37df27c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-final-promotion.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fbe3900f9b57d1f13a7eaa1383218a87eb33bfe4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-final-publication.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1651ae11cd69d3ab05e3ee729fcb4bcafd6e9760",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-final-record-promotion.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fa85110007e17d32583390d250ef69859d3055ac",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-final-retirement.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2575c73a92b6f2609a9323d275165342a096ce4f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-historical-runtime.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "30b9ccc80a3bc21adf13facf9da5d4061fe3773f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-installation-cutover.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "54a6945786aef84b89a19ac4764dd3356669d0aa",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-migration-source-profiles.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e43d9d4417ac960083bd15f978598159d7f4284c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-prepared-migration.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "85d7f6ec148ad76c994c88768937a05b364cd061",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-prepared-split-transport.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0b2c14458a71f5c09eb83b8c7ac7eea3a47e5fa3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-prepared-split-validation.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1b193fe0588cd5da99a8d979ddc38cddece695ae",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-reconsideration-publication.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3c216c7cacbd7730322832bbff22f657e7ab46de",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-repeated-equivalent-merge.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fbce1000b848c6881e8a4ef38085ab0b9fa7f462",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-split-review-publication.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4c9e3dcd751256f84eb25299a1c93096a1dcb83f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-subject-creation.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d48806b74f200bb43d8f274ded89e2af156d12be",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-subject-metadata-publication.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8d74f7b0c0557f7257be8a5c09ca8f24ebb10537",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "docs/agents/ucs-1240-subject-proposal-suppression-publication.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e51bb061a8bb57e9ec91bb911b51de50eb5b4fce",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/commands/migrate-identity.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "19d4d5b6c15737af50dc8b55540ec777599a9539",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/LICENSE",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d645695673349e3947e8e5ae42332d0ac3164cd7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/NOTICE",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3ddab0a51143faa421df38eb9fb4921d824bf36e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/audit.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5cb5b91261394ee676c78b87a65a51e47009d42d",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/audit.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "144cb2bbb8b7e9c4543e8fe7d81ad76f59ab0d5b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/commit-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c303a15b7aa1ffada0846ad47013c9322daab973",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/derive.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "73c8cf716b8de93ffe5635c94790aa1a5ac28788",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/ingest.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "87a8cbed5379dcc4b216ab068866f6c35e71409b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/log-entry.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e533ba46e9125bbb7ba908c7b22fda417a6b9530",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/phoenix.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4fcbae58a6856e529d449434dbebcbd7a3dda647",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/preflight.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a6ce83462c08cfebf419a4a5df079236735c718b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/resolve.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1bdf0b8cb71b4a13c840e754d1869f23b159c70f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/reverse-staged.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "03ae2a4f645526cbf64d89a9d10a9dd691de8fed",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/survey-map.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3b52f2591f49bde42973cceca9d59e5e5f740ae4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/validate-values.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2feb12ec7f274b801a60695b4d64282866505015",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commands/validate.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cfcbf0b000d58352c842b766ce4bd797690abb4b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/commit-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b22e28981539488ee2483db0926b7b01c414d0ff",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/derive.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ec454ecda4d8ac247adb25f8a29aae8cecac2817",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/ingest.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d7bb7e3947d1f145ef86c7146baf4236aa05d8f0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/anchor-signatures.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d3bd19b64575ff157180be06cf045f749a435667",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/boot.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cdf6399a7731ca22bba8b76dedf22eaea9f2500b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/call-numbers.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "150a31b00898378b5e7320c7711b64a546365f4a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/cli.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "dc3c9975bc1525e3ea1381684026f93729f2b7be",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/commit-snapshot.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cb4cdd131627d513cc67e31ca48a58cfbf2127ad",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/coverage.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3d833263f18d3a74d4e0451a9686952bdf75b9ec",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/decomposition.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9fdf63d4e0e557817cf39d0a8d3dff8d851e86dc",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/derived.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "921c91202c8a90f419cfb31bc506c5907ace5125",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/engine-refusal.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cbe222340a54ff61ebd5a0c7b08dbd8482a922c0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/exit-codes.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "26cf0789b236022a109b37974bec05c7efd537f3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/extractor-kinds.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8bf6873ff69e0cecb478b80afd22142e6453bc0b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/format-adapters.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0960842f28a1d04aac3dc88c10fe89bea0e98d14",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/id-grammars.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f88e16c3b9fa222464ac3cab98a000e8fce0527d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/iso-date.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "de4d7bde162431008ff70580a9973e680650a03a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/kit-root.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0eb228d43d5ab53978a16cb5eb8450de2923bf0a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/load-stores.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1a4e385a24916a90148c548c04792db700adae78",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/log-entry.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7b7ef1708104ca8ae86abd5909b811d2928a8432",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/phoenix.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "51ab54637d53b7501b6df99fbc99c6e937d70c7e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/preflight.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ca0a9a500e56b8984a3ebf50f23e5f6d73f40a14",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/scoring.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "960a253fa43db10c6780432a198b7f227530159c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/suppressions.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0f32f066e6e59cf1042cc628197f16f59757023d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/time-verdicts.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4bd7a758c62e9d06f897a82009d58b3f7e41aae8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/usage-error.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "05b3e0ab919782cb84719964d6b5e65efc8fa8bf",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/validate-record.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bacb0acab80431ec2515502b389f43980d29bbe1",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/lib/verdicts.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "86cc3d7f070501e35e9a912c987652500e0e85db",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/log-entry.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f77855c94532502f090f13d4252c41b1af2220e3",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/phoenix.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3c0554a7dddf69fa4f76ebda069e7d68e491ab8f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/preflight.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "04ca0b066e53185f94f8421574794e5bc0a7d77d",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/resolve.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0ff7669ee8bbe8eb9e7e6c84bb22aad76601cb73",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/reverse-staged.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0252a6253813e2872290c8b424c3c12b4dc99fab",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/survey-map.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7da6fa934639f0c62035d8c3207b5948ed51186b",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/validate-values.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6f0642145253f5c2d940ae241ac9ef1131e1350a",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/engine/validate.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "240b780a343b15b9ba91f3219c42a3a035eed362",
+      "referenceMode": "100755"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/CHANGELOG.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "dc39ed6952f87adcd961d07749e1ffe7a2b7335b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/LICENSE",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "66a3ac80d729a3a5bdfd22002d34be59a6daf222",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/README.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "550b5c9b7b00aaa18ba240b485e5b31598ef04b2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/argparse.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2b8c8c63177af9757a44926cfc3ab7d9878c9387",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/lib/sub.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e3eb3215fc171cec44a2a1e290cc7deb19bcca74",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/lib/textwrap.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "23d51cdb95ccc8591fb6ade3f7e07943071559fe",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/argparse/package.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "647d2aff18d2ac0bc73c4618e09a2a220bf7b36a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/LICENSE",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "09d3a29e93d1239edf737a58fb1cd893808abc82",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/README.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b7bfb84633e206ac5f00a73e03004f4a094f674d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/bin/js-yaml.mjs",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fe265981f29fb5331f29f3ac0ea1d86aa236a9a8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/browser/js-yaml.esm.min.mjs",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "79c6226ab1eb1f10550849d86285f3e86cd1fe5f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/browser/js-yaml.esm.min.mjs.map",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "858600bb1f6298bf1354ce102e1f1d6742f43383",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/browser/js-yaml.umd.min.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "26300eb257435a42b7a52b7fe4e38dd4c7f744f6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/browser/js-yaml.umd.min.js.map",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c6853bf0a826b55c0278f9f7967e682ca18c3785",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.cjs.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f0beb48e9303c3ffd9f6720bc47e0e227966dba8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.cjs.js.map",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "876a80ab86a91919eeeeb72a9a3b7dff043247de",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.d.ts",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "993af346d0379112db2973f9957b81006c084432",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.mjs",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ef8e83c2ec66074fdfdb26e67bc91d0197a08c69",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.mjs.map",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "12d7cb5ccdc1b98f0af9682b093693377d723893",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/node_modules/js-yaml/package.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "10c360fffc854635c6a5c751f73692c661fafedc",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/package-lock.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "32fb608b18e6d909f624f4d34471f6336bb36826",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/package.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3dbc1ca591c0557e35b6004aeba250e6a70b56e3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/catalog.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b41f333ff5079a0c03574417802475cdad2ead30",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/decision-entry.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "58510807092ab42357b7b0693914624fcdaf3c8c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/finding.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "581ff2ced1d0e48a02c2cac04a83c6fca0386ca5",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/gap.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8836dc32bc9b8117d14375428fd7b3807e71d144",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/graduation-categories.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "88e8253613023b17527fb21952f121bc42a69012",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/knowledge-leaf.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7124d0a4531dd73235ed5ee2e330779685d35665",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/miss.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "66f2865a4d0e1eb08b41ecde71a63150d34599d5",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/ontology-concept.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bdf7237e98f8730a0393796dd6f832e37fbcb93d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/phoenix-event.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ec33289e7ff8a9087ff892799646e6af4264dae2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/registry.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e4c5a97bf81e69b0a2426022761f979aa658f965",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/rules.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "434d64de8e45592672fb1fe46c049f3c44ff585b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/compatibility/identity-migration-08066b5/schemas/survey-scope.schema.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ffe1e9d4d2e389cafaabdd115aa636387bb56484",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-ref-transaction.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cf8cfef992003c011299eb9f8140d274ce411efe",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-review-creation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "da70a5d8e5b5624580f4069114ffb6c3a904f3a0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-review-eventless-creation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "366f1b7f5f97b8990fcffbf4afcabee6289d0254",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-review-metadata.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a65840d7de62bdb22e0cad5ecb23b33f6a38c2fa",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-review-reconsideration.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "03b4bd4881f4b6ffedd8cd6192ec9259c5581628",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-review-split.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ef4514b0514cefd4fa2cd5c39266fe7ec5f9d649",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/candidate-review.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7f1b9b6675dd291d708bfe0b24debe0ed30fa2db",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-assignment-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "02f2ca935a134d6c358127a4c0acf21472baee2b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-equivalent-merge-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c7836f16a469ddc0139d7cd1945616b6b3d97a8d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-migration-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e797665779940fb24f7ee49c5e2530f7ad81536d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-assignment.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3ddce29995f06c360262bac9d11b73ec7f691846",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-equivalent-merge.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "be92e64368e6e12513a1cb5208fddb334fa39281",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-eventless-creation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bd09a7a74bad52b0ea74246ea20caf89ab64ecb3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-migration.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9f1d7c6252408970160d44a6871c2dd69f082b10",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-promotion.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "398104699c51b7bde8f80dbb69254561425fbdd7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-subject-creation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "267c10edef53b11eba44c4655ecfa181a242433f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-subject-metadata.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e812ab0196666fbceabc69d8058a7ec35adacd9e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-subject-reconsideration.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c502435b3dc99462253496da3e01f0606d1bdd07",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-subject-retirement.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "712eb0bd92653c4394a7f3d2fe46fd7ead82fb83",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-prepared-subject-split.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d8dce7c75f32ee072dde35565f8247a0d080f39e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-promotion-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "97f55ea734407dc8243f2c6d29c8984b036e6373",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-record-promotion-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ee36157e2bddc56e985c80b30516d75974bad805",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-subject-creation-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cc0bebeefa457ef3eb95bf96957d69903859b48f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-subject-metadata-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f20682d4c46f8f2904c4c821c12a3adb719fe4d8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-subject-proposal-suppression-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "905eb12dcfc0c219dcaa56790afeef8bfa0c105a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-subject-reconsideration-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "582f236b806245274804734d65e85211e3d26332",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-subject-retirement-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "905bcf18932849ef4685f7ecbf51d7d0fd631ab2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/final-subject-split-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ea19ff2a9482cae88cb1955e8eb93a13797d19b0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/identity-migration-source.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "dc19cc1a01f87555de53639402c00f6e3c7c689b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/identity-migration.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "09b79067ffddaf2b60ba16f0a897b2a0e784fdf9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-activation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6655fb939c9b94968e63bd99fe53af050a8feac3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-consumer-proof.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fc279db33b21d91ec4377b3a2f542740f9c22e4e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-historical-runtime.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a1316f4a439e6501f730a76232c71d10d1c2557c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-installation-report.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "972a012c3d58dff3942115547a69b73df56bc307",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-installation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "384a86ad54d0abdacdcec0752e35aac2bdec8dc9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-operational-history.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8bec2987ac39acf323e89c761e689001c85ae660",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-semantic-compare.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7a403f9fd9484f3c22ada9f56e0cd0f0f7ec069b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/migration-semantic-recipe.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "33842eb84ee5a3b7d80abe969268e3b89bc4e907",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepare-candidate.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "21fd3af246fca9fe40e0505aa6137699f75657b6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-assignment-binding.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "505f9ce0a4c9aa0a04a74bb0752e0a806aa687f1",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-assignment-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0457b0550f0a2863054a3a22adeca65448bb7e47",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-assignment-continuation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8169e43fdebb94effc289f3be328e38a43a1cb73",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-assignment-event.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c34079fd4fe701338bd43ab42c88836f892ae676",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-engine-process.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f784b8df17149ddfbb3739eaf12bcbfeaf323ca7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-equivalent-merge-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2ddc0e2046544ab245790ee1715953a564ed299c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-equivalent-merge.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "daa529ccd87f0690b3a08c7310bea98db1b18b37",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-eventless-creation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "27f9f6371075d3ac8cdca755ed77a460daaf85ae",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-evidence-files.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "913767e632ebd59ea52a4ac2ed5d163347cd8e56",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-evidence.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0f32a14577774560d1c93562d83f4f70128cc03a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-migration-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b39df3795c7846bd69d8e5ab8e5ad47cc263240e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-migration-gate.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "328a39ab8215f1e686316538c0eca5675a9572e8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-migration-report.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d8441f627ef6a3bde148a496728b153a13f21c14",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-migration-semantics.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d8021a3d90463ed440435ab7d5ce3ad05ba13e5d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-promotion-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "65f88ab0f9aa45d3d678a9e323e5b7084473147b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-promotion.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "05f902552bb0296c9a038ad15028b12d3089c828",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-record-promotion-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ad4ea301ddf906a5458c083427e0e7756670b99f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-runtime.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5d46853e5593aaf708487ba27b392b2e8b97d934",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-creation-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2c6d6a77de9f07558d48643fd2c705471bcb739b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-creation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "418a7b7f671997fb3615d968ff2d1e0d913626cb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-metadata-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8b3c0239947e13b16639aec1343299fc730aa0f9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-metadata.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8a0e3b99b0bdee7f58645a9a91715572c7ec7e47",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-proposal-suppression-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a2bcd95fd6be38fccf5ce1d20d9b1a1d47ca45e5",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-reconsideration-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d54ff87ac16a8df097431ad75757dabc22cbee2b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-reconsideration.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b07502ae4123c3869bf5962c66a2271ce1fa3073",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-retirement-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f79b15971062adacb98d604b990fb1652e264974",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-retirement.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b0549b9582df47d0172d43507f18e4d68821f81c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-split-check.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "16c5f05f9012083f2c3bfb2035469e92b95c8726",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-subject-split.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d2c4947b3c069f370a5a8db289e86e4f0bea6efb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-validation-policy.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "756f632ca8b37a4dc5e27d759d489b405ab5bf4c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-validation-worker.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3ff6c189ef3236980bfe745e4b8c688ec2b836ca",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-validation.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b1e03006858dadacad57b9520ddc74d0cbf12a51",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/prepared-worker-process.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2d1bf14ea9c16c2e52ec43dfa86e52c6a9fd1618",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/publish-prepared-candidate.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0ec5452107a915a5e28f35201f330f868db33d2c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/lib/runtime-capability.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9b6c08ea74366f115db2a2841245cbdfb706abd7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/migrate-identity.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "06b682dc3247903dbca12ce1d9c25049a6b481f3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/policies/candidate-publication.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "aa1944ed0776f147cecdf1807bc2af12d700e13b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/policies/identity-migration-08066b5.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9898e21eaf765c0356781589348c90329c9f89b0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/engine/policies/installation-assets.json",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f00f25f68d68d2d034b2248f485c8ce3303c7452",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "payload/protocol/engine-interface.md",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "edcce79689f25778d1120bb4dd23d5363f45a176",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-candidate-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "07c232da429edfa79f03489623230333afb17b33",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-continuation-gate.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d44b7e0831c53fdd4edccb71282dbd8570ded8b7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-continuation-prepared.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3ac8e92f14986e730cdcb91512c9462521da3eab",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/assignment-continuation-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d50ed044d360d1beff8b7b5e57b75661af6d2db9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/candidate-ref-transaction.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f080dc020462d81f6c82a0842b83aa197daff623",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/candidate-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "83cce1cc2e550f9e2d6816fbb899f2cd65da0a77",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/equivalent-merge-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "186a7c580d4962033bc17cc71e5ef41d65270a4d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-assignment.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d32ecb3eab18527842d8a06ae915ea569dc12811",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-equivalent-merge.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d1603d1ab5d18d2e637293a5fc42e17071602163",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-migration.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "293e6391d597d822a2d9a989793a9aa0a3aab88b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-subject-creation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6cc56a9dda0fecd8cafb5fdaa20cc1c1f1c4d303",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-subject-reconsideration.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "16265128731108c2a693cb064801d90b63212b2b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-subject-retirement.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c0c6298178fa9e07968b4c62fe9ac977cf3cf6e8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-subject-split-depth.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5d7d01087078193d125566f7c13fec2c3284d8cc",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/final-prepared-subject-split.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "39588db15d8de5aadf3ec3423333078e04e9fe44",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/assignment-continuation-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4478fcc76a0365cf3013fac109751e66306442be",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/assignment-review-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e862b1bf536072917a1f7c9f524a34b52cac98e6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/equivalent-merge-zero-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "aa7d86981a364c05b202db90a5c204d2b8fdc9a7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/final-assignment-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1c46863e9737d1d2cca8b234ca2c32c0a4b4c465",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/final-equivalent-merge-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "65c3ff5118b12aaaf11d7c7c741fa3e0e4a3e6b3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/final-migration-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5a5a027d2416f4470cba9b5ccdb16edbed7e6364",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/final-subject-retirement-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cd8460263a45d1fbedd8b15c283bb3b2c15aa7d0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/final-subject-split-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "41fd2a2b2f9ccd3bfd8b0fab2e7f544b6d357d32",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/installation-cutover-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "97f656cd75cc2cd74dde14478f52f3fd3836187c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/migration-review-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6a516ce2746c3afc9af827afa46c689097988e85",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/migration-semantic-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a0284cd9df1741bc5b754ba0f4e10399c9dd1b72",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/prepared-creation-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f5a8e52ba5c16c399e6cd1e4d109e581f4414286",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/prepared-evidence-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "389b118a2a3780b1b709ee4a99d234489beab0fc",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/prepared-migration-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cbc15ef53714d545f3bb699514d290056ce52d75",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/prepared-reconsideration-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "117baab37a677c1998bd20b8b08811a58e64eac4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/record-promotion-material-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8521217b169ec58519ab9188eddaf7534a21a821",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/repeated-equivalent-merge-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a3649f0dd5184793677a1db944b2e788f53c5048",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-merge-material-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "197eec2819fb73a48863b360a98b6dd00267ac0c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-metadata-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "1533d5ab78d729951f94f0736454862d20b16d18",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-proposal-suppression-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e4534e3a698c7eaabea9cd3487f230bfaad43458",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-retirement-material-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "af61d8cc04382f33bded48c34ba8aaf748c8b1d2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-split-material-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0d7dc54c01167cd76ab15219aa17299696ea3ac3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/subject-split-review-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f911448e1c905c167129f3f86c54ca7127122201",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/helpers/typed-assignment-publication-fixture.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "ab86b933d4f394c199899c82e3b8352afa44b6cb",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/identity-conversion-phoenix.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b7e4cb369780d95c73f72abcb2904d513b6d35f3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/identity-migration-cli.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2ad9d9d3a5e8051d6e44491f4aa9335904c3af90",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/identity-migration-declarations.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3e2606467efb420fe8e5fb9e59f8c6ff764017a8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/identity-migration-rewrite.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b9902ab5f7f48bf8fd55bfde7f2f2bc65e8b326c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/identity-migration.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f673e1c841cecfaa4caa567bbfa8eab793ea8a19",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/installation-assets.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "3c5b16a14e7deddfbecf089f9d03d7be1158b004",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/installation-cutover-refusals.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e34fb1481e46f82821eee1857b89373c4580a737",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/installation-cutover.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "47502c9468ca4cde0d1573413a384bb6d7e00006",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/installation-publication-vertical.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7a558b2f0ed4ed61fbac0a877c4a91ea121defad",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/iso-date.test.js",
+      "pr": 4,
+      "baseBlob": "f2b8d967a33e17778b6abed78ba5140ff2298174",
+      "baseMode": "100644",
+      "referenceBlob": "f365f6e72d7e6d12b569124b7b39e42237dd03c6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/migration-historical-runtime.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "09aa3421fafab7e42b7301281de891e6f354b3b7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/migration-optional-stores.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5e9fa3b8fd14a1861784d5f65e40949b32ce9a1c",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/migration-publication-vertical.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7c04abc0c3d27ecb6ca6b6a0f92034bb56b4fd55",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/migration-semantic-compare.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8c7483aec66ad594a965e37c13084b8182096cae",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/migration-semantic-recipe.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "4287ef53470a4cfdd6182791385f66635af7d4b9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/ordinary-promotion-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "02668aba39ac2c7e57776cd705c284e6a4ecbfa7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepare-candidate.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "28cf78f199d51adcae8f550c4c90f1420eb2dfaa",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-assignment-event.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bc739960113295657e32b908eb715277abba89c2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-assignment-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "dccb381d428aacb168e429ed11ae312508d81c5b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-creation-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "186834aff50a780fe42431a7ee0f05accbd61760",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-engine-process.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c901b0f16166b2463416d3ec4302af0ef9c1506b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-equivalent-merge-zero.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8355aed323f8448e37e1537384a42d463c65def1",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-equivalent-merge.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8929862ddc152c9a2632b73672bdd17d2e795ef7",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-evidence-readback.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "425b795e3bea8bdb722c84522ada96e4e283f83f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-migration-gate.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "42955199e2f5c8547f3b35ef56c05031ac77991e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-migration-semantics.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f27d1c2918ce66b769f079a2684790ae37453980",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-migration-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "42f9cd2552612145a9c8cc9eb19bf5d36815316a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-reconsideration-runtime-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bbf9d8091845a31de46d1eaa1eca3877dc1bc054",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-reconsideration-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "168a814ad54f70428aa89c3bc751c1739e1b0d09",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-retirement-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "596a30eb867e3d5ea1d4abf399c3e8985aba4809",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-runtime.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "badd98f8015b400e38e3d6bafea8e6d3eeae0bb1",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-split-runtime-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "fed16eec81cb7e83a99898507b1b2553b6c710c3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-split-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8ccee47d9fb2ca06162eef82bc80f5832330cf00",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-lifecycle-input.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9f0cb173c492310f5c2575d73275e63f2a8b755e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-metadata.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "65137fc63b4e07f7f832a11c83650e999cc364c3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-proposal-suppression.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9d425c4e96a36d51860f6bdb1d948b3c215bb91e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-reconsideration.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "018be876981819e9ae1e5cecd3ddf8342660de3b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-retirement.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "a5e565f89afa28f0e91918c985bc2d6a40fd050e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-split-candidate-cap.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "14ceb4ab87efc66d30c14cb738caa4314717f15f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-split-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "9765f1a96dffcc2358824a43ec1553f6a8a2820f",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-subject-split.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "59b1bfac297e004d6bdf0555eb15fbc2cd9b2c5a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-validation-policy.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "cded3072e3d2efe0e00beee372e1a1b000926bf3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/prepared-validation.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "b91377d20bb4dedc628e8d890c137bfe0e57d676",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/publish-prepared-candidate.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8960bcaed5e1c8d39a9e2cb7acb43c667b06ef27",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/record-promotion-material-optional.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5f5939afb6ce8633c3de47b4812f64490589061a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/record-promotion-material-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "bae91a055c8362d2c5d4fdb5aacb3a6a99cb8d55",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/record-promotion-material.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "7ab7a7f6abd5e9b83eaac909f0702ff362037961",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/record-promotion.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "0abc46c6e22b7a0760a7813f0dd2af62a072caf6",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/repeated-equivalent-merge-publication-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "964ab88b554f7068c59361f0798c79d9eca74b0e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/repeated-equivalent-merge.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c4fd08571c0e4810200dc55146d7c0eb0dbe6c87",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/runtime-capability.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8272198054ff8a193ebfee47fb7034215408129d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-creation-publication-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "40aec92214e5464904e2e5930e7f895205981cc4",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-zero-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "79f81045b7613a242c50829d35cd83d7d1ab6b20",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-equivalent-merge-zero.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f151b85e0f52157237c1a8b78d075b68f798d474",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-merge-material-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "514391165b74682027eb513c8c0151033707ca13",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-merge-material.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "381ca887d4a53a30e09b15eaae5271ca897775d8",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-metadata-gate.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "2dd53d5ae7740f0467ea047bf3793b36c6851dc9",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-metadata-publication-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "f8f05d4a6b49759ad345a57686f25f18ccd5f9fd",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-proposal-suppression-publication-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "8c5b89af18bd1803e2673671209a0321cb5e828e",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-proposal-suppression.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "59123a98355f94367592def5ab32e6592d2966a5",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "38647614cb3ab6125bff4a3e4539781997a907a3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-reconsideration-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "d3a5cf2df97c76d4edac72a11c0b93dfc7a3d1f3",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-material-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "77ed16496aa5a59eacc49d0e60d67fcc07b77de2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-material.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "e2a595c374befcd6b2effaa6a8ee3fc8fff096c0",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-retirement-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "41ee4f14e3d9c2a52fc71f9a04ee71052ac90557",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-material-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "6d6e452012300006d9454e43392a49873835269d",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-material.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "de69206d8efd4e4ac42216aeb19e79a5f839bd4a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c3572e200defbb7b3f6b1ac89bd6981420a6ce3b",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/subject-split-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5dff2d06986be6bbbe07f9d1ee9ea97206e7966a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-assignment-publication-review.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "648f73d99f752f8cc15bd87152b8066cd3f12d69",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-assignment-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5018e2d5ed6c8945148c0d915215092e11ae2391",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-assignment-retained-binding.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "75e9cde0a50dd57af6a055bb0391bf01fbdab52a",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-promotion-publication.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "c005844b6588244989679501e6c2b38a6151feb2",
+      "referenceMode": "100644"
+    },
+    {
+      "path": "tests/typed-record-promotion.test.js",
+      "pr": 4,
+      "baseBlob": null,
+      "baseMode": null,
+      "referenceBlob": "5c49e447d0d77150ab27aa0e6179b3b4db4090e3",
+      "referenceMode": "100644"
+    }
+  ],
+  "sharedTransitions": [
+    "package.json",
+    "package-lock.json",
+    "CHANGELOG.md",
+    "decisions/_catalog.yaml",
+    "README.md",
+    "CONTEXT.md",
+    "cli/kit.manifest.yaml",
+    "payload/protocol/AGENTS.md",
+    "payload/engine/lib/log-entry.js",
+    "payload/schemas/finding.schema.json",
+    "payload/schemas/miss.schema.json",
+    "payload/schemas/gap.schema.json",
+    "acceptance/run.js",
+    "docs/migration-3.md",
+    "docs/change-completeness.md",
+    "docs/publishing.md"
+  ]
+}

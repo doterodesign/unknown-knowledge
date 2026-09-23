@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -13,7 +13,7 @@ The [split Decision](../../decisions/entries/plain-subject-split.yaml) records
 the rationale and rejected alternatives.
 
 An own `evidence.materialCaptures` array selects the
-continued profile (contract arrives in PR4; see delivery availability), with outer report
+[continued profile](lifecycle-material-continuation.md), with outer report
 version 2 and one authentic governance allowance from capture admission through
 the core, inventory and assignment rows. Omission retains the version-1 profile
 described below. Both profiles preserve the native allocation and impact policies.

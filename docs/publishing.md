@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
 
@@ -165,5 +165,5 @@ transport tests. The SDK is not copied into seeded repositories. Installed
 engine files and the interface protocol guide are manifest-covered. Before
 release, run the interface tests and verify package bin/lock metadata alongside
 the normal installation checks. See the
-interface contract (contract arrives in PR6; see delivery availability) for its operation
+[interface contract](../payload/protocol/engine-interface.md) for its operation
 inventory, framing limits and remaining unimplemented bindings.

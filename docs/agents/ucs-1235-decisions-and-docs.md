@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -20,7 +20,7 @@ Each record below has its own file and an additive entry in
 | [95dfdc46-5a14-4cee-9e35-452b7ee5369a](../../decisions/entries/captured-subject-governance-history.yaml) | Private captured governance, retained historical evidence and explicit refusal-assessment attestation | [Governance](ucs-1235-subject-governance.md) |
 | [35fdefd8-f0e3-4b39-aa76-7dcd27442536](../../decisions/entries/equivalent-subject-merge-governance.yaml) | Actual all-owner use closure, typed merge preservation and fixed mandatory impacts before final publication | [Inventory](ucs-1235-subject-use-inventory.md), [merge DTO](ucs-1235-equivalent-merge-dto.md) |
 | [a5cd613f-8b58-4822-90a0-5446201d5ca3](../../decisions/entries/subject-logical-operation-budgets.yaml) | Authentic cumulative logical allowances and private reuse of work, with explicit native/host exclusions | [Budget composition](ucs-1235-operation-budget.md) |
-| [3d935466-771a-458b-be78-37bec94ec044](../../decisions/entries/suppressed-subject-reconsideration.yaml) | Preserve the exact refused proposal through reviewed reconsideration; verify one fresh Subject allocation with the native planner | [History/model](ucs-1235-subject-reconsideration-creation.md), [read-only consumers](ucs-1237-reconsideration-consumers.md), [actual-Git core](ucs-1235-reconsideration-git-core.md), [prepared impact gate](ucs-1235-reconsideration-gate.md), retained publication (contract arrives in PR4; see delivery availability) and clarified remaining scope (contract arrives in PR4; see delivery availability) |
+| [3d935466-771a-458b-be78-37bec94ec044](../../decisions/entries/suppressed-subject-reconsideration.yaml) | Preserve the exact refused proposal through reviewed reconsideration; verify one fresh Subject allocation with the native planner | [History/model](ucs-1235-subject-reconsideration-creation.md), [read-only consumers](ucs-1237-reconsideration-consumers.md), [actual-Git core](ucs-1235-reconsideration-git-core.md), [prepared impact gate](ucs-1235-reconsideration-gate.md), [retained publication](ucs-1240-reconsideration-publication.md) and [clarified remaining scope](subject-lifecycle-required-scope.md) |
 
 Existing D-000005, D-000010, D-000011, D-000012, D-000014 and D-000022 continue
 to cover vendored validators, Git concurrency, mechanical verdicts, whole-store
@@ -127,8 +127,8 @@ and broader acceptance remain open; this verifies the committed owner slice.
 
 ## Subsequent retirement publication integration
 
-The retained retirement profile (contract arrives in PR4; see delivery availability) and its
-Decision (contract arrives in PR4; see delivery availability) now add
+The [retained retirement profile](ucs-1240-final-retirement.md) and its
+[Decision](../../decisions/entries/ucs-1240-retirement-publication.yaml) now add
 the event-independent authorizer, exact original-input proof, separate raw
 capture caps, fixed workers, fresh owner equality and shared ref transaction.
 The earlier owner-only evidence above remains tied to its original snapshot.
@@ -250,9 +250,9 @@ remains rc.2 Unreleased for the same pending PR; no release or approval is impli
 
 ## Subsequent split review and publication
 
-The publication profile (contract arrives in PR4; see delivery availability) now adds actual
+The [publication profile](ucs-1240-split-review-publication.md) now adds actual
 before/candidate authority verification, independent native allocation and fresh
-owner checks at both review and publication. Its separate Decision (contract arrives in PR4; see delivery availability)
+owner checks at both review and publication. Its separate [Decision](../../decisions/entries/ucs-1240-split-publication.yaml)
 records the agreed four/five capture boundary and one local allowance. Normalized
 registry semantics and authorizer/provenance checks remain with the fresh owner;
 the adapter neither reloads the full model nor requires a new Decision source.
@@ -307,6 +307,6 @@ The [ordinary assignment continuation](ucs-1241-assignment-continuation.md),
 integrated in `81520d1`, now carries assessment/material evidence through staged
 and prepared owners, both fixed wire workers and fresh review/publication. Main
 integration passed 215/215 with the exact snapshot and limitations recorded in
-that guide. The next reconsideration publication contract (contract arrives in PR4; see delivery availability)
+that guide. The [next reconsideration publication contract](ucs-1240-reconsideration-publication.md)
 is agreed, not delivered. Earlier receipts above remain scoped to their original
 implementations; they do not verify later lifecycle/typed-promotion propagation.

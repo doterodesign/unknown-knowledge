@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -192,7 +192,7 @@ cleanup failure. The receipts below identify the tested implementation and limit
 Ordinary assignment evidence continuation and full reach/tree/replay composition
 are implemented in their separate guides. Reconsideration's retained workers,
 review, fresh-final validation and publication are now implemented as separate
-stages under the publication contract (contract arrives in PR4; see delivery availability).
+stages under the [publication contract](ucs-1240-reconsideration-publication.md).
 This module adds no public CLI/MCP command and does not qualify a runtime or
 authorize a release. Package versioning follows the existing pending PR; every
 actual PR must still advance its target base and update versioned notes.

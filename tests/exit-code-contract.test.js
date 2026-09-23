@@ -60,6 +60,7 @@ const ARGV = {
   'payload/engine/phoenix.js': ['P-001'],
   // Only the pinned OID spelling is needed: cwd's injected failure precedes
   // source capture, so this object need not exist in the test repository.
+  'payload/engine/migrate-identity.js': ['--source', '0'.repeat(40), '--kit-root', '.'],
   'payload/engine/subject-view.js': ['--delete'],
   'payload/engine/subject.js': ['lookup', 'some-subject'],
   'cli/init-copy.js': ['--target', '.'],
@@ -83,6 +84,7 @@ const EMITS_FINDINGS = new Set([
   // --write is the fix (UCS-1158).
   'payload/engine/derive.js',
   'payload/engine/subject-view.js', // completed comparison of disposable Subject artifacts
+  'payload/engine/migrate-identity.js', // completed source inventory diagnostics
 ]);
 
 /** The command module behind a surface's entry shim. */

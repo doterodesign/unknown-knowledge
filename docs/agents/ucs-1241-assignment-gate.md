@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -168,5 +168,5 @@ claim that reverse coverage is clean, and no draft findings were published.
 
 Candidate preparation, trusted runtime/report artifacts, human review binding
 and ref-CAS publication are separate owner surfaces; see [prepared evaluation](ucs-1241-prepared-assignment-gate.md)
-and P7 final publication (contract arrives in PR4; see delivery availability). Successful read-only
+and [P7 final publication](ucs-1240-final-publication.md). Successful read-only
 checks do not substitute for them or establish publication of a real candidate.

@@ -14,7 +14,7 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 
 The 3.0 pilot is available explicitly with
@@ -61,9 +61,9 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
-Sixteen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
+Seventeen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
 
 | Command | Purpose |
 | --- | --- |
@@ -83,6 +83,7 @@ Sixteen seeded command-line surfaces. JavaScript with JSDoc types, zero build st
 | `query-subjects.js` | governed Subject query |
 | `subject-view.js` | Subject tree, route and context views |
 | `intent-plan.js` | intent validation and execution |
+| `migrate-identity.js` | offline identity inventory |
 
 Engine commands run with `node payload/engine/<command> --root .` in this repository. Installed paths use `<kit-root>/engine/`. Check each command’s help and the protocol before use.
 
@@ -100,9 +101,11 @@ Validation surfaces use three codes, and agents ride them:
 
 - **The engine never executes your code** (D-000014). No `eval`, no importing your
   modules, no spawning your build. Parsing is lexical; subprocesses invoke
-  Git for tracked-file navigation and raw staged snapshots. Candidate code is
-  never executed by these checks. Retained Node worker checks and reviewed
-  candidate publication arrive in PR4.
+  Git for tracked-file navigation, raw snapshots, and isolated candidate object
+  preparation, or Node for fixed checks from the captured trusted installed
+  engine. Candidate code is never used as the validation runtime. Preparation
+  and validation never advance a ref or change the user's index/worktree;
+  retained check evidence does not certify publication.
 - **No network, ever.** Nothing is uploaded, and nothing is fetched.
 - **Deterministic.** Same tree in, byte-identical output out. Dates are
   injected, never read from the wall clock, so a report is reproducible from

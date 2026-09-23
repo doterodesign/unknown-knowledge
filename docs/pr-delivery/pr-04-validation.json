@@ -1,0 +1,358 @@
+{
+  "base": "6e4b409bfb5b23a61c6ad71d8441de8248065f53",
+  "version": "3.0.0-rc.5",
+  "scope": "P7 and P1 validation transport: isolated migration and installation cutover, exact retained runtime evidence, fixed workers, fresh review and bounded candidate-reference publication.",
+  "tests": {
+    "tests": 185,
+    "pass": 185,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "files": 668,
+    "failures": 0
+  },
+  "acceptance": {
+    "automated": "A1\u2013A4/A6 passed",
+    "manualA5": "not run"
+  },
+  "logs": [
+    {
+      "name": "pr4-tests.log",
+      "sha256": "5c7288a33f9b896799efe210ef69cc389b24ccd792eda62f7b7b6082bc089cde",
+      "bytes": 19161,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr4-lint.log",
+      "sha256": "5b6abf85068c2ca09bfb6b8d3bb83744b0298ab8f4b75e827b2b282ab06cb072",
+      "bytes": 97,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr4-acceptance.log",
+      "sha256": "2e84fa19cfa789c4165364efb6c8969d70c8da08733cf0b73fdf5a5988fdd55a",
+      "bytes": 7246,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    }
+  ],
+  "historicalReference": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "historicalEvidenceReuse": "Unchanged earlier layers retain their prior receipts. These checks execute the new owning suites and shared inventory/contracts at this assembled tree; they are not a new reader study or full historical rerun.",
+  "testFiles": [
+    "tests/assignment-candidate-review.test.js",
+    "tests/candidate-review.test.js",
+    "tests/context-glossary.test.js",
+    "tests/exit-code-contract.test.js",
+    "tests/final-prepared-migration.test.js",
+    "tests/identity-migration-cli.test.js",
+    "tests/identity-migration-declarations.test.js",
+    "tests/identity-migration-rewrite.test.js",
+    "tests/identity-migration.test.js",
+    "tests/init.test.js",
+    "tests/installation-assets.test.js",
+    "tests/installation-cutover-refusals.test.js",
+    "tests/installation-cutover.test.js",
+    "tests/installation-publication-vertical.test.js",
+    "tests/migration-historical-runtime.test.js",
+    "tests/migration-optional-stores.test.js",
+    "tests/migration-publication-vertical.test.js",
+    "tests/migration-semantic-compare.test.js",
+    "tests/migration-semantic-recipe.test.js",
+    "tests/prepare-candidate.test.js",
+    "tests/prepared-engine-process.test.js",
+    "tests/prepared-migration-gate.test.js",
+    "tests/prepared-migration-semantics.test.js",
+    "tests/prepared-migration-validation.test.js",
+    "tests/prepared-runtime.test.js",
+    "tests/prepared-validation-policy.test.js",
+    "tests/prepared-validation.test.js",
+    "tests/publish-prepared-candidate.test.js",
+    "tests/readme.test.js",
+    "tests/runtime-capability.test.js",
+    "tests/scaffold-layout.test.js"
+  ],
+  "initialRun": {
+    "summary": {
+      "tests": 901,
+      "pass": 861,
+      "fail": 40,
+      "cancelled": 0
+    },
+    "failureDetailBlocks": [
+      {
+        "location": "tests/candidate-review.test.js:11:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/candidate-review.test.js:30:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/candidate-review.test.js:53:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/candidate-review.test.js:65:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/candidate-review.test.js:87:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/final-prepared-migration.test.js:9:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/final-prepared-migration.test.js:25:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-assets.test.js:9:1",
+        "cause": "policy-manifest-guide-mismatch"
+      },
+      {
+        "location": "tests/installation-cutover-refusals.test.js:14:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-cutover-refusals.test.js:71:14",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-cutover-refusals.test.js:71:14",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-cutover-refusals.test.js:71:14",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-cutover-refusals.test.js:71:14",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-cutover.test.js:11:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/installation-publication-vertical.test.js:17:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:20:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:28:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:34:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:44:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:54:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:62:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:83:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-historical-runtime.test.js:106:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-optional-stores.test.js:18:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-optional-stores.test.js:54:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-optional-stores.test.js:68:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-publication-vertical.test.js:14:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/migration-publication-vertical.test.js:14:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-migration-semantics.test.js:11:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-migration-semantics.test.js:40:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-migration-semantics.test.js:57:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-migration-validation.test.js:13:42",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-migration-validation.test.js:13:42",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-migration-validation.test.js:36:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-validation.test.js:49:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-validation.test.js:90:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-validation.test.js:101:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/prepared-validation.test.js:165:1",
+        "cause": "missing-fixed-guide"
+      },
+      {
+        "location": "tests/publish-prepared-candidate.test.js:41:1",
+        "cause": "missing-fixed-guide"
+      }
+    ],
+    "initialLogSHA256": "f2445d17c72c130e146ea23ed97d6544333716714c65ace2a2ba3d498e87a4bd",
+    "detailReconciliation": {
+      "directFailures": 39,
+      "missingGuideENOENT": 38,
+      "policyManifestMismatch": 1,
+      "additionalFailedParent": "unsupported source rule, suppression and customized vendor grammars refuse without partial migration",
+      "reason": "Four named child refusals failed before their intended assertions because the fixed guide was missing; Node also counts their parent as failed, giving40 total."
+    },
+    "sourceTree": {
+      "stash": "2aa8964a1f9d8166f09ad1717d488a9ddf10fa36",
+      "tree": "91b99494c49096bfed59534e646096ce4575e514",
+      "base": "bef1efc11e5976cec50e9f4fb6564df4d3305bd6",
+      "meaning": "Initial tested worktree reconstructed from tracked stash tree plus its untracked-file parent using a private index; actual user index untouched. Local history only."
+    },
+    "testFiles": [
+      "tests/assignment-candidate-review.test.js",
+      "tests/assignment-continuation-gate.test.js",
+      "tests/assignment-continuation-prepared.test.js",
+      "tests/assignment-continuation-publication.test.js",
+      "tests/candidate-ref-transaction.test.js",
+      "tests/candidate-review.test.js",
+      "tests/context-glossary.test.js",
+      "tests/equivalent-merge-publication.test.js",
+      "tests/exit-code-contract.test.js",
+      "tests/final-prepared-assignment.test.js",
+      "tests/final-prepared-equivalent-merge.test.js",
+      "tests/final-prepared-migration.test.js",
+      "tests/final-prepared-subject-creation.test.js",
+      "tests/final-prepared-subject-reconsideration.test.js",
+      "tests/final-prepared-subject-retirement.test.js",
+      "tests/final-prepared-subject-split-depth.test.js",
+      "tests/final-prepared-subject-split.test.js",
+      "tests/identity-conversion-phoenix.test.js",
+      "tests/identity-migration-cli.test.js",
+      "tests/identity-migration-declarations.test.js",
+      "tests/identity-migration-rewrite.test.js",
+      "tests/identity-migration.test.js",
+      "tests/init.test.js",
+      "tests/installation-assets.test.js",
+      "tests/installation-cutover-refusals.test.js",
+      "tests/installation-cutover.test.js",
+      "tests/installation-publication-vertical.test.js",
+      "tests/iso-date.test.js",
+      "tests/migration-historical-runtime.test.js",
+      "tests/migration-optional-stores.test.js",
+      "tests/migration-publication-vertical.test.js",
+      "tests/migration-semantic-compare.test.js",
+      "tests/migration-semantic-recipe.test.js",
+      "tests/ordinary-promotion-publication.test.js",
+      "tests/prepare-candidate.test.js",
+      "tests/prepared-assignment-event.test.js",
+      "tests/prepared-assignment-validation.test.js",
+      "tests/prepared-creation-validation.test.js",
+      "tests/prepared-engine-process.test.js",
+      "tests/prepared-equivalent-merge-zero.test.js",
+      "tests/prepared-equivalent-merge.test.js",
+      "tests/prepared-evidence-readback.test.js",
+      "tests/prepared-migration-gate.test.js",
+      "tests/prepared-migration-semantics.test.js",
+      "tests/prepared-migration-validation.test.js",
+      "tests/prepared-reconsideration-runtime-review.test.js",
+      "tests/prepared-reconsideration-validation.test.js",
+      "tests/prepared-retirement-validation.test.js",
+      "tests/prepared-runtime.test.js",
+      "tests/prepared-split-runtime-review.test.js",
+      "tests/prepared-split-validation.test.js",
+      "tests/prepared-subject-lifecycle-input.test.js",
+      "tests/prepared-subject-metadata.test.js",
+      "tests/prepared-subject-proposal-suppression.test.js",
+      "tests/prepared-subject-reconsideration.test.js",
+      "tests/prepared-subject-retirement.test.js",
+      "tests/prepared-subject-split-candidate-cap.test.js",
+      "tests/prepared-subject-split-review.test.js",
+      "tests/prepared-subject-split.test.js",
+      "tests/prepared-validation-policy.test.js",
+      "tests/prepared-validation.test.js",
+      "tests/publish-prepared-candidate.test.js",
+      "tests/readme.test.js",
+      "tests/record-promotion-material-optional.test.js",
+      "tests/record-promotion-material-review.test.js",
+      "tests/record-promotion-material.test.js",
+      "tests/record-promotion.test.js",
+      "tests/repeated-equivalent-merge-publication-review.test.js",
+      "tests/repeated-equivalent-merge.test.js",
+      "tests/runtime-capability.test.js",
+      "tests/scaffold-layout.test.js",
+      "tests/subject-creation-publication-review.test.js",
+      "tests/subject-equivalent-merge-zero-review.test.js",
+      "tests/subject-equivalent-merge-zero.test.js",
+      "tests/subject-merge-material-review.test.js",
+      "tests/subject-merge-material.test.js",
+      "tests/subject-metadata-gate.test.js",
+      "tests/subject-metadata-publication-review.test.js",
+      "tests/subject-proposal-suppression-publication-review.test.js",
+      "tests/subject-proposal-suppression.test.js",
+      "tests/subject-reconsideration-publication.test.js",
+      "tests/subject-reconsideration-review.test.js",
+      "tests/subject-retirement-material-review.test.js",
+      "tests/subject-retirement-material.test.js",
+      "tests/subject-retirement-publication.test.js",
+      "tests/subject-split-material-review.test.js",
+      "tests/subject-split-material.test.js",
+      "tests/subject-split-publication.test.js",
+      "tests/subject-split-review.test.js",
+      "tests/typed-assignment-publication-review.test.js",
+      "tests/typed-assignment-publication.test.js",
+      "tests/typed-assignment-retained-binding.test.js",
+      "tests/typed-promotion-publication.test.js",
+      "tests/typed-record-promotion.test.js"
+    ],
+    "disposition": "Required fixed installation guide moved from PR6 into PR4 and included in manifest; explicit notice and heading defer callable interfaces until PR6. All listed fixed assets verified present. Engine runtime bytes unchanged; cli/kit.manifest.yaml is the only engine/cli difference from the preserved initial tree. Every failed suite plus affected migration, installation, prepared-runtime and shared doc/init contracts rerun; original full run is not relabeled green."
+  },
+  "validationScope": "Corrected affected suites plus preserved initial owning-suite results; no second full901-test run is claimed.",
+  "ciCorrection": {
+    "receipt": "pr-04-ci-correction.json",
+    "historicalBindingsPreserved": true,
+    "runtimeChanges": false
+  }
+}

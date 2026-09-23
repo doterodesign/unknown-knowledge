@@ -239,7 +239,7 @@ Query output version 2 retains full assignment outcomes once in each branch's
 same result's namespace, purpose and policy; the table is not reusable approval.
 Unknown assignments and known-empty lists remain distinct. Missing evidence
 references are malformed output. Complete explanations still do not imply an
-untruncated page or source adequacy. See the shared interface (contract arrives in PR6; see delivery availability)
+untruncated page or source adequacy. See [the shared interface](engine-interface.md)
 for exact reconstruction and output-version discovery. Do not expand the table
 into every row and then claim the compact output's byte usage.
 

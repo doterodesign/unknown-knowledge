@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -16,13 +16,13 @@ provenance and stored-owner preservation. The
 [impact gate](ucs-1235-reconsideration-gate.md) and
 [ordinary assignment continuation](ucs-1241-assignment-continuation.md) are also
 implemented. Reconsideration's own retained execution/review/publication now
-implements the separate contract (contract arrives in PR4; see delivery availability).
-Retirement continuation (contract arrives in PR4; see delivery availability) carries that
+implements the [separate contract](ucs-1240-reconsideration-publication.md).
+[Retirement continuation](lifecycle-material-continuation.md) carries that
 evidence through later retirement, merge, split and typed promotion. The separate
 [query/intent/view consumers](ucs-1237-reconsideration-consumers.md) now carry
 retained material to the evaluator. This is not completion of ordinary fresh
 creation, union/broadening or all proposal-refusal/reversal acceptance. The
-required-scope clarification (contract arrives in PR4; see delivery availability) distinguishes
+[required-scope clarification](subject-lifecycle-required-scope.md) distinguishes
 these requirements from unsupported active-canonical suppression/restoration.
 
 ## Fixed model interface

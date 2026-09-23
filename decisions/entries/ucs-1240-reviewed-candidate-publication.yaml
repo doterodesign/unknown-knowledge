@@ -1,0 +1,105 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:f2b11d91-a465-4775-b626-beaecb414649
+    title: Exact retained review and fresh domain proof precede one final candidate ref transaction
+    category: architecture
+    status: proposed
+    date: "2026-09-19"
+    deciders: [codex]
+    context: >
+      A prior successful report, opaque approval text or an unchanged ref cannot
+      independently establish current publication readiness. Assignment event
+      digests omit review metadata, and mechanical migration reports deliberately
+      leave semantic impact unperformed. Concurrent ref changes and lost Git
+      acknowledgements also require explicit outcomes.
+    decision: >
+      Retain exactly request.json, receipt.json and the original authorization
+      bytes, bound to the actual validation bundle and exact immutable request.
+      Trust operator/platform authorization as an external input; do not infer
+      human approval by parsing text or following a PR reference. Embed the actual
+      final result and digest, recapture full domain evidence and rerun capability
+      and final checks during both review recording and publication. Verify actual
+      candidate namespace and raw event/capture bindings. Only after those checks
+      may one bounded Git transaction verify source/output pins and retain the
+      exact candidate ref. A mechanical-only migration review can never publish.
+    consequences: >
+      Domain reports remain unchanged, including publicationReady false and
+      unperformed human approval. Human receipt identity is distinct from domain
+      review provenance. Missing commit acknowledgement yields publication-unknown
+      with reconciliation coordinates, never rollback or inferred success from
+      later ref equality. Publication does not merge, activate or push. Evidence
+      includes 095a659 assignment publication and 98295b6 migration publication,
+      real disposable-repository review/CAS tests and the contracts in
+      docs/agents/ucs-1240-candidate-review.md,
+      docs/agents/ucs-1240-candidate-ref-transaction.md and
+      docs/agents/ucs-1240-final-publication.md. Fixture approvals are synthetic;
+      this proposed record does not approve a real candidate.
+      The first ordinary promotion profile applies the same retained/fresh proof
+      policy to the actual Decisions-only gate. Its distinct descriptor prevents
+      a generic operation name from implicitly admitting broader K/O promotion.
+      Raw creation-event recapture preserves review metadata omitted by the event
+      digest, while the owner protects the authorizer record even when its shared
+      physical file changes. Requiring an unchanged whole authorizer file would
+      incorrectly exclude this supported branch. Implementation and evidence are
+      in docs/agents/ucs-1240-final-promotion.md and
+      tests/ordinary-promotion-publication.test.js. Domain promotion and actual
+      capability reasoning remain in existing owner proposals rather than being
+      duplicated as a second domain decision here.
+      The subsequent Ontology transport uses the distinct typed-record-promotion
+      operation and typed-record-promotion-publication-v1 descriptor, with an
+      explicit ontology recordKinds list and typed-record-promotion-v1 impact
+      policy. Fixed wrappers share the existing final transport implementation;
+      caller-selected executors and implicit widening of the ordinary Decision
+      profile are rejected. The reviewed O-only owner gate supplies the domain
+      proof, including classified assignments and existing history. Registry
+      presence requires actual reach, tree and replay evidence; absence on both
+      sides is explicit, and unknown reach remains incomplete. Retain the exact
+      owner wire/report, separate envelope digest and raw creation event, then
+      rerun the current owner under the exact approved runtime before the shared
+      review and candidate CAS. This avoids duplicate transaction code while
+      keeping record-kind admission independently reviewable. Adding K or D
+      requires a new policy/runtime disposition, not a caller option. See
+      docs/agents/ucs-1240-final-record-promotion.md and
+      tests/typed-promotion-publication.test.js. Existing fixture approvals and
+      earlier runtime approvals do not authorize this changed runtime.
+      A subsequent joint domain/transport review approved O/K v2: the typed owner
+      policy becomes typed-record-promotion-v2, and the publication descriptor
+      typed-record-promotion-publication-v2, each with version 2 and exactly
+      ontology and knowledge as admitted record kinds. All other policy fields
+      and wire/report shape versions remain unchanged. Require homogeneous typed
+      ref kinds/prefixes and the selected store, exact per-kind owner preflight,
+      current policy evidence and original raw event bytes. Historical O-only v1
+      bundles retain their original meaning and cannot be relabeled for v2;
+      fresh validation, runtime approval and exact review are required. Preserve
+      the ordinary Decision descriptor and tests. The shared policy-file change
+      still changes the whole runtime identity even for that unchanged operation.
+      This explicit version boundary is preferred to silently widening the O-only
+      profile or introducing caller-selectable policy/execution. Typed D remains
+      excluded until separately reviewed. The updated O/K contract and real Git
+      tests are docs/agents/ucs-1240-final-record-promotion.md and
+      tests/typed-promotion-publication.test.js.
+      The subsequent v3 domain/publication agreement adds homogeneous Decision
+      admission and a version-2 typed owner report. The owner policy explicitly
+      maps concept, leaf and inapplicable Decision preflight. Retained report
+      admission shares the exact D-only not-applicable tuple rule with the owner;
+      all other required checks pass and final publication still reruns the whole
+      owner and compares exact report/event evidence. D report today/result are
+      null; its input date remains bound, never falsely described as an evaluated
+      freshness date. This resolves the alternative added applicability field and
+      date echo without expanding every report. Review refs now admit correctly
+      paired homogeneous K/O/D and retain exact wire/report/ref-kind binding.
+      Owner/publication policies advance to v3; input, final, worker and receipt
+      structures remain unchanged. Historical policy/report combinations cannot
+      be reused under the new runtime. The original ordinary Decision profile is
+      preserved. Existing effective authorizers remain required before promotion;
+      known-empty support Decisions do not waive registry or mixed-store impacts.
+      Source/assignment/publication proofs remain separate from human attention.
+      The subsequent ordering correction propagates independently decoded original
+      selected refs through retained, fresh and final typed report checks. Authored
+      input order and P1 allocation order need not match; compare unique complete
+      typed membership separately and bind the preflight tuple to input order.
+      Deriving that selection from report output would self-corroborate a changed
+      order. Missing original selection refuses, while a valid reversed request
+      succeeds. The shared final transport leaves ordinary Decision behavior
+      unchanged; actual publication tests cover both profiles.
+    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000012, D-000014] }

@@ -1,4 +1,4 @@
-> Packaging stage 3/7, version `3.0.0-rc.4`. This stacked prerelease is for review and new-installation development. The existing-store migration/cutover workflow arrives in PR4; do not migrate existing installations with this intermediate tree.
+> Packaging stage 4/7, version `3.0.0-rc.5`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
 
@@ -9,11 +9,11 @@ DTO. The effective canonical K/O/D read-only runtime is implemented; final publi
 integration and whole lifecycle acceptance remain separate. P1/P7 transport
 consumes this owner contract.
 
-The material-continuation profile (contract arrives in PR4; see delivery availability) additionally
+The [material-continuation profile](lifecycle-material-continuation.md) additionally
 accepts an own `evidence.materialCaptures` array and returns outer report version 2.
 It shares one governance allowance through source checks and assignment rows.
 The input and version-1 examples below describe omission of that field in the
-positive-use profile. The separate zero-use extension (contract arrives in PR4; see delivery availability)
+positive-use profile. The separate [zero-use extension](ucs-1240-equivalent-merge-zero.md)
 uses explicit `assignmentEvent: null`, actual empty direct-use proof, closure
 limits and report version 3, with or without retained material.
 
@@ -79,7 +79,7 @@ are unchanged. The registry event schema has no new cross-link.
 
 ## Repeated equivalence with a preserved redirect
 
-The bounded repeated-merge extension (contract arrives in PR4; see delivery availability)
+The [bounded repeated-merge extension](ucs-1240-repeated-equivalent-merge.md)
 permits a reviewed `A→B` followed by `B→C`, preserving A and its exact original
 redirect. It reuses this fixed operation and both positive and zero-use branches.
 Only a verified unchanged retired equivalence reference receives the narrow
