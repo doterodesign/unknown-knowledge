@@ -1,0 +1,504 @@
+{
+  "status": "Portable copies of explicitly approved anonymous packet; no sourceBindings were opened",
+  "originalManifestSHA256": "189f6b9982c4aacbc213b0fe65792eb43c982a26b381d48ac6ee00d40a1a95ee",
+  "referenceImplementationCommit": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "files": [
+    {
+      "path": "ANONYMOUS-CASES.md",
+      "originalSHA256": "531c7c5eca928c1eac6f17b5bda3fd8943bedb72090edcb4639b0bdc3d58723e",
+      "originalBytes": 3384,
+      "portableSHA256": "689e4801fd2a5edc63c259729645eef40814a2f7a5341520aa6af7b993291a02",
+      "portableBytes": 3407,
+      "changed": true
+    },
+    {
+      "path": "REPORT.md",
+      "originalSHA256": "81d402bf651a018563e9121902297ce03c7fc7dacc922d5ea4af418e560db881",
+      "originalBytes": 6639,
+      "portableSHA256": "fd06c8862f7620d3e92340812bac42cdf9a55216d4280c536a19e5b2d6446564",
+      "portableBytes": 6553,
+      "changed": true
+    },
+    {
+      "path": "adverse-pairs.json",
+      "originalSHA256": "3cc042841282fcea4362fd31533c3bda66ce8aaeedcd3cf6c5195ddde48725b3",
+      "originalBytes": 6578,
+      "portableSHA256": "3cc042841282fcea4362fd31533c3bda66ce8aaeedcd3cf6c5195ddde48725b3",
+      "portableBytes": 6578,
+      "changed": false
+    },
+    {
+      "path": "heldout-aggregate-main-acceptance.json",
+      "originalSHA256": "445d34c52ffce66d7505b54d119bd28a6c074e18602279bb713dc39653f8c81f",
+      "originalBytes": 1432,
+      "portableSHA256": "1a36cb28bcfcbc4af401d6f0ac39ed629d43d7768ea431649ef29044afa78da6",
+      "portableBytes": 1342,
+      "changed": true
+    },
+    {
+      "path": "heldout-approved-aggregate.json",
+      "originalSHA256": "cd6d0a58aa18809f53a7e849e733ddca7f9b4f4580bedda7623c22a99903b393",
+      "originalBytes": 15372,
+      "portableSHA256": "3beb0173e17952e07ea2c5257e48c3d030493abe637cfd76d3b6ae21f1cce41e",
+      "portableBytes": 15283,
+      "changed": true
+    },
+    {
+      "path": "heldout-approved-report.json",
+      "originalSHA256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+      "originalBytes": 204034,
+      "portableSHA256": "ca00c21824a71e1e27588bde2d990122923a4230bdce47d5ab64d093a41f670c",
+      "portableBytes": 203725,
+      "changed": true
+    },
+    {
+      "path": "heldout-final-handoff.json",
+      "originalSHA256": "4f00a35d91b3a7a172e390caf92ebd134a490a760b638525d5b647718c003ce1",
+      "originalBytes": 3880,
+      "portableSHA256": "f77a602c87a5f0e5251ebf52cafe41f171b008c787dbf62353ae007c00522312",
+      "portableBytes": 3339,
+      "changed": true
+    },
+    {
+      "path": "heldout-final-report-main-acceptance.json",
+      "originalSHA256": "ec7bc0ad060210d6324f94ab1c81d6529ea34067ef19d9ebc6bbf084c5a5b746",
+      "originalBytes": 1335,
+      "portableSHA256": "50a12dffa916b47c91cab97d358307b9d55e99f3c5f17272d43da5fedeb3664f",
+      "portableBytes": 1252,
+      "changed": true
+    },
+    {
+      "path": "heldout-independent-final-acceptance.json",
+      "originalSHA256": "9b37db1f222bbab830dd0cad5884c1e8162ae9282cb4aec5d1808ce35266d499",
+      "originalBytes": 914,
+      "portableSHA256": "e40c84b1587d8a5aa1e9273f31c82098cd510095ed4b7b29a18e8d631572fcaf",
+      "portableBytes": 717,
+      "changed": true
+    },
+    {
+      "path": "heldout-safe-export-manifest.json",
+      "originalSHA256": "33ea145650aee54fe58c543e6f7d7a548da46ab7fabfd5a858f1df5026275c6b",
+      "originalBytes": 1532,
+      "portableSHA256": "832f1864d6d63f81eb05e3088d17d5761c36a4236ac281b8dedad48bfa38894d",
+      "portableBytes": 1063,
+      "changed": true
+    },
+    {
+      "path": "heldout-witness-main-acceptance.json",
+      "originalSHA256": "b49744ed83e95ec84099b692d40bf1ee6528782154cc312cbf2679e02a58c701",
+      "originalBytes": 1679,
+      "portableSHA256": "672938b5e7c0d3985055e4f797f2bcfa226d5fcbee770c891cead39d41051c08",
+      "portableBytes": 1591,
+      "changed": true
+    },
+    {
+      "path": "public-witness-main-acceptance.json",
+      "originalSHA256": "7b5d44064eaf0b8fe23b093d6658dc72a4254fc8a6374ceca45d1117a4e4e790",
+      "originalBytes": 2089,
+      "portableSHA256": "4b186904204dcfdaa505777ed8bfabf51cb08f2dadfa7fc6745db526c9e1b237",
+      "portableBytes": 1929,
+      "changed": true
+    },
+    {
+      "path": "report.json",
+      "originalSHA256": "2e070fa38e961d6e58a39fbb2e77f081f1571fee6cdb8998afb0bef81a2fba12",
+      "originalBytes": 10138,
+      "portableSHA256": "137fa082cc2bf3d95237a67353da8a1e37b880c9b227ed6980b79a839746b479",
+      "portableBytes": 7772,
+      "changed": true
+    },
+    {
+      "path": "serialization-provenance.json",
+      "originalSHA256": "153808dfc459254dd5aa0e4d757bd338d6166a5e1e7a436ffb7b892a536c5c58",
+      "originalBytes": 631,
+      "portableSHA256": "bcc5ff8105471d36fbc5480702a96103d604b1cb89396775a5770c38efa29932",
+      "portableBytes": 528,
+      "changed": true
+    }
+  ],
+  "sanitization": "Local locator strings and JSON formatting change; Markdown adds a copy notice. Numeric outcomes, historical pins and original hashes remain. Portable copies have independent hashes. Unpublished source markers identify retained local evidence, not downloadable attachments.",
+  "changedStrings": [
+    {
+      "originalStringSHA256": "531c7c5eca928c1eac6f17b5bda3fd8943bedb72090edcb4639b0bdc3d58723e",
+      "portableStringSHA256": "f62c17671139c64c149ae0f9159faf667124cbd04abad8fc6b766dd7abc44dc9",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "81d402bf651a018563e9121902297ce03c7fc7dacc922d5ea4af418e560db881",
+      "portableStringSHA256": "a7263b759e10ed936833c94842b1cdf49baf98df56e8f5bbc8ab7f95def6118d",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "e7fff5e01f1d57c1a1e7a2d387246c3bf806165a0e04089db0345d252d47846c",
+      "portableStringSHA256": "adda3f8fe6fa053351ba457f3b81dc08c4b813bc1a39409048be494739131838",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "abd4986fbc0193ab0bd0ee4cd4aa930c2736bf6ef0c9ef26413ac9077a0a60ac",
+      "portableStringSHA256": "32b6a225d4e23645abc66ad80049c42b114777e82dc0432ad433872ed1005ef5",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "abd4986fbc0193ab0bd0ee4cd4aa930c2736bf6ef0c9ef26413ac9077a0a60ac",
+      "portableStringSHA256": "32b6a225d4e23645abc66ad80049c42b114777e82dc0432ad433872ed1005ef5",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "e7fff5e01f1d57c1a1e7a2d387246c3bf806165a0e04089db0345d252d47846c",
+      "portableStringSHA256": "adda3f8fe6fa053351ba457f3b81dc08c4b813bc1a39409048be494739131838",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "a7ceea0a66223487f3642978709c3bde7112fac30b8a2be062309020cba7c812",
+      "portableStringSHA256": "4c2ea10c6887bccb2c64a9afca0af4b512c5fcadd4f2fe408debf6a084070aea",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "3c74e340ec6d5136b853157d70e3fc51db3205616a7119df3160e1b5422b7318",
+      "portableStringSHA256": "00ba6d0ca568f3a9dbd8a736696f7c301691f61d26e0a018a1058600e116dfe3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "abd4986fbc0193ab0bd0ee4cd4aa930c2736bf6ef0c9ef26413ac9077a0a60ac",
+      "portableStringSHA256": "32b6a225d4e23645abc66ad80049c42b114777e82dc0432ad433872ed1005ef5",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "93e45b6d15467f2230c6f2439c263a8b5005c6bfd46b1527d126350ae2a50a20",
+      "portableStringSHA256": "9572cebf6aeb8829a74265f9581fb998b48827438fb4e55b53fe00eee38ed29b",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "078096d1e158f03a58756ce89d14b07f126d77f7e2c6bb091bb9e0f6327052de",
+      "portableStringSHA256": "2d8cf8767720505d84ce963641450e2638c865fbb6fdca95400fbde69a096d29",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "1d15e679cbb11d896d9ee3e84cabc1dc2ee0202d315ce2d0f8246d1bca810bbf",
+      "portableStringSHA256": "9ab9e5a5afa56df7e7a97ac7d12bea76584c6b51192e9efe3671f2bfa6205800",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "f12dfe8372c3083f6fffcb94118ad8117dcbc264b275f7b8fa3b6a90b8ec7bff",
+      "portableStringSHA256": "7f03718623c78ac33d39c21c70f4972b8f14f72b374442e2c21dfa7e037ad9eb",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "3c74e340ec6d5136b853157d70e3fc51db3205616a7119df3160e1b5422b7318",
+      "portableStringSHA256": "00ba6d0ca568f3a9dbd8a736696f7c301691f61d26e0a018a1058600e116dfe3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "3c74e340ec6d5136b853157d70e3fc51db3205616a7119df3160e1b5422b7318",
+      "portableStringSHA256": "00ba6d0ca568f3a9dbd8a736696f7c301691f61d26e0a018a1058600e116dfe3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "7d21994d6de0930deb8494cbca3f5ed6e31d3d676ea07cf8edd82af1efd4b203",
+      "portableStringSHA256": "8ededb18a9ce82f9b283a56ef8fe58523e504ccf7ece22c0d7b571855bab26f2",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "3c74e340ec6d5136b853157d70e3fc51db3205616a7119df3160e1b5422b7318",
+      "portableStringSHA256": "00ba6d0ca568f3a9dbd8a736696f7c301691f61d26e0a018a1058600e116dfe3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "209efd961fb1b3d0a667fad4d01849c1cd3e8f436bb415721942fe8c8107cd43",
+      "portableStringSHA256": "afdf90e89abf3523eea96a5a2ce0183cfd0b9a6f25d2ae9364d91501d092abd7",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "078096d1e158f03a58756ce89d14b07f126d77f7e2c6bb091bb9e0f6327052de",
+      "portableStringSHA256": "2d8cf8767720505d84ce963641450e2638c865fbb6fdca95400fbde69a096d29",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "e7fff5e01f1d57c1a1e7a2d387246c3bf806165a0e04089db0345d252d47846c",
+      "portableStringSHA256": "adda3f8fe6fa053351ba457f3b81dc08c4b813bc1a39409048be494739131838",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "d075b71c4298ced10d09d16383ac01fe41a207ad2f076cbade9fc09107f296da",
+      "portableStringSHA256": "269d1ad60d9ac999b04bca23547c3d9ec213b57c65aa48e73fb56deb8069b405",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "2b36a8c729f1b335a7e8b72435ce72cafcfe4a0aaae2c8484db680eb3bb8af97",
+      "portableStringSHA256": "48a54bfc5f69aad8ce4c60a876580dc6b37432b3708b304ed363a35c3fdc3c52",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "d075b71c4298ced10d09d16383ac01fe41a207ad2f076cbade9fc09107f296da",
+      "portableStringSHA256": "269d1ad60d9ac999b04bca23547c3d9ec213b57c65aa48e73fb56deb8069b405",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "f277d00a4712963c418a7e1dc811ac0b17061e3322aa0129260fc2d07d7fe5ad",
+      "portableStringSHA256": "86f778f66287a7fc823841d417b78a3354ae2d575e8bc12bb34bf607a4d8f9fc",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "2c4d9e858ffc93f02ccee6b655e906a011065c006581f5de8069eb54641e361a",
+      "portableStringSHA256": "80c6909d1c95d4fabb3bf4fd4e2e2ed7f9f967397027f6af7bb7ebeaaba73ea9",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "40963ebf53609fb1e49ef82635e0e195c9fb4c87631769e3f43a0b33dd01fcc4",
+      "portableStringSHA256": "fcd97397c1241f0215f53ab6e518354942cc5fe67420a9adaf75f613fc0f86e0",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "b366abcba2fb302e016908052cbfd7888c8c067f6e14472f5ebf9a1372ae9412",
+      "portableStringSHA256": "00ba6d0ca568f3a9dbd8a736696f7c301691f61d26e0a018a1058600e116dfe3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "50096616a855ca688993e9c850de7dfc9c1913e6603aafbb886674b640a8248e",
+      "portableStringSHA256": "adda3f8fe6fa053351ba457f3b81dc08c4b813bc1a39409048be494739131838",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "ccaebf771dcfb2984548038d4091aa2f802edb4a0029611fc00c2b8553ec9849",
+      "portableStringSHA256": "925e6ad669c9570fdd62a6038f0196f68c6120375498a7de4a170eff400bc8b7",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "74743b4e8f4b21cdcf6338e6b9500f0aa3f4bb25c703e130b37c972df7a34380",
+      "portableStringSHA256": "ff7d2b59ba58c67c8db8bfc966db62143b46d270b14b3292d467bceb9061aa71",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "fe3cd717202c9c4806eeaad374c9f821ef799e35d2c7bce734e17220607fae6f",
+      "portableStringSHA256": "171f5523128126dd9cc7f2aee8412f3be437fe526e5d4f3f7a4010c9b9ba43d2",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "07a70ff65b1995bcdd0d5b4b6c2db4968013db333da552950f66991765ec8ab9",
+      "portableStringSHA256": "e3df6285beffec5bfbb284ed7f8c3b5378eb28a92284b2e42b52b8f0aca57396",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "14641fd8ba5eacedffc764532685739854a81152b4d77b69b0154677b787d5e2",
+      "portableStringSHA256": "21ad725bec3539f1cdef550fb3e4daa77abcd498b588ad73f2232761aa7e7f8e",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "a51b87051e037936c15dd7d0593f4c10a29b625d27101753960bf2d86d08ade7",
+      "portableStringSHA256": "6943ba355c76045ecf2af1544d3cfee8f6ca6248ce072d150d47e14b5d8531e3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "6644ebc6dee5b14bfdb7724e62216989b27b266d98050620c524628054e831b0",
+      "portableStringSHA256": "d728dbe96fb7a551a254f04ff6408eaf10069942d8a32a34d6c7b0907e839ebd",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "680dc9590de1a5a4211d21c1e8eaaed897863f141f8e067789e2e4ff97917f20",
+      "portableStringSHA256": "4142a4ee35267a78fbed82b454f2b0ab0fe7b1d1ad831b4d2849ae496d725a95",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "e901492a53a1f0a070b4a5b182d990efc97b061b68e0a980cb6a5e579329d7e3",
+      "portableStringSHA256": "7bdd239790a82b8a88c2834bee69e37d653f27c0cbf08b9307f6e8418ed1644b",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "78b23b652a810a72a8ff0d77c5fdd9e4f4f186ff57a0f30d1f6a92f5817e49b6",
+      "portableStringSHA256": "b4702e32da26e1ea78e197465b7061f4d21ebf9945a0f6e4a63079ea0a199c8c",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "dc5f92a160f48cd0c614608f8e6b2e34cd92a4e86bf77a8d9d56b21d8560aa07",
+      "portableStringSHA256": "8fee7b1c4c5cd5d2d9e5320743c852bd50bf89a1417d71fc95cda723a2ddb63c",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "d075b71c4298ced10d09d16383ac01fe41a207ad2f076cbade9fc09107f296da",
+      "portableStringSHA256": "269d1ad60d9ac999b04bca23547c3d9ec213b57c65aa48e73fb56deb8069b405",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "f277d00a4712963c418a7e1dc811ac0b17061e3322aa0129260fc2d07d7fe5ad",
+      "portableStringSHA256": "86f778f66287a7fc823841d417b78a3354ae2d575e8bc12bb34bf607a4d8f9fc",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "3c74e340ec6d5136b853157d70e3fc51db3205616a7119df3160e1b5422b7318",
+      "portableStringSHA256": "00ba6d0ca568f3a9dbd8a736696f7c301691f61d26e0a018a1058600e116dfe3",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "078096d1e158f03a58756ce89d14b07f126d77f7e2c6bb091bb9e0f6327052de",
+      "portableStringSHA256": "2d8cf8767720505d84ce963641450e2638c865fbb6fdca95400fbde69a096d29",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "209efd961fb1b3d0a667fad4d01849c1cd3e8f436bb415721942fe8c8107cd43",
+      "portableStringSHA256": "afdf90e89abf3523eea96a5a2ce0183cfd0b9a6f25d2ae9364d91501d092abd7",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "edfbe1887e7bbe175b33611850139e64686da5ee5bd59764cd1b35a49f4a330e",
+      "portableStringSHA256": "5b11d49961802762a77ef27c9f50da56969d1b4123de9ae3dd4058ce4902ddd9",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "e7fff5e01f1d57c1a1e7a2d387246c3bf806165a0e04089db0345d252d47846c",
+      "portableStringSHA256": "adda3f8fe6fa053351ba457f3b81dc08c4b813bc1a39409048be494739131838",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "dc5f92a160f48cd0c614608f8e6b2e34cd92a4e86bf77a8d9d56b21d8560aa07",
+      "portableStringSHA256": "8fee7b1c4c5cd5d2d9e5320743c852bd50bf89a1417d71fc95cda723a2ddb63c",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "12558b1631caecc0ba52935af36d3e96361c80dbd02a5f2191957fed36f8cfe9",
+      "portableStringSHA256": "8804596a9317c076a29e29a88288cd699967d1e8ecc268e6c7051d27cdb41f2b",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "14641fd8ba5eacedffc764532685739854a81152b4d77b69b0154677b787d5e2",
+      "portableStringSHA256": "21ad725bec3539f1cdef550fb3e4daa77abcd498b588ad73f2232761aa7e7f8e",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "2f36f0eba50d6e75a9bb652083dd334c198c345f40c71b6753550f2bf8ed2eb0",
+      "portableStringSHA256": "be2652e782075eada109ad47b7894c379f01425a183958163e60186effcc06a1",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "7b8db9b87cc9794227da3905c44016d6ce48919b29b13c96c28a6b46500b81f5",
+      "portableStringSHA256": "be2652e782075eada109ad47b7894c379f01425a183958163e60186effcc06a1",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    },
+    {
+      "originalStringSHA256": "2f36f0eba50d6e75a9bb652083dd334c198c345f40c71b6753550f2bf8ed2eb0",
+      "portableStringSHA256": "be2652e782075eada109ad47b7894c379f01425a183958163e60186effcc06a1",
+      "reason": "local evidence locator replaced; evidence content and outcomes unchanged"
+    }
+  ],
+  "originalSourceBindings": [
+    {
+      "originalSHA256": "a9e2432de62a269a643deee103dc50fe10f689c501ae5fc5e01625900e1a7314",
+      "bytes": 5091,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "83937c02c2716ff1f8e9bd7b24f844ca83f2bfd73fe6f7ec187868dbb4ebfdd7",
+      "bytes": 25002,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "7b5d44064eaf0b8fe23b093d6658dc72a4254fc8a6374ceca45d1117a4e4e790",
+      "bytes": 2089,
+      "portableCopy": "public-witness-main-acceptance.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "69784c4e729ad14badc212d1f29738063988bcfff85e9de1cd13cac9cf598a02",
+      "bytes": 3031,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "b463e91dc69e488a5c5751529806e7e5ac1fde99b2e2c79673d1e1421fc5d166",
+      "bytes": 1215,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "3b26856df84bc225f383bdab14fa065eb8cb59178a828268ac4fab1e5aa90e00",
+      "bytes": 7728,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "67b75bc2c234f80a6e7fb84ab8d6789146ad60661ac9034ede024ea5ec2df092",
+      "bytes": 2202,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "2c0d0bc18fbbdf33a45c12da436b684608d63a9917322546f59172e9f6eaebd8",
+      "bytes": 2027,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "b49744ed83e95ec84099b692d40bf1ee6528782154cc312cbf2679e02a58c701",
+      "bytes": 1679,
+      "portableCopy": "heldout-witness-main-acceptance.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "d3f1b0cedc2e84548d6bb02b8b3034e97516935e449f89bf634694cacb7f5477",
+      "bytes": 2588,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "cb1c7d85fecfeeab6658ae5167a1e9f6cfd11d7bbb11615d7d0e9c860d290569",
+      "bytes": 1022,
+      "portableCopy": null,
+      "availability": "unpublished historical evidence"
+    },
+    {
+      "originalSHA256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+      "bytes": 204034,
+      "portableCopy": "heldout-approved-report.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "9b37db1f222bbab830dd0cad5884c1e8162ae9282cb4aec5d1808ce35266d499",
+      "bytes": 914,
+      "portableCopy": "heldout-independent-final-acceptance.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "4f00a35d91b3a7a172e390caf92ebd134a490a760b638525d5b647718c003ce1",
+      "bytes": 3880,
+      "portableCopy": "heldout-final-handoff.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "33ea145650aee54fe58c543e6f7d7a548da46ab7fabfd5a858f1df5026275c6b",
+      "bytes": 1532,
+      "portableCopy": "heldout-safe-export-manifest.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "cd6d0a58aa18809f53a7e849e733ddca7f9b4f4580bedda7623c22a99903b393",
+      "bytes": 15372,
+      "portableCopy": "heldout-approved-aggregate.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "b49744ed83e95ec84099b692d40bf1ee6528782154cc312cbf2679e02a58c701",
+      "bytes": 1679,
+      "portableCopy": "heldout-witness-main-acceptance.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "445d34c52ffce66d7505b54d119bd28a6c074e18602279bb713dc39653f8c81f",
+      "bytes": 1432,
+      "portableCopy": "heldout-aggregate-main-acceptance.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "7b5d44064eaf0b8fe23b093d6658dc72a4254fc8a6374ceca45d1117a4e4e790",
+      "bytes": 2089,
+      "portableCopy": "public-witness-main-acceptance.json",
+      "availability": "approved portable copy"
+    },
+    {
+      "originalSHA256": "ec7bc0ad060210d6324f94ab1c81d6529ea34067ef19d9ebc6bbf084c5a5b746",
+      "bytes": 1335,
+      "portableCopy": "heldout-final-report-main-acceptance.json",
+      "availability": "approved portable copy"
+    }
+  ]
+}

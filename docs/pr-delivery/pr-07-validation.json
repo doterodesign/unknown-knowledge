@@ -1,0 +1,112 @@
+{
+  "base": "5ac00e46c177f89f08c91da38140b7185f1f78d6",
+  "version": "3.0.0-rc.8",
+  "scope": "P10 and cross-stack evidence: independent deterministic evaluation tools, public synthetic corpus, preserved public/held-out results and the approved anonymous portable final packet. Prominent README overview of the planned unreleased rc.8 package, migration requirements and bounded evaluation regression.",
+  "tests": {
+    "tests": 99,
+    "pass": 99,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "files": 689,
+    "failures": 0
+  },
+  "acceptance": {
+    "automated": "A1\u2013A4/A6 passed",
+    "manualA5": "not run"
+  },
+  "logs": [
+    {
+      "name": "pr7-tests.log",
+      "sha256": "75ad9a9a5db4435d04e7f3f2abe14c5aef8f3de4d734ef6017796a3bce6aa0af",
+      "bytes": 9429,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr7-lint.log",
+      "sha256": "084c901d861007ef985580706ba06d45b69d025df2d1c2377504345bf3652ed0",
+      "bytes": 97,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    },
+    {
+      "name": "pr7-acceptance.log",
+      "sha256": "b016ce6b432a729ba91e4e94ac26299e70f271c6d450adc5ca4b43473700c575",
+      "bytes": 7246,
+      "availability": "Original retained locally; portable results and exact reproducible source scope are included here."
+    }
+  ],
+  "historicalReference": "2491646386ee88d48891a3ed92845f1066bd59f7",
+  "historicalEvidenceReuse": "Unchanged earlier layers retain their prior receipts. These checks execute the new owning suites and shared inventory/contracts at this assembled tree; they are not a new reader study or full historical rerun.",
+  "testFiles": [
+    "tests/context-glossary.test.js",
+    "tests/exit-code-contract.test.js",
+    "tests/init.test.js",
+    "tests/readme.test.js",
+    "tests/retrieval-acceptance.test.js",
+    "tests/retrieval-growth-preparation.test.js",
+    "tests/retrieval-intent-host.test.js",
+    "tests/retrieval-trial-host.test.js",
+    "tests/scaffold-layout.test.js"
+  ],
+  "testedHead": "5d9f2d127c83c376d8a4e96f8b7c21b951600bee",
+  "testedTree": "6435fe76252459d2f107a9eb54965ef16f0d7d54",
+  "initialAttempt": {
+    "tests": 99,
+    "pass": 98,
+    "fail": 1,
+    "logSHA256": "b68173bb3c5992266d0ba9f14cd725c521effa01d53b321858d34d7947a0f325",
+    "disposition": "Real Git replacement test clones current committed HEAD, which was still PR6 and lacked the new retrieval harness directory. Commit the local PR7 candidate, then rerun unchanged tests at that exact head; no assertion or test behavior changed."
+  },
+  "candidateDisposition": "Unchanged99 tests pass at the committed candidate; the 9b228c3 follow-up records evidence. The later README overview and proposed Decision clarification receive separate focused documentation checks; historical tests and agent results are not rerun or relabeled. Subsequent Linux CI fixture and history-availability corrections have separate original failure and focused-check receipts in pr-04-ci-correction.json and pr-07-ci-correction.json.",
+  "coverage": {
+    "intendedPaths": 1580,
+    "matchingReference": 1522,
+    "explicitExceptions": 58,
+    "unexpectedImplementationDifferences": 0,
+    "unrelatedBaselineChanges": 0,
+    "restoredHistoricalDocumentPaths": 37,
+    "approvedAdditionalArtifactPaths": 44,
+    "details": "final-coverage.json"
+  },
+  "portablePacket": {
+    "approvedCopies": 14,
+    "allOriginalAndPortableHashesVerified": true,
+    "sourceBindingsOpened": false,
+    "privacy": "No private questions, answers, judgments, journals or reader children opened/exported."
+  },
+  "readmeOverview": {
+    "priorHead": "9b228c3be253bcd8cdc95902b5fb0b8fe7184711",
+    "scope": "Near-top planned/unreleased package status, identity and interface changes, reviewed migration and pinned-evaluation regression; existing proposed scoring Decision records evidence distinctions.",
+    "tests": {
+      "tests": 8,
+      "pass": 8,
+      "fail": 0,
+      "command": "node --test tests/readme.test.js"
+    },
+    "localReadmeLinks": "all resolve",
+    "existingFencedCommandBlocks": "byte-identical to prior head",
+    "versionGuard": "3.0.0-rc.7 \u2192 3.0.0-rc.8; both lock fields and changelog agree",
+    "readmeSHA256": "53831f39a728c8e46e33c42473fa264b4fb83160b438cc9440cc749322928b98",
+    "decisionSHA256": "f80dc0abda815e3f469a262f6048a875b98f2388e53fe2b456b09643732092a0",
+    "logs": [
+      {
+        "name": "pr7-readme-rc8-tests.log",
+        "sha256": "c1e5bf7b2af468ec0aced1c837e750e571fec98ed107f0c65a5718e11afc6cdf",
+        "bytes": 720
+      },
+      {
+        "name": "pr7-readme-rc8-version.log",
+        "sha256": "1d3ff302029c3504c859cd82595a77715887ee41b59b9510a3786e23a287e726",
+        "bytes": 75
+      }
+    ],
+    "newReaderOrFullSuiteExperiment": false
+  },
+  "ciCorrection": {
+    "receipt": "pr-07-ci-correction.json",
+    "historicalBindingsPreserved": true,
+    "runtimeChanges": false
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "version": "development-v2-semantic-metadata-review-1",
+  "status": "source-cross-reviewed; P2 governance and executable representation pending",
+  "recordCount": 82,
+  "unresolvedSourceKindLifecycleMappings": 22,
+  "sourceJudgmentsChanged": false,
+  "runtimeOutputsSeen": false,
+  "files": [
+    {
+      "file": "proposal-engineering-culture.json",
+      "sha256": "816ad42bcecca2235da0a5a65c849c218a1c9404f85ce1d40e86cbd5136c8a74"
+    },
+    {
+      "file": "crossreview-engineering-culture.json",
+      "sha256": "5bc88dca0366bd614ecc1dc63805b0c79813191e4897448ae3361105375274cc"
+    },
+    {
+      "file": "verification-engineering-culture.json",
+      "sha256": "391edf76c24e363e8c88397691c252f7545c530d99ad676e74f6d7eca6e6bd44"
+    },
+    {
+      "file": "proposal-policy-manufacturing.json",
+      "sha256": "047a565b0b0ebb7373f940b39a4252b6e979de4d42c8ac11afd95604075c6a26"
+    },
+    {
+      "file": "crossreview-policy-manufacturing.json",
+      "sha256": "c7e83d50443fb0cfd7b144cba551c469e09b189d8ee0c8f76e9ed5b1278d0ef2"
+    },
+    {
+      "file": "verification-policy-manufacturing.json",
+      "sha256": "5c04093fd122a699ddbe44038a3bf539ef15c9b82041a3a9ae5b327d726a357c"
+    },
+    {
+      "file": "proposal-services-holding.json",
+      "sha256": "e62489362c117ed52234d11aad7113f9965fcb7011e6e15b582b8929c5a3098d"
+    },
+    {
+      "file": "crossreview-services-holding.json",
+      "sha256": "fca6918bdeb0919ce3ab8aa74482cac42cc1651e47f876af8c3e601407bfad65"
+    },
+    {
+      "file": "verification-services-holding.json",
+      "sha256": "e1b18a44d679a26d28ac7ac87bc793cac3677a12c89feee9f08ee51c476fd5bf"
+    },
+    {
+      "file": "adjudication.md",
+      "sha256": "82011c99f3c6f7e510bfa10b1e057a67eece7a75f5f45687ed596219812b230a"
+    },
+    {
+      "file": "README.md",
+      "sha256": "3d6fac56bf313b7709bf811c5c2644e3a2ba675b9a80aa6bc853828b13635902"
+    }
+  ]
+}

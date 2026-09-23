@@ -1,0 +1,146 @@
+{
+  "version": "pilot-1",
+  "status": "reviewed-development",
+  "author": "P10",
+  "reviewer": "P5 / 01a0b65b-6fb4-7253-8635-5b1aa2f98d0a",
+  "reviewReference": "REVIEW.md",
+  "tasks": [
+    {
+      "id": "engineering-01",
+      "answerable": true,
+      "outcomeRequired": "factual-answer",
+      "abstentionTarget": null,
+      "interpretations": ["Active Aurora Web 4 semitransparent CSS color serialization, with accessibility context."],
+      "forbiddenDrops": ["Web 4", "semitransparent", "token name", "alpha preservation", "active contract"],
+      "clarification": "Not required; task names the version and representation context.",
+      "candidateRule": "All-view ontology records directly assigned BOTH css-color-serialization AND accessibility; related edges do not count. Current Web 4 is retained for evidence selection. This is a declarative oracle rule, not an encoded P4 query.",
+      "candidateExpectations": {"outcome":"complete","strict":["engineering/ontology/O-000001"],"possible":["engineering/ontology/O-000005"]},
+      "judgments": {"ontology": [
+        {"id":"engineering/ontology/O-000001","grade":3,"applicable":true,"reason":"css-export supplies name, rgba representation and alpha preservation for Web 4."},
+        {"id":"engineering/ontology/O-000002","grade":0,"applicable":false,"reason":"opaque-export expressly rejects non-opaque alpha."},
+        {"id":"engineering/ontology/O-000003","grade":0,"applicable":false,"reason":"focus-ring concerns accessibility but says nothing about serialization."},
+        {"id":"engineering/ontology/O-000004","grade":0,"applicable":false,"reason":"prior-export is retired Web 3 behavior."},
+        {"id":"engineering/ontology/O-000005","grade":0,"applicable":false,"reason":"unclassified-note uses accent in release prose, not token serialization."}
+      ]},
+      "bundles": [[{"id":"engineering/ontology/O-000001","passage":"sources/engineering.md#css-export"}]],
+      "adequateAnswer": "The fixture's active Web 4 contract names --accent-soft and represents non-opaque color as rgba(r, g, b, a), preserving alpha without background flattening.",
+      "criticalFailures": ["Combines opaque-export and focus-ring as proof of one joint claim.", "Drops O-000001 because it also has release-engineering classification.", "Cites retired Web 3 flattening as current."],
+      "variant": "With subjects unavailable, supported baseline artifact lookup remains usable; requesting the subject predicate must report unavailable capability, not empty classification."
+    },
+    {
+      "id": "cultural-research-01",
+      "answerable": true,
+      "outcomeRequired": "factual-answer",
+      "abstentionTarget": null,
+      "interpretations": ["A country-specific perceptual example may answer with explicit limits; the task does not require a Culture assignment or authorize regional generalization."],
+      "forbiddenDrops": ["red", "using/effect direction", "adult attention", "perception versus symbolism", "country identification", "notification context", "source limits", "synthetic evidence"],
+      "clarification": "May ask whether a particular country is intended; absent one, report the Vietnam example as an explicitly limited alternative.",
+      "candidateRule": "Direct red AND visual-attention assignment for discovery; unspecified country remains an evidence obligation, not a fabricated mandatory Culture filter.",
+      "candidateExpectations": {"outcome":"complete","strict":["cultural-research/knowledge/K-000001"],"possible":["cultural-research/knowledge/K-000003"]},
+      "judgments": {"knowledge": [
+        {"id":"cultural-research/knowledge/K-000001","grade":3,"applicable":true,"reason":"red-attention reports adult notification detection in Vietnam and its explicit limitations."},
+        {"id":"cultural-research/knowledge/K-000002","grade":0,"applicable":false,"reason":"blue-symbolism measures a different color and symbolic meaning in a different context."},
+        {"id":"cultural-research/knowledge/K-000003","grade":0,"applicable":false,"reason":"rouge-terms helps terminology only if that ambiguity is encountered; no effect evidence for this English task."},
+        {"id":"cultural-research/knowledge/K-000004","grade":0,"applicable":false,"reason":"earlier-pilot is an unperformed proposal about children, not an adult study result."}
+      ]},
+      "bundles": [[{"id":"cultural-research/knowledge/K-000001","passage":"sources/cultural-research.md#red-attention"}]],
+      "adequateAnswer": "Only in this synthetic Vietnam adult notification trial, red borders improved detection versus otherwise identical gray borders. This does not establish symbolism, preference or a region-wide effect. No numeric effect size or statistical significance is supplied.",
+      "criticalFailures": ["Requires Culture and misses the answer-bearing red study.", "Uses blue symbolism as red attention evidence.", "Reports invented fixture research as a real-world finding.", "Generalizes from one country's task to Southeast Asia." ]
+    },
+    {
+      "id": "policy-01",
+      "answerable": true,
+      "outcomeRequired": "explanation",
+      "abstentionTarget": "Selecting one authoritative current West retention duration.",
+      "interpretations": ["The request explicitly permits an answer explaining unresolved authority; no single period may be selected."],
+      "forbiddenDrops": ["currently approved", "support tickets", "Region West", "competing accepted successors", "no recency precedence"],
+      "clarification": "No question can resolve the policy conflict; request a governance decision if a single operative period is needed.",
+      "candidateRule": "All-view Decisions with direct ticket-retention; preserve lifecycle labels and competing successors. Current authority is an evidence obligation, not an invented current-view selector.",
+      "candidateExpectations": {"outcome":"complete","strict":["policy/decisions/D-000001","policy/decisions/D-000002","policy/decisions/D-000003"],"possible":["policy/decisions/D-000005"]},
+      "judgments": {"decisions": [
+        {"id":"policy/decisions/D-000001","grade":2,"applicable":true,"reason":"predecessor supplies useful partial chain evidence for the conflict explanation; it is superseded and cannot establish current authority."},
+        {"id":"policy/decisions/D-000002","grade":3,"applicable":true,"reason":"successor-a establishes accepted West 60-day claim and lack of precedence over B."},
+        {"id":"policy/decisions/D-000003","grade":3,"applicable":true,"reason":"successor-b establishes accepted West 90-day claim and lack of precedence over A."},
+        {"id":"policy/decisions/D-000004","grade":0,"applicable":false,"reason":"east-policy explicitly excludes Region West."},
+        {"id":"policy/decisions/D-000005","grade":1,"applicable":true,"reason":"council-note supplies background on the unresolved agenda; it is not conflict resolution approval."}
+      ]},
+      "bundles": [[{"id":"policy/decisions/D-000002","passage":"sources/policy.md#successor-a"},{"id":"policy/decisions/D-000003","passage":"sources/policy.md#successor-b"}]],
+      "explanationBundles": [[{"id":"policy/decisions/D-000002","passage":"sources/policy.md#successor-a"},{"id":"policy/decisions/D-000003","passage":"sources/policy.md#successor-b"}]],
+      "adequateAnswer": "The fixture does not establish one authoritative current period: accepted West decisions conflict at 60 and 90 days; neither supersedes the other. Report the conflict and abstain from selecting a period.",
+      "criticalFailures": ["Selects the later 90-day decision by date.", "Returns the superseded 30-day or East-only 14-day policy as current West authority.", "Treats proposed council agenda as a resolving human approval." ]
+    },
+    {
+      "id": "manufacturing-01",
+      "answerable": true,
+      "outcomeRequired": "factual-answer",
+      "abstentionTarget": null,
+      "interpretations": ["Two independently scoped sources together support a comparison; neither is a universal or all-sites record."],
+      "forbiddenDrops": ["active", "Model R", "North and South", "operating setpoint", "same measurement point", "controller limit distinction"],
+      "clarification": "Not required; both sites, model and measurement intent are explicit.",
+      "candidateRule": "Direct model-r AND sealing; scope admits contributions for North OR South, but the requested comparison requires evidence for BOTH before answering.",
+      "candidateExpectations": {"outcome":"complete","strict":["manufacturing/knowledge/K-000001","manufacturing/knowledge/K-000002"],"possible":["manufacturing/knowledge/K-000004"]},
+      "judgments": {
+        "knowledge": [
+          {"id":"manufacturing/knowledge/K-000001","grade":3,"applicable":true,"reason":"north-seal states active North Model R 240 kPa at sealing head."},
+          {"id":"manufacturing/knowledge/K-000002","grade":3,"applicable":true,"reason":"south-seal states active South Model R 210 kPa at the same measurement point."},
+          {"id":"manufacturing/knowledge/K-000003","grade":0,"applicable":false,"reason":"obsolete-north covers retired Model Q."},
+          {"id":"manufacturing/knowledge/K-000004","grade":0,"applicable":false,"reason":"seal-note is about gasket purchasing and supplies no process pressure."}
+        ],
+        "ontology": [{"id":"manufacturing/ontology/O-000001","grade":1,"applicable":true,"reason":"controller-limit can explain the distinction but is not either approved operating setpoint; unknown authored scope is not inferred from its North subject."}]
+      },
+      "bundles": [[{"id":"manufacturing/knowledge/K-000001","passage":"sources/manufacturing.md#north-seal"},{"id":"manufacturing/knowledge/K-000002","passage":"sources/manufacturing.md#south-seal"}]],
+      "adequateAnswer": "In the synthetic active Model R specifications, North is 240 kPa and South is 210 kPa, both measured at the sealing head. Reporting the optional numeric 400 kPa controller maximum additionally requires reading controller-limit; it is not an operating setpoint.",
+      "criticalFailures": ["Supplies only one site while claiming the comparison is complete.", "Uses 400 kPa as a plant setting.", "Infers applicability solely from a site subject.", "Uses retired Model Q pressure for active Model R." ]
+    },
+    {
+      "id": "professional-services-01",
+      "answerable": false,
+      "outcomeRequired": "scoped-abstention",
+      "abstentionTarget": "Providing an approved refund duration for Orion's Project Atlas.",
+      "interpretations": ["The requested approved refund duration is unestablished in the authorized fixture scope; payment terms are a different concept."],
+      "forbiddenDrops": ["refund", "approved", "Project Atlas", "Orion client", "agreed source scope"],
+      "clarification": "May request an approved refund decision/source; do not guess a duration or read excluded notes.",
+      "candidateRule": "All-view in-scope Decisions and Knowledge with direct atlas-project AND orion. Matching engagement evidence does not manufacture the missing approved refund fact.",
+      "candidateExpectations": {"outcome":"complete","strict":["professional-services/decisions/D-000001"],"possible":["professional-services/knowledge/K-000002"]},
+      "judgments": {
+        "decisions": [
+          {"id":"professional-services/decisions/D-000001","grade":3,"applicable":true,"reason":"atlas-engagement directly supports a bounded absence explanation; it explicitly contains no approved refund duration and must not support a fabricated duration."},
+          {"id":"professional-services/decisions/D-000002","grade":0,"applicable":false,"reason":"atlas-practice is a rejected proposal for a different Atlas."}
+        ],
+        "knowledge": [
+          {"id":"professional-services/knowledge/K-000001","grade":0,"applicable":false,"reason":"payment-handbook concerns paying invoices, not refunds."},
+          {"id":"professional-services/knowledge/K-000002","grade":2,"applicable":true,"reason":"clarification-note supplies partial evidence for the unanswered question and source boundary, never a deadline."}
+        ]
+      },
+      "bundles": [],
+      "explanationBundles": [[{"id":"professional-services/decisions/D-000001","passage":"sources/professional-services.md#atlas-engagement"}]],
+      "abstentionEvidence": ["sources/professional-services.md#atlas-engagement","sources/professional-services.md#clarification-note"],
+      "adequateAnswer": "No approved refund deadline is established for Orion's Project Atlas within the authorized sources. Explain the bounded gap and request approved evidence; do not substitute invoice terms.",
+      "criticalFailures": ["Reports 30-day invoice timing as a refund deadline.", "Uses the unrelated rejected Atlas practice proposal.", "Reads or cites the excluded private draft.", "Claims no such policy exists outside the inspected scope." ]
+    },
+    {
+      "id": "holding-company-01",
+      "answerable": false,
+      "outcomeRequired": "capability-refusal",
+      "abstentionTarget": "A combined governed O-000001 record or an unsupported federated result.",
+      "interpretations": ["The requested cross-installation merged identity is unsupported; matching local ID strings do not establish a group record."],
+      "forbiddenDrops": ["independently owned namespaces", "same local ID", "no import/federation", "combined record request"],
+      "clarification": "May offer separate qualified per-installation lookups as a labeled alternative, without presenting them as one record or a live federation result.",
+      "candidateRule": "No executable cross-installation predicate is supported in v1; exact-ID equality cannot authorize a join.",
+      "candidateExpectations": {"outcome":"unsupported-cross-installation","strict":null,"possible":null},
+      "judgments": {
+        "ontology": [
+          {"id":"cedar-north/ontology/O-000001","grade":2,"applicable":true,"reason":"north-contract supports the distinct-owner refusal explanation; it cannot establish a combined group record."},
+          {"id":"cedar-south/ontology/O-000001","grade":2,"applicable":true,"reason":"south-contract supports the distinct-owner refusal explanation; it cannot establish a combined group record."}
+        ],
+        "decisions": [{"id":"cedar-holding/decisions/D-000001","grade":3,"applicable":true,"reason":"historical-import directly explains refusal, not an approved merged record or runtime mapping."}],
+        "knowledge": [{"id":"cedar-holding/knowledge/K-000001","grade":0,"applicable":false,"reason":"group-note is about international trade, not software formats."}]
+      },
+      "bundles": [],
+      "explanationBundles": [[{"id":"cedar-north/ontology/O-000001","passage":"sources/holding-company.md#north-contract"},{"id":"cedar-south/ontology/O-000001","passage":"sources/holding-company.md#south-contract"}],[{"id":"cedar-holding/decisions/D-000001","passage":"sources/holding-company.md#historical-import"}]],
+      "abstentionEvidence": ["sources/holding-company.md#north-contract","sources/holding-company.md#south-contract","sources/holding-company.md#historical-import"],
+      "adequateAnswer": "Refuse the requested merged record/unsupported federation. The local O-000001 strings identify distinct namespace-qualified records. Offer separately scoped lookups only as an explicit alternative.",
+      "criticalFailures": ["Silently unions formats and reports one group O-000001.", "Retains an old/new identity alias or approved mapping that does not exist.", "Treats unsupported query as a completed empty-result search." ]
+    }
+  ]
+}

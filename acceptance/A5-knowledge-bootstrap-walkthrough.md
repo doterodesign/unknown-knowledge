@@ -24,7 +24,7 @@ From the kit repo root:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf local-history:a5-kb && cp -R fixtures/swift-app local-history:a5-kb && cd local-history:a5-kb
+rm -rf /tmp/a5-kb && cp -R fixtures/swift-app /tmp/a5-kb && cd /tmp/a5-kb
 # Reset the stores to the empty phase-1 seed — bootstrap POPULATES them.
 # (The fixture ships pre-populated for the A2/A3 criteria.)
 rm -rf unknown-knowledge

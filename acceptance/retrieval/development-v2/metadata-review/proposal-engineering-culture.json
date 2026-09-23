@@ -1,0 +1,922 @@
+{
+  "review": "P10/UCS-1243 independent public-source metadata review: engineering and cultural-research",
+  "status": "draft for root and cross-review before freeze",
+  "sourceBoundary": {
+    "read": [
+      "acceptance/retrieval/{pilot,development-v2}/sources/{engineering,cultural-research}.md",
+      "acceptance/retrieval/development-v2/record-inventory.json (only engineering/cultural-research organizations)",
+      "acceptance/retrieval/pilot/tasks.json (only corresponding engineering/cultural-research rows)"
+    ],
+    "excluded": "No private files, implementation/runtime outputs, source judgments, or sealed/heldout artifacts consulted."
+  },
+  "conventions": [
+    "IDs and source attribution are copied from the public provisional inventory; they do not certify canonical allocation or record kind.",
+    "Lifecycle derives from source standing appropriate to the provisional record kind. Null preserves unresolved standing or kind/standing mapping, not a new executable enum. sourceStanding and referenced/described-object standing remain separate. proposedLifecycle is only a labeled prior candidate or future normalization proposal with its basis; it asserts no approved record promotion.",
+    "Scope values are semantic applicability proposals, not executable profile identifiers. Null means applicability details are missing; structured notebook scopes preserve independent known applicability with jointWarrant:false. No passage proves genuinely unrestricted global applicability; none receives [].",
+    "Subject keys are curator topic proposals. Explicit source missing classification (keyboard-capture) differs from a curator-deferred assignment in this draft (including prior-export, rouge-terms, and earlier-pilot). Omitted keys have a declared classificationStatus/basis; none implies an explicitly empty assignment. No source-backed [] is asserted.",
+    "Notebook records retain topic co-membership and per-observation scope facts. A subject conjunction can retrieve such a record but does not prove a jointly tested factual claim; jointWarrant:false preserves this distinction.",
+    "All corpus facts are invented synthetic fixture claims, not real-world research findings."
+  ],
+  "records": [
+    {
+      "id": "engineering/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "css-export",
+      "lifecycle": "active",
+      "scope": [
+        "aurora-web-4"
+      ],
+      "metadataReason": "The passage explicitly calls this an active Aurora Web 4 contract and specifies alpha-preserving rgba serialization and --accent-soft.",
+      "subjectKeys": [
+        "css-color-serialization",
+        "color-tokens"
+      ],
+      "ambiguities": [
+        "The prior accessibility and release-engineering assignments are curator proposals unsupported as distinct responsibilities by this passage; mention of a release identifies applicability, not necessarily a release-engineering subject assignment."
+      ]
+    },
+    {
+      "id": "engineering/ontology/O-000002",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "opaque-export",
+      "lifecycle": null,
+      "scope": [
+        "aurora-web-4-opaque-only"
+      ],
+      "metadataReason": "The passage supplies Web 4 opaque-only execution applicability and a normative export rule, but does not independently supply lifecycle approval.",
+      "subjectKeys": [
+        "css-color-serialization"
+      ],
+      "ambiguities": [
+        "Prior active lifecycle is not directly authenticated by this passage; confirm source standing before canonicalization."
+      ],
+      "proposedLifecycle": "active",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json candidate only; not authenticated source standing or an approved fixture-record normalization."
+    },
+    {
+      "id": "engineering/ontology/O-000003",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "focus-ring",
+      "lifecycle": null,
+      "scope": null,
+      "metadataReason": "Keyboard-focus outline and offset support the accessibility topic. Aurora is named, but neither release/platform applicability nor lifecycle approval is supplied.",
+      "subjectKeys": [
+        "accessibility"
+      ],
+      "ambiguities": [
+        "Prior aurora-web-4 scope imports execution applicability absent from this passage. The development keyboard-capture contract does not retroactively fill this source gap.",
+        "Prior active lifecycle needs source-owner confirmation."
+      ],
+      "proposedLifecycle": "active",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json candidate only; not authenticated source standing or an approved fixture-record normalization."
+    },
+    {
+      "id": "engineering/ontology/O-000004",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "prior-export",
+      "lifecycle": "retired",
+      "scope": [
+        "aurora-web-3"
+      ],
+      "metadataReason": "The source explicitly identifies the retired Web 3 exporter and limits use to historical debugging.",
+      "ambiguities": [
+        "Prior subjectKeys:[] is not an explicit source-backed empty assignment. This draft defers assignment; the source does not expressly declare classification missing. CSS color serialization is a content-based candidate for a declared curation decision."
+      ],
+      "classificationStatus": "curator-assignment-deferred-in-this-draft",
+      "classificationBasis": "The passage does not explicitly declare missing classification. Omission is a pending curator decision in this draft, not source proof of a missing or empty subject set. Source-warranted topics may be authored by a later declared curation decision."
+    },
+    {
+      "id": "engineering/ontology/O-000005",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "unclassified-note",
+      "lifecycle": null,
+      "scope": null,
+      "metadataReason": "This is a note about the word accent in a release announcement. It supplies no approval, executable contract applicability, or supplied classification.",
+      "ambiguities": [
+        "Prior scope:[] wrongly presents missing applicability as unrestricted/global.",
+        "Prior active lifecycle is not established. The provisional ontology ID may be inappropriate for a communications note."
+      ],
+      "proposedLifecycle": "active",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json candidate only; not authenticated source standing or an approved fixture-record normalization.",
+      "classificationStatus": "draft-omission-with-source-heading-cue",
+      "classificationBasis": "The unclassified-note heading cues unspecified classification, but the prose does not declare an explicit empty set. This draft leaves assignment deferred rather than asserting source-authored []."
+    },
+    {
+      "id": "engineering/ontology/O-000006",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "css-audit",
+      "lifecycle": null,
+      "scope": [
+        "aurora-web-4-css-exporter"
+      ],
+      "metadataReason": "The accepted audit covers the active Web 4 CSS exporter and confirms its alpha-preserving rgba contract. Acceptance describes the audit; active describes the referenced exporter. Neither allocates or promotes the provisional ontology record.",
+      "subjectKeys": [
+        "css-color-serialization",
+        "color-tokens"
+      ],
+      "ambiguities": [
+        "The supplied ontology ID is provisional: an audit is evidence about a contract. Governance must decide whether to verify an ontology assertion or allocate another record kind without silently changing this attribution ID.",
+        "The proposed active lifecycle is an explicit candidate for later ontology normalization, not an assertion that the accepted audit itself has active ontology standing."
+      ],
+      "sourceStanding": "accepted audit",
+      "referencedContractStanding": "active Web 4 CSS exporter",
+      "proposedLifecycle": "active",
+      "proposedLifecycleBasis": "Possible future ontology assertion supported by the accepted audit, requiring an explicit fixture-record kind/verification/normalization decision; not source-authenticated audit lifecycle."
+    },
+    {
+      "id": "engineering/ontology/O-000007",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "eclat-color",
+      "lifecycle": null,
+      "scope": [
+        "aurora-web-4-color-naming"
+      ],
+      "metadataReason": "The glossary is reviewed and names the semitransparent accent role and existing --accent-soft token in Web 4. It does not itself define CSS serialization.",
+      "subjectKeys": [
+        "accent-color-role",
+        "terminology"
+      ],
+      "ambiguities": [
+        "Reviewed glossary standing supports reviewed knowledge; it does not independently establish active ontology standing under the supplied provisional ontology ID. Resolve kind/standing before freeze."
+      ]
+    },
+    {
+      "id": "engineering/ontology/O-000008",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "eclat-project",
+      "lifecycle": "proposed",
+      "scope": [
+        "aurora-android-eclat-animation-project"
+      ],
+      "metadataReason": "The source explicitly describes a proposed Android animation project with draft cue spark-start and no approved production animation contract.",
+      "subjectKeys": [
+        "animation",
+        "eclat-project"
+      ],
+      "ambiguities": [
+        "A proposal-only source does not establish that its provisional canonical ontology ID has been allocated. It must remain an unallocated proposal unless governance confirms allocation.",
+        "Éclat in this context is the animation project, not a color-token alias."
+      ]
+    },
+    {
+      "id": "engineering/ontology/O-000009",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "production-theme",
+      "lifecycle": "active",
+      "scope": [
+        "aurora-web-4-production-excluding-experimental-preview"
+      ],
+      "metadataReason": "The accepted production contract specifies a 6 px card radius, excludes experimental preview, explicitly belongs to card layout and release styling, and retains an additional release classification.",
+      "subjectKeys": [
+        "card-layout",
+        "release-styling",
+        "release-engineering"
+      ],
+      "ambiguities": [
+        "The spelling release-engineering is a curator registry proposal for the source-mentioned additional release classification, not a source-authored taxonomy identifier."
+      ]
+    },
+    {
+      "id": "engineering/ontology/O-000010",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "preview-theme",
+      "lifecycle": null,
+      "scope": [
+        "aurora-experimental-preview"
+      ],
+      "metadataReason": "The reviewed preview observation specifies a 12 px radius for the preview channel only and explicitly leaves the production contract in place.",
+      "subjectKeys": [
+        "card-layout",
+        "release-styling"
+      ],
+      "ambiguities": [
+        "Reviewed observation is a knowledge standing; active ontology approval is not explicit. Resolve provisional kind or obtain contract standing. This record does not supersede production-theme."
+      ]
+    },
+    {
+      "id": "engineering/ontology/O-000011",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "cross-platform-notebook",
+      "lifecycle": null,
+      "scope": {
+        "kind": "independent-observation-scopes",
+        "observations": [
+          {
+            "scope": [
+              "android-image-viewer"
+            ],
+            "subjectKeys": [
+              "image-viewer"
+            ],
+            "claim": "Accepts P3 images."
+          },
+          {
+            "scope": [
+              "desktop-css-exporter"
+            ],
+            "subjectKeys": [
+              "css-color-serialization"
+            ],
+            "claim": "Serializes alpha colors as rgba."
+          }
+        ],
+        "jointWarrant": false,
+        "representationStatus": "semantic proposal only; executable applicability representation unresolved"
+      },
+      "metadataReason": "The reviewed notebook has two independently scoped observations. Its topical coverage warrants both image-viewer and CSS color-serialization assignments, but their co-membership is not evidence of a jointly qualified Android color-export contract.",
+      "ambiguities": [
+        "Kind mismatch: reviewed notebook supports reviewed knowledge, not automatically active ontology.",
+        "Android image-viewer P3 acceptance and desktop CSS rgba serialization are independent. Subject AND means recorded topic co-membership only; it does not prove Android CSS export of P3 colors with alpha.",
+        "Known scopes are preserved per observation. Their structured semantic proposal is not an executable applicability profile and requires governance representation before freeze."
+      ],
+      "subjectKeys": [
+        "image-viewer",
+        "css-color-serialization"
+      ],
+      "jointWarrant": false
+    },
+    {
+      "id": "engineering/ontology/O-000012",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "keyboard-capture",
+      "lifecycle": "active",
+      "scope": [
+        "aurora-web-4"
+      ],
+      "metadataReason": "The source explicitly calls the keyboard contract accepted and active, names Web 4, and requires preserving the two-pixel outline and offset in screenshots.",
+      "ambiguities": [
+        "The source explicitly says subject classification has not yet been supplied. Omit subjectKeys; do not encode [] or infer an accessibility assignment that would conceal the missing classification."
+      ],
+      "classificationStatus": "source-explicitly-missing",
+      "classificationBasis": "The passage expressly states that subject classification has not yet been supplied. Preserve absence unless a declared later curation decision addresses it; do not fill with inferred accessibility or []."
+    },
+    {
+      "id": "engineering/ontology/O-000013",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "web5-proposal",
+      "lifecycle": "proposed",
+      "scope": [
+        "aurora-web-5"
+      ],
+      "metadataReason": "The proposed change concerns future Web 5 display-p3 color serialization, has not been accepted or shipped, and does not supersede the Web 4 contract.",
+      "subjectKeys": [
+        "css-color-serialization",
+        "color-tokens"
+      ],
+      "ambiguities": [
+        "The provisional canonical ontology ID is not proof of allocation for a proposal-only source; use the unallocated proposal path unless governance confirms allocation."
+      ]
+    },
+    {
+      "id": "engineering/ontology/O-000014",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "palette-mail",
+      "lifecycle": "proposed",
+      "scope": null,
+      "metadataReason": "The unreviewed should-be-solid message proposes a change but names neither product nor release and provides no approved exporter change.",
+      "ambiguities": [
+        "Scope is missing, not global. Accent does not identify a specific token or project without context; classification remains omitted.",
+        "The proposal-only message may not belong in ontology, and its provisional canonical ID does not authenticate allocation."
+      ],
+      "classificationStatus": "curator-assignment-deferred-in-this-draft",
+      "classificationBasis": "Product/release and accent referent are unspecified. Assignment is deferred by the reviewer; the source does not explicitly declare missing classification or an empty subject set."
+    },
+    {
+      "id": "engineering/ontology/O-000015",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "screenshot-limit",
+      "lifecycle": "active",
+      "scope": [
+        "android-image-viewer"
+      ],
+      "metadataReason": "The source explicitly calls the Android image-viewer test active and states its 4096-pixel maximum screenshot width.",
+      "subjectKeys": [
+        "image-viewer"
+      ],
+      "ambiguities": [
+        "The source does not name Aurora, a release, a CSS exporter, or focus rings. Do not import those applicability details.",
+        "An active test is not necessarily an active ontology contract: the supplied kind/ID requires governance review. Lifecycle here preserves the explicit test standing only."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "red-attention",
+      "lifecycle": null,
+      "scope": [
+        "vietnam-adult-software-notifications"
+      ],
+      "metadataReason": "The completed invented 2025 trial studied 40 adults recruited in Vietnam detecting red-bordered versus otherwise identical gray-bordered software notifications. No review status is supplied.",
+      "subjectKeys": [
+        "red",
+        "visual-attention"
+      ],
+      "ambiguities": [
+        "Prior reviewed lifecycle requires source-owner confirmation; completed research is not automatically reviewed.",
+        "Scope denotes this recruited sample and task, not all Vietnam residents or a Southeast Asia-wide result."
+      ],
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json candidate only; not authenticated source standing or an approved fixture-record normalization."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000002",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "blue-symbolism",
+      "lifecycle": null,
+      "scope": [
+        "thailand-adult-packaging-symbolism"
+      ],
+      "metadataReason": "The survey studied reported symbolism of blue packaging among adults recruited in Thailand. It supplies no review status or attention comparison.",
+      "subjectKeys": [
+        "blue",
+        "color-symbolism"
+      ],
+      "ambiguities": [
+        "Prior reviewed lifecycle requires source-owner confirmation."
+      ],
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json candidate only; not authenticated source standing or an approved fixture-record normalization."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000003",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "rouge-terms",
+      "lifecycle": null,
+      "scope": [
+        "maru-research-collection-terminology"
+      ],
+      "metadataReason": "The note defines two collection-specific uses of Rouge and supplies no review status. This draft defers subject assignment rather than asserting a source-declared missing classification.",
+      "ambiguities": [
+        "Prior scope:[] is unsupported as global applicability: the project-name meaning is explicitly within this collection.",
+        "Prior reviewed lifecycle is not source-authenticated. Subject omission is a draft curation choice, not an explicit source absence or empty assignment, and does not establish a red-effect finding."
+      ],
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json candidate only; not authenticated source standing or an approved fixture-record normalization.",
+      "classificationStatus": "curator-assignment-deferred-in-this-draft",
+      "classificationBasis": "The passage does not explicitly declare missing classification. Omission is a pending curator decision in this draft, not source proof of a missing or empty subject set. Source-warranted topics may be authored by a later declared curation decision."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000004",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "earlier-pilot",
+      "lifecycle": "proposed",
+      "scope": null,
+      "metadataReason": "The source explicitly describes an unreviewed, unperformed proposal involving red toy-package labels and children. Another country is not identified.",
+      "ambiguities": [
+        "Prior subjectKeys:[] does not establish a source-authored empty assignment. This draft defers topic assignment; the passage does not explicitly declare classification missing.",
+        "Prior children-toy-packaging scope is only partial: children and intended medium are known, but country and complete intended applicability are missing. No executed study exists.",
+        "Retained as research history does not mean retired. Provisional canonical knowledge ID does not establish allocation for an unallocated proposal."
+      ],
+      "classificationStatus": "curator-assignment-deferred-in-this-draft",
+      "classificationBasis": "The passage does not explicitly declare missing classification. Omission is a pending curator decision in this draft, not source proof of a missing or empty subject set. Source-warranted topics may be authored by a later declared curation decision."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000005",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "do-glossary",
+      "lifecycle": "reviewed",
+      "scope": [
+        "vietnam-adult-software-notification-trial-color-naming"
+      ],
+      "metadataReason": "The reviewed Vietnamese-language glossary maps đỏ to red in the collection’s Vietnam adult notification trial. Its contribution is naming, not an experimental effect.",
+      "subjectKeys": [
+        "red",
+        "terminology"
+      ],
+      "ambiguities": [
+        "Do not use the glossary alias or its reviewed standing to add attention evidence or a region-wide result."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000006",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "rouge-project",
+      "lifecycle": "reviewed",
+      "scope": [
+        "maru-project-rouge-museum-brochure-title-study"
+      ],
+      "metadataReason": "The reviewed internal naming study concerns recall of the museum brochure title Morning Harbor; Rouge is the project name.",
+      "subjectKeys": [
+        "rouge-project"
+      ],
+      "ambiguities": [
+        "No color manipulation or visual-attention test occurred. Country and participant population are unspecified; the scope identifies this study and medium only, not a country/population finding."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000007",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "thailand-null",
+      "lifecycle": "reviewed",
+      "scope": [
+        "thailand-adult-software-notifications"
+      ],
+      "metadataReason": "The reviewed invented study involves 36 adults recruited in Thailand and equal red-bordered/gray-bordered notification detection within reported precision.",
+      "subjectKeys": [
+        "red",
+        "visual-attention"
+      ],
+      "ambiguities": [
+        "This task-specific null neither refutes the separate Vietnam sample nor supports a universal null."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000008",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "split-study-notebook",
+      "lifecycle": "reviewed",
+      "scope": {
+        "kind": "independent-observation-scopes",
+        "observations": [
+          {
+            "scope": [
+              "vietnam-adult-software-alerts"
+            ],
+            "subjectKeys": [
+              "red",
+              "visual-attention"
+            ],
+            "claim": "Adults noticed red software alerts more often than gray."
+          },
+          {
+            "scope": [
+              "vietnam-child-toy-packaging"
+            ],
+            "subjectKeys": [
+              "blue",
+              "color-preference"
+            ],
+            "claim": "Children preferred blue toy packages over green."
+          }
+        ],
+        "jointWarrant": false,
+        "representationStatus": "semantic proposal only; executable applicability representation unresolved"
+      },
+      "metadataReason": "The reviewed compilation discusses both red-alert noticing and blue-package preference. These topics warrant recorded subject co-membership, while the known age/medium scopes and factual warrant remain separated by observation.",
+      "ambiguities": [
+        "Section A: Vietnam adults, red versus gray software alerts, noticing. Section B: Vietnam children, blue versus green toy packaging, preference.",
+        "Subject AND may retrieve the compilation as covering both topics. It must not be interpreted as proof that red toy packaging was tested among children.",
+        "Known scopes are preserved per observation. Their structured semantic proposal is not an executable applicability profile and requires governance representation before freeze."
+      ],
+      "subjectKeys": [
+        "red",
+        "blue",
+        "visual-attention",
+        "color-preference"
+      ],
+      "jointWarrant": false
+    },
+    {
+      "id": "cultural-research/knowledge/K-000009",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "preliminary-poster",
+      "lifecycle": "retired",
+      "scope": [
+        "laos-adult-poster-study"
+      ],
+      "metadataReason": "The source explicitly marks the preliminary poster retired and says its color-only attention conclusion was withdrawn because poster sizes differed.",
+      "subjectKeys": [
+        "red",
+        "visual-attention"
+      ],
+      "ambiguities": [
+        "Historical classification as red/attention does not authenticate the withdrawn effect. Scope names the historical study, not current accepted applicability."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000010",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "poster-retraction",
+      "lifecycle": null,
+      "scope": [
+        "laos-adult-poster-study-correction"
+      ],
+      "metadataReason": "The source explicitly accepts the correction explaining that color and size changed together, withdrawing the color-only conclusion without supplying a replacement effect estimate. Its accepted corrective force is preserved; reviewed knowledge-record lifecycle is a separate proposed normalization.",
+      "subjectKeys": [
+        "research-methodology"
+      ],
+      "ambiguities": [
+        "Accepted source correction and reviewed knowledge-record lifecycle are different declarations. Keep lifecycle unresolved until the proposed record normalization/kind is explicitly reviewed.",
+        "If governance models withdrawal as a decision, the provisional knowledge ID still remains an attribution handle pending allocation review; do not silently change it.",
+        "The correction withdraws the historical preliminary poster’s color-only claim and provides no replacement color effect. An unresolved record lifecycle does not weaken the accepted source correction."
+      ],
+      "sourceStanding": "accepted correction",
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Possible future reviewed knowledge-record normalization of the accepted correction; requires an explicitly declared fixture-record review/kind decision."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000011",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "unlocated-observation",
+      "lifecycle": "reviewed",
+      "scope": null,
+      "metadataReason": "The transcription is explicitly reviewed and reports adult readers noticing red labels more often. Review authenticates transcription only; original country, medium, and sampling are unknown.",
+      "subjectKeys": [
+        "red",
+        "visual-attention"
+      ],
+      "ambiguities": [
+        "Unknown execution/study applicability must remain null, not [] or a named-country/region scope. Adult/red/label text does not fill the missing experiment details.",
+        "Subject keys describe the transcribed claim’s topic, not authenticated experimental design, effect size, or geographic applicability."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000012",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "vietnam-symbolism",
+      "lifecycle": "reviewed",
+      "scope": [
+        "vietnam-adult-interview-symbolism"
+      ],
+      "metadataReason": "The reviewed invented Vietnam interview report records participating adults describing red as festive; the measured subject is reported symbolism.",
+      "subjectKeys": [
+        "red",
+        "color-symbolism"
+      ],
+      "ambiguities": [
+        "It supplies no attention/detection effect and no comparison with gray notifications."
+      ]
+    },
+    {
+      "id": "cultural-research/knowledge/K-000013",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "future-region-study",
+      "lifecycle": "proposed",
+      "scope": [
+        "southeast-asia-all-countries-planned-notification-study"
+      ],
+      "metadataReason": "The proposed multisite study intends to compare notification detection across all Southeast Asian countries; recruitment has not started and no results exist.",
+      "subjectKeys": [
+        "visual-attention",
+        "research-planning"
+      ],
+      "ambiguities": [
+        "Scope represents intended study applicability only, not executed coverage or established regional evidence.",
+        "No color manipulation is specified, so red is not assigned. The provisional canonical knowledge ID does not establish allocation of this proposal."
+      ]
+    }
+  ],
+  "independentObservationBoundaries": [
+    {
+      "id": "engineering/ontology/O-000011",
+      "observations": [
+        {
+          "scope": "android-image-viewer",
+          "claim": "Accepts P3 images."
+        },
+        {
+          "scope": "desktop-css-exporter",
+          "claim": "Serializes alpha colors as rgba."
+        }
+      ],
+      "unsupportedConjunction": "P3 colors with alpha are qualified in the Android CSS exporter."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000008",
+      "observations": [
+        {
+          "scope": "vietnam-adult-software-alerts",
+          "claim": "Adults noticed red software alerts more often than gray."
+        },
+        {
+          "scope": "vietnam-child-toy-packaging",
+          "claim": "Children preferred blue toy packages over green."
+        }
+      ],
+      "unsupportedConjunction": "Red toy packaging improves attention or preference among children."
+    }
+  ],
+  "subjectRegistryProposals": {
+    "status": "organization-partitioned curator proposals only; not schema, governance approval, or executable registries",
+    "identityBoundary": "engineering and cultural-research own independent subject registries. Subject identity is scoped by organization; equal local labels such as color, projects, or terminology do not merge identities, share ancestry, or transfer aliases. No cross-company registry mapping is proposed.",
+    "organizations": {
+      "engineering": {
+        "organization": "engineering",
+        "registryOwnership": "Independent company-owned registry; local subject keys resolve only in this organization.",
+        "status": "curator proposal pending semantics, warrant, and governance review",
+        "roots": [
+          {
+            "key": "engineering",
+            "reason": "Engineering source collection and its explicit contracts/tests."
+          },
+          {
+            "key": "accessibility",
+            "reason": "Keyboard-focus treatment and capture requirements."
+          },
+          {
+            "key": "release-engineering",
+            "reason": "Production theme explicitly retains an additional release classification."
+          },
+          {
+            "key": "color",
+            "reason": "Aurora engineering color tokens and color serialization."
+          },
+          {
+            "key": "projects",
+            "reason": "The proposed Éclat Android animation project is distinct from the accent color role."
+          },
+          {
+            "key": "terminology",
+            "reason": "The Aurora Web 4 French glossary and contextual accent naming."
+          }
+        ],
+        "parents": [
+          {
+            "key": "css-color-serialization",
+            "parent": "engineering",
+            "evidence": [
+              "css-export",
+              "opaque-export",
+              "css-audit",
+              "web5-proposal"
+            ]
+          },
+          {
+            "key": "color-tokens",
+            "parent": "color",
+            "evidence": [
+              "css-export",
+              "eclat-color"
+            ]
+          },
+          {
+            "key": "card-layout",
+            "parent": "engineering",
+            "evidence": [
+              "production-theme",
+              "preview-theme"
+            ]
+          },
+          {
+            "key": "release-styling",
+            "parent": "engineering",
+            "evidence": [
+              "production-theme",
+              "preview-theme"
+            ]
+          },
+          {
+            "key": "animation",
+            "parent": "engineering",
+            "evidence": [
+              "eclat-project"
+            ]
+          },
+          {
+            "key": "image-viewer",
+            "parent": "engineering",
+            "evidence": [
+              "cross-platform-notebook",
+              "screenshot-limit"
+            ]
+          },
+          {
+            "key": "eclat-project",
+            "parent": "projects",
+            "evidence": [
+              "eclat-project"
+            ]
+          },
+          {
+            "key": "accent-color-role",
+            "parent": "color",
+            "evidence": [
+              "css-export",
+              "eclat-color"
+            ],
+            "limitation": "Neither the new topic-containment edge nor the former color-tokens edge is approved or executable. The uses-token relationship may be described separately but does not establish inheritance.",
+            "relationSemantics": "Proposed subject-topic containment under the local color topic, not an assertion that a role is a subtype of token or a color value.",
+            "status": "candidate pending company-owned definition and inheritance review",
+            "rationale": "The source describes a semitransparent accent color role that uses --accent-soft. Use of a token does not make the role a token subtype. A broader color-topic parent avoids that unsupported implication while retaining the dedicated contextual alias target."
+          }
+        ],
+        "aliases": [
+          {
+            "alias": "éclat",
+            "subject": "accent-color-role",
+            "context": "French glossary; Aurora Web 4 semitransparent accent role using --accent-soft",
+            "evidence": "eclat-color",
+            "limitation": "Only the Aurora Web 4 semitransparent accent role; separate from the Éclat animation project."
+          },
+          {
+            "alias": "Éclat",
+            "subject": "eclat-project",
+            "context": "Proposed Android animation project",
+            "evidence": "eclat-project"
+          }
+        ],
+        "priorHierarchyReview": {
+          "source": "acceptance/retrieval/pilot/tasks.json engineering-01 subjectParents; reviewed only as an earlier curator proposal",
+          "principle": "Source documents need not spell out a subject taxonomy. A deeper hierarchy can be a separately governed curator proposal when its meanings and inherited retrieval warrant are reviewed. Missing literal source taxonomy does not prove that a hierarchy must be flattened. Neither the pilot hierarchy nor the shallower draft is auto-approved.",
+          "semanticallyQuestionableEdges": [
+            {
+              "child": "design-systems",
+              "parent": "frontend",
+              "assessment": "Requires semantic narrowing, not merely an approval stamp. Design systems can include design language, assets, governance, and non-frontend platforms. Placing the broad subject under frontend may cause every design-systems descendant to inherit frontend classification without sufficient meaning. A clearly defined local frontend-design-systems subject could make this edge defensible.",
+              "neededEvidence": "Company-owned subject definitions and examples demonstrating that this local design-systems subject intentionally denotes a frontend specialization; inspect the inherited meaning before adoption.",
+              "decision": "unresolved; do not auto-approve or automatically flatten"
+            },
+            {
+              "child": "color-serialization",
+              "parent": "color-tokens",
+              "assessment": "Potential process-versus-object mismatch. Color serialization is an operation or contract that can cover color values beyond design-token entities; it is not inherently a narrower kind of color token. Association with tokens in css-export does not by itself justify a descendant relation.",
+              "neededEvidence": "A local definition restricting color-serialization to token serialization, or a governed restructuring that models token serialization beneath an appropriate serialization subject. Explicitly decide what ancestor membership is intended to assert.",
+              "decision": "unresolved; do not auto-approve or automatically flatten"
+            }
+          ],
+          "edgesNeedingExplicitCuratorGovernanceEvidence": [
+            {
+              "child": "software",
+              "parent": "engineering",
+              "assessment": "Semantically plausible topic specialization in this company registry; no specific semantic contradiction identified.",
+              "neededEvidence": "Approve local subject definitions and the software-to-engineering inherited membership; literal mention of this taxonomy in a source passage is unnecessary."
+            },
+            {
+              "child": "frontend",
+              "parent": "software",
+              "assessment": "Semantically plausible software subdomain; no specific semantic contradiction identified.",
+              "neededEvidence": "Confirm local frontend scope and intended inherited software membership."
+            },
+            {
+              "child": "design-tokens",
+              "parent": "design-systems",
+              "assessment": "Semantically plausible design-system subject specialization when topic containment is the governed meaning of parenthood. It is not an assertion that a token object is itself a complete design system.",
+              "neededEvidence": "Confirm registry relation semantics, local subject definitions, and acceptable inherited design-system topic coverage."
+            },
+            {
+              "child": "color-tokens",
+              "parent": "design-tokens",
+              "assessment": "Semantically plausible specialization of tokens by represented property; no specific semantic contradiction identified.",
+              "neededEvidence": "Approve local token definitions and inherited design-token classification."
+            },
+            {
+              "child": "css-color-serialization",
+              "parent": "color-serialization",
+              "assessment": "Semantically plausible specialization by serialization format/context; no specific semantic contradiction identified.",
+              "neededEvidence": "Define the parent and child scopes consistently and approve inherited color-serialization topic coverage."
+            }
+          ],
+          "limits": "This review approves no hierarchy edge, restores no lifecycle or scope, allocates no canonical IDs, and does not turn classification co-membership into factual joint warrant. The listed shallower draft edges remain alternatives for governance review, not a conclusion compelled by absent literal taxonomy."
+        }
+      },
+      "cultural-research": {
+        "organization": "cultural-research",
+        "registryOwnership": "Independent company-owned registry; local subject keys resolve only in this organization.",
+        "status": "curator proposal pending semantics, warrant, and governance review",
+        "roots": [
+          {
+            "key": "color",
+            "reason": "Colors named in Maru research studies and terminology notes."
+          },
+          {
+            "key": "perception",
+            "reason": "Detection/visual attention outcomes in the research passages."
+          },
+          {
+            "key": "culture",
+            "reason": "Reported color symbolism."
+          },
+          {
+            "key": "projects",
+            "reason": "Project Rouge is a research project name distinct from the French word for red."
+          },
+          {
+            "key": "terminology",
+            "reason": "Maru collection French and Vietnamese color terminology and project naming."
+          },
+          {
+            "key": "research",
+            "reason": "Study planning and explicit methodological correction."
+          },
+          {
+            "key": "preference",
+            "reason": "The compilation explicitly reports children’s packaging preference, distinct from detection and symbolism."
+          }
+        ],
+        "parents": [
+          {
+            "key": "rouge-project",
+            "parent": "projects",
+            "evidence": [
+              "rouge-terms",
+              "rouge-project"
+            ]
+          },
+          {
+            "key": "red",
+            "parent": "color",
+            "evidence": [
+              "red-attention",
+              "rouge-terms",
+              "do-glossary"
+            ]
+          },
+          {
+            "key": "blue",
+            "parent": "color",
+            "evidence": [
+              "blue-symbolism",
+              "split-study-notebook"
+            ]
+          },
+          {
+            "key": "visual-attention",
+            "parent": "perception",
+            "evidence": [
+              "red-attention",
+              "thailand-null"
+            ]
+          },
+          {
+            "key": "color-symbolism",
+            "parent": "culture",
+            "evidence": [
+              "blue-symbolism",
+              "vietnam-symbolism"
+            ]
+          },
+          {
+            "key": "research-methodology",
+            "parent": "research",
+            "evidence": [
+              "poster-retraction"
+            ]
+          },
+          {
+            "key": "research-planning",
+            "parent": "research",
+            "evidence": [
+              "earlier-pilot",
+              "future-region-study"
+            ]
+          },
+          {
+            "key": "color-preference",
+            "parent": "preference",
+            "evidence": [
+              "split-study-notebook"
+            ]
+          }
+        ],
+        "aliases": [
+          {
+            "alias": "Rouge",
+            "subject": "red",
+            "context": "French color term",
+            "evidence": "rouge-terms"
+          },
+          {
+            "alias": "Rouge",
+            "subject": "rouge-project",
+            "context": "Name of the separate research project; museum brochure naming study",
+            "evidence": "rouge-project"
+          },
+          {
+            "alias": "đỏ",
+            "subject": "red",
+            "context": "Vietnamese color term in the collection’s Vietnam adult software-notification trial",
+            "evidence": "do-glossary"
+          }
+        ]
+      }
+    },
+    "limitations": [
+      "All parent edges and roots are curator proposals whose semantics and inherited topic coverage require owner governance. Source documents need not themselves state a taxonomy; absence of literal taxonomy is not a reason to require a flat registry.",
+      "No proposed related/association edge is sufficient evidence of ancestry, record applicability, or a tested factual conjunction.",
+      "Aliases resolve within their owning organization and stated context. Éclat animation is separate from Aurora accent naming; Maru Project Rouge is separate from the French color term.",
+      "No scope profile, matching algorithm, canonical identifier allocation, proposal promotion, executable identity format, or inheritance behavior is implemented by these semantic labels.",
+      "Unresolved lifecycle/kind mappings and source-standing, scope, classification, provisional-ID, and independent-observation flags remain explicit. Cross-review resolution notes identify narrowly applied changes; no governance approval is inferred."
+    ]
+  },
+  "crossReviewResolutions": {
+    "reviewArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-crossreview-engineering-culture.json",
+    "status": "requested source-metadata corrections applied; root and governance-owner review still pending",
+    "resolutions": [
+      {
+        "id": "C1",
+        "recordId": "engineering/ontology/O-000006",
+        "resolution": "Set source-derived lifecycle:null, preserved accepted audit standing and active referenced exporter separately, and labeled active only as a future ontology normalization candidate. Provisional ID/kind flags retained."
+      },
+      {
+        "id": "C2",
+        "recordId": "cultural-research/knowledge/K-000010",
+        "resolution": "Set source-derived lifecycle:null, preserved accepted correction standing, and labeled reviewed only as a future knowledge-record normalization candidate. Corrective factual force and provisional ID/kind flags retained."
+      },
+      {
+        "id": "C3",
+        "recordId": "engineering/ontology/O-000007",
+        "resolution": "Replaced the draft accent-color-role parent candidate color-tokens with engineering-local color under expressly proposed topic-containment semantics. Role uses a token does not imply token subtype; company definition/inheritance governance remains pending. Contextual éclat alias target stays narrow and unchanged."
+      },
+      {
+        "id": "C4",
+        "recordIds": [
+          "engineering/ontology/O-000004",
+          "cultural-research/knowledge/K-000003",
+          "cultural-research/knowledge/K-000004"
+        ],
+        "resolution": "Recorded draft curator-deferred assignments separately from source-explicit missing classification. Added classificationStatus/basis to all omitted-subject records and preserved keyboard-capture’s explicit absence. No automatic topic assignment or empty set introduced."
+      }
+    ],
+    "unchanged": "All 28 IDs/source locators/passages, source facts, applicability scopes, assigned subject sets, organization ownership, independent observation boundaries and alias targets are unchanged. No repository, source or judgment edits."
+  }
+}

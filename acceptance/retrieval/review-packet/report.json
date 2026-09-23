@@ -1,0 +1,194 @@
+{
+  "status": "finalized combined public and heldout report",
+  "finalized": true,
+  "frozenRuntimePins": {
+    "original": "08066b5f527b9d7d9705a3367bc26dcf080271ad",
+    "historicalPublicCurrent": "79c3efc0803963c6308ce483235c1d1d1d7f2b24",
+    "heldoutCurrent": "52a62703c77ee159703a1018d21a0abe356912cb",
+    "heldoutCurrentTree": "7037d34bca38b55ee6cb8568406a5ec5d7dbbc08",
+    "laterEvidenceCommitsChangeRuntime": false
+  },
+  "public": {
+    "sessions": 162,
+    "originalBaselineSessions": 54,
+    "currentVariantSessions": 108,
+    "criticalEventCounts": {
+      "wrongScope": 0,
+      "trustTransfer": 0,
+      "silentIdentityCollision": 0,
+      "falseAttribution": 0
+    },
+    "noncriticalOperationalFalseAttributionEvents": 9,
+    "boundedNativeStrictWitness": {
+      "validatedOccurrences": 123,
+      "totalOccurrences": 123,
+      "nativeOutputs": 53,
+      "readerDeliveredOutputs": 47,
+      "forensicallyRecoveredOutputs": 6,
+      "possibleOccurrencesSeparatelyReviewed": 39,
+      "unknownNativeOutputs": 0,
+      "mainAccepted": true
+    },
+    "causalTriage": {
+      "scope": "14 inadequate current answers within32 eligible pairs; not all162 sessions",
+      "qualifiedObjectInCanonicalStringField": 6,
+      "cumulativeHostDeliveryBudget": 7,
+      "malformedJSON": 1
+    },
+    "descriptiveNonregressionFailurePreserved": true,
+    "severityBasis": "Explicit adjudication; no predeclared numerical severity/closed rubric. Scope clarification is Main, P2 and P10 team interpretation under implementation authority, not explicit user choice or prior predeclared arm qualification."
+  },
+  "narrowRepair": {
+    "target": "canvas-alias-replacement-01",
+    "correctedConditionSupportedTargets": 1,
+    "claimedTargets": 1,
+    "originalGovernedWorkRowUnchanged": true,
+    "historicalFailuresUnchanged": true,
+    "broaderGateGNotPooled": true
+  },
+  "heldoutApprovedReport": {
+    "path": "./heldout-approved-report.json",
+    "sha256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+    "bytes": 204034
+  },
+  "heldoutAggregate": {
+    "path": "./heldout-approved-aggregate.json",
+    "sha256": "cd6d0a58aa18809f53a7e849e733ddca7f9b4f4580bedda7623c22a99903b393",
+    "bytes": 15372
+  },
+  "adversePairs": {
+    "path": "./adverse-pairs.json",
+    "sha256": "3cc042841282fcea4362fd31533c3bda66ce8aaeedcd3cf6c5195ddde48725b3",
+    "bytes": 6578
+  },
+  "qualityDisposition": "Observed current task completion regresses15/18 to10/18; no overall quality improvement/nonregression claim.",
+  "remainingReportInputs": [],
+  "sourceReaudits": 0,
+  "additionalNativeCalls": 0,
+  "readerTrialsAdded": 0,
+  "outcomesRegraded": false,
+  "explicitUnknowns": [
+    "Actual serialized initial prompt equality and backend version",
+    "Unobserved context/attention",
+    "Historical environment and exhaustive prior exposure",
+    "Whole-cohort/cross-store ranking deltas",
+    "Primary false-abstention rate under unfrozen operational inclusion",
+    "Current whole-arm source/tool bytes and exposed/full record totals",
+    "Deeper causal attribution for adverse pairs"
+  ],
+  "priorDraftManifest": {
+    "path": "unpublished-location:74743b4e8f4b21cd",
+    "sha256": "276e41cde90c097584bcd95ee24899606b8fdb054707cfd8934cfaabf0bdb799",
+    "bytes": 4386
+  },
+  "sourceBindings": [
+    {
+      "path": "unpublished-source:a9e2432de62a269a643deee103dc50fe10f689c501ae5fc5e01625900e1a7314",
+      "sha256": "a9e2432de62a269a643deee103dc50fe10f689c501ae5fc5e01625900e1a7314",
+      "bytes": 5091
+    },
+    {
+      "path": "unpublished-source:83937c02c2716ff1f8e9bd7b24f844ca83f2bfd73fe6f7ec187868dbb4ebfdd7",
+      "sha256": "83937c02c2716ff1f8e9bd7b24f844ca83f2bfd73fe6f7ec187868dbb4ebfdd7",
+      "bytes": 25002
+    },
+    {
+      "path": "./public-witness-main-acceptance.json",
+      "sha256": "7b5d44064eaf0b8fe23b093d6658dc72a4254fc8a6374ceca45d1117a4e4e790",
+      "bytes": 2089
+    },
+    {
+      "path": "unpublished-source:69784c4e729ad14badc212d1f29738063988bcfff85e9de1cd13cac9cf598a02",
+      "sha256": "69784c4e729ad14badc212d1f29738063988bcfff85e9de1cd13cac9cf598a02",
+      "bytes": 3031
+    },
+    {
+      "path": "unpublished-source:b463e91dc69e488a5c5751529806e7e5ac1fde99b2e2c79673d1e1421fc5d166",
+      "sha256": "b463e91dc69e488a5c5751529806e7e5ac1fde99b2e2c79673d1e1421fc5d166",
+      "bytes": 1215
+    },
+    {
+      "path": "unpublished-source:3b26856df84bc225f383bdab14fa065eb8cb59178a828268ac4fab1e5aa90e00",
+      "sha256": "3b26856df84bc225f383bdab14fa065eb8cb59178a828268ac4fab1e5aa90e00",
+      "bytes": 7728
+    },
+    {
+      "path": "unpublished-source:67b75bc2c234f80a6e7fb84ab8d6789146ad60661ac9034ede024ea5ec2df092",
+      "sha256": "67b75bc2c234f80a6e7fb84ab8d6789146ad60661ac9034ede024ea5ec2df092",
+      "bytes": 2202
+    },
+    {
+      "path": "unpublished-source:2c0d0bc18fbbdf33a45c12da436b684608d63a9917322546f59172e9f6eaebd8",
+      "sha256": "2c0d0bc18fbbdf33a45c12da436b684608d63a9917322546f59172e9f6eaebd8",
+      "bytes": 2027
+    },
+    {
+      "path": "./heldout-witness-main-acceptance.json",
+      "sha256": "b49744ed83e95ec84099b692d40bf1ee6528782154cc312cbf2679e02a58c701",
+      "bytes": 1679
+    },
+    {
+      "path": "unpublished-source:d3f1b0cedc2e84548d6bb02b8b3034e97516935e449f89bf634694cacb7f5477",
+      "sha256": "d3f1b0cedc2e84548d6bb02b8b3034e97516935e449f89bf634694cacb7f5477",
+      "bytes": 2588
+    },
+    {
+      "path": "unpublished-source:cb1c7d85fecfeeab6658ae5167a1e9f6cfd11d7bbb11615d7d0e9c860d290569",
+      "sha256": "cb1c7d85fecfeeab6658ae5167a1e9f6cfd11d7bbb11615d7d0e9c860d290569",
+      "bytes": 1022
+    },
+    {
+      "path": "./heldout-approved-report.json",
+      "sha256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+      "bytes": 204034
+    },
+    {
+      "path": "./heldout-independent-final-acceptance.json",
+      "sha256": "9b37db1f222bbab830dd0cad5884c1e8162ae9282cb4aec5d1808ce35266d499",
+      "bytes": 914
+    },
+    {
+      "path": "./heldout-final-handoff.json",
+      "sha256": "4f00a35d91b3a7a172e390caf92ebd134a490a760b638525d5b647718c003ce1",
+      "bytes": 3880
+    },
+    {
+      "path": "./heldout-safe-export-manifest.json",
+      "sha256": "33ea145650aee54fe58c543e6f7d7a548da46ab7fabfd5a858f1df5026275c6b",
+      "bytes": 1532
+    },
+    {
+      "path": "./heldout-approved-aggregate.json",
+      "sha256": "cd6d0a58aa18809f53a7e849e733ddca7f9b4f4580bedda7623c22a99903b393",
+      "bytes": 15372
+    },
+    {
+      "path": "./heldout-witness-main-acceptance.json",
+      "sha256": "b49744ed83e95ec84099b692d40bf1ee6528782154cc312cbf2679e02a58c701",
+      "bytes": 1679
+    },
+    {
+      "path": "./heldout-aggregate-main-acceptance.json",
+      "sha256": "445d34c52ffce66d7505b54d119bd28a6c074e18602279bb713dc39653f8c81f",
+      "bytes": 1432
+    },
+    {
+      "path": "./public-witness-main-acceptance.json",
+      "sha256": "7b5d44064eaf0b8fe23b093d6658dc72a4254fc8a6374ceca45d1117a4e4e790",
+      "bytes": 2089
+    },
+    {
+      "path": "./heldout-final-report-main-acceptance.json",
+      "sha256": "ec7bc0ad060210d6324f94ab1c81d6529ea34067ef19d9ebc6bbf084c5a5b746",
+      "bytes": 1335
+    }
+  ],
+  "mainHeldoutFinalReportAcceptance": {
+    "path": "./heldout-final-report-main-acceptance.json",
+    "sha256": "ec7bc0ad060210d6324f94ab1c81d6529ea34067ef19d9ebc6bbf084c5a5b746",
+    "bytes": 1335
+  },
+  "serializationProvenance": "User authorized coordination/report review; Main chose fresh-alias/field serialization under that authority, not the user personally prescribing serialization.",
+  "supportedClaim": "Implemented capability within agreed targets; observed quality regression remains, no quality improvement/nonregression claim.",
+  "speculativeRuntimeFixOrNewStudyRequired": false
+}

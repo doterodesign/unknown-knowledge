@@ -1,0 +1,300 @@
+{
+  "reviewer": "independent-engineering-cultural-reviewer cross-reviewing services/holding",
+  "status": "semantic-draft-agreement-with-two-bounded-corrections-and-outstanding-governance; no executable approval",
+  "reviewedArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-services-holding.json",
+  "reviewedArtifactSha256": "82c41307723372f3df3497b6a5c6b66bfac3aa607356ac63772d2c3b963113a2",
+  "reviewBoundary": {
+    "read": [
+      "acceptance/retrieval/pilot/sources/professional-services.md",
+      "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "acceptance/retrieval/pilot/sources/holding-company.md",
+      "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "acceptance/retrieval/development-v2/record-inventory.json (professional-services and holding-company only)",
+      "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-services-holding.json",
+      "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-adjudication.md"
+    ],
+    "notRead": [
+      "pilot/tasks.json",
+      "private files",
+      "runtime implementation or outputs",
+      "source judgments",
+      "sealed S4 or heldout artifacts"
+    ],
+    "limitation": "Prior pilot comparisons reported inside the author artifact were not independently rechecked against tasks.json. This review checks current proposals against public passages and provisional inventory only."
+  },
+  "checks": {
+    "recordCount": 26,
+    "sourceAttribution": "All 26 unique IDs exactly match filtered inventory source and passage locators; every heading exists in the allowed source files.",
+    "lifecycle": "All values fit their provisional record kind or remain explicitly unresolved with null; source/record standing and proposed action approval remain distinct.",
+    "emptyVersusMissing": "No [] scope or subject assignment is asserted. Iris classification is explicitly missing and remains omitted; null applicability does not mean unrestricted.",
+    "registryOwnership": "professional-services, cedar-north, cedar-south, and cedar-holding have independent local vocabularies. All parent, alias, record assignment, and qualified descriptive references resolve within the intended owner.",
+    "billingConjunction": "Valid billing/cancellation/Orion/refund topical co-membership is retained. Independent components and jointWarrant:false reject the false 30-day Orion refund claim.",
+    "proposalAndKindFlags": "beta-template, south-nord-project, proposed-correspondence, historical-import, payment-handbook, clarification-note, and nord-glossary carry appropriate provisional allocation/kind or standing concerns.",
+    "reviewedTranscription": "unlocated-package correctly authenticates transcription only and retains unknown owner/release/application scope."
+  },
+  "recordReviews": [
+    {
+      "id": "professional-services/decisions/D-000001",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "atlas-engagement",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted signed engagement includes approved milestones and an explicit refund-policy gap; refund topic membership does not approve a refund duration."
+    },
+    {
+      "id": "professional-services/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "payment-handbook",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree with unresolved standing/kind: invoice deadline is known; reviewed knowledge standing is not stated. Provisional reviewed candidate is not authenticated."
+    },
+    {
+      "id": "professional-services/decisions/D-000002",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "atlas-practice",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: rejected practice proposal remains distinct from Orion project; refund/practice topic proposals need no literal source taxonomy."
+    },
+    {
+      "id": "professional-services/knowledge/K-000002",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "clarification-note",
+      "outcome": "correction requested",
+      "reason": "Correction C1: Orion and the refund agenda are explicit, but the passage does not name Atlas. Preserve the separate approved source-access statement and unresolved note standing without importing the project label."
+    },
+    {
+      "id": "professional-services/decisions/D-000003",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "atlas-project-response",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted Orion/Atlas acknowledgment target is two business days, not resolution or refunds."
+    },
+    {
+      "id": "professional-services/decisions/D-000004",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "atlas-practice-response",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted practice acknowledgment target is four business days and applies to internal research requests, separately from Orion."
+    },
+    {
+      "id": "professional-services/knowledge/K-000003",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "billing-and-cancellation",
+      "outcome": "correction requested",
+      "reason": "Agree with independent scopes, valid multiple topic assignments, and jointWarrant:false. Correction C2 tightens the component claim so a request to pay is not presented as observed payment behavior."
+    },
+    {
+      "id": "professional-services/decisions/D-000005",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "iris-scheduling",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted Iris/Nova scope is explicit; subjectKeys correctly omitted for explicitly missing classification, not [] and not inferred."
+    },
+    {
+      "id": "professional-services/decisions/D-000006",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "nova-refund",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted seven-calendar-day request window remains Cedar/Nova scoped and does not authorize Orion refunds."
+    },
+    {
+      "id": "professional-services/knowledge/K-000004",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "old-orion-contact",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: retired contact history supplies no active contact instruction."
+    },
+    {
+      "id": "professional-services/decisions/D-000007",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "contact-withdrawal",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted withdrawal is distinct from approval of any replacement address; no address is invented."
+    },
+    {
+      "id": "professional-services/decisions/D-000008",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "beta-template",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: proposed unnamed-client template has scope:null and explicit kind/allocation caveats."
+    },
+    {
+      "id": "professional-services/decisions/D-000009",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "private-access",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted public instruction describes the synthetic access exclusion; it authorizes no private read or live scope change."
+    },
+    {
+      "id": "cedar-north/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "north-contract",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: active North ontology O-000001 means local PNG/SVG asset export and remains independently owned."
+    },
+    {
+      "id": "cedar-south/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "south-contract",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: active South ontology O-000001 means local PDF transport and remains distinct from North despite matching local ID."
+    },
+    {
+      "id": "cedar-holding/decisions/D-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "historical-import",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree with explicit unresolved allocation/kind interpretation: source rejects merging the proposal; no mapping or combined governed record exists."
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "group-note",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: trade topic is supported, review standing and operational applicability remain unknown, and [] is not inferred."
+    },
+    {
+      "id": "cedar-north/knowledge/K-000001",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "north-knowledge",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: reviewed North K-000001 winter-crate instruction is distinct by both kind and meaning from North O-000001."
+    },
+    {
+      "id": "cedar-north/ontology/O-000003",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "nord-glossary",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree as an unresolved kind/lifecycle proposal: accepted contextual name Nord is supported; active ontology allocation is not silently inferred."
+    },
+    {
+      "id": "cedar-south/knowledge/K-000001",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "south-nord-project",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: proposed South Nord project and hoped-for CSV output supply neither deployment nor North equivalence; allocation remains flagged."
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000002",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "repeated-branches",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: local ownership, qualified descriptive references, component scopes, and jointWarrant:false prevent equal labels becoming imported identities or a group descendant set."
+    },
+    {
+      "id": "cedar-north/ontology/O-000002",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "retired-north-tiff",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: retired O-000002 TIFF support remains historical, separate from active PNG/SVG O-000001."
+    },
+    {
+      "id": "cedar-holding/decisions/D-000002",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "proposed-correspondence",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: proposal preserves distinct destination concepts and explicitly unallocated destinations; no executable mapping is asserted."
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000003",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "unlocated-package",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: reviewed transcription retains unknown installation/owner/release with scope:null; holding record attribution does not authenticate component ownership or EPS support in either subsidiary."
+    },
+    {
+      "id": "cedar-holding/decisions/D-000003",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "rejected-union",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: accepted review is correctly accepted even though the reviewed union rule is rejected; no shared identity is produced."
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000004",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "trade-port",
+      "outcome": "agree as semantic draft",
+      "reason": "Agree: reviewed holding freight topic concerns crates to Port Elm and transfers no software-format meaning."
+    }
+  ],
+  "corrections": [
+    {
+      "id": "C1",
+      "priority": "semantic correction before source-metadata freeze",
+      "recordId": "professional-services/knowledge/K-000002",
+      "passage": "clarification-note",
+      "issue": "The current orion-atlas scope and atlas-project assignment import an engagement name absent from the reviewed passage. The note names Orion, a next engagement-review agenda, and a separate access policy. No passage-local statement identifies that agenda as Project Atlas.",
+      "currentValues": {
+        "scope": [
+          "orion-atlas",
+          "agreed-review-access"
+        ],
+        "subjectKeys": [
+          "atlas-project",
+          "orion",
+          "refunds",
+          "source-access"
+        ],
+        "refundAgendaScope": [
+          "orion-atlas"
+        ],
+        "refundAgendaSubjectKeys": [
+          "atlas-project",
+          "orion",
+          "refunds"
+        ]
+      },
+      "proposedValues": {
+        "scope": [
+          "orion-refund-review-agenda",
+          "agreed-review-access"
+        ],
+        "subjectKeys": [
+          "orion",
+          "refunds",
+          "source-access"
+        ],
+        "refundAgendaScope": [
+          "orion-refund-review-agenda"
+        ],
+        "refundAgendaSubjectKeys": [
+          "orion",
+          "refunds"
+        ]
+      },
+      "preserve": [
+        "lifecycle:null",
+        "separate scopeComponents",
+        "jointWarrant:false",
+        "approved access-policy wording without promoting note standing"
+      ],
+      "alternativeResolution": "A separately reviewed, explicitly attributed cross-passage engagement linkage could justify an Atlas relationship later; it is not established by this passage alone.",
+      "status": "not applied to author artifact"
+    },
+    {
+      "id": "C2",
+      "priority": "wording precision before source-metadata freeze",
+      "recordId": "professional-services/knowledge/K-000003",
+      "passage": "billing-and-cancellation",
+      "field": "scopeComponents[general-billing].claim",
+      "issue": "Clients pay invoices within thirty days can read as a descriptive compliance fact, while the source only says the billing section asks clients to pay within thirty days.",
+      "currentValue": "Clients pay invoices within thirty days.",
+      "proposedValue": "The general firm billing section asks clients to pay invoices within thirty days.",
+      "preserve": [
+        "reviewed lifecycle",
+        "all subject assignments",
+        "independent scopeComponents",
+        "jointWarrant:false"
+      ],
+      "status": "not applied to author artifact"
+    }
+  ],
+  "outstandingGovernance": [
+    "Any later fixture-record review must explicitly identify what was verified; source review status and record lifecycle must not be conflated.",
+    "Provisional inventory IDs do not allocate proposal/canonical identities. Do not produce a source-local-ID-to-runtime-proposal lookup or executable correspondence from this review.",
+    "Root/parent/alias proposals require company-owned registry review. Source prose can warrant topics without literally authoring taxonomy; no flattening is required merely by absent literal parent edges.",
+    "The semantic scope arrays and component scopes have no executable matching semantics until an applicability representation is reviewed.",
+    "Accepted curation could intentionally author known-empty assignments later, but no such decision is inferred here and explicitly missing classification must remain absent.",
+    "The accepted North glossary and other flagged artifact kinds require explicit record-kind/standing decisions; nulls may remain in a semantic draft pending that review."
+  ],
+  "conclusion": "Acceptable as a reviewable semantic draft with C1 and C2 requested before metadata freeze. All 26 source attributions agree. This cross-review is neither governance-owner approval nor executable applicability/schema validation, record allocation, runtime testing, or a source/judgment change."
+}

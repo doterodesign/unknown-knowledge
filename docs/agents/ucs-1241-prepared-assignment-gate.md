@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # UCS-1241 — prepared assignment evaluation
 
 The proposed [P8 decision records](../../decisions/entries/assignment-snapshot-preservation.yaml) capture the shared snapshot/preservation rationale (`8c9f8f9e-5775-4098-ba5a-f4776c375533`). The [documentation audit](ucs-1241-documentation-audit.md) distinguishes this existing-record API from the merge and creation adapters.

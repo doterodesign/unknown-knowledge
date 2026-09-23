@@ -1,6 +1,4 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
+> Historical integration report: the original single pending rc.2 description below is retained as provenance. Delivery now uses seven dependent draft PRs, rc.2 through rc.8; see [delivery evidence](pr-delivery/README.md). Original evaluated pins and outcomes have not been rerun or relabeled.
 
 # Decision and documentation coverage
 
@@ -17,14 +15,14 @@ plus 28 corrected cases, with no unresolved deterministic failure. The public
 agent campaign and all 36 held-out sessions are complete, with adverse comparative
 results. Bounded critical-category, emitted-witness and anonymous repeated-case
 reviews are accepted. The
-current review (contract arrives in PR7; see delivery availability) consolidates these results.
+[current review](../acceptance/retrieval/FINAL-RESULTS.md) consolidates these results.
 Bounded performance and archival-history results are recorded separately. Earlier sections retain their original
 revision-specific results and limitations; they are not a current backlog.
-The seventy-cell evidence mapping (contract arrives in PR7; see delivery availability)
+The [seventy-cell evidence mapping](../acceptance/retrieval/FINAL-DETERMINISTIC-COVERAGE.md)
 separates actual assertions from agent/source obligations. An independently
 reviewed additional E01 test verifies the eligible record beyond the registered
 lexical top ten without changing product code; the original full-run totals stand.
-The public campaign review (contract arrives in PR7; see delivery availability)
+The [public campaign review](../acceptance/retrieval/PUBLIC-CAMPAIGN-RESULTS.md)
 retains all six initial attempts and 156 subsequent attempts under their
 respective instruction contracts. It establishes no overall quality pass.
 
@@ -150,7 +148,7 @@ pending at that owner-only snapshot; no PR, tag, release, runtime approval or cu
 | P7 migration, review and publication | [Coverage audit](agents/ucs-1240-decision-and-documentation-audit.md) |
 | P8 assignment history and gates | [Coverage audit](agents/ucs-1241-documentation-audit.md) |
 | P9 reflection and retrieval conduct | [Coverage audit](agents/ucs-1242-retrieval-governance.md) |
-| P10 evaluation | Decisions, evidence and remaining acceptance (contract arrives in PR7; see delivery availability) |
+| P10 evaluation | [Decisions, evidence and remaining acceptance](../acceptance/retrieval/DECISIONS-AND-EVIDENCE.md) |
 | P11 interface preparation | [Proposed contracts and unresolved scope](agents/ucs-1244-interface-preparation.md) |
 
 These links establish documentation coverage, not completion of every task.
@@ -1574,7 +1572,7 @@ PR's aligned rc.2 version are unchanged; no release or customer migration occurs
 The existing operational Decision now records the actual four-call results at
 `79c3efc`: complete requested K/O/D pages and independently checked full expanded
 witnesses under unchanged limits. The new
-results report (contract arrives in PR7; see delivery availability) preserves
+[results report](../acceptance/retrieval/PRIVATE-FILE-RESULTS-V2.md) preserves
 the difference between requested pages and all 21 matches per store, retained
 warnings, exact hashes, point-in-time custody and unqualified broader claims.
 Main rehashed all 21 sealed receipts and verified both transport byte comparisons.
@@ -1695,7 +1693,7 @@ Execution subsequently completed once with 39/60 scoped checks passing. All 21
 failed successful-result expectations explicitly selected absent Ontology stores
 and received the specified unavailable-store refusal. Main verified all 299
 receipt hashes, 120 custody checks and the actual result dimensions. The new
-baseline report (contract arrives in PR7; see delivery availability) retains the failure
+[baseline report](../acceptance/retrieval/VARIED-BASELINE.md) retains the failure
 and distinguishes byte parity, successful queries and incomplete contexts.
 
 The existing fixture-custody Decision and held-out guide record independent
@@ -1848,7 +1846,7 @@ implemented warranted reversal to its existing source-bound history/publication
 tests; this audit adds no new lifecycle operation.
 
 The existing fixture-custody and operational Decisions now distinguish synthetic
-corpus construction from lifecycle publication. Growth construction (contract arrives in PR7; see delivery availability)
+corpus construction from lifecycle publication. [Growth construction](../acceptance/retrieval/GROWTH-CONSTRUCTION.md)
 documents the narrow evaluator helper, preserved original bytes and container
 rows, actual native allocation and pending fidelity/replay evidence. Its three
 pure preservation/refusal checks passed. Existing source judgments are preserved;
@@ -1903,7 +1901,7 @@ target passed 1/1 in 422.867875 ms. The reconciliation receipt is
 or corrected log hash retained. No product runtime change was required, and
 this does not relabel the failed original run as a single all-green run.
 
-The growth result (contract arrives in PR7; see delivery availability)
+The [growth result](../acceptance/retrieval/GROWTH-CONSTRUCTION.md#matched-replay-result)
 now records accepted source/record fidelity, finalized judgments and the completed
 60/60 matched replay. The existing operational Decision, evaluation README,
 evidence index and changelog are synchronized. Root/protocol AGENTS and package
@@ -1923,7 +1921,7 @@ version guard passed. No schema, public interface or shipped runtime changed.
 
 ## Public evaluation handoff and results review
 
-The public campaign results (contract arrives in PR7; see delivery availability)
+The [public campaign results](../acceptance/retrieval/PUBLIC-CAMPAIGN-RESULTS.md)
 record explicit user authorization, completed attempts, independently checked
 hashes and paired totals, adverse findings and remaining acceptance work. The
 existing fixture-custody Decision records the choice and consequences; its
@@ -2061,7 +2059,7 @@ and metric reporting, followed by final acceptance, remain pending.
 
 ## Final implementation and evaluation review
 
-The final review (contract arrives in PR7; see delivery availability) consolidates P1–P11
+The [final review](../acceptance/retrieval/FINAL-RESULTS.md) consolidates P1–P11
 capabilities and the completed bounded evidence, including anonymous repeated-
 case results, explicit critical-category/action coverage, every emitted strict
 witness and the narrow accepted repair. It preserves the adverse agent outcomes,

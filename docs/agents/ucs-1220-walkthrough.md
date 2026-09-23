@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # UCS-1220 — fresh-agent conduct evidence
 
 Six actual fresh subagents ran the shipped runtime loop on 2026-09-10.
@@ -19,7 +15,7 @@ Git snapshots; trials did not commit dependencies or alter implementation/stores
 Required findings were appended only through the logging helper.
 
 Evidence root:
-`local-history:ucs-1220`.
+`/Users/dimitriotero/.codex/visualizations/2026/09/10/01a0890c-8506-7a33-ae64-5287670d38b6/ucs-1220/`.
 For each row, read `trials/<variant>/commands.jsonl`, `trace.md` and
 `manifest.json`. `trial-prompts.md` preserves the task/harness instructions;
 `trial-audit.json` summarizes actual preflight argv/exits, source reads and

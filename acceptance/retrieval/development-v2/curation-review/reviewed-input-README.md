@@ -1,0 +1,15 @@
+# Development-v2 final editorial curation choices
+
+This is the concrete curation package for P2 representation and subject review. It is not an activated registry, allocated record set, or authenticated human approval. The 48 frozen passage judgments and twelve source files remain unchanged.
+
+`record-decisions.json` covers all 82 source attributions, with exact source passage and file hashes, chosen kind and runtime lifecycle target, identity treatment, assignments, source standing and applicability limitations. All 22 previously null kind/lifecycle mappings choose source-reporting Knowledge. The targets comprise 12 Ontology assertions, 43 Knowledge records and 27 Decisions.
+
+Knowledge `verified` targets require actual fixture transcription review/capture. They mean faithful reporting of the source, including its approval limitations. Three historical Knowledge records explicitly report retired or withdrawn content; verified does not reinstate it. Current schemas have no Knowledge retired stage. The two retired Ontology targets use `deprecated`, with historical assertion verification. All eleven proposed and three rejected source artifacts retain typed proposal identities with no canonical allocation. The accepted review rejecting a blanket union remains an accepted Decision, distinct from those rejected proposal artifacts.
+
+Four source-explicit missing assignments and five curator-deferred assignments remain absent. No empty assignment set is authored. Proposed subject keys are editorial handles only. Subject definitions include explicit boundaries, source warrants, local parent rationales and contextual aliases; one symmetric association is authored per pair, with inverse derived. Eight independently owned installations serve the six organization scenarios. Equal labels never combine their registries.
+
+`scoped-relationships.json` preserves the ordinary-ticket conflict, VIP-only supersession, visitor-log incompatibility and the exact shared measurement-point reference without transferring operating authority. These are semantic relationships, not unsupported executable filtering or lifecycle changes. Independent notebook components and joint-warrant limitations are retained in the record rows.
+
+P2 should review the exact definitions and representation targets before materialization. Materialization must use actual P1 allocation/publication or typed proposal paths, actual captured curation Decisions and P2 governance/assignment checks. The review is simulated fixture curation, not a claim of live human approval or approval by the invented source owners. Attribution handles must never become a runtime resolver crosswalk.
+
+After materialization, independently review source-to-record fidelity and actual identities before projecting record grades. Governance/support records require separate judgments and consume reader budgets. Runtime validation, source fidelity and reader outcomes remain separate acceptance evidence.

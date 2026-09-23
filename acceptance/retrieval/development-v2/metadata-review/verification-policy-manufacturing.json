@@ -1,0 +1,26 @@
+{
+  "reviewer": "independent-engineering-cultural-reviewer",
+  "status": "requested-corrections-verified-resolved",
+  "authorArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-policy-manufacturing.json",
+  "finalAuthorSha256": "047a565b0b0ebb7373f940b39a4252b6e979de4d42c8ac11afd95604075c6a26",
+  "expectedAuthorSha256": "047a565b0b0ebb7373f940b39a4252b6e979de4d42c8ac11afd95604075c6a26",
+  "expectedHashMatches": true,
+  "crossReviewArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-crossreview-policy-manufacturing.json",
+  "verificationScope": "Bounded verification of this reviewer’s requested corrections only; not a new full metadata/source audit.",
+  "correctionVerdicts": [
+    {
+      "correctionId": "C1",
+      "verdict": "verified-resolved",
+      "recordId": "manufacturing/ontology/O-000003",
+      "evidence": "Scope and definition now use south-model-q-gasket; the unsupported South replacement/spare role is removed. Active source-standing proposal, ontology-kind caveat, subjects, and North exclusion remain intact."
+    },
+    {
+      "correctionId": "G1",
+      "verdict": "verified-resolved",
+      "location": "subjectRegistryProposals[organization=manufacturing].reason",
+      "evidence": "The current hierarchy is explicitly one curator proposal. Assembly remains open to separate definition/relation/warrant review; absent literal source taxonomy neither invalidates it nor requires flattening. No assembly node was restored or approved."
+    }
+  ],
+  "remainingScopeLimit": "Existing unresolved governance, record allocation/kind, and executable applicability questions remain pending. This verifies author correction content; it is not P2 approval, runtime acceptance, or authorization to change sources/judgments.",
+  "filesChanged": "Only this separate verification artifact was created. Author metadata, original cross-review, source, judgment, and repository files were not edited."
+}

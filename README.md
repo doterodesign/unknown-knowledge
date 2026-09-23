@@ -12,10 +12,37 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
+## Planned 3.0.0-rc.8 — unreleased
+
+`unknown-knowledge@3.0.0-rc.8` is the planned prerelease represented by the
+[seven-PR delivery stack](docs/pr-delivery/README.md). Merging the stack into
+`main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1
+installations. The install commands below remain unchanged.
+
+The prepared implementation adds:
+
+- Permanent six-digit record IDs (`K-NNNNNN`, `O-NNNNNN`, `D-NNNNNN`) within each
+  installation, plus optional stable Subjects. A record can have multiple
+  Subject assignments; each Subject has at most one parent, with typed related
+  links kept separate from ancestry.
+- Governed Subject queries and intent execution, with eleven read operations
+  shared by the API, request-file CLI and local stdio MCP server.
+
+Existing stores require the explicit [reviewed migration process](docs/migration-3.md)
+before adopting the new identity format; check its supported source profiles.
+Backward ID aliases are not supported.
+
+**The bounded held-out evaluation regressed:** source-supported task completion
+fell from **15/18 to 10/18**, across 36 sessions: six cases, three runs per
+condition. This compares the pinned original and evaluated implementation in
+the report, not npm 2.1.0 directly against an rc.8 package. Deterministic contract
+tests check engine behavior; they do not establish that an agent interprets a
+request correctly or inspects adequate source evidence. Retrieval improvement
+and production or overall nonregression qualification have not been established.
+See the [approved report](acceptance/retrieval/review-packet/REPORT.md) and
+[qualification limits](acceptance/retrieval/FINAL-RESULTS.md).
+
 ## Quickstart
-
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
 
 The 3.0 pilot is available explicitly with
 `npx unknown-knowledge@3.0.0-rc.1 init`. The stable `latest` channel remains
@@ -61,32 +88,71 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+Eighteen seeded command-line surfaces. JavaScript with JSDoc types, zero build
+step; the seeded engine uses `js-yaml` (D-000022). The npm MCP adapter separately
+uses the official MCP SDK and Zod.
 
-Eighteen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
-
-| Command | Purpose |
+| Command | Answers |
 | --- | --- |
-| `validate.js` | structural validation |
-| `validate-values.js` | source value validation |
-| `preflight.js` | record trust and freshness checks |
-| `resolve.js` | record and path lookup |
-| `survey-map.js` | bounded repository survey |
-| `audit.js` | reverse coverage audit |
-| `log-entry.js` | operational log entries |
-| `ingest.js` | document ingestion |
-| `phoenix.js` | governed reclassification |
-| `derive.js` | disposable browse artifacts |
-| `commit-check.js` | staged store gate |
-| `reverse-staged.js` | staged attribution |
-| `subject.js` | Subject metadata lookup |
-| `query-subjects.js` | governed Subject query |
-| `subject-view.js` | Subject tree, route and context views |
-| `intent-plan.js` | intent validation and execution |
-| `migrate-identity.js` | offline identity inventory |
-| `invoke.js` | shared request-file API invocation |
+| `validate.js` | is the store structurally sound? |
+| `validate-values.js` | do the Concepts still match the code they point at? |
+| `commit-check.js` | do both whole-store validators pass the commit gate? |
+| `reverse-staged.js` | what governed each staged path before and after this commit? |
+| `preflight.js` | which Concepts may this agent trust, right now? |
+| `resolve.js` | what does the store know about these terms or paths? |
+| `query-subjects.js` | which captured records satisfy a governed subject query, with explicit counts and coverage? |
+| `survey-map.js` | what is in this repo, and what could not be surveyed? |
+| `audit.js` | what looks like knowledge but was never written down? |
+| `log-entry.js` | append a finding, miss or gap — never by hand-editing YAML |
+| `ingest.js` | normalize a document (md, txt, html, pdf) to one intermediate representation |
+| `intent-plan.js` | validate declared intent, then optionally validate or execute its captured queries |
+| `phoenix.js` | apply a phoenix event: re-file a drifted subtree in bulk, in full or not at all |
+| `derive.js` | regenerate the derived layer: plural browse trees, call numbers, resolution index |
+| `subject-view.js` | manage the disposable Subject tree, evaluate explicit intersection routes, or count subject contexts |
+| `migrate-identity.js` | inventory a pinned pre-cutover commit for offline identity review; does not publish |
+| `subject.js` | look up every matching declared subject label or alias, with identity and status |
+| `invoke.js` | call the shared versioned API from a bounded JSON request file |
 
-Engine commands run with `node payload/engine/<command> --root .` in this repository. Installed paths use `<kit-root>/engine/`. Check each command’s help and the protocol before use.
+The [shared API, terminal and MCP guide](payload/protocol/engine-interface.md)
+documents eleven read-only operations: discovery, subject lookup/tree/query,
+intersection routes/context counts, Ontology/Knowledge preflight and four
+intent-plan operations.
+`unknown-knowledge-engine` calls the request-file CLI;
+`unknown-knowledge-mcp` serves the same API over local stdio for an external
+agent host. Both require explicit transport capacities. The API's `completed`
+envelope means a native report returned, so consumers must still inspect its
+native status, coverage and source-review obligations. Tree preview returns
+generated text and metadata without writing or checking saved files.
+Query output version 2 keeps full assignment outcomes in a query-local
+`assignmentEvidence` table; each record's ordered assignments reference it.
+Per-operation output versions are available through discovery.
+MCP clients can also read the two shipped usage guides through fixed
+documentation resources, without IDE access to repository files.
+
+Intent-plan validation checks the declared inventory and its internal references.
+The explicit `--validate-queries` mode also validates captured queries and their
+intent provenance using the installed registry and retained review evidence.
+Use `--inspect-bindings` separately to inspect declared label/alias claims,
+homonyms and captured identity outcomes against the installation.
+The separate `--execute-queries` mode requires an additional execution admission
+policy and preserves each branch's results and limits. None of these modes
+establishes semantic completeness, binding proof, or source support. See the
+[structural contract](docs/agents/ucs-1238-intent-plan-s1.md) and
+[query modes](docs/agents/ucs-1238-intent-query-plan.md#explicit-cli-mode).
+
+`node payload/engine/subject.js lookup <label...> [--locale value] [--context value] [--root repo] [--json]`
+reads the selected installation's optional `subjects/registry.yaml`. It returns
+all homonyms, including proposed, suppressed and retired metadata, without
+granting query or assignment approval. Locale and context filters are exact;
+unscoped aliases remain eligible. A valid search with no matches exits 0;
+missing authority, invalid installation data and usage errors exit 2 with no
+result on stdout. This read-only command never exits 1.
+
+JSON reports `scope: declared-metadata` and `consistency: captured-model`, with
+the namespace, identity/schema/normalizer versions and registry revisions.
+`registryDigest` hashes the complete captured registry document, including
+history. It is a registry-only digest: it does not certify Decision evidence,
+the full installation or an atomic filesystem snapshot.
 
 ### Exit codes are a contract
 
@@ -97,6 +163,50 @@ Validation surfaces use three codes, and agents ride them:
 | `0` | the check ran and found nothing |
 | `1` | the check ran and **found something** |
 | `2` | the check **did not run** — an engine failure |
+
+`query-subjects.js` uses 0 for completed evaluation, including zero matches and
+output-only truncation, and 2 for refusal, incomplete evaluation or failure. It
+never uses findings exit 1. Supply `--query <JSONfile>` with explicit budgets;
+`--decision-captures <JSONfile>` provides retained Decision evidence and optional
+`--assessment-captures <JSONfile>` supplies retained original registry/identity
+pairs. For reconsidered Subjects, `--material-captures <JSONfile>` supplies
+their cited retained material. `--counts`
+selects counts only, and `--json` preserves the query result and coverage. See the
+[subject-query contract](docs/agents/ucs-1237-subject-query.md).
+With `--operation-limits-json`, the command loads files and evaluates the query
+within one private operation, retaining the initial corpus checks without a
+duplicate traversal. The internal
+[file-query API](docs/agents/ucs-1237-subject-query.md#fixed-file-to-query-api)
+documents that sequence; exposed in-memory contexts still require full
+re-admission. This change alone does not establish large-corpus capacity.
+Within one captured operation, repeated current-subject checks can reuse verified
+immutable governance evidence; record assignments and current model bindings
+still receive fresh validation. See the
+[eligibility contract](docs/agents/ucs-1235-query-eligibility-reuse.md).
+The [assignment contract](docs/agents/ucs-1236-subject-assignments.md) explains
+how absent subjects differ from an explicit empty list across K/O/D records.
+
+`subject-view.js --mode route` and `--mode contexts` use that same governed
+query evaluator with explicit query budgets and retained Decision evidence.
+Their optional `--operation-limits-json` allowance also bounds host input,
+validation and output. Tree generation keeps its separate projection limits
+and rejects that host flag. See [Subject views](docs/agents/ucs-1239-subject-views.md).
+
+The distinction between `1` and `2` is the load-bearing one. An agent that reads
+`1` quarantines the affected Concepts and continues. If a crashed command could
+exit `1`, that agent would walk straight past a check that never happened. So a
+crash always exits `2`, and a test enumerates every surface, forces a bug into
+each, and proves it.
+
+The resolver also accepts repeatable `--path` values for lossless filename
+transport, for example `--path 'src/a,b.ts' --path 'src/my file.ts'`. Legacy
+comma-separated `--paths` remains supported; mixing the forms fails with
+exit 2. See the [complete-filename and safe programmatic invocation guide](payload/docs/README.md#reverse-lookup-for-complete-filenames).
+This is an additive MINOR CLI surface change under D-000021.
+
+The reverse audit is advisory: its findings are proposals for human review, and
+never a gate. A human may opt in with `--fail-on-findings`, and that is never a
+shipped CI default.
 
 ## Guarantees
 
@@ -202,11 +312,113 @@ Changelog form).
 
 ## Reading further
 
-- [Delivery stages and availability](docs/pr-delivery/README.md)
-- [Contribution rules](CONTRIBUTING.md)
-- [Protocol](payload/protocol/AGENTS.md)
-- [Decisions catalog](decisions/_catalog.yaml)
-- [Migration status](docs/migration-3.md)
+- [CONTEXT.md](CONTEXT.md) — the domain glossary. Start here.
+- [decisions/](decisions/) — the kit records its own decisions, in the same
+  format it asks you to use. It eats its own cooking.
+- [Decision and documentation coverage](docs/change-completeness.md) — links
+  implementation rationale, current contracts and remaining acceptance work.
+- [Required Subject lifecycle scope](docs/agents/subject-lifecycle-required-scope.md) —
+  distinguishes specification requirements, implementation limits and the
+  explicitly corrected active-canonical suppression interpretation.
+- [Subject metadata publication](docs/agents/ucs-1240-subject-metadata-publication.md) —
+  reviewed rename, clarification, parent and related-subject changes with stable
+  identities, unchanged assignments and actual query-impact checks.
+- [Subject creation publication](docs/agents/ucs-1240-subject-creation.md) —
+  reviewed fresh activation or proposal promotion with permanent allocation;
+  broader subjects receive new IDs while original subjects remain unchanged.
+- [Subject proposal suppression](docs/agents/ucs-1240-subject-proposal-suppression-publication.md) —
+  reviewed rejection preserves the proposal's meaning and refusal reason while
+  leaving canonical subjects, stored records and query memberships unchanged.
+- [Retrieval-quality targets](acceptance/retrieval/QUALITY-TARGETS.md) —
+  prospective correctness and paired quality criteria for final evaluation;
+  these are targets, not measured performance or release qualification.
+- [Held-out retrieval results](acceptance/retrieval/HELDOUT-RESULTS.md) —
+  all 36 sessions are retained and reviewed; current source-supported task
+  completion is lower, with accepted observed critical-error and witness checks.
+- [Implementation and evaluation review](acceptance/retrieval/FINAL-RESULTS.md) —
+  capabilities, reconciled tests, critical-error and witness checks, adverse
+  agent results and the limits of supported performance.
+- [Measured query performance](acceptance/retrieval/PERFORMANCE-6605402.md) —
+  both named CLI workloads and the joint loaded query meet their targets;
+  the near-byte loaded query refuses at its work limit, and context measurements
+  cover the recorded partial result. Broader qualification remains open.
+- [Measured retrieval pages](acceptance/retrieval/PRIVATE-FILE-RESULTS-V2.md) —
+  four fixed-fixture API/CLI checks returned ten records per K/O/D store with
+  complete source-verified explanations; broader acceptance remains open.
+- [Equivalent-merge publication](docs/agents/ucs-1240-final-equivalent-merge.md) —
+  the internal library contract for retained review, fresh validation and an
+  atomic candidate-ref update; this is separate from merging or activating it.
+  The [zero-use profile](docs/agents/ucs-1240-equivalent-merge-zero.md) proves
+  registry-only preservation without creating an empty assignment event.
+  [Repeated merges](docs/agents/ucs-1240-repeated-equivalent-merge.md) preserve
+  earlier redirects while verifying the extended chain and its assignment history.
+- [Lifecycle material continuation](docs/agents/lifecycle-material-continuation.md) —
+  retained reconsideration evidence through retirement, merge, split and
+  [K/O/D promotion](docs/agents/ucs-1241-typed-promotion-material.md), including
+  fresh publication checks and explicit behavior without Subject authority.
+- [Plain Subject retirement gate](docs/agents/ucs-1235-plain-retirement-dto.md) —
+  committed withdrawal or zero-use validation, preserved history and mandatory
+  retrieval impacts, with a separate [retained publication profile](docs/agents/ucs-1240-final-retirement.md)
+  and [retained-material continuation](docs/agents/lifecycle-material-continuation.md)
+  that verifies fresh evidence before the candidate-ref transaction.
+- [Single-Subject allocation](docs/agents/ucs-1235-subject-creation-allocation.md) —
+  exact native verification of one fresh Subject and the complete candidate ledger;
+  this internal primitive does not perform governance or publish a candidate.
+- [Suppressed Subject reconsideration](docs/agents/ucs-1235-subject-reconsideration-creation.md) —
+  retain the original refusal, verify captured review evidence and create one fresh
+  Subject. The [retrieval consumers](docs/agents/ucs-1237-reconsideration-consumers.md)
+  carry its retained evidence through queries, intent plans and route/context views.
+  The [actual-Git owner](docs/agents/ucs-1235-reconsideration-git-core.md) verifies
+  committed evidence and preserves all stored record assignments. The
+  [prepared impact gate](docs/agents/ucs-1235-reconsideration-gate.md) adds mandatory
+  reach, whole-registry trees and finite replay checks. The separate retained
+  execution/review/publication profile requires fresh proof before applying the
+  reviewed candidate.
+- [Prepared Subject split gate](docs/agents/ucs-1235-subject-split-gate.md) —
+  actual fresh allocation, complete reviewed mappings, typed assignment preservation,
+  eventless two-path proof and mandatory retrieval impacts. The [design](docs/agents/ucs-1235-subject-split-design.md)
+  records the supported graph profile and verification boundaries.
+- [Prepared split transport](docs/agents/ucs-1240-prepared-split-transport.md) —
+  original-input/report consistency and bounded raw candidate registry, identity
+  and assignment evidence. The [fixed workers and fresh final gate](docs/agents/ucs-1240-prepared-split-validation.md)
+  retain that evidence and require actual rerun equality. The [review and publication profile](docs/agents/ucs-1240-split-review-publication.md)
+  independently verifies actual Git authorities and allocation, then requires
+  fresh owner checks before the existing candidate-ref transaction.
+- [Decisions-only promotion publication](docs/agents/ucs-1240-final-promotion.md) —
+  the internal library profile for reviewed proposal-to-canonical creation,
+  with exact evidence and explicit limits on supported record types and history.
+- [Knowledge/Ontology promotion planning](docs/agents/ucs-1234-typed-promotion-planner.md) —
+  the internal byte-planning contract for permanent IDs and fixed lifecycle
+  transitions; plans still require separate typed validation and publication.
+- [K/O/D promotion gate](docs/agents/ucs-1241-typed-promotion-design.md) —
+  the internal read-only proof of canonical creation, classification, preflight
+  and retrieval impacts, with explicit per-kind preflight applicability.
+- [Staged and prepared assignment gates](docs/agents/ucs-1241-prepared-assignment-gate.md) —
+  actual snapshot, history and preservation checks; cleanup failure clears
+  overall success even after the domain checks finish.
+  The [evidence-continuation contract](docs/agents/ucs-1241-assignment-continuation.md)
+  carries retained assessment/material evidence through ordinary assignments,
+  fixed workers and fresh review/publication checks. The
+  [typed K/O/D publication profile](docs/agents/ucs-1241-typed-assignment-publication.md)
+  binds the original mixed-record selection and requires fixed all-store replay
+  checks while preserving each store's evidence and lifecycle rules.
+- [Reconsideration publication](docs/agents/ucs-1240-reconsideration-publication.md) —
+  fixed retained workers, independent actual-Git review and fresh proof before
+  candidate-ref publication; assignments remain unchanged and no empty event is created.
+- [K/O/D promotion publication](docs/agents/ucs-1240-final-record-promotion.md) —
+  the distinct internal K/O/D profile for exact retained evidence, fresh
+  subject-impact checks, reviewed runtime and atomic candidate-ref publication.
+- [Finite migration publication](docs/agents/ucs-1240-final-migration.md) —
+  retained retrieval, generated-view, operational-log and Phoenix edition
+  evidence for supported pre-Subject sources, including Decisions-only and
+  optional stores. [Source profiles](docs/agents/ucs-1240-migration-source-profiles.md)
+  distinguish absent, empty and malformed stores and document broader limits.
+- [Seeded-installation cutover](docs/agents/ucs-1240-installation-cutover.md) —
+  exact committed runtime/consumer conversion and separately observed local
+  activation for the supported nested installation; external processes and
+  future state require their own operational verification.
+- [docs/publishing.md](docs/publishing.md) — release and supply-chain process
+  (npm provenance, 2FA).
 
 ## License and contributing
 

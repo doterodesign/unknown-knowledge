@@ -1,0 +1,51 @@
+{
+  "version": "curation-final-editorial-1",
+  "status": "Exact packet for P2 subject review; not runtime activation",
+  "files": [
+    {
+      "file": "P2-representation-review.md",
+      "sha256": "f49aa7080adbed3443f4194a4637a7c3e3276041954976b7e1088e594f4dc2de",
+      "bytes": 3570
+    },
+    {
+      "file": "README.md",
+      "sha256": "cdf49764d01f70c111535dde0e7dd5d573bbfd61111a9b8116752ff261d8beeb",
+      "bytes": 2969
+    },
+    {
+      "file": "curation-subjects-engineering-culture.json",
+      "sha256": "eab51e17409b57a9784a3707b2ced56518b55419ef791c22a7bfe159a21a60aa",
+      "bytes": 44441
+    },
+    {
+      "file": "curation-subjects-policy-manufacturing.json",
+      "sha256": "ee073e17f820d4ea6a3b15200ed94981c12c8442c66cde516e3601d39601ed13",
+      "bytes": 42415
+    },
+    {
+      "file": "curation-subjects-services-holding.json",
+      "sha256": "db57c28734edb67dccbdeed1b6a804a67251e90fb9b0ac3214dfdf732eb063a2",
+      "bytes": 48626
+    },
+    {
+      "file": "record-decisions.json",
+      "sha256": "bc83d86194e6531937dae61025701e0dadc7d1cb1b94e20d91217db03802dcb7",
+      "bytes": 271411
+    },
+    {
+      "file": "rendering-constraints.json",
+      "sha256": "46e1133bca5c63dc66c101683a61c1ac3d0d6d877529e97b7f16bfc33eef362f",
+      "bytes": 1512
+    },
+    {
+      "file": "scoped-relationships.json",
+      "sha256": "b260ed1ba30e89aaeac4e639e458a58941112f9bbd2b59a463bfef0a06ac09e7",
+      "bytes": 2021
+    },
+    {
+      "file": "validation.json",
+      "sha256": "060fb6503a4a641135f1287d23c3309d2c7254e56592b4274b6aab2b3701f40c",
+      "bytes": 551
+    }
+  ]
+}

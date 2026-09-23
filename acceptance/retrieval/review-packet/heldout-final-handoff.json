@@ -1,0 +1,71 @@
+{
+  "classification": "BLINDED; safe for main/P10",
+  "status": "Final anonymous detail export independently accepted; no unresolved preparation/reporting prerequisites",
+  "utc": "2026-09-21T23:37:03.943907+00:00",
+  "report": {
+    "path": "./heldout-approved-report.json",
+    "sha256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740"
+  },
+  "scope": {
+    "anonymousCases": 6,
+    "arms": 2,
+    "repetitions": 3,
+    "observedReaderRows": 36,
+    "ownerStoreGroups": 19,
+    "rankObservationRows": 114,
+    "newTrials": 0,
+    "newSourceJudgments": 0
+  },
+  "authorization": "User explicitly permits fresh report-only aliases, arm/repetition observed outcomes/metrics, topology and necessary reporting-level denominators/NA. No original case IDs, prompts/answers, organization mapping or source/record/passage judgments.",
+  "independentAcceptedBasis": {
+    "reportingManifestPath": "unpublished-location:abd4986fbc0193ab",
+    "reportingManifestSHA256": "52c604dc60145612c54ccd90ca0e9d869413c55dac3cff3c1892c98c7d1c183f",
+    "custodyAddendumPath": "unpublished-location:93e45b6d15467f22",
+    "custodyAddendumSHA256": "11d59553c8d8539397af4bc3aa02b1b8c64a781892a2412d060828e535908821",
+    "sourceAndArithmeticReopened": false
+  },
+  "custodianSerializationChecks": {
+    "freshAliasBijection": true,
+    "noOriginalCaseIdsOrRecordSourceFields": true,
+    "all36ObservedOutcomeValuesEqualAcceptedDraft": true,
+    "rankNullsAndNativeStoreSeparationPreserved": true,
+    "qualitativeReasons": "Generic translations from existing independently accepted observed dispositions only"
+  },
+  "independentFinalSerializationReceipt": {
+    "safePath": "./heldout-independent-final-acceptance.json",
+    "sha256": "9b37db1f222bbab830dd0cad5884c1e8162ae9282cb4aec5d1808ce35266d499",
+    "privateManifestPath": "unpublished-location:1d15e679cbb11d89",
+    "privateManifestSHA256": "e7de9553e721ae3307855ec44dd2e739f216e04b45c5156cd0f4a90e662661b5",
+    "privateDeltaReportSHA256": "5137fea9e52ca3b73c8a8ca2070e4c677533796d5efe119a7e260147f8e3df88",
+    "disposition": "Accepted exact v2 serialization; no unresolved reporting/custody correction"
+  },
+  "acceptedAggregates": {
+    "sourceSupportedCompletion": {
+      "original": "15/18",
+      "current": "10/18"
+    },
+    "pairedRegressions": 7,
+    "pairedImprovements": 2,
+    "ties": 9,
+    "incompleteAccounting": 6,
+    "observedCriticalCategoryViolations": {
+      "wrongScope": 0,
+      "trustTransfer": 0,
+      "silentIdentityCollision": 0,
+      "falseAttribution": 0
+    },
+    "emittedStrictWitnesses": "59/59"
+  },
+  "limits": [
+    "Observed-only critical dispositions; unobserved context and attention remain null.",
+    "Primary false-abstention operational inclusion not frozen; null and separate observed categories retained.",
+    "Unavailable ranking/accounting values stay null; no forensic reader credit or whole-cohort inference from subsets.",
+    "External topology linkability cannot be ruled out; mapping/answer keys remain private."
+  ],
+  "mainAggregateAcceptanceSHA256": "445d34c52ffce66d7505b54d119bd28a6c074e18602279bb713dc39653f8c81f",
+  "priorReceiptPreserved": {
+    "path": "unpublished-location:f12dfe8372c3083f",
+    "sha256": "e47234128553abfdfe2b3d7583db577de91d605974eb6774549a30407cee59aa"
+  },
+  "remainingPrerequisites": []
+}

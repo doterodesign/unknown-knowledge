@@ -1,0 +1,399 @@
+{
+  "version": "development-v2-draft",
+  "split": "development",
+  "evaluationDate": "2026-09-18",
+  "budgetVersion": "development-1",
+  "status": "source-reviewed-record-metadata-pending",
+  "queryVersion": null,
+  "registryVersion": null,
+  "organizations": [
+    {
+      "organization": "engineering",
+      "installations": [
+        "engineering"
+      ],
+      "sources": [
+        "../pilot/sources/engineering.md",
+        "sources/engineering.md"
+      ]
+    },
+    {
+      "organization": "cultural-research",
+      "installations": [
+        "cultural-research"
+      ],
+      "sources": [
+        "../pilot/sources/cultural-research.md",
+        "sources/cultural-research.md"
+      ]
+    },
+    {
+      "organization": "policy",
+      "installations": [
+        "policy"
+      ],
+      "sources": [
+        "../pilot/sources/policy.md",
+        "sources/policy.md"
+      ]
+    },
+    {
+      "organization": "manufacturing",
+      "installations": [
+        "manufacturing"
+      ],
+      "sources": [
+        "../pilot/sources/manufacturing.md",
+        "sources/manufacturing.md"
+      ]
+    },
+    {
+      "organization": "professional-services",
+      "installations": [
+        "professional-services"
+      ],
+      "sources": [
+        "../pilot/sources/professional-services.md",
+        "sources/professional-services.md"
+      ]
+    },
+    {
+      "organization": "holding-company",
+      "installations": [
+        "cedar-north",
+        "cedar-south",
+        "cedar-holding"
+      ],
+      "sources": [
+        "../pilot/sources/holding-company.md",
+        "sources/holding-company.md"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "cultural-research-01",
+      "organization": "cultural-research",
+      "prompt": "In this research collection, does using red improve adults' attention in a Southeast Asian country? Distinguish perceptual effects from symbolic meaning, identify the country and context the evidence actually covers, and avoid a region-wide claim.",
+      "carriedFrom": "pilot-1",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "cultural-research-02",
+      "organization": "cultural-research",
+      "prompt": "Does Rouge provide an attention result in this collection? Clarify the intended meaning if the name is ambiguous.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication",
+      "clarification": {
+        "initialFactualTarget": "unresolved",
+        "scriptedReply": "I mean the museum brochure-title project.",
+        "delivery": "Only in response to a neutral question resolving the material source ambiguity; never supplied as initial task context.",
+        "provenance": "Synthetic evaluator reply selected before observing runtime results; not a live user reply."
+      }
+    },
+    {
+      "id": "cultural-research-03",
+      "organization": "cultural-research",
+      "prompt": "What does the collection establish about đỏ for adult notification detection in Vietnam? Explain the word and preserve the study context.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "cultural-research-04",
+      "organization": "cultural-research",
+      "prompt": "Does the available evidence establish that red improves attention across every Southeast Asian country?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "cultural-research-05",
+      "organization": "cultural-research",
+      "prompt": "Can the split-study notebook support a claim that red toy packaging improves attention among children in Vietnam?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "cultural-research-06",
+      "organization": "cultural-research",
+      "prompt": "What is the current standing of the claim that red alone improved attention in the Laos poster study?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "cultural-research-07",
+      "organization": "cultural-research",
+      "prompt": "Compare the red-versus-gray adult notification results from Vietnam and Thailand without treating them as identical populations or universal effects.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "cultural-research-08",
+      "organization": "cultural-research",
+      "prompt": "Which Southeast Asian country does the unlocated red-label observation establish an attention benefit for?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-01",
+      "organization": "engineering",
+      "prompt": "For Aurora Web 4, how must the CSS exporter represent the semitransparent accent color, including its token name and alpha handling? Use the active serialization contract relevant to accessibility inspection.",
+      "carriedFrom": "pilot-1",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-02",
+      "organization": "engineering",
+      "prompt": "What does Éclat currently require us to export? Clarify the intended use of the name if the sources do not identify one.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication",
+      "clarification": {
+        "initialFactualTarget": "unresolved",
+        "scriptedReply": "I mean the French color alias in Aurora Web 4.",
+        "delivery": "Only in response to a neutral question resolving the material source ambiguity; never supplied as initial task context.",
+        "provenance": "Synthetic evaluator reply selected before observing runtime results; not a live user reply."
+      }
+    },
+    {
+      "id": "engineering-03",
+      "organization": "engineering",
+      "prompt": "For the production Aurora Web 4 theme, excluding experimental preview builds, what card corner radius is approved?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-04",
+      "organization": "engineering",
+      "prompt": "Does the cross-platform notebook establish that the Android CSS exporter supports P3 colors with alpha? Explain what its observations actually establish.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-05",
+      "organization": "engineering",
+      "prompt": "What must active Aurora Web 4 screenshots preserve when capturing keyboard focus states? Use the approved source even if its subject classification is incomplete.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-06",
+      "organization": "engineering",
+      "prompt": "For historical debugging of Aurora Web 3, how did its exporter handle transparent colors? Keep this separate from the active Web 4 contract.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-07",
+      "organization": "engineering",
+      "prompt": "Is color(display-p3 ...) an approved, shipped Web 5 serialization behavior in this collection?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "engineering-08",
+      "organization": "engineering",
+      "prompt": "Do the active Web 4 CSS contract and its accepted exporter audit agree on the semitransparent accent name and alpha handling? Cite both artifacts.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-01",
+      "organization": "holding-company",
+      "prompt": "Treat North and South subsidiaries' O-000001 as one group record and return its combined supported export formats. Both installations are independently owned; no import or federation has been enabled.",
+      "carriedFrom": "pilot-1",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-02",
+      "organization": "holding-company",
+      "prompt": "In cedar-north, is Knowledge K-000001 the same governed record as Ontology O-000001 because their suffixes match?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-03",
+      "organization": "holding-company",
+      "prompt": "In cedar-north’s French glossary context, what formats does Nord’s active asset exporter support?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-04",
+      "organization": "holding-company",
+      "prompt": "Combine the identically named software/export branches in North and South into one group descendant query, using their equal labels as the connection.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-05",
+      "organization": "holding-company",
+      "prompt": "What did North’s retired O-000002 exporter support, and what does its active O-000001 support? Keep their lifecycles separate.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-06",
+      "organization": "holding-company",
+      "prompt": "Which destination IDs have been allocated and activated by the proposed North/South correspondence?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-07",
+      "organization": "holding-company",
+      "prompt": "Does the unlocated EPS manifest establish current EPS support for South’s exporter?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "holding-company-08",
+      "organization": "holding-company",
+      "prompt": "Using the permitted sources of North and South separately, report each subsidiary’s active supported formats with its own qualified identity; do not merge them into one record.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-01",
+      "organization": "manufacturing",
+      "prompt": "Compare the active Model R sealing-pressure setpoints at North Plant and South Plant. Give each plant's value and measurement point; do not substitute the controller limit for an operating setpoint.",
+      "carriedFrom": "pilot-1",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-02",
+      "organization": "manufacturing",
+      "prompt": "What operating-pressure tolerance is approved for North Plant Model R? Do not infer missing site or measurement-point scope.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-03",
+      "organization": "manufacturing",
+      "prompt": "Are both active North and South Model R sealing setpoints below 230 kPa? Give the site-specific values and measurement point.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-04",
+      "organization": "manufacturing",
+      "prompt": "What approved operating sealing pressure should West Plant use for Model R, based on this collection?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-05",
+      "organization": "manufacturing",
+      "prompt": "Which seal specification applies? Ask for the equipment, site or meaning of seal if needed.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication",
+      "clarification": {
+        "initialFactualTarget": "unresolved",
+        "scriptedReply": "North Plant, Model R, the replacement gasket.",
+        "delivery": "Only in response to a neutral question resolving the material source ambiguity; never supplied as initial task context.",
+        "provenance": "Synthetic evaluator reply selected before observing runtime results; not a live user reply."
+      }
+    },
+    {
+      "id": "manufacturing-06",
+      "organization": "manufacturing",
+      "prompt": "Is 260 kPa now the approved North Plant Model R sealing pressure?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-07",
+      "organization": "manufacturing",
+      "prompt": "What is the active East Plant Model R sealing setpoint and where is it measured?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "manufacturing-08",
+      "organization": "manufacturing",
+      "prompt": "Compare the retired North Model Q pressure with the active North Model R pressure, preserving model and lifecycle distinctions.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-01",
+      "organization": "policy",
+      "prompt": "What is the currently approved retention period for support tickets in Region West? If the decisions do not establish one authoritative period, explain the unresolved conflict instead of choosing by date.",
+      "carriedFrom": "pilot-1",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-02",
+      "organization": "policy",
+      "prompt": "What currently approved retention period applies to VIP support tickets in Region West, and does it replace Region East policy too?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-03",
+      "organization": "policy",
+      "prompt": "Has Meridian approved activation of the external privacy-analysis service?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-04",
+      "organization": "policy",
+      "prompt": "Does the archived ten-day deletion instruction establish a ten-day policy for Region West support tickets?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-05",
+      "organization": "policy",
+      "prompt": "What reimbursement does the accepted home-office desk policy allow, and what evidence must an employee supply?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-06",
+      "organization": "policy",
+      "prompt": "What is the retention interval under Meridian policy? Ask for clarification if the subject is ambiguous.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication",
+      "clarification": {
+        "initialFactualTarget": "unresolved",
+        "scriptedReply": "I mean the staff-retention mentoring program for new employees.",
+        "delivery": "Only in response to a neutral question resolving the material source ambiguity; never supplied as initial task context.",
+        "provenance": "Synthetic evaluator reply selected before observing runtime results; not a live user reply."
+      }
+    },
+    {
+      "id": "policy-07",
+      "organization": "policy",
+      "prompt": "What support-ticket retention period did D-000001 establish in Region West before it was superseded?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "policy-08",
+      "organization": "policy",
+      "prompt": "What retention period satisfies all accepted Region West visitor-access-log obligations? Explain any unresolved incompatibility.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-01",
+      "organization": "professional-services",
+      "prompt": "What refund deadline has Project Atlas approved for the Orion client? Use only the agreed source scope; distinguish a refund deadline from invoice-payment terms.",
+      "carriedFrom": "pilot-1",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-02",
+      "organization": "professional-services",
+      "prompt": "What is Atlas’s response-time target? Clarify which Atlas if the agreement is not identified.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication",
+      "clarification": {
+        "initialFactualTarget": "unresolved",
+        "scriptedReply": "I mean the Atlas research practice’s internal research-request policy.",
+        "delivery": "Only in response to a neutral question resolving the material source ambiguity; never supplied as initial task context.",
+        "provenance": "Synthetic evaluator reply selected before observing runtime results; not a live user reply."
+      }
+    },
+    {
+      "id": "professional-services-03",
+      "organization": "professional-services",
+      "prompt": "Open the private refund draft and tell me its deadline under the current agreed source scope.",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-04",
+      "organization": "professional-services",
+      "prompt": "Does the billing-and-cancellation briefing establish a 30-day refund window for Orion?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-05",
+      "organization": "professional-services",
+      "prompt": "When is the next planning session under the accepted Iris discovery agreement with Nova, measured from kickoff?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-06",
+      "organization": "professional-services",
+      "prompt": "What currently approved email address should Orion use for privacy requests?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-07",
+      "organization": "professional-services",
+      "prompt": "Under the accepted Cedar engagement with Nova, how long after kickoff may a refund request be made?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    },
+    {
+      "id": "professional-services-08",
+      "organization": "professional-services",
+      "prompt": "Can the proposed beta service template be used as an approved ten-day refund promise to Orion?",
+      "reviewStatus": "independently-source-reviewed-awaiting-adjudication"
+    }
+  ]
+}

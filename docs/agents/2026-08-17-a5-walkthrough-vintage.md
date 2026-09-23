@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # A5 walkthrough re-capture — design-studio fixture vintage (2026-08-17)
 
 Scope: the five `acceptance/A5-*.md` walkthroughs and the five skill/protocol

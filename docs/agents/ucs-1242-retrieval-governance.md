@@ -1,7 +1,3 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # UCS-1242: retrieval governance decisions and evidence boundaries
 
 This note backfills substantive P9 decisions and audits their documentation
@@ -17,7 +13,7 @@ authorization or synthetic fixture stewardship into canonical approval.
 | Preserve reviewed proposal bytes, per-item gates, replacement lineage, interrupted work and separate review/repair completion | [Reflection review state](../../decisions/entries/retrieval-review-state.yaml), proposal `7a69353a-0ea1-40b1-8af9-51914458b002` | `432a9e0`, `68748ed`; [reflect](../../payload/protocol/skills/knowledge-reflect.md), [audit](../../payload/protocol/skills/knowledge-audit.md), their tests and A5 walkthroughs |
 | Use the whole resolver envelope; useful leaves need no forced concept ranking; preserve residue and exclusions | [Envelope navigation](../../decisions/entries/retrieval-envelope-navigation.yaml), proposal `84efc561-ed43-47b1-bb5f-154dfe519504` | `ff1b0fc` / integration `557be46`; [runtime contract](../../payload/protocol/AGENTS.md), existing resolver/decomposition tests and retained actual traces |
 | Make typed Subject operations conditional while preserving ordinary intent/source obligations and every actual exit-2 stop | [Optional Subject routing](../../decisions/entries/optional-subject-retrieval-routing.yaml), proposal `937723fe-050c-4d01-a699-d58fbf49ff76` | `9f2c4b8` / integration `5bad18d`; [intent protocol](../../payload/protocol/intent-retrieval.md), [documentation pins](../../tests/intent-protocol-doc.test.js), Subject CLI/registry/context tests |
-| Keep frozen attempts, source/gate/navigation/accounting judgments and complete runtime custody separate from rank diagnostics | Evaluation custody (contract arrives in PR7; see delivery availability), proposal `f06142c9-77a3-4be3-ade7-35b5b8942c5b` | Public original/v2 audits; independently sealed P10 public aggregate; prospective v3 packet and corrected complete inventory |
+| Keep frozen attempts, source/gate/navigation/accounting judgments and complete runtime custody separate from rank diagnostics | [Evaluation custody](../../decisions/entries/retrieval-evaluation-custody.yaml), proposal `f06142c9-77a3-4be3-ade7-35b5b8942c5b` | Public original/v2 audits; independently sealed P10 public aggregate; prospective v3 packet and corrected complete inventory |
 | Include recursive installed-kit, engine and dependency discovery in contract-first onboarding | [Runtime discovery onboarding](../../decisions/entries/onboarding-before-runtime-discovery.yaml), proposal `bd38c554-e695-45a0-b6e4-0bea9d74af95` | Canonical contract and both wrapper templates; existing [generated-init matrix](../../tests/init-wrappers.test.js) checks delivery, not fresh-agent conduct |
 
 Existing accepted records cover the broader boundaries rather than duplicating
@@ -141,16 +137,16 @@ claims are not rewritten by this note or reused as present-runtime qualification
 
 ## Documentation and release coverage
 
-The subsequent reflection-conduct evidence audit (contract arrives in PR7; see delivery availability)
+The subsequent [reflection-conduct evidence audit](../../acceptance/retrieval/FINAL-DETERMINISTIC-COVERAGE.md#subsequent-reflection-conduct-evidence-audit)
 binds existing supported-writer, resume and chain-reader receipts to pending
 handoffs and same-day behavior. A separately executed and independently accepted
-three-stage archival check (contract arrives in PR7; see delivery availability)
+[three-stage archival check](../../acceptance/retrieval/FINAL-DETERMINISTIC-COVERAGE.md#positive-archival-boundary--accepted-result)
 proves retention below the threshold, persisted evidence before deletion, and
 preservation of earlier archive history at its pinned runtime. Synthetic
 historical seeds, recovered truncated reads, prompt-custody limits and original
 pending repair work remain explicit; this is narrow behavioral acceptance.
 Separately, the
-corrected navigation binding (contract arrives in PR7; see delivery availability)
+[corrected navigation binding](../../acceptance/retrieval/DECISIONS-AND-EVIDENCE.md)
 accepts the narrow applicable later-reader evidence without changing earlier
 failed trials or completing governed repair state.
 
@@ -160,7 +156,7 @@ failed trials or completing governed repair state.
 | [Pointer wrapper](../../payload/wrappers/pointer.md), [Cursor wrapper](../../payload/wrappers/cursor.mdc) and init | Both templates state the recursive installed-runtime boundary; the existing init matrix checks actual generated output; no initializer code or manifest change |
 | Shipped reflect/audit skills and their A5 guides | Durable review/frontier behavior already documented in the implementation commits; this note supplies the missing linked rationale |
 | [A5 retrieval walkthrough](../../acceptance/A5-reflection-retrieval-walkthrough.md) | Links this note and clarifies that required catalogs/rules/entries are ordinary navigation |
-| Retrieval evaluation README (contract arrives in PR7; see delivery availability) and trial-host guides | Existing broader benchmark and host contracts remain separate; v3 is not silently substituted for their task counts, repetition policy or qualification |
+| [Retrieval evaluation README](../../acceptance/retrieval/README.md) and trial-host guides | Existing broader benchmark and host contracts remain separate; v3 is not silently substituted for their task counts, repetition policy or qualification |
 | A5 wrapper/catalog recovery walkthroughs | Existing adoption guidance and historical scoring are preserved; the prospective scope and its validation limit are recorded above, without rewriting frozen criteria |
 | Historical reports, frozen runtime exports, prepared clients and evidence archives | Unchanged; corrections are separate versioned artifacts, never rewritten attempts |
 | Root README, AGENTS, CONTRIBUTING, PR template, CI and publishing files | Shared integration ownership. No new API, command, installation mode or release claim here requires a competing owner edit; the root README already identifies Subject authority as optional |

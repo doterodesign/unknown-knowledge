@@ -1,0 +1,957 @@
+{
+  "reviewer": "independent-services-holding-source-metadata-reviewer",
+  "status": "source-backed-proposals-awaiting-root-review-and-cross-review-before-freeze",
+  "sourceFiles": [
+    "acceptance/retrieval/pilot/sources/professional-services.md",
+    "acceptance/retrieval/development-v2/sources/professional-services.md",
+    "acceptance/retrieval/pilot/sources/holding-company.md",
+    "acceptance/retrieval/development-v2/sources/holding-company.md"
+  ],
+  "otherReadInputs": [
+    "acceptance/retrieval/development-v2/record-inventory.json (professional-services and holding-company entries only)",
+    "acceptance/retrieval/pilot/tasks.json (professional-services-01 and holding-company-01 prior proposals only)"
+  ],
+  "schemaAssumption": "No executable schema or runtime applicability profile assumed. scope strings are human-readable semantic proposals; arrays do not define conjunction, union or operational authorization. Source standing, provisional kind, allocation, classification and applicability remain separate.",
+  "records": [
+    {
+      "id": "professional-services/decisions/D-000001",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "atlas-engagement",
+      "lifecycle": "accepted",
+      "scope": [
+        "orion-atlas"
+      ],
+      "subjectKeys": [
+        "atlas-project",
+        "orion",
+        "refunds"
+      ],
+      "metadataReason": "The signed Project Atlas engagement for Orion explicitly approves milestones and supplies no approved refund duration. Acceptance applies to the signed engagement, not its unresolved future refund clause.",
+      "ambiguities": [
+        "The unresolved refund clause is not itself an accepted decision. Topic membership in refunds represents the explicit policy-gap statement, not approval of a refund term."
+      ]
+    },
+    {
+      "id": "professional-services/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "payment-handbook",
+      "lifecycle": null,
+      "scope": [
+        "firm-invoices"
+      ],
+      "subjectKeys": [
+        "invoices"
+      ],
+      "metadataReason": "The handbook requires thirty-day invoice payment, establishing firm-invoice scope. The source does not state that this knowledge record was reviewed.",
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json proposal only.",
+      "ambiguities": [
+        "Provisional knowledge kind requires review: a normative handbook requirement may be a governed instruction rather than distilled knowledge. Do not infer acceptance or reviewed standing from the word requires."
+      ]
+    },
+    {
+      "id": "professional-services/decisions/D-000002",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "atlas-practice",
+      "lifecycle": "rejected",
+      "scope": [
+        "atlas-practice"
+      ],
+      "subjectKeys": [
+        "atlas-practice",
+        "refunds"
+      ],
+      "metadataReason": "The archived fourteen-day refund proposal for the research practice was explicitly rejected and never applied to Orion.",
+      "ambiguities": [
+        "Pilot subjectKeys:[] does not establish that the source has an explicitly empty classification. This review proposes the source-supported practice and refund topics instead.",
+        "A canonical rejected-decision ID is a provisional inventory attribution; the text does not print or allocate this ID."
+      ]
+    },
+    {
+      "id": "professional-services/knowledge/K-000002",
+      "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+      "passage": "clarification-note",
+      "lifecycle": null,
+      "scope": [
+        "orion-refund-review-agenda",
+        "agreed-review-access"
+      ],
+      "subjectKeys": [
+        "orion",
+        "refunds",
+        "source-access"
+      ],
+      "metadataReason": "The note reports Orion's pending refund question and a separately approved access policy. The note itself has no explicit reviewed standing.",
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json proposal only.",
+      "scopeComponents": [
+        {
+          "key": "refund-agenda",
+          "scope": [
+            "orion-refund-review-agenda"
+          ],
+          "subjectKeys": [
+            "orion",
+            "refunds"
+          ],
+          "claim": "Orion refund question is on the next engagement review agenda."
+        },
+        {
+          "key": "access-policy",
+          "scope": [
+            "agreed-review-access"
+          ],
+          "subjectKeys": [
+            "source-access"
+          ],
+          "claim": "The team's approved source-access policy excludes sources/private/ from this review."
+        }
+      ],
+      "jointWarrant": false,
+      "ambiguities": [
+        "Pilot omitted subjectKeys, which is unspecified metadata rather than an explicitly empty classification. No source sentence explicitly forbids classification here.",
+        "The note contains a governed access instruction as well as a narrative agenda report; the provisional knowledge kind cannot silently turn the embedded policy into a reviewed knowledge approval.",
+        "Multiple scoped statements require an execution representation; record-level co-membership does not join their claims.",
+        "The source-access policy is scoped governance and supplies no permission to read the private draft.",
+        "Cross-review C1: this passage names Orion but not Project Atlas. No Atlas subject or engagement scope is imported from another passage."
+      ]
+    },
+    {
+      "id": "professional-services/decisions/D-000003",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "atlas-project-response",
+      "lifecycle": "accepted",
+      "scope": [
+        "orion-atlas"
+      ],
+      "subjectKeys": [
+        "atlas-project",
+        "orion",
+        "acknowledgement"
+      ],
+      "metadataReason": "The accepted Project Atlas agreement with Orion commits to acknowledging a client question within two business days, not resolving it or granting refunds."
+    },
+    {
+      "id": "professional-services/decisions/D-000004",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "atlas-practice-response",
+      "lifecycle": "accepted",
+      "scope": [
+        "atlas-practice-internal-research-requests"
+      ],
+      "subjectKeys": [
+        "atlas-practice",
+        "research",
+        "acknowledgement"
+      ],
+      "metadataReason": "The accepted Atlas research-practice handbook allows four business days to acknowledge an internal research request, explicitly separate from Orion's project."
+    },
+    {
+      "id": "professional-services/knowledge/K-000003",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "billing-and-cancellation",
+      "lifecycle": "reviewed",
+      "scope": [
+        "firm-invoices",
+        "orion-workshop-cancellation"
+      ],
+      "subjectKeys": [
+        "invoices",
+        "cancellation",
+        "orion",
+        "refunds"
+      ],
+      "metadataReason": "The briefing is explicitly reviewed and contains independently scoped general firm billing and Orion workshop-cancellation sections. Its explicit refund-duration denial is also a topic of the record.",
+      "scopeComponents": [
+        {
+          "key": "general-billing",
+          "scope": [
+            "firm-invoices"
+          ],
+          "subjectKeys": [
+            "invoices"
+          ],
+          "claim": "The general firm billing section asks clients to pay invoices within thirty days."
+        },
+        {
+          "key": "orion-cancellation",
+          "scope": [
+            "orion-workshop-cancellation"
+          ],
+          "subjectKeys": [
+            "orion",
+            "cancellation"
+          ],
+          "claim": "Five business days' notice before ending an Orion workshop booking."
+        },
+        {
+          "key": "refund-nonwarrant",
+          "scope": [
+            "this-briefing"
+          ],
+          "subjectKeys": [
+            "refunds"
+          ],
+          "claim": "Neither section establishes a refund duration; their combination does not establish a thirty-day Orion refund policy."
+        }
+      ],
+      "jointWarrant": false,
+      "ambiguities": [
+        "Do not remove invoices, cancellation or Orion assignments merely to prevent an AND query from retrieving the record. AND retrieval proves recorded co-membership, not a joint refund claim.",
+        "The scope array is a proposal listing component contexts, not an executable conjunction, union or applicability profile. Independent scopeComponents require explicit execution representation."
+      ]
+    },
+    {
+      "id": "professional-services/decisions/D-000005",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "iris-scheduling",
+      "lifecycle": "accepted",
+      "scope": [
+        "nova-iris-discovery"
+      ],
+      "metadataReason": "The accepted Iris discovery agreement with Nova explicitly fixes a planning session fourteen calendar days after kickoff; subject classification is explicitly not supplied.",
+      "ambiguities": [
+        "subjectKeys is deliberately omitted, not []. Missing classification must not erase explicit client/engagement scope or accepted standing."
+      ]
+    },
+    {
+      "id": "professional-services/decisions/D-000006",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "nova-refund",
+      "lifecycle": "accepted",
+      "scope": [
+        "nova-cedar"
+      ],
+      "subjectKeys": [
+        "cedar-engagement",
+        "nova",
+        "refunds"
+      ],
+      "metadataReason": "The accepted Cedar engagement with Nova permits a refund request within seven calendar days of kickoff and explicitly excludes incorporation into Orion's contract."
+    },
+    {
+      "id": "professional-services/knowledge/K-000004",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "old-orion-contact",
+      "lifecycle": "retired",
+      "scope": [
+        "orion-privacy-requests"
+      ],
+      "subjectKeys": [
+        "orion",
+        "privacy-requests"
+      ],
+      "metadataReason": "The Orion contact sheet and old mailbox are explicitly retired; the address is retained as history and is not a current instruction."
+    },
+    {
+      "id": "professional-services/decisions/D-000007",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "contact-withdrawal",
+      "lifecycle": "accepted",
+      "scope": [
+        "orion-privacy-requests"
+      ],
+      "subjectKeys": [
+        "orion",
+        "privacy-requests"
+      ],
+      "metadataReason": "The accepted administrative note withdraws the old Orion privacy mailbox and establishes that a replacement is awaiting client confirmation.",
+      "ambiguities": [
+        "Acceptance governs withdrawal and the stated pending status; it does not approve an unknown replacement address."
+      ]
+    },
+    {
+      "id": "professional-services/decisions/D-000008",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "beta-template",
+      "lifecycle": "proposed",
+      "scope": null,
+      "subjectKeys": [
+        "refunds",
+        "service-template"
+      ],
+      "metadataReason": "The service template is explicitly proposed for an unnamed future client and has no signed engagement, client identity or approved scope.",
+      "allocationStatus": "unresolved-proposal-id",
+      "ambiguities": [
+        "The provisional canonical D-000008 attribution is not evidence that a decision ID has been allocated to this proposal-only source.",
+        "Decision kind is provisional: the source is a template proposal, not an accepted governing decision.",
+        "scope:null records absent approved client/engagement scope. It is not [] and cannot be inferred as Orion, Nova or global."
+      ]
+    },
+    {
+      "id": "professional-services/decisions/D-000009",
+      "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "passage": "private-access",
+      "lifecycle": "accepted",
+      "scope": [
+        "agreed-review-access"
+      ],
+      "subjectKeys": [
+        "source-access"
+      ],
+      "metadataReason": "The accepted review-access instruction excludes sources/private/ and its refund draft; widening requires an explicit scope decision.",
+      "ambiguities": [
+        "This metadata is scoped governance for the synthetic review, not permission to read private content or a live approval event."
+      ]
+    },
+    {
+      "id": "cedar-north/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "north-contract",
+      "lifecycle": "active",
+      "scope": [
+        "cedar-north"
+      ],
+      "subjectKeys": [
+        "north-software-export"
+      ],
+      "metadataReason": "The source explicitly names North's active O-000001 asset-export contract, PNG/SVG support and cedar-north namespace, with no authority over South."
+    },
+    {
+      "id": "cedar-south/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "south-contract",
+      "lifecycle": "active",
+      "scope": [
+        "cedar-south"
+      ],
+      "subjectKeys": [
+        "south-software-export"
+      ],
+      "metadataReason": "The source explicitly names South's active O-000001 transport contract, PDF support and cedar-south namespace, with no authority over North."
+    },
+    {
+      "id": "cedar-holding/decisions/D-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "historical-import",
+      "lifecycle": "rejected",
+      "scope": [
+        "group-import-review"
+      ],
+      "subjectKeys": [
+        "group-import",
+        "record-identity"
+      ],
+      "metadataReason": "Review explicitly rejected merging the two source O-000001 strings; no mapping or combined governed record was approved.",
+      "ambiguities": [
+        "Pilot subjectKeys:[] is a prior proposal, not source evidence of an explicitly empty classification. Source-backed import and record-identity topics are proposed here.",
+        "The source describes a rejected proposal, while the provisional decision ID may represent its rejection outcome. Resolve this allocation/kind interpretation before canonicalization; the passage does not print D-000001."
+      ]
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+      "passage": "group-note",
+      "lifecycle": null,
+      "scope": null,
+      "subjectKeys": [
+        "international-trade"
+      ],
+      "metadataReason": "The holding-company note supplies the shipping-goods-abroad meaning of export. It establishes neither reviewed standing nor an explicitly unrestricted applicability scope.",
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Prior pilot/tasks.json proposal only.",
+      "ambiguities": [
+        "Pilot scope:[] is unsupported as an explicit global/no-restriction statement. Use null for unknown operational applicability; the holding-company source attribution does not establish group-wide governing authority.",
+        "Pilot omitted subjectKeys. The note's explicit trade meaning supports the proposed international-trade topic; omitted classification is not an empty set."
+      ]
+    },
+    {
+      "id": "cedar-north/knowledge/K-000001",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "north-knowledge",
+      "lifecycle": "reviewed",
+      "scope": [
+        "cedar-north-winter-freight-crates"
+      ],
+      "subjectKeys": [
+        "winter-freight-crates"
+      ],
+      "metadataReason": "The source explicitly identifies cedar-north Knowledge K-000001 as a reviewed winter-crate note and distinguishes it from Ontology O-000001."
+    },
+    {
+      "id": "cedar-north/ontology/O-000003",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "nord-glossary",
+      "lifecycle": null,
+      "scope": [
+        "cedar-north-french-glossary"
+      ],
+      "subjectKeys": [
+        "north-subsidiary"
+      ],
+      "metadataReason": "The glossary is explicitly accepted and establishes the contextual French name Nord for North, but the passage does not explicitly establish an active Ontology O-000003 record.",
+      "sourceStanding": "accepted glossary",
+      "proposedLifecycle": "active",
+      "proposedLifecycleBasis": "A possible ontology representation of the accepted contextual alias; requires kind/lifecycle adjudication, not assumed active source standing.",
+      "ambiguities": [
+        "Provisional ontology kind/ID mismatch requires resolution: this passage is an accepted glossary alias, not an explicitly allocated or active Ontology O-000003 record.",
+        "If represented as a governed acceptance decision instead, accepted is supported; if distilled as knowledge, reviewed is not explicitly stated. Do not silently change the provisional ID.",
+        "The alias belongs only to cedar-north's French glossary context; it is not a global equivalence or permission to resolve North IDs in South."
+      ]
+    },
+    {
+      "id": "cedar-south/knowledge/K-000001",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "south-nord-project",
+      "lifecycle": "proposed",
+      "scope": [
+        "cedar-south-nord-project-proposal"
+      ],
+      "subjectKeys": [
+        "south-nord-project"
+      ],
+      "metadataReason": "The source explicitly describes a proposed logistics software project named Nord in cedar-south, with hoped-for CSV output and no approval or deployment.",
+      "allocationStatus": "unresolved-proposal-id",
+      "ambiguities": [
+        "The provisional canonical K-000001 attribution is not evidence of allocation for the proposed project/draft.",
+        "Knowledge kind is provisional: the source is a project proposal; proposed describes source standing, not a materialized runtime knowledge lifecycle.",
+        "Known proposal context does not create an approved scope for CSV support."
+      ]
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000002",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "repeated-branches",
+      "lifecycle": null,
+      "scope": [
+        "cedar-north-local-technical-branch",
+        "cedar-south-local-document-transport-branch"
+      ],
+      "subjectKeys": [
+        "branch-identity",
+        "record-identity"
+      ],
+      "metadataReason": "The passage describes independent North/South branches with equal labels and explicitly denies cross-owner parent, equivalent-subject or import edges. It does not state reviewed standing for the passage.",
+      "proposedLifecycle": "reviewed",
+      "proposedLifecycleBasis": "Provisional knowledge representation only; no source review status is stated.",
+      "scopeComponents": [
+        {
+          "key": "north-branch",
+          "scope": [
+            "cedar-north"
+          ],
+          "subjectReference": {
+            "installation": "cedar-north",
+            "key": "north-software-export"
+          },
+          "claim": "North labels a local technical branch software / export."
+        },
+        {
+          "key": "south-branch",
+          "scope": [
+            "cedar-south"
+          ],
+          "subjectReference": {
+            "installation": "cedar-south",
+            "key": "south-software-export"
+          },
+          "claim": "South independently uses software / export for document transport."
+        },
+        {
+          "key": "no-cross-owner-edge",
+          "scope": [
+            "north-south-branch-comparison"
+          ],
+          "subjectKeys": [
+            "branch-identity",
+            "record-identity"
+          ],
+          "claim": "Neither owner declares a parent relation, equivalent subject or import edge to the other branch."
+        }
+      ],
+      "jointWarrant": false,
+      "ambiguities": [
+        "Holding's record may describe two owners without owning either local branch or creating subject edges between their stores.",
+        "Cross-namespace subject references are descriptive only; runtime representation must preserve independent owners and cannot treat them as imported subject assignments.",
+        "No automatic parent edge or group descendant set follows from equal labels."
+      ]
+    },
+    {
+      "id": "cedar-north/ontology/O-000002",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "retired-north-tiff",
+      "lifecycle": "retired",
+      "scope": [
+        "cedar-north"
+      ],
+      "subjectKeys": [
+        "north-software-export"
+      ],
+      "metadataReason": "The source explicitly identifies retired North Ontology O-000002 as TIFF-only, withdrawn before active O-000001's PNG/SVG contract."
+    },
+    {
+      "id": "cedar-holding/decisions/D-000002",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "proposed-correspondence",
+      "lifecycle": "proposed",
+      "scope": [
+        "north-south-import-planning-proposal"
+      ],
+      "subjectKeys": [
+        "group-import",
+        "record-identity"
+      ],
+      "metadataReason": "The holding-company planning note is explicitly proposed, calls for distinct destination identities and states that no destination IDs, approved import or operational correspondence exist.",
+      "allocationStatus": "unresolved-proposal-id",
+      "ambiguities": [
+        "The provisional canonical D-000002 attribution is not allocation evidence for the proposal note; independently, the text explicitly rules out allocated destination IDs.",
+        "Decision kind is provisional because the source is a planning proposal rather than an approved decision.",
+        "Known planning context is not approved import scope or executable correspondence; no source-local ID becomes a destination ID."
+      ]
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000003",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "unlocated-package",
+      "lifecycle": "reviewed",
+      "scope": null,
+      "subjectKeys": [
+        "component-formats"
+      ],
+      "metadataReason": "The archival manifest is explicitly reviewed only for transcription. Its component installation, owner and release are unknown.",
+      "ambiguities": [
+        "scope:null preserves unknown installation/owner/release; not [] and not cedar-holding, cedar-north or cedar-south applicability.",
+        "Inventory placement in cedar-holding identifies the proposed knowledge-record owner, not the EPS component's owner.",
+        "Reviewed transcription must not be promoted into verified ownership, release status or active EPS support."
+      ]
+    },
+    {
+      "id": "cedar-holding/decisions/D-000003",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "rejected-union",
+      "lifecycle": "accepted",
+      "scope": [
+        "holding-identity-governance"
+      ],
+      "subjectKeys": [
+        "record-identity",
+        "branch-identity"
+      ],
+      "metadataReason": "The source explicitly describes an accepted holding-company review rejecting a blanket union rule. The accepted review is the artifact's standing; rejected describes its treatment of the proposed rule.",
+      "ambiguities": [
+        "Do not set lifecycle to rejected based on the heading: the review itself is accepted.",
+        "Holding governance does not consolidate namespaces or authorize shared descendant sets; separately qualified source reading remains permitted."
+      ]
+    },
+    {
+      "id": "cedar-holding/knowledge/K-000004",
+      "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+      "passage": "trade-port",
+      "lifecycle": "reviewed",
+      "scope": [
+        "holding-freight-port-elm"
+      ],
+      "subjectKeys": [
+        "international-trade"
+      ],
+      "metadataReason": "The freight note is explicitly reviewed and concerns shipping crates to Port Elm, not software formats or federation."
+    }
+  ],
+  "subjectVocabularyProposals": [
+    {
+      "installation": "professional-services",
+      "roots": [
+        "client-projects",
+        "clients",
+        "practices",
+        "finance",
+        "service-delivery",
+        "governance",
+        "privacy"
+      ],
+      "parents": [
+        {
+          "child": "atlas-project",
+          "parent": "client-projects"
+        },
+        {
+          "child": "cedar-engagement",
+          "parent": "client-projects"
+        },
+        {
+          "child": "orion",
+          "parent": "clients"
+        },
+        {
+          "child": "nova",
+          "parent": "clients"
+        },
+        {
+          "child": "research",
+          "parent": "practices"
+        },
+        {
+          "child": "atlas-practice",
+          "parent": "research"
+        },
+        {
+          "child": "invoices",
+          "parent": "finance"
+        },
+        {
+          "child": "refunds",
+          "parent": "finance"
+        },
+        {
+          "child": "acknowledgement",
+          "parent": "service-delivery"
+        },
+        {
+          "child": "cancellation",
+          "parent": "service-delivery"
+        },
+        {
+          "child": "service-template",
+          "parent": "service-delivery"
+        },
+        {
+          "child": "source-access",
+          "parent": "governance"
+        },
+        {
+          "child": "privacy-requests",
+          "parent": "privacy"
+        }
+      ],
+      "aliases": [
+        {
+          "alias": "Atlas",
+          "subject": "atlas-project",
+          "context": "Project Atlas agreement with Orion",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-project-response"
+            }
+          ]
+        },
+        {
+          "alias": "Atlas",
+          "subject": "atlas-practice",
+          "context": "Atlas research practice's internal research-request policy",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-practice"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-practice-response"
+            }
+          ]
+        },
+        {
+          "alias": "Cedar",
+          "subject": "cedar-engagement",
+          "context": "Accepted Cedar engagement with Nova",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            }
+          ]
+        }
+      ],
+      "basis": "Prior pilot roots/parents for client-projects, clients, practices, research and finance are retained as proposals. New roots/parents organize explicit agreement, response, cancellation, privacy and access topics in the cited public sources. These editorial taxonomy proposals are not claimed to be source-declared parent edges.",
+      "evidence": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement"
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "payment-handbook"
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-practice"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-project-response"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-practice-response"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "billing-and-cancellation"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "old-orion-contact"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "contact-withdrawal"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "beta-template"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "private-access"
+        }
+      ],
+      "ambiguities": [
+        "Iris planning-session subject classification is explicitly absent; no subject assignment is proposed for its record, even though its client/project scope is known.",
+        "Co-membership of subject keys does not assert a joint claim between all subjects."
+      ]
+    },
+    {
+      "installation": "cedar-north",
+      "roots": [
+        "north-technical",
+        "north-logistics",
+        "north-subsidiary"
+      ],
+      "parents": [
+        {
+          "child": "north-software-export",
+          "parent": "north-technical"
+        },
+        {
+          "child": "winter-freight-crates",
+          "parent": "north-logistics"
+        }
+      ],
+      "aliases": [
+        {
+          "alias": "export",
+          "subject": "north-software-export",
+          "context": "North local asset/software exporter",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "north-contract"
+            }
+          ]
+        },
+        {
+          "alias": "software / export",
+          "subject": "north-software-export",
+          "context": "North's independently owned local technical branch",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            }
+          ]
+        },
+        {
+          "alias": "Nord",
+          "subject": "north-subsidiary",
+          "context": "cedar-north accepted French glossary only",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "nord-glossary"
+            }
+          ]
+        }
+      ],
+      "basis": "North technical grouping continues the prior pilot proposal; freight grouping follows the reviewed winter-crate note. Alias Nord is explicit. All nodes and proposed parent relations remain local to cedar-north.",
+      "evidence": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "north-knowledge"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "nord-glossary"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "repeated-branches"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "retired-north-tiff"
+        }
+      ],
+      "ambiguities": [
+        "The exact two-level internal taxonomy is an editorial proposal, not proof of an executable subject graph.",
+        "North subsidiary entity and North asset-export concept remain distinct subjects; contextual naming is not record identity."
+      ]
+    },
+    {
+      "installation": "cedar-south",
+      "roots": [
+        "south-operations"
+      ],
+      "parents": [
+        {
+          "child": "south-documents",
+          "parent": "south-operations"
+        },
+        {
+          "child": "south-software-export",
+          "parent": "south-documents"
+        },
+        {
+          "child": "south-nord-project",
+          "parent": "south-operations"
+        }
+      ],
+      "aliases": [
+        {
+          "alias": "software / export",
+          "subject": "south-software-export",
+          "context": "South independently owned document-transport branch",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            }
+          ]
+        },
+        {
+          "alias": "Nord",
+          "subject": "south-nord-project",
+          "context": "cedar-south proposed logistics software project",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "south-nord-project"
+            }
+          ]
+        }
+      ],
+      "basis": "South operations/document/export grouping continues the prior pilot proposal and source document-transport meaning. Proposed Nord is an independently scoped project topic and cannot be aliased to North.",
+      "evidence": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "south-nord-project"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "repeated-branches"
+        }
+      ],
+      "ambiguities": [
+        "The proposed Nord project has its own topic; CSV output does not establish equivalence to South's active document-transport contract.",
+        "Equal branch display labels across installations do not create any parent, equivalent-subject or import edge."
+      ]
+    },
+    {
+      "installation": "cedar-holding",
+      "roots": [
+        "group-governance",
+        "international-trade",
+        "component-formats"
+      ],
+      "parents": [
+        {
+          "child": "group-import",
+          "parent": "group-governance"
+        },
+        {
+          "child": "record-identity",
+          "parent": "group-governance"
+        },
+        {
+          "child": "branch-identity",
+          "parent": "group-governance"
+        }
+      ],
+      "aliases": [
+        {
+          "alias": "export",
+          "subject": "international-trade",
+          "context": "Holding-company shipping goods abroad / freight to Port Elm",
+          "evidence": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "group-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "trade-port"
+            }
+          ]
+        }
+      ],
+      "basis": "Governance and international-trade roots continue prior pilot proposals. Import and identity topics follow explicit rejection/proposal passages; component-formats represents the manifest's known format topic without attributing its unknown component owner.",
+      "evidence": [
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "historical-import"
+        },
+        {
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "group-note"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "repeated-branches"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "proposed-correspondence"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "rejected-union"
+        },
+        {
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "trade-port"
+        }
+      ],
+      "ambiguities": [
+        "Holding subject ownership is bookkeeping for holding artifacts, never authority over either subsidiary's concepts.",
+        "No North/South subjects are imported or parented under holding roots. Holding's branch-comparison record uses descriptive qualified references only."
+      ]
+    }
+  ],
+  "reviewNotes": [
+    "All 26 records retain the provisional inventory IDs and attribution; no ID was changed or materialized.",
+    "Semantic lifecycle is null where the source does not establish standing appropriate to the provisional kind. Prior/provisional mappings are separately labeled proposedLifecycle.",
+    "No scope:[] is emitted: none of these sources explicitly establishes unrestricted/global operational applicability.",
+    "Omitted subjectKeys on iris-scheduling preserves explicitly missing classification. Pilot omitted/empty classifications are not silently treated as equivalent; source-backed proposals and disagreements are flagged.",
+    "Proposal-only canonical IDs for beta-template, south-nord-project and proposed-correspondence require allocation adjudication. The rejected historical proposal also needs clarification whether its decision ID represents the rejected proposal or the rejection outcome.",
+    "payment-handbook and clarification-note mix normative governance with provisional knowledge attribution. nord-glossary's provisional ontology ID/lifecycle requires explicit adjudication.",
+    "billing-and-cancellation preserves multiple source-backed topics and independent scope components with jointWarrant:false. Retrieval co-membership cannot establish a joined refund claim.",
+    "Three holding namespaces, record kinds, IDs and local taxonomies remain separate. Descriptive comparison is allowed; identity union and group descendant inference are not.",
+    "This artifact is an independent source-review proposal, not a source edit, schema migration, frozen metadata, runtime test, human approval or access-scope change."
+  ],
+  "crossReviewResolutions": {
+    "reviewArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-crossreview-services-holding.json",
+    "status": "Both bounded source-metadata corrections applied; governance and executable-representation questions remain unresolved.",
+    "corrections": [
+      {
+        "id": "C1",
+        "recordId": "professional-services/knowledge/K-000002",
+        "resolution": "Removed unsupported Atlas assignment and orion-atlas scope from the note and its refund-agenda component. Retained Orion refund-review agenda, separate agreed-access scope, null note lifecycle and jointWarrant:false."
+      },
+      {
+        "id": "C2",
+        "recordId": "professional-services/knowledge/K-000003",
+        "resolution": "General-billing component now states that the section asks clients to pay within thirty days, preserving normative wording rather than claiming observed compliance. All topic assignments, reviewed standing, independent components and jointWarrant:false retained."
+      }
+    ],
+    "limits": "Only this outside-Git metadata proposal changed. Source facts, passage judgments, frozen corpus and repository remain unchanged; this is not runtime or governance approval."
+  }
+}

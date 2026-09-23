@@ -1,0 +1,1063 @@
+{
+  "scope": "Local editorial subject curation for the policy and manufacturing installations from public pilot and development-v2 sources only.",
+  "status": "final-editorial-choices-pending-P2-review",
+  "registryStatus": "not-activated-not-accepted",
+  "idsAllocated": false,
+  "executable": false,
+  "governanceApproval": false,
+  "sourceFiles": [
+    "acceptance/retrieval/pilot/sources/policy.md",
+    "acceptance/retrieval/development-v2/sources/policy.md",
+    "acceptance/retrieval/pilot/sources/manufacturing.md",
+    "acceptance/retrieval/development-v2/sources/manufacturing.md"
+  ],
+  "proposalInput": "acceptance/retrieval/development-v2/metadata-review/proposal-policy-manufacturing.json",
+  "interpretationRules": [
+    "Keys are local semantic handles, not allocated registry IDs. These are final editorial choices for review, not an accepted or activated registry.",
+    "Parent edges propose topic containment subject to P2 review; they do not confer applicability, operational authorization, record lifecycle or source-authored taxonomy standing.",
+    "Warrant and alias evidence point to exact public source passage headings; nonliteral intermediate topics are warranted by actual descendant passages.",
+    "Related associations are authored once; inverse associations may be derived, never authored as duplicate inverse rows.",
+    "Co-membership in topics does not combine independent claims or broaden site, model, process or measurement-point scope.",
+    "Policy remains a deliberate flat nine-root forest because the development-v2 policy preamble explicitly requires a flat subject vocabulary.",
+    "The existing tolerances key is retained for assigned-key coverage but its label and definition are narrowed to pressure tolerances.",
+    "The equipment parent explicitly includes equipment retirement activity; equipment-retirement is contained as a topic, not treated as an object subtype."
+  ],
+  "classificationAbsence": [
+    {
+      "installation": "policy",
+      "source": "acceptance/retrieval/development-v2/sources/policy.md",
+      "passage": "home-office",
+      "treatment": "Keep subjectKeys absent; do not infer assignments or substitute an empty set."
+    },
+    {
+      "installation": "manufacturing",
+      "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+      "passage": "unclassified-gauge",
+      "treatment": "Keep subjectKeys absent; do not infer assignments or substitute an empty set."
+    }
+  ],
+  "installations": [
+    {
+      "installation": "policy",
+      "subjects": [
+        {
+          "key": "ticket-retention",
+          "label": "Support-ticket retention",
+          "definition": {
+            "text": "Retention periods and policy history for customer support-ticket records.",
+            "includes": [
+              "Ordinary and VIP ticket periods in the named regions",
+              "Supersession, conflict, rejection and archival clarification concerning ticket periods"
+            ],
+            "excludes": [
+              "Staff continuity and mentoring",
+              "Visitor-access-log periods",
+              "Deletion instructions with unknown record type"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "retention",
+              "context": "Support-ticket records; resolve only where the surrounding statement identifies tickets.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/policy.md",
+                  "passage": "predecessor"
+                },
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/policy.md",
+                  "passage": "staff-retention"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "predecessor"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "successor-a"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "vip-successor"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "archive-correction"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "east-vip-note"
+            }
+          ]
+        },
+        {
+          "key": "staff-retention",
+          "label": "Staff retention",
+          "definition": {
+            "text": "Programs intended to retain employees, locally represented by new-employee mentoring.",
+            "includes": [
+              "The new-employee mentor check-in program and its cadence"
+            ],
+            "excludes": [
+              "Record retention or deletion periods",
+              "Support-ticket and visitor-log rules"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "retention",
+              "context": "Staff continuity and new-employee mentoring; does not denote keeping records.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/policy.md",
+                  "passage": "staff-retention"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "staff-retention"
+            }
+          ]
+        },
+        {
+          "key": "support",
+          "label": "Customer support",
+          "definition": {
+            "text": "Customer support work, its team, and records created in handling support tickets.",
+            "includes": [
+              "Support-ticket policy context",
+              "Support-team proposals to use a privacy-analysis service"
+            ],
+            "excludes": [
+              "Visitor-access logs",
+              "Staff mentoring",
+              "Employee home-office purchasing"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "successor-a"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "privacy-proposal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "east-vip-note"
+            }
+          ]
+        },
+        {
+          "key": "governance",
+          "label": "Policy governance",
+          "definition": {
+            "text": "Council decision-making about policy authorization, precedence and resolution of competing policies.",
+            "includes": [
+              "Explicit supersession and conflict-resolution rules",
+              "Council proposals and unaccepted authorizations",
+              "Rejection of proposed policy extensions"
+            ],
+            "excludes": [
+              "Assuming a later date resolves conflicting rules",
+              "Treating a proposed authorization as approval"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "successor-b"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "council-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "vip-successor"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "privacy-proposal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "east-vip-note"
+            }
+          ]
+        },
+        {
+          "key": "privacy-analysis",
+          "label": "Privacy analysis",
+          "definition": {
+            "text": "Analysis of privacy matters through the external service contemplated for the support team.",
+            "includes": [
+              "The proposed external privacy-analysis service and its contemplated activation"
+            ],
+            "excludes": [
+              "An inference that service use is authorized",
+              "Ticket-retention periods merely because both concern support"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "privacy-proposal"
+            }
+          ]
+        },
+        {
+          "key": "record-deletion",
+          "label": "Record deletion",
+          "definition": {
+            "text": "Instructions or requirements to remove records, without assuming a particular record type or jurisdiction.",
+            "includes": [
+              "The archived ten-day deletion instruction",
+              "Deletion as an explicit action distinct from archival preservation"
+            ],
+            "excludes": [
+              "Employee retention",
+              "Inferring applicability of the unlocated instruction to support tickets",
+              "Treating transcription acceptance as approval of the quoted rule"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "unlocated-deletion"
+            }
+          ]
+        },
+        {
+          "key": "archives",
+          "label": "Archives and historical clarification",
+          "definition": {
+            "text": "Preservation, transcription and clarification of historical policy evidence.",
+            "includes": [
+              "Preserving an archived deletion instruction",
+              "Clarifying a superseded ticket policy and its historical period"
+            ],
+            "excludes": [
+              "Reinstating historical rules as current policy",
+              "Inferring missing applicability from archival acceptance"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "unlocated-deletion"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "archive-correction"
+            }
+          ]
+        },
+        {
+          "key": "mentoring",
+          "label": "Employee mentoring",
+          "definition": {
+            "text": "Mentor contact for new employees in the local staff-retention program.",
+            "includes": [
+              "The mentor check-in activity",
+              "The program cadence of every 14 days"
+            ],
+            "excludes": [
+              "A 14-day record-retention rule",
+              "Support-ticket handling"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "staff-retention"
+            }
+          ]
+        },
+        {
+          "key": "visitor-log-retention",
+          "label": "Visitor-access-log retention",
+          "definition": {
+            "text": "Minimum keeping periods and maximum deletion periods for visitor-access logs.",
+            "includes": [
+              "The West visitor-log minimum and maximum obligations",
+              "Their unresolved incompatibility"
+            ],
+            "excludes": [
+              "Support-ticket periods",
+              "Assuming later acceptance supersedes the earlier obligation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "visitor-minimum"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "visitor-maximum"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "fromKey": "ticket-retention",
+          "toKey": "support",
+          "type": "association",
+          "rationale": "Ticket-period rules concern support records; this is an association between orthogonal flat topics, not a parent edge.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "successor-a"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "vip-successor"
+            }
+          ]
+        },
+        {
+          "fromKey": "staff-retention",
+          "toKey": "mentoring",
+          "type": "association",
+          "rationale": "The staff-retention program is implemented through new-employee mentor check-ins; both topics stay roots in the required flat vocabulary.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "staff-retention"
+            }
+          ]
+        },
+        {
+          "fromKey": "ticket-retention",
+          "toKey": "governance",
+          "type": "association",
+          "rationale": "Competing ticket periods are addressed through council precedence and scoped supersession; governance is not inferred for unrelated rules.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "successor-b"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/policy.md",
+              "passage": "council-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/policy.md",
+              "passage": "vip-successor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "installation": "manufacturing",
+      "subjects": [
+        {
+          "key": "manufacturing",
+          "label": "Manufacturing processes",
+          "definition": {
+            "text": "Production-process activities and their operating parameters in the local plant evidence.",
+            "includes": [
+              "Packaging and sealing operations",
+              "Operating pressures and pressure tolerances, including historical or unlocated process evidence"
+            ],
+            "excludes": [
+              "Controller capability as an approved operating setpoint",
+              "Automatic applicability across plants or models"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "pressure-draft"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "unlocated-tolerance"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "q-retirement"
+            }
+          ]
+        },
+        {
+          "key": "packaging",
+          "label": "Packaging processes",
+          "definition": {
+            "text": "Packaging production activities, locally evidenced by Model R sealing operations.",
+            "includes": [
+              "Packaging specifications and the sealing operation they describe"
+            ],
+            "excludes": [
+              "Gasket parts treated as operations merely because they are called seals",
+              "Equipment ownership without a packaging-process statement"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            }
+          ],
+          "parentKey": "manufacturing",
+          "parentRationale": "Packaging-operation subject matter is contained within production-process subject matter; North and South packaging specifications provide direct descendant warrant."
+        },
+        {
+          "key": "sealing",
+          "label": "Sealing operations",
+          "definition": {
+            "text": "The production operation of sealing, including its process specifications, sealing-head pressure and proposed changes.",
+            "includes": [
+              "Plant-specific sealing specifications",
+              "Sealing-pressure trials and active-baseline statements"
+            ],
+            "excludes": [
+              "A gasket component called a seal",
+              "Controller input ceilings treated as process setpoints",
+              "An unlocated tolerance assumed to concern sealing"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "seal",
+              "context": "Process engineering: the sealing operation, not a purchased gasket.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+                  "passage": "gasket-standard"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "east-model-r"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "pressure-draft"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            }
+          ],
+          "parentKey": "packaging",
+          "parentRationale": "The local North and South packaging specifications expressly describe sealing operations; containment is of this local operation topic within packaging, not a universal claim about every form of sealing."
+        },
+        {
+          "key": "operating-pressure",
+          "label": "Operating pressure",
+          "definition": {
+            "text": "Pressure used or specified for production operation, including recorded values, proposed changes and allowed variation.",
+            "includes": [
+              "Current and historical operating pressures",
+              "Pressure tolerances even when plant, model and measurement point are unknown"
+            ],
+            "excludes": [
+              "Controller input ceilings as operating instructions",
+              "Gasket materials and part identity",
+              "Transcription review treated as operational approval"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "obsolete-north"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "unlocated-tolerance"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "cross-line-book"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "q-retirement"
+            }
+          ],
+          "parentKey": "manufacturing",
+          "parentRationale": "Operating pressures and their variation are production-process parameters; archived process-note and historical line-operation passages warrant the topic even without present operating authority."
+        },
+        {
+          "key": "tolerances",
+          "label": "Pressure tolerances",
+          "definition": {
+            "text": "Allowed variation in operating pressure, locally represented by the archived plus-or-minus 5 kPa process note.",
+            "includes": [
+              "Pressure deviations stated in pressure units",
+              "Unlocated and archival pressure-tolerance statements"
+            ],
+            "excludes": [
+              "Dimensional, material or other non-pressure tolerances",
+              "Treating the unlocated tolerance as an approved North Model R limit"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "unlocated-tolerance"
+            }
+          ],
+          "parentKey": "operating-pressure",
+          "parentRationale": "This key is deliberately narrowed to pressure tolerances, which are variation limits on operating pressure; it does not denote tolerances generally."
+        },
+        {
+          "key": "sites",
+          "label": "Plant sites",
+          "definition": {
+            "text": "Plant-specific subject matter and attribution across the locally named production sites.",
+            "includes": [
+              "North, South, East and West plant contexts",
+              "Plant-specific current, proposed, historical and inventory statements"
+            ],
+            "excludes": [
+              "Inferring a plant from an unspecified controller limit",
+              "Treating site co-membership as shared operating authority"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "east-model-r"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "west-controller"
+            }
+          ]
+        },
+        {
+          "key": "north",
+          "label": "North Plant",
+          "definition": {
+            "text": "Subject matter expressly concerning North Plant, including its equipment, processes, parts and history.",
+            "includes": [
+              "North Model R specifications, trials and spare parts",
+              "Historical North Model Q operation and retirement"
+            ],
+            "excludes": [
+              "Applying South, East or West values to North",
+              "Assigning an unlocated tolerance to North"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "obsolete-north"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "q-retirement"
+            }
+          ],
+          "parentKey": "sites",
+          "parentRationale": "North-specific plant subject matter is contained within the broader plant-sites topic; the relation expresses topic containment, not a claim about equipment type."
+        },
+        {
+          "key": "south",
+          "label": "South Plant",
+          "definition": {
+            "text": "Subject matter expressly concerning South Plant, including its equipment, processes and parts.",
+            "includes": [
+              "South Model R sealing",
+              "South Model Q gasket and operating-pressure observations"
+            ],
+            "excludes": [
+              "North Model R spare applicability",
+              "Combining separate maintenance-book pages into a joint instruction"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-decoy"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "cross-line-book"
+            }
+          ],
+          "parentKey": "sites",
+          "parentRationale": "South-specific plant subject matter is contained within the plant-sites topic."
+        },
+        {
+          "key": "east",
+          "label": "East Plant",
+          "definition": {
+            "text": "Subject matter expressly concerning East Plant and its local equipment or processes.",
+            "includes": [
+              "East Model R sealing specification and local operating setting"
+            ],
+            "excludes": [
+              "Treating East settings as governing North or South"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "east-model-r"
+            }
+          ],
+          "parentKey": "sites",
+          "parentRationale": "East-specific plant subject matter is contained within the plant-sites topic."
+        },
+        {
+          "key": "west",
+          "label": "West Plant",
+          "definition": {
+            "text": "Subject matter expressly concerning West Plant and its equipment inventory.",
+            "includes": [
+              "West ownership of a Model R controller and its input ceiling"
+            ],
+            "excludes": [
+              "Inferring an approved West sealing-process setpoint",
+              "Applying another plant’s operating setting to West"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "west-controller"
+            }
+          ],
+          "parentKey": "sites",
+          "parentRationale": "West-specific plant subject matter is contained within the plant-sites topic."
+        },
+        {
+          "key": "equipment",
+          "label": "Equipment and equipment lifecycle",
+          "definition": {
+            "text": "Subject matter about production equipment, including model-specific operation, components and controllers, inventory and retirement activity.",
+            "includes": [
+              "Model R and Model Q equipment context",
+              "Controller capabilities and ownership",
+              "Equipment retirement decisions and historical operating context"
+            ],
+            "excludes": [
+              "Treating a device ceiling as an approved process setting",
+              "Equating an accepted retirement record with a retired record lifecycle",
+              "Deriving plant applicability solely from a shared model"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "controller-limit"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "obsolete-north"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "west-controller"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "q-retirement"
+            }
+          ]
+        },
+        {
+          "key": "model-r",
+          "label": "Model R equipment",
+          "definition": {
+            "text": "Subject matter expressly concerning Model R equipment, including its operating specifications, controllers and compatible parts.",
+            "includes": [
+              "Model R plant-specific sealing and proposed trials",
+              "Model R controller ceilings and local gasket specifications"
+            ],
+            "excludes": [
+              "Model Q values or parts as Model R instructions",
+              "Assuming model co-membership removes site constraints"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "controller-limit"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "west-controller"
+            }
+          ],
+          "parentKey": "equipment",
+          "parentRationale": "All subject matter within this model-specific topic concerns equipment, its operation or components, which the parent explicitly includes; this is reviewed topic containment rather than an object-instance taxonomy."
+        },
+        {
+          "key": "model-q",
+          "label": "Model Q equipment",
+          "definition": {
+            "text": "Subject matter expressly concerning Model Q equipment, its operating history, parts and retirement.",
+            "includes": [
+              "Retired North Model Q specifications and line retirement",
+              "South Model Q gasket and operating-pressure observations"
+            ],
+            "excludes": [
+              "Assuming all Model Q equipment is retired because the North line is retired",
+              "Model R operating or spare-part applicability"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "obsolete-north"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-decoy"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "cross-line-book"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "q-retirement"
+            }
+          ],
+          "parentKey": "equipment",
+          "parentRationale": "Model Q equipment operation, components and retirement form a narrower equipment subject, not a parent relation asserting that record objects are equipment types."
+        },
+        {
+          "key": "controllers",
+          "label": "Equipment controllers",
+          "definition": {
+            "text": "Controller-device capabilities and inventory, especially pressure-setting input ceilings.",
+            "includes": [
+              "The Model R 400 kPa device limit",
+              "West controller ownership and inventory"
+            ],
+            "excludes": [
+              "A site-approved sealing-process pressure",
+              "Inferring a site for the unlocated pilot controller artifact"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "controller-limit"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "west-controller"
+            }
+          ],
+          "parentKey": "equipment",
+          "parentRationale": "Controller capability and inventory are contained in the parent’s explicitly defined equipment subject matter; this does not make device capability operational authority."
+        },
+        {
+          "key": "equipment-retirement",
+          "label": "Equipment retirement",
+          "definition": {
+            "text": "Retirement activity and records concerning production equipment, including preserved pre-retirement operating history.",
+            "includes": [
+              "The retirement of the North Model Q line",
+              "Historical operating evidence recorded with that retirement"
+            ],
+            "excludes": [
+              "Treating the accepted retirement decision itself as retired",
+              "Applying the retired line’s value to active Model R"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "q-retirement"
+            }
+          ],
+          "parentKey": "equipment",
+          "parentRationale": "The parent explicitly includes equipment retirement activity and lifecycle history, so retirement is a narrower activity topic rather than an object subtype."
+        },
+        {
+          "key": "gaskets",
+          "label": "Gasket parts",
+          "definition": {
+            "text": "Physical gasket components described as seals, including material, identity and equipment-specific use.",
+            "includes": [
+              "The North Model R silicone SG-8 spare gasket",
+              "The South Model Q nitrile NQ-3 gasket",
+              "Recorded silicone-seal material in the maintenance book"
+            ],
+            "excludes": [
+              "The sealing operation itself",
+              "Operating-pressure authorization",
+              "Assuming the South gasket is a North spare"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "seal",
+              "context": "Purchasing or physical-part context: a gasket component, including an explicitly identified spare.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+                  "passage": "seal-note"
+                },
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+                  "passage": "gasket-standard"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "seal-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-decoy"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "cross-line-book"
+            }
+          ]
+        },
+        {
+          "key": "purchasing",
+          "label": "Purchasing and purchased-part standards",
+          "definition": {
+            "text": "Purchasing terminology and requirements for acquired parts.",
+            "includes": [
+              "The purchasing sense of seal as gasket",
+              "The purchased-part standard specifying North Model R spare material and identity"
+            ],
+            "excludes": [
+              "Process engineering’s use of seal for an operation",
+              "Treating every gasket observation as a purchase or spare designation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "seal-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            }
+          ]
+        },
+        {
+          "key": "quality-review",
+          "label": "Quality review",
+          "definition": {
+            "text": "The explicit quality-review subject classification of a production specification.",
+            "includes": [
+              "The extra quality-review classification on the East Model R sealing specification"
+            ],
+            "excludes": [
+              "Automatically classifying every reviewed record as quality review",
+              "Treating subject classification as approval or validation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "east-model-r"
+            }
+          ]
+        },
+        {
+          "key": "maintenance",
+          "label": "Maintenance records",
+          "definition": {
+            "text": "Equipment-maintenance subject matter documented through maintenance records and books.",
+            "includes": [
+              "Historical Model Q specification retained for maintenance",
+              "Independent equipment, seal-material and pressure observations in the reviewed maintenance book"
+            ],
+            "excludes": [
+              "Combining independent maintenance pages into a joint operating instruction",
+              "Assuming a maintenance record approves current operation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "obsolete-north"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "cross-line-book"
+            }
+          ]
+        },
+        {
+          "key": "archives",
+          "label": "Archived process evidence",
+          "definition": {
+            "text": "Preservation and transcription of historical process evidence whose original operating context may be incomplete.",
+            "includes": [
+              "The archived pressure-tolerance process note and its reviewed transcription"
+            ],
+            "excludes": [
+              "Treating transcription accuracy as operating approval",
+              "Filling in missing plant, model or measurement point"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "unlocated-tolerance"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "fromKey": "sealing",
+          "toKey": "operating-pressure",
+          "type": "association",
+          "rationale": "The local sealing specifications state operating pressure at the sealing head. This topic association does not merge sealing with every pressure statement or turn controller ceilings into setpoints.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "north-seal"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "south-seal"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "pressure-draft"
+            }
+          ]
+        },
+        {
+          "fromKey": "gaskets",
+          "toKey": "purchasing",
+          "type": "association",
+          "rationale": "Purchasing identifies gasket materials and parts and uses seal for the physical part. Gasket observations need not themselves be purchases.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+              "passage": "seal-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            }
+          ]
+        },
+        {
+          "fromKey": "gaskets",
+          "toKey": "sealing",
+          "type": "association",
+          "rationale": "The purchased-part standard explicitly distinguishes the gasket and sealing-operation senses of seal; an association supports navigation while preserving distinct meanings and applicability.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+              "passage": "gasket-standard"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -116,16 +116,16 @@ finding set at the PR's merge-base against the set at HEAD. Both validators
 emit stable, sorted JSON precisely so this diff means something.
 
 ```sh
-git worktree add local-history:kk-base "$(git merge-base HEAD origin/main)"
+git worktree add /tmp/kk-base "$(git merge-base HEAD origin/main)"
 
 # Exit 1 just means findings exist — attribution wants the sets, not the gate.
-node unknown-knowledge/engine/validate.js --json --root local-history:kk-base > local-history:base.json || true
-node unknown-knowledge/engine/validate.js --json --root . > local-history:head.json || true
+node unknown-knowledge/engine/validate.js --json --root /tmp/kk-base > /tmp/base.json || true
+node unknown-knowledge/engine/validate.js --json --root . > /tmp/head.json || true
 
 # Right side only = drift this PR introduced; left side only = drift it fixed.
-diff <(jq -S '.findings' local-history:base.json) <(jq -S '.findings' local-history:head.json)
+diff <(jq -S '.findings' /tmp/base.json) <(jq -S '.findings' /tmp/head.json)
 
-git worktree remove local-history:kk-base
+git worktree remove /tmp/kk-base
 ```
 
 Run the same pair with `engine/validate-values.js` for value drift. In a CI

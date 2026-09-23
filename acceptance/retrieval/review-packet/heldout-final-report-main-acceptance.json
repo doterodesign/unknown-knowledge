@@ -1,0 +1,19 @@
+{
+  "status": "Accepted final anonymous heldout export and independent serialization receipt",
+  "report": "./heldout-approved-report.json",
+  "reportSHA256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+  "manifestSHA256": "33ea145650aee54fe58c543e6f7d7a548da46ab7fabfd5a858f1df5026275c6b",
+  "safeBoundFilesVerified": 6,
+  "checks": [
+    "36 unique case/arm/repetition rows",
+    "Six case summaries reconcile to arm aggregates and repeated outcomes",
+    "7 regressions,2 improvements,9 ties",
+    "Eight and six paired-step subset arithmetic",
+    "114 ranking cells,19groups,nine common-valid paired numeric deltas",
+    "Independent reviewer accepted exact v2 serialization with0discrepancies"
+  ],
+  "provenanceClarification": "User authorized internal coordination and evaluation-report review. Main specified fresh report-only aliases and reporting fields under that goal authority; the user did not personally prescribe that serialization. Read user-reporting-authorization wording in retained exports with this clarification. Original artifacts unchanged.",
+  "newSourceJudgmentsOrTrials": 0,
+  "privateContentsRead": false,
+  "remaining": "P10 final combined report and repository final documentation/checks only"
+}

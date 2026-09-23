@@ -1,0 +1,447 @@
+{
+  "version": "development-v2-draft",
+  "status": "source-attribution-only-awaiting-kind-and-metadata-review",
+  "note": "Canonical target fixture identities only; no runtime exists yet, no old-ID correspondence. Lifecycle, scope, subjects and authorizers are deliberately not inferred here. Each record denotes exactly its source section; whole-file storage never broadens its claims.",
+  "organizations": [
+    {
+      "organization": "engineering",
+      "records": [
+        {
+          "id": "engineering/ontology/O-000001",
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "css-export"
+        },
+        {
+          "id": "engineering/ontology/O-000002",
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "opaque-export"
+        },
+        {
+          "id": "engineering/ontology/O-000003",
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "focus-ring"
+        },
+        {
+          "id": "engineering/ontology/O-000004",
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "prior-export"
+        },
+        {
+          "id": "engineering/ontology/O-000005",
+          "source": "acceptance/retrieval/pilot/sources/engineering.md",
+          "passage": "unclassified-note"
+        },
+        {
+          "id": "engineering/ontology/O-000006",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "css-audit"
+        },
+        {
+          "id": "engineering/ontology/O-000007",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "eclat-color"
+        },
+        {
+          "id": "engineering/ontology/O-000008",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "eclat-project"
+        },
+        {
+          "id": "engineering/ontology/O-000009",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "production-theme"
+        },
+        {
+          "id": "engineering/ontology/O-000010",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "preview-theme"
+        },
+        {
+          "id": "engineering/ontology/O-000011",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "cross-platform-notebook"
+        },
+        {
+          "id": "engineering/ontology/O-000012",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "keyboard-capture"
+        },
+        {
+          "id": "engineering/ontology/O-000013",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "web5-proposal"
+        },
+        {
+          "id": "engineering/ontology/O-000014",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "palette-mail"
+        },
+        {
+          "id": "engineering/ontology/O-000015",
+          "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+          "passage": "screenshot-limit"
+        }
+      ]
+    },
+    {
+      "organization": "cultural-research",
+      "records": [
+        {
+          "id": "cultural-research/knowledge/K-000001",
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "red-attention"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000002",
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "blue-symbolism"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000003",
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "rouge-terms"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000004",
+          "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+          "passage": "earlier-pilot"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000005",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "do-glossary"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000006",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "rouge-project"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000007",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "thailand-null"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000008",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "split-study-notebook"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000009",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "preliminary-poster"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000010",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "poster-retraction"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000011",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "unlocated-observation"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000012",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "vietnam-symbolism"
+        },
+        {
+          "id": "cultural-research/knowledge/K-000013",
+          "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+          "passage": "future-region-study"
+        }
+      ]
+    },
+    {
+      "organization": "policy",
+      "records": [
+        {
+          "id": "policy/decisions/D-000001",
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "predecessor"
+        },
+        {
+          "id": "policy/decisions/D-000002",
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "successor-a"
+        },
+        {
+          "id": "policy/decisions/D-000003",
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "successor-b"
+        },
+        {
+          "id": "policy/decisions/D-000004",
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "east-policy"
+        },
+        {
+          "id": "policy/decisions/D-000005",
+          "source": "acceptance/retrieval/pilot/sources/policy.md",
+          "passage": "council-note"
+        },
+        {
+          "id": "policy/decisions/D-000006",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "vip-successor"
+        },
+        {
+          "id": "policy/decisions/D-000007",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "privacy-proposal"
+        },
+        {
+          "id": "policy/decisions/D-000008",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "unlocated-deletion"
+        },
+        {
+          "id": "policy/decisions/D-000009",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "home-office"
+        },
+        {
+          "id": "policy/decisions/D-000010",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "staff-retention"
+        },
+        {
+          "id": "policy/decisions/D-000011",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "archive-correction"
+        },
+        {
+          "id": "policy/decisions/D-000012",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "visitor-minimum"
+        },
+        {
+          "id": "policy/decisions/D-000013",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "visitor-maximum"
+        },
+        {
+          "id": "policy/decisions/D-000014",
+          "source": "acceptance/retrieval/development-v2/sources/policy.md",
+          "passage": "east-vip-note"
+        }
+      ]
+    },
+    {
+      "organization": "manufacturing",
+      "records": [
+        {
+          "id": "manufacturing/knowledge/K-000001",
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "north-seal"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000002",
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "south-seal"
+        },
+        {
+          "id": "manufacturing/ontology/O-000001",
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "controller-limit"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000003",
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "obsolete-north"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000004",
+          "source": "acceptance/retrieval/pilot/sources/manufacturing.md",
+          "passage": "seal-note"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000005",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "east-model-r"
+        },
+        {
+          "id": "manufacturing/ontology/O-000002",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "gasket-standard"
+        },
+        {
+          "id": "manufacturing/ontology/O-000003",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "gasket-decoy"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000006",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "pressure-draft"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000007",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "unlocated-tolerance"
+        },
+        {
+          "id": "manufacturing/ontology/O-000004",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "west-controller"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000008",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "cross-line-book"
+        },
+        {
+          "id": "manufacturing/decisions/D-000001",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "q-retirement"
+        },
+        {
+          "id": "manufacturing/knowledge/K-000009",
+          "source": "acceptance/retrieval/development-v2/sources/manufacturing.md",
+          "passage": "unclassified-gauge"
+        }
+      ]
+    },
+    {
+      "organization": "professional-services",
+      "records": [
+        {
+          "id": "professional-services/decisions/D-000001",
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-engagement"
+        },
+        {
+          "id": "professional-services/knowledge/K-000001",
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "payment-handbook"
+        },
+        {
+          "id": "professional-services/decisions/D-000002",
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "atlas-practice"
+        },
+        {
+          "id": "professional-services/knowledge/K-000002",
+          "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+          "passage": "clarification-note"
+        },
+        {
+          "id": "professional-services/decisions/D-000003",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-project-response"
+        },
+        {
+          "id": "professional-services/decisions/D-000004",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "atlas-practice-response"
+        },
+        {
+          "id": "professional-services/knowledge/K-000003",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "billing-and-cancellation"
+        },
+        {
+          "id": "professional-services/decisions/D-000005",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "iris-scheduling"
+        },
+        {
+          "id": "professional-services/decisions/D-000006",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "nova-refund"
+        },
+        {
+          "id": "professional-services/knowledge/K-000004",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "old-orion-contact"
+        },
+        {
+          "id": "professional-services/decisions/D-000007",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "contact-withdrawal"
+        },
+        {
+          "id": "professional-services/decisions/D-000008",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "beta-template"
+        },
+        {
+          "id": "professional-services/decisions/D-000009",
+          "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+          "passage": "private-access"
+        }
+      ]
+    },
+    {
+      "organization": "holding-company",
+      "records": [
+        {
+          "id": "cedar-north/ontology/O-000001",
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "north-contract"
+        },
+        {
+          "id": "cedar-south/ontology/O-000001",
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "south-contract"
+        },
+        {
+          "id": "cedar-holding/decisions/D-000001",
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "historical-import"
+        },
+        {
+          "id": "cedar-holding/knowledge/K-000001",
+          "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+          "passage": "group-note"
+        },
+        {
+          "id": "cedar-north/knowledge/K-000001",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "north-knowledge"
+        },
+        {
+          "id": "cedar-north/ontology/O-000003",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "nord-glossary"
+        },
+        {
+          "id": "cedar-south/knowledge/K-000001",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "south-nord-project"
+        },
+        {
+          "id": "cedar-holding/knowledge/K-000002",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "repeated-branches"
+        },
+        {
+          "id": "cedar-north/ontology/O-000002",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "retired-north-tiff"
+        },
+        {
+          "id": "cedar-holding/decisions/D-000002",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "proposed-correspondence"
+        },
+        {
+          "id": "cedar-holding/knowledge/K-000003",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "unlocated-package"
+        },
+        {
+          "id": "cedar-holding/decisions/D-000003",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "rejected-union"
+        },
+        {
+          "id": "cedar-holding/knowledge/K-000004",
+          "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+          "passage": "trade-port"
+        }
+      ]
+    }
+  ]
+}

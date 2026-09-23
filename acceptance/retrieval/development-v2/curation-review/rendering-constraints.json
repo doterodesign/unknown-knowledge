@@ -1,0 +1,22 @@
+{
+  "status": "Materialization requirements retained from P2 representation review",
+  "historicalKnowledge": [
+    {
+      "attributionHandle": "cultural-research/knowledge/K-000009",
+      "requiredHeadingQualifier": "Historical source report \u2014 retired or withdrawn",
+      "requiredBodyConstraint": "Retain explicit source retirement/withdrawal and its original qualification; verified authenticates reporting/transcription only, not current operation."
+    },
+    {
+      "attributionHandle": "manufacturing/knowledge/K-000003",
+      "requiredHeadingQualifier": "Historical source report \u2014 retired or withdrawn",
+      "requiredBodyConstraint": "Retain explicit source retirement/withdrawal and its original qualification; verified authenticates reporting/transcription only, not current operation."
+    },
+    {
+      "attributionHandle": "professional-services/knowledge/K-000004",
+      "requiredHeadingQualifier": "Historical source report \u2014 retired or withdrawn",
+      "requiredBodyConstraint": "Retain explicit source retirement/withdrawal and its original qualification; verified authenticates reporting/transcription only, not current operation."
+    }
+  ],
+  "allKnowledge": "Render as source reporting, preserve original standing/missing facts and independent component scopes; no source action receives approval through fixture review.",
+  "gradeProjection": "Actual record fidelity/identity and operational qualification require independent review before record-level grades."
+}

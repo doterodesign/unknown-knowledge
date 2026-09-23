@@ -1,0 +1,68 @@
+{
+  "status": "Final semantic choices; not executable relationships",
+  "identityBoundary": "Handles below are provenance attributions, never runtime identifiers or a crosswalk.",
+  "runtimeBoundary": "Partial supersession needs the actual scoped relationship contract. Until supported, retain the exact source statement; do not emit a broader whole-record supersedes edge. Dates do not resolve conflict.",
+  "relationships": [
+    {
+      "type": "supersedes",
+      "from": "policy/decisions/D-000002",
+      "to": "policy/decisions/D-000001",
+      "scope": [
+        "region-west-support-tickets"
+      ]
+    },
+    {
+      "type": "supersedes",
+      "from": "policy/decisions/D-000003",
+      "to": "policy/decisions/D-000001",
+      "scope": [
+        "region-west-support-tickets"
+      ]
+    },
+    {
+      "type": "supersedes-only-in-scope",
+      "from": "policy/decisions/D-000006",
+      "to": "policy/decisions/D-000002",
+      "scope": [
+        "region-west-vip-support-tickets"
+      ]
+    },
+    {
+      "type": "supersedes-only-in-scope",
+      "from": "policy/decisions/D-000006",
+      "to": "policy/decisions/D-000003",
+      "scope": [
+        "region-west-vip-support-tickets"
+      ]
+    },
+    {
+      "type": "unresolved-conflict",
+      "between": [
+        "policy/decisions/D-000002",
+        "policy/decisions/D-000003"
+      ],
+      "scope": [
+        "region-west-ordinary-support-tickets"
+      ]
+    },
+    {
+      "type": "unresolved-incompatibility",
+      "between": [
+        "policy/decisions/D-000012",
+        "policy/decisions/D-000013"
+      ],
+      "scope": [
+        "region-west-visitor-access-logs"
+      ]
+    },
+    {
+      "type": "measurement-point-reference",
+      "from": "manufacturing/knowledge/K-000002",
+      "to": "manufacturing/knowledge/K-000001",
+      "scope": [
+        "south-model-r-sealing-pressure-at-head"
+      ],
+      "reason": "South explicitly uses the same measurement point as North; values and authority remain plant-specific."
+    }
+  ]
+}

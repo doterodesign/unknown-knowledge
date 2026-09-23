@@ -1,0 +1,101 @@
+{
+  "status": "Complete translation of all seven observed adverse pairs; no new judgments",
+  "approvedSourceSHA256": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+  "pairs": [
+    {
+      "case": "Report-A",
+      "repeat": 1,
+      "topology": "single installation",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The selected evidence met the frozen original-source bundle requirement; factual consistency and adequate source coverage were both demonstrated.",
+      "currentObservedDisposition": "operational-inability",
+      "currentObservedReason": "The host withheld a successful native result after the tool-result budget was exhausted; no adequate original-source bundle was obtained.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/0/qualityRegressionDisposition"
+    },
+    {
+      "case": "Report-A",
+      "repeat": 2,
+      "topology": "single installation",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The selected evidence met the frozen original-source bundle requirement; factual consistency and adequate source coverage were both demonstrated.",
+      "currentObservedDisposition": "operational-inability",
+      "currentObservedReason": "The host withheld a successful native result after the tool-result budget was exhausted; no adequate original-source bundle was obtained.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/0/qualityRegressionDisposition"
+    },
+    {
+      "case": "Report-A",
+      "repeat": 3,
+      "topology": "single installation",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The selected evidence met the frozen original-source bundle requirement; factual consistency and adequate source coverage were both demonstrated.",
+      "currentObservedDisposition": "operational-inability",
+      "currentObservedReason": "The host withheld a successful native result after the tool-result budget was exhausted; no adequate original-source bundle was obtained.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/0/qualityRegressionDisposition"
+    },
+    {
+      "case": "Report-B",
+      "repeat": 3,
+      "topology": "single installation",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The registered explanation and required original-source absence coverage were demonstrated; scoped abstention was supported.",
+      "currentObservedDisposition": "incomplete-source-refusal",
+      "currentObservedReason": "Required original-source absence coverage was incomplete. Semantically consistent scoped text did not establish a fully supported refusal.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/1/qualityRegressionDisposition"
+    },
+    {
+      "case": "Report-E",
+      "repeat": 1,
+      "topology": "three installations; identities and source witnesses remain owner-qualified",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The selected evidence met the frozen original-source bundle requirement; factual consistency and adequate source coverage were both demonstrated.",
+      "currentObservedDisposition": "partial-answer-with-incomplete-source-bundle",
+      "currentObservedReason": "The factual response remained consistent, but separately owned original-source delivery required for a complete selected bundle was not demonstrated.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/4/qualityRegressionDisposition"
+    },
+    {
+      "case": "Report-E",
+      "repeat": 2,
+      "topology": "three installations; identities and source witnesses remain owner-qualified",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The selected evidence met the frozen original-source bundle requirement; factual consistency and adequate source coverage were both demonstrated.",
+      "currentObservedDisposition": "operational-inability",
+      "currentObservedReason": "The host withheld a successful native result after the tool-result budget was exhausted; no adequate original-source bundle was obtained.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/4/qualityRegressionDisposition"
+    },
+    {
+      "case": "Report-E",
+      "repeat": 3,
+      "topology": "three installations; identities and source witnesses remain owner-qualified",
+      "originalTaskComplete": true,
+      "currentTaskComplete": false,
+      "originalDisposition": "The selected evidence met the frozen original-source bundle requirement; factual consistency and adequate source coverage were both demonstrated.",
+      "currentObservedDisposition": "partial-answer-with-incomplete-source-bundle",
+      "currentObservedReason": "The factual response remained consistent, but separately owned original-source delivery required for a complete selected bundle was not demonstrated.",
+      "deeperCausalAttribution": null,
+      "deeperCausalNullReason": "Not established by the approved reporting evidence; no counterfactual, implementation fault or reader-attention cause inferred.",
+      "sourceJSONPointer": "/anonymousCaseSummary/4/qualityRegressionDisposition"
+    }
+  ],
+  "observedRegressions": 7,
+  "newTrials": 0,
+  "newSourceJudgments": 0,
+  "regrades": 0
+}

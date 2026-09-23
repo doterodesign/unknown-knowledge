@@ -19,8 +19,8 @@ stdout, stderr and exit separately, including expected nonzero exits.
 
 ```sh
 KIT="$PWD/payload"
-AUDIT_ROOT=$(mktemp -d local-history:canonical-a5-audit.XXXXXX)
-REFLECT_ROOT=$(mktemp -d local-history:canonical-a5-reflect.XXXXXX)
+AUDIT_ROOT=$(mktemp -d /tmp/canonical-a5-audit.XXXXXX)
+REFLECT_ROOT=$(mktemp -d /tmp/canonical-a5-reflect.XXXXXX)
 cp -R fixtures/ts-app/. "$AUDIT_ROOT/"
 cp -R fixtures/swift-app/. "$REFLECT_ROOT/"
 git -C "$AUDIT_ROOT" init -q

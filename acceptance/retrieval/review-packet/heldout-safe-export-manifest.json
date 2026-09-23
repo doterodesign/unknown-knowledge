@@ -1,0 +1,15 @@
+{
+  "classification": "BLINDED final safe export manifest",
+  "files": {
+    "./heldout-approved-report.json": "0a32c5773611daea69a2bd1a584545c96e975f5f114d245225df266396421740",
+    "./heldout-final-handoff.json": "4f00a35d91b3a7a172e390caf92ebd134a490a760b638525d5b647718c003ce1",
+    "./heldout-independent-final-acceptance.json": "9b37db1f222bbab830dd0cad5884c1e8162ae9282cb4aec5d1808ce35266d499",
+    "./heldout-approved-aggregate.json": "cd6d0a58aa18809f53a7e849e733ddca7f9b4f4580bedda7623c22a99903b393",
+    "unpublished-source:d3f1b0cedc2e84548d6bb02b8b3034e97516935e449f89bf634694cacb7f5477": "d3f1b0cedc2e84548d6bb02b8b3034e97516935e449f89bf634694cacb7f5477",
+    "unpublished-location:2b36a8c729f1b335": "be0c20ccea2916361d6627681fb82f1f90b48c6b376672f8ac7eb8df193d52cb"
+  },
+  "scope": "Exactly6sealedcases/36originalreaders/5releasedforensicoutputs. All private original inputs, source judgments and reviews preserved.",
+  "frozenRuntime": "52a62703c77ee159703a1018d21a0abe356912cb",
+  "custodianWorkComplete": true,
+  "remainingPrerequisites": []
+}

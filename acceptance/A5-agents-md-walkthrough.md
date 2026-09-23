@@ -29,7 +29,7 @@ From the kit repo root:
 ```sh
 export KIT="$PWD/payload"            # engine lives here in the KIT repo;
                                      # in a client repo it is <kit-dir>/engine
-rm -rf local-history:a5 && cp -R fixtures/ts-app local-history:a5 && cd local-history:a5
+rm -rf /tmp/a5 && cp -R fixtures/ts-app /tmp/a5 && cd /tmp/a5
 ```
 
 The fixture is a client repo in §9.1 layout: stores at `unknown-knowledge/`,

@@ -1,14 +1,10 @@
-> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
-
-This contract includes final design and historical checkpoints. See [stage availability](../pr-delivery/README.md) before using an operation; internal checks do not supply a publication workflow.
-
 # Codebase survey — faceted knowledge store (issue #49)
 
 > Produced by a read-only Explore sub-agent on 2026-08-16 in support of breaking
 > [issue #49](https://github.com/doterodesign/unknown-knowledge/issues/49) into tickets.
 > Persisted verbatim by the coordinating session (the sub-agent had no write access).
 
-Repo: `local-history:unknown-knowledge` @ `ca9922e`, kit v1.0.0. Engine is plain ESM JavaScript + JSDoc (D-022), Node ≥22, zero build, `js-yaml` the only runtime dep.
+Repo: `/Users/dimitriotero/Documents/GITHUB/unknown-knowledge` @ `ca9922e`, kit v1.0.0. Engine is plain ESM JavaScript + JSDoc (D-022), Node ≥22, zero build, `js-yaml` the only runtime dep.
 
 ## 1. Engine CLI surface
 

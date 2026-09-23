@@ -1,0 +1,18 @@
+{
+  "version": "pilot-1",
+  "status": "reviewed-development",
+  "algorithm": "sha256",
+  "files": {
+    "README.md": "de57f5294318b454775df6199308d59fec653544189e48db3deddad83af564e6",
+    "REVIEW.md": "0d441510d4274d93ae86b423765f903ec801158f808549f601d496deece4f1f0",
+    "judgments.json": "7c258163b78188f142b7762473f81fb2773d991e15606afdcd20feba3f27896e",
+    "sources/cultural-research.md": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9",
+    "sources/engineering.md": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0",
+    "sources/holding-company.md": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc",
+    "sources/manufacturing.md": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8",
+    "sources/policy.md": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470",
+    "sources/private/refund-draft.md": "d3c1c6da8e8140d8278f0076facb0f88bb358fa23a6fcae0b3dd05c1eacc3c16",
+    "sources/professional-services.md": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3",
+    "tasks.json": "8e67d5794ba338841cec350d977865400a24037c5f6bf1891959c012d5595b9d"
+  }
+}

@@ -1,0 +1,305 @@
+{
+  "reviewer": "independent-services-holding-reviewer-cross-reviewing-engineering-culture",
+  "status": "source-cross-review-complete-with-concrete-corrections-before-freeze",
+  "reviewedArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-engineering-culture.json",
+  "adjudicationArtifact": "/Users/dimitriotero/.codex/visualizations/2026/09/18/01a0b650-6695-7d20-bdd4-0ce676526f01/implementation/dev-v2-metadata-adjudication.md",
+  "sourceBoundary": {
+    "sources": [
+      "acceptance/retrieval/pilot/sources/engineering.md",
+      "acceptance/retrieval/development-v2/sources/engineering.md",
+      "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "acceptance/retrieval/development-v2/sources/cultural-research.md"
+    ],
+    "inventory": "acceptance/retrieval/development-v2/record-inventory.json; engineering and cultural-research organizations only",
+    "notRead": [
+      "tasks",
+      "source judgments",
+      "runtime outputs",
+      "private files",
+      "S4"
+    ],
+    "note": "Prior pilot hierarchy is considered only as quoted within the authorized metadata artifact; no pilot/tasks.json was opened during this cross-review."
+  },
+  "attributionCheck": {
+    "expected": 28,
+    "observed": 28,
+    "matchingIdsSourcePassages": 28,
+    "sourceHeadingsVerified": 28,
+    "duplicates": 0,
+    "localSubjectReferencesResolve": true
+  },
+  "recordChecks": [
+    {
+      "id": "engineering/ontology/O-000001",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "css-export",
+      "status": "agree",
+      "reason": "Explicit active Web 4 contract; rgba, token and alpha topics are warranted."
+    },
+    {
+      "id": "engineering/ontology/O-000002",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "opaque-export",
+      "status": "agree-with-existing-flag",
+      "reason": "Web 4 opaque-only rule is known; explicit approval standing is absent, so null lifecycle is prudent."
+    },
+    {
+      "id": "engineering/ontology/O-000003",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "focus-ring",
+      "status": "agree-with-existing-flag",
+      "reason": "Aurora product is known, release/platform are not. Null complete scope preserves that uncertainty; retain known product detail already recorded in metadataReason."
+    },
+    {
+      "id": "engineering/ontology/O-000004",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "prior-export",
+      "status": "agree-with-classification-caveat",
+      "reason": "Retired Web 3 standing and historical scope are explicit. Omitted subjects represent deferred curator assignment, not source-declared missing classification."
+    },
+    {
+      "id": "engineering/ontology/O-000005",
+      "source": "acceptance/retrieval/pilot/sources/engineering.md",
+      "passage": "unclassified-note",
+      "status": "agree-with-existing-flag",
+      "reason": "A communications note supplies no active ontology approval or execution scope; source heading supports unclassified treatment."
+    },
+    {
+      "id": "engineering/ontology/O-000006",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "css-audit",
+      "status": "correction-required",
+      "reason": "Accepted audit and active exporter are different standing referents; see C1."
+    },
+    {
+      "id": "engineering/ontology/O-000007",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "eclat-color",
+      "status": "agree-with-existing-flag",
+      "reason": "Reviewed glossary does not automatically confer active ontology standing; contextual role alias is correct, subject-parent semantics need C3."
+    },
+    {
+      "id": "engineering/ontology/O-000008",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "eclat-project",
+      "status": "agree-with-existing-flag",
+      "reason": "Proposed Android animation project, no production approval, and provisional ID allocation flag are source-supported."
+    },
+    {
+      "id": "engineering/ontology/O-000009",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "production-theme",
+      "status": "agree-with-existing-flag",
+      "reason": "Accepted applicable production contract with preview exclusion supports the proposed active contract representation. Three source-backed responsibilities remain assigned."
+    },
+    {
+      "id": "engineering/ontology/O-000010",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "preview-theme",
+      "status": "agree-with-existing-flag",
+      "reason": "Reviewed preview observation does not supply active ontology approval and does not supersede production; scope remains separate."
+    },
+    {
+      "id": "engineering/ontology/O-000011",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "cross-platform-notebook",
+      "status": "agree-with-existing-flag",
+      "reason": "Reviewed notebook with two known independent platform/consumer scopes; kind mismatch and jointWarrant:false correctly preserved."
+    },
+    {
+      "id": "engineering/ontology/O-000012",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "keyboard-capture",
+      "status": "agree",
+      "reason": "Explicit accepted active Web 4 contract; explicitly unsupplied subject classification is correctly omitted."
+    },
+    {
+      "id": "engineering/ontology/O-000013",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "web5-proposal",
+      "status": "agree-with-existing-flag",
+      "reason": "Proposed Web 5 change is not accepted, shipped or superseding; intended scope is known and allocation remains unresolved."
+    },
+    {
+      "id": "engineering/ontology/O-000014",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "palette-mail",
+      "status": "agree-with-existing-flag",
+      "reason": "Unreviewed recommendation reasonably has proposed source standing, while product/release and canonical ontology allocation remain unknown."
+    },
+    {
+      "id": "engineering/ontology/O-000015",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "screenshot-limit",
+      "status": "agree-with-existing-flag",
+      "reason": "The test is explicitly active and Android image-viewer scope is known. Keep the existing warning that active test standing is not active ontology approval."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000001",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "red-attention",
+      "status": "agree-with-existing-flag",
+      "reason": "Vietnam recruited adult sample and software-detection context are explicit; completed trial does not itself establish reviewed standing."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000002",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "blue-symbolism",
+      "status": "agree-with-existing-flag",
+      "reason": "Thailand adult packaging-symbolism scope is explicit; source review status is absent."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000003",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "rouge-terms",
+      "status": "agree-with-classification-caveat",
+      "reason": "Collection-specific terminology scope and absent review status are preserved. Omitted subjects are deferred curation, not an explicit source declaration of missing classification."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000004",
+      "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "passage": "earlier-pilot",
+      "status": "agree-with-classification-caveat",
+      "reason": "Unperformed proposed study, unknown country and retained known child/toy context are correctly distinguished. Omitted topics are deferred curation, not a source-declared empty or missing classification."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000005",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "do-glossary",
+      "status": "agree",
+      "reason": "Reviewed contextual Vietnamese naming note supplies no new experimental result."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000006",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "rouge-project",
+      "status": "agree",
+      "reason": "Reviewed museum-title naming study, project identity and unknown country/population are preserved without importing a color effect."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000007",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "thailand-null",
+      "status": "agree",
+      "reason": "Reviewed Thailand sample/task scope and within-precision null are preserved; no universal null is inferred."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000008",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "split-study-notebook",
+      "status": "agree",
+      "reason": "Reviewed compilation retains red/attention and blue/preference topics with distinct age/medium scopes and no joint warrant."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000009",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "preliminary-poster",
+      "status": "agree",
+      "reason": "Explicit retired preliminary report; withdrawn color-only conclusion remains historical."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000010",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "poster-retraction",
+      "status": "correction-required",
+      "reason": "Accepted correction is explicit; reviewed knowledge lifecycle is a proposed normalization currently encoded as an asserted value; see C2."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000011",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "unlocated-observation",
+      "status": "agree",
+      "reason": "Reviewed transcription does not verify country, medium or sampling; null applicability preserves missing provenance."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000012",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "vietnam-symbolism",
+      "status": "agree",
+      "reason": "Reviewed adult interview symbolism is separate from notification detection."
+    },
+    {
+      "id": "cultural-research/knowledge/K-000013",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "future-region-study",
+      "status": "agree-with-existing-flag",
+      "reason": "Proposed multisite notification study supplies intended geography, no recruitment/results, and no specified color manipulation."
+    }
+  ],
+  "corrections": [
+    {
+      "id": "C1",
+      "severity": "before-freeze",
+      "recordId": "engineering/ontology/O-000006",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "css-audit",
+      "field": "lifecycle",
+      "finding": "The audit is accepted; the CSS exporter/release covered by it is active. lifecycle:active currently transfers standing from the observed contract to the evidence artifact, unlike the draft's conservative handling of the reviewed glossary/notebook.",
+      "sourceEvidence": "The accepted Aurora Web 4 exporter audit ... covers the CSS exporter in the active Web 4 release.",
+      "recommendedChange": {
+        "lifecycle": null,
+        "sourceStanding": "accepted audit",
+        "referencedContractStanding": "active Web 4 CSS exporter",
+        "proposedLifecycle": "active"
+      },
+      "resolution": "Retain the provisional ontology ID and explicit kind ambiguity. A later declared curation decision may normalize the verified assertion into an active ontology record or allocate another kind; do not represent that choice as source-authenticated record standing now."
+    },
+    {
+      "id": "C2",
+      "severity": "before-freeze",
+      "recordId": "cultural-research/knowledge/K-000010",
+      "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+      "passage": "poster-retraction",
+      "field": "lifecycle",
+      "finding": "The source explicitly says accepted correction, while the draft encodes reviewed and describes that as a proposed knowledge-lifecycle normalization. The proposed mapping is not the same as a source statement that this knowledge record has been reviewed.",
+      "sourceEvidence": "The accepted correction to the Laos poster report ... withdraws the color-only conclusion.",
+      "recommendedChange": {
+        "lifecycle": null,
+        "sourceStanding": "accepted correction",
+        "proposedLifecycle": "reviewed"
+      },
+      "resolution": "Retain source authority for the correction and its existing kind flag. Make the later fixture curation decision explicit if reviewed knowledge is chosen; do not silently change K-000010 to a decision ID or weaken the accepted correction's factual force."
+    },
+    {
+      "id": "C3",
+      "severity": "semantic-resolution-before-registry-freeze",
+      "recordId": "engineering/ontology/O-000007",
+      "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+      "passage": "eclat-color",
+      "field": "subjectRegistryProposals.organizations.engineering.parents[accent-color-role -> color-tokens]",
+      "finding": "The source establishes that the accent role uses a color token. A role's association with a token does not by itself prove it is a narrower kind of token. The draft correctly flags process-versus-object ambiguity in color-serialization -> color-tokens; this role-versus-token edge deserves the same explicit semantic treatment.",
+      "recommendedChange": "Add an unresolved semantic flag and define whether parenthood means topic containment or an is-a relation. Under contextual topic containment, a narrowly defined token-role leaf may be justified; otherwise consider a color-role parent or separate related relation. Preserve the narrow contextual éclat alias rather than broadening it to all color tokens.",
+      "resolution": "No forced flattening is warranted. Source-backed definitions and inherited topic meanings must be reviewed before adopting this edge."
+    },
+    {
+      "id": "C4",
+      "severity": "wording-clarification",
+      "recordIds": [
+        "engineering/ontology/O-000004",
+        "cultural-research/knowledge/K-000003",
+        "cultural-research/knowledge/K-000004"
+      ],
+      "field": "ambiguities and missing-classification terminology",
+      "finding": "These passages do not explicitly state that subject classification has not been supplied. Their current omission may be a valid pending curator choice, but should not be conflated with keyboard-capture's explicit missing-classification condition.",
+      "recommendedChange": "Describe omitted subjects here as deferred/unassigned in this draft, not explicitly missing in the source. Do not infer [] from source silence. The source-backed topics may be authored by a declared curation decision; retaining omission pending that decision is also acceptable.",
+      "resolution": "No compulsory new subject assignment is requested. Preserve keyboard-capture's genuinely explicit omission."
+    }
+  ],
+  "agreements": [
+    "All 28 exact provisional ID/source/heading attributions match the filtered inventory and public headings; no source content or ID needs silent replacement.",
+    "Both notebooks preserve independently known scopes, multiple warranted subject assignments and jointWarrant:false. AND topic co-membership is not joint factual qualification; do not strip assignments to force non-retrieval.",
+    "Unknown scope is not global scope: no [] scope appears, and missing release/product/country fields are not borrowed from adjacent records.",
+    "Explicit keyboard-capture subject absence is preserved while owner and Web 4 approval remain explicit.",
+    "Engineering and cultural-research registries are independent. Equal color/projects/terminology local labels and cross-language strings do not merge identities or transfer aliases.",
+    "Éclat color-role and animation-project meanings, and Rouge color-term and museum-project meanings, remain contextually separated. The đỏ alias adds naming, not study evidence.",
+    "The design-systems -> frontend concern is substantive: broad design-system scope need not be a frontend specialization. The color-serialization -> color-tokens concern is also substantive: operations are not automatically narrower object categories.",
+    "Software -> engineering, frontend -> software, design-tokens -> design-systems, color-tokens -> design-tokens, and CSS serialization -> color serialization are plausible under reviewed local topic-containment semantics. Sources need not spell their taxonomy; neither forced flattening nor approval for depth alone is justified.",
+    "Proposed and historical artifacts retain their appropriate source standing without becoming approved external actions. Explicit provisional ID and kind flags must survive any later normalization."
+  ],
+  "limitations": [
+    "This cross-review is an independent semantic source check, not executable schema validation, runtime acceptance, source-owner approval or a live human approval.",
+    "Source standing, eventual fixture-record lifecycle and accepted subject classification require separate declarations. Null lifecycle findings are unresolved draft representations, not assertions that an accepted source is unreliable.",
+    "No author metadata, repository file, frozen corpus or judgment was edited.",
+    "Root reconciliation and the appropriate governance review remain necessary before freezing metadata or subject registries."
+  ]
+}
