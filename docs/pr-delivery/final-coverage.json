@@ -3,8 +3,8 @@
   "reference": "2491646386ee88d48891a3ed92845f1066bd59f7",
   "referenceTree": "77d2a68c775fc7450b1dbc49e96a3d433d796a60",
   "intendedPaths": 1580,
-  "matchingFinalPaths": 1528,
-  "explicitExceptions": 52,
+  "matchingFinalPaths": 1522,
+  "explicitExceptions": 58,
   "unexpectedImplementationDifferences": [],
   "unrelatedBaselineChanges": [],
   "ownership": "Each integration path has one owning PR; shared file transitions are enumerated separately, including early compatibility changes before final ownership. New review artifacts live only under docs/pr-delivery and acceptance/retrieval/review-packet. The final head/tree and complete added-artifact inventory are supplied by the terminal GitHub checkpoint to avoid a self-referential tree hash.",
@@ -3339,10 +3339,10 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "c5836974f4135f2218f9a05727d2ae8ccd14bd53"
+        "blob": "2fa60ba1dad15ac9da9af89d02a3e0ed1284ff48"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Only engine-tests checkout gains fetch-depth: 0 relative to reference; pinned baseline and all test assertions unchanged. See pr-07-ci-correction.json.",
       "transitions": [
         {
           "pr": 1,
@@ -3354,8 +3354,21 @@
             "mode": "100644",
             "blob": "c5836974f4135f2218f9a05727d2ae8ccd14bd53"
           }
+        },
+        {
+          "pr": 7,
+          "before": {
+            "mode": "100644",
+            "blob": "c5836974f4135f2218f9a05727d2ae8ccd14bd53"
+          },
+          "after": {
+            "mode": "100644",
+            "blob": "2fa60ba1dad15ac9da9af89d02a3e0ed1284ff48"
+          }
         }
-      ]
+      ],
+      "referenceSHA256": "93e110e2ee2f3b16fe5199bab29a1c333d14055057ed850f3069711554111e08",
+      "finalSHA256": "9f1dc5835844f1d88d97f8a14bc72cdff49c1160e2cbb9de31352a922fcef29b"
     },
     {
       "path": ".gitignore",
@@ -3417,7 +3430,7 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "5f625055ba2add81227f4d96cbc357ed2ac977cd"
+        "blob": "64c34547f0a606f48df85abc895905ff07d034e9"
       },
       "matchesReference": false,
       "exception": "Seven Unreleased prerelease entries and same-PR CI correction notes; rc1 and older history remains byte-identical.",
@@ -3463,45 +3476,45 @@
           },
           "after": {
             "mode": "100644",
-            "blob": "cfacec44a7d4d52f014bc63c8d0981954f497556"
+            "blob": "09fdd1f85e88356fcc608aa9ec1f87bd20faf0ca"
           }
         },
         {
           "pr": 5,
           "before": {
             "mode": "100644",
-            "blob": "cfacec44a7d4d52f014bc63c8d0981954f497556"
+            "blob": "09fdd1f85e88356fcc608aa9ec1f87bd20faf0ca"
           },
           "after": {
             "mode": "100644",
-            "blob": "25a1788eb85e60f20731f6f025b238fbf7f4d02d"
+            "blob": "94368866bbbba530ec2ca56357f8d77e9e36c183"
           }
         },
         {
           "pr": 6,
           "before": {
             "mode": "100644",
-            "blob": "25a1788eb85e60f20731f6f025b238fbf7f4d02d"
+            "blob": "94368866bbbba530ec2ca56357f8d77e9e36c183"
           },
           "after": {
             "mode": "100644",
-            "blob": "2a718f824eca88b6f25fe4ebd29660a02e6c33a8"
+            "blob": "993717bca51ab503472c95a666dfe62fd29ca4c7"
           }
         },
         {
           "pr": 7,
           "before": {
             "mode": "100644",
-            "blob": "2a718f824eca88b6f25fe4ebd29660a02e6c33a8"
+            "blob": "993717bca51ab503472c95a666dfe62fd29ca4c7"
           },
           "after": {
             "mode": "100644",
-            "blob": "5f625055ba2add81227f4d96cbc357ed2ac977cd"
+            "blob": "64c34547f0a606f48df85abc895905ff07d034e9"
           }
         }
       ],
       "referenceSHA256": "defd2bd7f53ec0b56d33997c91dc4a9e0e878509198a6444302b22a1319f392a",
-      "finalSHA256": "85009c5cd99201bdb7961b2cc172aed2e691cf1af5897c91673dd8083f0d9eb1"
+      "finalSHA256": "95aaf9a9fd9a37115b4bd1cebb38797cce0796c9625c07b0816d162a9a711281"
     },
     {
       "path": "CONTEXT.md",
@@ -7809,10 +7822,10 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "5c9933597218e1db01a3c7dce25f36b60fb30083"
+        "blob": "b665f6e8685fe8f77f906cc9fcc0ab2e595fa0da"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Exact appended CI setup rationale in existing proposed Decision; original reasoning/key/status/catalog preserved.",
       "transitions": [
         {
           "pr": 3,
@@ -7821,8 +7834,21 @@
             "mode": "100644",
             "blob": "5c9933597218e1db01a3c7dce25f36b60fb30083"
           }
+        },
+        {
+          "pr": 4,
+          "before": {
+            "mode": "100644",
+            "blob": "5c9933597218e1db01a3c7dce25f36b60fb30083"
+          },
+          "after": {
+            "mode": "100644",
+            "blob": "b665f6e8685fe8f77f906cc9fcc0ab2e595fa0da"
+          }
         }
-      ]
+      ],
+      "referenceSHA256": "9e2ee46ce45bad8dfd443bfdf8f8c58274eac4f11632a03a88ad154540b927eb",
+      "finalSHA256": "a8168091f7138511f1a1e2af9dc6adfc8f37bff045b35348e53c6ab528d5ff22"
     },
     {
       "path": "decisions/entries/retrieval-envelope-navigation.yaml",
@@ -7881,20 +7907,22 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "8a6c94777b88fadfe713846cad04219cb923d281"
+        "blob": "367164817c2db916a879898d0aa4a6f914b54d85"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Exact appended CI setup rationale in existing proposed Decision; original reasoning/key/status/catalog preserved.",
       "transitions": [
         {
           "pr": 7,
           "before": null,
           "after": {
             "mode": "100644",
-            "blob": "8a6c94777b88fadfe713846cad04219cb923d281"
+            "blob": "367164817c2db916a879898d0aa4a6f914b54d85"
           }
         }
-      ]
+      ],
+      "referenceSHA256": "3009596ca59b16ddeb5905c5bc3e2ae34f4268191a6372f2a6763f661668b5c7",
+      "finalSHA256": "78a71ae321553ba5b74c71a126af34d49bc978181ba88747bff00c5d7d2e753a"
     },
     {
       "path": "decisions/entries/retrieval-independent-scoring.yaml",
@@ -24285,7 +24313,7 @@
         "blob": "4fa9d293e423bbaec537819c1afc59d0ca37cd2f"
       },
       "matchesReference": false,
-      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03-ci-correction.json records unchanged assertions, failures and focused results.",
+      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03/pr-04-ci-correction.json records unchanged assertions, failures and focused results.",
       "transitions": [
         {
           "pr": 1,
@@ -40918,10 +40946,10 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "62a3c437479cf8669e999814f4104da5af09e00e"
+        "blob": "50dfe52b58472ecceab83b230dde3a64550c269e"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03/pr-04-ci-correction.json records unchanged assertions, failures and focused results.",
       "transitions": [
         {
           "pr": 1,
@@ -40930,8 +40958,21 @@
             "mode": "100644",
             "blob": "62a3c437479cf8669e999814f4104da5af09e00e"
           }
+        },
+        {
+          "pr": 4,
+          "before": {
+            "mode": "100644",
+            "blob": "62a3c437479cf8669e999814f4104da5af09e00e"
+          },
+          "after": {
+            "mode": "100644",
+            "blob": "50dfe52b58472ecceab83b230dde3a64550c269e"
+          }
         }
-      ]
+      ],
+      "referenceSHA256": "0dde92126526e52d246caf80a7738e513b9507d9146434d7c0c302fa0a44e9a1",
+      "finalSHA256": "6f8d668de2a3688dd03f54b71ee944fcc98172cafb8be763bf6a8dd34bb32a6c"
     },
     {
       "path": "tests/helpers/subject-split-input-fixture.js",
@@ -42277,20 +42318,22 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "09aa3421fafab7e42b7301281de891e6f354b3b7"
+        "blob": "a9fb52d0306f95dd6a55c0606e74d589650a5c21"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03/pr-04-ci-correction.json records unchanged assertions, failures and focused results.",
       "transitions": [
         {
           "pr": 4,
           "before": null,
           "after": {
             "mode": "100644",
-            "blob": "09aa3421fafab7e42b7301281de891e6f354b3b7"
+            "blob": "a9fb52d0306f95dd6a55c0606e74d589650a5c21"
           }
         }
-      ]
+      ],
+      "referenceSHA256": "4f26a72e54b8ce33f1b82d57bd986a948c2271905becd02b690394319a86d899",
+      "finalSHA256": "19e9730dc88aacb1b02092b5300d8fe11fd021df84e88156760ca10d8610dfc8"
     },
     {
       "path": "tests/migration-optional-stores.test.js",
@@ -44051,7 +44094,7 @@
         "blob": "ebab62bac0bd8e2af0d4a2de2ec7e9f63446de98"
       },
       "matchesReference": false,
-      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03-ci-correction.json records unchanged assertions, failures and focused results.",
+      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03/pr-04-ci-correction.json records unchanged assertions, failures and focused results.",
       "transitions": [
         {
           "pr": 3,
@@ -44773,7 +44816,7 @@
         "blob": "97cfc61987f773fceebae6bc6d88301e0526f118"
       },
       "matchesReference": false,
-      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03-ci-correction.json records unchanged assertions, failures and focused results.",
+      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03/pr-04-ci-correction.json records unchanged assertions, failures and focused results.",
       "transitions": [
         {
           "pr": 2,
@@ -46452,20 +46495,22 @@
       },
       "final": {
         "mode": "100644",
-        "blob": "c3572e200defbb7b3f6b1ac89bd6981420a6ce3b"
+        "blob": "cf5992dd74d03e5915d5b4dfa41961b05dbe3160"
       },
-      "matchesReference": true,
-      "exception": null,
+      "matchesReference": false,
+      "exception": "Exact reviewed test-only CI harness transformation; corresponding pr-01/pr-02/pr-03/pr-04-ci-correction.json records unchanged assertions, failures and focused results.",
       "transitions": [
         {
           "pr": 4,
           "before": null,
           "after": {
             "mode": "100644",
-            "blob": "c3572e200defbb7b3f6b1ac89bd6981420a6ce3b"
+            "blob": "cf5992dd74d03e5915d5b4dfa41961b05dbe3160"
           }
         }
-      ]
+      ],
+      "referenceSHA256": "b400b70b5b8b6d51b4ee1f3073af87fdb73c191835bf1ad1d90be65633b7578b",
+      "finalSHA256": "d3e2cadd5264edbc4df03c042a6fd8a36b4e75796e54abed45bfe1cf6dd13690"
     },
     {
       "path": "tests/subject-split-replay-faults.test.js",

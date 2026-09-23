@@ -36,6 +36,9 @@ export function subjectSplitHistoryFixture(t, { objectFormat = 'sha1', nested = 
   };
   const read = file => readFileSync(join(f.kitRoot, file), 'utf8');
   git('init', `--object-format=${objectFormat}`, '-q');
+  // Deliberate loose-object deletion tests need stable storage until restoration.
+  git('config', 'gc.auto', '0');
+  git('config', 'maintenance.auto', 'false');
   const approvalSource = commit('original accepted Decision bytes');
   const decisionCapture = capture(approvalSource, 'decisions/entries/approval.yaml');
   const beforeDocument = structuredClone(f.context.model.subjectRegistry.document);

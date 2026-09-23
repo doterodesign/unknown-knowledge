@@ -59,15 +59,15 @@
     "logSHA256": "b68173bb3c5992266d0ba9f14cd725c521effa01d53b321858d34d7947a0f325",
     "disposition": "Real Git replacement test clones current committed HEAD, which was still PR6 and lacked the new retrieval harness directory. Commit the local PR7 candidate, then rerun unchanged tests at that exact head; no assertion or test behavior changed."
   },
-  "candidateDisposition": "Unchanged99 tests pass at the committed candidate; the 9b228c3 follow-up records evidence. The later README overview and proposed Decision clarification receive separate focused documentation checks; historical tests and agent results are not rerun or relabeled.",
+  "candidateDisposition": "Unchanged99 tests pass at the committed candidate; the 9b228c3 follow-up records evidence. The later README overview and proposed Decision clarification receive separate focused documentation checks; historical tests and agent results are not rerun or relabeled. Subsequent Linux CI fixture and history-availability corrections have separate original failure and focused-check receipts in pr-04-ci-correction.json and pr-07-ci-correction.json.",
   "coverage": {
     "intendedPaths": 1580,
-    "matchingReference": 1528,
-    "explicitExceptions": 52,
+    "matchingReference": 1522,
+    "explicitExceptions": 58,
     "unexpectedImplementationDifferences": 0,
     "unrelatedBaselineChanges": 0,
     "restoredHistoricalDocumentPaths": 37,
-    "approvedAdditionalArtifactPaths": 42,
+    "approvedAdditionalArtifactPaths": 44,
     "details": "final-coverage.json"
   },
   "portablePacket": {

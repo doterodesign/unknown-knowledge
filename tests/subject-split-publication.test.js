@@ -109,6 +109,8 @@ for (const [objectFormat, nested] of [['sha1', false], ['sha256', true]]) for (c
     const original = readFileSync(object); const mode = statSync(object).mode & 0o777;
     unlinkSync(object);
     try {
+      assert.throws(() => f.git('cat-file', '-t', source.commit), /could not get object info/,
+        'the selected historical authorizer commit is actually unavailable');
       assert.equal(f.git('cat-file', '-t', f.source.commit), 'commit');
       assert.equal(f.git('cat-file', '-t', f.candidate.commit), 'commit');
       assert.equal(readReview(input).status, 'verified', 'old receipt remains intact while actual Decision source is unavailable');
