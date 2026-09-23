@@ -1,0 +1,52 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:aa673542-1ffc-4fc7-b197-8831ce8f9b19
+    title: Preserve captured-input limits and revision-specific P11 acceptance evidence
+    category: process
+    status: proposed
+    date: "2026-09-19"
+    deciders: [pending-steward-review]
+    provenance: { author: codex-ucs-1244 }
+    context: >
+      P11 produced consumer characterization checks over delivered P1/P2
+      modules at f5660e9 and read-only inventories of later CLI and capture
+      integration. None implemented the supported interface. A successful
+      probe can report absent dependencies; a passing domain check does not
+      establish production loader or transport acceptance. Registry digests
+      and evaluated governance descriptors describe different captured inputs
+      and cannot justify invented source, runtime or approval claims.
+    decision: >
+      Record evidence with its actual revision, command and limitations. Keep
+      f5660e9 consumer checks as characterization, not behavioral red/green or
+      P11 completion; keep old loader absence observations historical rather
+      than permanently required behavior. Future lookup uses one actual
+      loaded model and the delivered captured-model context fields: namespace,
+      identityFormat, subjectSchema, normalizer, registryRevision,
+      hierarchyRevision and canonical registryDigest. The digest covers the
+      full registry document only. Do not invent snapshot IDs, replace runtime
+      identity with a seed stamp, substitute current Decision files for retained
+      history, serialize approval handles or cache trust. Later governed
+      operations must reuse real owner capture/evidence checks. After scope and
+      contract agreement, P11's first behavioral red should invoke an actual
+      accepted interface where subject.lookup is unregistered, expect real
+      fixture matches and observe unsupported-operation; register the real
+      binding and replay green. Verify representative API/CLI parity, no-match
+      versus absence/health failure, and read-only copied-installation behavior.
+      Main owns integrated checks at the resulting exact candidate and version
+      accounting per actual PR, including documentation-only PRs.
+    consequences: >
+      Captured-model consistency makes a limited factual claim and avoids
+      accidental atomic filesystem, original-byte, Git membership or human
+      authentication promises. Setup/import failures remain distinguishable
+      from behavioral red and unexpected bugs from domain refusals. Existing
+      full domain suites need not be duplicated. No pass carries across source
+      changes without actual verification, and no documentation update retunes
+      or rewrites frozen experiment/runtime/evidence bytes. Historical artifacts,
+      existing decision coverage and affected documentation are indexed in
+      docs/agents/ucs-1244-interface-preparation.md. These recommendations do not
+      authorize new readers, benchmarks, interface implementation, release tags
+      or publication.
+    relates-to:
+      concepts: []
+      leaves: []
+      decisions: [proposal:decision:d3ac3274-bb5e-4d45-824b-bc2a5ef63687, proposal:decision:7253be98-5bf4-4cfb-a13a-cdb28663d2f0, D-000010, D-000011, D-000021, proposal:decision:b97239f1-4802-4c2a-a8d5-21eeed73c018]

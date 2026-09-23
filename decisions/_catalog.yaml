@@ -206,6 +206,15 @@ entries:
   - id: proposal:decision:937723fe-050c-4d01-a699-d58fbf49ff76
     title: Ordinary retrieval preserves intent without requiring optional Subject authority
     file: entries/optional-subject-retrieval-routing.yaml
+  - id: proposal:decision:d3ac3274-bb5e-4d45-824b-bc2a5ef63687
+    title: Keep P11 bindings separate from the adjacent supported interface prerequisite
+    file: entries/ucs-1244-supported-interface-scope.yaml
+  - id: proposal:decision:7253be98-5bf4-4cfb-a13a-cdb28663d2f0
+    title: Proposed first interface preserves real lookup behavior and existing CLI output
+    file: entries/ucs-1244-first-interface-contract-proposal.yaml
+  - id: proposal:decision:aa673542-1ffc-4fc7-b197-8831ce8f9b19
+    title: Preserve captured-input limits and revision-specific P11 acceptance evidence
+    file: entries/ucs-1244-captured-evidence-and-acceptance.yaml
   - id: proposal:decision:88481c7c-29da-40e0-a5b7-f8331769f765
     title: Guard actual record results once with strict authored descendants
     file: entries/single-pass-record-result-admission.yaml

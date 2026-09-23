@@ -463,6 +463,23 @@ An unfamiliar code is not an all-clear: report the contract mismatch and stop.
 
 ## Gate rules
 
+The [shared engine interface](engine-interface.md) exposes subject retrieval
+with structural tree previews, intersection/context navigation, intent-plan operations and the existing
+Ontology/Knowledge preflight through API, terminal and local MCP. For
+`record.preflight`, supply explicit concept/leaf ID arrays and a calendar date
+or null; apply the same verdict and next-action conduct above. Empty arrays
+check store health only. The operation cannot enable logging and supplies no
+Decisions verdict. MCP resource discovery supplies the two shipped usage
+guides; treat them as documentation, not repository evidence. The host agent
+interprets intent; engine output never supplies source review or human approval.
+Read native report status and coverage even when the outer invocation says
+`completed`. Read each operation's output version. Query output version 2 retains
+complete assignment outcomes in its query-local `assignmentEvidence` table;
+preserve each row's original ordered assignments when reading that evidence.
+Tree preview is declared metadata, not approval or a saved-file drift check.
+Use explicit evidence and capacities; do not turn unavailable
+evidence into an empty result. Existing gate and conduct rules still apply.
+
 - **All store mutations beyond logging are human-gated.** Agents draft;
   humans approve through the normal PR gate. Logging (`logs/`) is the one
   agent-writable surface, and only via `engine/log-entry.js`.

@@ -1,0 +1,43 @@
+schema-version: 2
+entries:
+  - id: proposal:decision:d3ac3274-bb5e-4d45-824b-bc2a5ef63687
+    title: Keep P11 bindings separate from the adjacent supported interface prerequisite
+    category: scope
+    status: proposed
+    date: "2026-09-19"
+    deciders: [pending-steward-review]
+    provenance: { author: codex-ucs-1244 }
+    context: >
+      UCS-1244 preparation found real subject domain functions and later CLI
+      implementations, but no supported public interface in the inspected
+      snapshots through 819ef85. Programmatic Contracts and Integration
+      Readiness owns that interface. Main instructed P11 to remain artifact-only
+      while the additional scope question is unanswered; this record preserves
+      that instruction and an unapproved delivery proposal, not current release
+      inventory or authority to implement the adjacent project.
+    decision: >
+      Propose an adjacent-owned slice for the supported local ESM entry,
+      invocation versions, static callable registrations, genuine installed
+      capability discovery, refusal contract, documentation and copied-runtime
+      acceptance. P11 would then bind the actual P2 subject lookup operation and
+      adapt the existing lookup CLI. Keep P1 through P10 independent of both
+      slices. Do not substitute internal exports, a stub capability or a
+      deferred status for interface delivery. Main must resolve scope and assign
+      ownership before implementation. Broader Decision search, snapshot/source
+      attribution, harness provisioning, MCP, mutation and authoring operations
+      remain separately scoped.
+    consequences: >
+      This keeps additional cross-project delivery reviewable and avoids
+      blocking independently authorized subject work. It leaves P11 incomplete
+      until its actual dependencies and acceptance are delivered; capability-only
+      delivery completes neither P11 nor the whole adjacent project. A joint
+      all-project dependency was considered and rejected as unnecessary for the
+      first lookup slice. P1, P2 and P4 agreed the delivery separation in task
+      coordination, but no agreement is claimed for final wire fields or the
+      unanswered scope authorization. Evidence and documentation coverage are
+      recorded in docs/agents/ucs-1244-interface-preparation.md. This proposed
+      record allocates no canonical identity and grants no runtime trust.
+    relates-to:
+      concepts: []
+      leaves: []
+      decisions: [D-000007, D-000010, proposal:decision:b97239f1-4802-4c2a-a8d5-21eeed73c018]

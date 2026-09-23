@@ -66,6 +66,9 @@ const ARGV = {
   'cli/init-copy.js': ['--target', '.'],
   // Explicit-path interfaces have no default-root read; their fixed main-time
   // file access is the crash boundary instead (see preload below).
+  'cli/mcp.js': ['--root', repoRoot, '--max-message-bytes', '65536', '--max-result-bytes', '65536'],
+  'payload/engine/invoke.js': ['--request', join(repoRoot, 'package.json'),
+    '--max-request-bytes', '65536', '--max-output-bytes', '65536'],
 };
 
 /** Surfaces that can legitimately return exit 1, and why. */

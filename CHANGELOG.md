@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.0.0-rc.7] - Unreleased
+
+- Expose eleven shared read operations through the local API, request-file CLI and stdio MCP with installed capability and dependency checks.
+- Review scope, Decisions and validation: [PR 6](docs/pr-delivery/pr-06.md).
+
 ## [3.0.0-rc.6] - Unreleased
 
 - Preserve prior finding outcomes when reopening and document governed reflection, durable review and source/evidence conduct.

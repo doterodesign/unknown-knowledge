@@ -14,7 +14,7 @@ branched and merged by your normal PRs.
 
 ## Quickstart
 
-> Packaging stage 5/7, version `3.0.0-rc.6`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 
 The 3.0 pilot is available explicitly with
@@ -61,9 +61,9 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-> Packaging stage 5/7, version `3.0.0-rc.6`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
-Seventeen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
+Eighteen seeded command-line surfaces. JavaScript with JSDoc types, zero build step.
 
 | Command | Purpose |
 | --- | --- |
@@ -84,6 +84,7 @@ Seventeen seeded command-line surfaces. JavaScript with JSDoc types, zero build 
 | `subject-view.js` | Subject tree, route and context views |
 | `intent-plan.js` | intent validation and execution |
 | `migrate-identity.js` | offline identity inventory |
+| `invoke.js` | shared request-file API invocation |
 
 Engine commands run with `node payload/engine/<command> --root .` in this repository. Installed paths use `<kit-root>/engine/`. Check each command’s help and the protocol before use.
 

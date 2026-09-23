@@ -1,4 +1,4 @@
-> Packaging stage 5/7, version `3.0.0-rc.6`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
+> Packaging stage 6/7, version `3.0.0-rc.7`. This stacked prerelease is for review and new-installation development. No release or customer migration is authorized.
 
 This page preserves integration history and design context. The [delivery availability](pr-delivery/README.md) is authoritative for this intermediate tree; later capabilities and historical receipts are not current head verification.
 
@@ -29,7 +29,7 @@ retains all six initial attempts and 156 subsequent attempts under their
 respective instruction contracts. It establishes no overall quality pass.
 
 The shared interface increment records subsequent decisions in the existing
-P11 contract (contract arrives in PR6; see delivery availability),
+[P11 contract](../decisions/entries/ucs-1244-first-interface-contract-proposal.yaml),
 with its existing exact catalog row. It updates package/lock dependency and bin
 metadata, README, CONTEXT, protocol AGENTS, the seeded
 [interface guide](../payload/protocol/engine-interface.md), manifest, P11 status,
@@ -151,7 +151,7 @@ pending at that owner-only snapshot; no PR, tag, release, runtime approval or cu
 | P8 assignment history and gates | [Coverage audit](agents/ucs-1241-documentation-audit.md) |
 | P9 reflection and retrieval conduct | [Coverage audit](agents/ucs-1242-retrieval-governance.md) |
 | P10 evaluation | Decisions, evidence and remaining acceptance (contract arrives in PR7; see delivery availability) |
-| P11 interface preparation | Proposed contracts and unresolved scope (contract arrives in PR6; see delivery availability) |
+| P11 interface preparation | [Proposed contracts and unresolved scope](agents/ucs-1244-interface-preparation.md) |
 
 These links establish documentation coverage, not completion of every task.
 Homogeneous K/O/D proposal promotion is implemented. Further Subject lifecycle
@@ -1187,7 +1187,7 @@ establish client-store coverage.
 
 ## Shared record preflight and next lifecycle contract
 
-The interface Decision (contract arrives in PR6; see delivery availability)
+The [interface Decision](../decisions/entries/ucs-1244-first-interface-contract-proposal.yaml)
 records the agreed `record.preflight` binding. It calls the existing native
 Ontology/Knowledge owner once, preserves payloads and conduct, and disables
 logging. Both arrays and a date/null are explicit; guarded dense string arrays
@@ -1211,7 +1211,7 @@ changes are excluded. Tests exercise actual disk fixtures, preserved native
 findings/refusals, date and own-data admission, a copied engine with only js-yaml,
 request-file exit mapping, and the official SDK's real stdio client. P2 reviewed
 both runtime changes without an actionable finding. Receipt paths and development
-failures are indexed in the P11 guide (contract arrives in PR6; see delivery availability).
+failures are indexed in the [P11 guide](agents/ucs-1244-interface-preparation.md).
 
 Separately, the implementation and review owners agreed the
 [lifecycle material contract](agents/lifecycle-material-continuation.md) before

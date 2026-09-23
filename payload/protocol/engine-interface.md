@@ -1,5 +1,3 @@
-> Availability in this intermediate release: this guide is captured as a fixed installation asset. The shared API, request-file CLI, MCP server and their dependencies arrive in PR6 (3.0.0-rc.7). The operations described below are final design contracts, not callable capabilities of PR4/PR5.
-
 # Shared engine API, terminal and MCP
 
 The agent interprets the request, proposes a plan, chooses explicit capacities,
@@ -7,7 +5,7 @@ calls deterministic operations and reads the original sources. The engine
 validates and executes that plan. Neither an MCP connection nor a returned
 report makes the agent's interpretation correct or supplies human approval.
 
-## Operations available from PR6
+## Operations available now
 
 All operations are read-only. Interface and input versions are 1. Output versions
 are per operation: `subject.query`, `subject.route`, `subject.contexts`,

@@ -278,7 +278,8 @@ test('D-006: init never writes CI config — no .github/workflows anywhere, and 
 
 test('package.json: bin maps unknown-knowledge → cli/init.js; files allowlist ships cli/ + payload/ + license artifacts; release is publishable', () => {
   const pkg = JSON.parse(readFileSync(join(kitRoot, 'package.json'), 'utf8'));
-  assert.deepEqual(pkg.bin, { 'unknown-knowledge': 'cli/init.js' });
+  assert.deepEqual(pkg.bin, { 'unknown-knowledge': 'cli/init.js',
+    'unknown-knowledge-engine': 'payload/engine/invoke.js', 'unknown-knowledge-mcp': 'cli/mcp.js' });
   assert.deepEqual(pkg.files, ['cli/', 'payload/', 'LICENSE', 'NOTICE', 'README.md'],
     'publish allowlist: the kit\'s fixtures/, tests/, acceptance/ never ship (D-007 posture)');
   assert.notEqual(pkg.private, true,
