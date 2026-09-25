@@ -87,13 +87,8 @@ test('the README limits subprocesses to Git plumbing', () => {
     }
   };
   walk(engineDir);
-  // The fixed historical distribution retains its original two Git modules;
-  // A6 independently checks their exact relative paths and all profile bytes.
-  assert.deepEqual(spawners.sort(), ['captured-source.js', 'commit-snapshot.js', 'commit-snapshot.js', 'identity-migration-source.js',
-    'survey-map.js', 'survey-map.js'], 'only Git plumbing spawns (D-014)');
-  const migration = readFileSync(join(engineDir, 'lib', 'identity-migration-source.js'), 'utf8');
-  assert.match(migration, /spawnSync\('git',/);
-  assert.doesNotMatch(migration, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|write-tree)['"]/);
+  assert.deepEqual(spawners.sort(), ['captured-source.js', 'commit-snapshot.js', 'survey-map.js'],
+    'only Git plumbing spawns (D-014)');
   const capture = readFileSync(join(engineDir, 'lib', 'captured-source.js'), 'utf8');
   assert.match(capture, /spawnSync\('git',/);
   assert.doesNotMatch(capture, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|write-tree)['"]/);

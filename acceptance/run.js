@@ -30,7 +30,6 @@
  * Usage: node acceptance/run.js        (or: npm run acceptance)
  */
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, cpSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -577,18 +576,6 @@ criterion('A6', [
     assert.ok(mentioned >= 1, 'grep exercised nothing — did the flag move?');
   }],
   ['payload/: no-client-code-execution grep — fixed Git plumbing and captured trusted-engine checks only (D-014)', () => {
-    // The fixed historical distribution is still inspected by every code guard.
-    // Its complete file inventory additionally binds unchanged reviewed bytes.
-    const historicalRoot = 'payload/engine/compatibility/identity-migration-08066b5/';
-    const historicalProfile = JSON.parse(readFileSync(join(root, 'payload/engine/policies/identity-migration-08066b5.json'), 'utf8'));
-    const historicalFiles = payloadFiles().filter((file) => relative(root, file).startsWith(historicalRoot));
-    assert.deepEqual(historicalFiles.map((file) => relative(root, file)),
-      historicalProfile.files.map((row) => `payload/${row.path}`));
-    for (const row of historicalProfile.files) {
-      const bytes = readFileSync(join(root, 'payload', row.path));
-      assert.equal(bytes.length, row.size, `${row.path}: reviewed historical size`);
-      assert.equal(createHash('sha256').update(bytes).digest('hex'), row.sha256, `${row.path}: reviewed historical bytes`);
-    }
     for (const file of payloadFiles()) {
       if (!/\.(js|mjs|cjs)$/.test(file)) continue;
       const rel = relative(root, file);
@@ -614,22 +601,10 @@ criterion('A6', [
         assert.doesNotMatch(text, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
         const capturedReaders = [
           join('payload', 'engine', 'lib', 'captured-source.js'),
-          join('payload', 'engine', 'lib', 'identity-migration-source.js'),
         ];
-        const historicalGit = [
-          join('payload', 'engine', 'compatibility', 'identity-migration-08066b5', 'engine', 'commands', 'survey-map.js'),
-          join('payload', 'engine', 'compatibility', 'identity-migration-08066b5', 'engine', 'lib', 'commit-snapshot.js'),
-        ];
-        if (historicalGit.includes(rel)) {
-          assert.match(text, /import\s*\{\s*spawnSync\s*\}\s*from\s*'node:child_process'/);
-          assert.equal([...text.matchAll(/['"](?:node:)?child_process['"]/g)].length, 1);
-          assert.equal([...text.matchAll(/\b(?:spawnSync|spawn)\s*\(/g)].length, 1);
-          assert.match(text, /spawnSync\('git',/);
-          assert.doesNotMatch(text, /shell\s*:/);
-        }
         assert.ok([join('payload', 'engine', 'commands', 'survey-map.js'),
           join('payload', 'engine', 'lib', 'commit-snapshot.js'),
-          ...capturedReaders, ...historicalGit].includes(rel),
+          ...capturedReaders].includes(rel),
         `${rel}: child_process outside Git navigation/snapshot orchestration (D-014)`);
         assert.match(text, /spawnSync\('git',/, 'only the fixed git binary may be spawned');
         if (capturedReaders.includes(rel)) {

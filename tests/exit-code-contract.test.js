@@ -55,9 +55,8 @@ const ARGV = {
   // The event to apply. It need not exist: naming one gets past the flag
   // grammar into `main`, where the injected bug waits.
   'payload/engine/phoenix.js': ['P-001'],
-  // Only the pinned OID spelling is needed: cwd's injected failure precedes
-  // source capture, so this object need not exist in the test repository.
-  'payload/engine/migrate-identity.js': ['--source', '0'.repeat(40), '--kit-root', '.'],
+  // A dry run of cwd, where the injected bug waits; nothing would be written.
+  'payload/engine/migrate.js': ['--dry-run'],
   'payload/engine/subject.js': ['lookup', 'some-subject'],
   'cli/init-copy.js': ['--target', '.'],
   // Explicit-path interfaces have no default-root read; their fixed main-time
@@ -82,7 +81,7 @@ const EMITS_FINDINGS = new Set([
   // or carrying a file no axis generates. The check RAN; regenerating with
   // --write is the fix (UCS-1158).
   'payload/engine/derive.js',
-  'payload/engine/migrate-identity.js', // completed source inventory diagnostics
+  'payload/engine/migrate.js', // 2.x source defects refuse the conversion; nothing is written
 ]);
 
 /** The command module behind a surface's entry shim. */

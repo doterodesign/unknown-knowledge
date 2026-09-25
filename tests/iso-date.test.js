@@ -163,10 +163,8 @@ test('ISO_DATE is defined once per current and fixed historical runtime', async 
     }
   };
   await walk(engineDir);
-  // Preserve the historical runtime byte-for-byte; neither runtime may gain
-  // another definition. This scans the whole tree without directory exemptions.
+  // One definition. This scans the whole tree without directory exemptions.
   assert.deepEqual(definers.sort(), [
-    'payload/engine/compatibility/identity-migration-08066b5/engine/lib/iso-date.js',
     'payload/engine/lib/iso-date.js',
   ], `unexpected date-rule definitions: ${definers.join(', ')}`);
 });

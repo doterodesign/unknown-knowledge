@@ -1,8 +1,0 @@
-schema-version: 1
-entries:
-  - id: K-102
-    term: Component
-    class: 100-feed
-    summary: A reusable element in the shared component library.
-    source-of-truth: [src/feed/latency.ts]
-    status: active

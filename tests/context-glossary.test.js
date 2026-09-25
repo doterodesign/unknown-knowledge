@@ -37,11 +37,7 @@ function decisions() {
 test('the engine is JavaScript, and no build step exists', () => {
   const ts = readdirSync(engineDir, { recursive: true }).filter((f) => String(f).endsWith('.ts'));
   const js = readdirSync(engineDir, { recursive: true }).filter((f) => String(f).endsWith('.js'));
-  // The fixed historical dependency ships its original declarations, not a
-  // TypeScript implementation. Exact inventory keeps new source files visible.
-  assert.deepEqual(ts, [
-    'compatibility/identity-migration-08066b5/node_modules/js-yaml/dist/js-yaml.d.ts',
-  ], 'only the fixed historical dependency declaration is permitted');
+  assert.deepEqual(ts, [], 'the engine ships no TypeScript');
   assert.ok(js.length >= 20, `the engine is JavaScript (${js.length} files)`);
 
   const { scripts } = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8'));
@@ -128,7 +124,7 @@ test('the Engine term names every shipped engine surface', () => {
     ingest: 'document ingest',
     phoenix: 'phoenix events',
     derive: 'derived layer',
-    'migrate-identity': 'offline identity inventory',
+    migrate: 'one-shot 2.x to 3.0 converter',
     subject: 'subject metadata lookup',
     invoke: 'shared API invocation',
   };

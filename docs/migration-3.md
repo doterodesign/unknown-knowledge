@@ -3,44 +3,53 @@
 `3.0.0-rc.1` is a release candidate on npm's `next` channel. Install the exact
 version during a pilot. `latest` remains the stable 2.1.0 release.
 
-## Working-tree identity changes — unreleased rc.2
+## Converting 2.x stores — unreleased
 
-The current branch adds permanent six-digit `K-`, `O-` and `D-` identities.
-The published rc.1 instructions below describe an earlier pilot; they do not
-establish that rc.2 is available on npm. Identity cutover rewrites the admitted
-record references together. It requires no legacy lookup keys, aliases or
-retained old-to-new crosswalk in the migrated installation. Private comparison
-inputs may be used during validation without becoming runtime compatibility.
+3.0 gives every record a permanent six-digit ID: `K-` for Knowledge, `O-` for
+Ontology and `D-` for Decisions, allocated in the installation's
+`_identity.yaml`. A 2.x installation converts once, with the 3.0 engine's
+`migrate.js`, after the vendored engine has been upgraded (see the next
+section):
 
-The [final migration gate](agents/ucs-1240-final-migration.md) currently proves
-a bounded pre-Subject profile using actual historical/current retrieval and
-generated views, explicit operational-log validation and preserved Phoenix
-edition accounting. The version-4 publication policy also requires equal actual
-store presence and authored record counts before and after conversion, with at
-least one record overall. Decisions-only, K-without-O and O-without-K sources are
-supported within the [finite source profile](agents/ucs-1240-migration-source-profiles.md).
-An absent store stays absent; an empty present store stays present. Empty
-Knowledge views are compared in memory. This does not add Decision search to the
-ordinary resolver. Malformed stores, unsupported formats or incomplete
-preservation evidence refuse.
-The [mechanical gate](agents/ucs-1240-prepared-migration.md) alone cannot publish.
+```bash
+node unknown-knowledge/engine/migrate.js --root . --dry-run   # print the mapping, write nothing
+node unknown-knowledge/engine/migrate.js --root .             # convert in place
+```
 
-The separate [seeded-installation profile](agents/ucs-1240-installation-cutover.md)
-extends review to the complete committed tree, the actual old/new distributions,
-rule and suppression conversion, generated wrapper sections and supported local
-launchers. Every file needs a fixed owner or an independent reviewed role;
-unknown required consumers block. The default nested layout and unchanged known
-vendor assets are supported; customized assets, optional stack packs and dynamic
-or external launch forms need a separately supported treatment. This is an
-internal governed API, not an init updater or a new public migration command.
+The converter reads every store document (catalogs, Ontology classes,
+Knowledge leaves, Decision entries, registries, Phoenix events and the
+finding, gap and miss logs) and then:
 
-After candidate publication, `verifyMigrationActivation` can separately observe
-the supported local hook, configuration, files, dependencies and executable.
-It edits none of them and cannot certify an IDE, remote process or future state.
-Use an explicit supported process environment and keep retained evidence outside
-the observed repository. A passing disposable fixture does not approve migration
-of a real installation. Broader acceptance and integrated activation verification
-remain open; owner evidence and exact limitations are in the scoped guide.
+- allocates a permanent ID for each accepted record, in old-ID order per kind, and
+  writes `_identity.yaml` last;
+- gives each draft or proposed record a `proposal:<kind>:<uuid>` key instead,
+  so nothing is promoted by conversion;
+- rewrites every citation (catalog rows, `relates` and `supersedes` fields,
+  registry and Phoenix decision references, log `consulted` lists) to the new
+  IDs, and bumps each document's schema version;
+- rewrites a prose mention only when it spells exactly one record's old ID as
+  a word. File names such as `knowledge/L-000001.md` keep their names, and a
+  mention that names no record, or several, is left as written and reported.
+
+Every other byte is copied unchanged. The result is an ordinary working-tree
+diff: review it, run `validate.js` and `validate-values.js`, regenerate the
+derived views with `derive.js --write`, and commit. `--dry-run` prints the
+old-to-new mapping to the terminal; nothing in the converted installation
+keeps it, and old IDs do not work as aliases afterwards.
+
+The converter refuses (exit 1, nothing written) when a source store has a
+defect it cannot carry over: a duplicate ID, a citation that names no record,
+or a document it cannot parse. Fix those in the 2.x stores and run it again.
+It refuses (exit 2) an installation that already has `_identity.yaml`.
+Non-empty `_rules.yaml` files and unknown files inside the store directories
+are listed as "not converted" for review by hand. Start from a clean branch so
+the conversion diff is the whole diff. To undo it before committing, discard
+the working-tree changes.
+
+The six pilot tasks in `acceptance/retrieval/pilot` are the converter's test:
+`tests/migrate.test.js` builds them as 2.x stores with the original 08066b5
+runtime, converts them, checks both validators report zero errors and no old
+ID survives as a citation, and scores `ask` against their gold judgments.
 
 ## What changes in the published rc.1 pilot
 
@@ -78,9 +87,10 @@ version and customizations before editing.
    rules and existing instructions. Shared wrappers use sentinel sections;
    dedicated files such as an existing `CLAUDE.md` are skipped by init and need
    a reviewed pointer update.
-4. Preserve `ontology/`, `knowledge/`, `decisions/`, logs, survey scope, accession
-   IDs, citations, historical metadata and authored relations. Regenerate
-   disposable derived indexes only after authored records validate.
+4. Preserve `ontology/`, `knowledge/`, `decisions/`, logs, survey scope,
+   citations, historical metadata and authored relations. Then convert the
+   stores with `migrate.js` as described above, in its own commit. Regenerate
+   disposable derived indexes only after the converted records validate.
 5. Keep the original seed manifest as provenance. Record the new runtime
    version, reviewed file delta and preserved customizations in a separate
    migration record; do not stamp a mixed installation as a pristine seed.
@@ -93,22 +103,20 @@ version and customizations before editing.
 For the earlier rc.1 pilot, rollback is the migration commit's reviewed inverse
 or a return to the prior pilot branch. Never reset a user's dirty checkout.
 
-For canonical-ID cutover, discard an unpublished candidate if validation fails.
-After publication, use a reviewed forward repair that preserves every allocated
-new-system ID and its occupied ledger slot. A prior-format recovery environment
-must keep its old data and readers together, separate from the converted
-installation. Do not point old readers at canonical data or treat an inverse ID
-rewrite as a supported downgrade. Candidate-ref publication alone does not prove
-that installed readers, hooks and external integrations have switched safely.
+For the ID conversion, discard the uncommitted conversion if validation fails.
+After it is committed, repair forward and keep every allocated ID and its
+ledger slot. To go back to 2.x, revert the conversion commit together with the
+engine upgrade; do not point a 2.x engine at converted stores or rewrite IDs
+backwards by hand.
 
 ## Older custom knowledge bases
 
 A repository with its own catalog schema, concept IDs or knowledge frontmatter
-is an import pilot, not a 2.1.0 in-place upgrade. Inspect its source records
-and dependent consumers in an isolated branch. For the unreleased canonical
-identity cutover, allocate the appropriate `K-NNNNNN`, `O-NNNNNN` or `D-NNNNNN`
-identities and rewrite admitted references together; do not add legacy aliases
-or a permanent identity crosswalk. Preserve factual content, relationships
+is an import pilot, not a 2.1.0 in-place upgrade, and `migrate.js` does not
+read it. Inspect its source records and dependent consumers in an isolated
+branch. Allocate `K-NNNNNN`, `O-NNNNNN` or `D-NNNNNN` IDs in `_identity.yaml`
+and rewrite references to them together; do not add legacy aliases or keep an
+old-to-new lookup table. Preserve factual content, relationships
 and lifecycle evidence. Representation conversion never verifies the claims
 or promotes an unreviewed record.
 

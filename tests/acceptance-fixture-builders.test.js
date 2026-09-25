@@ -68,6 +68,9 @@ test('source-evidence builder publishes canonical Decision lifecycle and passes 
     return result.stdout + result.stderr;
   }
   git('init', '-q'); git('config', 'user.name', 'Fixture Steward'); git('config', 'user.email', 'fixture@example.invalid');
+  // Keep automatic maintenance synchronous so it never writes into .git while
+  // the test removes the directory.
+  git('config', 'gc.autoDetach', 'false'); git('config', 'maintenance.autoDetach', 'false');
   for (const [source, event] of [['pre-commit', 'pre-commit'], ['reverse-lookup', 'prepare-commit-msg']]) {
     const installed = join(root, '.git/hooks', event);
     copyFileSync(join(root, 'unknown-knowledge/hooks', source), installed);

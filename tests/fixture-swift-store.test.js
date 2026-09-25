@@ -5,7 +5,6 @@
 // Planted-case inventory: fixtures/swift-app/FIXTURE.md (KK-16 asserts it).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -92,14 +91,6 @@ test('nothing shipped by init (payload/, cli/) references the acceptance fixture
         `${file} must not reference the acceptance fixture apps (D-007)`,
       );
       if (tree === 'payload') {
-        if (file === join(root, 'payload/engine/policies/installation-assets.json')) {
-          // The reviewed installation inventory names shipped extractor/adapter
-          // fixtures. Only these exact bytes may bypass the blanket word scan;
-          // the acceptance-app ban above and manifest construction checks remain.
-          assert.equal(createHash('sha256').update(text).digest('hex'),
-            '028082d1156fb4ca63ba4af9b413e0b46620f24dd4ba4d82e55d1cbec98b8ec4');
-          continue;
-        }
         assert.ok(
           !/\bfixtures\//.test(text),
           `${file} must not reference the acceptance fixtures (D-007)`,
