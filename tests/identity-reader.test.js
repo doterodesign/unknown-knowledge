@@ -19,7 +19,6 @@ import { fileURLToPath } from 'node:url';
 import { indexRegistryValues } from '../payload/engine/lib/registry-values.js';
 import { knownVocabulary } from '../payload/engine/lib/coverage.js';
 import { canonicalSha256 } from '../payload/engine/lib/canonical-json.js';
-import { assignmentEventFixture } from './helpers/assignment-event-fixture.js';
 
 const namespace = '11111111-1111-4111-8111-111111111111';
 const publication = { id: '22222222-2222-4222-8222-222222222222', review: 'review:cutover' };
@@ -522,107 +521,4 @@ test('proposal graph cycles, orphaning, provenance and citation defects remain o
   assert.equal(result.status, 1, result.stderr);
   assert.deepEqual(JSON.parse(result.stdout).provenance, [{ id: proposal, file: 'decisions/entries/direction.yaml',
     author: 'kb-author', 'skill-version': '1.0' }]);
-});
-
-const historyFile = 'subjects/_assignments/_baselines.yaml';
-const historyRef = (kind = 'decision', id = 'D-000001') => ({ namespace, kind, id });
-const historyBaseline = (ref = historyRef(), state = { state: 'unknown', reason: 'absent' }) => ({ ref, state,
-  capture: { file: 'decisions/entries/direction.yaml', blob: 'a'.repeat(40), sha256: 'b'.repeat(64) } });
-const historyEventId = '44444444-4444-4444-8444-444444444444';
-function putHistory(f, baselines, rows = []) {
-  f.put(historyFile, { 'schema-version': 1, namespace, baselines });
-  if (rows.length) f.put(`subjects/_assignments/${historyEventId}.yaml`, assignmentEventFixture({
-    namespace, event: historyEventId,
-    rows: rows.map((ref) => ({ ref, before: { state: 'unknown', reason: 'absent' }, after: { state: 'known', ids: [] },
-      'before-revision': 0, 'after-revision': 1, disposition: 'changed', reason: 'Reviewed assignment state' })),
-  }));
-}
-
-test('actual history capability is optional and an empty tracked universe never implies a current check', (t) => {
-  const f = fixture(t, { proposals: true });
-  f.records.entries[0].subjects = [];
-  f.put('decisions/entries/direction.yaml', f.records);
-  let model = loadStores(f.root);
-  assert.equal(model.ok, true);
-  assert.equal(Object.hasOwn(model, 'assignmentHistory'), false);
-  assert.equal(Object.hasOwn(model, 'assignmentHistoryCurrent'), false);
-  putHistory(f, []);
-  model = loadStores(f.root);
-  assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
-  assert.deepEqual(model.assignmentHistoryCurrent, { scope: 'loaded-tracked-records', status: 'not-performed',
-    reason: 'no-loaded-tracked-records', checkedRefs: [], unavailableRefs: [] });
-  assert.equal(model.assignmentHistory.currentStateCheck, 'not-performed');
-  assert.equal(model.assignmentHistory.publicationReady, false);
-});
-
-test('tracked loaded terminal states use the real chain validator and exact authored owner locator', (t) => {
-  const f = fixture(t, { proposals: true });
-  putHistory(f, [historyBaseline()]);
-  let model = loadStores(f.root);
-  assert.equal(model.ok, true);
-  assert.deepEqual(model.assignmentHistoryCurrent, { scope: 'loaded-tracked-records', status: 'passed',
-    checkedRefs: [historyRef()], unavailableRefs: [] });
-  model.assignmentHistoryCurrent.checkedRefs[0].id = 'D-999999';
-  assert.equal(model.assignmentHistory.baselines[0].ref.id, 'D-000001', 'reported refs are detached from authored history');
-  f.records.entries[0].subjects = [];
-  f.put('decisions/entries/direction.yaml', f.records);
-  model = loadStores(f.root);
-  assert.equal(model.ok, false, 'absent metadata and an authored empty assignment are distinct terminal states');
-  assert.equal(model.assignmentHistoryCurrent.status, 'failed');
-  const mismatch = model.diagnostics.find(({ code }) => code === 'current-state-mismatch');
-  assert.equal(mismatch.file, 'decisions/entries/direction.yaml');
-  assert.equal(mismatch.path, 'entries[0].subjects');
-  putHistory(f, [historyBaseline()], [historyRef()]);
-  model = loadStores(f.root);
-  assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
-  assert.equal(model.assignmentHistoryCurrent.status, 'passed');
-  assert.equal(model.assignmentHistory.currentStateCheck, 'not-performed');
-  for (const field of ['captureVerification', 'eventScopeCheck', 'approvalCheck']) assert.equal(model.assignmentHistory[field], 'not-performed');
-});
-
-test('occupied unavailable histories stay inspectable while only loaded tracked rows join terminal state', (t) => {
-  const f = fixture(t);
-  const absent = [historyRef('decision', 'D-000002'), historyRef('ontology', 'O-000001'), historyRef('knowledge', 'K-000001')];
-  f.identity.allocations.push(...absent.map(({ kind, id }, index) => ({ kind, id, publication,
-    state: ['allocated', 'retired', 'cancelled'][index], ...(index ? { reason: 'Retained occupancy' } : {}) })));
-  f.put('_identity.yaml', f.identity);
-  putHistory(f, absent.map((ref) => historyBaseline(ref)));
-  let model = loadStores(f.root);
-  assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
-  const unavailableRefs = [absent[0], absent[2], absent[1]];
-  assert.deepEqual(model.assignmentHistoryCurrent, { scope: 'loaded-tracked-records', status: 'not-performed',
-    reason: 'no-loaded-tracked-records', checkedRefs: [], unavailableRefs });
-  f.records.entries[0].subjects = [];
-  f.put('decisions/entries/direction.yaml', f.records);
-  putHistory(f, [...absent.map((ref) => historyBaseline(ref)), historyBaseline()], [historyRef(), absent[0]]);
-  model = loadStores(f.root);
-  assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
-  assert.deepEqual(model.assignmentHistoryCurrent, { scope: 'loaded-tracked-records', status: 'passed',
-    checkedRefs: [historyRef()], unavailableRefs });
-  assert.equal(model.assignmentHistory.sources.events[0].document.rows.length, 2, 'terminal projection never rewrites the full source event');
-  assert.equal(model.assignmentHistory.revisions.length, 4);
-});
-
-test('Knowledge history mismatch points at root subjects and blocks both actual validators', (t) => {
-  const f = fixture(t);
-  const ref = historyRef('knowledge', 'K-000001');
-  f.identity.allocations.push({ kind: ref.kind, id: ref.id, state: 'allocated', publication });
-  f.put('_identity.yaml', f.identity);
-  f.put('knowledge/_catalog.yaml', { 'schema-version': 2, store: 'knowledge', entries: [
-    { id: ref.id, title: 'Evidence', file: 'evidence.md' }] });
-  const record = { 'schema-version': 3, id: ref.id, heading: 'Evidence', domain: 'world',
-    citations: [{ source: 'observed-source' }] };
-  writeFileSync(join(f.root, 'knowledge/evidence.md'), `---\n${JSON.stringify(record)}\n---\nObserved.\n`);
-  putHistory(f, [historyBaseline(ref, { state: 'known', ids: [] })]);
-  const model = loadStores(f.root);
-  assert.equal(model.ok, false);
-  const mismatch = model.diagnostics.find(({ code }) => code === 'current-state-mismatch');
-  assert.equal(mismatch.file, 'knowledge/evidence.md');
-  assert.equal(mismatch.path, 'subjects');
-  for (const name of ['validate', 'validate-values']) {
-    const command = fileURLToPath(new URL(`../payload/engine/${name}.js`, import.meta.url));
-    const result = spawnSync(process.execPath, [command, '--root', f.root], { encoding: 'utf8' });
-    assert.equal(result.status, 2, result.stdout + result.stderr);
-    assert.match(result.stdout + result.stderr, /current-state-mismatch/);
-  }
 });

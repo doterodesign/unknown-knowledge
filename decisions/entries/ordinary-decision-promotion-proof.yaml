@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:1c8d9b0f-38a9-4f86-a571-3ed7d14add75
     title: Ordinary Decision promotion compares exact committed transformations and canonical genesis
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -29,4 +29,4 @@ entries:
       preservation. The gate keeps publicationReady false and human approval
       unperformed. Broader typed or classified promotion and final publication
       require their own actual integration evidence.
-    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:8a17c8a0-8437-4d3c-a26f-46c24adb70ae, proposal:decision:bc77a31e-0fbb-4fbe-ba20-299bb0095953] }
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:8a17c8a0-8437-4d3c-a26f-46c24adb70ae, proposal:decision:bc77a31e-0fbb-4fbe-ba20-299bb0095953, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

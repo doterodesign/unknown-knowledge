@@ -124,8 +124,6 @@ import { parseCanonicalId, parseProposalKey, RECORD_KINDS } from './record-ident
 import { validateIdentityLedger } from './identity-ledger.js';
 import { buildIdentityIndex, resolveRecord } from './record-identity-index.js';
 import { readSubjectRegistry, SUBJECT_REGISTRY_DIAGNOSTIC_CODES } from './subject-registry-reader.js';
-import { readAssignmentHistory, ASSIGNMENT_HISTORY_DIAGNOSTIC_CODES } from './assignment-history-reader.js';
-import { validateAssignmentHistory } from './subject-history.js';
 import { indexRegistryValues } from './registry-values.js';
 import { readAssignments } from './subject-assignments.js';
 import { resolveSubject, SubjectError } from './subjects.js';
@@ -210,7 +208,6 @@ export const recordId = (entry) => entry.identity ?? entry.id;
 export const DIAGNOSTIC_CODES = Object.freeze([...new Set([
   ...ERROR_CODES,
   ...SUBJECT_REGISTRY_DIAGNOSTIC_CODES,
-  ...ASSIGNMENT_HISTORY_DIAGNOSTIC_CODES,
   'current-state-mismatch', 'duplicate-current-record', 'invalid-current-record', 'missing-current-record',
   'parse-error',
   'read-error',
@@ -1409,52 +1406,6 @@ function captureIdentityIndex(ctx) {
   }
 }
 
-/** Compare only loaded tracked payloads; retained unavailable history is not a missing current record. */
-function loadAssignmentHistory(ctx) {
-  const source = readAssignmentHistory({ kitDir: ctx.root, identity: ctx.identity, sourceBudget: ctx.sourceBudget, documentBudget: ctx.documentBudget });
-  ctx.diagnostics.push(...source.diagnostics);
-  if (!source.present || !source.ok) return;
-  const history = source.assignmentHistory;
-  ctx.assignmentHistory = history;
-  const keyOf = ({ namespace, kind, id }) => JSON.stringify([namespace, kind, id]);
-  const tracked = new Set(history.baselines.map(({ ref }) => keyOf(ref)));
-  // Keep original occurrences, not Map winners. Existing health defects skip
-  // comparison, but no projection here can conceal a duplicate occurrence.
-  const current = ctx.identityRecords.map(({ kind, entry, locator }) => ({
-    ref: { namespace: history.namespace, kind, id: recordId(entry) }, entry, locator,
-  })).filter(({ ref }) => tracked.has(keyOf(ref)));
-  const loaded = new Map(current.map((item) => [keyOf(item.ref), item]));
-  const unavailableRefs = history.baselines.filter(({ ref }) => !loaded.has(keyOf(ref)))
-    .map(({ ref }) => ({ ...ref })).sort((a, b) => compare(keyOf(a), keyOf(b)));
-  const result = { scope: 'loaded-tracked-records', status: 'not-performed', checkedRefs: [], unavailableRefs };
-  ctx.assignmentHistoryCurrent = result;
-  if (ctx.diagnostics.some(({ severity }) => severity === 'error')) {
-    result.reason = 'loader-errors';
-    return;
-  }
-  if (current.length === 0) {
-    result.reason = 'no-loaded-tracked-records';
-    return;
-  }
-  // Full original sources have already passed replay. Narrow whole per-record
-  // chains for the existing terminal validator; never modify retained sources.
-  const baselines = history.baselines.filter(({ ref }) => loaded.has(keyOf(ref)));
-  const events = history.events.map((event) => ({ ...event,
-    rows: event.rows.filter(({ ref }) => loaded.has(keyOf(ref))),
-  })).filter(({ rows }) => rows.length > 0);
-  const checked = validateAssignmentHistory({ namespace: history.namespace, baselines, events, currentRecords: current });
-  result.status = checked.ok ? 'passed' : 'failed';
-  result.checkedRefs = [...loaded.values()].map(({ ref }) => ({ ...ref }))
-    .sort((a, b) => compare(keyOf(a), keyOf(b)));
-  for (const diagnostic of checked.diagnostics) {
-    const position = /^currentRecords\[(\d+)\]/.exec(diagnostic.path);
-    const owner = position ? current[Number(position[1])] : loaded.get(diagnostic.path);
-    ctx.diagnostics.push({ severity: 'error', ...diagnostic,
-      file: owner?.locator.file ?? history.sources.baselines.file,
-      path: owner ? `${owner.locator.path ? `${owner.locator.path}.` : ''}subjects` : diagnostic.path,
-    });
-  }
-}
 
 /**
  * Load the three stores under `root` into the indexed model described above.
@@ -1525,7 +1476,6 @@ export function loadStores(root, { sourceBudget, documentBudget, subjectOperatio
   const leavesByConcept = buildLeavesByConcept(ctx);
   captureIdentityIndex(ctx);
   resolveRefs(ctx);
-  loadAssignmentHistory(ctx);
   ctx.diagnostics.sort((a, b) =>
     compare(a.file, b.file) || compare(a.path, b.path) || compare(a.code, b.code));
 
@@ -1535,7 +1485,6 @@ export function loadStores(root, { sourceBudget, documentBudget, subjectOperatio
     identity: ctx.identity,
     identityIndex: ctx.identityIndex,
     ...(ctx.subjectRegistry ? { subjectRegistry: ctx.subjectRegistry } : {}),
-    ...(ctx.assignmentHistory ? { assignmentHistory: ctx.assignmentHistory, assignmentHistoryCurrent: ctx.assignmentHistoryCurrent } : {}),
     proposals: Object.fromEntries(RECORD_KINDS.map((kind) => [kind, sortedMap(ctx.proposals[kind])])),
     concepts: sortedMap(ctx.concepts),
     leaves: sortedMap(ctx.leaves),

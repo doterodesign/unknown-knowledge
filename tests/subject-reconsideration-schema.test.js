@@ -85,17 +85,3 @@ test('ordinary refusal-assessment v1 does not acquire the reconsideration dispos
   row.disposition = 'same-meaning-reconsidered';
   assert.equal(validate(wire).ok, false, 'new evidence semantics require their separate field');
 });
-
-test('reader advertises the reconsideration history diagnostic after schema admission', t => {
-  const f = subjectReconsiderationFixture(t);
-  const parse = () => parseSubjectRegistry({ bytes: Buffer.from(JSON.stringify(reconsiderationWire(f.candidateDocument))), identity: f.identity });
-  assert.equal(parse().ok, true, 'actual candidate passes the real reader before mutation');
-  f.event.reconsideration.records = [];
-  f.event.reconsideration.sources = [];
-  f.event.review.changeDigest = digestEvent(f.event);
-  assert.equal(validate(reconsiderationWire(f.candidateDocument)).ok, true, 'combined nonemptiness belongs to history validation');
-  const result = parse();
-  assert.equal(result.ok, false);
-  assert.ok(result.diagnostics.some(row => row.code === 'invalid-reconsideration-evidence'), JSON.stringify(result));
-  assert.ok(result.diagnostics.every(row => SUBJECT_REGISTRY_DIAGNOSTIC_CODES.includes(row.code)), JSON.stringify(result));
-});

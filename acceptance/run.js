@@ -589,29 +589,6 @@ criterion('A6', [
       assert.equal(bytes.length, row.size, `${row.path}: reviewed historical size`);
       assert.equal(createHash('sha256').update(bytes).digest('hex'), row.sha256, `${row.path}: reviewed historical bytes`);
     }
-    // These fixed launch points run installed engine code, never candidate code.
-    // The real candidate-engine nonexecution regression lives in prepared-validation.test.js.
-    const preparedLaunches = new Map([
-      ['prepared-runtime.js', { method: 'spawnSync', call: /spawnSync\(path, args, \{ env, cwd: work,/,
-        boundaries: [/node: realpathSync\(process\.execPath\), git: realpathSync\('\/usr\/bin\/git'\)/,
-          /version: probe\(path, \['--version'\]\)/, /probe\(paths\.git, \['--exec-path'\]\)/] }],
-      ['prepared-worker-process.js', { method: 'spawn', call: /spawn\(runtime\.manifest\.executables\.node\.path,/,
-        boundaries: [/join\(runtime\.root, entrypoint\), jobFile/,
-          /if \(!\['validation', 'final-assignment', 'final-migration', 'final-equivalent-merge', 'final-subject-retirement', 'final-subject-split', 'final-subject-reconsideration', 'final-subject-metadata', 'final-subject-proposal-suppression', 'final-subject-creation', 'final-promotion', 'final-record-promotion'\]\.includes\(kind\)\)/,
-          /kind === 'validation'\s*\? 'engine\/lib\/prepared-validation-worker\.js' : kind === 'final-assignment'\s*\? 'engine\/lib\/final-assignment-check\.js' : kind === 'final-migration'\s*\? 'engine\/lib\/final-migration-check\.js' : kind === 'final-equivalent-merge'\s*\? 'engine\/lib\/final-equivalent-merge-check\.js' : kind === 'final-subject-retirement'\s*\? 'engine\/lib\/final-subject-retirement-check\.js' : kind === 'final-subject-split'\s*\? 'engine\/lib\/final-subject-split-check\.js' : kind === 'final-subject-reconsideration'\s*\? 'engine\/lib\/final-subject-reconsideration-check\.js' : kind === 'final-subject-metadata'\s*\? 'engine\/lib\/final-subject-metadata-check\.js' : kind === 'final-subject-proposal-suppression'\s*\? 'engine\/lib\/final-subject-proposal-suppression-check\.js' : kind === 'final-subject-creation'\s*\? 'engine\/lib\/final-subject-creation-check\.js' : kind === 'final-record-promotion'\s*\? 'engine\/lib\/final-record-promotion-check\.js' : 'engine\/lib\/final-promotion-check\.js'/,
-          /cwd: runtime\.root, env: runtime\.env, detached: true/] }],
-      ['prepared-engine-process.js', { method: 'spawn', call: /spawn\(manifest\.executables\.node\.path, \[join\(runtime, entrypoint\), \.\.\.args\]/,
-        boundaries: [/Object\.hasOwn\(entries, check\.kind\)/,
-          /const args = invocation\(check\); const entrypoint = entries\[check\.kind\]/,
-          /cwd: runtime, env: process\.env, stdio:/,
-          /const entries = Object\.freeze\(\{\s*structural: 'engine\/validate\.js',\s*values: 'engine\/validate-values\.js',\s*assignment: 'engine\/lib\/prepared-assignment-check\.js',\s*migration: 'engine\/lib\/prepared-migration-check\.js',\s*promotion: 'engine\/lib\/prepared-promotion-check\.js',\s*'record-promotion': 'engine\/lib\/prepared-record-promotion-check\.js',\s*'equivalent-merge': 'engine\/lib\/prepared-equivalent-merge-check\.js',\s*'subject-split': 'engine\/lib\/prepared-subject-split-check\.js',\s*'subject-metadata': 'engine\/lib\/prepared-subject-metadata-check\.js',\s*'subject-proposal-suppression': 'engine\/lib\/prepared-subject-proposal-suppression-check\.js',\s*'subject-reconsideration': 'engine\/lib\/prepared-subject-reconsideration-check\.js',\s*'subject-creation': 'engine\/lib\/prepared-subject-creation-check\.js',\s*'subject-retirement': 'engine\/lib\/prepared-subject-retirement-check\.js',\s*'historical-structural': 'engine\/compatibility\/identity-migration-08066b5\/engine\/validate\.js',\s*'historical-values': 'engine\/compatibility\/identity-migration-08066b5\/engine\/validate-values\.js',\s*'ordinary-historical': 'engine\/compatibility\/identity-migration-08066b5\/engine\/resolve\.js',\s*'ordinary-current': 'engine\/resolve\.js',\s*'historical-audit': 'engine\/compatibility\/identity-migration-08066b5\/engine\/audit\.js',\s*'current-audit': 'engine\/audit\.js',\s*\}\)/] }],
-    ].map(([name, checks]) => [join('payload', 'engine', 'lib', name), checks]));
-    const validationWorker = readFileSync(join(root, 'payload/engine/lib/prepared-validation-worker.js'), 'utf8');
-    assert.match(validationWorker, /const runtime = fileURLToPath\(new URL\('\.\.\/\.\.\/', import\.meta\.url\)\)/);
-    assert.match(validationWorker, /for \(const entry of VALIDATION_ENTRYPOINTS\) await runCheck\(entry, candidate\.root\)/);
-    assert.match(validationWorker, /await runCheck\(ASSIGNMENT_ENTRYPOINT, candidate\.root\)/);
-    assert.match(validationWorker, /await runCheck\(MIGRATION_ENTRYPOINT, candidate\.root\)/);
-    assert.match(validationWorker, /executePreparedEngineCheck\(runtime, job\.manifest, job\.limits, selected\)/);
     for (const file of payloadFiles()) {
       if (!/\.(js|mjs|cjs)$/.test(file)) continue;
       const rel = relative(root, file);
@@ -635,51 +612,9 @@ criterion('A6', [
       }
       if (/['"](?:node:)?child_process['"]/.test(text)) {
         assert.doesNotMatch(text, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
-        if (rel === join('payload', 'engine', 'lib', 'candidate-ref-transaction.js')) {
-          assert.match(text, /import\s*\{\s*spawn\s*\}\s*from\s*'node:child_process'/);
-          assert.equal([...text.matchAll(/['"](?:node:)?child_process['"]/g)].length, 1);
-          assert.equal([...text.matchAll(/\bspawn\s*\(/g)].length, 2);
-          assert.equal([...text.matchAll(/spawn\('\/usr\/bin\/git',/g)].length, 2);
-          assert.match(text, /'update-ref', '--no-deref', '--stdin', '-z'/);
-          assert.match(text, /core\.hooksPath=\/dev\/null/);
-          assert.doesNotMatch(text, /shell\s*:|['"](?:fetch|pull|reset|stash|add)['"]/);
-          continue;
-        }
-        const prepared = preparedLaunches.get(rel);
-        if (prepared) {
-          assert.equal([...text.matchAll(/['"](?:node:)?child_process['"]/g)].length, 1,
-            `${rel}: exactly one approved child_process import, without additional methods or module aliases`);
-          assert.match(text, new RegExp(`import\\s*\\{\\s*${prepared.method}\\s*\\}\\s*from\\s*'node:child_process'`));
-          assert.equal([...text.matchAll(/\b(?:spawnSync|spawn)\s*\(/g)].length, 1,
-            `${rel}: exactly one fixed trusted launch point`);
-          assert.match(text, prepared.call, `${rel}: fixed executable and arguments`);
-          for (const boundary of prepared.boundaries) assert.match(text, boundary, `${rel}: trusted runtime boundary`);
-          assert.doesNotMatch(text, /shell\s*:/, `${rel}: trusted checks must not invoke a shell`);
-          continue;
-        }
-        if (rel === join('payload', 'engine', 'lib', 'migration-activation.js')) {
-          assert.equal([...text.matchAll(/\bspawnSync\s*\(/g)].length, 1);
-          assert.match(text, /spawnSync\('\/usr\/bin\/git', \['-c', 'core.fsmonitor=false', '-C', root, \.\.\.args\]/);
-          assert.match(text, /git\(\['config', '--null', '--get-all', 'core.hooksPath'\]\)/);
-          assert.match(text, /git\(\['ls-files', '--stage', '-z'\]\)/);
-          assert.match(text, /git\(\['rev-parse', '--verify', request.publish.outputRef\]\)/);
-          assert.doesNotMatch(text, /shell\s*:|['"](?:fetch|pull|reset|checkout|update-ref|add|commit)['"]/);
-          continue;
-        }
-        if (rel === join('payload', 'engine', 'lib', 'migration-consumer-proof.js')) {
-          assert.equal([...text.matchAll(/\bspawnSync\s*\(/g)].length, 1);
-          assert.match(text, /spawnSync\('git',/);
-          assert.match(text, /git\(\['init', '--quiet', '--template='\]\)/);
-          assert.match(text, /git\(\['add', '--all', '--force', '--', '\.'\]\)/);
-          assert.match(text, /core\.hooksPath=\/dev\/null/);
-          assert.match(text, /GIT_CONFIG_GLOBAL: '\/dev\/null'/);
-          assert.doesNotMatch(text, /shell\s*:|['"](?:fetch|pull|reset|checkout|update-ref)['"]/);
-          continue;
-        }
         const capturedReaders = [
           join('payload', 'engine', 'lib', 'captured-source.js'),
           join('payload', 'engine', 'lib', 'identity-migration-source.js'),
-          join('payload', 'engine', 'lib', 'prepared-migration-gate.js'),
         ];
         const historicalGit = [
           join('payload', 'engine', 'compatibility', 'identity-migration-08066b5', 'engine', 'commands', 'survey-map.js'),
@@ -694,7 +629,7 @@ criterion('A6', [
         }
         assert.ok([join('payload', 'engine', 'commands', 'survey-map.js'),
           join('payload', 'engine', 'lib', 'commit-snapshot.js'),
-          join('payload', 'engine', 'lib', 'prepare-candidate.js'), ...capturedReaders, ...historicalGit].includes(rel),
+          ...capturedReaders, ...historicalGit].includes(rel),
         `${rel}: child_process outside Git navigation/snapshot orchestration (D-014)`);
         assert.match(text, /spawnSync\('git',/, 'only the fixed git binary may be spawned');
         if (capturedReaders.includes(rel)) {

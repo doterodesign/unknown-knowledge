@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba
     title: Assignment genesis distinguishes canonical absence from unknown classification
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -31,4 +31,4 @@ entries:
       This backfill is proposed and allocates no canonical Decision identity.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000010, D-000014] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000010, D-000014, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

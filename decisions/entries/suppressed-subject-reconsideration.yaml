@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:3d935466-771a-458b-be78-37bec94ec044
     title: Suppressed Subject reconsideration preserves refusal history and publishes one fresh identity
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -405,4 +405,4 @@ entries:
       does not publish this proposed Decision, approve runtime configuration,
       authorize customer records, create a PR or release a package. Each actual
       PR retains the repository's decision, version and documentation obligations.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:c584ac00-a64a-4fc3-bc61-882e68e96e6d, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:c584ac00-a64a-4fc3-bc61-882e68e96e6d, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

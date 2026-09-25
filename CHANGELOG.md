@@ -13,6 +13,14 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.13] - Unreleased
+
+- Remove the in-engine publication pipeline, Subject lifecycle operations and typed assignment/promotion gates: 136 modules no shipped command, API operation or CLI reached. Store changes are ordinary commits checked by the pre-commit gate and reviewed in PRs.
+- The loader no longer reads assignment history; an existing `subjects/_assignments/` directory is ignored and can be deleted. The seven `assignment-*` schemas and record kinds are removed.
+- The engine spawns only Git now. The D-014 guard in `acceptance/run.js` and the README subprocess test pin exactly the remaining Git launch points.
+- The test suite drops from 324 to 110 files and runs in about four minutes instead of over an hour.
+- 26 proposal Decisions for the removed machinery are marked rejected. Decision: [removal](decisions/entries/remove-publication-pipeline.yaml). Tracking: UCS-1519.
+
 ## [3.0.0-rc.12] - Unreleased
 
 - The Subject registry is an ordinary governed file. The loader no longer replays a recorded event history; `history` and per-Subject `changes` are optional and inert. Subject IDs must still hold matching allocations in `_identity.yaml`, and every structural check stays.

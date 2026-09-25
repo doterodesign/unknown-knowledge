@@ -1,11 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as subjects from '../payload/engine/lib/subjects.js';
-import { canonicalSha256 } from '../payload/engine/lib/canonical-json.js';
-import { evaluateSubjectGovernance, validateSubjectPromotion } from '../payload/engine/lib/subject-governance.js';
-import { subjectGovernanceFixture } from './helpers/subject-governance-fixture.js';
-import { subjectPromotionFixture } from './helpers/subject-promotion-fixture.js';
-import { SUBJECT_REGISTRY_DIAGNOSTIC_CODES } from '../payload/engine/lib/subject-registry-reader.js';
 
 const namespace = '12345678-1234-4234-8234-123456789abc';
 const proposal = `proposal:subject:${namespace}`;
@@ -40,50 +35,6 @@ test('related graph refuses reciprocal authored declarations', () => {
     subject('S-000002', { related: [edge('S-000001')] })]);
   assert.equal(result.ok, false);
   assert.ok(result.diagnostics.some((d) => d.code === 'duplicate-related'));
-});
-
-const digestEvent = ({ review, ...event }) => canonicalSha256(event);
-function relatedHistory(firstEdges, secondEdges = []) {
-  const f = subjectGovernanceFixture();
-  const creation = f.document.history[0];
-  const first = { ...structuredClone(creation.rows[0].after), related: firstEdges };
-  const second = { ...structuredClone(first), label: 'Second meaning', related: secondEdges };
-  creation.rows = [{ id: 'S-000001', before: null, after: first },
-    { id: 'S-000002', before: null, after: second }];
-  creation.review.changeDigest = digestEvent(creation);
-  const event = { id: '34567890-1234-4234-8234-123456789abc', action: 'relate',
-    decision: creation.decision, rows: [{ id: 'S-000001', before: first, after: { ...first, related: [] } }] };
-  event.review = { ...creation.review, changeDigest: digestEvent(event) };
-  f.document.history.push(event);
-  f.document.revision = 2;
-  f.document.subjects = [{ id: 'S-000001', ...event.rows[0].after, changes: [creation.id, event.id] },
-    { id: 'S-000002', ...second, changes: [creation.id] }];
-  return f;
-}
-function evaluate(f) {
-  return evaluateSubjectGovernance({ registry: subjects.indexSubjects(f.document).registry,
-    identity: f.identityInput.identity, identityIndex: f.identityIndex, decisionCaptures: f.decisionCaptures });
-}
-
-for (const [name, first, second] of [
-  ['self', [edge('S-000001')], []],
-  ['dangling', [edge('S-000099')], []],
-  ['reciprocal', [edge('S-000002')], [edge('S-000001')]],
-]) {
-  test(`a later relation edit cannot conceal an invalid historical ${name} edge`, () => {
-    const f = relatedHistory(first, second);
-    assert.equal(subjects.indexSubjects(f.document).ok, true, 'final graph is valid');
-    const result = evaluate(f);
-    assert.equal(result.ok, false);
-    assert.equal(result.diagnostics[0].code, 'invalid-history-forest');
-  });
-}
-
-test('historical relation validation includes unchanged endpoints and preserves authored snapshots', () => {
-  const f = relatedHistory([edge('S-000002')]);
-  const before = structuredClone(f.document);
-  assert.equal(evaluate(f).ok, true);
-  assert.deepEqual(f.document, before);
 });
 
 const related = (registry, id, edges) => subjects.subjectRelated(registry, id, { budget: { edges } });
@@ -160,31 +111,4 @@ test('invalid selectors and options refuse with typed errors instead of empty na
     { edges: Number.MAX_SAFE_INTEGER + 1 }, { edges: 1, nodes: 1 }]) {
     assert.throws(() => subjects.subjectRelated(registry, 'S-000001', { budget }), { code: 'invalid-budget' });
   }
-});
-
-test('actual loaded promotion rejects dangling and self links through registered diagnostics', (t) => {
-  for (const [target, code] of [['S-000099', 'missing-related'], ['S-000001', 'self-related']]) {
-    const f = subjectPromotionFixture(t);
-    f.event.rows[0].after.related = [edge(target)];
-    f.candidate.subjects.find(({ id }) => id === 'S-000001').related = [edge(target)];
-    f.reload();
-    assert.equal(f.candidateModel.ok, false);
-    assert.ok(f.candidateModel.diagnostics.some((d) => d.code === code), JSON.stringify(f.candidateModel.diagnostics));
-    assert.ok(SUBJECT_REGISTRY_DIAGNOSTIC_CODES.includes(code));
-    assert.equal(validateSubjectPromotion(f).ok, false);
-  }
-});
-
-test('actual promotion can relate to an unchanged canonical endpoint without rewriting its history', (t) => {
-  const f = subjectPromotionFixture(t, { parentStatus: 'active' });
-  const targetBefore = structuredClone(f.candidate.subjects.find(({ id }) => id === 'S-000002'));
-  f.event.rows[0].after.related = [edge('S-000002')];
-  f.candidate.subjects.find(({ id }) => id === 'S-000001').related = [edge('S-000002')];
-  f.reload();
-  assert.equal(f.candidateModel.ok, true, JSON.stringify(f.candidateModel.diagnostics));
-  const result = validateSubjectPromotion(f);
-  assert.equal(result.ok, true, JSON.stringify(result.diagnostics));
-  assert.equal(result.publicationReady, false);
-  assert.deepEqual(f.candidate.subjects.find(({ id }) => id === 'S-000002'), targetBefore);
-  assert.equal(related(f.candidateModel.subjectRegistry, 'S-000002', 1).neighbors[0].witness.derivedInverse, true);
 });

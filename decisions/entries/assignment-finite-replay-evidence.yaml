@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:f1369103-65d4-4660-b166-f396e918a67d
     title: Finite replay evidence reserves the complete recipe and preserves unknown results
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -30,4 +30,4 @@ entries:
       docs/agents/ucs-1241-assignment-replays.md records the legacy recipe scope.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-000008, D-000011, D-000012, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000008, D-000011, D-000012, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

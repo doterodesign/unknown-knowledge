@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:b35f9a27-86ca-454f-ad53-b77113499a68
     title: Typed promotion shares exact byte planning with fixed store lifecycle policies
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -31,4 +31,4 @@ entries:
       byte plans does not expand an Ontology-only gate or the existing Decision
       publication profile. Implementation, limits and actual Git test evidence
       are documented in docs/agents/ucs-1234-typed-promotion-planner.md.
-    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:1c8d9b0f-38a9-4f86-a571-3ed7d14add75] }
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:1c8d9b0f-38a9-4f86-a571-3ed7d14add75, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

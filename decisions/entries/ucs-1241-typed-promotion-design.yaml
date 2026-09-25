@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:ac919c9f-8879-422b-9dce-8b3e04324712
     title: Typed promotion separates candidate activation from fresh assignment genesis
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -100,4 +100,4 @@ entries:
       changing its policy descriptor or input/report shapes.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000005, D-000010, proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:f1369103-65d4-4660-b166-f396e918a67d, proposal:decision:53e6b70b-75d3-476b-bd2c-1b11ef075ebc] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000005, D-000010, proposal:decision:ab799c5e-c506-458c-b642-5a6b8fb8b7ba, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:f1369103-65d4-4660-b166-f396e918a67d, proposal:decision:53e6b70b-75d3-476b-bd2c-1b11ef075ebc, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

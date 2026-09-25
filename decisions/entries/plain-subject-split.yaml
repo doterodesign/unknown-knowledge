@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:e4a28bbf-8a28-4eea-b32a-b81b15bdc14d
     title: Subject split preserves original meaning and proves fresh successors and complete mappings
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -157,4 +157,4 @@ entries:
       replay case and byte reservation precedes every query. The design, dedicated
       gate/replay guides and owner receipts document the implemented boundaries;
       retained artifacts, runtime review and final split publication remain unfinished.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000011, D-000012, proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000011, D-000012, proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }
