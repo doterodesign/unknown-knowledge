@@ -35,6 +35,11 @@ function setup(t, { initial = true } = {}) {
   const ok = (r) => assert.equal(r.status, 0, r.stdout + r.stderr);
   const write = (path, bytes) => { mkdirSync(dirname(join(repo, path)), { recursive: true }); writeFileSync(join(repo, path), bytes); };
   ok(git('init', '-q'));
+  // No automatic gc: one test removes a loose object and needs it to stay
+  // unpacked, and background maintenance must never race the cleanup.
+  ok(git('config', 'gc.auto', '0'));
+  ok(git('config', 'gc.autoDetach', 'false'));
+  ok(git('config', 'maintenance.autoDetach', 'false'));
   ok(git('config', 'user.name', 'Hook Test'));
   ok(git('config', 'user.email', 'hook@example.test'));
   symlinkSync(join(kit, 'node_modules'), join(repo, 'node_modules'), 'dir');

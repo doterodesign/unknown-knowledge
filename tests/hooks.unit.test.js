@@ -1,7 +1,7 @@
 // UCS-1157: the seeded git hooks — blocking validation before commit, and
 // automatic reverse lookup over the staged diff.
 //
-// These source checks supplement tests/commit-gate.test.js, which exercises
+// These source checks supplement tests/commit-gate.e2e.test.js, which exercises
 // real commits with the installed pre-commit hook. They pin packaging,
 // thin wrappers and the absence of a bypass switch.
 import { test } from 'node:test';

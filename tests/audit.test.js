@@ -7,10 +7,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { scratchRepository } from './helpers/canonical.js';
 import { load } from 'js-yaml';
 
 const cli = fileURLToPath(new URL('../payload/engine/audit.js', import.meta.url));
@@ -27,21 +26,8 @@ function runJson(root, expectedStatus, ...args) {
 
 // --------------------------------------------- synthetic repos (scope, health)
 
-function plantRepo(name, files) {
-  const repo = join(mkdtempSync(join(tmpdir(), `kk12-${name}-`)), 'repo');
-  mkdirSync(repo, { recursive: true });
-  const git = (...args) => {
-    const result = spawnSync('git', ['-C', repo, ...args], { encoding: 'utf8' });
-    assert.equal(result.status, 0, `git ${args[0]}: ${result.stderr}`);
-  };
-  git('init', '-q');
-  for (const [rel, content] of Object.entries(files)) {
-    mkdirSync(dirname(join(repo, rel)), { recursive: true });
-    writeFileSync(join(repo, rel), content);
-  }
-  git('add', '-A');
-  return repo;
-}
+/** A staged repository holding exactly `files` (scenario name kept for reading). */
+const plantRepo = (name, files) => scratchRepository(null, files);
 
 const ANCHOR_TS = "export const ICONS = ['grid', 'list'];\n";
 const STORE_MIN = {

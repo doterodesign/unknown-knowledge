@@ -9,7 +9,7 @@
 # obedience: the same validator CI runs, run before the commit exists.
 #
 # Installed-hook behavior is exercised with real Git commits in
-# tests/commit-gate.test.js; command tests alone do not prove the wiring.
+# tests/commit-gate.e2e.test.js; command tests alone do not prove the wiring.
 #
 # Wire it (the client's own git config — the kit never writes .git/):
 #   ln -s ../../unknown-knowledge/hooks/pre-commit .git/hooks/pre-commit

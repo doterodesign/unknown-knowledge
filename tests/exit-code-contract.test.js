@@ -19,6 +19,7 @@ import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EXIT_CODES } from '../payload/engine/lib/exit-codes.js';
 import { catchBlocks } from './lib/catch-blocks.js';
+import { scratchRepository } from './helpers/canonical.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const fixture = join(repoRoot, 'fixtures', 'ts-app');
@@ -93,19 +94,12 @@ const commandOf = (surface) => surface.replace(/\/([\w-]+\.js)$/, '/commands/$1'
  * this repo has one, so the FINDINGS branch would otherwise never be exercised.
  */
 function repoWithBlindSpot(t) {
-  const dir = mkdtempSync(join(tmpdir(), 'uk-blind-'));
   const outside = mkdtempSync(join(tmpdir(), 'uk-outside-'));
-  t.after(() => { rmSync(dir, { recursive: true, force: true }); rmSync(outside, { recursive: true, force: true }); });
-
+  t.after(() => rmSync(outside, { recursive: true, force: true }));
   writeFileSync(join(outside, 'outside.txt'), 'not visible from the root\n');
-  writeFileSync(join(dir, 'a.ts'), 'export const a = 1;\n');
+  const dir = scratchRepository(t, { 'a.ts': 'export const a = 1;\n' });
   symlinkSync(join(outside, 'outside.txt'), join(dir, 'link.txt'));
-
-  const git = (...args) => spawnSync('git', ['-C', dir, ...args], { encoding: 'utf8', timeout: 20_000 });
-  assert.equal(git('init', '-q', '.').status, 0, 'git init');
-  git('config', 'user.email', 'test@example.com');
-  git('config', 'user.name', 'test');
-  assert.equal(git('add', '-A').status, 0, 'git add');
+  assert.equal(spawnSync('git', ['-C', dir, 'add', '-A'], { encoding: 'utf8' }).status, 0, 'git add');
   return dir;
 }
 

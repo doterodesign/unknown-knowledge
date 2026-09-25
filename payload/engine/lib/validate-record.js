@@ -74,7 +74,7 @@ export const ERROR_CODES = Object.freeze([
 /**
  * The JSON Schema subset this module interprets. Schemas must not use
  * keywords outside this set — an unenforced keyword is silent contract
- * drift (tests/store-schemas.test.js walks every schema against it).
+ * drift (tests/store-schemas.unit.test.js walks every schema against it).
  */
 export const SUPPORTED_KEYWORDS = Object.freeze([
   '$schema', '$id', '$defs', '$ref',
@@ -98,7 +98,7 @@ const schemaCache = new Map();
  * for external consumers, but the ENGINE validates against lib/id-grammars.js
  * — the one module that owns each id space's pattern. Overwriting rather than
  * asserting is deliberate: a drifted copy is corrected here, so the engine can
- * only ever enforce the live grammar. (tests/id-grammars.test.js pins that the
+ * only ever enforce the live grammar. (tests/id-grammars.unit.test.js pins that the
  * shipped copies agree, which is what keeps the published documents honest.)
  *
  * The grammar's HINT is bound alongside its pattern, under a key the schema

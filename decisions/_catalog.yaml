@@ -259,3 +259,6 @@ entries:
   - id: proposal:decision:5d6a8862-4db1-4812-bda9-2b9772b61be8
     title: A one-shot converter replaces the bundled 08066b5 engine and reviewed migration
     file: entries/one-shot-2x-converter.yaml
+  - id: proposal:decision:2cfcc7cc-c716-4b22-b255-94caf7382074
+    title: Tests run in three tiers named by file suffix, with Git repositories copied rather than initialized
+    file: entries/test-tiers.yaml

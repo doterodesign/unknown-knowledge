@@ -21,6 +21,7 @@ import { appendFileSync, cpSync, mkdtempSync, readFileSync, readdirSync, rmSync,
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { scratchRepository } from './helpers/canonical.js';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const engineDir = join(repoRoot, 'payload', 'engine');
@@ -128,12 +129,10 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
     if (['commit-check.js', 'reverse-staged.js'].includes(surface)) {
       // The gate now needs a real Git candidate, even when runtime loading
       // fails. Keep evidence separate from the deliberately broken runtime.
-      checkRoot = join(dir, `candidate-${surface}`);
+      checkRoot = scratchRepository(t);
       cpSync(fixture, checkRoot, { recursive: true });
-      for (const args of [['init', '-q'], ['add', '.']]) {
-        const git = spawnSync('git', ['-C', checkRoot, ...args], { encoding: 'utf8' });
-        assert.equal(git.status, 0, git.stderr);
-      }
+      const git = spawnSync('git', ['-C', checkRoot, 'add', '.'], { encoding: 'utf8' });
+      assert.equal(git.status, 0, git.stderr);
     }
     const r = run(dir, surface, '--root', checkRoot);
     assertNeverFindings(r, surface, 'with js-yaml absent');

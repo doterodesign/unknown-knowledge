@@ -398,7 +398,7 @@ ln -s ../../unknown-knowledge/hooks/reverse-lookup .git/hooks/prepare-commit-msg
   edit was made.
 - [ ] Verify complete filenames with commas, whitespace, quotes and newlines
   survive through actual Git commits and resolver JSON without splitting or
-  shell execution. `tests/reverse-staged.test.js` provides deterministic
+  shell execution. `tests/reverse-staged.e2e.test.js` provides deterministic
   regression cases; a fresh-agent walkthrough still needs its own trace.
 - [ ] With no staged changes, `sh unknown-knowledge/hooks/reverse-lookup` exits
   0 with no output. This also holds for an empty unborn index.

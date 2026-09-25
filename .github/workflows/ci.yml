@@ -70,6 +70,23 @@ jobs:
       - run: npm run lint
       - run: npm test
 
+  # End-to-end tier: real Git hooks, init copies, the 2.x converter on pilot
+  # stores built by the pinned 08066b5 runtime (needs full history).
+  engine-e2e:
+    needs: changes
+    if: needs.changes.outputs.engine == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run test:e2e
+
   # KK-16 acceptance harness: ONE run reporting per-criterion status for the
   # PRD §10 capabilities against BOTH fixture apps. Asserts A2-A4 + A6;
   # reports A1 as DEFERRED (M5) and A5 as MANUAL — never fake coverage.
@@ -90,7 +107,7 @@ jobs:
   # job, so a required check always resolves; fails if any needed job
   # failed or was cancelled.
   ci-ok:
-    needs: [changes, pr-version, engine-tests, fixture-acceptance]
+    needs: [changes, pr-version, engine-tests, engine-e2e, fixture-acceptance]
     if: always()
     runs-on: ubuntu-latest
     steps:

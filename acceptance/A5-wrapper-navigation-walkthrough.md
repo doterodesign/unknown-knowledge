@@ -1,7 +1,7 @@
 # A5 — generated wrapper navigation (UCS-1222)
 
 This is a **manual, model-dependent** trial. Delivery assertions in
-`tests/init-wrappers.test.js` prove what init writes; this trial records what
+`tests/init-wrappers.e2e.test.js` prove what init writes; this trial records what
 a fresh agent actually does. Markdown instructions are not a host tool firewall.
 
 ## Prepare an isolated client

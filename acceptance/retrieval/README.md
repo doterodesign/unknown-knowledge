@@ -59,7 +59,7 @@ loaded query refuses; partial context timing does not qualify full enumeration.
 Run the scorer's independent literal examples:
 
 ```sh
-node --test tests/retrieval-acceptance.test.js
+node --test tests/retrieval-acceptance.e2e.test.js
 ```
 
 ## Agreed rubric

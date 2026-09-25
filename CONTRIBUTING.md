@@ -33,9 +33,20 @@ the demand signal the kind backlog is built from.
 
 ## Pull request expectations
 
-- **Tests**: `npm test` green; new behavior comes with tests. Build new tests
-  on the shared fixture in `fixtures/canonical` (see its README) rather than
-  initializing a repository per test.
+- **Tests**: `npm test` and `npm run test:e2e` green; new behavior comes with
+  tests. Tests come in three tiers, chosen by file name:
+
+  | Tier | File name | Runs | Script | Measured |
+  | --- | --- | --- | --- | --- |
+  | Unit | `tests/*.unit.test.js` | in-memory models; no subprocess, no Git, no temporary files | `npm run test:unit` | 376 tests, 6 s |
+  | Fixture | `tests/*.test.js` | the canonical fixture, validators, retrieval, CLI/API/MCP parity, gold gate | `npm test` (with unit) | 1,342 tests, 12 s |
+  | End-to-end | `tests/*.e2e.test.js` | real Git hooks, `init` copies, the 2.x converter; CI runs it | `npm run test:e2e` | 130 tests, about 3 min |
+
+  Build new tests on the shared fixture in `fixtures/canonical` (see its
+  README). A test that needs Git copies `repository(t, name)`, or
+  `scratchRepository(t, files)` when the scenario is a planted tree; neither
+  runs `git init` per test. Build expensive results once per file and assert
+  many properties against them.
 - **Lint**: `npm run lint` clean.
 - **Acceptance**: `npm run acceptance` green.
 - **Structural validation**: `node payload/engine/validate.js --root .`

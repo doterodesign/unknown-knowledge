@@ -11,37 +11,20 @@
 // surface, one answer.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { dirname, join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { scratchRepository } from './helpers/canonical.js';
 import { locateKit, locateKitRoot, AmbiguousKitLayout, KIT_DIR_DEFAULT } from '../payload/engine/lib/kit-root.js';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const engine = (name) => join(root, 'payload', 'engine', name);
 
-const scratch = mkdtempSync(join(tmpdir(), 'kit-root-'));
-process.on('exit', () => rmSync(scratch, { recursive: true, force: true }));
-let n = 0;
 
-/** Plant a repo from a path→content map; returns its absolute root. */
-function plant(files) {
-  const repo = join(scratch, `r${n += 1}`);
-  for (const [rel, content] of Object.entries(files)) {
-    const abs = join(repo, rel);
-    mkdirSync(dirname(abs), { recursive: true });
-    writeFileSync(abs, content);
-  }
-  mkdirSync(repo, { recursive: true });
-  // The reverse audit rides the survey map, which enumerates git-tracked
-  // files — an unversioned repo fails before it ever reaches the locator.
-  const git = (...args) => execFileSync('git', ['-C', repo, ...args], { stdio: 'ignore' });
-  git('init', '--quiet');
-  git('add', '-A');
-  git('-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '--quiet', '-m', 'planted');
-  return repo;
-}
+/** A committed repository holding exactly `files`; returns its absolute root. */
+// The reverse audit rides the survey map, which enumerates git-tracked files,
+// so an unversioned repo would fail before it ever reached the locator.
+const plant = (files) => scratchRepository(null, files, { commit: true });
 
 const RULES = 'schema-version: 1\nstore: ontology\nrules: []\n';
 const catalog = (id, title, file) =>

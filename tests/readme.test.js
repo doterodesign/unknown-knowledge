@@ -87,11 +87,8 @@ test('the README limits subprocesses to Git plumbing', () => {
     }
   };
   walk(engineDir);
-  assert.deepEqual(spawners.sort(), ['captured-source.js', 'commit-snapshot.js', 'survey-map.js'],
+  assert.deepEqual(spawners.sort(), ['commit-snapshot.js', 'survey-map.js'],
     'only Git plumbing spawns (D-014)');
-  const capture = readFileSync(join(engineDir, 'lib', 'captured-source.js'), 'utf8');
-  assert.match(capture, /spawnSync\('git',/);
-  assert.doesNotMatch(capture, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive|write-tree)['"]/);
   const snapshot = readFileSync(join(engineDir, 'lib', 'commit-snapshot.js'), 'utf8')
     .replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
   assert.match(snapshot, /spawnSync\('git',/);

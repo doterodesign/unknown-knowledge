@@ -69,7 +69,7 @@ test('O-000007 wrong-pointer: no claimed value appears anywhere in the pointed f
 test('nothing shipped by init (payload/, cli/) references the acceptance fixtures (D-007)', () => {
   // KK-17's kit.manifest.yaml now exists and the CONSTRUCTIONAL guard lives
   // in cli/lib/copy-payload.js (loadManifest refuses any source outside
-  // payload/ or under fixtures//tests/ — covered by tests/init-copy.test.js
+  // payload/ or under fixtures//tests/ — covered by tests/init-copy.e2e.test.js
   // and the A1 acceptance criterion). cli/ legitimately names the D-007
   // boundary and the seeded engine/tests/fixtures/<stack> targets, so the
   // lexical pin here is the part the copy engine can't check: no shippable

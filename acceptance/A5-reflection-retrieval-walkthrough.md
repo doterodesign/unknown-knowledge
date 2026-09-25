@@ -3,7 +3,7 @@
 This extends the existing [reflect walkthrough](A5-knowledge-reflect-walkthrough.md).
 It exercises diagnosis, approval, kb-build handoff, and retrieval improvement.
 It is **model-dependent**: the CLI characterization in
-`tests/reflection-retrieval.test.js` does not prove that an agent follows the
+`tests/reflection-retrieval.e2e.test.js` does not prove that an agent follows the
 protocol. Preserve fresh-agent traces; do not mark boxes from a prompt assertion.
 All source documents and steward decisions below are synthetic fixtures, never
 approval to change live company knowledge.
