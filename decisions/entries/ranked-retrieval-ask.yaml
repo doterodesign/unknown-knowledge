@@ -1,0 +1,59 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:fb2c4724-c3c4-4a1a-b367-231b2dfc685e"
+    title: "Ranked metadata retrieval with a retrieval tier is the first retrieval step"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1515; acceptance pending"]
+    context: >
+      The held-out evaluation regressed source-supported completion from 15/18 to
+      10/18. On the 48 development-v2 gold tasks, resolve returned zero records for
+      every question: it joins only exact governed phrases, never searches
+      Decisions, and the development records carry no terms. The typed Subject
+      path sorts by identity rather than relevance and returned up to 77 KB,
+      exhausting host output budgets in four of seven held-out regressions. The
+      user asked for retrieval that is as accurate as possible, under one second
+      in most cases, with a confidence level, while keeping stable IDs and
+      metadata-driven records.
+    decision: >
+      Add ask.js and the record.ask operation. Search ranks Knowledge, Ontology
+      and Decision records with BM25F over a record's own names (weight 4),
+      assigned Subject labels (2), descriptions (1.5) and body (1), after Unicode
+      folding, light stemming and a question-noise list checked before folding.
+      Accession IDs in the question lead the results. A record whose own title
+      carries a question word found in at most three titles is guaranteed a slot.
+      Output carries identities, titles, files and match evidence, never bodies,
+      and at most eight records by default. A deterministic retrieval tier
+      reports covered (no unknown or missed terms, top-record coverage at least
+      0.75, at most one near-complete tie), none (coverage below 0.2), partial
+      otherwise, and unavailable whenever a store did not load cleanly. The tier
+      claims only that the right records were found; the host agent's answer
+      check after reading them decides answered, partially answered or not in
+      the knowledge base. Count and fields modes select exactly by metadata,
+      group by one field, report missing values and ties at the cut, and never
+      rank by relevance. The MCP server keeps one index per root in memory and
+      drops it on any change under the kit root. The protocol starts RESOLVE with
+      ask; resolve keeps governed vocabulary joins, --paths and --doc.
+    consequences: >
+      On the development gold set every answer bundle is within the default
+      eight records (37/48 within three, 28/48 at rank one) at about 85 ms p95
+      and at most 2.8 KB, against 0/48 for resolve. No unanswerable task is
+      called covered and no task is called none. The weights and two rules were
+      tuned on those same tasks; a weight sweep changed at most one result, but
+      there is no untouched held-out set yet. Synonym gaps still need aliases in
+      metadata. Cold CLI calls grow with store size (about 1 s at 10,000
+      records, 14 s at 100,000); only the warm MCP path meets the latency goal at
+      that size (about 185 ms search, 280 ms count). tests/ask-gold.test.js
+      makes these floors a regression gate. Alternatives rejected: an embedding
+      index (non-deterministic, and D-000014 keeps the engine offline), raising
+      resolve's phrase matching (still no ranking or confidence), and answer
+      confidence inside the engine (retrieval signals do not separate
+      answerable from unanswerable tasks). The user authorized this work in the
+      session that produced it; that authorization is not acceptance or
+      publication of this Decision. Supporting evidence:
+      payload/engine/lib/ask.js, payload/engine/lib/aggregate.js,
+      payload/engine/lib/ask-service.js, tests/ask.test.js,
+      tests/ask-gold.test.js, acceptance/retrieval/benchmark.js and
+      docs/agents/2026-09-24-retrieval-before-after-map.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000010", "D-000011", "D-000014"]}

@@ -12,10 +12,11 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.8 — unreleased
+## Planned 3.0.0-rc.9 — unreleased
 
-`unknown-knowledge@3.0.0-rc.8` is the planned prerelease represented by the
-[seven-PR delivery stack](docs/pr-delivery/README.md). Merging the stack into
+`unknown-knowledge@3.0.0-rc.9` is the planned prerelease represented by the
+[seven-PR delivery stack](docs/pr-delivery/README.md) plus ranked retrieval
+(`ask`). Merging into
 `main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1
 installations. The install commands below remain unchanged.
 
@@ -25,8 +26,13 @@ The prepared implementation adds:
   installation, plus optional stable Subjects. A record can have multiple
   Subject assignments; each Subject has at most one parent, with typed related
   links kept separate from ancestry.
-- Governed Subject queries and intent execution, with eleven read operations
+- Governed Subject queries and intent execution, with twelve read operations
   shared by the API, request-file CLI and local stdio MCP server.
+- `ask`: one question in, at most eight ranked records from all three stores
+  and a retrieval tier (`covered`, `partial`, `none`, `unavailable`) out. It
+  also counts records exactly by metadata field for questions about many
+  records. The tier says whether the right records were found, not whether
+  they answer the question; the agent decides that after reading them.
 
 Existing stores require the explicit [reviewed migration process](docs/migration-3.md)
 before adopting the new identity format; check its supported source profiles.
@@ -41,6 +47,13 @@ request correctly or inspects adequate source evidence. Retrieval improvement
 and production or overall nonregression qualification have not been established.
 See the [approved report](acceptance/retrieval/review-packet/REPORT.md) and
 [qualification limits](acceptance/retrieval/FINAL-RESULTS.md).
+
+That evaluation predates `ask`. On the 48 development gold questions, the
+previous resolver returned no records for any question; `ask` places every
+independently judged answer bundle within its first eight results (37 within
+three, 28 at rank one) in about 85 ms. Those questions also guided `ask`'s
+tuning, and no agent evaluation has been run with it yet, so this is engine
+retrieval evidence, not a task-completion result.
 
 ## Quickstart
 
@@ -88,7 +101,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Eighteen seeded command-line surfaces. JavaScript with JSDoc types, zero build
+Nineteen seeded command-line surfaces. JavaScript with JSDoc types, zero build
 step; the seeded engine uses `js-yaml` (D-000022). The npm MCP adapter separately
 uses the official MCP SDK and Zod.
 
@@ -99,6 +112,7 @@ uses the official MCP SDK and Zod.
 | `commit-check.js` | do both whole-store validators pass the commit gate? |
 | `reverse-staged.js` | what governed each staged path before and after this commit? |
 | `preflight.js` | which Concepts may this agent trust, right now? |
+| `ask.js` | which records is this question about, how sure is that, and what do exact metadata counts say? |
 | `resolve.js` | what does the store know about these terms or paths? |
 | `query-subjects.js` | which captured records satisfy a governed subject query, with explicit counts and coverage? |
 | `survey-map.js` | what is in this repo, and what could not be surveyed? |
@@ -114,9 +128,9 @@ uses the official MCP SDK and Zod.
 | `invoke.js` | call the shared versioned API from a bounded JSON request file |
 
 The [shared API, terminal and MCP guide](payload/protocol/engine-interface.md)
-documents eleven read-only operations: discovery, subject lookup/tree/query,
-intersection routes/context counts, Ontology/Knowledge preflight and four
-intent-plan operations.
+documents twelve read-only operations: discovery, ranked record retrieval
+(`record.ask`), subject lookup/tree/query, intersection routes/context counts,
+Ontology/Knowledge preflight and four intent-plan operations.
 `unknown-knowledge-engine` calls the request-file CLI;
 `unknown-knowledge-mcp` serves the same API over local stdio for an external
 agent host. Both require explicit transport capacities. The API's `completed`

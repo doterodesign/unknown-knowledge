@@ -13,6 +13,14 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.9] - Unreleased
+
+- Add `ask.js` and the `record.ask` API/MCP operation: BM25F ranking over record names, Subject labels, descriptions and bodies across Knowledge, Ontology and Decisions, with a retrieval tier (`covered`, `partial`, `none`, `unavailable`). Exact metadata counts (`--count-by`, `--where`, `--under`) and a field card (`--fields`) answer questions about many records without reading them.
+- Start the protocol's RESOLVE step with `ask` and add the agent's answer check. `resolve` keeps vocabulary joins, `--paths` and `--doc`.
+- The MCP server keeps one retrieval index per root in memory and drops it on any change under the kit root.
+- Add the development gold retrieval gate (`tests/ask-gold.test.js`), the retrieval benchmark and a scale fixture generator. On the 48 gold questions every answer bundle falls within eight results, against none for `resolve`.
+- Decision: [ranked retrieval](decisions/entries/ranked-retrieval-ask.yaml). Tracking: UCS-1515.
+
 ## [3.0.0-rc.8] - Unreleased
 
 - Fetch full history for engine CI so pinned historical retrieval fixtures run with their existing baseline and integrity checks.

@@ -121,6 +121,7 @@ test('the Engine term names every shipped engine surface', () => {
     'validate-values': 'value validator',
     preflight: 'preflight',
     resolve: 'resolver',
+    ask: 'ranked record retrieval',
     'survey-map': 'survey map',
     audit: 'reverse audit',
     'log-entry': 'log-entry helper',

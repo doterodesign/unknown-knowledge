@@ -44,7 +44,7 @@ test('the README names every engine surface, and invents none', () => {
     assert.ok(shipped.includes(named), `the README documents ${named}, which no longer exists`);
   }
   // The prose spells the number out; a digit here would fail on style, not fact.
-  const words = { 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen' };
+  const words = { 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine', 10: 'Ten', 11: 'Eleven', 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen', 17: 'Seventeen', 18: 'Eighteen', 19: 'Nineteen' };
   assert.ok(words[shipped.length], `teach this test the word for ${shipped.length}`);
   assert.match(readme, new RegExp(`${words[shipped.length]} seeded command-line surfaces`, 'i'),
     `the README must say how many surfaces there are (${shipped.length})`);

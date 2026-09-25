@@ -46,6 +46,8 @@ function surfaces() {
  */
 const ARGV = {
   'payload/engine/resolve.js': ['some-term'],
+  // A question with no --root defaults to cwd, where the injected bug waits.
+  'payload/engine/ask.js': ['some question'],
   'payload/engine/log-entry.js': ['create'],
   // A supported extension, so dispatch succeeds and the injected bug is reached
   // in `main`; an unsupported one would be refused before it ever got there.

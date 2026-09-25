@@ -19,6 +19,8 @@ import { validateIntentQueryPlan, executeIntentQueryPlan } from '../lib/intent-q
 import { executeIntersectionRoute } from '../lib/subject-routes.js';
 import { countSubjectContexts } from '../lib/subject-contexts.js';
 import { deriveSubjectTreeArtifacts } from '../lib/subject-views.js';
+import { askPayload, createIndexCache } from '../lib/ask-service.js';
+import { UnknownFieldError } from '../lib/aggregate.js';
 
 export const ENGINE_INTERFACE_VERSION = 1;
 
@@ -141,6 +143,31 @@ function subjectView(root, input, mode) {
   return { mode, result, contextDiagnostics: loaded.diagnostics };
 }
 
+// One index per root for the life of the process; a store change evicts it.
+const askIndexes = createIndexCache();
+
+function recordAsk(root, input) {
+  requireInput(closed(input, [], ['question', 'mode', 'where', 'countBy', 'under', 'limit', 'top']));
+  const mode = input.mode ?? 'search';
+  const text = input.question ?? '';
+  const where = input.where ?? [];
+  const integer = (value, fallback, max) => (value === undefined ? fallback : value);
+  requireInput(['search', 'count', 'fields'].includes(mode) && typeof text === 'string'
+    && (mode !== 'search' || text.trim()) && (mode !== 'count' || typeof input.countBy === 'string')
+    && Array.isArray(where) && where.every((c) => closed(c, ['field', 'value']) && typeof c.field === 'string' && typeof c.value === 'string')
+    && (input.under === undefined || typeof input.under === 'string')
+    && [[input.limit, 50], [input.top, 100]].every(([v, max]) => v === undefined || (Number.isInteger(v) && v >= 1 && v <= max)));
+  try {
+    return askPayload(askIndexes.get([root]), {
+      mode, text: text.trim(), where, countBy: input.countBy ?? null, under: input.under ?? null,
+      limit: integer(input.limit, 8), top: integer(input.top, 10),
+    });
+  } catch (error) {
+    if (error instanceof UnknownFieldError) throw new InterfaceRefusal('unknown-field', error.message);
+    throw error;
+  }
+}
+
 // Discovery comes from real registrations; registration does not establish local authority.
 const operations = new Map([
   ['engine.capabilities', { scope: 'interface-metadata', run(root, input) {
@@ -155,6 +182,7 @@ const operations = new Map([
   ['subject.route', { outputVersion: 2, scope: 'governed-retrieval', run: (root, input) => subjectView(root, input, 'route') }],
   ['subject.contexts', { outputVersion: 2, scope: 'governed-retrieval', run: (root, input) => subjectView(root, input, 'contexts') }],
   ['record.preflight', { scope: 'record-verdicts', run: preflight }],
+  ['record.ask', { scope: 'ranked-retrieval', run: recordAsk }],
   ['intent.validate', { scope: 'declared-inventory', run(root, input) {
     requireInput(closed(input, ['plan'])); return validateIntentPlan(input.plan);
   } }],

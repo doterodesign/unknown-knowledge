@@ -132,7 +132,10 @@ test('official MCP client discovers and calls actual lookup/query owners over st
   await client.connect(transport);
   const listed = await client.listTools();
   assert.deepEqual(listed.tools.map(tool => tool.name).sort(), ['engine_capabilities', 'intent_executeQueries',
-    'intent_inspectBindings', 'intent_validate', 'intent_validateQueries', 'record_preflight', 'subject_contexts', 'subject_lookup', 'subject_query', 'subject_route', 'subject_tree']);
+    'intent_inspectBindings', 'intent_validate', 'intent_validateQueries', 'record_ask', 'record_preflight', 'subject_contexts', 'subject_lookup', 'subject_query', 'subject_route', 'subject_tree']);
+  const asked = await client.callTool({ name: 'record_ask', arguments: { question: 'Shape' } });
+  assert.equal(asked.isError, false, JSON.stringify(asked));
+  assert.deepEqual(asked.structuredContent, await invoke(request(f.root, 'record.ask', { question: 'Shape' })));
   const input = queryInput(f);
   const found = await client.callTool({ name: 'subject_query', arguments: input });
   assert.equal(found.isError, false, JSON.stringify(found));

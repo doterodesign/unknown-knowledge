@@ -24,6 +24,7 @@ through the request-file CLI.
 | `subject.query` | `subject_query` | `query`, `collect`, `evidence`, `operationLimits` |
 | `subject.route` | `subject_route` | `request`, `evidence`, `operationLimits` |
 | `subject.contexts` | `subject_contexts` | `request`, `evidence`, `operationLimits` |
+| `record.ask` | `record_ask` | `question` for search; (`mode`: `search`, `count`, `fields`; `where`; `countBy`; `under`; `limit`; `top`) |
 | `record.preflight` | `record_preflight` | `concepts`, `leaves`, `today` |
 | `intent.validate` | `intent_validate` | `plan` |
 | `intent.inspectBindings` | `intent_inspectBindings` | `plan`, (`lookupRequests`) |
@@ -56,6 +57,20 @@ The tree's `maxBytes` bounds `tree.md` including its fingerprint banner, not
 metadata or the API envelope. Request-CLI and MCP output capacities apply
 separately to their full serialized responses. Structural preview does not
 claim governed Subject operation accounting.
+
+`record.ask` is the same service as `ask.js`, and returns the same payload the
+CLI prints with `--json`. Search mode ranks Knowledge, Ontology and Decision
+records for `question` and returns at most `limit` (default 8, maximum 50),
+with `confidence.tier` (`covered`, `partial`, `none` or `unavailable`) and the
+signals behind it. `fields` mode lists the metadata fields present in a
+selection with their most common values. `count` mode selects exactly by
+`where` (`[{field, value}]`; Subjects match by descendant), groups by
+`countBy` (`under` rolls Subjects up to that parent's children) and returns up
+to `top` groups (default 10, maximum 100) with `missing` and `tieAtCut`. An
+unknown field refuses with `unknown-field`. The long-running MCP server keeps
+one index per root in memory and drops it on any change under the kit root, so
+repeat calls skip reloading the stores. The tier reports whether the right
+records were found, not whether they answer the question.
 
 `record.preflight` performs the existing Ontology/Knowledge preflight on a fresh
 load. Supply `concepts` and `leaves` as arrays of individual record IDs; whitespace

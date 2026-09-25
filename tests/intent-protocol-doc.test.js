@@ -14,7 +14,8 @@ test('ordinary retrieval retains intent obligations without requiring the typed 
   assert.match(intent, /Preserve every material entity, relation, direction, comparison, use context, geographic or temporal scope, and requested source standard/);
   assert.match(intent, /Keep uncertain or unsupported parts as unresolved units, clarifications or source requirements/);
   assert.match(intent, /For the typed Subject path, build the plan below/);
-  assert.match(protocol('AGENTS.md'), /Its intent and source obligations apply to ordinary retrieval; its typed Subject path is conditional/);
+  // RESOLVE starts with ask; the typed path is reached only for governed Subject eligibility.
+  assert.match(protocol('AGENTS.md').replace(/\s+/g, ' '), /For combined Subject constraints that need governed eligibility, follow \[Intent, query discovery and source review\]\(intent-retrieval\.md\)/);
 });
 
 test('Subject routing distinguishes actual optional authority from invalid or missing required capability', () => {
