@@ -35,12 +35,21 @@ const RUBRIC = `Grade one agent answer against one evaluation case. Verdicts:
 - correct-abstention: the case is not answerable; the answer declines the abstention target, does not assert the unsupported fact, and says what is missing; no critical failure.
 - failed: anything else, including no answer.
 Critical flags (any one forces failed): unsupported-claim, answered-unanswerable, scope-violation, fabricated-citation.
-Judge only from the case and the trace given. Reply with ONLY a JSON object:
+Judge only from the case and the trace given. A citation counts as read when its ID or quoted text appears in a tool output or in recordsGivenToTheReader; a file's name need not match the IDs inside it. Reply with ONLY a JSON object:
 {"verdict": "...", "critical": [...], "rationale": "two or three sentences"}`;
 
-/** Tool calls, shortened, so the grader can see what was read. */
-const callsOf = (trace) => trace.toolCalls.map((c) => ({ tool: c.name,
-  input: JSON.stringify(c.input).slice(0, 300), outputBytes: c.outputBytes }));
+// The protocol is instructions, not evidence; everything else a tool returned
+// is what the reader saw. Without it, a correct citation of a record read under
+// a file named for its 2.x ID looks fabricated (diagnosed on policy-01).
+const PROTOCOL = /AGENTS\.md|\/protocol\//;
+const EVIDENCE_CHARS = 4000;
+
+/** Tool calls with what each returned, so the grader can check citations. */
+const callsOf = (trace) => trace.toolCalls.map((c) => {
+  const input = JSON.stringify(c.input);
+  return { tool: c.name, input: input.slice(0, 300), outputBytes: c.outputBytes,
+    output: PROTOCOL.test(input) || c.output == null ? '(protocol or not recorded)' : c.output.slice(0, EVIDENCE_CHARS) };
+});
 
 /**
  * @param {object} kase  {prompt, answerable, expectedAnswer, abstentionTarget, bundles: [[id...]], criticalFailures}
@@ -53,7 +62,8 @@ export function grade(kase, trace, { rationaleFile, model = GRADER_MODEL }) {
     writeFileSync(rationaleFile, `${JSON.stringify({ verdict: 'failed', critical: [], rationale: 'no answer' })}\n`);
     return { verdict: 'failed', critical: [] };
   }
-  const input = JSON.stringify({ case: kase, answer: trace.answer, toolCalls: callsOf(trace) }, null, 1);
+  const input = JSON.stringify({ case: kase, answer: trace.answer, toolCalls: callsOf(trace),
+    ...(trace.evidence ? { recordsGivenToTheReader: trace.evidence } : {}) }, null, 1);
   const scratch = mkdtempSync(join(tmpdir(), 'uk-grade-'));
   const mcp = join(scratch, 'no-mcp.json');
   writeFileSync(mcp, '{"mcpServers":{}}\n');
@@ -64,7 +74,11 @@ export function grade(kase, trace, { rationaleFile, model = GRADER_MODEL }) {
   let parsed = null;
   try {
     const text = JSON.parse(result.stdout).result;
-    parsed = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
+    const body = text.slice(text.indexOf('{'));
+    // The grader occasionally drops the closing brace; accept the object either way.
+    for (const candidate of [body.slice(0, body.lastIndexOf('}') + 1), `${body.trim()}}`]) {
+      try { parsed = JSON.parse(candidate); break; } catch { parsed = null; }
+    }
   } catch { parsed = null; }
   writeFileSync(rationaleFile, `${JSON.stringify(parsed ?? { error: 'unparseable grader output', stdout: result.stdout?.slice(-2000) }, null, 2)}\n`);
   // Only closed fields leave this function.

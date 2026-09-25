@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "dates": [
     "2026-09-24",
     "2026-09-25"
@@ -20,7 +20,8 @@
       "toolCalls": 22,
       "toolOutputBytes": 62735,
       "seconds": 77,
-      "costUsd": 0.288
+      "costUsd": 0.288,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-cultural-research-01",
@@ -31,7 +32,8 @@
       "toolCalls": 22,
       "toolOutputBytes": 62519,
       "seconds": 50,
-      "costUsd": 0.267
+      "costUsd": 0.267,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-cultural-research-01",
@@ -42,7 +44,8 @@
       "toolCalls": 21,
       "toolOutputBytes": 61340,
       "seconds": 55,
-      "costUsd": 0.266
+      "costUsd": 0.266,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-cultural-research-01",
@@ -53,7 +56,8 @@
       "toolCalls": 10,
       "toolOutputBytes": 48694,
       "seconds": 33,
-      "costUsd": 0.19
+      "costUsd": 0.19,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-cultural-research-01",
@@ -64,7 +68,8 @@
       "toolCalls": 13,
       "toolOutputBytes": 50399,
       "seconds": 44,
-      "costUsd": 0.216
+      "costUsd": 0.216,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-cultural-research-01",
@@ -75,7 +80,8 @@
       "toolCalls": 12,
       "toolOutputBytes": 51252,
       "seconds": 58,
-      "costUsd": 0.211
+      "costUsd": 0.211,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-engineering-01",
@@ -86,7 +92,8 @@
       "toolCalls": 10,
       "toolOutputBytes": 53562,
       "seconds": 44,
-      "costUsd": 0.185
+      "costUsd": 0.185,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-engineering-01",
@@ -97,7 +104,8 @@
       "toolCalls": 11,
       "toolOutputBytes": 53624,
       "seconds": 42,
-      "costUsd": 0.192
+      "costUsd": 0.192,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-engineering-01",
@@ -108,7 +116,8 @@
       "toolCalls": 10,
       "toolOutputBytes": 53748,
       "seconds": 38,
-      "costUsd": 0.19
+      "costUsd": 0.19,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-engineering-01",
@@ -119,7 +128,8 @@
       "toolCalls": 11,
       "toolOutputBytes": 49327,
       "seconds": 40,
-      "costUsd": 0.168
+      "costUsd": 0.168,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-engineering-01",
@@ -130,7 +140,8 @@
       "toolCalls": 13,
       "toolOutputBytes": 51499,
       "seconds": 56,
-      "costUsd": 0.247
+      "costUsd": 0.247,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-engineering-01",
@@ -141,7 +152,8 @@
       "toolCalls": 17,
       "toolOutputBytes": 53786,
       "seconds": 65,
-      "costUsd": 0.24
+      "costUsd": 0.24,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-holding-company-01",
@@ -152,7 +164,8 @@
       "toolCalls": 23,
       "toolOutputBytes": 137110,
       "seconds": 58,
-      "costUsd": 0.37
+      "costUsd": 0.37,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-holding-company-01",
@@ -163,7 +176,8 @@
       "toolCalls": 30,
       "toolOutputBytes": 156956,
       "seconds": 91,
-      "costUsd": 0.519
+      "costUsd": 0.519,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-holding-company-01",
@@ -174,7 +188,8 @@
       "toolCalls": 29,
       "toolOutputBytes": 136888,
       "seconds": 66,
-      "costUsd": 0.418
+      "costUsd": 0.418,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-holding-company-01",
@@ -185,7 +200,8 @@
       "toolCalls": 38,
       "toolOutputBytes": 125151,
       "seconds": 104,
-      "costUsd": 0.529
+      "costUsd": 0.529,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-holding-company-01",
@@ -196,7 +212,8 @@
       "toolCalls": 38,
       "toolOutputBytes": 140735,
       "seconds": 117,
-      "costUsd": 0.538
+      "costUsd": 0.538,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-holding-company-01",
@@ -207,7 +224,8 @@
       "toolCalls": 35,
       "toolOutputBytes": 139672,
       "seconds": 89,
-      "costUsd": 0.519
+      "costUsd": 0.519,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-manufacturing-01",
@@ -218,7 +236,8 @@
       "toolCalls": 11,
       "toolOutputBytes": 47707,
       "seconds": 22,
-      "costUsd": 0.166
+      "costUsd": 0.166,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-manufacturing-01",
@@ -229,7 +248,8 @@
       "toolCalls": 10,
       "toolOutputBytes": 47512,
       "seconds": 34,
-      "costUsd": 0.152
+      "costUsd": 0.152,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-manufacturing-01",
@@ -240,7 +260,8 @@
       "toolCalls": 10,
       "toolOutputBytes": 47512,
       "seconds": 18,
-      "costUsd": 0.152
+      "costUsd": 0.152,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-manufacturing-01",
@@ -251,7 +272,8 @@
       "toolCalls": 5,
       "toolOutputBytes": 39356,
       "seconds": 12,
-      "costUsd": 0.129
+      "costUsd": 0.129,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-manufacturing-01",
@@ -262,7 +284,8 @@
       "toolCalls": 8,
       "toolOutputBytes": 42527,
       "seconds": 36,
-      "costUsd": 0.163
+      "costUsd": 0.163,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-manufacturing-01",
@@ -273,7 +296,8 @@
       "toolCalls": 5,
       "toolOutputBytes": 40476,
       "seconds": 30,
-      "costUsd": 0.134
+      "costUsd": 0.134,
+      "verdictV1": "blocked"
     },
     {
       "case": "heldout-policy-01",
@@ -284,7 +308,8 @@
       "toolCalls": 19,
       "toolOutputBytes": 54166,
       "seconds": 55,
-      "costUsd": 0.243
+      "costUsd": 0.243,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-policy-01",
@@ -295,21 +320,20 @@
       "toolCalls": 16,
       "toolOutputBytes": 53460,
       "seconds": 36,
-      "costUsd": 0.203
+      "costUsd": 0.203,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-policy-01",
       "runtime": "current",
       "repeat": 3,
-      "verdict": "failed",
-      "critical": [
-        "fabricated-citation",
-        "unsupported-claim"
-      ],
+      "verdict": "completed",
+      "critical": [],
       "toolCalls": 14,
       "toolOutputBytes": 53134,
       "seconds": 40,
-      "costUsd": 0.211
+      "costUsd": 0.211,
+      "verdictV1": "failed"
     },
     {
       "case": "heldout-policy-01",
@@ -320,7 +344,8 @@
       "toolCalls": 19,
       "toolOutputBytes": 45521,
       "seconds": 56,
-      "costUsd": 0.206
+      "costUsd": 0.206,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-policy-01",
@@ -331,7 +356,8 @@
       "toolCalls": 15,
       "toolOutputBytes": 44325,
       "seconds": 51,
-      "costUsd": 0.239
+      "costUsd": 0.239,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-policy-01",
@@ -342,7 +368,8 @@
       "toolCalls": 22,
       "toolOutputBytes": 48651,
       "seconds": 67,
-      "costUsd": 0.258
+      "costUsd": 0.258,
+      "verdictV1": "completed"
     },
     {
       "case": "heldout-professional-services-01",
@@ -353,7 +380,8 @@
       "toolCalls": 10,
       "toolOutputBytes": 49462,
       "seconds": 39,
-      "costUsd": 0.176
+      "costUsd": 0.176,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-professional-services-01",
@@ -364,7 +392,8 @@
       "toolCalls": 11,
       "toolOutputBytes": 50294,
       "seconds": 31,
-      "costUsd": 0.184
+      "costUsd": 0.184,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-professional-services-01",
@@ -375,7 +404,8 @@
       "toolCalls": 12,
       "toolOutputBytes": 50019,
       "seconds": 60,
-      "costUsd": 0.2
+      "costUsd": 0.2,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-professional-services-01",
@@ -386,7 +416,8 @@
       "toolCalls": 13,
       "toolOutputBytes": 43597,
       "seconds": 33,
-      "costUsd": 0.185
+      "costUsd": 0.185,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-professional-services-01",
@@ -397,7 +428,8 @@
       "toolCalls": 14,
       "toolOutputBytes": 41389,
       "seconds": 49,
-      "costUsd": 0.18
+      "costUsd": 0.18,
+      "verdictV1": "correct-abstention"
     },
     {
       "case": "heldout-professional-services-01",
@@ -408,7 +440,9 @@
       "toolCalls": 13,
       "toolOutputBytes": 43682,
       "seconds": 57,
-      "costUsd": 0.187
+      "costUsd": 0.187,
+      "verdictV1": "correct-abstention"
     }
-  ]
+  ],
+  "graderRevision": "2026-09-25: grader sees tool outputs (replayed for these sessions); verdictV1 is the first grading"
 }

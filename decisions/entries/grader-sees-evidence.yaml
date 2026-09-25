@@ -1,0 +1,44 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:ecab54e7-c723-4e59-b796-7937b86bd792"
+    title: "The blind grader sees what each tool returned; recorded sessions are regraded by replay"
+    category: "governance"
+    status: "proposed"
+    date: "2026-09-25"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1584 follow-up; acceptance pending"]
+    context: >
+      A blind diagnosis of the only held-out failure (policy-01, current
+      runtime, repeat 3) found a grader error. The grader saw tool calls as
+      file paths only. After migrate.js a Knowledge record keeps its 2.x file
+      name while carrying a new ID, so a correct citation of a record read
+      under that file looked fabricated. The single-call path showed the same
+      flaw: with no tool calls to inspect, the grader flagged correct
+      citations as fabricated. One grader reply also dropped its closing
+      brace and was counted as failed.
+    decision: >
+      reader.js keeps each tool's output in the trace (custody only). The
+      grader receives those outputs, except the protocol documents, truncated
+      per call, and in single-call mode the records the model was given; its
+      instruction says a citation counts as read when its ID or quoted text
+      appears there, whatever the file is named. The rubric's verdicts and
+      flags are unchanged. Sessions recorded before this are regraded by
+      rebuilding the same installations and replaying the reader's read-only
+      calls (replay.js refuses compound shell commands); the first verdicts
+      are kept beside the new ones. The grader's JSON is accepted with a
+      missing closing brace.
+    consequences: >
+      The held-out result becomes 12 of 12 sessions that ran for both
+      runtimes; the pilot agent and single-call paths are 6 of 6. Grading
+      costs slightly more per session. Replay depends on the engine staying
+      deterministic and on readers having only read access; replayed Bash
+      output matched recorded sizes in nearly every call, and Grep/Glob calls
+      are not replayed. The rubric changed after it was fixed, only in what
+      the grader can see, and every regrade is recorded. Alternatives
+      rejected: rerunning all 36 sessions (about $9 for identical engine
+      output) and trusting the first grades (they penalized the migration's
+      file naming, not the reader). The user authorized this work in the
+      session that produced it; that authorization is not acceptance or
+      publication of this Decision. Supporting implementation:
+      acceptance/retrieval/grade.js, reader.js, replay.js, heldout-regrade.js,
+      docs/agents/2026-09-25-policy-01-miss-diagnosis.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["proposal:decision:7cf5ceb1-f852-4c8b-9017-0662460b2443"]}

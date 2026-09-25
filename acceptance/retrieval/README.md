@@ -18,12 +18,15 @@ payload.
 | `grade.js` | blind grader: one trace and one case in, a closed verdict out | `pilot-grade.js`, `heldout-run.js` |
 | `pilot-readers.js`, `pilot-grade.js` | run and grade readers on the public pilot tasks | choosing the reader model |
 | `heldout-run.js` | the held-out comparison between the original and current runtime ([latest report](agent-evaluation/HELDOUT-2026-09-24.md)) | `node acceptance/retrieval/heldout-run.js --custody <dir> --model claude-sonnet-5 --summary <file>` |
+| `heldout-regrade.js`, `replay.js` | regrade recorded sessions with tool outputs rebuilt by replaying the reader's read-only calls | grading correction, 2026-09-25 |
+| `one-shot.js`, `pilot-one-shot.js` | the single-call path: `ask`, then one model call over the returned records | [cost analysis](agent-evaluation/COST.md) |
 
 The [latest agent evaluation](agent-evaluation/HELDOUT-2026-09-24.md) (six
-new held-out cases, three repeats per runtime, 36 sessions) found no systematic
-regression: on the four cases the reader could run, the original runtime
-completed or correctly declined 12 of 12 sessions and the current runtime 11 of
-12, and the API refused every session of the other two cases in both runtimes.
+new held-out cases, three repeats per runtime, 36 sessions) found no
+regression: on the four cases the reader could run, both runtimes completed or
+correctly declined all 12 sessions, and the API refused every session of the
+other two cases in both runtimes. [Cost analysis](agent-evaluation/COST.md):
+why an agent session costs about $0.20 while retrieval costs nothing.
 The earlier study
 (15/18 original, 10/18 rc.8) and its reports remain at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/tree/2777b9b/acceptance/retrieval).
@@ -49,7 +52,8 @@ repository keeps only the
 They use the development-v2 corpus, built for the original runtime by
 `materialize-corpus.js`.
 
-The grader (`grade.js`, Sonnet 5, no tools) sees the case and the trace and
+The grader (`grade.js`, Sonnet 5, no tools) sees the case, the trace and what
+each tool returned (the protocol documents excepted), and
 returns `completed`, `correct-abstention` or `failed`, plus critical flags
 (`unsupported-claim`, `answered-unanswerable`, `scope-violation`,
 `fabricated-citation`). The rubric is in the file and was fixed before any

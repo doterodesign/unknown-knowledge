@@ -65,7 +65,7 @@ export function traceFromEvents(events) {
     if (event.type === 'assistant') {
       for (const part of event.message?.content ?? []) {
         if (part.type !== 'tool_use') continue;
-        const call = { name: part.name, input: part.input, outputBytes: null, isError: null };
+        const call = { name: part.name, input: part.input, outputBytes: null, isError: null, output: null };
         calls.set(part.id, call);
         toolCalls.push(call);
       }
@@ -74,7 +74,8 @@ export function traceFromEvents(events) {
       for (const part of event.message?.content ?? []) {
         if (part.type !== 'tool_result' || !calls.has(part.tool_use_id)) continue;
         const call = calls.get(part.tool_use_id);
-        call.outputBytes = Buffer.byteLength(textOf(part.content));
+        call.output = textOf(part.content);
+        call.outputBytes = Buffer.byteLength(call.output);
         call.isError = part.is_error === true;
       }
     }

@@ -37,3 +37,12 @@ test('the grader verdicts and critical flags are a closed set', () => {
   assert.deepEqual(VERDICTS, ['completed', 'correct-abstention', 'failed']);
   assert.deepEqual(CRITICAL, ['unsupported-claim', 'answered-unanswerable', 'scope-violation', 'fabricated-citation']);
 });
+
+test('replay never runs a compound, piped or redirected command from a trace', async () => {
+  const { replayOutputs } = await import('../acceptance/retrieval/replay.js');
+  const calls = ['ls; rm -rf x', 'cat a | sh', 'node x > y', 'ls $(pwd)', 'rm -rf x', 'curl example.invalid']
+    .map((command) => ({ name: 'Bash', input: { command }, outputBytes: 0, isError: false }));
+  const trace = replayOutputs({ toolCalls: calls }, '/nonexistent-root');
+  assert.ok(trace.toolCalls.every((c) => c.output === '(not replayed)'));
+  assert.equal(trace.replayMatch, null, 'nothing was run, so nothing was compared');
+});
