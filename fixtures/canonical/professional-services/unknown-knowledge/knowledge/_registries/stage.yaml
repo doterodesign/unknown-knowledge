@@ -1,0 +1,25 @@
+{
+  "schema-version": 2,
+  "store": "knowledge",
+  "registry": "stage",
+  "values": [
+    {
+      "value": "draft",
+      "gloss": "draft",
+      "warrant": "Simulated source-reporting lifecycle, not source-action approval.",
+      "decision": "D-000008"
+    },
+    {
+      "value": "proposed",
+      "gloss": "proposed",
+      "warrant": "Simulated source-reporting lifecycle, not source-action approval.",
+      "decision": "D-000008"
+    },
+    {
+      "value": "verified",
+      "gloss": "verified",
+      "warrant": "Simulated source-reporting lifecycle, not source-action approval.",
+      "decision": "D-000008"
+    }
+  ]
+}

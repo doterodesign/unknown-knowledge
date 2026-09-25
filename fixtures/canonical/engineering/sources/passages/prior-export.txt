@@ -1,0 +1,3 @@
+The retired Aurora Web 3 exporter flattened transparent colors to opaque
+hexadecimal values. Its behavior is preserved for historical debugging only;
+it is not the active Web 4 contract.

@@ -1,0 +1,11 @@
+{
+  "schema-version": 2,
+  "store": "decisions",
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Simulated fixture curation — representation and local subject meanings",
+      "file": "entries/D-000001.yaml"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "schema-version": 2,
+  "store": "decisions",
+  "entries": [
+    {
+      "id": "proposal:decision:e110eab4-9cce-4867-b19a-6b71db8407ed",
+      "title": "Source report: historical import",
+      "file": "entries/e110eab4-9cce-4867-b19a-6b71db8407ed.yaml"
+    },
+    {
+      "id": "proposal:decision:3d9e9a34-3b2d-4ea5-bc2f-583dda3e4e6a",
+      "title": "Source report: proposed correspondence",
+      "file": "entries/3d9e9a34-3b2d-4ea5-bc2f-583dda3e4e6a.yaml"
+    },
+    {
+      "id": "D-000001",
+      "title": "Source report: rejected union",
+      "file": "entries/D-000001.yaml"
+    },
+    {
+      "id": "D-000002",
+      "title": "Simulated fixture curation — representation and local subject meanings",
+      "file": "entries/D-000002.yaml"
+    }
+  ]
+}

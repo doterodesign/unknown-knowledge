@@ -7,9 +7,10 @@
 // tasks are scored on their explanation bundles (the evidence a scoped
 // abstention rests on) and on whether the retriever declined to claim an answer.
 //
-// Usage: node acceptance/retrieval/benchmark.js MATERIALIZED_DIR [resolve|ask ...]
-// MATERIALIZED_DIR is the output of materialize-development.js.
-import { readFileSync, readdirSync } from 'node:fs';
+// Usage: node acceptance/retrieval/benchmark.js [STORES_DIR] [resolve|ask ...]
+// STORES_DIR defaults to fixtures/canonical, the committed development-v2
+// stores; the output of materialize-development.js also works.
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -19,10 +20,13 @@ const corpus = join(repository, 'acceptance/retrieval/development-v2');
 const read = (file) => JSON.parse(readFileSync(file, 'utf8'));
 const DEPTHS = [1, 3, 5, 10];
 
-/** Gold tasks joined to materialized record handles (`installation/kind/id`). */
-export function loadGold(materializedDir) {
+export const CANONICAL = join(repository, 'fixtures/canonical');
+
+/** Gold tasks joined to record handles (`installation/kind/id`). */
+export function loadGold(materializedDir = CANONICAL) {
   const tasks = read(join(corpus, 'tasks.json'));
-  const materialization = read(join(materializedDir, 'materialization.json'));
+  const slim = join(materializedDir, 'records.json');
+  const materialization = existsSync(slim) ? read(slim) : read(join(materializedDir, 'materialization.json'));
   const judged = new Map();
   for (const file of readdirSync(join(corpus, 'source-judgments'))) {
     for (const task of read(join(corpus, 'source-judgments', file)).tasks) judged.set(task.id, task);
@@ -30,7 +34,7 @@ export function loadGold(materializedDir) {
   const byPassage = new Map(); // `${installation}:${passage}` -> handle
   for (const installation of materialization.installations) {
     for (const record of installation.records) {
-      const passage = basename(record.excerpt, '.txt');
+      const passage = record.passage ?? basename(record.excerpt, '.txt');
       byPassage.set(`${installation.installation}:${passage}`, `${installation.installation}/${record.kind}/${record.id}`);
     }
   }
@@ -161,8 +165,9 @@ function summarize(rows) {
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
-  const [dir, ...names] = process.argv.slice(2);
-  if (!dir) throw new Error('usage: node acceptance/retrieval/benchmark.js MATERIALIZED_DIR [resolve|ask ...]');
+  const args = process.argv.slice(2);
+  const dir = args[0] && !['resolve', 'ask', '--rows'].includes(args[0]) ? args.shift() : CANONICAL;
+  const names = args;
   const verbose = names.includes('--rows');
   for (const name of names.filter((n) => n !== '--rows').length ? names.filter((n) => n !== '--rows') : ['resolve']) {
     const result = runBenchmark(dir, name);

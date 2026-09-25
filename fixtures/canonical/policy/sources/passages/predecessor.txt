@@ -1,0 +1,2 @@
+D-000001 approved a 30-day retention period for support tickets in Region
+West. It is superseded by both D-000002 and D-000003.

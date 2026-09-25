@@ -1,0 +1,23 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000005",
+      "title": "Source report: vip successor",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000001",
+        "S-000003",
+        "S-000004"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/policy.md#vip-successor.",
+      "decision": "D-000006 was accepted on 2026-09-16. It sets Region West VIP support-ticket\nretention to 45 days and explicitly supersedes both D-000002 and D-000003 only\nfor VIP tickets. Both earlier decisions remain in force for ordinary West\ntickets, where their competing 60-day and 90-day periods are unresolved.\nD-000006 does not apply to Region East.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

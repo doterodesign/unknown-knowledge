@@ -1,0 +1,4 @@
+D-000007 is proposed. It would allow the support team to activate an external
+privacy-analysis service. The council has not accepted this authorization;
+the service has not been approved for use. A proposed authorizer cannot be
+treated as an accepted operational authorization.

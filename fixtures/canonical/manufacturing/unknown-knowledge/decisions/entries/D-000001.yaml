@@ -1,0 +1,24 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Source report: q retirement",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000013",
+        "S-000007",
+        "S-000015",
+        "S-000004"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/manufacturing.md#q-retirement.",
+      "decision": "An accepted retirement record confirms that the old North Plant Model Q line\nused 190 kPa at its sealing head and has been retired. This historical value\ndoes not apply to the active North Model R line.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

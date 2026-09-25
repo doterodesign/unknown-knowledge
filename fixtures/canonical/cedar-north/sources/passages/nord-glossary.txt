@@ -1,0 +1,3 @@
+The accepted cedar-north glossary uses “Nord” as its French-language short name
+for the North subsidiary. This alias establishes a name within that context;
+it does not authorize resolving unqualified North identifiers in South's store.

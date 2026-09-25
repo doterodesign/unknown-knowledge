@@ -1,0 +1,4 @@
+An accepted holding-company review rejects a blanket rule that combines local
+export formats whenever local IDs or subject labels match. Reading permitted
+sources from two owners can support separately qualified statements; it still
+does not create a single governed record or shared authority.

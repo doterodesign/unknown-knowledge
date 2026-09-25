@@ -1,0 +1,3 @@
+North subsidiary's O-000001 is an active asset-export contract: its local
+exporter supports PNG and SVG. It has no authority over South's exporter.
+The installation namespace is cedar-north.

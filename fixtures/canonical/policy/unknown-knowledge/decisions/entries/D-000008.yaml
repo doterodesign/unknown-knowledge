@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000008",
+      "title": "Source report: staff retention",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000002",
+        "S-000008"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/policy.md#staff-retention.",
+      "decision": "D-000010 is accepted and describes a staff-retention program: a mentor check-in\nevery 14 days for new employees. It sets no record-retention or deletion period.\nThe bare word “retention” can denote this program or support-ticket policy.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

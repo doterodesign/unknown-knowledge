@@ -1,0 +1,3 @@
+A reviewed archival manifest says a component supports EPS. Its installation,
+owner and release are unknown. Review verified the transcription, not ownership
+or current applicability. It cannot establish EPS support for North or South.

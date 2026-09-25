@@ -1,0 +1,42 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:9ae1f0be-1bfd-49cf-a7d4-0cdb1251c8f8"
+    title: "Kept guarantees are pinned by fast invariant tests on one shared fixture"
+    category: "process"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1516; acceptance pending"]
+    context: >
+      The full suite ran for over an hour. Tests over 30 s were 78% of test time,
+      and most of that was the prepared/final publication pipeline run end to
+      end per case: isolated worker processes, fsync per file and repeated
+      hashing, multiplied by record kind, object format and layout. Git itself
+      cost about 0.7 s of a 61 s test. P-UCS-60 removes much of that machinery;
+      the guarantees it protected have to survive the removal.
+    decision: >
+      Commit the eight development-v2 installations under fixtures/canonical as
+      the one shared fixture, with records.json mapping records to judged
+      passages. Tests read it in place, copy it to edit, or copy one Git
+      repository committed once per process. tests/invariants.test.js pins each
+      kept guarantee by the specific diagnostic that enforces it (never a total
+      count): allocated and unique IDs, append-only ledger rows, proposal keys
+      outside the ledger, Subject registry structure, assignments to known
+      Subjects, related links outside ancestry, validator exit codes,
+      byte-identical output across reruns and locations, and staged-snapshot
+      commit checks. Guarantees the engine does not enforce yet (live records
+      on retired or cancelled IDs, records assigned to retired Subjects) are
+      todo tests assigned to UCS-1518. The retrieval gold gate reads the same
+      fixture instead of rebuilding stores from a pinned runtime.
+    consequences: >
+      The invariant file runs in about 18 s and the gold gate in under 1 s,
+      without pinned Git history. Asserting specific codes lets removal
+      tickets delete surrounding checks without rewriting these tests.
+      Alternatives rejected: keeping per-test repositories (the measured cost
+      is the pipeline, but per-test setup multiplies whatever remains) and
+      asserting total diagnostic counts (they change whenever unrelated checks
+      are removed). The user authorized this work in the session that produced
+      it; that authorization is not acceptance or publication of this Decision.
+      Supporting evidence: tests/invariants.test.js,
+      tests/helpers/canonical.js, fixtures/canonical/README.md and
+      tests/ask-gold.test.js.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000005", "D-000010"]}

@@ -1,0 +1,4 @@
+The reviewed Vietnamese-language glossary uses “đỏ” for the color red. Within
+this collection it identifies the color in the Vietnam adult software-
+notification trial. This naming note contributes no additional experimental
+result and says nothing about a region-wide effect.

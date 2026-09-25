@@ -1,0 +1,3 @@
+South subsidiary's O-000001 is an active transport contract: its local
+exporter supports PDF. It has no authority over North's exporter.
+The installation namespace is cedar-south.

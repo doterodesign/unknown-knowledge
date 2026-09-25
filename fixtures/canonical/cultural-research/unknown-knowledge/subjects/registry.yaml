@@ -1,0 +1,1705 @@
+{
+  "schema-version": 1,
+  "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "Color",
+      "definition": {
+        "text": "Research-local topic for colors named as stimuli, described attributes or glossary referents in the Maru collection.",
+        "includes": [
+          "Red and blue as named research colors",
+          "Contextual color terminology"
+        ],
+        "excludes": [
+          "Project names without a color manipulation",
+          "Engineering token identities in another installation",
+          "A color-only effect inferred from confounded evidence"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#red-attention",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#do-glossary",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "Red",
+      "definition": {
+        "text": "The color red as a named stimulus, described attribute or contextual color term in this research collection.",
+        "includes": [
+          "Red notifications, labels and posters",
+          "Reported symbolism of red",
+          "French Rouge in a color-term context",
+          "Vietnamese đỏ in the specified trial glossary"
+        ],
+        "excludes": [
+          "Project Rouge in its museum brochure naming context",
+          "Universal detection benefits",
+          "Color-only causal conclusions from the withdrawn poster study"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Rouge",
+          "context": "French color term in the Maru terminology note; distinct from the separate research project name.",
+          "locale": "fr"
+        },
+        {
+          "label": "đỏ",
+          "context": "Vietnamese color term for red in the collection glossary identifying the Vietnam adult software-notification trial; no added experimental result.",
+          "locale": "vi"
+        }
+      ],
+      "parent": "S-000001",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000005"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#red-attention",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/pilot/cultural-research.md#rouge-terms",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#do-glossary",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#vietnam-symbolism",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "Blue",
+      "definition": {
+        "text": "The color blue as a named attribute or stimulus in the local research material.",
+        "includes": [
+          "Blue packaging symbolism",
+          "Blue toy-package preference"
+        ],
+        "excludes": [
+          "A red-versus-gray detection comparison",
+          "Any inferred common population or outcome across separate studies"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#split-study-notebook",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "Perception",
+      "definition": {
+        "text": "Local research topic for noticing or detecting visual stimuli in the tasks reported or proposed by the collection.",
+        "includes": [
+          "Notification detection",
+          "Visual noticing in labels or posters"
+        ],
+        "excludes": [
+          "Reported symbolism",
+          "Preference as if it were detection",
+          "A claim covering all sensory modalities"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#red-attention",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#thailand-null",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#unlocated-observation",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "Visual attention and detection",
+      "definition": {
+        "text": "Research topics concerning noticing or detecting visually presented stimuli, including null, withdrawn and proposed comparisons.",
+        "includes": [
+          "Red-versus-gray notification detection",
+          "Noticing labels",
+          "Historically withdrawn poster attention claim",
+          "Proposed multisite detection comparisons"
+        ],
+        "excludes": [
+          "Reported color symbolism",
+          "Toy-package preference",
+          "Memory of a brochure title without visual-attention testing",
+          "Universality inferred from one sample"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#red-attention",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#thailand-null",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#preliminary-poster",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#unlocated-observation",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#future-region-study",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000006",
+      "label": "Culture",
+      "definition": {
+        "text": "Local research topic for meanings participants report for visual color attributes.",
+        "includes": [
+          "Reported color symbolism in packaging and interviews"
+        ],
+        "excludes": [
+          "A universal cultural rule",
+          "Detection or preference substituted for reported meaning"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#vietnam-symbolism",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000007",
+      "label": "Color symbolism",
+      "definition": {
+        "text": "Research on meanings participants report or associate with colors in the stated context.",
+        "includes": [
+          "Adults’ reported meanings of blue packaging",
+          "Participating adults describing red as festive"
+        ],
+        "excludes": [
+          "Detection advantages",
+          "Preference measurements",
+          "A finding generalized beyond the reported participants and task"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000006",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#vietnam-symbolism",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000008",
+      "label": "Research projects",
+      "definition": {
+        "text": "Named research initiatives in the Maru collection, independently of words used as color terms.",
+        "includes": [
+          "Project Rouge museum brochure naming study"
+        ],
+        "excludes": [
+          "The French color word Rouge without project context",
+          "Engineering project names in another installation"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#rouge-terms",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#rouge-project",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000009",
+      "label": "Project Rouge",
+      "definition": {
+        "text": "The internal museum brochure title naming study called Project Rouge, including recall of Morning Harbor.",
+        "includes": [
+          "Research project identity",
+          "Brochure-title naming and memory study"
+        ],
+        "excludes": [
+          "The color red",
+          "Color manipulation or visual-attention testing",
+          "Color effects inferred from the project name"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Rouge",
+          "context": "Research project name for the museum brochure title naming study, including recall of Morning Harbor; no color was manipulated."
+        }
+      ],
+      "parent": "S-000008",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/cultural-research.md#rouge-project",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/pilot/cultural-research.md#rouge-terms",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000010",
+      "label": "Research terminology",
+      "definition": {
+        "text": "Context-dependent color and project naming in the research collection’s notes and glossaries.",
+        "includes": [
+          "French Rouge as color term versus project name",
+          "Vietnamese đỏ as the color red"
+        ],
+        "excludes": [
+          "New experimental evidence inferred from a translation",
+          "Context-free alias resolution"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#rouge-terms",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#do-glossary",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000011",
+      "label": "Research practice",
+      "definition": {
+        "text": "Local topic for planning investigations and evaluating methodological support for their claims.",
+        "includes": [
+          "Unperformed research proposals",
+          "Confounding and withdrawal of a color-only conclusion"
+        ],
+        "excludes": [
+          "Treating proposed or withdrawn findings as established results"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#earlier-pilot",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#future-region-study",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#poster-retraction",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000012",
+      "label": "Research methodology",
+      "definition": {
+        "text": "Methodological assessment of whether study design supports attribution of an observed result.",
+        "includes": [
+          "Poster size and color confounding",
+          "Withdrawal of unsupported color-only attribution"
+        ],
+        "excludes": [
+          "Replacement effect estimates absent from the correction",
+          "A causal claim based only on topical co-membership"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000011",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/cultural-research.md#poster-retraction",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000013",
+      "label": "Research planning",
+      "definition": {
+        "text": "Proposals and plans for studies that have not supplied observed results.",
+        "includes": [
+          "Unperformed child toy-packaging proposal",
+          "Proposed multisite Southeast Asian detection study"
+        ],
+        "excludes": [
+          "Completed recruitment or findings inferred from a plan",
+          "Region-wide evidence inferred from planned coverage"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000011",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/cultural-research.md#earlier-pilot",
+            "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+          },
+          {
+            "locator": "sources/development-v2/cultural-research.md#future-region-study",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000014",
+      "label": "Preference",
+      "definition": {
+        "text": "Local topic for reported choices between visual alternatives.",
+        "includes": [
+          "Children’s toy-package preference"
+        ],
+        "excludes": [
+          "Detection",
+          "Reported symbolism",
+          "A preference generalized to untested colors or groups"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/cultural-research.md#split-study-notebook",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    },
+    {
+      "id": "S-000015",
+      "label": "Color preference",
+      "definition": {
+        "text": "Reported preference comparisons involving the colors of presented alternatives.",
+        "includes": [
+          "Vietnam children preferring blue over green toy packages"
+        ],
+        "excludes": [
+          "Red toy-package preference inferred by combining notebook sections",
+          "Attention or symbolism outcomes"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000014",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/cultural-research.md#split-study-notebook",
+            "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+          }
+        ]
+      },
+      "changes": [
+        "5ebdaf8a-9d50-41c6-9add-844686012ead"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "5ebdaf8a-9d50-41c6-9add-844686012ead",
+      "action": "activate",
+      "decision": {
+        "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "Color",
+            "definition": {
+              "text": "Research-local topic for colors named as stimuli, described attributes or glossary referents in the Maru collection.",
+              "includes": [
+                "Red and blue as named research colors",
+                "Contextual color terminology"
+              ],
+              "excludes": [
+                "Project names without a color manipulation",
+                "Engineering token identities in another installation",
+                "A color-only effect inferred from confounded evidence"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#red-attention",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#do-glossary",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "Red",
+            "definition": {
+              "text": "The color red as a named stimulus, described attribute or contextual color term in this research collection.",
+              "includes": [
+                "Red notifications, labels and posters",
+                "Reported symbolism of red",
+                "French Rouge in a color-term context",
+                "Vietnamese đỏ in the specified trial glossary"
+              ],
+              "excludes": [
+                "Project Rouge in its museum brochure naming context",
+                "Universal detection benefits",
+                "Color-only causal conclusions from the withdrawn poster study"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Rouge",
+                "context": "French color term in the Maru terminology note; distinct from the separate research project name.",
+                "locale": "fr"
+              },
+              {
+                "label": "đỏ",
+                "context": "Vietnamese color term for red in the collection glossary identifying the Vietnam adult software-notification trial; no added experimental result.",
+                "locale": "vi"
+              }
+            ],
+            "parent": "S-000001",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000005"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#red-attention",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/pilot/cultural-research.md#rouge-terms",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#do-glossary",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#vietnam-symbolism",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "Blue",
+            "definition": {
+              "text": "The color blue as a named attribute or stimulus in the local research material.",
+              "includes": [
+                "Blue packaging symbolism",
+                "Blue toy-package preference"
+              ],
+              "excludes": [
+                "A red-versus-gray detection comparison",
+                "Any inferred common population or outcome across separate studies"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#split-study-notebook",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "Perception",
+            "definition": {
+              "text": "Local research topic for noticing or detecting visual stimuli in the tasks reported or proposed by the collection.",
+              "includes": [
+                "Notification detection",
+                "Visual noticing in labels or posters"
+              ],
+              "excludes": [
+                "Reported symbolism",
+                "Preference as if it were detection",
+                "A claim covering all sensory modalities"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#red-attention",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#thailand-null",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#unlocated-observation",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "Visual attention and detection",
+            "definition": {
+              "text": "Research topics concerning noticing or detecting visually presented stimuli, including null, withdrawn and proposed comparisons.",
+              "includes": [
+                "Red-versus-gray notification detection",
+                "Noticing labels",
+                "Historically withdrawn poster attention claim",
+                "Proposed multisite detection comparisons"
+              ],
+              "excludes": [
+                "Reported color symbolism",
+                "Toy-package preference",
+                "Memory of a brochure title without visual-attention testing",
+                "Universality inferred from one sample"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#red-attention",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#thailand-null",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#preliminary-poster",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#unlocated-observation",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#future-region-study",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000006",
+          "before": null,
+          "after": {
+            "label": "Culture",
+            "definition": {
+              "text": "Local research topic for meanings participants report for visual color attributes.",
+              "includes": [
+                "Reported color symbolism in packaging and interviews"
+              ],
+              "excludes": [
+                "A universal cultural rule",
+                "Detection or preference substituted for reported meaning"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#vietnam-symbolism",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000007",
+          "before": null,
+          "after": {
+            "label": "Color symbolism",
+            "definition": {
+              "text": "Research on meanings participants report or associate with colors in the stated context.",
+              "includes": [
+                "Adults’ reported meanings of blue packaging",
+                "Participating adults describing red as festive"
+              ],
+              "excludes": [
+                "Detection advantages",
+                "Preference measurements",
+                "A finding generalized beyond the reported participants and task"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000006",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#blue-symbolism",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#vietnam-symbolism",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000008",
+          "before": null,
+          "after": {
+            "label": "Research projects",
+            "definition": {
+              "text": "Named research initiatives in the Maru collection, independently of words used as color terms.",
+              "includes": [
+                "Project Rouge museum brochure naming study"
+              ],
+              "excludes": [
+                "The French color word Rouge without project context",
+                "Engineering project names in another installation"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#rouge-terms",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#rouge-project",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000009",
+          "before": null,
+          "after": {
+            "label": "Project Rouge",
+            "definition": {
+              "text": "The internal museum brochure title naming study called Project Rouge, including recall of Morning Harbor.",
+              "includes": [
+                "Research project identity",
+                "Brochure-title naming and memory study"
+              ],
+              "excludes": [
+                "The color red",
+                "Color manipulation or visual-attention testing",
+                "Color effects inferred from the project name"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Rouge",
+                "context": "Research project name for the museum brochure title naming study, including recall of Morning Harbor; no color was manipulated."
+              }
+            ],
+            "parent": "S-000008",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/cultural-research.md#rouge-project",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/pilot/cultural-research.md#rouge-terms",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000010",
+          "before": null,
+          "after": {
+            "label": "Research terminology",
+            "definition": {
+              "text": "Context-dependent color and project naming in the research collection’s notes and glossaries.",
+              "includes": [
+                "French Rouge as color term versus project name",
+                "Vietnamese đỏ as the color red"
+              ],
+              "excludes": [
+                "New experimental evidence inferred from a translation",
+                "Context-free alias resolution"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#rouge-terms",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#do-glossary",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000011",
+          "before": null,
+          "after": {
+            "label": "Research practice",
+            "definition": {
+              "text": "Local topic for planning investigations and evaluating methodological support for their claims.",
+              "includes": [
+                "Unperformed research proposals",
+                "Confounding and withdrawal of a color-only conclusion"
+              ],
+              "excludes": [
+                "Treating proposed or withdrawn findings as established results"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#earlier-pilot",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#future-region-study",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#poster-retraction",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000012",
+          "before": null,
+          "after": {
+            "label": "Research methodology",
+            "definition": {
+              "text": "Methodological assessment of whether study design supports attribution of an observed result.",
+              "includes": [
+                "Poster size and color confounding",
+                "Withdrawal of unsupported color-only attribution"
+              ],
+              "excludes": [
+                "Replacement effect estimates absent from the correction",
+                "A causal claim based only on topical co-membership"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000011",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/cultural-research.md#poster-retraction",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000013",
+          "before": null,
+          "after": {
+            "label": "Research planning",
+            "definition": {
+              "text": "Proposals and plans for studies that have not supplied observed results.",
+              "includes": [
+                "Unperformed child toy-packaging proposal",
+                "Proposed multisite Southeast Asian detection study"
+              ],
+              "excludes": [
+                "Completed recruitment or findings inferred from a plan",
+                "Region-wide evidence inferred from planned coverage"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000011",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/cultural-research.md#earlier-pilot",
+                  "revision": "f599a803393ae26de0ec2b4cfda1f8fb45861f32621361575d5f81e98b2a87d9"
+                },
+                {
+                  "locator": "sources/development-v2/cultural-research.md#future-region-study",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000014",
+          "before": null,
+          "after": {
+            "label": "Preference",
+            "definition": {
+              "text": "Local topic for reported choices between visual alternatives.",
+              "includes": [
+                "Children’s toy-package preference"
+              ],
+              "excludes": [
+                "Detection",
+                "Reported symbolism",
+                "A preference generalized to untested colors or groups"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/cultural-research.md#split-study-notebook",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000015",
+          "before": null,
+          "after": {
+            "label": "Color preference",
+            "definition": {
+              "text": "Reported preference comparisons involving the colors of presented alternatives.",
+              "includes": [
+                "Vietnam children preferring blue over green toy packages"
+              ],
+              "excludes": [
+                "Red toy-package preference inferred by combining notebook sections",
+                "Attention or symbolism outcomes"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000014",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "eeae2852-aaf8-4297-9ee3-98497157786b",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/cultural-research.md#split-study-notebook",
+                  "revision": "59ac595372bccf8c00d6c8b69a835968a8995387bf7be01ecd8102ab77eb5c41"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+          "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+          "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+        },
+        "decision-digest": "4adc01ff251d28bed8cb059aa84883c579cc95d81c7c2636bb94c9bc42a88561",
+        "change-digest": "8bf67c518d01070ea01e318a65604c0c3b51e04d1194caadbf823cb93a90f460"
+      }
+    }
+  ]
+}

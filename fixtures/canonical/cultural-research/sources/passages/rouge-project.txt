@@ -1,0 +1,4 @@
+Project Rouge is a reviewed internal naming study of museum brochure titles.
+It examined whether readers remembered the title “Morning Harbor.” No color
+was manipulated and no visual-attention test was performed. “Rouge” here is a
+project name; the separate French glossary uses the same word for red.

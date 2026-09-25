@@ -1,0 +1,1114 @@
+{
+  "scope": "P10 independent public-source editorial curation of installation-local subjects for engineering and cultural-research only.",
+  "status": "Final editorial choices pending P2 review; NOT an activated or accepted registry. No IDs allocated. No executable or governance approval.",
+  "sourceBoundary": {
+    "read": [
+      "acceptance/retrieval/development-v2/metadata-review/proposal-engineering-culture.json",
+      "acceptance/retrieval/pilot/sources/engineering.md",
+      "acceptance/retrieval/pilot/sources/cultural-research.md",
+      "acceptance/retrieval/development-v2/sources/engineering.md",
+      "acceptance/retrieval/development-v2/sources/cultural-research.md"
+    ],
+    "excluded": "No hidden S4, private or heldout sources, runtime outputs, retrieval ranks, source judgments or executable registry consulted."
+  },
+  "semantics": {
+    "identity": "Each key resolves only inside its installation. Repeated keys across installations do not merge identities or transfer aliases.",
+    "parent": "Editorial topic containment; every child inherits only the locally defined broader topic. It is not object subtype, causal warrant, approval standing or applicability. Intermediate nodes are warranted by the actual cited descendant passages, not merely by proposed hierarchy metadata.",
+    "association": "Each related edge is authored once as a symmetric association. Its inverse is derived, never separately authored. Association entails neither ancestry nor a tested joint claim.",
+    "aliases": "Only source-evidenced aliases are authored. Context is required when spellings collide; casing alone is insufficient to disambiguate Éclat/éclat or Rouge. Locale is supplied only where the source establishes language.",
+    "classifications": "This file defines vocabulary only; it does not author or change record assignments. All draft omitted assignments remain absent, especially the source-explicitly missing keyboard-capture classification. Citing a passage as vocabulary warrant does not assign a record to that vocabulary."
+  },
+  "installations": [
+    {
+      "installation": "engineering",
+      "subjects": [
+        {
+          "key": "engineering",
+          "label": "Engineering",
+          "definition": {
+            "text": "Local topic for the engineering of software behavior and interfaces represented by Aurora contracts, proposals, audits and tests.",
+            "includes": [
+              "Software implementation and interface conventions",
+              "Engineering tests and historical implementation behavior"
+            ],
+            "excludes": [
+              "Claims about all engineering disciplines",
+              "Automatic approval of described proposals"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "production-theme"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "screenshot-limit"
+            }
+          ]
+        },
+        {
+          "key": "software",
+          "label": "Software engineering",
+          "definition": {
+            "text": "Engineering topics concerning software components, their user interfaces and data conversion behavior.",
+            "includes": [
+              "CSS exporters",
+              "Web and Android interface behavior"
+            ],
+            "excludes": [
+              "Non-software engineering",
+              "Unspecified release-announcement emphasis"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-project"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "screenshot-limit"
+            }
+          ],
+          "parentKey": "engineering",
+          "parentRationale": "Software components are a narrower engineering topic; exporter and interface passages ground the local specialization."
+        },
+        {
+          "key": "frontend",
+          "label": "Frontend interfaces",
+          "definition": {
+            "text": "User-facing software presentation and interaction in the local web, desktop and Android interface material.",
+            "includes": [
+              "Reusable web interface conventions",
+              "Animation cues",
+              "Image-viewer presentation and capture behavior"
+            ],
+            "excludes": [
+              "Backend services without interface relevance",
+              "A claim that all design systems are frontend-only"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "production-theme"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-project"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "screenshot-limit"
+            }
+          ],
+          "parentKey": "software",
+          "parentRationale": "User-facing presentation and interaction specialize the local software topic across the named platforms."
+        },
+        {
+          "key": "design-systems",
+          "label": "Frontend design systems",
+          "definition": {
+            "text": "Local subject restricted to reusable frontend interface conventions and their named design values in the Aurora material.",
+            "includes": [
+              "Named interface tokens",
+              "Card layout conventions",
+              "Production and preview styling conventions"
+            ],
+            "excludes": [
+              "Enterprise design governance",
+              "Brand strategy and non-interface assets",
+              "Design-system work outside frontend interfaces"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-color"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "production-theme"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "preview-theme"
+            }
+          ],
+          "parentKey": "frontend",
+          "parentRationale": "The local definition deliberately narrows this otherwise broad term to reusable frontend interface conventions, so inherited frontend membership is warranted."
+        },
+        {
+          "key": "design-tokens",
+          "label": "Design tokens",
+          "definition": {
+            "text": "Named reusable values used to express local frontend interface design properties.",
+            "includes": [
+              "The named --accent-soft interface token",
+              "Token values and roles documented by the glossary"
+            ],
+            "excludes": [
+              "Every color value regardless of token identity",
+              "Serialization processes considered independently of tokens",
+              "Animation cues solely because they have names"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-color"
+            }
+          ],
+          "parentKey": "design-systems",
+          "parentRationale": "Named reusable interface design values are a contained design-system topic; this does not assert that a token object is itself a whole design system."
+        },
+        {
+          "key": "color-tokens",
+          "label": "Color tokens",
+          "definition": {
+            "text": "Design-token topics concerning named interface colors and their alpha values.",
+            "includes": [
+              "The semitransparent --accent-soft token",
+              "Its documented alpha-preserving representation"
+            ],
+            "excludes": [
+              "Accent role as a subtype of token",
+              "Every color serialization operation",
+              "The spark-start animation cue"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "css-audit"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-color"
+            }
+          ],
+          "parentKey": "design-tokens",
+          "parentRationale": "Color-valued design tokens specialize the named design-value topic. The serialization branch is independent."
+        },
+        {
+          "key": "color-serialization",
+          "label": "Color serialization",
+          "definition": {
+            "text": "Software processes and contracts for representing color values in an output notation while handling alpha and color-space information.",
+            "includes": [
+              "RGBA and hexadecimal color export",
+              "Proposed display-p3 representation",
+              "Historical flattening of transparent colors"
+            ],
+            "excludes": [
+              "A kind of color-token object",
+              "Image-viewer P3 acceptance as proof of exporter behavior",
+              "Automatic equivalence between proposals and active contracts"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "opaque-export"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "prior-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "web5-proposal"
+            }
+          ],
+          "parentKey": "software",
+          "parentRationale": "Representing color data is a software operation, separately warranted from the design-token object branch."
+        },
+        {
+          "key": "css-color-serialization",
+          "label": "CSS color serialization",
+          "definition": {
+            "text": "Color-serialization behavior and proposals specifically for CSS exporter output.",
+            "includes": [
+              "Alpha-preserving rgba output",
+              "Opaque-only hexadecimal mode",
+              "Historical Web 3 flattening",
+              "Proposed Web 5 display-p3 output"
+            ],
+            "excludes": [
+              "Android image-viewer support inferred to qualify an Android CSS exporter",
+              "Color-role naming without a serialization claim"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "opaque-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "css-audit"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "cross-platform-notebook"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "web5-proposal"
+            }
+          ],
+          "parentKey": "color-serialization",
+          "parentRationale": "CSS output is a format and exporter specialization of color representation processes, not a narrower color-token object."
+        },
+        {
+          "key": "card-layout",
+          "label": "Card layout",
+          "definition": {
+            "text": "Frontend design-system topics concerning card geometry, including corner radius.",
+            "includes": [
+              "Production 6 px card radius",
+              "Preview 12 px card radius"
+            ],
+            "excludes": [
+              "Preview values generalized to production",
+              "Unmentioned card dimensions or spacing"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "production-theme"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "preview-theme"
+            }
+          ],
+          "parentKey": "design-systems",
+          "parentRationale": "Card geometry conventions are part of the locally narrowed frontend interface design-system topic."
+        },
+        {
+          "key": "release-styling",
+          "label": "Release styling",
+          "definition": {
+            "text": "Frontend design-system styling conventions differentiated by release or delivery channel.",
+            "includes": [
+              "Production theme styling",
+              "Experimental preview styling"
+            ],
+            "excludes": [
+              "General release operations without a styling topic",
+              "Preview styling treated as production replacement"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "production-theme"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "preview-theme"
+            }
+          ],
+          "parentKey": "design-systems",
+          "parentRationale": "Channel-specific interface styling specializes reusable frontend design conventions; this does not collapse release responsibility into layout."
+        },
+        {
+          "key": "animation",
+          "label": "Interface animation",
+          "definition": {
+            "text": "Software-interface animation topics, including proposed named motion cues.",
+            "includes": [
+              "The proposed Android animation cue spark-start"
+            ],
+            "excludes": [
+              "The accent-color role named éclat",
+              "An approved production animation contract inferred from a draft"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-project"
+            }
+          ],
+          "parentKey": "frontend",
+          "parentRationale": "The Android animation proposal concerns interface presentation and thus falls within the local frontend topic."
+        },
+        {
+          "key": "image-viewer",
+          "label": "Image viewer",
+          "definition": {
+            "text": "User-facing image-viewer capabilities and associated image or screenshot limits in the Android material.",
+            "includes": [
+              "Acceptance of P3 images",
+              "Maximum screenshot width of 4096 pixels"
+            ],
+            "excludes": [
+              "An Android CSS export qualification",
+              "Web 4 focus-ring requirements"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "cross-platform-notebook"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "screenshot-limit"
+            }
+          ],
+          "parentKey": "frontend",
+          "parentRationale": "Image display and capture behavior are user-facing software presentation topics; no unrelated exporter claim is inherited."
+        },
+        {
+          "key": "accessibility",
+          "label": "Accessibility",
+          "definition": {
+            "text": "Local topic for keyboard-focus visibility and its specified outline treatment.",
+            "includes": [
+              "Keyboard-focus outline and offset"
+            ],
+            "excludes": [
+              "General accessibility compliance inferred from a focus treatment"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "focus-ring"
+            }
+          ]
+        },
+        {
+          "key": "release-engineering",
+          "label": "Release engineering",
+          "definition": {
+            "text": "Local topic for the additional release responsibility explicitly retained by the production theme contract.",
+            "includes": [
+              "Release responsibility attached to the Web 4 production theme"
+            ],
+            "excludes": [
+              "Every mention of a release version",
+              "Replacing card-layout or release-styling responsibility",
+              "Unspecified build and deployment operations"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "production-theme"
+            }
+          ]
+        },
+        {
+          "key": "color",
+          "label": "Interface color",
+          "definition": {
+            "text": "Engineering-local topic for interface color roles and named color properties.",
+            "includes": [
+              "Semitransparent accent role",
+              "Named accent token as color-related evidence"
+            ],
+            "excludes": [
+              "The separate animation project Éclat",
+              "Cultural color findings from another installation",
+              "Treating a role as a token subtype"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-color"
+            }
+          ]
+        },
+        {
+          "key": "accent-color-role",
+          "label": "Semitransparent accent color role",
+          "definition": {
+            "text": "The semitransparent accent role in Aurora Web 4 named éclat in its French glossary and implemented using --accent-soft.",
+            "includes": [
+              "The glossary naming of this specific role",
+              "The documented use of --accent-soft by that role"
+            ],
+            "excludes": [
+              "Generic emphasis in announcements",
+              "The proposed Éclat Android animation project",
+              "Unspecified accent mentioned in palette-mail",
+              "All color tokens"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "éclat",
+              "context": "French glossary naming the Aurora Web 4 semitransparent accent color role using --accent-soft; not the Android animation project.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+                  "passage": "eclat-color"
+                }
+              ],
+              "locale": "fr"
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-color"
+            }
+          ],
+          "parentKey": "color",
+          "parentRationale": "The accent role is a narrower interface-color topic; using a token does not establish subtype membership beneath color-tokens."
+        },
+        {
+          "key": "projects",
+          "label": "Engineering projects",
+          "definition": {
+            "text": "Named engineering initiatives represented in this installation independently of their implementation topics or approval standing.",
+            "includes": [
+              "The proposed Éclat Android animation initiative"
+            ],
+            "excludes": [
+              "Color roles sharing a project-name spelling",
+              "Assumed production approval"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-project"
+            }
+          ]
+        },
+        {
+          "key": "eclat-project",
+          "label": "Éclat animation project",
+          "definition": {
+            "text": "The proposed Android animation project named Éclat whose draft names spark-start.",
+            "includes": [
+              "Project identity and draft animation cue"
+            ],
+            "excludes": [
+              "The French accent-color alias éclat",
+              "Any approved production animation contract"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Éclat",
+              "context": "Name of the proposed Android animation project with draft cue spark-start; not the Aurora Web 4 accent-color role.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+                  "passage": "eclat-project"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-project"
+            }
+          ],
+          "parentKey": "projects",
+          "parentRationale": "This is one named engineering initiative; its animation topic may be assigned separately."
+        },
+        {
+          "key": "terminology",
+          "label": "Engineering terminology",
+          "definition": {
+            "text": "Contextual naming and glossary topics in the local engineering source material.",
+            "includes": [
+              "French glossary naming of the semitransparent accent role"
+            ],
+            "excludes": [
+              "A new CSS serialization rule inferred from naming",
+              "Context-free equivalence of project and color names"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "eclat-color"
+            }
+          ]
+        }
+      ],
+      "related": [
+        {
+          "fromKey": "css-color-serialization",
+          "toKey": "color-tokens",
+          "type": "association",
+          "rationale": "The active CSS contract serializes named color tokens. The process and object topics are related without making serialization a kind of token; the inverse is derived.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/engineering.md",
+              "passage": "css-export"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/engineering.md",
+              "passage": "css-audit"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "installation": "cultural-research",
+      "subjects": [
+        {
+          "key": "color",
+          "label": "Color",
+          "definition": {
+            "text": "Research-local topic for colors named as stimuli, described attributes or glossary referents in the Maru collection.",
+            "includes": [
+              "Red and blue as named research colors",
+              "Contextual color terminology"
+            ],
+            "excludes": [
+              "Project names without a color manipulation",
+              "Engineering token identities in another installation",
+              "A color-only effect inferred from confounded evidence"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "red-attention"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "blue-symbolism"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "do-glossary"
+            }
+          ]
+        },
+        {
+          "key": "red",
+          "label": "Red",
+          "definition": {
+            "text": "The color red as a named stimulus, described attribute or contextual color term in this research collection.",
+            "includes": [
+              "Red notifications, labels and posters",
+              "Reported symbolism of red",
+              "French Rouge in a color-term context",
+              "Vietnamese đỏ in the specified trial glossary"
+            ],
+            "excludes": [
+              "Project Rouge in its museum brochure naming context",
+              "Universal detection benefits",
+              "Color-only causal conclusions from the withdrawn poster study"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Rouge",
+              "context": "French color term in the Maru terminology note; distinct from the separate research project name.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+                  "passage": "rouge-terms"
+                },
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+                  "passage": "rouge-project"
+                }
+              ],
+              "locale": "fr"
+            },
+            {
+              "label": "đỏ",
+              "context": "Vietnamese color term for red in the collection glossary identifying the Vietnam adult software-notification trial; no added experimental result.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+                  "passage": "do-glossary"
+                }
+              ],
+              "locale": "vi"
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "red-attention"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "rouge-terms"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "do-glossary"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "vietnam-symbolism"
+            }
+          ],
+          "parentKey": "color",
+          "parentRationale": "A named color is a narrower color topic; topic membership supplies no effect estimate."
+        },
+        {
+          "key": "blue",
+          "label": "Blue",
+          "definition": {
+            "text": "The color blue as a named attribute or stimulus in the local research material.",
+            "includes": [
+              "Blue packaging symbolism",
+              "Blue toy-package preference"
+            ],
+            "excludes": [
+              "A red-versus-gray detection comparison",
+              "Any inferred common population or outcome across separate studies"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "blue-symbolism"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "split-study-notebook"
+            }
+          ],
+          "parentKey": "color",
+          "parentRationale": "Blue is a named-color specialization; each source retains its own population, task and outcome."
+        },
+        {
+          "key": "perception",
+          "label": "Perception",
+          "definition": {
+            "text": "Local research topic for noticing or detecting visual stimuli in the tasks reported or proposed by the collection.",
+            "includes": [
+              "Notification detection",
+              "Visual noticing in labels or posters"
+            ],
+            "excludes": [
+              "Reported symbolism",
+              "Preference as if it were detection",
+              "A claim covering all sensory modalities"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "red-attention"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "thailand-null"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "unlocated-observation"
+            }
+          ]
+        },
+        {
+          "key": "visual-attention",
+          "label": "Visual attention and detection",
+          "definition": {
+            "text": "Research topics concerning noticing or detecting visually presented stimuli, including null, withdrawn and proposed comparisons.",
+            "includes": [
+              "Red-versus-gray notification detection",
+              "Noticing labels",
+              "Historically withdrawn poster attention claim",
+              "Proposed multisite detection comparisons"
+            ],
+            "excludes": [
+              "Reported color symbolism",
+              "Toy-package preference",
+              "Memory of a brochure title without visual-attention testing",
+              "Universality inferred from one sample"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "red-attention"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "thailand-null"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "preliminary-poster"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "unlocated-observation"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "future-region-study"
+            }
+          ],
+          "parentKey": "perception",
+          "parentRationale": "Noticing and detection are the visually specified part of the locally defined perception topic; assignment does not certify a current finding."
+        },
+        {
+          "key": "culture",
+          "label": "Culture",
+          "definition": {
+            "text": "Local research topic for meanings participants report for visual color attributes.",
+            "includes": [
+              "Reported color symbolism in packaging and interviews"
+            ],
+            "excludes": [
+              "A universal cultural rule",
+              "Detection or preference substituted for reported meaning"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "blue-symbolism"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "vietnam-symbolism"
+            }
+          ]
+        },
+        {
+          "key": "color-symbolism",
+          "label": "Color symbolism",
+          "definition": {
+            "text": "Research on meanings participants report or associate with colors in the stated context.",
+            "includes": [
+              "Adults’ reported meanings of blue packaging",
+              "Participating adults describing red as festive"
+            ],
+            "excludes": [
+              "Detection advantages",
+              "Preference measurements",
+              "A finding generalized beyond the reported participants and task"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "blue-symbolism"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "vietnam-symbolism"
+            }
+          ],
+          "parentKey": "culture",
+          "parentRationale": "Reported meanings of colors specialize the installation’s local cultural-meaning topic."
+        },
+        {
+          "key": "projects",
+          "label": "Research projects",
+          "definition": {
+            "text": "Named research initiatives in the Maru collection, independently of words used as color terms.",
+            "includes": [
+              "Project Rouge museum brochure naming study"
+            ],
+            "excludes": [
+              "The French color word Rouge without project context",
+              "Engineering project names in another installation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "rouge-terms"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "rouge-project"
+            }
+          ]
+        },
+        {
+          "key": "rouge-project",
+          "label": "Project Rouge",
+          "definition": {
+            "text": "The internal museum brochure title naming study called Project Rouge, including recall of Morning Harbor.",
+            "includes": [
+              "Research project identity",
+              "Brochure-title naming and memory study"
+            ],
+            "excludes": [
+              "The color red",
+              "Color manipulation or visual-attention testing",
+              "Color effects inferred from the project name"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Rouge",
+              "context": "Research project name for the museum brochure title naming study, including recall of Morning Harbor; no color was manipulated.",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+                  "passage": "rouge-project"
+                },
+                {
+                  "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+                  "passage": "rouge-terms"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "rouge-project"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "rouge-terms"
+            }
+          ],
+          "parentKey": "projects",
+          "parentRationale": "Project Rouge is one named research initiative, independently of the French color term."
+        },
+        {
+          "key": "terminology",
+          "label": "Research terminology",
+          "definition": {
+            "text": "Context-dependent color and project naming in the research collection’s notes and glossaries.",
+            "includes": [
+              "French Rouge as color term versus project name",
+              "Vietnamese đỏ as the color red"
+            ],
+            "excludes": [
+              "New experimental evidence inferred from a translation",
+              "Context-free alias resolution"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "rouge-terms"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "do-glossary"
+            }
+          ]
+        },
+        {
+          "key": "research",
+          "label": "Research practice",
+          "definition": {
+            "text": "Local topic for planning investigations and evaluating methodological support for their claims.",
+            "includes": [
+              "Unperformed research proposals",
+              "Confounding and withdrawal of a color-only conclusion"
+            ],
+            "excludes": [
+              "Treating proposed or withdrawn findings as established results"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "earlier-pilot"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "future-region-study"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "poster-retraction"
+            }
+          ]
+        },
+        {
+          "key": "research-methodology",
+          "label": "Research methodology",
+          "definition": {
+            "text": "Methodological assessment of whether study design supports attribution of an observed result.",
+            "includes": [
+              "Poster size and color confounding",
+              "Withdrawal of unsupported color-only attribution"
+            ],
+            "excludes": [
+              "Replacement effect estimates absent from the correction",
+              "A causal claim based only on topical co-membership"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "poster-retraction"
+            }
+          ],
+          "parentKey": "research",
+          "parentRationale": "Assessment of design and attribution is a specialized research-practice topic."
+        },
+        {
+          "key": "research-planning",
+          "label": "Research planning",
+          "definition": {
+            "text": "Proposals and plans for studies that have not supplied observed results.",
+            "includes": [
+              "Unperformed child toy-packaging proposal",
+              "Proposed multisite Southeast Asian detection study"
+            ],
+            "excludes": [
+              "Completed recruitment or findings inferred from a plan",
+              "Region-wide evidence inferred from planned coverage"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "earlier-pilot"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "future-region-study"
+            }
+          ],
+          "parentKey": "research",
+          "parentRationale": "Planning investigations is a specialized research-practice topic; proposal coverage does not establish empirical scope."
+        },
+        {
+          "key": "preference",
+          "label": "Preference",
+          "definition": {
+            "text": "Local topic for reported choices between visual alternatives.",
+            "includes": [
+              "Children’s toy-package preference"
+            ],
+            "excludes": [
+              "Detection",
+              "Reported symbolism",
+              "A preference generalized to untested colors or groups"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "split-study-notebook"
+            }
+          ]
+        },
+        {
+          "key": "color-preference",
+          "label": "Color preference",
+          "definition": {
+            "text": "Reported preference comparisons involving the colors of presented alternatives.",
+            "includes": [
+              "Vietnam children preferring blue over green toy packages"
+            ],
+            "excludes": [
+              "Red toy-package preference inferred by combining notebook sections",
+              "Attention or symbolism outcomes"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "split-study-notebook"
+            }
+          ],
+          "parentKey": "preference",
+          "parentRationale": "Choice between colored toy packages specializes the local preference topic; unrelated notebook sections remain independent."
+        }
+      ],
+      "related": [
+        {
+          "fromKey": "red",
+          "toKey": "visual-attention",
+          "type": "association",
+          "rationale": "The Vietnam and Thailand passages study detection of red versus gray notifications with different reported outcomes. This establishes topical association only, not a universal effect or a common study; the inverse is derived.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/cultural-research.md",
+              "passage": "red-attention"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/cultural-research.md",
+              "passage": "thailand-null"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "coverage": "Defines every assigned subject key in the public proposal, plus explicitly warranted intermediate topics. No source-explicit missing classification is filled; no IDs, approval, lifecycle or scope values are allocated or normalized."
+}

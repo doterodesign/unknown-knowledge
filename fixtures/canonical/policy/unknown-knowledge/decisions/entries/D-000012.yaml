@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000012",
+      "title": "Simulated fixture curation — representation and local subject meanings",
+      "category": "governance",
+      "status": "accepted",
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-fixture-curator"
+      ],
+      "context": "P2 independently reviewed the retained editorial packet. This is synthetic test curation, not authenticated human review or approval by a source owner.",
+      "decision": "Approve only these exact source-reporting representations and local subject meanings for fixture preparation. Preserve nine absent assignment choices across the corpus, historical qualifications, independently scoped notebook claims and proposal/rejection standing. Related edges create no ancestry. Operational applicability is not established by classification or reporting verification.",
+      "consequences": "Support metadata consumes reader budgets and needs an independent record judgment. No retrieval-quality or final-publication acceptance follows.",
+      "provenance": {
+        "author": "simulated-fixture-curation",
+        "skill-version": "development-v2-editorial-1"
+      }
+    }
+  ]
+}

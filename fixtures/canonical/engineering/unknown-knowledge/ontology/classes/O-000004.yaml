@@ -1,0 +1,30 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000004",
+      "term": "Source-text assertion: keyboard capture",
+      "class": "source-text",
+      "summary": "Inspect sources/development-v2/engineering.md#keyboard-capture and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "source-of-truth": [
+        "sources/passages/keyboard-capture.txt",
+        "sources/development-v2/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/keyboard-capture.txt",
+          "values": [
+            "An accepted active Aurora Web 4 keyboard contract requires screenshots of focus",
+            "states to retain the two-pixel focus outline and its two-pixel offset. The",
+            "record's subject classification has not yet been supplied. Its source owner",
+            "and Web 4 scope are explicit; missing classification does not retract approval."
+          ]
+        }
+      ]
+    }
+  ]
+}

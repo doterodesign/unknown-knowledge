@@ -1,0 +1,41 @@
+{
+  "schema-version": 2,
+  "store": "knowledge",
+  "entries": [
+    {
+      "id": "K-000001",
+      "title": "Source report: opaque export",
+      "file": "K-000001.md"
+    },
+    {
+      "id": "K-000002",
+      "title": "Source report: focus ring",
+      "file": "K-000002.md"
+    },
+    {
+      "id": "K-000003",
+      "title": "Source report: unclassified note",
+      "file": "K-000003.md"
+    },
+    {
+      "id": "K-000004",
+      "title": "Source report: css audit",
+      "file": "K-000004.md"
+    },
+    {
+      "id": "K-000005",
+      "title": "Source report: eclat color",
+      "file": "K-000005.md"
+    },
+    {
+      "id": "K-000006",
+      "title": "Source report: preview theme",
+      "file": "K-000006.md"
+    },
+    {
+      "id": "K-000007",
+      "title": "Source report: cross platform notebook",
+      "file": "K-000007.md"
+    }
+  ]
+}

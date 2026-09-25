@@ -1,0 +1,23 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000003",
+      "title": "Source report: atlas practice response",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000013",
+        "S-000012",
+        "S-000016"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/professional-services.md#atlas-practice-response.",
+      "decision": "The accepted Atlas research-practice handbook allows four business days to\nacknowledge an internal research request. That practice is separate from\nProject Atlas and the Orion engagement. The name “Atlas” alone is ambiguous.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

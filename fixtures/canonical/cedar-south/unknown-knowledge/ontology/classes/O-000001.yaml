@@ -1,0 +1,32 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000001",
+      "term": "Source-text assertion: south contract",
+      "class": "source-text",
+      "summary": "Inspect sources/pilot/holding-company.md#south-contract and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "subjects": [
+        "S-000003"
+      ],
+      "source-of-truth": [
+        "sources/passages/south-contract.txt",
+        "sources/pilot/holding-company.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/south-contract.txt",
+          "values": [
+            "South subsidiary's O-000001 is an active transport contract: its local",
+            "exporter supports PDF. It has no authority over North's exporter.",
+            "The installation namespace is cedar-south."
+          ]
+        }
+      ]
+    }
+  ]
+}

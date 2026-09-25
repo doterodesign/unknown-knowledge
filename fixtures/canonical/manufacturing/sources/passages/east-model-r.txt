@@ -1,0 +1,4 @@
+The reviewed active East Plant Model R sealing specification sets 225 kPa at
+the sealing head. It governs East Plant only. It does not change North's 240 kPa
+or South's 210 kPa settings. The specification has an extra quality-review
+classification as well as its site, equipment and sealing classifications.

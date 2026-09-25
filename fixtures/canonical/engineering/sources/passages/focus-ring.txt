@@ -1,0 +1,2 @@
+Aurora's keyboard-focus treatment is a two-pixel outline with a two-pixel
+offset.

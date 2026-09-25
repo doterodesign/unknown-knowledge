@@ -1,0 +1,16 @@
+{
+  "schema-version": 2,
+  "store": "knowledge",
+  "entries": [
+    {
+      "id": "K-000001",
+      "title": "Source report: north knowledge",
+      "file": "K-000001.md"
+    },
+    {
+      "id": "K-000002",
+      "title": "Source report: nord glossary",
+      "file": "K-000002.md"
+    }
+  ]
+}

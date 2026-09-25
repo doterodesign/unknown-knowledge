@@ -1,0 +1,56 @@
+{
+  "schema-version": 2,
+  "store": "decisions",
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Source report: atlas engagement",
+      "file": "entries/D-000001.yaml"
+    },
+    {
+      "id": "proposal:decision:56df3ee4-12da-4a8e-b959-3579c0371aaa",
+      "title": "Source report: atlas practice",
+      "file": "entries/56df3ee4-12da-4a8e-b959-3579c0371aaa.yaml"
+    },
+    {
+      "id": "D-000002",
+      "title": "Source report: atlas project response",
+      "file": "entries/D-000002.yaml"
+    },
+    {
+      "id": "D-000003",
+      "title": "Source report: atlas practice response",
+      "file": "entries/D-000003.yaml"
+    },
+    {
+      "id": "D-000004",
+      "title": "Source report: iris scheduling",
+      "file": "entries/D-000004.yaml"
+    },
+    {
+      "id": "D-000005",
+      "title": "Source report: nova refund",
+      "file": "entries/D-000005.yaml"
+    },
+    {
+      "id": "D-000006",
+      "title": "Source report: contact withdrawal",
+      "file": "entries/D-000006.yaml"
+    },
+    {
+      "id": "proposal:decision:77918dc4-7946-47ab-9534-234db6783603",
+      "title": "Source report: beta template",
+      "file": "entries/77918dc4-7946-47ab-9534-234db6783603.yaml"
+    },
+    {
+      "id": "D-000007",
+      "title": "Source report: private access",
+      "file": "entries/D-000007.yaml"
+    },
+    {
+      "id": "D-000008",
+      "title": "Simulated fixture curation — representation and local subject meanings",
+      "file": "entries/D-000008.yaml"
+    }
+  ]
+}

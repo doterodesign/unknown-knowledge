@@ -1,0 +1,3 @@
+A note records that the Orion client has asked about refunds. The question
+is on the next engagement review agenda. The team's approved source-access
+policy excludes `sources/private/` from this review.

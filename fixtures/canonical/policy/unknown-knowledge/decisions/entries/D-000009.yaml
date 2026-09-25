@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000009",
+      "title": "Source report: archive correction",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000001",
+        "S-000007"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/policy.md#archive-correction.",
+      "decision": "D-000011 is an accepted archival clarification. It confirms that the superseded\nD-000001 used 30 days for Region West support tickets before D-000002 and\nD-000003 replaced it. It does not reinstate the predecessor as current policy.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

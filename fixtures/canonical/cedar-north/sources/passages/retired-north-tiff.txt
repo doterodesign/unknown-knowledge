@@ -1,0 +1,3 @@
+North's retired Ontology O-000002 describes an earlier TIFF-only asset exporter.
+It was withdrawn before the current O-000001 PNG/SVG contract became active.
+The historical TIFF behavior is not a current supported-format promise.

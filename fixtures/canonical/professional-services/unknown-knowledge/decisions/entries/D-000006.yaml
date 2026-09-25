@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000006",
+      "title": "Source report: contact withdrawal",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000010",
+        "S-000020"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/professional-services.md#contact-withdrawal.",
+      "decision": "An accepted administrative note withdraws the old Orion privacy mailbox and\nsays its replacement is still awaiting client confirmation. No approved current\naddress appears in the agreed source collection. The note does not authorize\nguessing an address or contacting the retired mailbox.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

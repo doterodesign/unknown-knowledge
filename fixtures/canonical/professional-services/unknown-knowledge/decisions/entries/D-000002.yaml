@@ -1,0 +1,23 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000002",
+      "title": "Source report: atlas project response",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000008",
+        "S-000010",
+        "S-000016"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/professional-services.md#atlas-project-response.",
+      "decision": "The accepted Project Atlas agreement with Orion commits to acknowledging a\nclient question within two business days. This is a response target, not a\nrefund deadline or a promise to resolve the question within two days.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

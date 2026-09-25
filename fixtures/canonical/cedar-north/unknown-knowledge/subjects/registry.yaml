@@ -1,0 +1,587 @@
+{
+  "schema-version": 1,
+  "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "North technical topics",
+      "definition": {
+        "text": "Technical subjects of cedar-north’s own asset-export artifacts.",
+        "includes": [
+          "North local software/export branch",
+          "Current and retired North asset exporters"
+        ],
+        "excludes": [
+          "South document transport",
+          "Group-wide software/export descendants",
+          "International trade"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#north-contract",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#retired-north-tiff",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "334d6d53-1921-41b6-8b68-7d6b9db01967"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "North logistics",
+      "definition": {
+        "text": "Physical freight-handling topics documented in cedar-north.",
+        "includes": [
+          "Winter freight-crate weather protection"
+        ],
+        "excludes": [
+          "Asset-export software formats",
+          "South Nord project"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/holding-company.md#north-knowledge",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "334d6d53-1921-41b6-8b68-7d6b9db01967"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "North subsidiary",
+      "definition": {
+        "text": "The North subsidiary as named in cedar-north’s accepted French glossary.",
+        "includes": [
+          "Contextual French short name Nord",
+          "North as the locally named subsidiary"
+        ],
+        "excludes": [
+          "South project named Nord",
+          "North asset-export concept as an entity synonym",
+          "Cross-installation identifier resolution"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Nord",
+          "context": "cedar-north accepted French glossary only",
+          "locale": "fr"
+        }
+      ],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/holding-company.md#nord-glossary",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "334d6d53-1921-41b6-8b68-7d6b9db01967"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "North asset export",
+      "definition": {
+        "text": "North’s local asset-export software topic spanning its active PNG/SVG and retired TIFF contracts.",
+        "includes": [
+          "Local technical branch wording software / export",
+          "Current PNG/SVG source claim",
+          "Historical TIFF-only exporter"
+        ],
+        "excludes": [
+          "South PDF transport",
+          "South proposed CSV project",
+          "Unlocated EPS component",
+          "Treating retired TIFF as currently supported"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "export",
+          "context": "North local asset/software exporter"
+        },
+        {
+          "label": "software / export",
+          "context": "North's independently owned local technical branch"
+        }
+      ],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#north-contract",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#retired-north-tiff",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "334d6d53-1921-41b6-8b68-7d6b9db01967"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "North winter freight crates",
+      "definition": {
+        "text": "Weather protection for winter freight crates in cedar-north’s reviewed knowledge note.",
+        "includes": [
+          "Using a weather cover for winter freight crates"
+        ],
+        "excludes": [
+          "Ontology O-000001 asset-export contract",
+          "Identity from an equal numerical suffix",
+          "Holding trade routes"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000002",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/holding-company.md#north-knowledge",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "334d6d53-1921-41b6-8b68-7d6b9db01967"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "334d6d53-1921-41b6-8b68-7d6b9db01967",
+      "action": "activate",
+      "decision": {
+        "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "North technical topics",
+            "definition": {
+              "text": "Technical subjects of cedar-north’s own asset-export artifacts.",
+              "includes": [
+                "North local software/export branch",
+                "Current and retired North asset exporters"
+              ],
+              "excludes": [
+                "South document transport",
+                "Group-wide software/export descendants",
+                "International trade"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#north-contract",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#retired-north-tiff",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "North logistics",
+            "definition": {
+              "text": "Physical freight-handling topics documented in cedar-north.",
+              "includes": [
+                "Winter freight-crate weather protection"
+              ],
+              "excludes": [
+                "Asset-export software formats",
+                "South Nord project"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/holding-company.md#north-knowledge",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "North subsidiary",
+            "definition": {
+              "text": "The North subsidiary as named in cedar-north’s accepted French glossary.",
+              "includes": [
+                "Contextual French short name Nord",
+                "North as the locally named subsidiary"
+              ],
+              "excludes": [
+                "South project named Nord",
+                "North asset-export concept as an entity synonym",
+                "Cross-installation identifier resolution"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Nord",
+                "context": "cedar-north accepted French glossary only",
+                "locale": "fr"
+              }
+            ],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/holding-company.md#nord-glossary",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "North asset export",
+            "definition": {
+              "text": "North’s local asset-export software topic spanning its active PNG/SVG and retired TIFF contracts.",
+              "includes": [
+                "Local technical branch wording software / export",
+                "Current PNG/SVG source claim",
+                "Historical TIFF-only exporter"
+              ],
+              "excludes": [
+                "South PDF transport",
+                "South proposed CSV project",
+                "Unlocated EPS component",
+                "Treating retired TIFF as currently supported"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "export",
+                "context": "North local asset/software exporter"
+              },
+              {
+                "label": "software / export",
+                "context": "North's independently owned local technical branch"
+              }
+            ],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#north-contract",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#retired-north-tiff",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "North winter freight crates",
+            "definition": {
+              "text": "Weather protection for winter freight crates in cedar-north’s reviewed knowledge note.",
+              "includes": [
+                "Using a weather cover for winter freight crates"
+              ],
+              "excludes": [
+                "Ontology O-000001 asset-export contract",
+                "Identity from an equal numerical suffix",
+                "Holding trade routes"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000002",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "9ee7c903-4566-4ba0-8b01-fbce8a5816df",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/holding-company.md#north-knowledge",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+          "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+          "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+        },
+        "decision-digest": "4adc01ff251d28bed8cb059aa84883c579cc95d81c7c2636bb94c9bc42a88561",
+        "change-digest": "0eee294912bb4c51ec6898aa97ba28e4ab6da15b445ea9646e5f5058cb67ca5a"
+      }
+    }
+  ]
+}

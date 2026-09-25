@@ -1,0 +1,81 @@
+{
+  "schema-version": 2,
+  "store": "decisions",
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Source report: predecessor",
+      "file": "entries/D-000001.yaml"
+    },
+    {
+      "id": "D-000002",
+      "title": "Source report: successor a",
+      "file": "entries/D-000002.yaml"
+    },
+    {
+      "id": "D-000003",
+      "title": "Source report: successor b",
+      "file": "entries/D-000003.yaml"
+    },
+    {
+      "id": "D-000004",
+      "title": "Source report: east policy",
+      "file": "entries/D-000004.yaml"
+    },
+    {
+      "id": "proposal:decision:b61f2450-bc2d-4a2d-91b7-1d18afe90f01",
+      "title": "Source report: council note",
+      "file": "entries/b61f2450-bc2d-4a2d-91b7-1d18afe90f01.yaml"
+    },
+    {
+      "id": "D-000005",
+      "title": "Source report: vip successor",
+      "file": "entries/D-000005.yaml"
+    },
+    {
+      "id": "proposal:decision:bde81353-68a8-4584-a337-0030d712351c",
+      "title": "Source report: privacy proposal",
+      "file": "entries/bde81353-68a8-4584-a337-0030d712351c.yaml"
+    },
+    {
+      "id": "D-000006",
+      "title": "Source report: unlocated deletion",
+      "file": "entries/D-000006.yaml"
+    },
+    {
+      "id": "D-000007",
+      "title": "Source report: home office",
+      "file": "entries/D-000007.yaml"
+    },
+    {
+      "id": "D-000008",
+      "title": "Source report: staff retention",
+      "file": "entries/D-000008.yaml"
+    },
+    {
+      "id": "D-000009",
+      "title": "Source report: archive correction",
+      "file": "entries/D-000009.yaml"
+    },
+    {
+      "id": "D-000010",
+      "title": "Source report: visitor minimum",
+      "file": "entries/D-000010.yaml"
+    },
+    {
+      "id": "D-000011",
+      "title": "Source report: visitor maximum",
+      "file": "entries/D-000011.yaml"
+    },
+    {
+      "id": "proposal:decision:38a1b914-21b0-4d5f-9521-2ab8903f8ef0",
+      "title": "Source report: east vip note",
+      "file": "entries/38a1b914-21b0-4d5f-9521-2ab8903f8ef0.yaml"
+    },
+    {
+      "id": "D-000012",
+      "title": "Simulated fixture curation — representation and local subject meanings",
+      "file": "entries/D-000012.yaml"
+    }
+  ]
+}

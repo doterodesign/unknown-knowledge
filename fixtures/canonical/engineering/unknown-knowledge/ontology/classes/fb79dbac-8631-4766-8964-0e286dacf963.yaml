@@ -1,0 +1,33 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:ontology:fb79dbac-8631-4766-8964-0e286dacf963",
+      "term": "Source-text assertion: web5 proposal",
+      "class": "source-text",
+      "summary": "Inspect sources/development-v2/engineering.md#web5-proposal and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "proposed",
+      "subjects": [
+        "S-000008",
+        "S-000006"
+      ],
+      "source-of-truth": [
+        "sources/passages/web5-proposal.txt",
+        "sources/development-v2/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/web5-proposal.txt",
+          "values": [
+            "A proposed Aurora Web 5 change would serialize all colors with `color(display-p3",
+            "...)`. The review has not accepted it, no implementation has shipped, and it",
+            "does not supersede the active Web 4 rgba contract."
+          ]
+        }
+      ]
+    }
+  ]
+}

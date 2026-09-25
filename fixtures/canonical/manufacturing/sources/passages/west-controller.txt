@@ -1,0 +1,3 @@
+West Plant owns a Model R controller with a 400 kPa input ceiling. Its equipment
+inventory contains no approved sealing-process setpoint. The maximum setting
+is not an operating instruction and the other plants' settings do not govern West.

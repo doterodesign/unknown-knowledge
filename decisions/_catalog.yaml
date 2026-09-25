@@ -216,6 +216,9 @@ entries:
   - id: proposal:decision:fb2c4724-c3c4-4a1a-b367-231b2dfc685e
     title: "Ranked metadata retrieval with a retrieval tier is the first retrieval step"
     file: entries/ranked-retrieval-ask.yaml
+  - id: proposal:decision:9ae1f0be-1bfd-49cf-a7d4-0cdb1251c8f8
+    title: "Kept guarantees are pinned by fast invariant tests on one shared fixture"
+    file: entries/shared-canonical-fixture.yaml
   - id: proposal:decision:768020f6-acd8-4577-9d55-724d93365dc2
     title: "Retrieval fixtures use independently reviewed sources and pinned trial custody"
     file: entries/retrieval-fixture-custody.yaml

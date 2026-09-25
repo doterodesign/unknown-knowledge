@@ -1,0 +1,16 @@
+{
+  "schema-version": 2,
+  "store": "decisions",
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Source report: q retirement",
+      "file": "entries/D-000001.yaml"
+    },
+    {
+      "id": "D-000002",
+      "title": "Simulated fixture curation — representation and local subject meanings",
+      "file": "entries/D-000002.yaml"
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+A proposed North Plant Model R trial would raise sealing pressure to 260 kPa.
+The change is not accepted or deployed. The active operating specification
+remains 240 kPa at the sealing head pending review and qualified validation.

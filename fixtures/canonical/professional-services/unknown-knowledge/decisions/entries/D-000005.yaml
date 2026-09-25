@@ -1,0 +1,23 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000005",
+      "title": "Source report: nova refund",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000009",
+        "S-000011",
+        "S-000015"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/professional-services.md#nova-refund.",
+      "decision": "The accepted Cedar engagement with Nova permits a refund request within seven\ncalendar days of kickoff. It is a different project/client agreement from\nProject Atlas for Orion and is not incorporated into the Orion contract.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

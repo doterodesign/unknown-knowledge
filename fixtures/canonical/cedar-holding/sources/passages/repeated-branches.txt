@@ -1,0 +1,4 @@
+North labels a local technical branch “software / export.” South independently
+uses the same branch wording for document transport. Neither owner declares a
+parent relation, equivalent subject or import edge to the other's branch.
+Their identical labels are insufficient to create a group-wide descendant set.

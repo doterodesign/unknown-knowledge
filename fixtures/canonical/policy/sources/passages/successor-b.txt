@@ -1,0 +1,5 @@
+D-000003 is accepted and reviewed; its scope is the same support tickets in
+Region West. It supersedes D-000001 and sets retention to 90 days. Its later
+date is September 12 rather than September 10, and it does not supersede
+D-000002. The council's rules give precedence only through explicit
+supersession or a separate conflict-resolution decision.

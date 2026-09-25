@@ -1,0 +1,4 @@
+This reviewed notebook contains two independent observations: Android's image
+viewer accepts P3 images, and the desktop CSS exporter serializes alpha colors
+as rgba. It reports no test of P3 colors with alpha in the Android CSS exporter.
+The notebook is not a joint Android color-export qualification.

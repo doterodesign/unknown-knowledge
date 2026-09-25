@@ -1,0 +1,23 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Source report: atlas engagement",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000008",
+        "S-000010",
+        "S-000015"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/pilot/professional-services.md#atlas-engagement.",
+      "decision": "Project Atlas for Orion approved discovery and design-delivery milestones.\nIts signed engagement record contains no refund deadline, refund policy or\nincorporated refund schedule. A later refund clause remains an unresolved\nagenda item; this record supplies no approved duration.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

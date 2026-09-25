@@ -1,0 +1,1 @@
+An engineering note uses “accent” to mean emphasis in a release announcement.

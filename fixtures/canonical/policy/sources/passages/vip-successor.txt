@@ -1,0 +1,5 @@
+D-000006 was accepted on 2026-09-16. It sets Region West VIP support-ticket
+retention to 45 days and explicitly supersedes both D-000002 and D-000003 only
+for VIP tickets. Both earlier decisions remain in force for ordinary West
+tickets, where their competing 60-day and 90-day periods are unresolved.
+D-000006 does not apply to Region East.

@@ -1,0 +1,3 @@
+D-000002 is accepted and reviewed; its scope is support tickets in Region
+West. It supersedes D-000001 and sets retention to 60 days. It does not
+supersede D-000003 and includes no conflict-resolution rule.

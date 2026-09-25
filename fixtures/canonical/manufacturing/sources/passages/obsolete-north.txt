@@ -1,0 +1,2 @@
+The retired North Plant Model Q specification used 190 kPa. It applies to a
+different model and is retained only for historical maintenance records.
