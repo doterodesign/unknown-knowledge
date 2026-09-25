@@ -12,12 +12,56 @@ payload.
 | `materialize-growth.js`, `materialize-scale.js` | grow those installations with reviewed or synthetic records (see [growth construction](GROWTH-CONSTRUCTION.md)) | `tests/retrieval-growth-preparation.test.js`, scale timing |
 | `benchmark.js` | ranks each gold task with `ask` or `resolve` and reports bundle depth, output size and latency | `node acceptance/retrieval/benchmark.js ask` |
 | `evaluate.js` | per-store recall/nDCG and bundle scorer for reviewed agent traces | `tests/retrieval-acceptance.e2e.test.js` |
+| `arms.js` | makes the current-runtime copy of a 2.x installation: fresh `init`, stores converted by `migrate.js` | `pilot-readers.js` |
+| `reader.js` | runs one fresh headless reader session and records its trace | `pilot-readers.js` |
+| `grade.js` | blind grader: one trace and one case in, a closed verdict out | `pilot-grade.js` |
+| `pilot-readers.js`, `pilot-grade.js` | run and grade readers on the public pilot tasks | choosing the reader model |
 
 The last agent evaluation (held-out, 36 sessions) predates `ask`: source-supported
 task completion was 15/18 for the original runtime and 10/18 for rc.8. Its
 reports were removed with the features they measured; they remain at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/tree/2777b9b/acceptance/retrieval).
 No agent evaluation has been run with `ask` yet.
+
+## Agent evaluation
+
+A reader is a headless Claude Code session (`claude -p`) started in a private
+copy of one installation. It gets the question and nothing else: no user
+settings, memory, hooks, plugins or MCP servers, and only the Read, Grep, Glob
+and Bash tools, with Bash limited to the engine and plain reads. It follows the
+installation's own `AGENTS.md`. The trace records every tool call, the bytes
+it returned, tokens, cost, time and the answer. The CLI must be signed in
+(`claude auth status`).
+
+Both runtimes hold identical content. The original arm is the 2.x store as the
+08066b5 runtime built it; the current arm is a fresh 3.0 `init` holding the same
+stores after `migrate.js`, which is the documented upgrade path.
+
+The grader (`grade.js`, Sonnet 5, no tools) sees the case and the trace and
+returns `completed`, `correct-abstention` or `failed`, plus critical flags
+(`unsupported-claim`, `answered-unanswerable`, `scope-violation`,
+`fabricated-citation`). The rubric is in the file and was fixed before any
+held-out session ran. For held-out cases its reasoning is written only to the
+custody directory.
+
+### Reader model
+
+Measured on the six public pilot tasks, current runtime, one session each,
+graded by `grade.js` and checked by hand
+([results](agent-evaluation/pilot-model-comparison.json)):
+
+| Model | Graded correct | Cost, 6 tasks | Mean time | Mean tool output |
+| --- | --- | --- | --- | --- |
+| Haiku 4.5 | 5/6 | $0.43 | 33 s | 46 KB |
+| Sonnet 5 | 6/6 | $1.32 | 51 s | 61 KB |
+
+Both cited a gold bundle on every task. Haiku failed holding-company-01: it
+acknowledged that the two subsidiaries' records must not be merged and then
+listed their merged formats anyway, a critical `answered-unanswerable` error.
+Half the held-out cases are scoped refusals, so the evaluation uses Sonnet 5:
+about three times Haiku's cost, still about $0.22 a session, and a reader that
+does not add its own refusal errors to both runtimes. Opus was not tried
+because Sonnet missed nothing.
 
 Run the scorer's independent literal examples:
 

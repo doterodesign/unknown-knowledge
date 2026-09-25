@@ -1,0 +1,41 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:7cf5ceb1-f852-4c8b-9017-0662460b2443"
+    title: "Agent evaluations use isolated headless Claude Code readers on Sonnet 5, graded blind against a fixed rubric"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1580 and UCS-1582; acceptance pending"]
+    context: >
+      Replacing the held-out regression result needs fresh agent sessions on
+      both runtimes. The earlier study's hosts, operator and custody were
+      removed or lost. The user asked that readers run as headless Claude Code
+      sessions if suitable, with the model chosen for cost, speed and accuracy.
+    decision: >
+      A reader is one claude -p session in a private copy of the installation
+      with only the question: no user settings, memory, hooks, plugins or MCP
+      servers, only the Read, Grep, Glob and Bash tools, Bash limited to engine
+      commands and plain reads, a per-session budget. Both runtimes hold
+      identical content: the 2.x stores, and the same stores after migrate.js
+      in a fresh 3.0 kit. The reader model is Sonnet 5, chosen on the six public
+      pilot tasks: 6 of 6 graded correct for $1.32 against Haiku 4.5's 5 of 6
+      for $0.43, where Haiku's miss was a critical error on a scoped refusal,
+      the kind of case half the held-out set tests. A separate Sonnet 5 session
+      with no tools grades each trace against the case: completed,
+      correct-abstention or failed, plus four critical flags. The rubric is
+      fixed in grade.js; only closed verdict fields leave the grader.
+    consequences: >
+      A held-out session costs about $0.20 and a minute. Sessions need a
+      signed-in claude CLI. The reader and grader share a model family, and all
+      grades come from one grader model. The provider's usage-policy
+      classifier can refuse a session outright; that is recorded as a failure,
+      never retried on another model. Alternatives rejected: Haiku 4.5 (cheaper
+      but adds its own refusal errors to both runtimes), Opus 5.5 (not needed:
+      Sonnet missed nothing on the pilot), in-session sub-agents (they inherit
+      the host's instructions and tools and give no tool-level trace). The user
+      authorized this work in the session that produced it; that authorization
+      is not acceptance or publication of this Decision. Supporting
+      implementation: acceptance/retrieval/reader.js, arms.js, grade.js,
+      pilot-readers.js, pilot-grade.js and
+      acceptance/retrieval/agent-evaluation/pilot-model-comparison.json.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000014"]}

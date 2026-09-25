@@ -13,6 +13,12 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.17] - Unreleased
+
+- Add a test-only agent evaluation harness: `acceptance/retrieval/reader.js` runs one fresh, isolated headless Claude Code reader on one installation and records its tool calls, output bytes, tokens, cost, time and answer; `arms.js` builds the current-runtime copy of a 2.x installation (fresh `init` plus `migrate.js`), so both runtimes hold identical content.
+- Add the blind grader `grade.js`: a separate Sonnet 5 session scores a trace as completed, correct-abstention or failed, with four critical flags, against a rubric fixed in the file. `pilot-readers.js` and `pilot-grade.js` run and grade readers on the public pilot tasks.
+- Reader model: Sonnet 5, measured on the six pilot tasks (6/6 correct, $1.32) against Haiku 4.5 (5/6, $0.43, one critical error on a scoped refusal). Results in `acceptance/retrieval/agent-evaluation/pilot-model-comparison.json`; method in `acceptance/retrieval/README.md`. Decision: [agent evaluation readers](decisions/entries/agent-evaluation-readers.yaml). Tracking: UCS-1580, UCS-1582.
+
 ## [3.0.0-rc.16] - Unreleased
 
 - Remove evidence and design notes for removed features: 17 evaluation reports and the review packet under `acceptance/retrieval`, `docs/pr-delivery`, `docs/change-completeness.md`, 68 `docs/agents` notes for removed code, and the uncalled `acceptance/retrieval/operational-fixtures.js`. Git history keeps them; links a reader still needs point at commit 2777b9b on GitHub. The development-v2 gold data, pilot tasks, materializers, benchmark and trace scorer stay; `acceptance/retrieval/README.md` now indexes them.
