@@ -20,9 +20,11 @@ payload.
 | `heldout-run.js` | the held-out comparison between the original and current runtime ([latest report](agent-evaluation/HELDOUT-2026-09-24.md)) | `node acceptance/retrieval/heldout-run.js --custody <dir> --model claude-sonnet-5 --summary <file>` |
 
 The [latest agent evaluation](agent-evaluation/HELDOUT-2026-09-24.md) (six
-new held-out cases, one repeat per runtime) found no regression: both runtimes
-completed or correctly declined 4 of 6, with identical verdicts on every case,
-and the API refused two cases' sessions in both runtimes. The earlier study
+new held-out cases, three repeats per runtime, 36 sessions) found no systematic
+regression: on the four cases the reader could run, the original runtime
+completed or correctly declined 12 of 12 sessions and the current runtime 11 of
+12, and the API refused every session of the other two cases in both runtimes.
+The earlier study
 (15/18 original, 10/18 rc.8) and its reports remain at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/tree/2777b9b/acceptance/retrieval).
 

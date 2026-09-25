@@ -9,8 +9,11 @@
 // prompts, answers or judgments.
 //
 // Usage: node acceptance/retrieval/heldout-run.js --custody <dir> --model <reader model>
-//          --summary <file> [--repeats 1] [--budget-usd 2]
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+//          --summary <file> [--repeats 1] [--first-repeat 1] [--budget-usd 2]
+//
+// --first-repeat numbers later passes after earlier ones (r2, r3, ...) so their
+// traces never overwrite an earlier pass's.
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { prepareBaselineRuntime } from './materialize.js';
@@ -27,6 +30,7 @@ const custody = arg('custody');
 const model = arg('model');
 const summaryFile = arg('summary');
 const repeats = Number(arg('repeats', 1));
+const firstRepeat = Number(arg('first-repeat', 1));
 if (!custody || !model || !summaryFile) {
   process.stderr.write('usage: heldout-run.js --custody <dir> --model <id> --summary <file> [--repeats 1] [--budget-usd 2]\n');
   process.exit(2);
@@ -63,10 +67,11 @@ const refs = (arm, bundle) => bundle.map((ref) => ids[arm].get(`${ref.installati
 const rows = [];
 for (const kase of cases) {
   for (const arm of ['original', 'current']) {
-    for (let repeat = 1; repeat <= repeats; repeat += 1) {
+    for (let repeat = firstRepeat; repeat < firstRepeat + repeats; repeat += 1) {
+      const tag = `${kase.id}.${arm}.r${repeat}`;
+      if (existsSync(join(sessions, `${tag}.trace.json`))) throw new Error(`${tag} already exists; choose another --first-repeat`);
       const root = taskRoot(arm, kase.installations);
       const trace = await runReader({ root, question: kase.prompt, model, budgetUsd: Number(arg('budget-usd', 2)) });
-      const tag = `${kase.id}.${arm}.r${repeat}`;
       writeFileSync(join(sessions, `${tag}.trace.json`), `${JSON.stringify(trace, null, 2)}\n`);
       const graded = grade({
         prompt: kase.prompt, answerable: kase.answerable, expectedAnswer: kase.expectedAnswer,
@@ -85,7 +90,7 @@ for (const kase of cases) {
   }
 }
 const passed = (arm) => rows.filter((r) => r.arm === arm && r.verdict !== 'failed').length;
-const summary = { model, repeats, cases: cases.length, rows,
+const summary = { model, repeats, firstRepeat, cases: cases.length, rows,
   completion: { original: passed('original'), current: passed('current'), of: cases.length * repeats } };
 writeFileSync(summaryFile, `${JSON.stringify(summary, null, 2)}\n`);
 process.stdout.write(`completion: original ${summary.completion.original}/${summary.completion.of}, `

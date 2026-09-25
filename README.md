@@ -57,14 +57,15 @@ and converted with `migrate.js`, are a second gold set `ask` was not tuned on:
 every bundle lands within three results, four at rank one. Both are engine
 retrieval results, not agent task completion.
 
-**Agent evaluation with `ask`: no regression on six new held-out cases.**
-Fresh Sonnet 5 readers answered each case once under the original 2.x runtime
-and once under the current runtime, over identical content, graded blind. Both
-completed or correctly declined 4 of 6, with the same verdict on every case and
-no critical errors; for the other two cases the API refused the reader session
-in both runtimes under its usage policy, so no answer was produced. Four
-usable cases and one repeat show no regression on these cases; they do not
-show that `ask` improves task completion. See the
+**Agent evaluation with `ask`: no systematic regression on six new held-out
+cases.** Fresh Sonnet 5 readers answered each case three times under the
+original 2.x runtime and three times under the current runtime, over identical
+content, graded blind: 36 sessions. On the four cases the reader could run, the
+original runtime completed or correctly declined 12 of 12 sessions and the
+current runtime 11 of 12; the one miss was a critical error (a fabricated
+citation) in one of three policy-01 repeats. For the other two cases the API
+refused every session in both runtimes under its usage policy, so no answer was
+produced. This does not show that `ask` improves task completion. See the
 [report](acceptance/retrieval/agent-evaluation/HELDOUT-2026-09-24.md). The
 earlier study (15/18 original, 10/18 rc.8, on cases that no longer exist) is
 kept at
