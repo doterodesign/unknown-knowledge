@@ -77,7 +77,7 @@ Two `--root` conventions, stated once (same as AGENTS.md):
 ## The five steps
 
 ```
-1. CLASSIFY  item → one facet-set home, via resolve.js
+1. CLASSIFY  item → one facet-set home, via ask.js and resolve.js
 2. CITE      every claim carries a citation, or it parks via log-entry.js
 3. FACET     fill the governed facets from the registries
 4. DRAFT     the leaf file: §3.2 governance frontmatter + body, at draft stage
@@ -92,10 +92,14 @@ domain spine the bootstrap interview wrote. Then ask the engine what
 already exists near the item:
 
 ```
+node unknown-knowledge/engine/ask.js "svg asset export precision" --json --root .
 node unknown-knowledge/engine/resolve.js "svg asset export precision" --json --root .
 ```
 
-`resolve.js` is what answers "does the store already cover this". Read its
+`ask.js` is what answers "does the store already cover this": it ranks existing
+records of every kind by their headings, terms, Subject labels and bodies, so a
+near-duplicate surfaces even when it shares no governed phrase. `resolve.js`
+answers "where does the vocabulary run out". Read its
 `decomposition` (which operations, concepts and jurisdictions joined) and
 its `residue` (the tokens nothing consumed) — residue is the store telling
 you where its vocabulary runs out, and it is the raw material a later

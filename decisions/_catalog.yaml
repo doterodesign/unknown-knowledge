@@ -213,6 +213,9 @@ entries:
   - id: proposal:decision:162296c8-e179-49fd-823d-046422cea782
     title: "Retrieval scores preserve independent relevance and missing evidence"
     file: entries/retrieval-independent-scoring.yaml
+  - id: proposal:decision:fb2c4724-c3c4-4a1a-b367-231b2dfc685e
+    title: "Ranked metadata retrieval with a retrieval tier is the first retrieval step"
+    file: entries/ranked-retrieval-ask.yaml
   - id: proposal:decision:768020f6-acd8-4577-9d55-724d93365dc2
     title: "Retrieval fixtures use independently reviewed sources and pinned trial custody"
     file: entries/retrieval-fixture-custody.yaml

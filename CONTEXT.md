@@ -25,8 +25,8 @@ protocol into a target repo. Distribution is seeded-once-then-owned: after
 `init`, the seeded repo has no relationship to the Kit. Revenue attaches to
 services on top (bootstrap engagements, stewardship), never the code.
 
-**Engine** — The vendored deterministic code. Eighteen command-line surfaces —
-structural validator, value validator, preflight, resolver, survey map, reverse
+**Engine** — The vendored deterministic code. Nineteen command-line surfaces —
+structural validator, value validator, preflight, resolver, ranked record retrieval, survey map, reverse
 audit, log-entry helper, document ingest, intent-plan validation/execution, phoenix events, derived layer, commit gate,
 staged attribution, offline identity inventory, subject metadata lookup, governed subject queries, disposable subject-view artifacts, shared API invocation — over a store loader, an extractor library, and a format-adapter library.
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-000022).
@@ -100,6 +100,20 @@ scope-mismatch flags, and ranked candidates carrying section addresses. It
 reports what the store's vocabulary did and did not reach in the document —
 bounded by the document's own content richness, never by how hard the engine
 tried.
+
+**Retrieval tier** — What `ask` reports about its own search: `covered` (the
+top records match everything the question asks and single something out),
+`partial` (related records exist; part of the question found nothing),
+`none` (nothing distinctive matched) or `unavailable` (a store did not load
+cleanly, so no tier is given). It measures whether the right records were
+found, never whether they answer the question. Strict on purpose: agents treat
+a tier as a verdict.
+
+**Answer check** — The host agent's one bounded judgment after reading the
+records `ask` returned: `answered`, `partially answered` or `not in the
+knowledge base`, citing only returned IDs. Retrieval signals cannot make this
+call; a question whose specific fact is missing scores the same coverage as
+one that is answerable, because the store still covers its topic.
 
 **Truth anchor** — Who owns a fact's truth: artifact, world, or team. Determines
 which store a fact belongs to and every governance property downstream

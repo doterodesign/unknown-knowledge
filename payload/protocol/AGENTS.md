@@ -37,7 +37,7 @@ the layout before invoking the engine. These are the supported conventions:
 
 Two `--root` conventions:
 
-- Every store-reading CLI (`resolve.js`, `preflight.js`, `validate.js`,
+- Every store-reading CLI (`ask.js`, `resolve.js`, `preflight.js`, `validate.js`,
   `validate-values.js`, `commit-check.js`, `audit.js`, `survey-map.js`) takes `--root` as the
   **repo root** (default: cwd). Store readers auto-locate
   `<root>/unknown-knowledge/` when present, otherwise stores at `<root>/`.
@@ -54,14 +54,15 @@ Two `--root` conventions:
 For the kit's own decision-store use case, stay at the repository root:
 
 ```
-node payload/engine/resolve.js "engine language" --json --root .
+node payload/engine/ask.js "engine language" --json --root .
 node payload/engine/preflight.js --json --root .
 ```
 
-Then enter `decisions/_catalog.yaml` and read the named entries using the
-shared lifecycle rules below. The resolver searches concepts/leaves, not
-decision text; zero hits cannot establish that a decision is absent. Missing
-ontology/knowledge warnings are expected in this decision-only layout.
+`ask` searches Decision titles, context and rationale, so it returns candidate
+entries directly. Confirm each through `decisions/_catalog.yaml` and read it
+using the shared lifecycle rules below. A `none` tier cannot establish that a
+decision is absent; fall back to the catalog. Missing ontology/knowledge
+warnings are expected in this decision-only layout.
 
 If working from another directory, supply an absolute repo root to store
 commands and an absolute store/kit root to logging. Do not use `--root payload`
@@ -146,39 +147,54 @@ and the citable half is the accession inside it. See
 
 `RESOLVE → PREFLIGHT → GATHER → ACT → RECORD`
 
-### 1. RESOLVE — request terms → navigation candidates
+### 1. RESOLVE — question → the records it is about
 
-For combined subject constraints, scope requirements or alternative
-interpretations, follow [Intent, query discovery and source review](intent-retrieval.md).
-Its intent and source obligations apply to ordinary retrieval; its typed Subject
-path is conditional. Scope or ambiguity alone does not require Subject lookup.
-Keep its transient inventory and source requirements alongside this loop;
-query execution does not replace catalog navigation, PREFLIGHT or GATHER.
+Start every request with `ask`. It searches Knowledge, Ontology and Decisions
+together and returns at most eight records, with a retrieval tier:
 
 ```
-node unknown-knowledge/engine/resolve.js "export format" --json --today <YYYY-MM-DD> --root .
+node unknown-knowledge/engine/ask.js "how must the CSS exporter serialize the accent color?" --json --root .
 ```
 
-Query terms are positional (joined into one query); results come scored with
-`source-of-truth` pointers, `confusable-with` disambiguation, and knowledge
-entry points. Exit 0 = the lookup ran (hits or none); exit 2 = it never ran —
-stop, that is an engine failure, not an empty result.
+Exit 0 = the search ran (any tier); exit 2 = it never ran — stop, that is an
+engine failure, not an empty result. Act on `confidence.tier`:
 
-Read the complete query envelope before choosing recovery. `results` contains
-ranked whole-query concept matches; top-level `leaves` contains first-class
-Knowledge candidates. `decomposition.concepts` may bind a named concept with
-`match: null`: the phrase joined, but the whole query earned no concept ranking
-score. An empty `results` array alone is not zero resolution. Inspect
-`decomposition.residue`, `resolved-context` and `exclusions` alongside candidates;
-none proves that the original request is fully understood or answered.
+| Tier | Meaning | Do |
+|---|---|---|
+| `covered` | The top records match everything the question asks and single something out | Read the listed records, then run the answer check |
+| `partial` | Related records exist; the terms in `unknown` or `missed` found nothing | Read the listed records, answer only what they support, name the uncovered terms as a gap |
+| `none` | Nothing distinctive matched | Follow zero resolution below; do not guess |
+| `unavailable` | A store did not load cleanly | Run store-health preflight and report the failure; do not answer |
 
-Follow relevant returned accessions and files through the required catalog,
-rules and entry reads. These are ordinary metadata navigation, not evidence of
-a wording miss. Do not force a ranked concept hit or repeat a narrower wording
-query merely to rediscover IDs already returned as useful candidates. Select
-the concept/leaf evidence actually needed, then apply PREFLIGHT and GATHER to
-each selected record. Candidate metadata, excerpts and scores are not trust or
-source proof; a leaf can be useful without any ranked concept result.
+The tier says whether the right records were found. It never says they answer
+the question. Titles, scores and `matched` terms locate evidence; they are not
+evidence.
+
+**Answer check.** After reading the returned records (bodies, and sources in
+GATHER), decide exactly one of `answered`, `partially answered` or `not in the
+knowledge base`, and cite only IDs that `ask` returned or that you reached from
+them through redirects, successors and dependencies. A record about the right
+topic can still lack the specific fact asked; say so rather than filling it in.
+
+**Many records.** For questions about the shape of many records ("the five most
+common complaint themes"), do not read them. List the fields a selection
+carries, choose from that list, then count:
+
+```
+node unknown-knowledge/engine/ask.js --fields --where "term=customer complaint" --json --root .
+node unknown-knowledge/engine/ask.js --count-by subject --under S-000040 --where "subject=S-000040" --top 5 --json --root .
+```
+
+Counts are exact over the selection. Report `missing` (records without the
+field) and `tieAtCut`, and read the example records before describing what a
+group means. Never invent a field or value that `--fields` did not list.
+
+**Governed vocabulary and paths.** `resolve.js` remains the tool for joining a
+question to governed vocabulary (operations, concepts, jurisdictions) when you
+need its `decomposition.residue` for a finding, for `--paths` reverse lookup
+and for `--doc` coverage maps. For combined Subject constraints that need
+governed eligibility, follow [Intent, query discovery and source
+review](intent-retrieval.md).
 
 Keep every original requirement, including residual terms and scope, until
 source review supports it or reports it limited or unresolved. Do not discard
@@ -204,10 +220,10 @@ Resolver metadata is navigation, never target preflight or proof that a
 successor applies. Historical requests can still use the predecessor's source;
 an unresolved conflict, cycle, or inapplicable successor is not a current answer.
 
-**Zero resolution is a normal outcome**, not proof of missing evidence. In query
-mode the engine supplies zero-resolution `conduct` when both `results` and
-top-level `leaves` are empty. Follow that conduct even if decomposition retains
-a named concept or near-miss clue. Use this recovery path before source search:
+**Zero resolution is a normal outcome**, not proof of missing evidence. It is
+`ask` tier `none`, or `resolve` returning zero-resolution `conduct` (both
+`results` and top-level `leaves` empty). Follow that conduct even if a named
+concept or near-miss clue remains. Use this recovery path before source search:
 
 1. **PREFLIGHT store health even with zero hits**: run `preflight.js --json
    --root .` without concept/leaf selectors. Follow its outcome; an exit 2
