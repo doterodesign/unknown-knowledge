@@ -1,0 +1,46 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:95b9b1ee-2bc0-442c-9e3d-87dbb83e0b19"
+    title: "Evidence and design notes for removed features leave the repository; Git history keeps them"
+    category: "governance"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1522; acceptance pending"]
+    context: >
+      After UCS-1517 to UCS-1521 removed intent plans, Subject query surfaces,
+      the publication pipeline, lifecycle operations, typed gates and the
+      bundled 2.x engine, the repository still carried their evidence: 17
+      evaluation reports and the review packet under acceptance/retrieval,
+      the seven-PR delivery evidence in docs/pr-delivery, the 2,084-line
+      docs/change-completeness.md integration report, 68 design notes under
+      docs/agents for the removed code, and operational-fixtures.js, which
+      nothing called. README led with a regression banner and linked those
+      reports as current evidence.
+    decision: >
+      Delete them. Keep the development-v2 gold data, the pilot tasks and
+      judgments, the materializers, the benchmark, the trace scorer
+      (evaluate.js), GROWTH-CONSTRUCTION.md (it documents a kept materializer)
+      and the design notes for features that still exist. Point old links at
+      commit 2777b9b on GitHub where a reader still needs them: the changelog's
+      delivery notes, the last agent evaluation's report. README describes
+      ask, the retrieval tier, the answer check and the smaller engine, and
+      states plainly that no agent evaluation has run with ask; the 15/18 to
+      10/18 held-out result stays as a sentence with its causes, not a banner.
+      The operational-qualification proposal is withdrawn: its budgets counted
+      registry and assignment events that no longer exist, and its fixtures
+      and reports are among the deleted files.
+    consequences: >
+      Every local Markdown link resolves, except the seeded-kit links in
+      payload/docs/README.md, which resolve after init. No current document
+      names a removed command, API operation or file; the one exception is
+      docs/agents/2026-09-24-retrieval-before-after-map.md, this project's own
+      map of what was removed. Recorded Decisions still cite deleted files as
+      plain-text evidence; their reasoning is unchanged and the files remain in
+      Git history. The next agent evaluation, with ask, will need its own
+      report; nothing here replaces the held-out result. Alternatives rejected:
+      moving the reports to an archive directory (it keeps them searchable as
+      if current, and Git already archives them) and deleting the development
+      and pilot judgments with them (the gold gates depend on them). The user
+      authorized this work in the session that produced it; that authorization
+      is not acceptance or publication of this Decision.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000010", "proposal:decision:2cfcc7cc-c716-4b22-b255-94caf7382074"]}

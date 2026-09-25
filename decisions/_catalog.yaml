@@ -262,3 +262,6 @@ entries:
   - id: proposal:decision:2cfcc7cc-c716-4b22-b255-94caf7382074
     title: Tests run in three tiers named by file suffix, with Git repositories copied rather than initialized
     file: entries/test-tiers.yaml
+  - id: proposal:decision:95b9b1ee-2bc0-442c-9e3d-87dbb83e0b19
+    title: Evidence and design notes for removed features leave the repository; Git history keeps them
+    file: entries/prune-removed-feature-evidence.yaml

@@ -1,60 +1,23 @@
-# Retrieval evaluation — UCS-1243
+# Retrieval gold data, fixtures and benchmark
 
-Test-only evidence and scoring for r3 §12. Nothing here ships in the kit payload.
-This is not a query implementation or a production finding schema.
+Test-only material for measuring retrieval. Nothing here ships in the kit
+payload.
 
-The [completed public campaign and initial integration review](PUBLIC-CAMPAIGN-RESULTS.md)
-record adverse answer-quality results, the now-authorized internal handoffs and
-remaining acceptance work. Historical preparation and checkpoint descriptions
-below remain evidence of their original stages, not the latest campaign status.
+| Path | What it is | Used by |
+| --- | --- | --- |
+| `development-v2/` | 48 development questions with independent source judgments and answer bundles, plus the source and curation reviews behind them | `tests/ask-gold.test.js` (the gold gate), `benchmark.js` |
+| `pilot/` | six earlier development tasks with their own reviewed judgments | `tests/migrate.e2e.test.js` (second gold set, after 2.x conversion) |
+| `materialize.js` | builds the pilot tasks as 2.x installations with the original 08066b5 runtime | `tests/migrate.e2e.test.js`, `tests/retrieval-acceptance.e2e.test.js` |
+| `materialize-development.js` | builds the development-v2 installations; its output is committed as `fixtures/canonical` | regenerating the canonical fixture |
+| `materialize-growth.js`, `materialize-scale.js` | grow those installations with reviewed or synthetic records (see [growth construction](GROWTH-CONSTRUCTION.md)) | `tests/retrieval-growth-preparation.test.js`, scale timing |
+| `benchmark.js` | ranks each gold task with `ask` or `resolve` and reports bundle depth, output size and latency | `node acceptance/retrieval/benchmark.js ask` |
+| `evaluate.js` | per-store recall/nDCG and bundle scorer for reviewed agent traces | `tests/retrieval-acceptance.e2e.test.js` |
 
-The [held-out observed results](HELDOUT-RESULTS.md) retain all 36 sessions and
-their independent review. Source-supported task completion is 15/18 original
-versus 10/18 current. Five missing native output bodies were recovered exactly,
-establishing 59/59 strict witnesses. The subsequent aggregate review covers all
-four critical categories across observed actions, reliance and final answers,
-with zero critical events and unavailable unobserved context. The
-[implementation and evaluation review](FINAL-RESULTS.md) brings together these
-results, anonymous repeated-case outcomes, available quality/friction metrics and
-remaining product limitations. The bounded report is complete; it supports no
-general retrieval-improvement claim or deployment approval.
-
-For decision records, public evidence, remaining acceptance and documentation
-coverage, see [Decisions and evidence](DECISIONS-AND-EVIDENCE.md). This index
-does not alter the frozen fixture or trial methodology described below.
-The [prospective quality targets](QUALITY-TARGETS.md) define the agreed final-trial
-criteria and paired denominators. They do not report measured improvements or
-authorize execution, and they leave the historical rubric and receipts intact.
-The [private-file count experiment](PRIVATE-FILE-COUNTS.md) records four complete
-queries under the original limits, with exact counts and retained missing-rules
-warnings. Its frozen evaluator remains false; it is not broader qualification.
-The historical [results-mode experiment](PRIVATE-FILE-RESULTS.md) verified five
-Decision witnesses while explanation capacity withheld Knowledge/Ontology pages.
-The [native-v2 follow-up](PRIVATE-FILE-RESULTS-V2.md) delivers the requested ten
-records per store with independently verified complete explanations at the same
-limits. Full-result delivery, broader quality and performance remain separate.
-The [varied-corpus baseline](VARIED-BASELINE.md) completed 60 calls once at the
-same `79c3efc` runtime: 39 passed, while 21 explicitly requested absent stores
-and refused. The separately reviewed correction passed 21/21 with only those
-plans' store selections changed; combined with the 39 unaffected receipts it
-covers the corrected fixed plan. The original failed score remains intact. Its
-[operational Decision](../../decisions/entries/retrieval-operational-qualification.yaml)
-records the exact freeze, custody and release.
-The [synthetic growth evaluation](GROWTH-CONSTRUCTION.md) preserves old fixture
-data while adding reviewed sources. Its separately reviewed matched replay
-passed 60/60 fixed-query checks. Agent answer quality and performance remain
-unqualified; synthetic construction is separate from lifecycle publication.
-The [six new held-out cases](HELDOUT-CURATION.md) have separately passed source
-and novelty review. Neither preparation establishes agent retrieval quality.
-The [initial six agent attempts](PUBLIC-AGENT-CHECKPOINT.md) did not meet the
-conduct/accounting continuation criterion. All are retained; the remaining
-156 were released under the reviewed prospective v2 amendment. Repeated host-budget
-instruction failures then paused dispatch after 33 v2 attempts. The remaining
-123 are released under a neutral v3 policy-file instruction, with all completed
-attempts and version-specific pairing preserved in the checkpoint.
-The [final-runtime performance measurements](PERFORMANCE-6605402.md) meet the
-named targets for both CLI conditions and the joint loaded query. The near-byte
-loaded query refuses; partial context timing does not qualify full enumeration.
+The last agent evaluation (held-out, 36 sessions) predates `ask`: source-supported
+task completion was 15/18 for the original runtime and 10/18 for rc.8. Its
+reports were removed with the features they measured; they remain at
+[2777b9b](https://github.com/doterodesign/unknown-knowledge/tree/2777b9b/acceptance/retrieval).
+No agent evaluation has been run with `ask` yet.
 
 Run the scorer's independent literal examples:
 
@@ -109,10 +72,6 @@ schema/runtime/query/registry revisions, date and budgets belong in the run
 ledger alongside this score; the scorer adds no snapshot or identity service.
 
 ## Pilot and release boundaries
-
-For the current compact study, [new held-out curation](HELDOUT-CURATION.md)
-records the bounded missing-pool finding and the agreed six-case preparation.
-The historical recommendation below does not establish an available unused pool.
 
 The authorized pilot starts with six different development tasks, one per
 organization topology. Final recommendation is 72 tasks: 48 development and
@@ -207,6 +166,3 @@ cannot conceal work. Internal engine file I/O is not agent inspection.
 Materialization and a guided CLI/catalog/source walkthrough characterize the
 development baseline only. They cannot stand in for independent fresh agents,
 three repetitions, the remaining development/held-out corpus, or paired results.
-The agreed subsequent development limits and delivery requirements are recorded
-in [DEVELOPMENT-BUDGETS.md](DEVELOPMENT-BUDGETS.md); host enforcement must be
-verified before comparison.

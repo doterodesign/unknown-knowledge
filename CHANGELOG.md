@@ -13,6 +13,13 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.16] - Unreleased
+
+- Remove evidence and design notes for removed features: 17 evaluation reports and the review packet under `acceptance/retrieval`, `docs/pr-delivery`, `docs/change-completeness.md`, 68 `docs/agents` notes for removed code, and the uncalled `acceptance/retrieval/operational-fixtures.js`. Git history keeps them; links a reader still needs point at commit 2777b9b on GitHub. The development-v2 gold data, pilot tasks, materializers, benchmark and trace scorer stay; `acceptance/retrieval/README.md` now indexes them.
+- README describes `ask`, the retrieval tier, the answer check and the smaller engine. The held-out regression banner becomes one paragraph: no agent evaluation has run with `ask` yet, and the last one (15/18 to 10/18) and its causes are stated with a link to its report.
+- CONTEXT.md: the runtime loop starts with `ask` and the answer check; Subject changes point at the protocol's **Changing Subjects** section.
+- The operational-qualification proposal Decision is marked rejected. Decision: [prune removed-feature evidence](decisions/entries/prune-removed-feature-evidence.yaml). Tracking: UCS-1522.
+
 ## [3.0.0-rc.15] - Unreleased
 
 - Tests run in three tiers, chosen by file name: `*.unit.test.js` (`npm run test:unit`, 376 tests in about 6 s), `*.test.js` (`npm test` runs these with the unit tier, 1,342 tests in about 12 s) and `*.e2e.test.js` (`npm run test:e2e`, 130 tests in about 3 minutes: real Git hooks, `init` copies and the 2.x converter). CI runs the end-to-end tier as its own job.
@@ -75,45 +82,45 @@ the actual release date; unpublished versions never receive invented dates.
 - Clarify the planned unreleased rc.8 package, identity/interface changes, reviewed migration requirements and bounded held-out completion regression near the top of the README.
 
 - Retain the completed bounded evaluation, adverse public and held-out outcomes, sanitized approved reports and exact cross-stack ownership ledger.
-- Review scope, Decisions and validation: [PR 7](docs/pr-delivery/pr-07.md).
+- Review scope, Decisions and validation: [PR 7](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-07.md).
 
 ## [3.0.0-rc.7] - Unreleased
 
 - Expose eleven shared read operations through the local API, request-file CLI and stdio MCP with installed capability and dependency checks.
-- Review scope, Decisions and validation: [PR 6](docs/pr-delivery/pr-06.md).
+- Review scope, Decisions and validation: [PR 6](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-06.md).
 
 ## [3.0.0-rc.6] - Unreleased
 
 - Preserve prior finding outcomes when reopening and document governed reflection, durable review and source/evidence conduct.
-- Review scope, Decisions and validation: [PR 5](docs/pr-delivery/pr-05.md).
+- Review scope, Decisions and validation: [PR 5](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-05.md).
 
 ## [3.0.0-rc.5] - Unreleased
 
 - Make historical-runtime test directories portable and keep split-publication fault fixtures in loose Git storage; verify that source deletion takes effect before refusal checks.
 
 - Isolated migration and complete-runtime cutover, fixed retained validation workers, fresh review and bounded candidate-reference publication.
-- Review scope, Decisions and validation: [PR 4](docs/pr-delivery/pr-04.md).
+- Review scope, Decisions and validation: [PR 4](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-04.md).
 
 ## [3.0.0-rc.4] - Unreleased
 
 - CI harness correction: retain exact admission counters while accounting explicitly for the host checkout path length.
 
 - Exact assignment and lifecycle domain checks, typed promotion planning, merge, split, retirement, creation, metadata and reconsideration proofs.
-- Review scope, Decisions and validation: [PR 3](docs/pr-delivery/pr-03.md).
+- Review scope, Decisions and validation: [PR 3](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-03.md).
 
 ## [3.0.0-rc.3] - Unreleased
 
 - CI harness correction: Send the large output-budget probe through stdin to preserve its full payload across Linux argument-size limits.
 
 - Captured Subject queries, strong Kleene unknowns, bounded intent execution, lookup, generated trees and context/route views.
-- Review scope, Decisions and validation: [PR 2](docs/pr-delivery/pr-02.md).
+- Review scope, Decisions and validation: [PR 2](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-02.md).
 
 ## [3.0.0-rc.2] - Unreleased
 
 - CI harness correction: Bound temporary Git fixture cleanup retries and keep automatic maintenance synchronous within each disposable repository; persistent teardown errors and all snapshot assertions remain visible.
 
 - Permanent typed identities, allocation ledger, optional Subject authority and assignment history; canonical schemas, seed templates and fixture conversion. Existing-store migration is unavailable at this intermediate stage.
-- Review scope, Decisions and validation: [PR 1](docs/pr-delivery/pr-01.md).
+- Review scope, Decisions and validation: [PR 1](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/docs/pr-delivery/pr-01.md).
 
 ### Original integrated implementation notes (historical pending rc.2)
 
