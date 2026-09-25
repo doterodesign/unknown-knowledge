@@ -102,6 +102,11 @@ export function prepareReflectionFixture(root) {
   }
   for (let i = 0; i < 3; i++) finding('O-000003', 'O-000003 retrieval retried; docs/handbook.md#locale.', 'one-session', '2026-09-09');
   run('git', ['init', '-q']);
+  // The copied engine crosses Git's loose-object threshold, so the commit below
+  // triggers automatic maintenance. Keep it synchronous: detached, it keeps
+  // writing into .git while the caller removes the fixture.
+  run('git', ['config', 'gc.autoDetach', 'false']);
+  run('git', ['config', 'maintenance.autoDetach', 'false']);
   run('git', ['config', 'user.name', 'Fixture Steward']);
   run('git', ['config', 'user.email', 'fixture@example.invalid']);
   run('git', ['config', 'core.hooksPath', 'unknown-knowledge/hooks']);

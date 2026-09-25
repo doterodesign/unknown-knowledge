@@ -441,7 +441,9 @@ test('no shipped prose claims the engine ranks conflicting citations', () => {
     const text = readFileSync(join(root, rel), 'utf8');
     const paragraphs = text.split(/\n\s*\n|\n(?=\s*(?:\/\*\*|\*\/))/);
     for (const para of paragraphs) {
-      if (!/\brank/i.test(para)) continue;
+      // The claim guarded against is ranking CITATIONS by authority. Ranking
+      // records for retrieval (ask.js) is present behaviour and is not that claim.
+      if (!/\brank/i.test(para) || !/citation|authority|tier|conflict/i.test(para)) continue;
       const flat = para.replace(/\s+/g, ' ');
       // A paragraph may mention ranking only while placing it in the future or
       // denying it happens today.
