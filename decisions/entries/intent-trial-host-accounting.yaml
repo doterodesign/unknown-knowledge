@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:b10eac52-921c-485c-bcb8-1820a16d53c3
     title: Intent trial hosting accounts delivered evidence and preserves failed attempts
     category: process
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -32,4 +32,4 @@ entries:
       covers actual delivery, drift, exposure and syntax-refusal handling.
       See docs/agents/ucs-1238-decisions-and-docs.md for scope and limitations.
       This backfill is a proposal, not approval or rewriting of trial evidence.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000007, D-000010, proposal:decision:a5c52715-cec0-476a-82c6-32e9099e9976, proposal:decision:85820498-82bc-4f84-8e36-67f60ddd1349] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000007, D-000010, proposal:decision:a5c52715-cec0-476a-82c6-32e9099e9976, proposal:decision:85820498-82bc-4f84-8e36-67f60ddd1349, proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f] }

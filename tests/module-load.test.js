@@ -119,9 +119,9 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
   // The seeded kit resolves js-yaml from the CLIENT's node_modules (§9.1). A
   // client who never installed it must get an engine failure, not findings.
   //
-  // ingest and default-mode intent-plan do not load YAML stores, so js-yaml's
-  // absence is invisible to them. That is a real property, not an exemption — they must
-  // still never exit 1, which the loop asserts for every surface either way.
+  // ingest does not load YAML stores, so js-yaml's absence is invisible to
+  // it. That is a real property, not an exemption — it must still never exit
+  // 1, which the loop asserts for every surface either way.
   const dir = sandbox(t, { deps: false });
   for (const surface of SURFACES) {
     let checkRoot = fixture;
@@ -137,16 +137,15 @@ test('a missing runtime dependency makes every surface exit 2, never 1', (t) => 
     }
     const r = run(dir, surface, '--root', checkRoot);
     assertNeverFindings(r, surface, 'with js-yaml absent');
-    if (['ingest.js', 'intent-plan.js'].includes(surface)) {
-      // These commands reach no YAML, so they LOAD rather than failing to.
-      // Assert this positively rather than skipping: they still exit 2, and
-      // it must do so by reaching its own usage validation (intent-plan now
-      // knows --root, but still requires a plan file) — proving the engine
-      // came up, which is the opposite of the
-      // other surfaces' outcome and would otherwise go unverified.
+    if (surface === 'ingest.js') {
+      // Ingest reaches no YAML, so it LOADS rather than failing to. Assert
+      // this positively rather than skipping: it still exits 2, and must do so
+      // by reaching its own flag validation — proving the engine came up,
+      // which is the opposite of the other surfaces' outcome and would
+      // otherwise go unverified.
       assert.doesNotMatch(r.stderr, /the engine could not be loaded/,
         `${surface} has no YAML dependency, so a missing js-yaml must not stop it loading`);
-      assert.match(r.stderr, surface === 'intent-plan.js' ? /name exactly one transient JSON plan file/ : /unknown flag --root/,
+      assert.match(r.stderr, /unknown flag --root/,
         `${surface} must have loaded far enough to parse flags`);
       continue;
     }

@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:937723fe-050c-4d01-a699-d58fbf49ff76
     title: Ordinary retrieval preserves intent without requiring optional Subject authority
     category: scope
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: ["integration owner (record review pending)"]
     context: >
@@ -58,4 +58,4 @@ entries:
       Rationale, artifacts and documentation coverage are linked in
       docs/agents/ucs-1242-retrieval-governance.md. This record remains proposed
       without canonical identity allocation or an asserted approval.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000011] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000001, D-000011, proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f] }

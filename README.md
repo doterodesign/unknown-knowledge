@@ -12,9 +12,9 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.10 — unreleased
+## Planned 3.0.0-rc.11 — unreleased
 
-`unknown-knowledge@3.0.0-rc.10` is the planned prerelease represented by the
+`unknown-knowledge@3.0.0-rc.11` is the planned prerelease represented by the
 [seven-PR delivery stack](docs/pr-delivery/README.md) plus ranked retrieval
 (`ask`). Merging into
 `main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1
@@ -26,8 +26,8 @@ The prepared implementation adds:
   installation, plus optional stable Subjects. A record can have multiple
   Subject assignments; each Subject has at most one parent, with typed related
   links kept separate from ancestry.
-- Governed Subject queries and intent execution, with twelve read operations
-  shared by the API, request-file CLI and local stdio MCP server.
+- Four read operations (capabilities, Subject lookup, ranked retrieval and
+  preflight) shared by the API, request-file CLI and local stdio MCP server.
 - `ask`: one question in, at most eight ranked records from all three stores
   and a retrieval tier (`covered`, `partial`, `none`, `unavailable`) out. It
   also counts records exactly by metadata field for questions about many
@@ -101,7 +101,7 @@ wrong parse is a false all-clear. What it could not read is recorded in
 
 ## The engine
 
-Nineteen seeded command-line surfaces. JavaScript with JSDoc types, zero build
+Sixteen seeded command-line surfaces. JavaScript with JSDoc types, zero build
 step; the seeded engine uses `js-yaml` (D-000022). The npm MCP adapter separately
 uses the official MCP SDK and Zod.
 
@@ -114,45 +114,27 @@ uses the official MCP SDK and Zod.
 | `preflight.js` | which Concepts may this agent trust, right now? |
 | `ask.js` | which records is this question about, how sure is that, and what do exact metadata counts say? |
 | `resolve.js` | what does the store know about these terms or paths? |
-| `query-subjects.js` | which captured records satisfy a governed subject query, with explicit counts and coverage? |
 | `survey-map.js` | what is in this repo, and what could not be surveyed? |
 | `audit.js` | what looks like knowledge but was never written down? |
 | `log-entry.js` | append a finding, miss or gap — never by hand-editing YAML |
 | `ingest.js` | normalize a document (md, txt, html, pdf) to one intermediate representation |
-| `intent-plan.js` | validate declared intent, then optionally validate or execute its captured queries |
 | `phoenix.js` | apply a phoenix event: re-file a drifted subtree in bulk, in full or not at all |
 | `derive.js` | regenerate the derived layer: plural browse trees, call numbers, resolution index |
-| `subject-view.js` | manage the disposable Subject tree, evaluate explicit intersection routes, or count subject contexts |
 | `migrate-identity.js` | inventory a pinned pre-cutover commit for offline identity review; does not publish |
 | `subject.js` | look up every matching declared subject label or alias, with identity and status |
 | `invoke.js` | call the shared versioned API from a bounded JSON request file |
 
 The [shared API, terminal and MCP guide](payload/protocol/engine-interface.md)
-documents twelve read-only operations: discovery, ranked record retrieval
-(`record.ask`), subject lookup/tree/query, intersection routes/context counts,
-Ontology/Knowledge preflight and four intent-plan operations.
+documents four read-only operations: discovery, Subject lookup, ranked record
+retrieval (`record.ask`) and Ontology/Knowledge preflight.
 `unknown-knowledge-engine` calls the request-file CLI;
 `unknown-knowledge-mcp` serves the same API over local stdio for an external
 agent host. Both require explicit transport capacities. The API's `completed`
 envelope means a native report returned, so consumers must still inspect its
-native status, coverage and source-review obligations. Tree preview returns
-generated text and metadata without writing or checking saved files.
-Query output version 2 keeps full assignment outcomes in a query-local
-`assignmentEvidence` table; each record's ordered assignments reference it.
-Per-operation output versions are available through discovery.
-MCP clients can also read the two shipped usage guides through fixed
-documentation resources, without IDE access to repository files.
-
-Intent-plan validation checks the declared inventory and its internal references.
-The explicit `--validate-queries` mode also validates captured queries and their
-intent provenance using the installed registry and retained review evidence.
-Use `--inspect-bindings` separately to inspect declared label/alias claims,
-homonyms and captured identity outcomes against the installation.
-The separate `--execute-queries` mode requires an additional execution admission
-policy and preserves each branch's results and limits. None of these modes
-establishes semantic completeness, binding proof, or source support. See the
-[structural contract](docs/agents/ucs-1238-intent-plan-s1.md) and
-[query modes](docs/agents/ucs-1238-intent-query-plan.md#explicit-cli-mode).
+native status and source-review obligations. The MCP server keeps one retrieval
+index per root in memory. MCP clients can also read the shipped runtime loop
+(`AGENTS.md`) and interface guide through fixed documentation resources,
+without IDE access to repository files.
 
 `node payload/engine/subject.js lookup <label...> [--locale value] [--context value] [--root repo] [--json]`
 reads the selected installation's optional `subjects/registry.yaml`. It returns
@@ -166,7 +148,9 @@ JSON reports `scope: declared-metadata` and `consistency: captured-model`, with
 the namespace, identity/schema/normalizer versions and registry revisions.
 `registryDigest` hashes the complete captured registry document, including
 history. It is a registry-only digest: it does not certify Decision evidence,
-the full installation or an atomic filesystem snapshot.
+the full installation or an atomic filesystem snapshot. The
+[assignment contract](docs/agents/ucs-1236-subject-assignments.md) explains
+how absent subjects differ from an explicit empty list across K/O/D records.
 
 ### Exit codes are a contract
 
@@ -177,34 +161,6 @@ Validation surfaces use three codes, and agents ride them:
 | `0` | the check ran and found nothing |
 | `1` | the check ran and **found something** |
 | `2` | the check **did not run** — an engine failure |
-
-`query-subjects.js` uses 0 for completed evaluation, including zero matches and
-output-only truncation, and 2 for refusal, incomplete evaluation or failure. It
-never uses findings exit 1. Supply `--query <JSONfile>` with explicit budgets;
-`--decision-captures <JSONfile>` provides retained Decision evidence and optional
-`--assessment-captures <JSONfile>` supplies retained original registry/identity
-pairs. For reconsidered Subjects, `--material-captures <JSONfile>` supplies
-their cited retained material. `--counts`
-selects counts only, and `--json` preserves the query result and coverage. See the
-[subject-query contract](docs/agents/ucs-1237-subject-query.md).
-With `--operation-limits-json`, the command loads files and evaluates the query
-within one private operation, retaining the initial corpus checks without a
-duplicate traversal. The internal
-[file-query API](docs/agents/ucs-1237-subject-query.md#fixed-file-to-query-api)
-documents that sequence; exposed in-memory contexts still require full
-re-admission. This change alone does not establish large-corpus capacity.
-Within one captured operation, repeated current-subject checks can reuse verified
-immutable governance evidence; record assignments and current model bindings
-still receive fresh validation. See the
-[eligibility contract](docs/agents/ucs-1235-query-eligibility-reuse.md).
-The [assignment contract](docs/agents/ucs-1236-subject-assignments.md) explains
-how absent subjects differ from an explicit empty list across K/O/D records.
-
-`subject-view.js --mode route` and `--mode contexts` use that same governed
-query evaluator with explicit query budgets and retained Decision evidence.
-Their optional `--operation-limits-json` allowance also bounds host input,
-validation and output. Tree generation keeps its separate projection limits
-and rejects that host flag. See [Subject views](docs/agents/ucs-1239-subject-views.md).
 
 The distinction between `1` and `2` is the load-bearing one. An agent that reads
 `1` quarantines the affected Concepts and continues. If a crashed command could

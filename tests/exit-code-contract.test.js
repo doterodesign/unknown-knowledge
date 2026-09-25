@@ -52,18 +52,12 @@ const ARGV = {
   // A supported extension, so dispatch succeeds and the injected bug is reached
   // in `main`; an unsupported one would be refused before it ever got there.
   'payload/engine/ingest.js': ['some-document.md'],
-  // Naming a plan reaches path resolution before any file read is attempted.
-  'payload/engine/intent-plan.js': ['some-plan.json'],
-  // A readable JSON file gets past input reading to the injected cwd failure;
-  // its content is never treated as a query because context assembly throws.
-  'payload/engine/query-subjects.js': ['--query', join(repoRoot, 'package.json')],
   // The event to apply. It need not exist: naming one gets past the flag
   // grammar into `main`, where the injected bug waits.
   'payload/engine/phoenix.js': ['P-001'],
   // Only the pinned OID spelling is needed: cwd's injected failure precedes
   // source capture, so this object need not exist in the test repository.
   'payload/engine/migrate-identity.js': ['--source', '0'.repeat(40), '--kit-root', '.'],
-  'payload/engine/subject-view.js': ['--delete'],
   'payload/engine/subject.js': ['lookup', 'some-subject'],
   'cli/init-copy.js': ['--target', '.'],
   // Explicit-path interfaces have no default-root read; their fixed main-time
@@ -88,7 +82,6 @@ const EMITS_FINDINGS = new Set([
   // or carrying a file no axis generates. The check RAN; regenerating with
   // --write is the fix (UCS-1158).
   'payload/engine/derive.js',
-  'payload/engine/subject-view.js', // completed comparison of disposable Subject artifacts
   'payload/engine/migrate-identity.js', // completed source inventory diagnostics
 ]);
 

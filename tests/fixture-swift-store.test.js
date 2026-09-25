@@ -97,7 +97,7 @@ test('nothing shipped by init (payload/, cli/) references the acceptance fixture
           // fixtures. Only these exact bytes may bypass the blanket word scan;
           // the acceptance-app ban above and manifest construction checks remain.
           assert.equal(createHash('sha256').update(text).digest('hex'),
-            '72d5861ce17a81a0652a72b246f6a89de731dadfa40f73533f36ea244bde23fb');
+            '028082d1156fb4ca63ba4af9b413e0b46620f24dd4ba4d82e55d1cbec98b8ec4');
           continue;
         }
         assert.ok(

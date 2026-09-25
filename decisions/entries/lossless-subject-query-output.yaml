@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:c30ef8a6-a3c5-419a-a6a0-478084c73cd0
     title: Share complete query assignment outcomes without dropping row evidence
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-21"
     deciders: [codex]
     context: >
@@ -53,3 +53,4 @@ entries:
         - proposal:decision:dc0d7e8b-9717-46fc-8c48-49f5e172943f
         - D-000011
         - D-000022
+        - proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f

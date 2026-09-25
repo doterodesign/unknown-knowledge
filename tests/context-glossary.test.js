@@ -126,13 +126,10 @@ test('the Engine term names every shipped engine surface', () => {
     audit: 'reverse audit',
     'log-entry': 'log-entry helper',
     ingest: 'document ingest',
-    'intent-plan': 'intent-plan validation',
     phoenix: 'phoenix events',
     derive: 'derived layer',
     'migrate-identity': 'offline identity inventory',
     subject: 'subject metadata lookup',
-    'subject-view': 'disposable subject-view artifacts',
-    'query-subjects': 'governed subject queries',
     invoke: 'shared API invocation',
   };
   for (const surface of shipped) {

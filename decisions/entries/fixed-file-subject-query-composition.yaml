@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:dc0d7e8b-9717-46fc-8c48-49f5e172943f
     title: Keep file-based Subject query loading and execution in one private lifetime
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -38,4 +38,4 @@ entries:
       remain. This new file composition profile cannot relabel the old two-step
       API trial; any later qualification requires a new frozen named controller.
       No capacity, fixture, operational probe or controller change is included.
-    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:30f04d46-dc02-4b4f-8f7a-c08df6ef8ee3, proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20] }
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:30f04d46-dc02-4b4f-8f7a-c08df6ef8ee3, proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20, proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f] }

@@ -13,6 +13,14 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.11] - Unreleased
+
+- Remove intent plans and the governed Subject query surfaces in favor of `ask`: `intent-plan.js`, `query-subjects.js` and `subject-view.js`; the API/MCP operations `subject.tree`, `subject.query`, `subject.route`, `subject.contexts` and `intent.*`; `protocol/intent-retrieval.md`; and the evaluation hosts that drove them. The shared interface now has four read operations.
+- The MCP server serves `AGENTS.md` (the runtime loop) as its second documentation resource. `AGENTS.md` keeps the rule to preserve every part of a request and routes Subject constraints through `subject.js lookup` and `ask --where subject=`.
+- `resolve` keeps its query mode for vocabulary residue, `--paths` and `--doc`.
+- A `subjects/derived/` directory from an earlier version is disposable and no longer generated; delete it.
+- Nine proposal Decisions for the removed surfaces are marked rejected. Decision: [removal](decisions/entries/remove-intent-query-path.yaml). Tracking: UCS-1517.
+
 ## [3.0.0-rc.10] - Unreleased
 
 - Add the shared test fixture `fixtures/canonical`: the eight development-v2 installations as plain committed files, with a record-to-passage map for the gold judgments. `tests/helpers/canonical.js` gives tests an in-place, copied or once-committed Git view of it.

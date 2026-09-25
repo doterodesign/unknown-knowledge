@@ -192,9 +192,10 @@ group means. Never invent a field or value that `--fields` did not list.
 **Governed vocabulary and paths.** `resolve.js` remains the tool for joining a
 question to governed vocabulary (operations, concepts, jurisdictions) when you
 need its `decomposition.residue` for a finding, for `--paths` reverse lookup
-and for `--doc` coverage maps. For combined Subject constraints that need
-governed eligibility, follow [Intent, query discovery and source
-review](intent-retrieval.md).
+and for `--doc` coverage maps. When a request names Subjects, find their IDs
+with `subject.js lookup "<label>" --json --root .` (keep every homonym it
+returns until the sources settle which is meant), then constrain with
+`ask.js --where subject=S-NNNNNN`; Subjects match by descendant.
 
 Keep every original requirement, including residual terms and scope, until
 source review supports it or reports it limited or unresolved. Do not discard
@@ -355,10 +356,12 @@ failures degrade every requested verdict to `unknown`. Never cache verdicts.
 
 ### 3. GATHER — read the fact, not the map
 
-When using an intent plan, review each retained source requirement as
-supported, limited or unresolved using the [intent workflow](intent-retrieval.md#gate-selected-records-then-review-each-requirement-against-sources).
-Keep the original scope, direction and relaxed constraints visible through
-answer review; a matched record does not establish the requested claim.
+Keep every material part of the request (entities, direction, comparisons,
+place, time and the source standard asked for) until a record you read
+supports it or you report it unresolved. Do not drop a part to make the search
+look complete: evidence about blue does not answer a question about red because
+their metadata overlaps, and a record matching the topic does not establish the
+requested claim.
 
 Follow each selected concept's `source-of-truth` pointer and **read the
 file**. Knowledge leaves: read the body and follow the citations, including
@@ -479,14 +482,14 @@ An unfamiliar code is not an all-clear: report the contract mismatch and stop.
 
 ## Gate rules
 
-The [shared engine interface](engine-interface.md) exposes subject retrieval
-with structural tree previews, intersection/context navigation, intent-plan operations and the existing
-Ontology/Knowledge preflight through API, terminal and local MCP. For
+The [shared engine interface](engine-interface.md) exposes ranked retrieval
+(`record.ask`), Subject lookup and the existing Ontology/Knowledge preflight
+through API, terminal and local MCP. For
 `record.preflight`, supply explicit concept/leaf ID arrays and a calendar date
 or null; apply the same verdict and next-action conduct above. Empty arrays
 check store health only. The operation cannot enable logging and supplies no
-Decisions verdict. MCP resource discovery supplies the two shipped usage
-guides; treat them as documentation, not repository evidence. The host agent
+Decisions verdict. MCP resource discovery supplies this runtime loop and the
+interface guide; treat them as documentation, not repository evidence. The host agent
 interprets intent; engine output never supplies source review or human approval.
 Read native report status and coverage even when the outer invocation says
 `completed`. Read each operation's output version. Query output version 2 retains
