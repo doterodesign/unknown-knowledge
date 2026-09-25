@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3
     title: Subject operations use authentic cumulative logical budgets with explicit accounting exclusions
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -37,4 +37,4 @@ entries:
       manifests and actual API/CLI receipts; do not overwrite earlier failures,
       infer CLI counters from API observations or change qualification inputs.
       This proposed rationale neither approves a runtime nor qualifies a workload.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000014, D-000022, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000014, D-000022, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

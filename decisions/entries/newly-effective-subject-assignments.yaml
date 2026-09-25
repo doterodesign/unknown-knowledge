@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:1184333b-3f64-44c5-8707-ff5f314e72db
     title: Newly effective subject assignments use current eligibility without granting publication
     category: governance
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [dimitri]
     context: >
@@ -42,4 +42,4 @@ entries:
     relates-to:
       concepts: []
       leaves: []
-      decisions: [D-000010, proposal:decision:adc0ae03-6d6c-4f3b-8d45-69c1185d0f02]
+      decisions: [D-000010, proposal:decision:adc0ae03-6d6c-4f3b-8d45-69c1185d0f02, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0]

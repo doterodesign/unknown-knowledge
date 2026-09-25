@@ -46,13 +46,6 @@ const KIND_SCHEMA_FILES = Object.freeze({
   'rules': 'rules.schema.json',
   'registry': 'registry.schema.json',
   'subject-registry': 'subject-registry.schema.json',
-  'assignment-baselines': 'assignment-baselines.schema.json',
-  'assignment-event': 'assignment-event.schema.json',
-  'assignment-event-v2': 'assignment-event-v2.schema.json',
-  'assignment-creation-event': 'assignment-creation-event.schema.json',
-  'assignment-transition-event': 'assignment-transition-event.schema.json',
-  'assignment-retirement-event': 'assignment-retirement-event.schema.json',
-  'assignment-split-event': 'assignment-split-event.schema.json',
   'phoenix-event': 'phoenix-event.schema.json',
   'graduation-categories': 'graduation-categories.schema.json',
 });

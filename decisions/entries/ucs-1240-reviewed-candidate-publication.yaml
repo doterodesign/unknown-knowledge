@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:f2b11d91-a465-4775-b626-beaecb414649
     title: Exact retained review and fresh domain proof precede one final candidate ref transaction
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -102,4 +102,4 @@ entries:
       order. Missing original selection refuses, while a valid reversed request
       succeeds. The shared final transport leaves ordinary Decision behavior
       unchanged; actual publication tests cover both profiles.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000012, D-000014] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000012, D-000014, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

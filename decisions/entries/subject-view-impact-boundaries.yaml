@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:af9b885b-fddb-4a68-8b23-6844fb132605
     title: Subject impact comparisons preserve supplied coverage and actual outputs
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -41,4 +41,4 @@ entries:
       docs/agents/ucs-1239-route-impact.md and ucs-1239-regenerated-view-impact.md.
       Consistency remains captured-model; no atomic filesystem snapshot or
       full resource qualification is inferred from fingerprints.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000011, D-000022] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000010, D-000011, D-000022, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

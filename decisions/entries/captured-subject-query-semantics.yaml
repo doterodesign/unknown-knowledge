@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:b0ef0f5a-f028-4509-a3b7-a08c6d598349
     title: Captured Subject queries preserve unknowns and governed source witnesses
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -41,4 +41,4 @@ entries:
       describe named logical units, not whole-process resources. Independent source
       witnesses are exercised in tests/subject-query-witness.test.js. This backfill
       records implemented choices as a proposal, not canonical human approval.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000011, D-000014, D-000022] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000011, D-000014, D-000022, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:2ecdcbd2-7c95-40e7-a4e0-2cbe7959b822
     title: Equivalent merge publication preserves owner evidence and recaptures both source files
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -46,4 +46,4 @@ entries:
       old runtime supports the new branch. Shape predicates confer no authority.
       See docs/agents/ucs-1240-equivalent-merge-zero.md for scoped evidence and
       limitations. Internal implementation authorization grants no approval.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

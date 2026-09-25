@@ -1,0 +1,43 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0"
+    title: "Git review replaces the in-engine publication pipeline and typed gates"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1519; acceptance pending"]
+    context: >
+      Reachability from every shipped command, API operation and CLI showed that
+      the prepared, final and candidate publication pipeline, the Subject
+      lifecycle operations, the typed assignment and promotion gates and their
+      evidence libraries (136 modules) had no shipped entry point; only tests
+      reached them. Those tests made the suite run for over an hour, mostly in
+      isolated worker processes, per-file fsync and repeated hashing. The
+      pipeline rebuilt what Git already provides for stores reviewed as code
+      (D-000010): compare-and-swap ref updates, provenance and review.
+    decision: >
+      Delete the unreachable modules, the loader's assignment-history reading
+      (subjects/_assignments/ is no longer read), the seven assignment schemas and
+      their record kinds, and their tests and helpers. Keep the pre-commit gate
+      (commit-check.js over the Git index snapshot), the identity ledger and
+      every validator. Tighten the D-014 guard in acceptance/run.js and the
+      README subprocess test to the remaining Git-only launch points
+      (captured-source, commit-snapshot, identity-migration-source, survey-map);
+      nothing spawns Node workers now. The historical 08066b5 engine copy stays
+      until UCS-1520 replaces the migration that uses it.
+    consequences: >
+      About 14k lines of engine code and 233 test and helper files are gone; the
+      full suite runs in about four minutes instead of over an hour. Store
+      changes of every kind are ordinary commits reviewed in PRs and checked by
+      the pre-commit gate and CI validators. An existing subjects/_assignments/
+      directory is ignored and can be deleted. Proposals withdrawn by this entry
+      cover split, merge, retirement and reconsideration publication, typed
+      promotion and its proofs, assignment gates, history and replay evidence,
+      Subject operation budgets and admission, and query eligibility and result
+      admission. Alternatives rejected: keeping the pipeline behind a flag (no
+      caller, and the cost stays in every test run) and deleting it without the
+      invariant tests (the guarantees it protected would go unpinned). The user
+      authorized this work in the session that produced it; that authorization
+      is not acceptance or publication of this Decision. Supporting evidence:
+      tests/invariants.test.js, acceptance/run.js and tests/readme.test.js.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000010", "D-000014"]}

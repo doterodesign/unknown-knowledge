@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:35fdefd8-f0e3-4b39-aa76-7dcd27442536
     title: Equivalent merge composes actual typed use closure and mandatory impacts before publication
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -74,4 +74,4 @@ entries:
       The scoped guide docs/agents/ucs-1240-repeated-equivalent-merge.md records
       implementation and actual controls. User authorization permits isolated
       implementation and tests, not approval, real publication or release.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000012, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:00000000-0000-4000-8000-000000000024] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000012, proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:00000000-0000-4000-8000-000000000024, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

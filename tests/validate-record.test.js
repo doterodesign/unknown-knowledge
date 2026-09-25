@@ -22,8 +22,6 @@ test('the kinds cover §3.1–3.4 records, the navigational grammar, and the §4
   // UCS-1154 the phoenix event mappings, UCS-1155 the trust graduation
   // category table — additive-only evolution (§3.5, D-013).
   assert.deepEqual([...KINDS].sort(), [
-    'assignment-baselines', 'assignment-creation-event', 'assignment-event', 'assignment-event-v2',
-    'assignment-retirement-event', 'assignment-split-event', 'assignment-transition-event',
     'catalog', 'decision-entry', 'finding', 'gap', 'graduation-categories',
     'knowledge-leaf', 'miss', 'ontology-concept', 'phoenix-event', 'registry',
     'rules', 'subject-registry', 'survey-scope',

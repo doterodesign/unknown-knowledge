@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:451f33be-ce10-4701-99c9-a42463d7d930
     title: Retirement publication binds event-independent authority and exact fresh owner evidence
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -38,4 +38,4 @@ entries:
       docs/agents/ucs-1240-final-retirement.md and its verification record.
       This implementation decision remains proposed and grants no actual runtime
       approval, operator authorization, release or customer publication.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4, proposal:decision:2ecdcbd2-7c95-40e7-a4e0-2cbe7959b822] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:f79159d7-1d60-4d9b-ab1e-ab540c9394a4, proposal:decision:2ecdcbd2-7c95-40e7-a4e0-2cbe7959b822, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

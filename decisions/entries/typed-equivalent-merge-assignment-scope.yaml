@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:a51231ef-db5b-49d4-a3ee-0bdd363fff75
     title: Equivalent merges derive complete typed scope and retain protected unknown files
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -31,4 +31,4 @@ entries:
       typed merge tests and docs/agents/ucs-1241-subject-use-assignment-gate.md.
     supersedes: []
     superseded-by: []
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:f1369103-65d4-4660-b166-f396e918a67d] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, proposal:decision:8c9f8f9e-5775-4098-ba5a-f4776c375533, proposal:decision:f1369103-65d4-4660-b166-f396e918a67d, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

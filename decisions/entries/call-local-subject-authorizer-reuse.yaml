@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:5ec051c3-351f-4712-9d53-5c465b7baf2f
     title: Reuse loaded authorizer resolution only inside one governance call
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -37,4 +37,4 @@ entries:
       and P2 reviewed the source; this remains a proposed record, not canonical
       approval. Parsed-evidence and immutable-corpus reuse remain deferred. No cap,
       fixture, eligibility change or operational qualification is included.
-    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20, proposal:decision:7e199c03-2618-41ed-97ed-5bee05750a09] }
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20, proposal:decision:7e199c03-2618-41ed-97ed-5bee05750a09, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

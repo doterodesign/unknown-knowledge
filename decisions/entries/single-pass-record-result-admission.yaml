@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:88481c7c-29da-40e0-a5b7-f8331769f765
     title: Guard actual record results once with strict authored descendants
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -37,4 +37,4 @@ entries:
       P1/P2 agreed the design, and main authorized this bounded implementation;
       this proposed record still grants no canonical publication or human approval.
       No capacity, fixture, eligibility or operational qualification change follows.
-    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:5ec051c3-351f-4712-9d53-5c465b7baf2f, proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20] }
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:5ec051c3-351f-4712-9d53-5c465b7baf2f, proposal:decision:42aed4e2-0a6c-4fb3-ba70-9dd06b867a20, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

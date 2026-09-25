@@ -12,9 +12,9 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.12 — unreleased
+## Planned 3.0.0-rc.13 — unreleased
 
-`unknown-knowledge@3.0.0-rc.12` is the planned prerelease represented by the
+`unknown-knowledge@3.0.0-rc.13` is the planned prerelease represented by the
 [seven-PR delivery stack](docs/pr-delivery/README.md) plus ranked retrieval
 (`ask`). Merging into
 `main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1
@@ -181,12 +181,9 @@ shipped CI default.
 ## Guarantees
 
 - **The engine never executes your code** (D-000014). No `eval`, no importing your
-  modules, no spawning your build. Parsing is lexical; subprocesses invoke
-  Git for tracked-file navigation, raw snapshots, and isolated candidate object
-  preparation, or Node for fixed checks from the captured trusted installed
-  engine. Candidate code is never used as the validation runtime. Preparation
-  and validation never advance a ref or change the user's index/worktree;
-  retained check evidence does not certify publication.
+  modules, no spawning your build. Parsing is lexical; the only subprocess is
+  Git, for tracked-file navigation and raw snapshots of the index. Validation
+  never advances a ref or changes the user's index or worktree.
 - **No network, ever.** Nothing is uploaded, and nothing is fetched.
 - **Deterministic.** Same tree in, byte-identical output out. Dates are
   injected, never read from the wall clock, so a report is reproducible from
@@ -287,18 +284,6 @@ Changelog form).
   format it asks you to use. It eats its own cooking.
 - [Decision and documentation coverage](docs/change-completeness.md) — links
   implementation rationale, current contracts and remaining acceptance work.
-- [Required Subject lifecycle scope](docs/agents/subject-lifecycle-required-scope.md) —
-  distinguishes specification requirements, implementation limits and the
-  explicitly corrected active-canonical suppression interpretation.
-- [Subject metadata publication](docs/agents/ucs-1240-subject-metadata-publication.md) —
-  reviewed rename, clarification, parent and related-subject changes with stable
-  identities, unchanged assignments and actual query-impact checks.
-- [Subject creation publication](docs/agents/ucs-1240-subject-creation.md) —
-  reviewed fresh activation or proposal promotion with permanent allocation;
-  broader subjects receive new IDs while original subjects remain unchanged.
-- [Subject proposal suppression](docs/agents/ucs-1240-subject-proposal-suppression-publication.md) —
-  reviewed rejection preserves the proposal's meaning and refusal reason while
-  leaving canonical subjects, stored records and query memberships unchanged.
 - [Retrieval-quality targets](acceptance/retrieval/QUALITY-TARGETS.md) —
   prospective correctness and paired quality criteria for final evaluation;
   these are targets, not measured performance or release qualification.
@@ -315,78 +300,6 @@ Changelog form).
 - [Measured retrieval pages](acceptance/retrieval/PRIVATE-FILE-RESULTS-V2.md) —
   four fixed-fixture API/CLI checks returned ten records per K/O/D store with
   complete source-verified explanations; broader acceptance remains open.
-- [Equivalent-merge publication](docs/agents/ucs-1240-final-equivalent-merge.md) —
-  the internal library contract for retained review, fresh validation and an
-  atomic candidate-ref update; this is separate from merging or activating it.
-  The [zero-use profile](docs/agents/ucs-1240-equivalent-merge-zero.md) proves
-  registry-only preservation without creating an empty assignment event.
-  [Repeated merges](docs/agents/ucs-1240-repeated-equivalent-merge.md) preserve
-  earlier redirects while verifying the extended chain and its assignment history.
-- [Lifecycle material continuation](docs/agents/lifecycle-material-continuation.md) —
-  retained reconsideration evidence through retirement, merge, split and
-  [K/O/D promotion](docs/agents/ucs-1241-typed-promotion-material.md), including
-  fresh publication checks and explicit behavior without Subject authority.
-- [Plain Subject retirement gate](docs/agents/ucs-1235-plain-retirement-dto.md) —
-  committed withdrawal or zero-use validation, preserved history and mandatory
-  retrieval impacts, with a separate [retained publication profile](docs/agents/ucs-1240-final-retirement.md)
-  and [retained-material continuation](docs/agents/lifecycle-material-continuation.md)
-  that verifies fresh evidence before the candidate-ref transaction.
-- [Single-Subject allocation](docs/agents/ucs-1235-subject-creation-allocation.md) —
-  exact native verification of one fresh Subject and the complete candidate ledger;
-  this internal primitive does not perform governance or publish a candidate.
-- [Suppressed Subject reconsideration](docs/agents/ucs-1235-subject-reconsideration-creation.md) —
-  retain the original refusal, verify captured review evidence and create one fresh
-  Subject. The [retrieval consumers](docs/agents/ucs-1237-reconsideration-consumers.md)
-  carry its retained evidence through queries, intent plans and route/context views.
-  The [actual-Git owner](docs/agents/ucs-1235-reconsideration-git-core.md) verifies
-  committed evidence and preserves all stored record assignments. The
-  [prepared impact gate](docs/agents/ucs-1235-reconsideration-gate.md) adds mandatory
-  reach, whole-registry trees and finite replay checks. The separate retained
-  execution/review/publication profile requires fresh proof before applying the
-  reviewed candidate.
-- [Prepared Subject split gate](docs/agents/ucs-1235-subject-split-gate.md) —
-  actual fresh allocation, complete reviewed mappings, typed assignment preservation,
-  eventless two-path proof and mandatory retrieval impacts. The [design](docs/agents/ucs-1235-subject-split-design.md)
-  records the supported graph profile and verification boundaries.
-- [Prepared split transport](docs/agents/ucs-1240-prepared-split-transport.md) —
-  original-input/report consistency and bounded raw candidate registry, identity
-  and assignment evidence. The [fixed workers and fresh final gate](docs/agents/ucs-1240-prepared-split-validation.md)
-  retain that evidence and require actual rerun equality. The [review and publication profile](docs/agents/ucs-1240-split-review-publication.md)
-  independently verifies actual Git authorities and allocation, then requires
-  fresh owner checks before the existing candidate-ref transaction.
-- [Decisions-only promotion publication](docs/agents/ucs-1240-final-promotion.md) —
-  the internal library profile for reviewed proposal-to-canonical creation,
-  with exact evidence and explicit limits on supported record types and history.
-- [Knowledge/Ontology promotion planning](docs/agents/ucs-1234-typed-promotion-planner.md) —
-  the internal byte-planning contract for permanent IDs and fixed lifecycle
-  transitions; plans still require separate typed validation and publication.
-- [K/O/D promotion gate](docs/agents/ucs-1241-typed-promotion-design.md) —
-  the internal read-only proof of canonical creation, classification, preflight
-  and retrieval impacts, with explicit per-kind preflight applicability.
-- [Staged and prepared assignment gates](docs/agents/ucs-1241-prepared-assignment-gate.md) —
-  actual snapshot, history and preservation checks; cleanup failure clears
-  overall success even after the domain checks finish.
-  The [evidence-continuation contract](docs/agents/ucs-1241-assignment-continuation.md)
-  carries retained assessment/material evidence through ordinary assignments,
-  fixed workers and fresh review/publication checks. The
-  [typed K/O/D publication profile](docs/agents/ucs-1241-typed-assignment-publication.md)
-  binds the original mixed-record selection and requires fixed all-store replay
-  checks while preserving each store's evidence and lifecycle rules.
-- [Reconsideration publication](docs/agents/ucs-1240-reconsideration-publication.md) —
-  fixed retained workers, independent actual-Git review and fresh proof before
-  candidate-ref publication; assignments remain unchanged and no empty event is created.
-- [K/O/D promotion publication](docs/agents/ucs-1240-final-record-promotion.md) —
-  the distinct internal K/O/D profile for exact retained evidence, fresh
-  subject-impact checks, reviewed runtime and atomic candidate-ref publication.
-- [Finite migration publication](docs/agents/ucs-1240-final-migration.md) —
-  retained retrieval, generated-view, operational-log and Phoenix edition
-  evidence for supported pre-Subject sources, including Decisions-only and
-  optional stores. [Source profiles](docs/agents/ucs-1240-migration-source-profiles.md)
-  distinguish absent, empty and malformed stores and document broader limits.
-- [Seeded-installation cutover](docs/agents/ucs-1240-installation-cutover.md) —
-  exact committed runtime/consumer conversion and separately observed local
-  activation for the supported nested installation; external processes and
-  future state require their own operational verification.
 - [docs/publishing.md](docs/publishing.md) — release and supply-chain process
   (npm provenance, 2FA).
 

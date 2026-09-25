@@ -9,7 +9,7 @@ import { createSourceBudget, readSourceFileSync, getSourceBudgetUsage, SourceBud
 import { createDocumentBudget, getDocumentBudgetUsage, DocumentBudgetError } from '../payload/engine/lib/document-budget.js';
 import { parseRecordFile, parseYamlDocument } from '../payload/engine/lib/record-file.js';
 import { locateKitRoot } from '../payload/engine/lib/kit-root.js';
-import { subjectQueryDiskFixture } from './helpers/subject-query-disk-fixture.js';
+import { copy } from './helpers/canonical.js';
 
 test('loader rejects a forged source allowance before loading any input', (t) => {
   const root = mkdtempSync(join(tmpdir(), 'source-budget-'));
@@ -89,28 +89,27 @@ test('chunk boundaries preserve bytes without exceeding the source allowance', (
 });
 
 test('actual loader counts ledger, registry, record, catalog, and history source bytes cumulatively', (t) => {
-  const f = subjectQueryDiskFixture(t);
-  f.put('subjects/_assignments/_baselines.yaml', { 'schema-version': 1, namespace: f.context.model.identity.namespace, baselines: [] });
+  const f = copy(t, 'engineering');
   const sum = (dir) => readdirSync(dir).reduce((total, name) => {
     const path = join(dir, name); const stat = statSync(path);
     return total + (stat.isDirectory() ? sum(path) : name === 'decision-captures.json' ? 0 : stat.size);
   }, 0);
-  const expected = sum(f.kitRoot);
+  const expected = sum(f.kit);
   const sourceBudget = createSourceBudget({ maxSourceBytes: expected * 2 });
   for (let i = 1; i <= 2; i += 1) {
-    const model = loadStores(f.kitRoot, { sourceBudget });
+    const model = loadStores(f.kit, { sourceBudget });
     assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
     assert.equal(getSourceBudgetUsage(sourceBudget).sourceBytes, expected * i);
   }
-  assert.throws(() => loadStores(f.kitRoot, { sourceBudget }), { code: 'source-budget-exhausted' });
+  assert.throws(() => loadStores(f.kit, { sourceBudget }), { code: 'source-budget-exhausted' });
 });
 
 test('layout read and subsequent loader share one allowance; exhaustion is never layout ambiguity', (t) => {
-  const f = subjectQueryDiskFixture(t, { nested: true });
+  const f = copy(t, 'engineering');
   const bytes = JSON.stringify({ kitRoot: 'unknown-knowledge' });
   writeFileSync(join(f.root, '.unknown-knowledge.json'), bytes);
   const sourceBudget = createSourceBudget({ maxSourceBytes: Buffer.byteLength(bytes) });
-  const root = locateKitRoot(f.root, { sourceBudget }); assert.equal(root, f.kitRoot);
+  const root = locateKitRoot(f.root, { sourceBudget }); assert.equal(root, f.kit);
   assert.throws(() => loadStores(root, { sourceBudget }), { code: 'source-budget-exhausted' });
   const short = createSourceBudget({ maxSourceBytes: Buffer.byteLength(bytes) - 1 });
   assert.throws(() => locateKitRoot(f.root, { sourceBudget: short }), { code: 'source-budget-exhausted' });
@@ -133,8 +132,8 @@ test('Knowledge body text is charged before schema validation, with UTF-16 units
 });
 
 test('loader shares the authentic document guard across every parsed source', (t) => {
-  const f = subjectQueryDiskFixture(t);
+  const f = copy(t, 'engineering');
   const documentBudget = createDocumentBudget({ maxDocumentNodes: 1, maxDocumentTextUnits: 100000 });
-  assert.throws(() => loadStores(f.kitRoot, { documentBudget }), { code: 'document-budget-exhausted' });
+  assert.throws(() => loadStores(f.kit, { documentBudget }), { code: 'document-budget-exhausted' });
   assert.equal(getDocumentBudgetUsage(documentBudget).documentNodes, 1);
 });

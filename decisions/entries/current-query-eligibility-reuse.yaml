@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:e9114f58-49dc-4459-9a9d-3d0867c31638
     title: Reuse current-query Subject eligibility only within its immutable capture and authentic operation
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -36,4 +36,4 @@ entries:
       main authorized implementation from efe0590, but this proposed record grants
       no canonical approval or publication authority. No probe, capacity, fixture
       or controller change is authorized; operational qualification stays separate.
-    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3] }
+    relates-to: { concepts: [], leaves: [], decisions: [proposal:decision:95dfdc46-5a14-4cee-9e35-452b7ee5369a, proposal:decision:a5cd613f-8b58-4822-90a0-5446201d5ca3, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }

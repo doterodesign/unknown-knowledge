@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:8b93636f-c539-4791-adef-c472741ec7bb
     title: Split publication separates retained byte evidence from actual allocation and fresh authority
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-20"
     deciders: [codex]
     context: >
@@ -102,4 +102,4 @@ entries:
       docs/agents/ucs-1240-split-review-publication.md and the split design.
       This proposed record grants no actual runtime approval, operator
       authorization, canonical Decision promotion, release or customer publication.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:e4a28bbf-8a28-4eea-b32a-b81b15bdc14d, proposal:decision:451f33be-ce10-4701-99c9-a42463d7d930] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000005, D-000010, D-000014, proposal:decision:e4a28bbf-8a28-4eea-b32a-b81b15bdc14d, proposal:decision:451f33be-ce10-4701-99c9-a42463d7d930, proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0] }
