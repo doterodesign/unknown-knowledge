@@ -9,8 +9,7 @@
     "namespace",
     "revision",
     "hierarchy-revision",
-    "subjects",
-    "history"
+    "subjects"
   ],
   "properties": {
     "schema-version": {
@@ -130,8 +129,7 @@
         "definition",
         "aliases",
         "related",
-        "status",
-        "changes"
+        "status"
       ],
       "properties": {
         "id": {

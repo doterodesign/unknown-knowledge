@@ -1,0 +1,44 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:40c7426b-f9b3-4d8d-b3f9-b5fe3eb085fd"
+    title: "The Subject registry is an ordinary governed file changed by reviewed edits"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1518; acceptance pending"]
+    context: >
+      The loader replayed the registry's recorded event history and refused any
+      Subject state the history did not produce, so a label fix or a new parent
+      could only be made through the lifecycle publication pipeline. No shipped
+      command, API operation or CLI reaches that pipeline; only tests do. Accepted
+      D-000010 makes stores Git-native and reviewed as code, which already gives
+      every registry change history, review and compare-and-swap.
+    decision: >
+      Stop replaying history on load. The reader keeps every structural check
+      (schema, unique IDs, one parent, no cycles, known parents) and checks that
+      each Subject holds a matching allocation in _identity.yaml, active ones
+      allocated. history (top level) and changes (per Subject) become optional
+      and are not interpreted; revision and hierarchy-revision stay required.
+      Add two loader checks: a record assigned to a retired or suppressed Subject
+      is an error (retired-subject-assigned), and a live record whose allocation
+      is retired or cancelled is an error (invalid-identity). Subject changes are
+      ordinary edits with one Decisions entry each; AGENTS.md "Changing Subjects"
+      describes create, rename, move, retire, merge and split in those terms.
+    consequences: >
+      Plain registry edits validate, which tests/invariants.test.js pins, along
+      with retirement plus reassignment in one change. Retiring a Subject now
+      requires reassigning its records in the same change; records can no longer
+      keep a retired meaning. This keeps retrieval from indexing labels nobody
+      maintains, at the cost of a bulk edit per retirement. Registries that carry
+      a history array still load; the array is inert. Alternatives rejected:
+      keeping retired assignments as historical meaning (stale labels stay in
+      retrieval and the store holds meanings nothing maintains) and refusing only
+      new assignments to retired Subjects (needs a base-commit comparison in
+      every reader for little gain). Proposals withdrawn by this entry:
+      captured Subject governance history and incremental history validation.
+      The user authorized this work in the session that produced it; that
+      authorization is not acceptance or publication of this Decision.
+      Supporting evidence: payload/engine/lib/subject-registry-reader.js,
+      payload/engine/lib/load-stores.js, tests/invariants.test.js and
+      tests/subject-registry-reader.test.js.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000010"]}

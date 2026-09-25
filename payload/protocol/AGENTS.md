@@ -482,6 +482,17 @@ An unfamiliar code is not an all-clear: report the contract mismatch and stop.
 
 ## Gate rules
 
+**Changing Subjects.** `subjects/registry.yaml` is an ordinary governed file,
+changed in a reviewed PR like any registry, with one Decisions entry per
+change carrying its warrant. Its history is the file's Git history. A new
+Subject takes the next `S-NNNNNN` allocation in `_identity.yaml`; IDs are
+never reused. Rename or clarify by editing `label`, `aliases` or
+`definition`; move by editing `parent` (one parent, no cycles). Retire by
+setting `status: retired` and, in the same change, reassigning every record
+that carries it: the validator refuses a record assigned to a retired Subject.
+To merge, retire one Subject and reassign its records to the other; to split,
+create the new Subjects and reassign each record to the one that fits.
+
 The [shared engine interface](engine-interface.md) exposes ranked retrieval
 (`record.ask`), Subject lookup and the existing Ontology/Knowledge preflight
 through API, terminal and local MCP. For

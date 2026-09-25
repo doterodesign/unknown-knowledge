@@ -13,6 +13,14 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.12] - Unreleased
+
+- The Subject registry is an ordinary governed file. The loader no longer replays a recorded event history; `history` and per-Subject `changes` are optional and inert. Subject IDs must still hold matching allocations in `_identity.yaml`, and every structural check stays.
+- New loader checks: a record assigned to a retired or suppressed Subject is refused (`retired-subject-assigned`), and a live record on a retired or cancelled ID is refused (`invalid-identity`). Retiring a Subject now reassigns its records in the same change.
+- `AGENTS.md` gains **Changing Subjects** (create, rename, move, retire, merge, split as reviewed edits with a Decisions entry); `kb-build` and `knowledge-reflect` follow it.
+- Test fixtures keep Git maintenance synchronous, which removes a cleanup race in the reflection fixture.
+- Two proposal Decisions about registry event history are marked rejected. Decision: [plain registry edits](decisions/entries/subject-registry-plain-edits.yaml). Tracking: UCS-1518.
+
 ## [3.0.0-rc.11] - Unreleased
 
 - Remove intent plans and the governed Subject query surfaces in favor of `ask`: `intent-plan.js`, `query-subjects.js` and `subject-view.js`; the API/MCP operations `subject.tree`, `subject.query`, `subject.route`, `subject.contexts` and `intent.*`; `protocol/intent-retrieval.md`; and the evaluation hosts that drove them. The shared interface now has four read operations.

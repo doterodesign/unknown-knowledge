@@ -7,7 +7,7 @@ import { load, YAMLException } from 'js-yaml';
 import { validateStoreFile, ERROR_CODES } from './validate-record.js';
 import { selectSubjectValidationBudget } from './subject-validation-budget.js';
 import { indexSubjects, SubjectError } from './subjects.js';
-import { validateSubjectRegistryMetadata } from './subject-governance.js';
+import { validateIdentityLedger } from './identity-ledger.js';
 
 const file = 'subjects/registry.yaml';
 export const SUBJECT_REGISTRY_DIAGNOSTIC_CODES = Object.freeze([...ERROR_CODES,
@@ -68,8 +68,32 @@ export function parseSubjectRegistry({ bytes, identity, budget, operationBudget,
   budget?.charge('subjects', document.subjects.length, 'parsed-registry');
   const indexed = indexSubjects(toDomain(document));
   if (!indexed.ok) return finish(undefined, indexed.diagnostics);
-  const metadata = validateSubjectRegistryMetadata(indexed.registry, { identity, budget });
-  return finish(metadata.ok ? indexed.registry : undefined, metadata.diagnostics);
+  const allocation = checkSubjectAllocations(indexed.registry, identity);
+  return finish(allocation.length ? undefined : indexed.registry, allocation);
+}
+
+/**
+ * Subject IDs come from the installation's identity ledger, like record IDs.
+ * The registry is an ordinary governed file: its change history is the Git
+ * history of the file, reviewed like any other store change, so no recorded
+ * event log is replayed here.
+ */
+function checkSubjectAllocations(registry, identity) {
+  if (!validateIdentityLedger(identity).ok) {
+    return [{ code: 'invalid-identity-ledger', path: '', message: 'The subject registry requires the validated installation identity ledger.' }];
+  }
+  if (identity.namespace !== registry.namespace) {
+    return [{ code: 'namespace-mismatch', path: '', message: 'Registry and identity must share the exact installation namespace.' }];
+  }
+  const allocations = new Map(identity.allocations.filter((row) => row.kind === 'subject').map((row) => [row.id, row]));
+  const diagnostics = [];
+  for (const subject of registry.subjects.values()) {
+    const allocation = allocations.get(subject.id);
+    if (!allocation || allocation.state === 'cancelled' || (subject.status === 'active' && allocation.state !== 'allocated')) {
+      diagnostics.push({ code: 'invalid-subject-allocation', path: '', message: `Subject ${subject.id} needs a matching allocation; active subjects must be allocated.` });
+    }
+  }
+  return diagnostics;
 }
 
 /**

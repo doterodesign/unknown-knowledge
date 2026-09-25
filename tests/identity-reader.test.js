@@ -342,7 +342,7 @@ test('nonempty assignments require actual subject authority at every authored ow
   assert.equal(model.diagnostics.filter(({ code }) => code === 'subjects-unavailable').length, 4);
 });
 
-test('retained canonical and proposal assignments resolve exact active or retired subject meanings', (t) => {
+test('canonical and proposal assignments resolve active subjects and refuse retired ones', (t) => {
   for (const retired of [false, true]) {
     const f = fixture(t, { proposals: true });
     const data = subjectGovernanceFixture();
@@ -368,10 +368,17 @@ test('retained canonical and proposal assignments resolve exact active or retire
     for (const record of f.records.entries) record.subjects = ['S-000001'];
     f.put('decisions/entries/direction.yaml', f.records);
     const model = loadStores(f.root);
+    assert.equal(model.subjectRegistry.subjects.get('S-000001').status, retired ? 'retired' : 'active');
+    if (retired) {
+      // Retiring a Subject and reassigning its records travel in one change.
+      const refused = model.diagnostics.filter((d) => d.code === 'retired-subject-assigned');
+      assert.deepEqual(refused.map((d) => d.path), ['entries[0].subjects[0]', 'entries[1].subjects[0]']);
+      assert.equal(model.ok, false);
+      continue;
+    }
     assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
     assert.deepEqual(model.decisions.get('D-000001').record.subjects, ['S-000001']);
     assert.deepEqual(model.proposals.decision.get(proposal).record.subjects, ['S-000001']);
-    assert.equal(model.subjectRegistry.subjects.get('S-000001').status, retired ? 'retired' : 'active');
   }
 });
 
@@ -594,30 +601,6 @@ test('occupied unavailable histories stay inspectable while only loaded tracked 
     checkedRefs: [historyRef()], unavailableRefs });
   assert.equal(model.assignmentHistory.sources.events[0].document.rows.length, 2, 'terminal projection never rewrites the full source event');
   assert.equal(model.assignmentHistory.revisions.length, 4);
-});
-
-test('loaded retired payloads still compare; unhealthy duplicate capture skips rather than passes', (t) => {
-  const f = fixture(t);
-  Object.assign(f.identity.allocations[0], { state: 'retired', reason: 'Retained identity' });
-  f.put('_identity.yaml', f.identity);
-  putHistory(f, [historyBaseline(historyRef(), { state: 'known', ids: [] })]);
-  let model = loadStores(f.root);
-  assert.equal(model.ok, false);
-  assert.equal(model.assignmentHistoryCurrent.status, 'failed');
-  f.records.entries[0].subjects = [];
-  f.put('decisions/entries/direction.yaml', f.records);
-  model = loadStores(f.root);
-  assert.equal(model.ok, true, JSON.stringify(model.diagnostics));
-  assert.equal(model.assignmentHistoryCurrent.status, 'passed');
-  f.put('decisions/entries/duplicate.yaml', f.records);
-  model = loadStores(f.root);
-  assert.equal(model.ok, false);
-  assert.deepEqual(model.assignmentHistoryCurrent, { scope: 'loaded-tracked-records', status: 'not-performed',
-    reason: 'loader-errors', checkedRefs: [], unavailableRefs: [] });
-  f.put(historyFile, { 'schema-version': 99 });
-  model = loadStores(f.root);
-  assert.ok(model.diagnostics.some(({ file }) => file === historyFile), 'history reading still diagnoses errors on unhealthy captures');
-  assert.equal(Object.hasOwn(model, 'assignmentHistory'), false);
 });
 
 test('Knowledge history mismatch points at root subjects and blocks both actual validators', (t) => {
