@@ -13,6 +13,13 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.20] - Unreleased
+
+- Grading correction: a blind diagnosis found the one held-out failure (policy-01, current runtime, repeat 3) was a grader error. The grader saw only file paths, and a converted record keeps its 2.x file name while carrying a new ID. The grader now sees each tool's output (`reader.js` keeps it; `replay.js` rebuilds it for earlier sessions), and all 24 held-out sessions that ran were regraded: both runtimes 12 of 12, no regression, first verdicts kept as `verdictV1`. Diagnosis: `docs/agents/2026-09-25-policy-01-miss-diagnosis.md`.
+- Cost analysis (`acceptance/retrieval/agent-evaluation/COST.md`): `ask` uses no model and costs nothing (46–177 ms). An agent session costs about $0.20, about 90% of it the host reading the 37 KB runtime loop across a dozen turns. The single-call path (`one-shot.js`: `ask`, then one model call over the returned records) answered all six pilot tasks correctly for $0.006 with Haiku 4.5 and $0.015 with Sonnet 5.
+- The two held-out cases the API refuses could not be replaced: the replacement custodian's own session was stopped by a safety check before it could probe drafts. The four-case set stands.
+- Decision: [grader sees evidence](decisions/entries/grader-sees-evidence.yaml). Tracking: UCS-1584.
+
 ## [3.0.0-rc.19] - Unreleased
 
 - First agent evaluation with `ask`: six sealed held-out cases, three fresh Sonnet 5 readers per case under the original 2.x runtime and three under the current runtime (36 sessions), identical content, graded blind. On the four cases the reader could run, the original runtime completed or correctly declined 12 of 12 sessions and the current runtime 11 of 12; the one miss was a critical error (fabricated citation) in one policy-01 repeat. For the other two cases the API refused every session in both runtimes under its usage policy; they count as failures and were not retried. Report: `acceptance/retrieval/agent-evaluation/HELDOUT-2026-09-24.md`; per-session rows in `heldout-2026-09-24.json`.

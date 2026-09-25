@@ -12,9 +12,9 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.19 — unreleased
+## Planned 3.0.0-rc.20 — unreleased
 
-`unknown-knowledge@3.0.0-rc.19` is the planned prerelease on `main`. Merging
+`unknown-knowledge@3.0.0-rc.20` is the planned prerelease on `main`. Merging
 into `main` does not publish an npm package or update existing 2.1.0 or
 3.0.0-rc.1 installations; the install commands below are unchanged.
 
@@ -57,18 +57,20 @@ and converted with `migrate.js`, are a second gold set `ask` was not tuned on:
 every bundle lands within three results, four at rank one. Both are engine
 retrieval results, not agent task completion.
 
-**Agent evaluation with `ask`: no systematic regression on six new held-out
-cases.** Fresh Sonnet 5 readers answered each case three times under the
-original 2.x runtime and three times under the current runtime, over identical
-content, graded blind: 36 sessions. On the four cases the reader could run, the
-original runtime completed or correctly declined 12 of 12 sessions and the
-current runtime 11 of 12; the one miss was a critical error (a fabricated
-citation) in one of three policy-01 repeats. For the other two cases the API
-refused every session in both runtimes under its usage policy, so no answer was
-produced. This does not show that `ask` improves task completion. See the
-[report](acceptance/retrieval/agent-evaluation/HELDOUT-2026-09-24.md). The
-earlier study (15/18 original, 10/18 rc.8, on cases that no longer exist) is
-kept at
+**Agent evaluation with `ask`: no regression on six new held-out cases.**
+Fresh Sonnet 5 readers answered each case three times under the original 2.x
+runtime and three times under the current runtime, over identical content,
+graded blind: 36 sessions. On the four cases the reader could run, both
+runtimes completed or correctly declined all 12 sessions. For the other two
+cases the API refused every session in both runtimes under its usage policy,
+so no answer was produced. This does not show that `ask` improves task
+completion. See the
+[report](acceptance/retrieval/agent-evaluation/HELDOUT-2026-09-24.md).
+Retrieval itself uses no model and costs nothing; an agent session costs about
+$0.20, almost all of it the host reading the runtime loop over a dozen turns,
+and a single model call over `ask`'s records costs $0.006 to $0.015
+([cost analysis](acceptance/retrieval/agent-evaluation/COST.md)). The earlier
+study (15/18 original, 10/18 rc.8, on cases that no longer exist) is kept at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/acceptance/retrieval/review-packet/REPORT.md).
 
 ## Quickstart

@@ -271,3 +271,6 @@ entries:
   - id: proposal:decision:1c5fe0db-e5f6-43e5-815d-bae927b438af
     title: Held-out cases are written and reviewed by independent agents, sealed outside the repository, over identical content for both runtimes
     file: entries/heldout-custody-by-agents.yaml
+  - id: proposal:decision:ecab54e7-c723-4e59-b796-7937b86bd792
+    title: The blind grader sees what each tool returned; recorded sessions are regraded by replay
+    file: entries/grader-sees-evidence.yaml
