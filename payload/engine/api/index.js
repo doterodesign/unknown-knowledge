@@ -8,17 +8,6 @@ import { runPreflight } from '../lib/preflight.js';
 import { isCalendarDate } from '../lib/iso-date.js';
 import { SubjectError } from '../lib/subjects.js';
 import { subjectLookupReport } from '../lib/subject-lookup.js';
-import { createSubjectOperation, guardSubjectOperationDocument, assertSubjectOperation,
-  SubjectOperationError } from '../lib/subject-operation.js';
-import { decodeDecisionCaptures, decodeAssessmentCaptures, decodeMaterialCaptures,
-  loadSubjectQueryContext } from '../lib/subject-query-context.js';
-import { querySubjects } from '../lib/subject-query.js';
-import { validateIntentPlan } from '../lib/intent-plan.js';
-import { inspectIntentBindings } from '../lib/intent-bindings.js';
-import { validateIntentQueryPlan, executeIntentQueryPlan } from '../lib/intent-query-plan.js';
-import { executeIntersectionRoute } from '../lib/subject-routes.js';
-import { countSubjectContexts } from '../lib/subject-contexts.js';
-import { deriveSubjectTreeArtifacts } from '../lib/subject-views.js';
 import { askPayload, createIndexCache } from '../lib/ask-service.js';
 import { UnknownFieldError } from '../lib/aggregate.js';
 
@@ -71,78 +60,6 @@ function lookup(root, input) {
   return subjectLookupReport(model, input.text, input.options ?? {});
 }
 
-function tree(root, input) {
-  requireInput(closed(input, ['budget', 'maxBytes']) && closed(input.budget, ['nodes', 'edges', 'rows']));
-  const model = loadStores(locateKitRoot(root));
-  const health = storeHealth(model);
-  if (!health.ok) throw new InterfaceRefusal('invalid-model', 'The captured installation failed validation.', health.errors);
-  if (!model.subjectRegistry) throw new InterfaceRefusal('subject-registry-unavailable', 'subjects/registry.yaml is absent.');
-  return deriveSubjectTreeArtifacts(model.subjectRegistry, input);
-}
-
-function governedContext(root, input, documents) {
-  requireInput(closed(input.evidence, ['decisionCaptures', 'assessmentCaptures', 'materialCaptures']));
-  const operation = createSubjectOperation(input.operationLimits);
-  for (const key of documents) guardSubjectOperationDocument(operation, input[key], `interface-${key}`);
-  const decisionCaptures = decodeDecisionCaptures(input.evidence.decisionCaptures, { operation });
-  const assessmentCaptures = decodeAssessmentCaptures(input.evidence.assessmentCaptures, { operation });
-  const materialCaptures = decodeMaterialCaptures(input.evidence.materialCaptures, { operation });
-  const loaded = loadSubjectQueryContext({ root, decisionCaptures, assessmentCaptures, materialCaptures, operation });
-  if (!loaded.ok) throw new InterfaceRefusal('query-context-unavailable', 'Cannot establish the query context.', loaded.diagnostics);
-  return { operation, ...loaded };
-}
-
-function query(root, input) {
-  requireInput(closed(input, ['query', 'collect', 'evidence', 'operationLimits']) && ['counts', 'results'].includes(input.collect));
-  const loaded = governedContext(root, input, ['query']);
-  const { operation } = loaded;
-  let report = querySubjects(loaded.context, input.query, { operation, collect: input.collect });
-  if (loaded.diagnostics.length) report = { ...report, contextDiagnostics: loaded.diagnostics };
-  assertSubjectOperation(operation);
-  return report;
-}
-
-function inspectBindings(root, input) {
-  requireInput(closed(input, ['plan'], ['lookupRequests']));
-  const model = loadStores(locateKitRoot(root));
-  if (!model.ok) throw new InterfaceRefusal('invalid-model', 'The captured installation failed validation.', model.diagnostics);
-  return { mode: 'inspect-bindings', result: inspectIntentBindings(input.plan, { identityIndex: model.identityIndex,
-    subjectDocument: model.subjectRegistry?.document, lookupRequests: input.lookupRequests }), contextDiagnostics: model.diagnostics };
-}
-
-function intentQueries(root, input, execute) {
-  const documents = ['plan', 'admission', ...(execute ? ['executionAdmission'] : [])];
-  requireInput(closed(input, [...documents, 'evidence', 'operationLimits']));
-  const loaded = governedContext(root, input, documents);
-  const { operation } = loaded;
-  const options = { admission: input.admission, operation,
-    ...(execute ? { executionAdmission: input.executionAdmission } : {}) };
-  // Execution owns its validation phase. Calling validation here too would duplicate work.
-  const result = execute ? executeIntentQueryPlan(input.plan, loaded.context, options)
-    : validateIntentQueryPlan(input.plan, loaded.context, options);
-  assertSubjectOperation(operation);
-  return { mode: execute ? 'execute-queries' : 'validate-queries', result, contextDiagnostics: loaded.diagnostics };
-}
-
-function subjectView(root, input, mode) {
-  requireInput(closed(input, ['request', 'evidence', 'operationLimits']));
-  const request = input.request;
-  const route = mode === 'route';
-  const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
-  requireInput((route ? closed(request, ['version', 'route', 'query'], ['collect'])
-    : closed(request, ['version', 'query', 'contextBudgets'])) && request.version === 1
-    && object(request.query) && (route ? object(request.route) && !Object.hasOwn(request.query, 'where')
-      && (!Object.hasOwn(request, 'collect') || ['results', 'counts'].includes(request.collect))
-      : object(request.contextBudgets)));
-  const loaded = governedContext(root, input, ['request']);
-  const { operation } = loaded;
-  const result = route
-    ? executeIntersectionRoute(loaded.context, request.route, request.query, { collect: request.collect ?? 'results', operation })
-    : countSubjectContexts(loaded.context, request.query, { budgets: request.contextBudgets, operation });
-  assertSubjectOperation(operation);
-  return { mode, result, contextDiagnostics: loaded.diagnostics };
-}
-
 // One index per root for the life of the process; a store change evicts it.
 const askIndexes = createIndexCache();
 
@@ -177,18 +94,8 @@ const operations = new Map([
     outputAccounting: 'invoke returns objects; operationLimits.maxOutputBytes is not charged; transports bound serialization separately' };
   } }],
   ['subject.lookup', { scope: 'declared-metadata', run: lookup }],
-  ['subject.tree', { scope: 'declared-metadata', run: tree }],
-  ['subject.query', { outputVersion: 2, scope: 'governed-retrieval', run: query }],
-  ['subject.route', { outputVersion: 2, scope: 'governed-retrieval', run: (root, input) => subjectView(root, input, 'route') }],
-  ['subject.contexts', { outputVersion: 2, scope: 'governed-retrieval', run: (root, input) => subjectView(root, input, 'contexts') }],
   ['record.preflight', { scope: 'record-verdicts', run: preflight }],
   ['record.ask', { scope: 'ranked-retrieval', run: recordAsk }],
-  ['intent.validate', { scope: 'declared-inventory', run(root, input) {
-    requireInput(closed(input, ['plan'])); return validateIntentPlan(input.plan);
-  } }],
-  ['intent.inspectBindings', { scope: 'declared-metadata', run: inspectBindings }],
-  ['intent.validateQueries', { outputVersion: 2, scope: 'governed-retrieval', run: (root, input) => intentQueries(root, input, false) }],
-  ['intent.executeQueries', { outputVersion: 2, scope: 'governed-retrieval', run: (root, input) => intentQueries(root, input, true) }],
 ]);
 
 /** Completion means an owner returned a report. Inspect data for its native outcome. */
@@ -209,8 +116,7 @@ export async function invoke(request) {
     outputVersion = selected.outputVersion ?? 1;
     return envelope('completed', [], await selected.run(request.root, request.input));
   } catch (error) {
-    if (error instanceof EngineRefusal || error instanceof UsageError || error instanceof SubjectError
-      || error instanceof SubjectOperationError) {
+    if (error instanceof EngineRefusal || error instanceof UsageError || error instanceof SubjectError) {
       return envelope('refused', error.diagnostics ?? [{ code: error.code ?? 'engine-refusal', path: '', message: error.message }]);
     }
     if (Number.isInteger(error?.errno) && typeof error.code === 'string') {
@@ -224,12 +130,7 @@ export async function invoke(request) {
 export function interfaceResultSucceeded(result) {
   if (result.status !== 'completed') return false;
   if (result.operation === 'record.preflight') return result.data.ok === true;
-  if (result.operation === 'subject.tree') return result.data.status === 'complete';
-  if (result.operation === 'subject.query') return result.data.status === 'complete';
-  if (['subject.route', 'subject.contexts'].includes(result.operation)) return result.data.result.status === 'complete';
-  if (result.operation === 'intent.validate') return result.data.valid;
-  if (result.operation === 'intent.inspectBindings') return result.data.result.planValidation.valid;
-  if (result.operation === 'intent.validateQueries') return result.data.result.valid;
-  if (result.operation === 'intent.executeQueries') return result.data.result.status === 'complete';
+  // A search over stores that did not load cleanly is reported, never graded.
+  if (result.operation === 'record.ask') return result.data['store-health'].ok === true;
   return true;
 }

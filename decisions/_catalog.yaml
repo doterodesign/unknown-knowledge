@@ -219,6 +219,9 @@ entries:
   - id: proposal:decision:9ae1f0be-1bfd-49cf-a7d4-0cdb1251c8f8
     title: "Kept guarantees are pinned by fast invariant tests on one shared fixture"
     file: entries/shared-canonical-fixture.yaml
+  - id: proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f
+    title: "Ranked retrieval replaces intent plans and governed Subject query surfaces"
+    file: entries/remove-intent-query-path.yaml
   - id: proposal:decision:768020f6-acd8-4577-9d55-724d93365dc2
     title: "Retrieval fixtures use independently reviewed sources and pinned trial custody"
     file: entries/retrieval-fixture-custody.yaml

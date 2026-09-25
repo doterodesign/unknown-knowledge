@@ -122,7 +122,8 @@ test("the kit's own decision entries are indexed and their refs resolve", () => 
     catalog.entries.map(({ id }) => id).filter((id) => id.startsWith('proposal:decision:')).sort(),
     'every cataloged proposal is indexed without allocating a canonical identity',
   );
-  assert.ok([...model.proposals.decision.values()].every(({ record }) => record.status === 'proposed'));
+  // A proposal is pending or withdrawn; an accepted Decision holds a canonical ID.
+  assert.ok([...model.proposals.decision.values()].every(({ record }) => ['proposed', 'rejected'].includes(record.status)));
   assert.ok(model.refs.length > 0);
   assert.ok(model.refs.every((r) => r.resolved), 'catalog-declared pending ids resolve');
 });

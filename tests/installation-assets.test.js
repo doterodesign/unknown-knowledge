@@ -10,7 +10,7 @@ test('installation asset policy matches actual unconditional manifest and immuta
   // Original Git-blob equality was verified when freezing this policy. Pin those
   // exact bytes without requiring historical objects in a shallow CI checkout.
   assert.equal(rawSha256(readFileSync('payload/engine/policies/installation-assets.json')),
-    '72d5861ce17a81a0652a72b246f6a89de731dadfa40f73533f36ea244bde23fb');
+    '028082d1156fb4ca63ba4af9b413e0b46620f24dd4ba4d82e55d1cbec98b8ec4');
   assert.equal(installationAssets.sourceCommit, '08066b5f527b9d7d9705a3367bc26dcf080271ad');
   const root = resolve('.'), manifest = loadManifest(root);
   const selected = structuredClone(manifest);

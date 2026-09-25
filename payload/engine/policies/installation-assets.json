@@ -287,10 +287,6 @@
       "source": "protocol/engine-interface.md"
     },
     {
-      "path": "protocol/intent-retrieval.md",
-      "source": "protocol/intent-retrieval.md"
-    },
-    {
       "path": "protocol/new-kind-pipeline.md",
       "source": "protocol/new-kind-pipeline.md"
     },

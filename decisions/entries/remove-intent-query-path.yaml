@@ -1,0 +1,48 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f"
+    title: "Ranked retrieval replaces intent plans and governed Subject query surfaces"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1517; acceptance pending"]
+    context: >
+      In the held-out evaluation, agents on the intent-plan and governed Subject
+      query path completed 10/18 tasks against 15/18 before it. Plans needed nine
+      budget fields, JSON-Pointer coverage and three capture files; results sorted
+      by identity and reached 77 KB, and four of seven regressions were host
+      output budgets. ask (proposal ranked-retrieval-ask) ranks all three stores,
+      selects exactly by Subject with descendants, counts by metadata field and
+      reports a retrieval tier, without agent-authored plans. The user asked to
+      strip what does not move the project forward, within sound architecture.
+    decision: >
+      Remove intent-plan.js, query-subjects.js and subject-view.js with their
+      commands; the intent plan, binding, query-admission and query-plan
+      libraries; the Subject contexts library; the API and MCP operations
+      subject.tree, subject.query, subject.route, subject.contexts and intent.*;
+      protocol/intent-retrieval.md; and the evaluation hosts that drove them.
+      Keep subject.lookup, record.ask and record.preflight. The MCP server now
+      serves AGENTS.md as its second documentation resource. AGENTS.md keeps the
+      rule to preserve every material part of a request, and routes Subject
+      constraints through subject.js lookup and ask --where subject=. Libraries
+      that lifecycle and publication gates still import (Subject query, query
+      context, routes, views and their impact comparisons) stay until the
+      tickets that remove those gates. resolve keeps its query mode: kb-build and
+      reflection read its residue, and --doc shares its join code.
+    consequences: >
+      The engine drops three command surfaces and eight API operations; the
+      shared interface is four read operations. Stores that carry a generated
+      subjects/derived/ directory keep a disposable file nothing regenerates;
+      delete it. Agents lose governed eligibility filtering, which the
+      evaluation did not show helping them. Proposals withdrawn by this entry:
+      intent plans, intent execution, intent evidence conduct, intent trial
+      hosting, lossless query output, Subject views and contexts, view adapters,
+      fixed-file query composition and optional Subject routing. Alternatives
+      rejected: keeping the typed path as an advanced option (it keeps the cost
+      and a second way to do the same thing) and removing resolve query mode
+      (it would lose residue findings for little code). The user authorized this
+      work in the session that produced it; that authorization is not
+      acceptance or publication of this Decision. Supporting evidence:
+      tests/engine-interface.test.js, tests/invariants.test.js,
+      tests/ask-gold.test.js and payload/protocol/AGENTS.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000010"]}

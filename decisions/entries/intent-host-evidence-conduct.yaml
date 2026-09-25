@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:85820498-82bc-4f84-8e36-67f60ddd1349
     title: Intent evidence obligations remain host conduct under existing store gates
     category: governance
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -31,4 +31,4 @@ entries:
       conduct foundation. Fresh host/source-review evidence is required for
       Gate D. This records P5's implemented extension as a proposal, not approval
       of source claims or replacement governance.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000007, D-000011, proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000007, D-000011, proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c, proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f] }

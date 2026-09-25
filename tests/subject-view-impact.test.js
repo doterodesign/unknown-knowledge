@@ -195,26 +195,6 @@ test('comparison does not mutate inputs and fingerprints bind options and captur
   assert.equal(JSON.stringify(f.fixture.context.model.subjectRegistry.document), snapshot);
 });
 
-test('actual CLI generated file bytes equal comparator output in root and nested installations', (t) => {
-  const cli = fileURLToPath(new URL('../payload/engine/subject-view.js', import.meta.url));
-  for (const nested of [false, true]) {
-    const f = subjectQueryDiskFixture(t, { nested });
-    const result = compareSubjectTreeViews({ version: 1,
-      before: { capturedInputRef: 'before', context: f.context }, after: { capturedInputRef: 'after', context: f.context },
-      inventory: { version: 1, coverage: 'complete', views: [view()] }, limits: { version: 1, maxViews: 1 } });
-    assert.equal(result.status, 'complete');
-    const run = spawnSync(process.execPath, [cli, '--root', f.root, '--write', '--max-nodes', '30',
-      '--max-edges', '30', '--max-rows', '10', '--max-bytes', '10000', '--json'], { encoding: 'utf8', timeout: 20000 });
-    assert.equal(run.status, 0, run.stderr);
-    for (const artifact of result.views[0].after.artifacts) {
-      const bytes = readFileSync(join(f.kitRoot, artifact.path));
-      assert.equal(bytes.toString('utf8'), artifact.text);
-      assert.equal(digest(bytes), artifact.sha256);
-      assert.equal(bytes.length, artifact.byteLength);
-    }
-  }
-});
-
 test('different authentic installation namespaces are refused', (t) => {
   const f = setup(t); const foreign = subjectQueryDiskFixture(t);
   const old = foreign.context.model.identity.namespace;

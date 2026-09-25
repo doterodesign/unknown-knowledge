@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:a5c52715-cec0-476a-82c6-32e9099e9976
     title: Intent execution preserves separate branches and cumulative operation allowances
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -38,4 +38,4 @@ entries:
       tests/intent-plan-admission.test.js, tests/intent-query-execution.test.js,
       tests/intent-operation.test.js and tests/intent-query-assessment-cli.test.js.
       This rationale proposal does not approve numeric operating limits.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000011, D-000022, proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000011, D-000022, proposal:decision:3636c7da-f47b-490c-a37d-02b0ec639f9c, proposal:decision:103e3e05-0ed2-438a-9c32-8bcfc3ffc51f] }
