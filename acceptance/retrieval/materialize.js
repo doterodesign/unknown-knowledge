@@ -93,21 +93,32 @@ function materializeInstallation(task, records, namespace, destination, runtime)
   for (const store of ['ontology', 'knowledge', 'decisions']) {
     if (!kinds.has(store)) rmSync(join(kit, store), { recursive: true });
   }
+  // A pilot task names one source file. A corpus record names its own
+  // (`source`, copied from `origin`), so one installation can span several.
+  const sourceOf = row => row.source ?? task.source;
+  const origins = new Map(records.filter(row => row.origin).map(row => [row.source, row.origin]));
+  const files = [...new Set([task.source, ...records.map(row => row.source)].filter(Boolean))];
   mkdirSync(join(destination, 'sources'));
-  cpSync(join(pilot, task.source), join(destination, task.source));
+  for (const file of files) {
+    mkdirSync(dirname(join(destination, file)), { recursive: true });
+    cpSync(origins.get(file) ?? join(pilot, file), join(destination, file));
+  }
   if (task.excludedSources) {
     mkdirSync(join(destination, 'sources/private'));
     for (const file of task.excludedSources) cpSync(join(pilot, file), join(destination, file));
   }
-  let source = readFileSync(join(destination, task.source), 'utf8');
+  const texts = new Map(files.map(file => [file, readFileSync(join(destination, file), 'utf8')]));
   if (task.id === 'holding-company-01') {
-    source = source.replaceAll('O-000001', 'K-101'); // Declared source identity spans only.
-    writeFileSync(join(destination, task.source), source);
+    // Declared source identity spans only.
+    texts.set(task.source, texts.get(task.source).replaceAll('O-000001', 'K-101'));
+    writeFileSync(join(destination, task.source), texts.get(task.source));
   }
+  const textOf = row => texts.get(sourceOf(row));
+  const reviewed = task.source ?? 'the reviewed corpus sources';
   writeYaml(join(destination, 'survey-scope.yaml'), { 'schema-version': 1, include: ['sources'], exclude: ['sources/private'] });
   writeFileSync(join(destination, '.gitignore'), '/node_modules\n');
   const inventory = [];
-  const addRecord = (kind, id, file, row) => inventory.push({ kind, id, file, source: task.source, passage: row.passage });
+  const addRecord = (kind, id, file, row) => inventory.push({ kind, id, file, source: sourceOf(row), passage: row.passage });
   const catalog = (kind, entries) => writeYaml(join(kit, kind, '_catalog.yaml'), { 'schema-version': 1, store: kind, entries });
   const concepts = records.filter(row => row.id.includes('/ontology/'));
   if (concepts.length) {
@@ -115,7 +126,7 @@ function materializeInstallation(task, records, namespace, destination, runtime)
       const id = `K-${101 + i}`;
       addRecord('ontology', id, 'ontology/classes/100-fixture.yaml', row);
       return { id, term: row.passage.replaceAll('-', ' '), class: '100-fixture',
-        summary: `See ${task.source}#${row.passage}.`, 'source-of-truth': [task.source],
+        summary: `See ${sourceOf(row)}#${row.passage}.`, 'source-of-truth': [sourceOf(row)],
         status: row.lifecycle === 'retired' ? 'deprecated' : row.lifecycle,
         'last-verified': corpus.evaluationDate };
     });
@@ -127,7 +138,7 @@ function materializeInstallation(task, records, namespace, destination, runtime)
     const stages = new Set();
     const jurisdictions = new Set();
     const rows = leaves.map(row => {
-      const id = row.id.split('/').at(-1).replace(/^K-/, 'L-');
+      const id = row.legacyId ?? row.id.split('/').at(-1).replace(/^K-/, 'L-');
       const stage = row.lifecycle === 'proposed' ? 'proposed' : 'verified';
       stages.add(stage);
       for (const value of row.scope ?? []) jurisdictions.add(value);
@@ -137,12 +148,12 @@ function materializeInstallation(task, records, namespace, destination, runtime)
         verified: corpus.evaluationDate, volatility: 'static', operations: [], concepts: [],
         ...(row.scope === null ? {} : { applies: { jurisdictions: row.scope } }),
         terms: row.passage.split('-'),
-        citations: [{ source: task.source, accessed: corpus.evaluationDate, authority: 'fixture-source' }],
+        citations: [{ source: sourceOf(row), accessed: corpus.evaluationDate, authority: 'fixture-source' }],
         provenance: { author: 'synthetic-fixture-steward', 'skill-version': 'pilot-1-source-review' },
-        notes: [{ type: 'scope', text: `Synthetic ${row.lifecycle} source snapshot; ${task.source}#${row.passage}. Baseline stage is not target lifecycle or approval authentication.` }],
+        notes: [{ type: 'scope', text: `Synthetic ${row.lifecycle} source snapshot; ${sourceOf(row)}#${row.passage}. Baseline stage is not target lifecycle or approval authentication.` }],
       };
       const file = `knowledge/${id}.md`;
-      writeFileSync(join(kit, file), `---\n${dump(fields, { lineWidth: 100 })}---\n\n${passage(source, row.passage)}\n`);
+      writeFileSync(join(kit, file), `---\n${dump(fields, { lineWidth: 100 })}---\n\n${passage(textOf(row), row.passage)}\n`);
       addRecord('knowledge', id, file, row);
       return { id, title: fields.heading, file: `${id}.md` };
     });
@@ -150,25 +161,26 @@ function materializeInstallation(task, records, namespace, destination, runtime)
     for (const [name, values] of Object.entries({ domains: [task.organization], form: ['reference'], anchor: ['world'], stage: [...stages], jurisdictions: [...jurisdictions], 'authority-tiers': ['fixture-source'] })) {
       writeYaml(join(kit, 'knowledge/_registries', `${name}.yaml`), { 'schema-version': 1, store: 'knowledge', registry: name,
         ...(name === 'domains' ? { hierarchical: true } : {}),
-        values: values.map(value => ({ value, warrant: `Synthetic reviewed source snapshot: ${task.source}`, decision: 'D-999999', minted: corpus.evaluationDate })) });
+        values: values.map(value => ({ value, warrant: `Synthetic reviewed source snapshot: ${reviewed}`, decision: 'D-999999', minted: corpus.evaluationDate })) });
     }
   }
   const decisions = records.filter(row => row.id.includes('/decisions/'));
+  const legacy = new Map(decisions.filter(row => row.legacyId).map(row => [row.id, row.legacyId]));
   const entries = decisions.map(row => {
-    const id = row.id.split('/').at(-1);
+    const id = row.legacyId ?? row.id.split('/').at(-1);
     addRecord('decisions', id, `decisions/entries/${id}.yaml`, row);
     return { id, title: row.passage.replaceAll('-', ' '), category: 'governance', status: row.lifecycle,
       date: task.id === 'policy-01' && id === 'D-000002' ? '2026-09-10'
         : task.id === 'policy-01' && id === 'D-000003' ? '2026-09-12' : corpus.evaluationDate,
-      deciders: ['synthetic-fixture-steward'], context: `Synthetic source snapshot: ${task.source}#${row.passage}`,
-      decision: passage(source, row.passage),
-      supersedes: (row.supersedes ?? []).map(ref => ref.split('/').at(-1)),
-      'superseded-by': decisions.filter(other => other.supersedes?.includes(row.id)).map(other => other.id.split('/').at(-1)),
+      deciders: ['synthetic-fixture-steward'], context: `Synthetic source snapshot: ${sourceOf(row)}#${row.passage}`,
+      decision: passage(textOf(row), row.passage),
+      supersedes: (row.supersedes ?? []).map(ref => legacy.get(ref) ?? ref.split('/').at(-1)),
+      'superseded-by': decisions.filter(other => other.supersedes?.includes(row.id)).map(other => other.legacyId ?? other.id.split('/').at(-1)),
     };
   });
   if (leaves.length) {
     entries.push({ id: 'D-999999', title: 'Synthetic fixture vocabulary', category: 'governance', status: 'accepted', date: corpus.evaluationDate,
-      deciders: ['synthetic-fixture-steward'], context: `Source review: ${task.source}.`,
+      deciders: ['synthetic-fixture-steward'], context: `Source review: ${reviewed}.`,
       decision: 'Authorize only the vocabulary and reviewed historical-source snapshots in this disposable fixture. This is support metadata, not task-answer authority or human approval of live data.',
       'relates-to': { leaves: inventory.filter(row => row.kind === 'knowledge').map(row => row.id) } });
     inventory.push({ kind: 'decisions', id: 'D-999999', file: 'decisions/entries/D-999999.yaml', support: true });
@@ -177,5 +189,18 @@ function materializeInstallation(task, records, namespace, destination, runtime)
   if (kinds.has('decisions')) catalog('decisions', entries.map(entry => ({ id: entry.id, title: entry.title, file: `entries/${entry.id}.yaml` })));
   run('git', ['init', '-q', destination]);
   run('git', ['-C', destination, 'add', '.']);
-  return { namespace, root: destination, source: task.source, sourceSha256: hash(source), records: inventory };
+  return { namespace, root: destination, source: task.source ?? null,
+    sourceSha256: task.source ? hash(texts.get(task.source)) : null, records: inventory };
+}
+
+/**
+ * One installation of a multi-source corpus, built by the original runtime
+ * like a pilot task. `spec` = { id, organization, records: [{ id:
+ * "<installation>/<store>/<ID>", legacyId?, passage, source, origin, lifecycle,
+ * scope, supersedes }] }; `source` is the path inside the installation and
+ * `origin` the file to copy it from.
+ */
+export function materializeCorpusInstallation(spec, destination, runtime) {
+  verifyRuntime(runtime);
+  return materializeInstallation(spec, spec.records, spec.id, destination, runtime);
 }
