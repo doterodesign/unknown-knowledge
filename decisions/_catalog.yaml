@@ -265,3 +265,6 @@ entries:
   - id: proposal:decision:95b9b1ee-2bc0-442c-9e3d-87dbb83e0b19
     title: Evidence and design notes for removed features leave the repository; Git history keeps them
     file: entries/prune-removed-feature-evidence.yaml
+  - id: proposal:decision:7cf5ceb1-f852-4c8b-9017-0662460b2443
+    title: Agent evaluations use isolated headless Claude Code readers on Sonnet 5, graded blind against a fixed rubric
+    file: entries/agent-evaluation-readers.yaml
