@@ -268,3 +268,6 @@ entries:
   - id: proposal:decision:7cf5ceb1-f852-4c8b-9017-0662460b2443
     title: Agent evaluations use isolated headless Claude Code readers on Sonnet 5, graded blind against a fixed rubric
     file: entries/agent-evaluation-readers.yaml
+  - id: proposal:decision:1c5fe0db-e5f6-43e5-815d-bae927b438af
+    title: Held-out cases are written and reviewed by independent agents, sealed outside the repository, over identical content for both runtimes
+    file: entries/heldout-custody-by-agents.yaml

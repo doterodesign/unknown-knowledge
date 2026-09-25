@@ -1,0 +1,42 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:1c5fe0db-e5f6-43e5-815d-bae927b438af"
+    title: "Held-out cases are written and reviewed by independent agents, sealed outside the repository, over identical content for both runtimes"
+    category: "governance"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1581; acceptance pending"]
+    context: >
+      The earlier sealed held-out package was never in the repository and no
+      longer exists; its custodians worked in local directories that are gone.
+      A new comparison needs cases the engine's tuner has not seen, and the
+      same content under the original and current runtime.
+    decision: >
+      A custodian agent writes six cases, one per development-v2 organization,
+      with graded passage judgments, bundles and critical failures, and a
+      separate reviewer agent derives its own answers before reading the
+      custodian's, checks entailment and novelty against the 54 existing
+      questions, and revises. The cases live outside the repository in a
+      durable custody directory beside it; the repository keeps a blinded
+      receipt with file hashes. Cases name records by installation and
+      passage, because IDs differ between runtimes. The original runtime's
+      stores are the development-v2 corpus built as 2.x installations by the
+      08066b5 runtime (materialize-corpus.js, generalizing materialize.js to
+      one source file per record); the current runtime's are the same stores
+      after migrate.js in a fresh 3.0 kit.
+    consequences: >
+      The tuner never reads case content; everything that crosses back is
+      verdict codes, counts and hashes. Case judgments come from two agents,
+      not humans, and one reviewer could not find entirely fresh evidence for
+      one organization. The 2.x build drops Subjects and turns any
+      non-proposed Knowledge record into verified, so neither runtime sees
+      Subject labels. Alternatives rejected: reusing the canonical 3.0 fixture
+      for the current runtime (its Subjects and richer titles would make the
+      comparison about content, not runtime) and keeping the cases in a
+      temporary directory (the previous package was lost that way). The user
+      authorized this work in the session that produced it; that authorization
+      is not acceptance or publication of this Decision. Supporting
+      implementation: acceptance/retrieval/materialize-corpus.js,
+      acceptance/retrieval/materialize.js, tests/corpus-arms.e2e.test.js and
+      docs/agents/2026-09-24-heldout-custody-receipt.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["proposal:decision:7cf5ceb1-f852-4c8b-9017-0662460b2443"]}

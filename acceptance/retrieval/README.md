@@ -12,7 +12,8 @@ payload.
 | `materialize-growth.js`, `materialize-scale.js` | grow those installations with reviewed or synthetic records (see [growth construction](GROWTH-CONSTRUCTION.md)) | `tests/retrieval-growth-preparation.test.js`, scale timing |
 | `benchmark.js` | ranks each gold task with `ask` or `resolve` and reports bundle depth, output size and latency | `node acceptance/retrieval/benchmark.js ask` |
 | `evaluate.js` | per-store recall/nDCG and bundle scorer for reviewed agent traces | `tests/retrieval-acceptance.e2e.test.js` |
-| `arms.js` | makes the current-runtime copy of a 2.x installation: fresh `init`, stores converted by `migrate.js` | `pilot-readers.js` |
+| `materialize-corpus.js` | builds the eight development-v2 installations as 2.x stores with the original runtime | `tests/corpus-arms.e2e.test.js` |
+| `arms.js` | makes the current-runtime copy of a 2.x installation: fresh `init`, stores converted by `migrate.js` | `pilot-readers.js`, `tests/corpus-arms.e2e.test.js` |
 | `reader.js` | runs one fresh headless reader session and records its trace | `pilot-readers.js` |
 | `grade.js` | blind grader: one trace and one case in, a closed verdict out | `pilot-grade.js` |
 | `pilot-readers.js`, `pilot-grade.js` | run and grade readers on the public pilot tasks | choosing the reader model |
@@ -36,6 +37,13 @@ it returned, tokens, cost, time and the answer. The CLI must be signed in
 Both runtimes hold identical content. The original arm is the 2.x store as the
 08066b5 runtime built it; the current arm is a fresh 3.0 `init` holding the same
 stores after `migrate.js`, which is the documented upgrade path.
+
+Held-out cases are written and reviewed by independent agents and sealed
+outside the repository, so whoever tunes retrieval never sees them; the
+repository keeps only the
+[blinded receipt](../../docs/agents/2026-09-24-heldout-custody-receipt.md).
+They use the development-v2 corpus, built for the original runtime by
+`materialize-corpus.js`.
 
 The grader (`grade.js`, Sonnet 5, no tools) sees the case and the trace and
 returns `completed`, `correct-abstention` or `failed`, plus critical flags

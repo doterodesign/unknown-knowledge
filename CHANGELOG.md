@@ -13,6 +13,12 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.18] - Unreleased
+
+- Six new held-out cases, one per development-v2 organization (3 answerable, 3 scoped negatives), written by an independent custodian agent and reviewed by a separate agent (3 accepted, 3 revised). They are sealed outside the repository; the [blinded receipt](docs/agents/2026-09-24-heldout-custody-receipt.md) records their hashes. The earlier sealed package was never in the repository and no longer exists.
+- `acceptance/retrieval/materialize-corpus.js` builds the eight development-v2 installations as 2.x stores with the original 08066b5 runtime; `materialize.js` now takes one source file per record. `tests/corpus-arms.e2e.test.js` checks both runtimes' copies validate and hold the same records.
+- Decision: [held-out custody by agents](decisions/entries/heldout-custody-by-agents.yaml). Tracking: UCS-1581.
+
 ## [3.0.0-rc.17] - Unreleased
 
 - Add a test-only agent evaluation harness: `acceptance/retrieval/reader.js` runs one fresh, isolated headless Claude Code reader on one installation and records its tool calls, output bytes, tokens, cost, time and answer; `arms.js` builds the current-runtime copy of a 2.x installation (fresh `init` plus `migrate.js`), so both runtimes hold identical content.
