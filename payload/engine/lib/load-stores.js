@@ -235,6 +235,7 @@ export const DIAGNOSTIC_CODES = Object.freeze([...new Set([
   'invalid-dependency',
   'subjects-unavailable',
   'unknown-subject',
+  'retired-subject-assigned',
 ])]);
 
 /**
@@ -593,6 +594,16 @@ function indexRecord(ctx, space, id, file, path, entry) {
         if (!(error instanceof SubjectError)) throw error;
         ctx.diagnostics.push({ severity: 'error', code: error.code, file,
           path: `${prefix}subjects[${index}]`, message: error.message });
+        continue;
+      }
+      // Historical lookup resolves a retired meaning so old records stay
+      // readable; a record may not stay assigned to it. Retiring a Subject and
+      // reassigning its records travel in the same change.
+      const status = (ctx.subjectRegistry.subjects.get(subjectId) ?? ctx.subjectRegistry.proposals?.get(subjectId))?.status;
+      if (status === 'retired' || status === 'suppressed') {
+        ctx.diagnostics.push({ severity: 'error', code: 'retired-subject-assigned', file,
+          path: `${prefix}subjects[${index}]`,
+          message: `Subject ${subjectId} is ${status}; reassign this record in the same change that retires it` });
       }
     }
   }
@@ -1390,6 +1401,10 @@ function captureIdentityIndex(ctx) {
     if (['invalid', 'ambiguous', 'missing'].includes(result.status)) {
       ctx.diagnostics.push({ severity: 'error', code: 'invalid-identity', file: item.locator.file, path: item.locator.path,
         message: `identity ${item.id}: ${result.reason ?? result.status}` });
+    } else if (result.status === 'retired' && result.entry) {
+      // Retired and cancelled IDs are never reused; a live record cannot hold one.
+      ctx.diagnostics.push({ severity: 'error', code: 'invalid-identity', file: item.locator.file, path: item.locator.path,
+        message: `identity ${item.id}: its allocation is ${result.allocation.state}, but a record still uses it` });
     }
   }
 }

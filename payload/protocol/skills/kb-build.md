@@ -267,12 +267,10 @@ The governance calls this skill makes on top of the schema:
 - **`subjects`** — optional whole-record candidate aboutness, never evidence
   or a source pointer. Absence means unknown; `[]` explicitly records none;
   authored order does not select a primary subject. Use canonical `S` identities
-  from the actual installation registry. New effective assignments require
-  actual active, reviewed eligibility, not merely schema-valid IDs or a visible
-  registry row. Retained retired assignments remain historical raw assignments;
-  do not silently redirect them. New-record and proposal-to-canonical
-  publication must check every assignment, without using a prior draft to
-  waive eligibility. A pure eligibility check is not publication approval.
+  from the actual installation registry, and assign only `active` ones: the
+  validator refuses an assignment to a retired or suppressed Subject. When a
+  Subject is retired, reassign its records in the same change (AGENTS.md,
+  **Changing Subjects**).
 - **`paths`** — the repo-relative files or directories this leaf governs. A
   directory covers its subtree. This is what makes the leaf surface in the
   reverse lookup, so the files in a diff surface the knowledge that governs

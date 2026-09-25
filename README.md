@@ -12,9 +12,9 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.11 — unreleased
+## Planned 3.0.0-rc.12 — unreleased
 
-`unknown-knowledge@3.0.0-rc.11` is the planned prerelease represented by the
+`unknown-knowledge@3.0.0-rc.12` is the planned prerelease represented by the
 [seven-PR delivery stack](docs/pr-delivery/README.md) plus ranked retrieval
 (`ask`). Merging into
 `main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1

@@ -4,10 +4,10 @@
 // enforces it, never a total error count, so the tests keep holding while the
 // governance machinery around them is removed (P-UCS-60). Tests marked `todo`
 // pin a guarantee the current engine does not enforce yet; they run and
-// report, and UCS-1518 turns them into ordinary tests.
+// report until the engine enforces them.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -86,12 +86,12 @@ test('proposal keys never consume allocations', (t) => {
 });
 
 for (const state of ['retired', 'cancelled']) {
-  test(`a live record cannot hold a ${state} ID`, { todo: 'UCS-1518: no check enforces this yet' }, (t) => {
+  test(`a live record cannot hold a ${state} ID`, (t) => {
     const { root, kit } = copy(t, 'engineering');
     const ledger = readJson(join(kit, '_identity.yaml'));
     Object.assign(ledger.allocations.find((row) => row.id === 'K-000001'), { state, reason: 'withdrawn' });
     writeJson(join(kit, '_identity.yaml'), ledger);
-    assert.ok(errorCodes(root).size > 0);
+    assert.ok(errorCodes(root).has('invalid-identity'));
   });
 }
 
@@ -117,10 +117,36 @@ test('a record cannot be assigned a Subject the registry does not hold', (t) => 
   assert.ok(errorCodes(root).has('unknown-subject'));
 });
 
-test('a record cannot stay assigned to a retired Subject', { todo: 'UCS-1518: only the history binding catches this today' }, (t) => {
+test('a record cannot stay assigned to a retired Subject', (t) => {
   const { root, kit } = copy(t, 'engineering');
   registry(kit, (r, s) => { s('S-000013').status = 'retired'; });
   assert.ok(errorCodes(root).has('retired-subject-assigned'));
+});
+
+test('the registry is an ordinary governed file: plain edits validate', (t) => {
+  const { root, kit } = copy(t, 'engineering');
+  registry(kit, (r, s) => {
+    s('S-000019').label = 'Engineering vocabulary';
+    s('S-000019').aliases = [{ label: 'Terminology', locale: 'en' }];
+    s('S-000011').parent = 'S-000004';
+  });
+  assert.deepEqual([...errorCodes(root)], []);
+});
+
+test('retiring a Subject validates when its records are reassigned in the same change', (t) => {
+  const { root, kit } = copy(t, 'engineering');
+  const assigned = [];
+  for (const name of ['knowledge', 'ontology/classes', 'decisions/entries']) {
+    const dir = join(kit, name);
+    for (const file of readdirSync(dir).filter((f) => /\.(md|yaml)$/.test(f))) {
+      const path = join(dir, file);
+      if (readFileSync(path, 'utf8').includes('"S-000013"')) assigned.push(path);
+    }
+  }
+  assert.ok(assigned.length > 0, 'some record is assigned S-000013');
+  registry(kit, (r, s) => { s('S-000013').status = 'retired'; });
+  for (const path of assigned) edit(path, '"S-000013"', '"S-000001"');
+  assert.deepEqual([...errorCodes(root)], []);
 });
 
 test('related links never create ancestry', () => {

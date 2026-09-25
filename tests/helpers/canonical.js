@@ -45,6 +45,10 @@ export function repository(t, name) {
     const base = mkdtempSync(join(tmpdir(), `uk-${name}-git-`));
     cpSync(installation(name), base, { recursive: true });
     git(base, 'init', '-q');
+    // Keep automatic maintenance synchronous so it never writes into .git
+    // while a test removes its copy.
+    git(base, 'config', 'gc.autoDetach', 'false');
+    git(base, 'config', 'maintenance.autoDetach', 'false');
     git(base, 'add', '-A');
     git(base, 'commit', '-q', '-m', 'canonical fixture');
     committed.set(name, base);

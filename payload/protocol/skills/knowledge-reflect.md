@@ -516,8 +516,8 @@ rule: preserve the original frontmatter provenance object and existing notes
 unchanged, append only the reviewed `revision`-note suffix, and retain separate
 assignment history. The change proposal stays
 unpublished until the same human gate; it is not a new record proposal key or
-evidence refresh. Actual active, reviewed subject eligibility is required for
-new effective assignments; no assignment is inferred from a query or facet.
+evidence refresh. Assign only active Subjects; no assignment is inferred from a
+query or facet. Registry changes follow AGENTS.md, **Changing Subjects**.
 
 Run full structural validation so leaf, registry and Decisions changes are
 checked even when no ontology concept changed:

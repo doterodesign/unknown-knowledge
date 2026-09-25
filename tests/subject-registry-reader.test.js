@@ -123,16 +123,20 @@ test('all governance fields round-trip into the exact domain capture without app
   assert.equal(Object.hasOwn(result, 'governance'), false);
 });
 
-test('active entries require complete structural governance and existing subject allocations', (t) => {
+test('active entries need an allocation, not a recorded event history', (t) => {
+  // The registry is an ordinary governed file; its history is the file's Git
+  // history. An active entry validates on its allocation alone.
   const input = kit(t);
   const bare = document();
   Object.assign(bare.subjects[0], { id: 'S-000001', status: 'active' });
+  delete bare.history;
   write(input, bare);
-  assert.equal(readSubjectRegistry(input).ok, false);
-  const data = subjectGovernanceFixture();
-  write(input, authoredGovernance(data));
+  const withAllocation = readSubjectRegistry(input);
+  assert.equal(withAllocation.ok, true, JSON.stringify(withAllocation.diagnostics));
   const identity = { ...input.identity, allocations: input.identity.allocations.filter((row) => row.kind !== 'subject') };
-  assert.equal(readSubjectRegistry({ ...input, identity }).ok, false);
+  const without = readSubjectRegistry({ ...input, identity });
+  assert.equal(without.ok, false);
+  assert.ok(without.diagnostics.some((d) => d.code === 'invalid-subject-allocation'), JSON.stringify(without.diagnostics));
 });
 
 test('programmer input errors and missing kit roots are not ordinary malformed registry diagnostics', (t) => {

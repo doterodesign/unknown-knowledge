@@ -62,10 +62,11 @@ record identity, filenames and labels. Records can carry multiple `subjects`;
 list order assigns no primary subject. An absent field means unknown, while
 `subjects: []` means explicitly empty. A parent expresses narrower/broader
 meaning; typed related-subject links do not imply ancestry or membership.
-Readable paths and indexes are derived views. Labels alone do not establish
-approved query or assignment eligibility. See the
-[assignment contract](docs/agents/ucs-1236-subject-assignments.md) and
-[governance contract](docs/agents/ucs-1235-subject-governance.md).
+Only active Subjects may be assigned. The registry is an ordinary governed
+file: Subjects are created, renamed, moved and retired by reviewed edits with a
+Decisions entry, and retiring one reassigns its records in the same change.
+Its history is the file's Git history. See the
+[assignment contract](docs/agents/ucs-1236-subject-assignments.md).
 
 **Facet** — One governed axis of a leaf's classification, filled from a
 **registry** rather than invented: `domain` (the hierarchical subject path),
