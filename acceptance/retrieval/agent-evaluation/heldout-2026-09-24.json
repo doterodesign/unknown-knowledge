@@ -1,0 +1,132 @@
+{
+  "version": 1,
+  "date": "2026-09-24",
+  "readerModel": "claude-sonnet-5",
+  "graderModel": "claude-sonnet-5",
+  "repeats": 1,
+  "cases": 6,
+  "casesReceipt": "docs/agents/2026-09-24-heldout-custody-receipt.md",
+  "blockedMeaning": "the API refused the reader session under its usage policy (classifier tag [bio]); no answer was produced",
+  "rows": [
+    {
+      "case": "heldout-engineering-01",
+      "runtime": "original",
+      "verdict": "completed",
+      "critical": [],
+      "toolCalls": 11,
+      "toolOutputBytes": 49327,
+      "seconds": 40,
+      "costUsd": 0.168
+    },
+    {
+      "case": "heldout-engineering-01",
+      "runtime": "current",
+      "verdict": "completed",
+      "critical": [],
+      "toolCalls": 10,
+      "toolOutputBytes": 53562,
+      "seconds": 44,
+      "costUsd": 0.185
+    },
+    {
+      "case": "heldout-cultural-research-01",
+      "runtime": "original",
+      "verdict": "correct-abstention",
+      "critical": [],
+      "toolCalls": 10,
+      "toolOutputBytes": 48694,
+      "seconds": 33,
+      "costUsd": 0.19
+    },
+    {
+      "case": "heldout-cultural-research-01",
+      "runtime": "current",
+      "verdict": "correct-abstention",
+      "critical": [],
+      "toolCalls": 22,
+      "toolOutputBytes": 62735,
+      "seconds": 77,
+      "costUsd": 0.288
+    },
+    {
+      "case": "heldout-policy-01",
+      "runtime": "original",
+      "verdict": "completed",
+      "critical": [],
+      "toolCalls": 19,
+      "toolOutputBytes": 45521,
+      "seconds": 56,
+      "costUsd": 0.206
+    },
+    {
+      "case": "heldout-policy-01",
+      "runtime": "current",
+      "verdict": "completed",
+      "critical": [],
+      "toolCalls": 19,
+      "toolOutputBytes": 54166,
+      "seconds": 55,
+      "costUsd": 0.243
+    },
+    {
+      "case": "heldout-manufacturing-01",
+      "runtime": "original",
+      "verdict": "blocked",
+      "critical": [],
+      "toolCalls": 5,
+      "toolOutputBytes": 39356,
+      "seconds": 12,
+      "costUsd": 0.129
+    },
+    {
+      "case": "heldout-manufacturing-01",
+      "runtime": "current",
+      "verdict": "blocked",
+      "critical": [],
+      "toolCalls": 11,
+      "toolOutputBytes": 47707,
+      "seconds": 22,
+      "costUsd": 0.166
+    },
+    {
+      "case": "heldout-professional-services-01",
+      "runtime": "original",
+      "verdict": "correct-abstention",
+      "critical": [],
+      "toolCalls": 13,
+      "toolOutputBytes": 43597,
+      "seconds": 33,
+      "costUsd": 0.185
+    },
+    {
+      "case": "heldout-professional-services-01",
+      "runtime": "current",
+      "verdict": "correct-abstention",
+      "critical": [],
+      "toolCalls": 10,
+      "toolOutputBytes": 49462,
+      "seconds": 39,
+      "costUsd": 0.176
+    },
+    {
+      "case": "heldout-holding-company-01",
+      "runtime": "original",
+      "verdict": "blocked",
+      "critical": [],
+      "toolCalls": 38,
+      "toolOutputBytes": 125151,
+      "seconds": 104,
+      "costUsd": 0.529
+    },
+    {
+      "case": "heldout-holding-company-01",
+      "runtime": "current",
+      "verdict": "blocked",
+      "critical": [],
+      "toolCalls": 23,
+      "toolOutputBytes": 137110,
+      "seconds": 58,
+      "costUsd": 0.37
+    }
+  ]
+}

@@ -12,17 +12,19 @@ payload.
 | `materialize-growth.js`, `materialize-scale.js` | grow those installations with reviewed or synthetic records (see [growth construction](GROWTH-CONSTRUCTION.md)) | `tests/retrieval-growth-preparation.test.js`, scale timing |
 | `benchmark.js` | ranks each gold task with `ask` or `resolve` and reports bundle depth, output size and latency | `node acceptance/retrieval/benchmark.js ask` |
 | `evaluate.js` | per-store recall/nDCG and bundle scorer for reviewed agent traces | `tests/retrieval-acceptance.e2e.test.js` |
-| `materialize-corpus.js` | builds the eight development-v2 installations as 2.x stores with the original runtime | `tests/corpus-arms.e2e.test.js` |
-| `arms.js` | makes the current-runtime copy of a 2.x installation: fresh `init`, stores converted by `migrate.js` | `pilot-readers.js`, `tests/corpus-arms.e2e.test.js` |
-| `reader.js` | runs one fresh headless reader session and records its trace | `pilot-readers.js` |
-| `grade.js` | blind grader: one trace and one case in, a closed verdict out | `pilot-grade.js` |
+| `materialize-corpus.js` | builds the eight development-v2 installations as 2.x stores with the original runtime | `heldout-run.js`, `tests/corpus-arms.e2e.test.js` |
+| `arms.js` | makes the current-runtime copy of a 2.x installation: fresh `init`, stores converted by `migrate.js` | `pilot-readers.js`, `heldout-run.js`, `tests/corpus-arms.e2e.test.js` |
+| `reader.js` | runs one fresh headless reader session and records its trace | `pilot-readers.js`, `heldout-run.js` |
+| `grade.js` | blind grader: one trace and one case in, a closed verdict out | `pilot-grade.js`, `heldout-run.js` |
 | `pilot-readers.js`, `pilot-grade.js` | run and grade readers on the public pilot tasks | choosing the reader model |
+| `heldout-run.js` | the held-out comparison between the original and current runtime ([latest report](agent-evaluation/HELDOUT-2026-09-24.md)) | `node acceptance/retrieval/heldout-run.js --custody <dir> --model claude-sonnet-5 --summary <file>` |
 
-The last agent evaluation (held-out, 36 sessions) predates `ask`: source-supported
-task completion was 15/18 for the original runtime and 10/18 for rc.8. Its
-reports were removed with the features they measured; they remain at
+The [latest agent evaluation](agent-evaluation/HELDOUT-2026-09-24.md) (six
+new held-out cases, one repeat per runtime) found no regression: both runtimes
+completed or correctly declined 4 of 6, with identical verdicts on every case,
+and the API refused two cases' sessions in both runtimes. The earlier study
+(15/18 original, 10/18 rc.8) and its reports remain at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/tree/2777b9b/acceptance/retrieval).
-No agent evaluation has been run with `ask` yet.
 
 ## Agent evaluation
 

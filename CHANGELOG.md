@@ -13,6 +13,12 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.19] - Unreleased
+
+- First agent evaluation with `ask`: six sealed held-out cases, one fresh Sonnet 5 reader per case under the original 2.x runtime and under the current runtime, identical content, graded blind. Both runtimes completed or correctly declined 4 of 6, with the same verdict on every case and no critical errors. For the other two cases the API refused the reader session in both runtimes under its usage policy; they count as failures and were not retried. Report: `acceptance/retrieval/agent-evaluation/HELDOUT-2026-09-24.md`; per-session rows in `heldout-2026-09-24.json`.
+- `acceptance/retrieval/heldout-run.js` runs the comparison. It reads sealed cases from the custody directory and writes traces and grader reasoning only there; it reports verdict codes, critical flags, cost, time and output size.
+- README replaces the held-out regression paragraph with this result and keeps the earlier study as a link to commit 2777b9b. Decisions: [agent evaluation readers](decisions/entries/agent-evaluation-readers.yaml), [held-out custody by agents](decisions/entries/heldout-custody-by-agents.yaml). Tracking: UCS-1584, UCS-1585.
+
 ## [3.0.0-rc.18] - Unreleased
 
 - Six new held-out cases, one per development-v2 organization (3 answerable, 3 scoped negatives), written by an independent custodian agent and reviewed by a separate agent (3 accepted, 3 revised). They are sealed outside the repository; the [blinded receipt](docs/agents/2026-09-24-heldout-custody-receipt.md) records their hashes. The earlier sealed package was never in the repository and no longer exists.

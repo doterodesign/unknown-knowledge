@@ -12,9 +12,9 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.16 — unreleased
+## Planned 3.0.0-rc.19 — unreleased
 
-`unknown-knowledge@3.0.0-rc.16` is the planned prerelease on `main`. Merging
+`unknown-knowledge@3.0.0-rc.19` is the planned prerelease on `main`. Merging
 into `main` does not publish an npm package or update existing 2.1.0 or
 3.0.0-rc.1 installations; the install commands below are unchanged.
 
@@ -57,11 +57,17 @@ and converted with `migrate.js`, are a second gold set `ask` was not tuned on:
 every bundle lands within three results, four at rank one. Both are engine
 retrieval results, not agent task completion.
 
-**No agent evaluation has been run with `ask` yet.** The last one, 36 held-out
-sessions against rc.8, found source-supported task completion fell from 15/18
-to 10/18. The investigation traced it to exact-phrase lookup that returned
-nothing, query output of up to 77 KB, and the extra tool calls typed Subject
-plans required; `ask` replaces all three. That report is kept at
+**Agent evaluation with `ask`: no regression on six new held-out cases.**
+Fresh Sonnet 5 readers answered each case once under the original 2.x runtime
+and once under the current runtime, over identical content, graded blind. Both
+completed or correctly declined 4 of 6, with the same verdict on every case and
+no critical errors; for the other two cases the API refused the reader session
+in both runtimes under its usage policy, so no answer was produced. Four
+usable cases and one repeat show no regression on these cases; they do not
+show that `ask` improves task completion. See the
+[report](acceptance/retrieval/agent-evaluation/HELDOUT-2026-09-24.md). The
+earlier study (15/18 original, 10/18 rc.8, on cases that no longer exist) is
+kept at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/acceptance/retrieval/review-packet/REPORT.md).
 
 ## Quickstart
