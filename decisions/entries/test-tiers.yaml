@@ -1,0 +1,43 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:2cfcc7cc-c716-4b22-b255-94caf7382074"
+    title: "Tests run in three tiers named by file suffix, with Git repositories copied rather than initialized"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1521; acceptance pending"]
+    context: >
+      After UCS-1515 to UCS-1520 the suite had 109 files and ran in about 160 s
+      of wall-clock time on a laptop, but two files, the commit gate and staged
+      attribution tests that drive the real pre-commit hook in a freshly
+      initialized kit, took about 180 s each on their own and set the floor.
+      Many other tests ran git init for every scenario, twelve fixture helpers
+      had no callers, lib/captured-source.js was reached only by those helpers,
+      and two tests repeated every assertion for both Git object formats.
+    decision: >
+      Name each test file by tier: *.unit.test.js (no subprocess, Git or
+      temporary files), *.test.js (the canonical fixture and planted trees), and
+      *.e2e.test.js (real hooks, init copies, the 2.x converter on pilot
+      stores). npm test runs unit and fixture tiers, npm run test:unit the first
+      alone, and npm run test:e2e the last, which CI runs as its own job. Suffixes
+      rather than directories keep every relative import unchanged; Node's test
+      glob excludes e2e with tests/!(*.e2e).test.js on Node 22 and later. Tests
+      that need Git copy either the canonical repository or scratchRepository,
+      an empty repository initialized once per process. Git's default sha1
+      format is tested throughout, with one sha256 detection test. Delete the
+      uncalled helpers, lib/captured-source.js and its test.
+    consequences: >
+      npm test runs 1,342 tests in about 12 s, the unit tier 376 tests in about
+      6 s, and the end-to-end tier 130 tests in about 3 minutes, all measured on
+      the implementation machine. Hook-level regressions now surface in the
+      separate CI job, not in npm test, so a contributor must run test:e2e
+      before changing hooks, init or the converter. The D-014 guard and the
+      README subprocess test now allow exactly commit-snapshot.js and
+      survey-map.js to spawn Git. Alternatives rejected: tier directories (every
+      relative path in about 100 files would change) and speeding up the hook
+      tests in place (each needs a real init and commit; they belong in the
+      slow tier). The user authorized this work in the session that produced
+      it; that authorization is not acceptance or publication of this Decision.
+      Supporting implementation: package.json scripts, .github/workflows/ci.yml,
+      tests/helpers/canonical.js, CONTRIBUTING.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000014", "proposal:decision:9ae1f0be-1bfd-49cf-a7d4-0cdb1251c8f8", "proposal:decision:5d6a8862-4db1-4812-bda9-2b9772b61be8"]}

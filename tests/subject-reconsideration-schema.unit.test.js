@@ -3,10 +3,14 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { fixture, authored, stateOf, digestEvent, ref } from './helpers/subject-suppression-fixture.js';
 import { validateStoreFile } from '../payload/engine/lib/validate-record.js';
-import { describeCandidateBytes } from '../payload/engine/lib/captured-source.js';
+import { createHash } from 'node:crypto';
 import { canonicalSha256 } from '../payload/engine/lib/canonical-json.js';
-import { subjectReconsiderationFixture, wire as reconsiderationWire } from './helpers/subject-reconsideration-fixture.js';
 import { parseSubjectRegistry, SUBJECT_REGISTRY_DIAGNOSTIC_CODES } from '../payload/engine/lib/subject-registry-reader.js';
+
+/** A sha1 capture locator: the Git blob ID and the sha256 of the exact bytes. */
+const capture = (file, bytes) => ({ file,
+  blob: createHash('sha1').update(`blob ${bytes.length}\0`).update(bytes).digest('hex'),
+  sha256: createHash('sha256').update(bytes).digest('hex') });
 
 function example(t) {
   const f = fixture(t);
@@ -22,7 +26,7 @@ function example(t) {
     reconsideration: { reason: 'Existing captured material was reconsidered under the reviewed scope.', records: [material], sources: [] },
   };
   event.reconsiderationAssessment = { version: 1,
-    scope: { beforeRegistry: { capture: describeCandidateBytes({ file: 'subjects/registry.yaml', bytes: beforeBytes, objectFormat: 'sha1' }),
+    scope: { beforeRegistry: { capture: capture('subjects/registry.yaml', beforeBytes),
       documentDigest: canonicalSha256(before) }, identityDigest: f.model.identityIndex.identityDigest },
     coverage: 'complete-registry', attestation: 'all-current-suppressed-meanings-assessed',
     relevantRefusals: [{ subject: proposal.id, refusal: event.priorRefusal,

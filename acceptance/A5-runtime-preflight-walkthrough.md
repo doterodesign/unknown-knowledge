@@ -60,7 +60,7 @@ Never label this checklist alone a completed agent trial.
 The deterministic companion checks are the existing public CLI suites:
 
 ```sh
-node --test tests/acceptance-fixture-builders.test.js tests/preflight.test.js tests/frontmatter-v2.test.js tests/time-facet.test.js
+node --test tests/acceptance-fixture-builders.e2e.test.js tests/preflight.test.js tests/frontmatter-v2.test.js tests/time-facet.test.js
 ```
 
 They cover trusted, stale, draft, skipped dates, time exemption, malformed

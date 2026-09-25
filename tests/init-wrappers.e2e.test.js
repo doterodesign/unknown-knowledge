@@ -311,7 +311,7 @@ test('registry guards refuse: templates escaping payload/, bad modes, duplicate 
     `    target: ${over.target ?? 'EVIL.md'}`,
     `    mode: ${over.mode ?? 'dedicated'}`,
   ];
-  assert.throws(() => loadManifest(kitRoot, write(spec({ template: '../tests/init-copy.test.js' }))),
+  assert.throws(() => loadManifest(kitRoot, write(spec({ template: '../tests/init-copy.e2e.test.js' }))),
     /"\.\." segments/, 'template traversal must refuse');
   assert.throws(() => loadManifest(kitRoot, write(spec({ mode: 'overwrite' }))),
     /mode must be "shared" or "dedicated"/);

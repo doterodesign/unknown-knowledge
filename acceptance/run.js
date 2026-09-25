@@ -599,22 +599,10 @@ criterion('A6', [
       }
       if (/['"](?:node:)?child_process['"]/.test(text)) {
         assert.doesNotMatch(text, /shell\s*:\s*true|['"](?:checkout|checkout-index|archive)['"]/);
-        const capturedReaders = [
-          join('payload', 'engine', 'lib', 'captured-source.js'),
-        ];
         assert.ok([join('payload', 'engine', 'commands', 'survey-map.js'),
-          join('payload', 'engine', 'lib', 'commit-snapshot.js'),
-          ...capturedReaders].includes(rel),
+          join('payload', 'engine', 'lib', 'commit-snapshot.js')].includes(rel),
         `${rel}: child_process outside Git navigation/snapshot orchestration (D-014)`);
         assert.match(text, /spawnSync\('git',/, 'only the fixed git binary may be spawned');
-        if (capturedReaders.includes(rel)) {
-          assert.match(text, /import\s*\{\s*spawnSync\s*\}\s*from\s*'node:child_process'/,
-            `${rel}: captured readers import only synchronous Git spawning`);
-          assert.equal([...text.matchAll(/\bspawnSync\s*\(/g)].length, 1,
-            `${rel}: every subprocess uses the single fixed Git runner`);
-          assert.doesNotMatch(text, /['"](?:write-tree|update-ref|hash-object|fetch|pull)['"]|shell\s*:/,
-            `${rel}: captured readers must not write Git state, fetch objects, or invoke a shell`);
-        }
       }
     }
   }],

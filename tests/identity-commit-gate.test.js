@@ -1,11 +1,11 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, writeFileSync, mkdirSync, rmSync, readFileSync, symlinkSync } from 'node:fs';
+import { writeFileSync, mkdirSync, rmSync, readFileSync, symlinkSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { withCommitSnapshot } from '../payload/engine/lib/commit-snapshot.js';
+import { scratchRepository } from './helpers/canonical.js';
 const command = fileURLToPath(new URL('../payload/engine/commit-check.js', import.meta.url));
 const namespace = '11111111-1111-4111-8111-111111111111';
 const publication = { id: '22222222-2222-4222-8222-222222222222', review: 'review:allocation' };
@@ -13,8 +13,9 @@ const ledger = () => ({ 'schema-version': 1, 'identity-format': 1, namespace, al
   { kind: 'ontology', id: 'O-000001', state: 'allocated', publication },
 ] });
 function fixture(t, before = ledger()) {
-  const root = mkdtempSync(join(tmpdir(), 'identity-commit-'));
-  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const files = { 'decisions/_catalog.yaml': JSON.stringify({ 'schema-version': 2, store: 'decisions', entries: [] }) };
+  if (before !== undefined && before !== null) files['_identity.yaml'] = JSON.stringify(before);
+  const root = scratchRepository(t, files, { commit: before !== null });
   const env = { ...process.env, GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null' };
   for (const key of Object.keys(env)) if (key.startsWith('GIT_') && !['GIT_CONFIG_NOSYSTEM', 'GIT_CONFIG_GLOBAL'].includes(key)) delete env[key];
   const git = (...args) => {
@@ -26,11 +27,7 @@ function fixture(t, before = ledger()) {
     mkdirSync(dirname(join(root, file)), { recursive: true });
     writeFileSync(join(root, file), typeof data === 'string' ? data : JSON.stringify(data));
   };
-  git('init', '-q'); git('config', 'user.name', 'Identity gate'); git('config', 'user.email', 'gate@example.test');
-  put('decisions/_catalog.yaml', { 'schema-version': 2, store: 'decisions', entries: [] });
-  if (before !== undefined && before !== null) put('_identity.yaml', before);
-  git('add', '.');
-  if (before !== null) git('commit', '-qm', 'captured before');
+  git('config', 'user.name', 'Identity gate'); git('config', 'user.email', 'gate@example.test');
   const check = () => spawnSync(process.execPath, [command, '--root', root], { env, encoding: 'utf8' });
   return { root, put, git, check };
 }

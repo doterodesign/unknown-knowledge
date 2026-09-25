@@ -3,7 +3,7 @@
 // packaging (bin/files). Exercised through the public seam — the cli/init.js
 // process — headlessly via flags/--yes and interactively by piping stdin.
 // The copy/wrapper semantics themselves are KK-17/KK-18's suites
-// (tests/init-copy.test.js, tests/init-wrappers.test.js) — not re-tested
+// (tests/init-copy.e2e.test.js, tests/init-wrappers.e2e.test.js) — not re-tested
 // here; this suite covers only the UX layer init.js adds.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

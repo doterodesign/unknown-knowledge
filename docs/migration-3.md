@@ -47,7 +47,7 @@ the conversion diff is the whole diff. To undo it before committing, discard
 the working-tree changes.
 
 The six pilot tasks in `acceptance/retrieval/pilot` are the converter's test:
-`tests/migrate.test.js` builds them as 2.x stores with the original 08066b5
+`tests/migrate.e2e.test.js` builds them as 2.x stores with the original 08066b5
 runtime, converts them, checks both validators report zero errors and no old
 ID survives as a citation, and scores `ask` against their gold judgments.
 

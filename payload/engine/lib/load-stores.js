@@ -714,7 +714,7 @@ function valueAtPath(record, segments) {
  * Pure: it takes the rows rather than reaching for REF_FIELDS, and returns
  * edges rather than pushing into the loader's context. That is what lets a
  * test drive a synthetic record kind through the real walker without a fake
- * edge being added to the shipped table (tests/load-stores.test.js).
+ * edge being added to the shipped table (tests/load-stores.unit.test.js).
  *
  * Non-string members are skipped: KK-02 already diagnoses the wrong type, and
  * a second complaint from the ref graph would double-report one defect.

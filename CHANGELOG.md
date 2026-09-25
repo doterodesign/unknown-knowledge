@@ -13,6 +13,14 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.15] - Unreleased
+
+- Tests run in three tiers, chosen by file name: `*.unit.test.js` (`npm run test:unit`, 376 tests in about 6 s), `*.test.js` (`npm test` runs these with the unit tier, 1,342 tests in about 12 s) and `*.e2e.test.js` (`npm run test:e2e`, 130 tests in about 3 minutes: real Git hooks, `init` copies and the 2.x converter). CI runs the end-to-end tier as its own job.
+- Tests that need Git copy a cached repository: the canonical fixture's, or `scratchRepository` from `tests/helpers/canonical.js` for planted trees. Outside the end-to-end tier, `git init` runs once per process, plus once in the survey-map file and once in the sha256 detection test.
+- Tree snapshot tests use Git's default sha1 format, plus one sha256 detection test.
+- Remove twelve test helpers with no callers and `lib/captured-source.js`, which only they reached. Only `commit-snapshot.js` and `survey-map.js` spawn Git now; the D-014 guard and the README subprocess test pin exactly those two.
+- The staged-attribution fixture disables automatic `gc`, which could pack the object one test deletes. Decision: [test tiers](decisions/entries/test-tiers.yaml). Tracking: UCS-1521.
+
 ## [3.0.0-rc.14] - Unreleased
 
 - Add `engine/migrate.js`, a one-shot 2.x to 3.0 converter. It allocates permanent IDs in a new `_identity.yaml`, gives draft and proposed records proposal keys, rewrites every citation, and writes the stores in place as an ordinary diff to review and commit. `--dry-run` prints the old-to-new mapping and writes nothing. Source defects such as a duplicate ID or a citation naming no record refuse the conversion (exit 1) with nothing written.

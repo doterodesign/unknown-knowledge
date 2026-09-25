@@ -5,9 +5,9 @@
 // Read-only tests use it in place. Tests that edit get a private copy. Tests
 // that need Git copy one repository committed once per process instead of
 // running `git init` and a first commit themselves.
-import { cpSync, mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -61,3 +61,35 @@ export function repository(t, name) {
 
 export const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
 export const writeJson = (file, value) => writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
+
+let emptyRepository = null;
+
+/**
+ * A private Git repository holding exactly `files`, for tests whose scenario
+ * is the planted tree itself (a survey blind spot, an audit candidate). The
+ * empty repository is initialized once per process and copied, so no test runs
+ * `git init`. Files are staged; pass `commit: true` to also commit them. `t`
+ * may be null, and the copy is then removed when the process exits.
+ */
+export function scratchRepository(t, files = {}, { commit = false } = {}) {
+  if (!emptyRepository) {
+    emptyRepository = mkdtempSync(join(tmpdir(), 'uk-empty-git-'));
+    git(emptyRepository, 'init', '-q');
+    git(emptyRepository, 'config', 'gc.autoDetach', 'false');
+    git(emptyRepository, 'config', 'maintenance.autoDetach', 'false');
+    committed.set('\0empty', emptyRepository); // removed with the others on exit
+  }
+  const parent = mkdtempSync(join(tmpdir(), 'uk-scratch-'));
+  // Without a test context (module-level setup), remove it when the process exits.
+  if (t) t.after(() => rmSync(parent, { recursive: true, force: true }));
+  else committed.set(parent, parent);
+  const dir = join(parent, 'repo');
+  cpSync(emptyRepository, dir, { recursive: true });
+  for (const [file, content] of Object.entries(files)) {
+    mkdirSync(dirname(join(dir, file)), { recursive: true });
+    writeFileSync(join(dir, file), content);
+  }
+  git(dir, 'add', '-A');
+  if (commit) git(dir, 'commit', '-q', '-m', 'planted');
+  return dir;
+}

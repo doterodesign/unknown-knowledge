@@ -5,10 +5,15 @@ import { chmodSync, existsSync, lstatSync, mkdtempSync, readFileSync, rmSync, sy
 import { join, dirname } from 'node:path';
 import { tmpdir } from 'node:os';
 import { withTreeSnapshot, withCommitSnapshot, readCommittedTree, changedTreePaths } from '../payload/engine/lib/commit-snapshot.js';
+import { scratchRepository } from './helpers/canonical.js';
 
 function fixture(t, format = 'sha1') {
-  const root = mkdtempSync(join(tmpdir(), 'tree-snapshot-test-'));
-  t.after(() => rmSync(root, { recursive: true, force: true }));
+  let root;
+  if (format === 'sha1') root = scratchRepository(t);
+  else {
+    root = mkdtempSync(join(tmpdir(), 'tree-snapshot-test-'));
+    t.after(() => rmSync(root, { recursive: true, force: true }));
+  }
   const env = { ...process.env };
   for (const key of Object.keys(env)) if (key.startsWith('GIT_')) delete env[key];
   Object.assign(env, { GIT_CONFIG_NOSYSTEM: '1', GIT_CONFIG_GLOBAL: '/dev/null' });
@@ -16,7 +21,7 @@ function fixture(t, format = 'sha1') {
     const result = spawnSync('git', ['-C', root, ...args], { env, encoding: 'utf8' });
     assert.equal(result.status, 0, result.stderr); return result.stdout.trim();
   };
-  git('init', '-q', `--object-format=${format}`);
+  if (format !== 'sha1') git('init', '-q', `--object-format=${format}`);
   git('config', 'user.name', 'Tree Test'); git('config', 'user.email', 'tree@example.test');
   git('config', 'core.autocrlf', 'false');
   const bytes = Buffer.from('\uFEFFold-format: retained\r\n# unchanged raw body\r\n');
@@ -26,9 +31,11 @@ function fixture(t, format = 'sha1') {
   return { root, git, bytes, commit: git('rev-parse', 'HEAD'), tree: git('rev-parse', 'HEAD^{tree}') };
 }
 
-test('explicit raw tree snapshots preserve bytes/modes and ignore dirty user state in both object formats', async (t) => {
-  for (const format of ['sha1', 'sha256']) {
-    const f = fixture(t, format);
+// Git's default object format (sha1) throughout, like the canonical fixture;
+// one test at the end proves the other format is detected.
+test('explicit raw tree snapshots preserve bytes/modes and ignore dirty user state', async (t) => {
+  {
+    const f = fixture(t);
     writeFileSync(join(f.root, 'source.txt'), 'staged change'); f.git('add', 'source.txt');
     writeFileSync(join(f.root, 'source.txt'), 'unstaged change');
     writeFileSync(join(f.root, 'untracked'), 'untracked');
@@ -89,7 +96,8 @@ test('explicit tree reads clear ambient Git routing and keep existing raw materi
 });
 
 test('committed descriptors stay pinned while shared tree diffs retain every rename/copy endpoint', async (t) => {
-  for (const format of ['sha1', 'sha256']) {
+  {
+    const format = 'sha1';
     const f = fixture(t, format);
     f.git('mv', 'source.txt', 'renamed file.txt');
     writeFileSync(join(f.root, 'copy.txt'), f.bytes); chmodSync(join(f.root, 'copy.txt'), 0o755);
@@ -123,4 +131,11 @@ test('commit/tree evidence helpers reject expressions, truncated IDs and cross-t
     assert.throws(() => changedTreePaths(f.root, tree, f.tree), /snapshot:/);
     assert.throws(() => changedTreePaths(f.root, f.tree, tree), /snapshot:/);
   }
+});
+
+test('a sha256 repository is detected as sha256', async (t) => {
+  const f = fixture(t, 'sha256');
+  assert.equal(f.commit.length, 64);
+  assert.deepEqual(readCommittedTree(f.root, f.commit), { commit: f.commit, tree: f.tree, objectFormat: 'sha256' });
+  await withTreeSnapshot(f.root, f.tree, ({ root }) => assert.deepEqual(readFileSync(join(root, 'source.txt')), f.bytes));
 });

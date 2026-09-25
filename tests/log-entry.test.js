@@ -11,6 +11,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load, dump } from 'js-yaml';
 import { validateRecord, SUPPORTED_KEYWORDS, ERROR_CODES } from '../payload/engine/lib/validate-record.js';
+import { scratchRepository } from './helpers/canonical.js';
 import {
   LOGS, LEGAL_TRANSITIONS, createEntry, transitionStatus,
 } from '../payload/engine/lib/log-entry.js';
@@ -688,8 +689,8 @@ test('CLI: --entry must be a JSON object — null/string/array get the usage err
 
 // --- D-010 done-criterion: two branches appending concurrently merge clean ---
 
-test('two simulated branches appending concurrently merge without conflict', () => {
-  const root = tmpRoot();
+test('two simulated branches appending concurrently merge without conflict', (t) => {
+  const root = scratchRepository(t);
   const git = (...args) => {
     const result = spawnSync('git', args, {
       cwd: root,
@@ -703,7 +704,7 @@ test('two simulated branches appending concurrently merge without conflict', () 
     assert.equal(result.status, 0, `git ${args.join(' ')}: ${result.stderr}`);
     return result.stdout;
   };
-  git('init', '-b', 'main');
+  git('checkout', '-q', '-b', 'main');
   git('commit', '--allow-empty', '-m', 'base');
 
   git('checkout', '-b', 'session-a');
