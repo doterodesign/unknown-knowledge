@@ -1,5 +1,5 @@
-/** Offline source inventory only; never imported by canonical record lookup. */
-import { load, YAMLException } from 'js-yaml';
+/** Offline 2.x -> 3.0 store conversion; never imported by canonical record lookup. */
+import { YAMLException } from 'js-yaml';
 import { parseSource, SourceDocumentError } from './yaml-source.js';
 import { REF_FIELDS } from './load-stores.js';
 import { planAllocations, validateIdentityLedger } from './identity-ledger.js';
@@ -294,7 +294,7 @@ export function planIdentityCorrespondence(documents, options) {
 
 // Representation versions agreed with the target runtime. Declaring these does
 // not activate its schemas or substitute for validating the complete candidate.
-const TARGET_VERSIONS = Object.freeze({
+export const TARGET_VERSIONS = Object.freeze({
   'knowledge-leaf': 3, 'ontology-concept': 2, 'decision-entry': 2,
   catalog: 2, registry: 2, 'graduation-categories': 2, 'phoenix-event': 2,
   finding: 2, gap: 2, miss: 1,
@@ -307,10 +307,9 @@ const setAt = (value, path, replacement) => {
 
 /**
  * Pure offline representation rewrite over original UTF-8 buffers. Never
- * publishes, promotes lifecycle, serializes YAML, or returns the private old-ID
- * correspondence. Files include expected-before hashes for later candidate CAS.
- * Unknown extensions/external consumers and actual target validation remain the
- * whole-installation gate's responsibility; supplied hints need explicit review.
+ * promotes lifecycle or serializes YAML. The old-to-new mapping is returned for
+ * display only; nothing retains it in the converted installation. Unknown
+ * extensions, external consumers and target validation stay with the caller.
  */
 export function rewriteIdentityCandidate(documents, options) {
   const refuse = (code, details = {}) => ({ ok: false, publicationReady: false, code, ...details });
@@ -415,5 +414,95 @@ export function rewriteIdentityCandidate(documents, options) {
     ok: true, publicationReady: false, coverage: 'supplied-documents-only',
     targetValidation: 'pending', targetVersions: { ...TARGET_VERSIONS },
     files, identity: plan.ledger, reviewRequired: [], diagnostics: inventory.diagnostics,
+    mapping: plan.correspondence.map(({ source, target }) => {
+      const record = records.get(source);
+      return { kind: record.kind, from: record.id, to: target.id, file: record.file };
+    }),
   };
+}
+
+/** The 2.x store document kind at a kit-relative path, or null. */
+export function sourceKind(path) {
+  if (/^(ontology|knowledge|decisions)\/_catalog\.yaml$/.test(path)) return 'catalog';
+  if (/^ontology\/classes\/[^/]+\.yaml$/.test(path)) return 'ontology-concept';
+  if (/^decisions\/entries\/[^/]+\.yaml$/.test(path)) return 'decision-entry';
+  if (/^decisions\/_registries\/graduation-categories\.yaml$/.test(path)) return 'graduation-categories';
+  if (/^(ontology|knowledge|decisions)\/_registries\/[^/]+\.yaml$/.test(path)) return 'registry';
+  if (/^knowledge\/_phoenix\/[^/]+\.yaml$/.test(path)) return 'phoenix-event';
+  if (path.startsWith('knowledge/') && path.endsWith('.md') && !path.startsWith('knowledge/derived/')
+    && path.slice('knowledge/'.length).split('/').every((part) => !part.startsWith('_'))) return 'knowledge-leaf';
+  const log = /^logs\/(findings|gaps|misses)\/[^/]+\.yaml$/.exec(path);
+  return log ? { findings: 'finding', gaps: 'gap', misses: 'miss' }[log[1]] : null;
+}
+
+const TOKEN_CHAR = /[A-Za-z0-9_:-]/;
+
+/**
+ * Byte ranges in `bytes[start, end)` where `token` stands alone as a word. A
+ * token inside a path (`knowledge/L-1.md`) is a file name, not a citation.
+ */
+function tokenRanges(bytes, start, end, token) {
+  const needle = Buffer.from(token);
+  const char = (at) => at >= 0 && at < bytes.length ? String.fromCharCode(bytes[at]) : '';
+  const ranges = [];
+  for (let at = bytes.indexOf(needle, start); at >= 0 && at + needle.length <= end; at = bytes.indexOf(needle, at + 1)) {
+    const after = at + needle.length;
+    if (TOKEN_CHAR.test(char(at - 1)) || TOKEN_CHAR.test(char(after))) continue;
+    if (char(at - 1) === '/' || (char(after) === '.' && /[A-Za-z0-9]/.test(char(after + 1)))) continue;
+    ranges.push([at, after]);
+  }
+  return ranges;
+}
+
+/**
+ * One-shot conversion of complete 2.x store documents with no manual choices:
+ * draft and proposed records get fresh proposal keys, pending-import catalog
+ * rows get permanent IDs, and a prose mention that exactly names one record is
+ * rewritten with its citation. A mention naming no record, or several, stays as
+ * written and is reported. Refuses (ok: false) on any source defect, such as a
+ * duplicate ID or a citation that names no record.
+ *
+ * @param {{file: string, kind: string, bytes: Buffer}[]} documents
+ * @param {{namespace: string, publication: {id: string, review: string}, proposalKey: (kind: string) => string}} options
+ */
+export function convertStoreDocuments(documents, { namespace, publication, proposalKey }) {
+  const inventory = inventorySourceDocuments(documents);
+  if (!inventory.ok) return { ok: false, code: 'invalid-source-inventory', diagnostics: inventory.diagnostics };
+  const payloads = inventory.records.filter((record) => record.availability !== 'declared-only');
+  const byId = new Map();
+  for (const record of inventory.records) byId.set(record.id, [...(byId.get(record.id) ?? []), record]);
+  const bytesOf = new Map(documents.map((input) => [input.file, input.bytes]));
+  const prose = [];
+  const kept = [];
+  const proseDecisions = inventory.reviewRequired.map((hint) => {
+    const bytes = bytesOf.get(hint.file);
+    const edits = [];
+    for (const [id, records] of byId) {
+      const ranges = tokenRanges(bytes, hint.span.start, hint.span.end, id);
+      if (!ranges.length) continue;
+      if (records.length !== 1) {
+        kept.push({ file: hint.file, path: hint.path, id, reason: 'ambiguous-record-id' });
+        continue;
+      }
+      for (const [start, end] of ranges) edits.push({ source: records[0].key, expected: id, start, end });
+    }
+    if (!edits.length) {
+      kept.push({ file: hint.file, path: hint.path, reason: 'no-record-id' });
+      return { file: hint.file, path: hint.path, action: 'preserve', classification: 'non-operational-evidence', review: 'migrate.js: names no record' };
+    }
+    prose.push({ file: hint.file, path: hint.path, ids: [...new Set(edits.map((edit) => edit.expected))] });
+    return { file: hint.file, path: hint.path, action: 'rewrite', edits, review: 'migrate.js: exact record ID mention' };
+  });
+  const result = rewriteIdentityCandidate(documents, {
+    namespace, publication, targetVersions: TARGET_VERSIONS, proseDecisions,
+    proposals: payloads.filter((record) => record.proposalRequired).map((record) => ({ source: record.key, id: proposalKey(record.kind) })),
+    declarations: inventory.records.filter((record) => record.availability === 'declared-only')
+      .map((record) => ({ source: record.key, disposition: 'allocate' })),
+  });
+  if (!result.ok) return result;
+  // Report only mentions whose ID actually changed; a 2.x decision may already
+  // have a canonical-shaped ID that keeps its spelling.
+  const changed = new Set(result.mapping.filter((row) => row.from !== row.to).map((row) => row.from));
+  const rewritten = prose.map((row) => ({ ...row, ids: row.ids.filter((id) => changed.has(id)) })).filter((row) => row.ids.length);
+  return { ok: true, files: result.files, identity: result.identity, mapping: result.mapping, prose: rewritten, kept, diagnostics: result.diagnostics };
 }

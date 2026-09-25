@@ -256,3 +256,6 @@ entries:
   - id: proposal:decision:dc0d7e8b-9717-46fc-8c48-49f5e172943f
     title: Keep file-based Subject query loading and execution in one private lifetime
     file: entries/fixed-file-subject-query-composition.yaml
+  - id: proposal:decision:5d6a8862-4db1-4812-bda9-2b9772b61be8
+    title: A one-shot converter replaces the bundled 08066b5 engine and reviewed migration
+    file: entries/one-shot-2x-converter.yaml

@@ -34,9 +34,10 @@ The prepared implementation adds:
   records. The tier says whether the right records were found, not whether
   they answer the question; the agent decides that after reading them.
 
-Existing stores require the explicit [reviewed migration process](docs/migration-3.md)
-before adopting the new identity format; check its supported source profiles.
-Backward ID aliases are not supported.
+Existing 2.x stores convert once with `migrate.js`, which allocates permanent
+IDs, rewrites every citation and leaves the result as an ordinary diff to
+review and commit. See the [migration guide](docs/migration-3.md). Old IDs do
+not keep working as aliases.
 
 **The bounded held-out evaluation regressed:** source-supported task completion
 fell from **15/18 to 10/18**, across 36 sessions: six cases, three runs per
@@ -53,7 +54,9 @@ previous resolver returned no records for any question; `ask` places every
 independently judged answer bundle within its first eight results (37 within
 three, 28 at rank one) in about 85 ms. Those questions also guided `ask`'s
 tuning, and no agent evaluation has been run with it yet, so this is engine
-retrieval evidence, not a task-completion result.
+retrieval evidence, not a task-completion result. The six pilot tasks, built
+as 2.x stores and converted with `migrate.js`, are a second gold set `ask` was
+not tuned on: every bundle lands within three results, four at rank one.
 
 ## Quickstart
 
@@ -120,7 +123,7 @@ uses the official MCP SDK and Zod.
 | `ingest.js` | normalize a document (md, txt, html, pdf) to one intermediate representation |
 | `phoenix.js` | apply a phoenix event: re-file a drifted subtree in bulk, in full or not at all |
 | `derive.js` | regenerate the derived layer: plural browse trees, call numbers, resolution index |
-| `migrate-identity.js` | inventory a pinned pre-cutover commit for offline identity review; does not publish |
+| `migrate.js` | convert 2.x stores to 3.0 once: permanent IDs, rewritten citations, `--dry-run` prints the mapping |
 | `subject.js` | look up every matching declared subject label or alias, with identity and status |
 | `invoke.js` | call the shared versioned API from a bounded JSON request file |
 

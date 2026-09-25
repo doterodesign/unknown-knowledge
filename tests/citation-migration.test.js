@@ -62,19 +62,13 @@ const SCOPE_ROOTS = [
  * exemptions — the contract they demonstrated no longer exists, so a fixture
  * demonstrating it would be teaching a shape the engine refuses.
  *
- * Two malformed-value controls and two offline migration sources remain. The controls are
+ * Two malformed-value controls and one offline migration source remain. The controls are
  * here because the verifier below tests a value for "is not an accession", and
  * an id of some OTHER illegal shape answers that question the same way a
  * notation does. Read the reasons: each plants a spelling the engine refuses,
  * and the refusal is the thing under test.
  */
 const EXEMPT = new Map([
-  [
-    'tests/fixtures/migration-08066b5/knowledge/_catalog.yaml',
-    'Immutable old-format input copied from release 08066b5; migration-historical-runtime.test.js '
-    + 'loads it through the fixed historical runtime to verify actual legacy retrieval and generation. '
-    + 'It is never a current-format installation or a legacy lookup fallback.',
-  ],
   [
     'tests/fixtures/identity-migration/phoenix-before/knowledge/_catalog.yaml',
     'Immutable old-format migration input, never loaded as a current installation; '

@@ -3,7 +3,7 @@ entries:
   - id: proposal:decision:77f89b29-f6a5-454b-b12d-b045a3364c2f
     title: Migration publication proves finite typed preservation against a fixed historical runtime
     category: architecture
-    status: proposed
+    status: rejected
     date: "2026-09-19"
     deciders: [codex]
     context: >
@@ -139,4 +139,4 @@ entries:
       Positive fixture setup selects the same restricted environment. Original
       frozen evidence remains historical; the focused follow-up has separate
       RED and GREEN receipts in the installation-cutover guide.
-    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000005, D-000008, D-000012, D-000014] }
+    relates-to: { concepts: [], leaves: [], decisions: [D-000003, D-000005, D-000008, D-000012, D-000014, proposal:decision:5d6a8862-4db1-4812-bda9-2b9772b61be8] }

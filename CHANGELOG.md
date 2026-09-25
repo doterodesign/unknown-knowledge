@@ -13,6 +13,14 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.14] - Unreleased
+
+- Add `engine/migrate.js`, a one-shot 2.x to 3.0 converter. It allocates permanent IDs in a new `_identity.yaml`, gives draft and proposed records proposal keys, rewrites every citation, and writes the stores in place as an ordinary diff to review and commit. `--dry-run` prints the old-to-new mapping and writes nothing. Source defects such as a duplicate ID or a citation naming no record refuse the conversion (exit 1) with nothing written.
+- Remove `migrate-identity.js`, which only inventoried a commit, and the bundled 08066b5 engine copy it was built around (about 22k lines), with `lib/identity-migration-source.js` and the `engine/policies/` files no code read. The D-014 guard and the swift-store scan lose their exceptions for them.
+- `tests/migrate.test.js` converts the six pilot tasks, built as 2.x stores by the original runtime, checks zero validator errors and no surviving old-ID citation, and scores `ask` on them as a second gold set: every bundle within three results, four at rank one.
+- `docs/migration-3.md` describes the new conversion path.
+- The proposal Decision for finite migration preservation against a historical runtime is marked rejected. Decision: [one-shot converter](decisions/entries/one-shot-2x-converter.yaml). Tracking: UCS-1520.
+
 ## [3.0.0-rc.13] - Unreleased
 
 - Remove the in-engine publication pipeline, Subject lifecycle operations and typed assignment/promotion gates: 136 modules no shipped command, API operation or CLI reached. Store changes are ordinary commits checked by the pre-commit gate and reviewed in PRs.

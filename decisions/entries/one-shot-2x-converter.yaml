@@ -1,0 +1,51 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:5d6a8862-4db1-4812-bda9-2b9772b61be8"
+    title: "A one-shot converter replaces the bundled 08066b5 engine and reviewed migration"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-24"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1520; acceptance pending"]
+    context: >
+      The payload shipped a full copy of the 2.x engine (commit 08066b5, about
+      21.8k lines with its own js-yaml) so a reviewed migration could prove
+      preservation by running old and new retrieval side by side, plus three
+      policy files pinning that copy and the installation inventory. No shipped
+      command, API operation or CLI reached the copy after UCS-1519; the only
+      shipped migration surface, migrate-identity.js, inventoried a commit and
+      converted nothing. The pure byte-level rewrite in lib/identity-migration.js
+      already produced stores the current validators accept: on all eight pilot
+      installations built by the real 08066b5 runtime it gave zero validator
+      errors with no other change.
+    decision: >
+      Add engine/migrate.js: read every 2.x store document under the kit root,
+      allocate permanent IDs in a new _identity.yaml, give draft and proposed
+      records proposal keys, rewrite every typed citation and every prose word
+      that spells exactly one record's old ID, and write the files in place as
+      an ordinary diff for review. --dry-run prints the old-to-new mapping and
+      writes nothing; nothing in the converted installation keeps it. Source
+      defects (duplicate IDs, citations naming no record, unparsable documents)
+      refuse the whole conversion with exit 1. Delete the 08066b5 copy, the
+      policies directory (the historical profile, the candidate-publication
+      policy and installation-assets.json, none of which any code read),
+      migrate-identity.js and lib/identity-migration-source.js. The current
+      validators, not a historical runtime, check the output.
+    consequences: >
+      About 22k lines leave the payload and the D-014 guard no longer carries a
+      historical-copy exception; the swift-store scan loses its only byte-pinned
+      bypass. The six pilot tasks become the converter's test and a second
+      retrieval gold set that ask was not tuned on (every bundle within three,
+      four at rank one; tests/migrate.test.js). The converter no longer proves
+      that old and new retrieval agree; the evidence is the validators, the
+      reviewed diff and the gold scores. Leaf files keep their 2.x file names.
+      lib/captured-source.js is now reached only by leftover test helpers and
+      goes with them in UCS-1521. Alternatives rejected: keeping migrate-identity
+      as a second command (it converted nothing and its Git capture duplicated
+      the review the diff already gets) and requiring a reviewer choice per
+      proposal and prose mention (a one-shot conversion reviewed as one diff
+      needs no per-item decisions to be safe). The user authorized this work in
+      the session that produced it; that authorization is not acceptance or
+      publication of this Decision. Supporting implementation:
+      payload/engine/commands/migrate.js, payload/engine/lib/identity-migration.js,
+      tests/migrate.test.js, docs/migration-3.md.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000010", "D-000014", "proposal:decision:aa4cefad-bd54-49fa-8029-14256700e9d0"]}

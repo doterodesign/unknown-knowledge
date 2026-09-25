@@ -28,7 +28,7 @@ services on top (bootstrap engagements, stewardship), never the code.
 **Engine** — The vendored deterministic code. Sixteen command-line surfaces —
 structural validator, value validator, preflight, resolver, ranked record retrieval, survey map, reverse
 audit, log-entry helper, document ingest, phoenix events, derived layer, commit gate,
-staged attribution, offline identity inventory, subject metadata lookup, shared API invocation — over a store loader, an extractor library, and a format-adapter library.
+staged attribution, one-shot 2.x to 3.0 converter, subject metadata lookup, shared API invocation — over a store loader, an extractor library, and a format-adapter library.
 JavaScript (ESM) with JSDoc types, no build step, minimal dependencies (D-000022).
 Never an agent; agents feed it and read it. It computes **Verdicts**; it does
 not decide what to do about them (D-000011).
