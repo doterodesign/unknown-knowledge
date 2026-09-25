@@ -12,51 +12,57 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.13 — unreleased
+## Planned 3.0.0-rc.16 — unreleased
 
-`unknown-knowledge@3.0.0-rc.13` is the planned prerelease represented by the
-[seven-PR delivery stack](docs/pr-delivery/README.md) plus ranked retrieval
-(`ask`). Merging into
-`main` does not publish an npm package or update existing 2.1.0 or 3.0.0-rc.1
-installations. The install commands below remain unchanged.
+`unknown-knowledge@3.0.0-rc.16` is the planned prerelease on `main`. Merging
+into `main` does not publish an npm package or update existing 2.1.0 or
+3.0.0-rc.1 installations; the install commands below are unchanged.
 
-The prepared implementation adds:
+What 3.0 changes:
 
-- Permanent six-digit record IDs (`K-NNNNNN`, `O-NNNNNN`, `D-NNNNNN`) within each
-  installation, plus optional stable Subjects. A record can have multiple
-  Subject assignments; each Subject has at most one parent, with typed related
-  links kept separate from ancestry.
-- Four read operations (capabilities, Subject lookup, ranked retrieval and
-  preflight) shared by the API, request-file CLI and local stdio MCP server.
-- `ask`: one question in, at most eight ranked records from all three stores
-  and a retrieval tier (`covered`, `partial`, `none`, `unavailable`) out. It
-  also counts records exactly by metadata field for questions about many
-  records. The tier says whether the right records were found, not whether
-  they answer the question; the agent decides that after reading them.
+- **`ask` finds the records a question needs.** One question in, at most eight
+  ranked records from all three stores out, with IDs, titles, files and the
+  words that matched, never record bodies. It also counts records exactly by a
+  metadata field (`--count-by`, `--where`, `--under`) for questions about many
+  records, and `--fields` lists what can be counted.
+- **Every answer carries a retrieval tier.** Question words are weighted by
+  rarity. `covered` means every word appears in the stores, the top three
+  records match all of them, the top record carries at least three quarters of
+  their weight, and no second record matches nearly everything. `none` means
+  the top three match under a fifth of the weight. `partial` is everything
+  between, and `unavailable` means a store did not load cleanly. The tier says whether the right records were
+  found, not whether they answer the question. The agent reads at most eight of
+  them and decides: answered, partially answered, or not in the knowledge base.
+- **Permanent record IDs.** `K-NNNNNN`, `O-NNNNNN` and `D-NNNNNN` within each
+  installation, allocated in `_identity.yaml`, plus optional Subjects: a
+  governed registry of labels a record can be assigned, each with at most one
+  parent.
+- **A smaller engine.** The in-engine publication pipeline, Subject lifecycle
+  operations, intent plans and Subject query surfaces, typed promotion gates and
+  the bundled 2.x engine copy are gone. Store changes are ordinary commits,
+  checked by the pre-commit gate and reviewed in PRs. The shared API, the
+  request-file CLI and the local MCP server expose four read operations:
+  capabilities, Subject lookup, `record.ask` and preflight.
 
 Existing 2.x stores convert once with `migrate.js`, which allocates permanent
 IDs, rewrites every citation and leaves the result as an ordinary diff to
 review and commit. See the [migration guide](docs/migration-3.md). Old IDs do
 not keep working as aliases.
 
-**The bounded held-out evaluation regressed:** source-supported task completion
-fell from **15/18 to 10/18**, across 36 sessions: six cases, three runs per
-condition. This compares the pinned original and evaluated implementation in
-the report, not npm 2.1.0 directly against an rc.8 package. Deterministic contract
-tests check engine behavior; they do not establish that an agent interprets a
-request correctly or inspects adequate source evidence. Retrieval improvement
-and production or overall nonregression qualification have not been established.
-See the [approved report](acceptance/retrieval/review-packet/REPORT.md) and
-[qualification limits](acceptance/retrieval/FINAL-RESULTS.md).
+On the 48 development gold questions, the previous resolver returned no records
+for any question; `ask` places every independently judged answer bundle within
+its first eight results (37 within three, 28 at rank one) in about 85 ms. Those
+questions also guided `ask`'s tuning. The six pilot tasks, built as 2.x stores
+and converted with `migrate.js`, are a second gold set `ask` was not tuned on:
+every bundle lands within three results, four at rank one. Both are engine
+retrieval results, not agent task completion.
 
-That evaluation predates `ask`. On the 48 development gold questions, the
-previous resolver returned no records for any question; `ask` places every
-independently judged answer bundle within its first eight results (37 within
-three, 28 at rank one) in about 85 ms. Those questions also guided `ask`'s
-tuning, and no agent evaluation has been run with it yet, so this is engine
-retrieval evidence, not a task-completion result. The six pilot tasks, built
-as 2.x stores and converted with `migrate.js`, are a second gold set `ask` was
-not tuned on: every bundle lands within three results, four at rank one.
+**No agent evaluation has been run with `ask` yet.** The last one, 36 held-out
+sessions against rc.8, found source-supported task completion fell from 15/18
+to 10/18. The investigation traced it to exact-phrase lookup that returned
+nothing, query output of up to 77 KB, and the extra tool calls typed Subject
+plans required; `ask` replaces all three. That report is kept at
+[2777b9b](https://github.com/doterodesign/unknown-knowledge/blob/2777b9b/acceptance/retrieval/review-packet/REPORT.md).
 
 ## Quickstart
 
@@ -151,9 +157,8 @@ JSON reports `scope: declared-metadata` and `consistency: captured-model`, with
 the namespace, identity/schema/normalizer versions and registry revisions.
 `registryDigest` hashes the complete captured registry document, including
 history. It is a registry-only digest: it does not certify Decision evidence,
-the full installation or an atomic filesystem snapshot. The
-[assignment contract](docs/agents/ucs-1236-subject-assignments.md) explains
-how absent subjects differ from an explicit empty list across K/O/D records.
+the full installation or an atomic filesystem snapshot. An absent `subjects`
+field means unknown; `subjects: []` means explicitly none.
 
 ### Exit codes are a contract
 
@@ -285,24 +290,11 @@ Changelog form).
 - [CONTEXT.md](CONTEXT.md) — the domain glossary. Start here.
 - [decisions/](decisions/) — the kit records its own decisions, in the same
   format it asks you to use. It eats its own cooking.
-- [Decision and documentation coverage](docs/change-completeness.md) — links
-  implementation rationale, current contracts and remaining acceptance work.
-- [Retrieval-quality targets](acceptance/retrieval/QUALITY-TARGETS.md) —
-  prospective correctness and paired quality criteria for final evaluation;
-  these are targets, not measured performance or release qualification.
-- [Held-out retrieval results](acceptance/retrieval/HELDOUT-RESULTS.md) —
-  all 36 sessions are retained and reviewed; current source-supported task
-  completion is lower, with accepted observed critical-error and witness checks.
-- [Implementation and evaluation review](acceptance/retrieval/FINAL-RESULTS.md) —
-  capabilities, reconciled tests, critical-error and witness checks, adverse
-  agent results and the limits of supported performance.
-- [Measured query performance](acceptance/retrieval/PERFORMANCE-6605402.md) —
-  both named CLI workloads and the joint loaded query meet their targets;
-  the near-byte loaded query refuses at its work limit, and context measurements
-  cover the recorded partial result. Broader qualification remains open.
-- [Measured retrieval pages](acceptance/retrieval/PRIVATE-FILE-RESULTS-V2.md) —
-  four fixed-fixture API/CLI checks returned ten records per K/O/D store with
-  complete source-verified explanations; broader acceptance remains open.
+- [Migration guide](docs/migration-3.md) — converting 2.x stores to 3.0.
+- [Retrieval gold data and benchmark](acceptance/retrieval/README.md) — the
+  development-v2 and pilot judgments, the fixture builders and
+  `benchmark.js`.
+- [Contributing](CONTRIBUTING.md) — PR expectations and the three test tiers.
 - [docs/publishing.md](docs/publishing.md) — release and supply-chain process
   (npm provenance, 2FA).
 

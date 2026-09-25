@@ -65,8 +65,8 @@ meaning; typed related-subject links do not imply ancestry or membership.
 Only active Subjects may be assigned. The registry is an ordinary governed
 file: Subjects are created, renamed, moved and retired by reviewed edits with a
 Decisions entry, and retiring one reassigns its records in the same change.
-Its history is the file's Git history. See the
-[assignment contract](docs/agents/ucs-1236-subject-assignments.md).
+Its history is the file's Git history. See **Changing Subjects** in the
+[runtime loop](payload/protocol/AGENTS.md).
 
 **Facet** — One governed axis of a leaf's classification, filled from a
 **registry** rather than invented: `domain` (the hierarchical subject path),
@@ -164,7 +164,8 @@ tests exercise the installed gate, including partial staging and preservation
 of local work. They seed but do not install: `init` never writes `.git/`, so the
 client hangs the gate the kit ships (D-000006).
 
-**Runtime loop** — The per-request agent protocol: resolve → preflight →
+**Runtime loop** — The per-request agent protocol: resolve (with `ask`, then
+the answer check) → preflight →
 gather (JIT reads of SSOT files; the map is never the fact) → act (concept
 updates travel in the same commit as code changes) → record (consultation
 trail + findings).

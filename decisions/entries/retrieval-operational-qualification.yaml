@@ -3,7 +3,7 @@ entries:
   - id: "proposal:decision:0632b8e9-01c0-46f6-aa76-1446017f67ef"
     title: "Operational qualification preserves one budget and retains all refusals"
     category: "scope"
-    status: "proposed"
+    status: "rejected"
     date: "2026-09-20"
     deciders: ["P10 evaluator (proposal author; acceptance pending)"]
     context: >
@@ -440,4 +440,4 @@ entries:
       loaded query qualify, while near-byte exposed queries, complete context
       enumeration and assignment-history capacity remain unqualified. Historical
       failures, proposed publication status and the adverse agent results remain.
-    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000014"]}
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000014", "proposal:decision:95b9b1ee-2bc0-442c-9e3d-87dbb83e0b19"]}
