@@ -1,0 +1,4 @@
+The accepted purchased-part standard for North Plant Model R specifies a
+silicone gasket, part SG-8, for the spare seal. It specifies material and part
+identity, not a pneumatic operating pressure. Purchasing uses “seal” for this
+gasket; process engineering uses it for the sealing operation.

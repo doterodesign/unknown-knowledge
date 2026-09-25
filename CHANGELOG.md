@@ -13,6 +13,13 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.10] - Unreleased
+
+- Add the shared test fixture `fixtures/canonical`: the eight development-v2 installations as plain committed files, with a record-to-passage map for the gold judgments. `tests/helpers/canonical.js` gives tests an in-place, copied or once-committed Git view of it.
+- Add `tests/invariants.test.js`, pinning the guarantees the engine keeps (ID allocation and uniqueness, ledger rows, proposal keys, Subject registry structure, exit codes, byte-identical output, staged-snapshot commit checks) in about 18 s. Two unenforced guarantees are todo tests for UCS-1518.
+- The retrieval gold gate reads the shared fixture and no longer needs pinned Git history.
+- Decision: [shared fixture](decisions/entries/shared-canonical-fixture.yaml). Tracking: UCS-1516.
+
 ## [3.0.0-rc.9] - Unreleased
 
 - Add `ask.js` and the `record.ask` API/MCP operation: BM25F ranking over record names, Subject labels, descriptions and bodies across Knowledge, Ontology and Decisions, with a retrieval tier (`covered`, `partial`, `none`, `unavailable`). Exact metadata counts (`--count-by`, `--where`, `--under`) and a field card (`--fields`) answer questions about many records without reading them.

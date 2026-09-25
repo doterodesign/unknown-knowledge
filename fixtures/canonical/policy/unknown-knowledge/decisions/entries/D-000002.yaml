@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000002",
+      "title": "Source report: successor a",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000001",
+        "S-000003"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/pilot/policy.md#successor-a.",
+      "decision": "D-000002 is accepted and reviewed; its scope is support tickets in Region\nWest. It supersedes D-000001 and sets retention to 60 days. It does not\nsupersede D-000003 and includes no conflict-resolution rule.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

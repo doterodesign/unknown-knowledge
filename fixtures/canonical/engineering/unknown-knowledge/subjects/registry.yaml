@@ -1,0 +1,2119 @@
+{
+  "schema-version": 1,
+  "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "Engineering",
+      "definition": {
+        "text": "Local topic for the engineering of software behavior and interfaces represented by Aurora contracts, proposals, audits and tests.",
+        "includes": [
+          "Software implementation and interface conventions",
+          "Engineering tests and historical implementation behavior"
+        ],
+        "excludes": [
+          "Claims about all engineering disciplines",
+          "Automatic approval of described proposals"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#production-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#screenshot-limit",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "Software engineering",
+      "definition": {
+        "text": "Engineering topics concerning software components, their user interfaces and data conversion behavior.",
+        "includes": [
+          "CSS exporters",
+          "Web and Android interface behavior"
+        ],
+        "excludes": [
+          "Non-software engineering",
+          "Unspecified release-announcement emphasis"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-project",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#screenshot-limit",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "Frontend interfaces",
+      "definition": {
+        "text": "User-facing software presentation and interaction in the local web, desktop and Android interface material.",
+        "includes": [
+          "Reusable web interface conventions",
+          "Animation cues",
+          "Image-viewer presentation and capture behavior"
+        ],
+        "excludes": [
+          "Backend services without interface relevance",
+          "A claim that all design systems are frontend-only"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000002",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#production-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-project",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#screenshot-limit",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "Frontend design systems",
+      "definition": {
+        "text": "Local subject restricted to reusable frontend interface conventions and their named design values in the Aurora material.",
+        "includes": [
+          "Named interface tokens",
+          "Card layout conventions",
+          "Production and preview styling conventions"
+        ],
+        "excludes": [
+          "Enterprise design governance",
+          "Brand strategy and non-interface assets",
+          "Design-system work outside frontend interfaces"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000003",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-color",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#production-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#preview-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "Design tokens",
+      "definition": {
+        "text": "Named reusable values used to express local frontend interface design properties.",
+        "includes": [
+          "The named --accent-soft interface token",
+          "Token values and roles documented by the glossary"
+        ],
+        "excludes": [
+          "Every color value regardless of token identity",
+          "Serialization processes considered independently of tokens",
+          "Animation cues solely because they have names"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-color",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000006",
+      "label": "Color tokens",
+      "definition": {
+        "text": "Design-token topics concerning named interface colors and their alpha values.",
+        "includes": [
+          "The semitransparent --accent-soft token",
+          "Its documented alpha-preserving representation"
+        ],
+        "excludes": [
+          "Accent role as a subtype of token",
+          "Every color serialization operation",
+          "The spark-start animation cue"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000005",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#css-audit",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-color",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000007",
+      "label": "Color serialization",
+      "definition": {
+        "text": "Software processes and contracts for representing color values in an output notation while handling alpha and color-space information.",
+        "includes": [
+          "RGBA and hexadecimal color export",
+          "Proposed display-p3 representation",
+          "Historical flattening of transparent colors"
+        ],
+        "excludes": [
+          "A kind of color-token object",
+          "Image-viewer P3 acceptance as proof of exporter behavior",
+          "Automatic equivalence between proposals and active contracts"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000002",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/pilot/engineering.md#opaque-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/pilot/engineering.md#prior-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#web5-proposal",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000008",
+      "label": "CSS color serialization",
+      "definition": {
+        "text": "Color-serialization behavior and proposals specifically for CSS exporter output.",
+        "includes": [
+          "Alpha-preserving rgba output",
+          "Opaque-only hexadecimal mode",
+          "Historical Web 3 flattening",
+          "Proposed Web 5 display-p3 output"
+        ],
+        "excludes": [
+          "Android image-viewer support inferred to qualify an Android CSS exporter",
+          "Color-role naming without a serialization claim"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000007",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000006"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/pilot/engineering.md#opaque-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#css-audit",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#cross-platform-notebook",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#web5-proposal",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000009",
+      "label": "Card layout",
+      "definition": {
+        "text": "Frontend design-system topics concerning card geometry, including corner radius.",
+        "includes": [
+          "Production 6 px card radius",
+          "Preview 12 px card radius"
+        ],
+        "excludes": [
+          "Preview values generalized to production",
+          "Unmentioned card dimensions or spacing"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#production-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#preview-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000010",
+      "label": "Release styling",
+      "definition": {
+        "text": "Frontend design-system styling conventions differentiated by release or delivery channel.",
+        "includes": [
+          "Production theme styling",
+          "Experimental preview styling"
+        ],
+        "excludes": [
+          "General release operations without a styling topic",
+          "Preview styling treated as production replacement"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#production-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#preview-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000011",
+      "label": "Interface animation",
+      "definition": {
+        "text": "Software-interface animation topics, including proposed named motion cues.",
+        "includes": [
+          "The proposed Android animation cue spark-start"
+        ],
+        "excludes": [
+          "The accent-color role named éclat",
+          "An approved production animation contract inferred from a draft"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000003",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-project",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000012",
+      "label": "Image viewer",
+      "definition": {
+        "text": "User-facing image-viewer capabilities and associated image or screenshot limits in the Android material.",
+        "includes": [
+          "Acceptance of P3 images",
+          "Maximum screenshot width of 4096 pixels"
+        ],
+        "excludes": [
+          "An Android CSS export qualification",
+          "Web 4 focus-ring requirements"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000003",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#cross-platform-notebook",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#screenshot-limit",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000013",
+      "label": "Accessibility",
+      "definition": {
+        "text": "Local topic for keyboard-focus visibility and its specified outline treatment.",
+        "includes": [
+          "Keyboard-focus outline and offset"
+        ],
+        "excludes": [
+          "General accessibility compliance inferred from a focus treatment"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#focus-ring",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000014",
+      "label": "Release engineering",
+      "definition": {
+        "text": "Local topic for the additional release responsibility explicitly retained by the production theme contract.",
+        "includes": [
+          "Release responsibility attached to the Web 4 production theme"
+        ],
+        "excludes": [
+          "Every mention of a release version",
+          "Replacing card-layout or release-styling responsibility",
+          "Unspecified build and deployment operations"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#production-theme",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000015",
+      "label": "Interface color",
+      "definition": {
+        "text": "Engineering-local topic for interface color roles and named color properties.",
+        "includes": [
+          "Semitransparent accent role",
+          "Named accent token as color-related evidence"
+        ],
+        "excludes": [
+          "The separate animation project Éclat",
+          "Cultural color findings from another installation",
+          "Treating a role as a token subtype"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/engineering.md#css-export",
+            "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+          },
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-color",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000016",
+      "label": "Semitransparent accent color role",
+      "definition": {
+        "text": "The semitransparent accent role in Aurora Web 4 named éclat in its French glossary and implemented using --accent-soft.",
+        "includes": [
+          "The glossary naming of this specific role",
+          "The documented use of --accent-soft by that role"
+        ],
+        "excludes": [
+          "Generic emphasis in announcements",
+          "The proposed Éclat Android animation project",
+          "Unspecified accent mentioned in palette-mail",
+          "All color tokens"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "éclat",
+          "context": "French glossary naming the Aurora Web 4 semitransparent accent color role using --accent-soft; not the Android animation project.",
+          "locale": "fr"
+        }
+      ],
+      "parent": "S-000015",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-color",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000017",
+      "label": "Engineering projects",
+      "definition": {
+        "text": "Named engineering initiatives represented in this installation independently of their implementation topics or approval standing.",
+        "includes": [
+          "The proposed Éclat Android animation initiative"
+        ],
+        "excludes": [
+          "Color roles sharing a project-name spelling",
+          "Assumed production approval"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-project",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000018",
+      "label": "Éclat animation project",
+      "definition": {
+        "text": "The proposed Android animation project named Éclat whose draft names spark-start.",
+        "includes": [
+          "Project identity and draft animation cue"
+        ],
+        "excludes": [
+          "The French accent-color alias éclat",
+          "Any approved production animation contract"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Éclat",
+          "context": "Name of the proposed Android animation project with draft cue spark-start; not the Aurora Web 4 accent-color role."
+        }
+      ],
+      "parent": "S-000017",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-project",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    },
+    {
+      "id": "S-000019",
+      "label": "Engineering terminology",
+      "definition": {
+        "text": "Contextual naming and glossary topics in the local engineering source material.",
+        "includes": [
+          "French glossary naming of the semitransparent accent role"
+        ],
+        "excludes": [
+          "A new CSS serialization rule inferred from naming",
+          "Context-free equivalence of project and color names"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/engineering.md#eclat-color",
+            "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+          }
+        ]
+      },
+      "changes": [
+        "16d45376-398d-4fcc-8d44-2ddf0fad387b"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "16d45376-398d-4fcc-8d44-2ddf0fad387b",
+      "action": "activate",
+      "decision": {
+        "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "Engineering",
+            "definition": {
+              "text": "Local topic for the engineering of software behavior and interfaces represented by Aurora contracts, proposals, audits and tests.",
+              "includes": [
+                "Software implementation and interface conventions",
+                "Engineering tests and historical implementation behavior"
+              ],
+              "excludes": [
+                "Claims about all engineering disciplines",
+                "Automatic approval of described proposals"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#production-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#screenshot-limit",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "Software engineering",
+            "definition": {
+              "text": "Engineering topics concerning software components, their user interfaces and data conversion behavior.",
+              "includes": [
+                "CSS exporters",
+                "Web and Android interface behavior"
+              ],
+              "excludes": [
+                "Non-software engineering",
+                "Unspecified release-announcement emphasis"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-project",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#screenshot-limit",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "Frontend interfaces",
+            "definition": {
+              "text": "User-facing software presentation and interaction in the local web, desktop and Android interface material.",
+              "includes": [
+                "Reusable web interface conventions",
+                "Animation cues",
+                "Image-viewer presentation and capture behavior"
+              ],
+              "excludes": [
+                "Backend services without interface relevance",
+                "A claim that all design systems are frontend-only"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000002",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#production-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-project",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#screenshot-limit",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "Frontend design systems",
+            "definition": {
+              "text": "Local subject restricted to reusable frontend interface conventions and their named design values in the Aurora material.",
+              "includes": [
+                "Named interface tokens",
+                "Card layout conventions",
+                "Production and preview styling conventions"
+              ],
+              "excludes": [
+                "Enterprise design governance",
+                "Brand strategy and non-interface assets",
+                "Design-system work outside frontend interfaces"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000003",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-color",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#production-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#preview-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "Design tokens",
+            "definition": {
+              "text": "Named reusable values used to express local frontend interface design properties.",
+              "includes": [
+                "The named --accent-soft interface token",
+                "Token values and roles documented by the glossary"
+              ],
+              "excludes": [
+                "Every color value regardless of token identity",
+                "Serialization processes considered independently of tokens",
+                "Animation cues solely because they have names"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-color",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000006",
+          "before": null,
+          "after": {
+            "label": "Color tokens",
+            "definition": {
+              "text": "Design-token topics concerning named interface colors and their alpha values.",
+              "includes": [
+                "The semitransparent --accent-soft token",
+                "Its documented alpha-preserving representation"
+              ],
+              "excludes": [
+                "Accent role as a subtype of token",
+                "Every color serialization operation",
+                "The spark-start animation cue"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000005",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#css-audit",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-color",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000007",
+          "before": null,
+          "after": {
+            "label": "Color serialization",
+            "definition": {
+              "text": "Software processes and contracts for representing color values in an output notation while handling alpha and color-space information.",
+              "includes": [
+                "RGBA and hexadecimal color export",
+                "Proposed display-p3 representation",
+                "Historical flattening of transparent colors"
+              ],
+              "excludes": [
+                "A kind of color-token object",
+                "Image-viewer P3 acceptance as proof of exporter behavior",
+                "Automatic equivalence between proposals and active contracts"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000002",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/pilot/engineering.md#opaque-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/pilot/engineering.md#prior-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#web5-proposal",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000008",
+          "before": null,
+          "after": {
+            "label": "CSS color serialization",
+            "definition": {
+              "text": "Color-serialization behavior and proposals specifically for CSS exporter output.",
+              "includes": [
+                "Alpha-preserving rgba output",
+                "Opaque-only hexadecimal mode",
+                "Historical Web 3 flattening",
+                "Proposed Web 5 display-p3 output"
+              ],
+              "excludes": [
+                "Android image-viewer support inferred to qualify an Android CSS exporter",
+                "Color-role naming without a serialization claim"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000007",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000006"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/pilot/engineering.md#opaque-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#css-audit",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#cross-platform-notebook",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#web5-proposal",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000009",
+          "before": null,
+          "after": {
+            "label": "Card layout",
+            "definition": {
+              "text": "Frontend design-system topics concerning card geometry, including corner radius.",
+              "includes": [
+                "Production 6 px card radius",
+                "Preview 12 px card radius"
+              ],
+              "excludes": [
+                "Preview values generalized to production",
+                "Unmentioned card dimensions or spacing"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#production-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#preview-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000010",
+          "before": null,
+          "after": {
+            "label": "Release styling",
+            "definition": {
+              "text": "Frontend design-system styling conventions differentiated by release or delivery channel.",
+              "includes": [
+                "Production theme styling",
+                "Experimental preview styling"
+              ],
+              "excludes": [
+                "General release operations without a styling topic",
+                "Preview styling treated as production replacement"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#production-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#preview-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000011",
+          "before": null,
+          "after": {
+            "label": "Interface animation",
+            "definition": {
+              "text": "Software-interface animation topics, including proposed named motion cues.",
+              "includes": [
+                "The proposed Android animation cue spark-start"
+              ],
+              "excludes": [
+                "The accent-color role named éclat",
+                "An approved production animation contract inferred from a draft"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000003",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-project",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000012",
+          "before": null,
+          "after": {
+            "label": "Image viewer",
+            "definition": {
+              "text": "User-facing image-viewer capabilities and associated image or screenshot limits in the Android material.",
+              "includes": [
+                "Acceptance of P3 images",
+                "Maximum screenshot width of 4096 pixels"
+              ],
+              "excludes": [
+                "An Android CSS export qualification",
+                "Web 4 focus-ring requirements"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000003",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#cross-platform-notebook",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#screenshot-limit",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000013",
+          "before": null,
+          "after": {
+            "label": "Accessibility",
+            "definition": {
+              "text": "Local topic for keyboard-focus visibility and its specified outline treatment.",
+              "includes": [
+                "Keyboard-focus outline and offset"
+              ],
+              "excludes": [
+                "General accessibility compliance inferred from a focus treatment"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#focus-ring",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000014",
+          "before": null,
+          "after": {
+            "label": "Release engineering",
+            "definition": {
+              "text": "Local topic for the additional release responsibility explicitly retained by the production theme contract.",
+              "includes": [
+                "Release responsibility attached to the Web 4 production theme"
+              ],
+              "excludes": [
+                "Every mention of a release version",
+                "Replacing card-layout or release-styling responsibility",
+                "Unspecified build and deployment operations"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#production-theme",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000015",
+          "before": null,
+          "after": {
+            "label": "Interface color",
+            "definition": {
+              "text": "Engineering-local topic for interface color roles and named color properties.",
+              "includes": [
+                "Semitransparent accent role",
+                "Named accent token as color-related evidence"
+              ],
+              "excludes": [
+                "The separate animation project Éclat",
+                "Cultural color findings from another installation",
+                "Treating a role as a token subtype"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/engineering.md#css-export",
+                  "revision": "070f88fba3f5df0cd442d590946dcd5a248a3cca63b149e8cd7a6c4ad8326ff0"
+                },
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-color",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000016",
+          "before": null,
+          "after": {
+            "label": "Semitransparent accent color role",
+            "definition": {
+              "text": "The semitransparent accent role in Aurora Web 4 named éclat in its French glossary and implemented using --accent-soft.",
+              "includes": [
+                "The glossary naming of this specific role",
+                "The documented use of --accent-soft by that role"
+              ],
+              "excludes": [
+                "Generic emphasis in announcements",
+                "The proposed Éclat Android animation project",
+                "Unspecified accent mentioned in palette-mail",
+                "All color tokens"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "éclat",
+                "context": "French glossary naming the Aurora Web 4 semitransparent accent color role using --accent-soft; not the Android animation project.",
+                "locale": "fr"
+              }
+            ],
+            "parent": "S-000015",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-color",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000017",
+          "before": null,
+          "after": {
+            "label": "Engineering projects",
+            "definition": {
+              "text": "Named engineering initiatives represented in this installation independently of their implementation topics or approval standing.",
+              "includes": [
+                "The proposed Éclat Android animation initiative"
+              ],
+              "excludes": [
+                "Color roles sharing a project-name spelling",
+                "Assumed production approval"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-project",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000018",
+          "before": null,
+          "after": {
+            "label": "Éclat animation project",
+            "definition": {
+              "text": "The proposed Android animation project named Éclat whose draft names spark-start.",
+              "includes": [
+                "Project identity and draft animation cue"
+              ],
+              "excludes": [
+                "The French accent-color alias éclat",
+                "Any approved production animation contract"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Éclat",
+                "context": "Name of the proposed Android animation project with draft cue spark-start; not the Aurora Web 4 accent-color role."
+              }
+            ],
+            "parent": "S-000017",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-project",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000019",
+          "before": null,
+          "after": {
+            "label": "Engineering terminology",
+            "definition": {
+              "text": "Contextual naming and glossary topics in the local engineering source material.",
+              "includes": [
+                "French glossary naming of the semitransparent accent role"
+              ],
+              "excludes": [
+                "A new CSS serialization rule inferred from naming",
+                "Context-free equivalence of project and color names"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/engineering.md#eclat-color",
+                  "revision": "093dfcde8cc6730b0b62ad7259f5827847028f856fd66ea327c01e266b91e74f"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+          "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+          "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+        },
+        "decision-digest": "4adc01ff251d28bed8cb059aa84883c579cc95d81c7c2636bb94c9bc42a88561",
+        "change-digest": "572d41f9049dc6dd3b1f03e96e2278648b8152291ce1d922470c1726c538bd5f"
+      }
+    }
+  ]
+}

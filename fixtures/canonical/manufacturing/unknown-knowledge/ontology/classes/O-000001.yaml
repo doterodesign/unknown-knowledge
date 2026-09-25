@@ -1,0 +1,33 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000001",
+      "term": "Source-text assertion: gasket decoy",
+      "class": "source-text",
+      "summary": "Inspect sources/development-v2/manufacturing.md#gasket-decoy and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "subjects": [
+        "S-000013",
+        "S-000008",
+        "S-000016"
+      ],
+      "source-of-truth": [
+        "sources/passages/gasket-decoy.txt",
+        "sources/development-v2/manufacturing.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/gasket-decoy.txt",
+          "values": [
+            "The active South Plant Model Q gasket is nitrile, part NQ-3. It is not a spare",
+            "for North Plant Model R and has no authority over that equipment's setpoint."
+          ]
+        }
+      ]
+    }
+  ]
+}

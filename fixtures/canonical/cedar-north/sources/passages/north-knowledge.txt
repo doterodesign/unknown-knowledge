@@ -1,0 +1,3 @@
+In cedar-north, Knowledge K-000001 is a reviewed note on winter freight crates:
+use a weather cover. It is not Ontology O-000001, which names the local asset-
+export contract. Equality of a numerical suffix across kinds is not identity.

@@ -1,0 +1,2 @@
+The reviewed holding-company freight note uses “export” for shipping crates to
+Port Elm. It describes no software format, local concept identity or federation.

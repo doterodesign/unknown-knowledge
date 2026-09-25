@@ -1,0 +1,21 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000010",
+      "title": "Source report: visitor minimum",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000009"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/policy.md#visitor-minimum.",
+      "decision": "D-000012 is accepted and requires Region West visitor-access logs to be kept\nfor at least 21 days. It is not a support-ticket policy. No successor or\nexception is recorded for its minimum period.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

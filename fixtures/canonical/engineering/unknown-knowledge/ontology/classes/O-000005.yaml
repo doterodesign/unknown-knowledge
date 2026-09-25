@@ -1,0 +1,31 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000005",
+      "term": "Source-text assertion: screenshot limit",
+      "class": "source-text",
+      "summary": "Inspect sources/development-v2/engineering.md#screenshot-limit and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "subjects": [
+        "S-000012"
+      ],
+      "source-of-truth": [
+        "sources/passages/screenshot-limit.txt",
+        "sources/development-v2/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/screenshot-limit.txt",
+          "values": [
+            "The active Android image-viewer test records a maximum screenshot width of",
+            "4096 pixels. It says nothing about Web 4 CSS color serialization or focus rings."
+          ]
+        }
+      ]
+    }
+  ]
+}

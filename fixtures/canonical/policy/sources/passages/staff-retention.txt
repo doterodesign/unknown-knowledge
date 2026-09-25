@@ -1,0 +1,3 @@
+D-000010 is accepted and describes a staff-retention program: a mentor check-in
+every 14 days for new employees. It sets no record-retention or deletion period.
+The bare word “retention” can denote this program or support-ticket policy.

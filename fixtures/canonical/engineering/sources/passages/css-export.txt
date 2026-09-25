@@ -1,0 +1,4 @@
+The Aurora CSS exporter represents every color token with a non-opaque alpha
+as `rgba(r, g, b, a)`. The semitransparent accent token is named
+`--accent-soft`. It retains its alpha value; the exporter must not flatten it
+against the page background. This active contract applies to Aurora Web 4.

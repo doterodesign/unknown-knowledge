@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:decision:56df3ee4-12da-4a8e-b959-3579c0371aaa",
+      "title": "Source report: atlas practice",
+      "category": "governance",
+      "status": "rejected",
+      "subjects": [
+        "S-000013",
+        "S-000015"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/pilot/professional-services.md#atlas-practice.",
+      "decision": "“Atlas” is also the name of a research practice unrelated to Project Atlas.\nAn archived proposal for that practice suggested a 14-day refund deadline;\nit was rejected and never applied to Orion.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

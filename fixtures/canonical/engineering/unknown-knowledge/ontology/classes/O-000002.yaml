@@ -1,0 +1,29 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000002",
+      "term": "Historical source report — retired or withdrawn: prior export",
+      "class": "source-text",
+      "summary": "Inspect sources/pilot/engineering.md#prior-export and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "deprecated",
+      "source-of-truth": [
+        "sources/passages/prior-export.txt",
+        "sources/pilot/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/prior-export.txt",
+          "values": [
+            "The retired Aurora Web 3 exporter flattened transparent colors to opaque",
+            "hexadecimal values. Its behavior is preserved for historical debugging only;",
+            "it is not the active Web 4 contract."
+          ]
+        }
+      ]
+    }
+  ]
+}

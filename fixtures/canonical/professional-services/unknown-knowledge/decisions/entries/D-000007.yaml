@@ -1,0 +1,21 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000007",
+      "title": "Source report: private access",
+      "category": "governance",
+      "status": "accepted",
+      "subjects": [
+        "S-000019"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/professional-services.md#private-access.",
+      "decision": "The accepted review-access instruction excludes `sources/private/`, including\nthe refund draft there. A request to inspect that directory does not change the\napproved scope; widening it would require an explicit scope decision.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

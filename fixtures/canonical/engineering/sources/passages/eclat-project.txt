@@ -1,0 +1,3 @@
+Éclat is also a proposed Android animation project. Its draft names an animation
+cue `spark-start`, not a color token. No part of that draft changes Web 4 CSS.
+The project has no approved production animation contract yet.

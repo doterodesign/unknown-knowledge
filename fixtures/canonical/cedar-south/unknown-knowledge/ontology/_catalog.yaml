@@ -1,0 +1,11 @@
+{
+  "schema-version": 2,
+  "store": "ontology",
+  "entries": [
+    {
+      "id": "O-000001",
+      "title": "Source-text assertion: south contract",
+      "file": "classes/O-000001.yaml"
+    }
+  ]
+}

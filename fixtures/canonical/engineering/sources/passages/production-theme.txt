@@ -1,0 +1,4 @@
+The accepted Aurora Web 4 production theme sets the card corner radius to 6 px.
+Its scope excludes experimental preview builds. This contract belongs to both
+card layout and release styling; an additional release classification does not
+remove either responsibility.

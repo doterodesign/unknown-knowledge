@@ -33,7 +33,9 @@ the demand signal the kind backlog is built from.
 
 ## Pull request expectations
 
-- **Tests**: `npm test` green; new behavior comes with tests.
+- **Tests**: `npm test` green; new behavior comes with tests. Build new tests
+  on the shared fixture in `fixtures/canonical` (see its README) rather than
+  initializing a repository per test.
 - **Lint**: `npm run lint` clean.
 - **Acceptance**: `npm run acceptance` green.
 - **Structural validation**: `node payload/engine/validate.js --root .`

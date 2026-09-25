@@ -1,0 +1,3 @@
+Aurora Web 4's opaque-only export mode writes six-digit hexadecimal color
+values. This mode accepts alpha equal to one and rejects all other alpha
+values.

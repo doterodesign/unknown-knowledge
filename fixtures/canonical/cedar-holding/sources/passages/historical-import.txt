@@ -1,0 +1,3 @@
+A historical import proposal suggested merging both O-000001 records by
+their local string. Review rejected it because the meanings and owners differ.
+No mapping or combined governed record was approved.

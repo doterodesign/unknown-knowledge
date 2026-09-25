@@ -1,0 +1,2 @@
+The reviewed Aurora experimental preview uses a 12 px card radius. That value
+is for the preview channel only and has not replaced production's 6 px rule.

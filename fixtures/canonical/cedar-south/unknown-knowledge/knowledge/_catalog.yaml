@@ -1,0 +1,11 @@
+{
+  "schema-version": 2,
+  "store": "knowledge",
+  "entries": [
+    {
+      "id": "proposal:knowledge:8e0b7e29-1c35-49f3-9750-8b00cfc9e40c",
+      "title": "Source report: south nord project",
+      "file": "proposals/8e0b7e29-1c35-49f3-9750-8b00cfc9e40c.md"
+    }
+  ]
+}

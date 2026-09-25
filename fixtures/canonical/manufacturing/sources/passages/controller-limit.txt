@@ -1,0 +1,3 @@
+The Model R controller accepts settings up to 400 kPa. This artifact defines
+a device limit; site operating setpoints are specified in the plant process
+documents.

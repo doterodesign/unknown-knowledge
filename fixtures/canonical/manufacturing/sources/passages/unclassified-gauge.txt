@@ -1,0 +1,3 @@
+The reviewed active North Model R gauge procedure requires reading pressure at
+the sealing head after the line stabilizes. Its subject classification is
+missing. Its site/model/source ownership remain explicit.

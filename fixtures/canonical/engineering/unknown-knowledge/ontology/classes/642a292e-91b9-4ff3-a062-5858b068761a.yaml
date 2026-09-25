@@ -1,0 +1,33 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:ontology:642a292e-91b9-4ff3-a062-5858b068761a",
+      "term": "Source-text assertion: eclat project",
+      "class": "source-text",
+      "summary": "Inspect sources/development-v2/engineering.md#eclat-project and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "proposed",
+      "subjects": [
+        "S-000011",
+        "S-000018"
+      ],
+      "source-of-truth": [
+        "sources/passages/eclat-project.txt",
+        "sources/development-v2/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/eclat-project.txt",
+          "values": [
+            "Éclat is also a proposed Android animation project. Its draft names an animation",
+            "cue `spark-start`, not a color token. No part of that draft changes Web 4 CSS.",
+            "The project has no approved production animation contract yet."
+          ]
+        }
+      ]
+    }
+  ]
+}

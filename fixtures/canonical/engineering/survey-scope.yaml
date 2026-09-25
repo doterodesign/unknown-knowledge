@@ -1,0 +1,9 @@
+{
+  "schema-version": 1,
+  "include": [
+    "sources"
+  ],
+  "exclude": [
+    "sources/private"
+  ]
+}

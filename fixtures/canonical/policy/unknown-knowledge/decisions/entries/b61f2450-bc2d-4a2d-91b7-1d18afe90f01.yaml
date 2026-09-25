@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:decision:b61f2450-bc2d-4a2d-91b7-1d18afe90f01",
+      "title": "Source report: council note",
+      "category": "governance",
+      "status": "proposed",
+      "subjects": [
+        "S-000001",
+        "S-000004"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/pilot/policy.md#council-note.",
+      "decision": "D-000005 is a proposed council agenda asking for a decision on the competing\nWest policies. It contains no approval resolving that conflict.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

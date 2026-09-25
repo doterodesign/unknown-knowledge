@@ -1,0 +1,2321 @@
+{
+  "schema-version": 1,
+  "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "Manufacturing processes",
+      "definition": {
+        "text": "Production-process activities and their operating parameters in the local plant evidence.",
+        "includes": [
+          "Packaging and sealing operations",
+          "Operating pressures and pressure tolerances, including historical or unlocated process evidence"
+        ],
+        "excludes": [
+          "Controller capability as an approved operating setpoint",
+          "Automatic applicability across plants or models"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#south-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#pressure-draft",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#q-retirement",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "Packaging processes",
+      "definition": {
+        "text": "Packaging production activities, locally evidenced by Model R sealing operations.",
+        "includes": [
+          "Packaging specifications and the sealing operation they describe"
+        ],
+        "excludes": [
+          "Gasket parts treated as operations merely because they are called seals",
+          "Equipment ownership without a packaging-process statement"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#south-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "Sealing operations",
+      "definition": {
+        "text": "The production operation of sealing, including its process specifications, sealing-head pressure and proposed changes.",
+        "includes": [
+          "Plant-specific sealing specifications",
+          "Sealing-pressure trials and active-baseline statements"
+        ],
+        "excludes": [
+          "A gasket component called a seal",
+          "Controller input ceilings treated as process setpoints",
+          "An unlocated tolerance assumed to concern sealing"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "seal",
+          "context": "Process engineering: the sealing operation, not a purchased gasket."
+        }
+      ],
+      "parent": "S-000002",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000004"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#south-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#east-model-r",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#pressure-draft",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "Operating pressure",
+      "definition": {
+        "text": "Pressure used or specified for production operation, including recorded values, proposed changes and allowed variation.",
+        "includes": [
+          "Current and historical operating pressures",
+          "Pressure tolerances even when plant, model and measurement point are unknown"
+        ],
+        "excludes": [
+          "Controller input ceilings as operating instructions",
+          "Gasket materials and part identity",
+          "Transcription review treated as operational approval"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#obsolete-north",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#q-retirement",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "Pressure tolerances",
+      "definition": {
+        "text": "Allowed variation in operating pressure, locally represented by the archived plus-or-minus 5 kPa process note.",
+        "includes": [
+          "Pressure deviations stated in pressure units",
+          "Unlocated and archival pressure-tolerance statements"
+        ],
+        "excludes": [
+          "Dimensional, material or other non-pressure tolerances",
+          "Treating the unlocated tolerance as an approved North Model R limit"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000006",
+      "label": "Plant sites",
+      "definition": {
+        "text": "Plant-specific subject matter and attribution across the locally named production sites.",
+        "includes": [
+          "North, South, East and West plant contexts",
+          "Plant-specific current, proposed, historical and inventory statements"
+        ],
+        "excludes": [
+          "Inferring a plant from an unspecified controller limit",
+          "Treating site co-membership as shared operating authority"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#south-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#east-model-r",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#west-controller",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000007",
+      "label": "North Plant",
+      "definition": {
+        "text": "Subject matter expressly concerning North Plant, including its equipment, processes, parts and history.",
+        "includes": [
+          "North Model R specifications, trials and spare parts",
+          "Historical North Model Q operation and retirement"
+        ],
+        "excludes": [
+          "Applying South, East or West values to North",
+          "Assigning an unlocated tolerance to North"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000006",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#obsolete-north",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#q-retirement",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000008",
+      "label": "South Plant",
+      "definition": {
+        "text": "Subject matter expressly concerning South Plant, including its equipment, processes and parts.",
+        "includes": [
+          "South Model R sealing",
+          "South Model Q gasket and operating-pressure observations"
+        ],
+        "excludes": [
+          "North Model R spare applicability",
+          "Combining separate maintenance-book pages into a joint instruction"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000006",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#south-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-decoy",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000009",
+      "label": "East Plant",
+      "definition": {
+        "text": "Subject matter expressly concerning East Plant and its local equipment or processes.",
+        "includes": [
+          "East Model R sealing specification and local operating setting"
+        ],
+        "excludes": [
+          "Treating East settings as governing North or South"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000006",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/manufacturing.md#east-model-r",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000010",
+      "label": "West Plant",
+      "definition": {
+        "text": "Subject matter expressly concerning West Plant and its equipment inventory.",
+        "includes": [
+          "West ownership of a Model R controller and its input ceiling"
+        ],
+        "excludes": [
+          "Inferring an approved West sealing-process setpoint",
+          "Applying another plant’s operating setting to West"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000006",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/manufacturing.md#west-controller",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000011",
+      "label": "Equipment and equipment lifecycle",
+      "definition": {
+        "text": "Subject matter about production equipment, including model-specific operation, components and controllers, inventory and retirement activity.",
+        "includes": [
+          "Model R and Model Q equipment context",
+          "Controller capabilities and ownership",
+          "Equipment retirement decisions and historical operating context"
+        ],
+        "excludes": [
+          "Treating a device ceiling as an approved process setting",
+          "Equating an accepted retirement record with a retired record lifecycle",
+          "Deriving plant applicability solely from a shared model"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#controller-limit",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#obsolete-north",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#west-controller",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#q-retirement",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000012",
+      "label": "Model R equipment",
+      "definition": {
+        "text": "Subject matter expressly concerning Model R equipment, including its operating specifications, controllers and compatible parts.",
+        "includes": [
+          "Model R plant-specific sealing and proposed trials",
+          "Model R controller ceilings and local gasket specifications"
+        ],
+        "excludes": [
+          "Model Q values or parts as Model R instructions",
+          "Assuming model co-membership removes site constraints"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000011",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#north-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#south-seal",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/pilot/manufacturing.md#controller-limit",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#west-controller",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000013",
+      "label": "Model Q equipment",
+      "definition": {
+        "text": "Subject matter expressly concerning Model Q equipment, its operating history, parts and retirement.",
+        "includes": [
+          "Retired North Model Q specifications and line retirement",
+          "South Model Q gasket and operating-pressure observations"
+        ],
+        "excludes": [
+          "Assuming all Model Q equipment is retired because the North line is retired",
+          "Model R operating or spare-part applicability"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000011",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#obsolete-north",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-decoy",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#q-retirement",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000014",
+      "label": "Equipment controllers",
+      "definition": {
+        "text": "Controller-device capabilities and inventory, especially pressure-setting input ceilings.",
+        "includes": [
+          "The Model R 400 kPa device limit",
+          "West controller ownership and inventory"
+        ],
+        "excludes": [
+          "A site-approved sealing-process pressure",
+          "Inferring a site for the unlocated pilot controller artifact"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000011",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#controller-limit",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#west-controller",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000015",
+      "label": "Equipment retirement",
+      "definition": {
+        "text": "Retirement activity and records concerning production equipment, including preserved pre-retirement operating history.",
+        "includes": [
+          "The retirement of the North Model Q line",
+          "Historical operating evidence recorded with that retirement"
+        ],
+        "excludes": [
+          "Treating the accepted retirement decision itself as retired",
+          "Applying the retired line’s value to active Model R"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000011",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/manufacturing.md#q-retirement",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000016",
+      "label": "Gasket parts",
+      "definition": {
+        "text": "Physical gasket components described as seals, including material, identity and equipment-specific use.",
+        "includes": [
+          "The North Model R silicone SG-8 spare gasket",
+          "The South Model Q nitrile NQ-3 gasket",
+          "Recorded silicone-seal material in the maintenance book"
+        ],
+        "excludes": [
+          "The sealing operation itself",
+          "Operating-pressure authorization",
+          "Assuming the South gasket is a North spare"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "seal",
+          "context": "Purchasing or physical-part context: a gasket component, including an explicitly identified spare."
+        }
+      ],
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000017"
+        },
+        {
+          "type": "association",
+          "target": "S-000003"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#seal-note",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-decoy",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000017",
+      "label": "Purchasing and purchased-part standards",
+      "definition": {
+        "text": "Purchasing terminology and requirements for acquired parts.",
+        "includes": [
+          "The purchasing sense of seal as gasket",
+          "The purchased-part standard specifying North Model R spare material and identity"
+        ],
+        "excludes": [
+          "Process engineering’s use of seal for an operation",
+          "Treating every gasket observation as a purchase or spare designation"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#seal-note",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000018",
+      "label": "Quality review",
+      "definition": {
+        "text": "The explicit quality-review subject classification of a production specification.",
+        "includes": [
+          "The extra quality-review classification on the East Model R sealing specification"
+        ],
+        "excludes": [
+          "Automatically classifying every reviewed record as quality review",
+          "Treating subject classification as approval or validation"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/manufacturing.md#east-model-r",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000019",
+      "label": "Maintenance records",
+      "definition": {
+        "text": "Equipment-maintenance subject matter documented through maintenance records and books.",
+        "includes": [
+          "Historical Model Q specification retained for maintenance",
+          "Independent equipment, seal-material and pressure observations in the reviewed maintenance book"
+        ],
+        "excludes": [
+          "Combining independent maintenance pages into a joint operating instruction",
+          "Assuming a maintenance record approves current operation"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/manufacturing.md#obsolete-north",
+            "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+          },
+          {
+            "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    },
+    {
+      "id": "S-000020",
+      "label": "Archived process evidence",
+      "definition": {
+        "text": "Preservation and transcription of historical process evidence whose original operating context may be incomplete.",
+        "includes": [
+          "The archived pressure-tolerance process note and its reviewed transcription"
+        ],
+        "excludes": [
+          "Treating transcription accuracy as operating approval",
+          "Filling in missing plant, model or measurement point"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+            "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+          }
+        ]
+      },
+      "changes": [
+        "b575292d-7940-4e61-b4c8-258f3d060de2"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "b575292d-7940-4e61-b4c8-258f3d060de2",
+      "action": "activate",
+      "decision": {
+        "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "Manufacturing processes",
+            "definition": {
+              "text": "Production-process activities and their operating parameters in the local plant evidence.",
+              "includes": [
+                "Packaging and sealing operations",
+                "Operating pressures and pressure tolerances, including historical or unlocated process evidence"
+              ],
+              "excludes": [
+                "Controller capability as an approved operating setpoint",
+                "Automatic applicability across plants or models"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#south-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#pressure-draft",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#q-retirement",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "Packaging processes",
+            "definition": {
+              "text": "Packaging production activities, locally evidenced by Model R sealing operations.",
+              "includes": [
+                "Packaging specifications and the sealing operation they describe"
+              ],
+              "excludes": [
+                "Gasket parts treated as operations merely because they are called seals",
+                "Equipment ownership without a packaging-process statement"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#south-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "Sealing operations",
+            "definition": {
+              "text": "The production operation of sealing, including its process specifications, sealing-head pressure and proposed changes.",
+              "includes": [
+                "Plant-specific sealing specifications",
+                "Sealing-pressure trials and active-baseline statements"
+              ],
+              "excludes": [
+                "A gasket component called a seal",
+                "Controller input ceilings treated as process setpoints",
+                "An unlocated tolerance assumed to concern sealing"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "seal",
+                "context": "Process engineering: the sealing operation, not a purchased gasket."
+              }
+            ],
+            "parent": "S-000002",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000004"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#south-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#east-model-r",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#pressure-draft",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "Operating pressure",
+            "definition": {
+              "text": "Pressure used or specified for production operation, including recorded values, proposed changes and allowed variation.",
+              "includes": [
+                "Current and historical operating pressures",
+                "Pressure tolerances even when plant, model and measurement point are unknown"
+              ],
+              "excludes": [
+                "Controller input ceilings as operating instructions",
+                "Gasket materials and part identity",
+                "Transcription review treated as operational approval"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#obsolete-north",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#q-retirement",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "Pressure tolerances",
+            "definition": {
+              "text": "Allowed variation in operating pressure, locally represented by the archived plus-or-minus 5 kPa process note.",
+              "includes": [
+                "Pressure deviations stated in pressure units",
+                "Unlocated and archival pressure-tolerance statements"
+              ],
+              "excludes": [
+                "Dimensional, material or other non-pressure tolerances",
+                "Treating the unlocated tolerance as an approved North Model R limit"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000006",
+          "before": null,
+          "after": {
+            "label": "Plant sites",
+            "definition": {
+              "text": "Plant-specific subject matter and attribution across the locally named production sites.",
+              "includes": [
+                "North, South, East and West plant contexts",
+                "Plant-specific current, proposed, historical and inventory statements"
+              ],
+              "excludes": [
+                "Inferring a plant from an unspecified controller limit",
+                "Treating site co-membership as shared operating authority"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#south-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#east-model-r",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#west-controller",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000007",
+          "before": null,
+          "after": {
+            "label": "North Plant",
+            "definition": {
+              "text": "Subject matter expressly concerning North Plant, including its equipment, processes, parts and history.",
+              "includes": [
+                "North Model R specifications, trials and spare parts",
+                "Historical North Model Q operation and retirement"
+              ],
+              "excludes": [
+                "Applying South, East or West values to North",
+                "Assigning an unlocated tolerance to North"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000006",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#obsolete-north",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#q-retirement",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000008",
+          "before": null,
+          "after": {
+            "label": "South Plant",
+            "definition": {
+              "text": "Subject matter expressly concerning South Plant, including its equipment, processes and parts.",
+              "includes": [
+                "South Model R sealing",
+                "South Model Q gasket and operating-pressure observations"
+              ],
+              "excludes": [
+                "North Model R spare applicability",
+                "Combining separate maintenance-book pages into a joint instruction"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000006",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#south-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-decoy",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000009",
+          "before": null,
+          "after": {
+            "label": "East Plant",
+            "definition": {
+              "text": "Subject matter expressly concerning East Plant and its local equipment or processes.",
+              "includes": [
+                "East Model R sealing specification and local operating setting"
+              ],
+              "excludes": [
+                "Treating East settings as governing North or South"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000006",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/manufacturing.md#east-model-r",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000010",
+          "before": null,
+          "after": {
+            "label": "West Plant",
+            "definition": {
+              "text": "Subject matter expressly concerning West Plant and its equipment inventory.",
+              "includes": [
+                "West ownership of a Model R controller and its input ceiling"
+              ],
+              "excludes": [
+                "Inferring an approved West sealing-process setpoint",
+                "Applying another plant’s operating setting to West"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000006",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/manufacturing.md#west-controller",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000011",
+          "before": null,
+          "after": {
+            "label": "Equipment and equipment lifecycle",
+            "definition": {
+              "text": "Subject matter about production equipment, including model-specific operation, components and controllers, inventory and retirement activity.",
+              "includes": [
+                "Model R and Model Q equipment context",
+                "Controller capabilities and ownership",
+                "Equipment retirement decisions and historical operating context"
+              ],
+              "excludes": [
+                "Treating a device ceiling as an approved process setting",
+                "Equating an accepted retirement record with a retired record lifecycle",
+                "Deriving plant applicability solely from a shared model"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#controller-limit",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#obsolete-north",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#west-controller",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#q-retirement",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000012",
+          "before": null,
+          "after": {
+            "label": "Model R equipment",
+            "definition": {
+              "text": "Subject matter expressly concerning Model R equipment, including its operating specifications, controllers and compatible parts.",
+              "includes": [
+                "Model R plant-specific sealing and proposed trials",
+                "Model R controller ceilings and local gasket specifications"
+              ],
+              "excludes": [
+                "Model Q values or parts as Model R instructions",
+                "Assuming model co-membership removes site constraints"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000011",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#north-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#south-seal",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/pilot/manufacturing.md#controller-limit",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#west-controller",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000013",
+          "before": null,
+          "after": {
+            "label": "Model Q equipment",
+            "definition": {
+              "text": "Subject matter expressly concerning Model Q equipment, its operating history, parts and retirement.",
+              "includes": [
+                "Retired North Model Q specifications and line retirement",
+                "South Model Q gasket and operating-pressure observations"
+              ],
+              "excludes": [
+                "Assuming all Model Q equipment is retired because the North line is retired",
+                "Model R operating or spare-part applicability"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000011",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#obsolete-north",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-decoy",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#q-retirement",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000014",
+          "before": null,
+          "after": {
+            "label": "Equipment controllers",
+            "definition": {
+              "text": "Controller-device capabilities and inventory, especially pressure-setting input ceilings.",
+              "includes": [
+                "The Model R 400 kPa device limit",
+                "West controller ownership and inventory"
+              ],
+              "excludes": [
+                "A site-approved sealing-process pressure",
+                "Inferring a site for the unlocated pilot controller artifact"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000011",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#controller-limit",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#west-controller",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000015",
+          "before": null,
+          "after": {
+            "label": "Equipment retirement",
+            "definition": {
+              "text": "Retirement activity and records concerning production equipment, including preserved pre-retirement operating history.",
+              "includes": [
+                "The retirement of the North Model Q line",
+                "Historical operating evidence recorded with that retirement"
+              ],
+              "excludes": [
+                "Treating the accepted retirement decision itself as retired",
+                "Applying the retired line’s value to active Model R"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000011",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/manufacturing.md#q-retirement",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000016",
+          "before": null,
+          "after": {
+            "label": "Gasket parts",
+            "definition": {
+              "text": "Physical gasket components described as seals, including material, identity and equipment-specific use.",
+              "includes": [
+                "The North Model R silicone SG-8 spare gasket",
+                "The South Model Q nitrile NQ-3 gasket",
+                "Recorded silicone-seal material in the maintenance book"
+              ],
+              "excludes": [
+                "The sealing operation itself",
+                "Operating-pressure authorization",
+                "Assuming the South gasket is a North spare"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "seal",
+                "context": "Purchasing or physical-part context: a gasket component, including an explicitly identified spare."
+              }
+            ],
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000017"
+              },
+              {
+                "type": "association",
+                "target": "S-000003"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#seal-note",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-decoy",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000017",
+          "before": null,
+          "after": {
+            "label": "Purchasing and purchased-part standards",
+            "definition": {
+              "text": "Purchasing terminology and requirements for acquired parts.",
+              "includes": [
+                "The purchasing sense of seal as gasket",
+                "The purchased-part standard specifying North Model R spare material and identity"
+              ],
+              "excludes": [
+                "Process engineering’s use of seal for an operation",
+                "Treating every gasket observation as a purchase or spare designation"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#seal-note",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#gasket-standard",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000018",
+          "before": null,
+          "after": {
+            "label": "Quality review",
+            "definition": {
+              "text": "The explicit quality-review subject classification of a production specification.",
+              "includes": [
+                "The extra quality-review classification on the East Model R sealing specification"
+              ],
+              "excludes": [
+                "Automatically classifying every reviewed record as quality review",
+                "Treating subject classification as approval or validation"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/manufacturing.md#east-model-r",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000019",
+          "before": null,
+          "after": {
+            "label": "Maintenance records",
+            "definition": {
+              "text": "Equipment-maintenance subject matter documented through maintenance records and books.",
+              "includes": [
+                "Historical Model Q specification retained for maintenance",
+                "Independent equipment, seal-material and pressure observations in the reviewed maintenance book"
+              ],
+              "excludes": [
+                "Combining independent maintenance pages into a joint operating instruction",
+                "Assuming a maintenance record approves current operation"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/manufacturing.md#obsolete-north",
+                  "revision": "c11806c389eb7e103ee23071476e73f83197032408eaa8cdb6da096aaf2c28c8"
+                },
+                {
+                  "locator": "sources/development-v2/manufacturing.md#cross-line-book",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000020",
+          "before": null,
+          "after": {
+            "label": "Archived process evidence",
+            "definition": {
+              "text": "Preservation and transcription of historical process evidence whose original operating context may be incomplete.",
+              "includes": [
+                "The archived pressure-tolerance process note and its reviewed transcription"
+              ],
+              "excludes": [
+                "Treating transcription accuracy as operating approval",
+                "Filling in missing plant, model or measurement point"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6fff8675-0601-4c8c-a181-cb59c53424bf",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/manufacturing.md#unlocated-tolerance",
+                  "revision": "711f27edc6773da75dbddb3ba37d89b54221e7f3d44a8d537a0671825479c792"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+          "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+          "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+        },
+        "decision-digest": "6a3697b30570e6a8faff6e85992c7d956743d0e2a9740c211805e03ffebf411b",
+        "change-digest": "2b5efe271786df4845445934352344f5c34eefc0c41f68b97d1fb9d2204f3dad"
+      }
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000003",
+      "term": "Source-text assertion: production theme",
+      "class": "source-text",
+      "summary": "Inspect sources/development-v2/engineering.md#production-theme and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "subjects": [
+        "S-000009",
+        "S-000010",
+        "S-000014"
+      ],
+      "source-of-truth": [
+        "sources/passages/production-theme.txt",
+        "sources/development-v2/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/production-theme.txt",
+          "values": [
+            "The accepted Aurora Web 4 production theme sets the card corner radius to 6 px.",
+            "Its scope excludes experimental preview builds. This contract belongs to both",
+            "card layout and release styling; an additional release classification does not",
+            "remove either responsibility."
+          ]
+        }
+      ]
+    }
+  ]
+}

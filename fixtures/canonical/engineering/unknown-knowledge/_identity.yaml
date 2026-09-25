@@ -1,0 +1,295 @@
+{
+  "schema-version": 1,
+  "identity-format": 1,
+  "namespace": "b4e4cc3b-cc4b-48eb-ae46-cc9bcb92247d",
+  "allocations": [
+    {
+      "id": "O-000001",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "O-000002",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "O-000003",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "O-000004",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "O-000005",
+      "kind": "ontology",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000001",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000002",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000003",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000004",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000005",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000006",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "K-000007",
+      "kind": "knowledge",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "D-000001",
+      "kind": "decision",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000001",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000002",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000003",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000004",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000005",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000006",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000007",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000008",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000009",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000010",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000011",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000012",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000013",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000014",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000015",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000016",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000017",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000018",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    },
+    {
+      "id": "S-000019",
+      "kind": "subject",
+      "state": "allocated",
+      "publication": {
+        "id": "608eabad-392f-4b95-9602-71259baefc59",
+        "review": "simulated-fixture-curation:development-v2/P2-reviewed-editorial-1"
+      }
+    }
+  ]
+}

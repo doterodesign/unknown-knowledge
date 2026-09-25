@@ -1,0 +1,3 @@
+D-000012 is accepted and requires Region West visitor-access logs to be kept
+for at least 21 days. It is not a support-ticket policy. No successor or
+exception is recorded for its minimum period.

@@ -1,0 +1,32 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000001",
+      "term": "Source-text assertion: north contract",
+      "class": "source-text",
+      "summary": "Inspect sources/pilot/holding-company.md#north-contract and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "subjects": [
+        "S-000004"
+      ],
+      "source-of-truth": [
+        "sources/passages/north-contract.txt",
+        "sources/pilot/holding-company.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/north-contract.txt",
+          "values": [
+            "North subsidiary's O-000001 is an active asset-export contract: its local",
+            "exporter supports PNG and SVG. It has no authority over South's exporter.",
+            "The installation namespace is cedar-north."
+          ]
+        }
+      ]
+    }
+  ]
+}

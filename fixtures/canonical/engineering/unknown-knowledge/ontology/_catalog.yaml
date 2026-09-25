@@ -1,0 +1,46 @@
+{
+  "schema-version": 2,
+  "store": "ontology",
+  "entries": [
+    {
+      "id": "O-000001",
+      "title": "Source-text assertion: css export",
+      "file": "classes/O-000001.yaml"
+    },
+    {
+      "id": "O-000002",
+      "title": "Historical source report — retired or withdrawn: prior export",
+      "file": "classes/O-000002.yaml"
+    },
+    {
+      "id": "proposal:ontology:642a292e-91b9-4ff3-a062-5858b068761a",
+      "title": "Source-text assertion: eclat project",
+      "file": "classes/642a292e-91b9-4ff3-a062-5858b068761a.yaml"
+    },
+    {
+      "id": "O-000003",
+      "title": "Source-text assertion: production theme",
+      "file": "classes/O-000003.yaml"
+    },
+    {
+      "id": "O-000004",
+      "title": "Source-text assertion: keyboard capture",
+      "file": "classes/O-000004.yaml"
+    },
+    {
+      "id": "proposal:ontology:fb79dbac-8631-4766-8964-0e286dacf963",
+      "title": "Source-text assertion: web5 proposal",
+      "file": "classes/fb79dbac-8631-4766-8964-0e286dacf963.yaml"
+    },
+    {
+      "id": "proposal:ontology:e669e8f4-edc5-4545-ab0a-885d825de0db",
+      "title": "Source-text assertion: palette mail",
+      "file": "classes/e669e8f4-edc5-4545-ab0a-885d825de0db.yaml"
+    },
+    {
+      "id": "O-000005",
+      "title": "Source-text assertion: screenshot limit",
+      "file": "classes/O-000005.yaml"
+    }
+  ]
+}

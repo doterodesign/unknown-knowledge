@@ -1,0 +1,5 @@
+A proposed holding-company planning note says a future importer could review
+North's O-000001 as an asset-format concept and South's O-000001 as a document-
+transport concept. It explicitly calls for distinct destination identities.
+No destination IDs have been allocated, no import approved, and no correspondence
+is operational. The note describes a proposal, not an executable mapping.

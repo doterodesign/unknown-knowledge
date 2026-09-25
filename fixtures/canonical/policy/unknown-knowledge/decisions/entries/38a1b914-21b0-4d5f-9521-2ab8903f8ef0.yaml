@@ -1,0 +1,23 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:decision:38a1b914-21b0-4d5f-9521-2ab8903f8ef0",
+      "title": "Source report: east vip note",
+      "category": "governance",
+      "status": "rejected",
+      "subjects": [
+        "S-000001",
+        "S-000003",
+        "S-000004"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/policy.md#east-vip-note.",
+      "decision": "D-000014 is rejected. It proposed applying West's 45-day VIP period in Region\nEast. The rejection left East's accepted 14-day support-ticket policy unchanged.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

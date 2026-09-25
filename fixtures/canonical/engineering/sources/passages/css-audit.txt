@@ -1,0 +1,5 @@
+The accepted Aurora Web 4 exporter audit records a semitransparent accent named
+`--accent-soft`, emitted as `rgba(r, g, b, a)` with the original alpha. Its
+assertion checks that export does not composite this token onto the background.
+The audit covers the CSS exporter in the active Web 4 release. It independently
+confirms the serialization contract; it is not a future-release proposal.

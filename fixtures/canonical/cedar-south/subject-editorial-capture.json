@@ -1,0 +1,1244 @@
+{
+  "status": "final editorial choices pending P2 review; NOT activated or accepted registry; no IDs allocated",
+  "scope": {
+    "artifact": "Local subject definitions for public pilot and development-v2 source metadata only",
+    "installations": [
+      "professional-services",
+      "cedar-north",
+      "cedar-south",
+      "cedar-holding"
+    ],
+    "sourceFiles": [
+      "acceptance/retrieval/pilot/sources/professional-services.md",
+      "acceptance/retrieval/development-v2/sources/professional-services.md",
+      "acceptance/retrieval/pilot/sources/holding-company.md",
+      "acceptance/retrieval/development-v2/sources/holding-company.md"
+    ],
+    "proposalInput": "acceptance/retrieval/development-v2/metadata-review/proposal-services-holding.json",
+    "activation": "No registry activation, canonical ID allocation, executable behavior, access-scope change or governance approval.",
+    "evidenceBoundary": "Only the named public proposal and four public source Markdown files were read for substantive evidence. No hidden S4, runtime results or ranks, private sources or heldout sources were read."
+  },
+  "editorialRules": [
+    "Parent edges are final editorial organization choices pending P2 review, not source-declared edges or approved runtime semantics. Intermediate/root definitions have warrants from their actual descendant passages.",
+    "All keys and edges are local to their containing installation. No cross-owner parent, association, equivalence, import or federation edge is authored.",
+    "Aliases are contextual names only. Atlas, Cedar, Nord and export do not resolve globally; the French Nord alias is confined to North’s accepted glossary.",
+    "Record topic co-membership does not join independently scoped claims, imply current applicability, or confer approval.",
+    "The iris-scheduling passage explicitly lacks supplied subject classification. It receives no subject assignment here; no Iris subject is invented. Its explicit client/engagement scope is not erased.",
+    "Each undirected association is authored once; its inverse is derived rather than duplicated. These associations are editorial topic links, not joined claims.",
+    "Holding record-identity and branch-identity are local governance-review topic boundaries, not universal identity categories.",
+    "Defining a topic does not resolve provisional record kinds, lifecycle mappings, allocation questions, or unknown owner/release scope."
+  ],
+  "installations": [
+    {
+      "installation": "professional-services",
+      "subjects": [
+        {
+          "key": "client-projects",
+          "label": "Client projects",
+          "definition": {
+            "text": "Named client engagements described in the professional-services collection.",
+            "includes": [
+              "Project Atlas for Orion",
+              "Cedar engagement with Nova"
+            ],
+            "excludes": [
+              "Internal research practices",
+              "Transfer of contract terms between engagements"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            }
+          ]
+        },
+        {
+          "key": "clients",
+          "label": "Clients",
+          "definition": {
+            "text": "Client parties explicitly named in the professional-services engagement and administrative passages.",
+            "includes": [
+              "Orion as a client",
+              "Nova as a client"
+            ],
+            "excludes": [
+              "Project identity treated as client identity",
+              "A named party for the unnamed service template"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "clarification-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            }
+          ]
+        },
+        {
+          "key": "practices",
+          "label": "Internal practices",
+          "definition": {
+            "text": "Internal professional-services practice topics distinguished from client engagements.",
+            "includes": [
+              "The research practice and its internal request handbook"
+            ],
+            "excludes": [
+              "Project Atlas or other client engagement terms"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-practice"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-practice-response"
+            }
+          ]
+        },
+        {
+          "key": "finance",
+          "label": "Financial terms",
+          "definition": {
+            "text": "Local topics concerning invoice payment and the return of money in the cited services records.",
+            "includes": [
+              "Invoice-payment requirements",
+              "Refund terms, proposals and explicit gaps"
+            ],
+            "excludes": [
+              "Response targets",
+              "Workshop cancellation notice inferred to be a refund duration"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "payment-handbook"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "billing-and-cancellation"
+            }
+          ]
+        },
+        {
+          "key": "service-delivery",
+          "label": "Service delivery",
+          "definition": {
+            "text": "Operational service topics covered by the local acknowledgement, workshop-cancellation and template records.",
+            "includes": [
+              "Acknowledgement targets",
+              "Ending a workshop booking",
+              "Proposed service templates"
+            ],
+            "excludes": [
+              "Automatically approved refund terms"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-project-response"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-practice-response"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "billing-and-cancellation"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "beta-template"
+            }
+          ]
+        },
+        {
+          "key": "governance",
+          "label": "Review governance",
+          "definition": {
+            "text": "Topics concerning the stated boundaries of the agreed source review.",
+            "includes": [
+              "Review source-access policy and its scope-change condition"
+            ],
+            "excludes": [
+              "Permission to inspect excluded sources",
+              "Authority over client commercial terms"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "clarification-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "private-access"
+            }
+          ]
+        },
+        {
+          "key": "privacy",
+          "label": "Privacy administration",
+          "definition": {
+            "text": "Local privacy-request contact administration documented for Orion.",
+            "includes": [
+              "Retired privacy mailbox",
+              "Withdrawal and unconfirmed replacement status"
+            ],
+            "excludes": [
+              "General privacy doctrine",
+              "An approved replacement contact address"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "old-orion-contact"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "contact-withdrawal"
+            }
+          ]
+        },
+        {
+          "key": "atlas-project",
+          "label": "Project Atlas for Orion",
+          "definition": {
+            "text": "The client engagement named Project Atlas for Orion.",
+            "includes": [
+              "Approved discovery and design-delivery milestones",
+              "Acknowledgement commitment and explicitly unresolved refund terms"
+            ],
+            "excludes": [
+              "Atlas research practice",
+              "Nova Cedar engagement",
+              "Refund durations imported from other records"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Atlas",
+              "context": "Project Atlas agreement with Orion",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+                  "passage": "atlas-engagement"
+                },
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+                  "passage": "atlas-project-response"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-project-response"
+            }
+          ],
+          "parentKey": "client-projects",
+          "parentRationale": "This named Orion engagement is a client-project topic; its commercial terms do not define the parent category."
+        },
+        {
+          "key": "cedar-engagement",
+          "label": "Cedar engagement with Nova",
+          "definition": {
+            "text": "The Cedar client engagement with Nova described in the refund agreement.",
+            "includes": [
+              "Its seven-calendar-day refund-request term as a source claim"
+            ],
+            "excludes": [
+              "Project Atlas for Orion",
+              "Cedar holding-company installations",
+              "Authority to transfer this term to another engagement"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Cedar",
+              "context": "Accepted Cedar engagement with Nova",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+                  "passage": "nova-refund"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            }
+          ],
+          "parentKey": "client-projects",
+          "parentRationale": "The source explicitly calls Cedar an engagement with Nova, placing its topic under client projects."
+        },
+        {
+          "key": "orion",
+          "label": "Orion client",
+          "definition": {
+            "text": "Orion as the named client in the local engagement, refund-agenda, cancellation and privacy-contact records.",
+            "includes": [
+              "Project Atlas client party",
+              "Orion refund question",
+              "Workshop cancellation and privacy-request administration"
+            ],
+            "excludes": [
+              "Nova",
+              "Atlas research practice",
+              "Joined commercial claims inferred from topic co-membership"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "clarification-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "billing-and-cancellation"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "old-orion-contact"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "contact-withdrawal"
+            }
+          ],
+          "parentKey": "clients",
+          "parentRationale": "Orion is explicitly called a client and party to Project Atlas."
+        },
+        {
+          "key": "nova",
+          "label": "Nova client",
+          "definition": {
+            "text": "Nova as the named client party in the source-described Cedar and Iris engagements.",
+            "includes": [
+              "Client party in the Cedar refund agreement",
+              "Client party in the Iris discovery agreement"
+            ],
+            "excludes": [
+              "Orion",
+              "Unnamed future template client"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "iris-scheduling"
+            }
+          ],
+          "parentKey": "clients",
+          "parentRationale": "The Cedar and Iris passages explicitly identify Nova as their client party, placing the named-party subject under clients."
+        },
+        {
+          "key": "research",
+          "label": "Internal research",
+          "definition": {
+            "text": "Internal research work and request handling within the services practice.",
+            "includes": [
+              "Atlas research practice",
+              "Acknowledgement of internal research requests"
+            ],
+            "excludes": [
+              "Client Project Atlas",
+              "A claim that all client discovery work belongs to this practice"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-practice"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-practice-response"
+            }
+          ],
+          "parentKey": "practices",
+          "parentRationale": "The cited research work is explicitly organized as an internal practice, making this a local practice category."
+        },
+        {
+          "key": "atlas-practice",
+          "label": "Atlas research practice",
+          "definition": {
+            "text": "The research practice named Atlas, separate from Project Atlas and Orion.",
+            "includes": [
+              "Rejected fourteen-day refund proposal",
+              "Accepted internal research-request acknowledgement handbook"
+            ],
+            "excludes": [
+              "Project Atlas client contract",
+              "Applying the practice refund proposal to Orion"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Atlas",
+              "context": "Atlas research practice's internal research-request policy",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+                  "passage": "atlas-practice"
+                },
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+                  "passage": "atlas-practice-response"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-practice"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-practice-response"
+            }
+          ],
+          "parentKey": "research",
+          "parentRationale": "The source explicitly identifies Atlas as a research practice with internal research requests."
+        },
+        {
+          "key": "invoices",
+          "label": "Invoice payment",
+          "definition": {
+            "text": "Payment of invoices to the professional-services firm.",
+            "includes": [
+              "Thirty-day invoice-payment requirement in the handbook",
+              "General firm billing section of the briefing"
+            ],
+            "excludes": [
+              "Return of money",
+              "A thirty-day Orion refund policy"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "payment-handbook"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "billing-and-cancellation"
+            }
+          ],
+          "parentKey": "finance",
+          "parentRationale": "Invoice payment is a local financial-term topic; it remains distinct from refunds."
+        },
+        {
+          "key": "refunds",
+          "label": "Refunds",
+          "definition": {
+            "text": "Return-of-money questions, terms, proposals and explicit absence of approved terms in the public services records.",
+            "includes": [
+              "Unresolved Orion question",
+              "Rejected practice proposal",
+              "Cedar/Nova refund-request term",
+              "Unapproved future-client template suggestion",
+              "Explicit refund nonwarrants"
+            ],
+            "excludes": [
+              "Invoice due dates as refund deadlines",
+              "Cancellation notice as refund duration",
+              "Approval inferred from topic assignment"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-practice"
+            },
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "clarification-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "billing-and-cancellation"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "beta-template"
+            }
+          ],
+          "parentKey": "finance",
+          "parentRationale": "Refunds concern return of money and are grouped under finance while preserving each passage’s standing and scope."
+        },
+        {
+          "key": "acknowledgement",
+          "label": "Request acknowledgement",
+          "definition": {
+            "text": "Acknowledging receipt of a question or internal request under the separately scoped services agreements.",
+            "includes": [
+              "Two-business-day Project Atlas client-question target",
+              "Four-business-day Atlas practice internal-request target"
+            ],
+            "excludes": [
+              "Resolution deadline",
+              "Refund deadline",
+              "Combining the two targets"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-project-response"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-practice-response"
+            }
+          ],
+          "parentKey": "service-delivery",
+          "parentRationale": "Acknowledgement is a service response operation; the parent does not merge client and practice applicability."
+        },
+        {
+          "key": "cancellation",
+          "label": "Workshop cancellation",
+          "definition": {
+            "text": "Notice before ending an Orion workshop booking.",
+            "includes": [
+              "Five-business-day notice in the Orion section of the briefing"
+            ],
+            "excludes": [
+              "Invoice payment",
+              "Refund eligibility or duration",
+              "Terms for other client engagements"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "billing-and-cancellation"
+            }
+          ],
+          "parentKey": "service-delivery",
+          "parentRationale": "Ending a workshop booking concerns service delivery, with the source-specific Orion boundary retained."
+        },
+        {
+          "key": "service-template",
+          "label": "Proposed service template",
+          "definition": {
+            "text": "The proposed template for an unnamed future services client.",
+            "includes": [
+              "Suggested ten-day refund window as an unapproved template proposal"
+            ],
+            "excludes": [
+              "Signed engagement",
+              "Known client identity or approved scope",
+              "A refund promise to Orion or Nova"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "beta-template"
+            }
+          ],
+          "parentKey": "service-delivery",
+          "parentRationale": "The topic is a proposed service-delivery document; grouping does not approve its suggested terms."
+        },
+        {
+          "key": "source-access",
+          "label": "Review source access",
+          "definition": {
+            "text": "The agreed review’s public/private source-access boundary and stated condition for widening it.",
+            "includes": [
+              "Exclusion of sources/private/",
+              "Need for an explicit scope decision to widen access"
+            ],
+            "excludes": [
+              "Actual access-scope expansion",
+              "Reading the excluded refund draft",
+              "Commercial refund policy"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "clarification-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "private-access"
+            }
+          ],
+          "parentKey": "governance",
+          "parentRationale": "The passages explicitly describe a review-access policy or instruction, supporting this local governance topic."
+        },
+        {
+          "key": "privacy-requests",
+          "label": "Orion privacy requests",
+          "definition": {
+            "text": "Privacy-request contact handling for Orion in the retirement and withdrawal records.",
+            "includes": [
+              "Historical old mailbox",
+              "Withdrawal and pending replacement confirmation"
+            ],
+            "excludes": [
+              "Using the retired mailbox",
+              "Guessing an address",
+              "An approved current address"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "old-orion-contact"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "contact-withdrawal"
+            }
+          ],
+          "parentKey": "privacy",
+          "parentRationale": "Both cited passages concern privacy-request contact administration within the local privacy category."
+        }
+      ],
+      "related": [
+        {
+          "fromKey": "atlas-project",
+          "toKey": "orion",
+          "type": "association",
+          "rationale": "The source explicitly identifies Project Atlas as Orion’s engagement. This local topic association does not transfer any policy.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/professional-services.md",
+              "passage": "atlas-engagement"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "atlas-project-response"
+            }
+          ]
+        },
+        {
+          "fromKey": "cedar-engagement",
+          "toKey": "nova",
+          "type": "association",
+          "rationale": "The source explicitly names Cedar as an engagement with Nova. The association is local and does not approve a term beyond the cited engagement.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/professional-services.md",
+              "passage": "nova-refund"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "installation": "cedar-north",
+      "subjects": [
+        {
+          "key": "north-technical",
+          "label": "North technical topics",
+          "definition": {
+            "text": "Technical subjects of cedar-north’s own asset-export artifacts.",
+            "includes": [
+              "North local software/export branch",
+              "Current and retired North asset exporters"
+            ],
+            "excludes": [
+              "South document transport",
+              "Group-wide software/export descendants",
+              "International trade"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "north-contract"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "retired-north-tiff"
+            }
+          ]
+        },
+        {
+          "key": "north-logistics",
+          "label": "North logistics",
+          "definition": {
+            "text": "Physical freight-handling topics documented in cedar-north.",
+            "includes": [
+              "Winter freight-crate weather protection"
+            ],
+            "excludes": [
+              "Asset-export software formats",
+              "South Nord project"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "north-knowledge"
+            }
+          ]
+        },
+        {
+          "key": "north-subsidiary",
+          "label": "North subsidiary",
+          "definition": {
+            "text": "The North subsidiary as named in cedar-north’s accepted French glossary.",
+            "includes": [
+              "Contextual French short name Nord",
+              "North as the locally named subsidiary"
+            ],
+            "excludes": [
+              "South project named Nord",
+              "North asset-export concept as an entity synonym",
+              "Cross-installation identifier resolution"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Nord",
+              "context": "cedar-north accepted French glossary only",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+                  "passage": "nord-glossary"
+                }
+              ],
+              "locale": "fr"
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "nord-glossary"
+            }
+          ]
+        },
+        {
+          "key": "north-software-export",
+          "label": "North asset export",
+          "definition": {
+            "text": "North’s local asset-export software topic spanning its active PNG/SVG and retired TIFF contracts.",
+            "includes": [
+              "Local technical branch wording software / export",
+              "Current PNG/SVG source claim",
+              "Historical TIFF-only exporter"
+            ],
+            "excludes": [
+              "South PDF transport",
+              "South proposed CSV project",
+              "Unlocated EPS component",
+              "Treating retired TIFF as currently supported"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "export",
+              "context": "North local asset/software exporter",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+                  "passage": "north-contract"
+                }
+              ]
+            },
+            {
+              "label": "software / export",
+              "context": "North's independently owned local technical branch",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+                  "passage": "repeated-branches"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "north-contract"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "retired-north-tiff"
+            }
+          ],
+          "parentKey": "north-technical",
+          "parentRationale": "North’s exporter and technical branch are local technical subjects; no edge to another owner follows."
+        },
+        {
+          "key": "winter-freight-crates",
+          "label": "North winter freight crates",
+          "definition": {
+            "text": "Weather protection for winter freight crates in cedar-north’s reviewed knowledge note.",
+            "includes": [
+              "Using a weather cover for winter freight crates"
+            ],
+            "excludes": [
+              "Ontology O-000001 asset-export contract",
+              "Identity from an equal numerical suffix",
+              "Holding trade routes"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "north-knowledge"
+            }
+          ],
+          "parentKey": "north-logistics",
+          "parentRationale": "Physical winter-crate handling is a freight-logistics topic, warranted by the descendant note itself."
+        }
+      ],
+      "related": []
+    },
+    {
+      "installation": "cedar-south",
+      "subjects": [
+        {
+          "key": "south-operations",
+          "label": "South operations",
+          "definition": {
+            "text": "Local South operational topics represented by document transport and the proposed Nord logistics project.",
+            "includes": [
+              "South document-transport exporter",
+              "Proposed South logistics software project"
+            ],
+            "excludes": [
+              "North operations",
+              "Approval of proposed CSV output",
+              "A holding-wide operational hierarchy"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "south-contract"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "south-nord-project"
+            }
+          ]
+        },
+        {
+          "key": "south-documents",
+          "label": "South document transport",
+          "definition": {
+            "text": "South’s local document-transport operation.",
+            "includes": [
+              "The PDF transport exporter",
+              "South’s independently worded software / export branch"
+            ],
+            "excludes": [
+              "North asset export",
+              "A claim that the proposed Nord project is the same transport operation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "south-contract"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            }
+          ],
+          "parentKey": "south-operations",
+          "parentRationale": "The transport contract and document-transport branch describe a local operational topic; this intermediate category is editorial."
+        },
+        {
+          "key": "south-software-export",
+          "label": "South document export",
+          "definition": {
+            "text": "South’s own exporter for document transport.",
+            "includes": [
+              "Active local PDF transport contract",
+              "Local branch label software / export"
+            ],
+            "excludes": [
+              "North PNG/SVG or retired TIFF",
+              "Unlocated EPS",
+              "CSV promised by the unapproved Nord project"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "software / export",
+              "context": "South independently owned document-transport branch",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+                  "passage": "repeated-branches"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "south-contract"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            }
+          ],
+          "parentKey": "south-documents",
+          "parentRationale": "The repeated-branches passage explicitly identifies South’s branch meaning as document transport."
+        },
+        {
+          "key": "south-nord-project",
+          "label": "South Nord project",
+          "definition": {
+            "text": "The proposed cedar-south logistics software project named Nord.",
+            "includes": [
+              "CSV as a hoped-for draft output",
+              "Unapproved and undeployed project status"
+            ],
+            "excludes": [
+              "North subsidiary’s French short name",
+              "North active asset exporter",
+              "Current PDF contract identity or approved CSV support"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "Nord",
+              "context": "cedar-south proposed logistics software project",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+                  "passage": "south-nord-project"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "south-nord-project"
+            }
+          ],
+          "parentKey": "south-operations",
+          "parentRationale": "The proposed logistics software project is a South operational topic; classification does not establish approval or deployment."
+        }
+      ],
+      "related": []
+    },
+    {
+      "installation": "cedar-holding",
+      "subjects": [
+        {
+          "key": "group-governance",
+          "label": "Holding governance review topics",
+          "definition": {
+            "text": "Local cedar-holding topics for reviews and proposals about import, record separation and branch separation.",
+            "includes": [
+              "Historical rejected import merge",
+              "Future correspondence planning",
+              "Review rejection of blanket format union",
+              "Comparison of independently owned branch labels"
+            ],
+            "excludes": [
+              "Governance authority over North or South",
+              "A universal identity taxonomy",
+              "Imported subsidiary descendants or an operational federation"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "historical-import"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "proposed-correspondence"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "rejected-union"
+            }
+          ]
+        },
+        {
+          "key": "international-trade",
+          "label": "International trade",
+          "definition": {
+            "text": "Shipping physical goods abroad as described in holding-company notes.",
+            "includes": [
+              "Export meaning shipping goods abroad",
+              "Crate freight to Port Elm"
+            ],
+            "excludes": [
+              "Software format export",
+              "Local concept identity",
+              "Import or federation of knowledge stores"
+            ]
+          },
+          "aliases": [
+            {
+              "label": "export",
+              "context": "Holding-company shipping goods abroad / freight to Port Elm",
+              "evidence": [
+                {
+                  "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+                  "passage": "group-note"
+                },
+                {
+                  "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+                  "passage": "trade-port"
+                }
+              ]
+            }
+          ],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "group-note"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "trade-port"
+            }
+          ]
+        },
+        {
+          "key": "component-formats",
+          "label": "Archival component formats",
+          "definition": {
+            "text": "Software-format capability mentioned in a holding archival manifest whose component owner, installation and release are unknown.",
+            "includes": [
+              "Transcribed EPS capability of the unlocated component"
+            ],
+            "excludes": [
+              "EPS support attributed to North or South",
+              "Ownership inferred from holding record placement",
+              "Current release applicability inferred from reviewed transcription"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "unlocated-package"
+            }
+          ]
+        },
+        {
+          "key": "group-import",
+          "label": "Holding import-review topics",
+          "definition": {
+            "text": "Holding-local review and planning of proposed imports between separately owned source artifacts and possible distinct destinations.",
+            "includes": [
+              "Rejected merge by O-000001 string",
+              "Proposed future importer with distinct destination identities"
+            ],
+            "excludes": [
+              "Approved import",
+              "Allocated destination IDs",
+              "Executable correspondence or combined governed record"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "historical-import"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "proposed-correspondence"
+            }
+          ],
+          "parentKey": "group-governance",
+          "parentRationale": "These passages concern holding import-review decisions and planning, a local governance-review topic rather than an import facility."
+        },
+        {
+          "key": "record-identity",
+          "label": "Holding record-separation reviews",
+          "definition": {
+            "text": "Holding-local governance topic for maintaining distinct record or concept identities when comparing owners, local identifiers and labels.",
+            "includes": [
+              "Rejected same-string record merge",
+              "Planning for distinct destination identities",
+              "Review of unsupported combined records from matching IDs or labels",
+              "Branch-comparison claims denying imported or equivalent concepts"
+            ],
+            "excludes": [
+              "A universal taxonomy of identity",
+              "A cross-owner identity edge",
+              "Identity allocation or operational mapping",
+              "Holding authority over either subsidiary"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "historical-import"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "proposed-correspondence"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "rejected-union"
+            }
+          ],
+          "parentKey": "group-governance",
+          "parentRationale": "The defined subject is specifically holding’s governance-review topic about record separation; identity in general is not declared a subtype of governance."
+        },
+        {
+          "key": "branch-identity",
+          "label": "Holding branch-separation reviews",
+          "definition": {
+            "text": "Holding-local governance topic for reviews comparing independently owned branches whose displayed labels match.",
+            "includes": [
+              "North/South software / export label comparison",
+              "Explicit absence of cross-owner parent, equivalence and import edges",
+              "Rejection of union based on matching subject labels"
+            ],
+            "excludes": [
+              "A universal identity taxonomy",
+              "A common parent or shared descendant set for subsidiary branches",
+              "Equating branch names with records",
+              "Holding ownership of the compared branches"
+            ]
+          },
+          "aliases": [],
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "repeated-branches"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "rejected-union"
+            }
+          ],
+          "parentKey": "group-governance",
+          "parentRationale": "The subject boundary is holding’s review of branch separation, which belongs to its local governance-review topics without subordinating either subsidiary."
+        }
+      ],
+      "related": [
+        {
+          "fromKey": "group-import",
+          "toKey": "record-identity",
+          "type": "association",
+          "rationale": "The rejected import merge and future import proposal explicitly concern separate record identities. This is an association between holding review topics, not an import mapping.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/pilot/sources/holding-company.md",
+              "passage": "historical-import"
+            },
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "proposed-correspondence"
+            }
+          ]
+        },
+        {
+          "fromKey": "record-identity",
+          "toKey": "branch-identity",
+          "type": "association",
+          "rationale": "The review explicitly considers matching local IDs and matching subject labels as insufficient grounds for a combined governed record. The association connects two holding review topics without linking subsidiary subjects.",
+          "warrant": [
+            {
+              "source": "acceptance/retrieval/development-v2/sources/holding-company.md",
+              "passage": "rejected-union"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

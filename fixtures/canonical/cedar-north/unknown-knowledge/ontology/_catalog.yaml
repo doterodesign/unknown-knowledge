@@ -1,0 +1,16 @@
+{
+  "schema-version": 2,
+  "store": "ontology",
+  "entries": [
+    {
+      "id": "O-000001",
+      "title": "Source-text assertion: north contract",
+      "file": "classes/O-000001.yaml"
+    },
+    {
+      "id": "O-000002",
+      "title": "Historical source report — retired or withdrawn: retired north tiff",
+      "file": "classes/O-000002.yaml"
+    }
+  ]
+}

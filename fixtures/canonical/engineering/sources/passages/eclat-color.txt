@@ -1,0 +1,3 @@
+The reviewed French glossary uses “éclat” as an alias for the semitransparent
+accent color role in Aurora Web 4. That role uses the existing `--accent-soft`
+token. The glossary describes naming; the CSS contract defines serialization.

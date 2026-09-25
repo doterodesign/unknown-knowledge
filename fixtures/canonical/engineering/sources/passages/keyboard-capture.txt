@@ -1,0 +1,4 @@
+An accepted active Aurora Web 4 keyboard contract requires screenshots of focus
+states to retain the two-pixel focus outline and its two-pixel offset. The
+record's subject classification has not yet been supplied. Its source owner
+and Web 4 scope are explicit; missing classification does not retract approval.

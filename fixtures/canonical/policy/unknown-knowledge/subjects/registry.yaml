@@ -1,0 +1,1045 @@
+{
+  "schema-version": 1,
+  "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+  "revision": 1,
+  "hierarchy-revision": 0,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "Support-ticket retention",
+      "definition": {
+        "text": "Retention periods and policy history for customer support-ticket records.",
+        "includes": [
+          "Ordinary and VIP ticket periods in the named regions",
+          "Supersession, conflict, rejection and archival clarification concerning ticket periods"
+        ],
+        "excludes": [
+          "Staff continuity and mentoring",
+          "Visitor-access-log periods",
+          "Deletion instructions with unknown record type"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "retention",
+          "context": "Support-ticket records; resolve only where the surrounding statement identifies tickets."
+        }
+      ],
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000003"
+        },
+        {
+          "type": "association",
+          "target": "S-000004"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/policy.md#predecessor",
+            "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+          },
+          {
+            "locator": "sources/pilot/policy.md#successor-a",
+            "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#vip-successor",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#archive-correction",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#east-vip-note",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "Staff retention",
+      "definition": {
+        "text": "Programs intended to retain employees, locally represented by new-employee mentoring.",
+        "includes": [
+          "The new-employee mentor check-in program and its cadence"
+        ],
+        "excludes": [
+          "Record retention or deletion periods",
+          "Support-ticket and visitor-log rules"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "retention",
+          "context": "Staff continuity and new-employee mentoring; does not denote keeping records."
+        }
+      ],
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000008"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/policy.md#staff-retention",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "Customer support",
+      "definition": {
+        "text": "Customer support work, its team, and records created in handling support tickets.",
+        "includes": [
+          "Support-ticket policy context",
+          "Support-team proposals to use a privacy-analysis service"
+        ],
+        "excludes": [
+          "Visitor-access logs",
+          "Staff mentoring",
+          "Employee home-office purchasing"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/policy.md#successor-a",
+            "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#privacy-proposal",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#east-vip-note",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "Policy governance",
+      "definition": {
+        "text": "Council decision-making about policy authorization, precedence and resolution of competing policies.",
+        "includes": [
+          "Explicit supersession and conflict-resolution rules",
+          "Council proposals and unaccepted authorizations",
+          "Rejection of proposed policy extensions"
+        ],
+        "excludes": [
+          "Assuming a later date resolves conflicting rules",
+          "Treating a proposed authorization as approval"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/policy.md#successor-b",
+            "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+          },
+          {
+            "locator": "sources/pilot/policy.md#council-note",
+            "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#vip-successor",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#privacy-proposal",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#east-vip-note",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "Privacy analysis",
+      "definition": {
+        "text": "Analysis of privacy matters through the external service contemplated for the support team.",
+        "includes": [
+          "The proposed external privacy-analysis service and its contemplated activation"
+        ],
+        "excludes": [
+          "An inference that service use is authorized",
+          "Ticket-retention periods merely because both concern support"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/policy.md#privacy-proposal",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000006",
+      "label": "Record deletion",
+      "definition": {
+        "text": "Instructions or requirements to remove records, without assuming a particular record type or jurisdiction.",
+        "includes": [
+          "The archived ten-day deletion instruction",
+          "Deletion as an explicit action distinct from archival preservation"
+        ],
+        "excludes": [
+          "Employee retention",
+          "Inferring applicability of the unlocated instruction to support tickets",
+          "Treating transcription acceptance as approval of the quoted rule"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/policy.md#unlocated-deletion",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000007",
+      "label": "Archives and historical clarification",
+      "definition": {
+        "text": "Preservation, transcription and clarification of historical policy evidence.",
+        "includes": [
+          "Preserving an archived deletion instruction",
+          "Clarifying a superseded ticket policy and its historical period"
+        ],
+        "excludes": [
+          "Reinstating historical rules as current policy",
+          "Inferring missing applicability from archival acceptance"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/policy.md#unlocated-deletion",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#archive-correction",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000008",
+      "label": "Employee mentoring",
+      "definition": {
+        "text": "Mentor contact for new employees in the local staff-retention program.",
+        "includes": [
+          "The mentor check-in activity",
+          "The program cadence of every 14 days"
+        ],
+        "excludes": [
+          "A 14-day record-retention rule",
+          "Support-ticket handling"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/policy.md#staff-retention",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    },
+    {
+      "id": "S-000009",
+      "label": "Visitor-access-log retention",
+      "definition": {
+        "text": "Minimum keeping periods and maximum deletion periods for visitor-access logs.",
+        "includes": [
+          "The West visitor-log minimum and maximum obligations",
+          "Their unresolved incompatibility"
+        ],
+        "excludes": [
+          "Support-ticket periods",
+          "Assuming later acceptance supersedes the earlier obligation"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+              "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+              "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/policy.md#visitor-minimum",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          },
+          {
+            "locator": "sources/development-v2/policy.md#visitor-maximum",
+            "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+          }
+        ]
+      },
+      "changes": [
+        "94360744-a892-42e8-8eb4-414579b12630"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "94360744-a892-42e8-8eb4-414579b12630",
+      "action": "activate",
+      "decision": {
+        "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+        "kind": "decision",
+        "id": "D-000012"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "Support-ticket retention",
+            "definition": {
+              "text": "Retention periods and policy history for customer support-ticket records.",
+              "includes": [
+                "Ordinary and VIP ticket periods in the named regions",
+                "Supersession, conflict, rejection and archival clarification concerning ticket periods"
+              ],
+              "excludes": [
+                "Staff continuity and mentoring",
+                "Visitor-access-log periods",
+                "Deletion instructions with unknown record type"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "retention",
+                "context": "Support-ticket records; resolve only where the surrounding statement identifies tickets."
+              }
+            ],
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000003"
+              },
+              {
+                "type": "association",
+                "target": "S-000004"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/policy.md#predecessor",
+                  "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+                },
+                {
+                  "locator": "sources/pilot/policy.md#successor-a",
+                  "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#vip-successor",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#archive-correction",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#east-vip-note",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "Staff retention",
+            "definition": {
+              "text": "Programs intended to retain employees, locally represented by new-employee mentoring.",
+              "includes": [
+                "The new-employee mentor check-in program and its cadence"
+              ],
+              "excludes": [
+                "Record retention or deletion periods",
+                "Support-ticket and visitor-log rules"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "retention",
+                "context": "Staff continuity and new-employee mentoring; does not denote keeping records."
+              }
+            ],
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000008"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/policy.md#staff-retention",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "Customer support",
+            "definition": {
+              "text": "Customer support work, its team, and records created in handling support tickets.",
+              "includes": [
+                "Support-ticket policy context",
+                "Support-team proposals to use a privacy-analysis service"
+              ],
+              "excludes": [
+                "Visitor-access logs",
+                "Staff mentoring",
+                "Employee home-office purchasing"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/policy.md#successor-a",
+                  "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#privacy-proposal",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#east-vip-note",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "Policy governance",
+            "definition": {
+              "text": "Council decision-making about policy authorization, precedence and resolution of competing policies.",
+              "includes": [
+                "Explicit supersession and conflict-resolution rules",
+                "Council proposals and unaccepted authorizations",
+                "Rejection of proposed policy extensions"
+              ],
+              "excludes": [
+                "Assuming a later date resolves conflicting rules",
+                "Treating a proposed authorization as approval"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/policy.md#successor-b",
+                  "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+                },
+                {
+                  "locator": "sources/pilot/policy.md#council-note",
+                  "revision": "6b8ba29913311e9540484ed62059734fd98b1fa08e0596bbc442ea4c01ee7470"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#vip-successor",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#privacy-proposal",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#east-vip-note",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "Privacy analysis",
+            "definition": {
+              "text": "Analysis of privacy matters through the external service contemplated for the support team.",
+              "includes": [
+                "The proposed external privacy-analysis service and its contemplated activation"
+              ],
+              "excludes": [
+                "An inference that service use is authorized",
+                "Ticket-retention periods merely because both concern support"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/policy.md#privacy-proposal",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000006",
+          "before": null,
+          "after": {
+            "label": "Record deletion",
+            "definition": {
+              "text": "Instructions or requirements to remove records, without assuming a particular record type or jurisdiction.",
+              "includes": [
+                "The archived ten-day deletion instruction",
+                "Deletion as an explicit action distinct from archival preservation"
+              ],
+              "excludes": [
+                "Employee retention",
+                "Inferring applicability of the unlocated instruction to support tickets",
+                "Treating transcription acceptance as approval of the quoted rule"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/policy.md#unlocated-deletion",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000007",
+          "before": null,
+          "after": {
+            "label": "Archives and historical clarification",
+            "definition": {
+              "text": "Preservation, transcription and clarification of historical policy evidence.",
+              "includes": [
+                "Preserving an archived deletion instruction",
+                "Clarifying a superseded ticket policy and its historical period"
+              ],
+              "excludes": [
+                "Reinstating historical rules as current policy",
+                "Inferring missing applicability from archival acceptance"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/policy.md#unlocated-deletion",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#archive-correction",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000008",
+          "before": null,
+          "after": {
+            "label": "Employee mentoring",
+            "definition": {
+              "text": "Mentor contact for new employees in the local staff-retention program.",
+              "includes": [
+                "The mentor check-in activity",
+                "The program cadence of every 14 days"
+              ],
+              "excludes": [
+                "A 14-day record-retention rule",
+                "Support-ticket handling"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/policy.md#staff-retention",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000009",
+          "before": null,
+          "after": {
+            "label": "Visitor-access-log retention",
+            "definition": {
+              "text": "Minimum keeping periods and maximum deletion periods for visitor-access logs.",
+              "includes": [
+                "The West visitor-log minimum and maximum obligations",
+                "Their unresolved incompatibility"
+              ],
+              "excludes": [
+                "Support-ticket periods",
+                "Assuming later acceptance supersedes the earlier obligation"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+              "kind": "decision",
+              "id": "D-000012"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "3ca6b0d9-70a5-4e3b-8c42-c42d3f50a175",
+                    "kind": "decision",
+                    "id": "D-000012"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+                    "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+                    "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/policy.md#visitor-minimum",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                },
+                {
+                  "locator": "sources/development-v2/policy.md#visitor-maximum",
+                  "revision": "023290a835486e97bb263e545cfcadaaa13189ad80457f8893a840176fe5a827"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000012.yaml",
+          "blob": "40c87508a86bdd7fbf2ba79fc3d01bab13494ba5",
+          "sha256": "46e78545d59cbb48be94962101b0428eacc570dacca0fb626d3e18bde1d6f3f9"
+        },
+        "decision-digest": "58ab252191fa207a8981899f847f7d10af560e8d005f650322294ed638920ba8",
+        "change-digest": "ab821e897d5a9743da1e8b31a1454e7179d0a7b472ed1584ef9da58ea4ffbb53"
+      }
+    }
+  ]
+}

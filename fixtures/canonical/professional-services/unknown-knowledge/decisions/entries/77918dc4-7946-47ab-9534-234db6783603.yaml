@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:decision:77918dc4-7946-47ab-9534-234db6783603",
+      "title": "Source report: beta template",
+      "category": "governance",
+      "status": "proposed",
+      "subjects": [
+        "S-000015",
+        "S-000018"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/development-v2/professional-services.md#beta-template.",
+      "decision": "A proposed service template for an unnamed future client suggests a ten-day\nrefund window. It has no signed engagement, client identity or approved scope.\nIt does not authorize a refund promise to Orion or Nova.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

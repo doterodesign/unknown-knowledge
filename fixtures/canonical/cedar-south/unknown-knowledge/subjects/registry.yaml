@@ -1,0 +1,481 @@
+{
+  "schema-version": 1,
+  "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "South operations",
+      "definition": {
+        "text": "Local South operational topics represented by document transport and the proposed Nord logistics project.",
+        "includes": [
+          "South document-transport exporter",
+          "Proposed South logistics software project"
+        ],
+        "excludes": [
+          "North operations",
+          "Approval of proposed CSV output",
+          "A holding-wide operational hierarchy"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#south-contract",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#south-nord-project",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "bbb8ba9f-bfdb-488b-9b20-5c7f993095c5"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "South document transport",
+      "definition": {
+        "text": "South’s local document-transport operation.",
+        "includes": [
+          "The PDF transport exporter",
+          "South’s independently worded software / export branch"
+        ],
+        "excludes": [
+          "North asset export",
+          "A claim that the proposed Nord project is the same transport operation"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#south-contract",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "bbb8ba9f-bfdb-488b-9b20-5c7f993095c5"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "South document export",
+      "definition": {
+        "text": "South’s own exporter for document transport.",
+        "includes": [
+          "Active local PDF transport contract",
+          "Local branch label software / export"
+        ],
+        "excludes": [
+          "North PNG/SVG or retired TIFF",
+          "Unlocated EPS",
+          "CSV promised by the unapproved Nord project"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "software / export",
+          "context": "South independently owned document-transport branch"
+        }
+      ],
+      "parent": "S-000002",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#south-contract",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "bbb8ba9f-bfdb-488b-9b20-5c7f993095c5"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "South Nord project",
+      "definition": {
+        "text": "The proposed cedar-south logistics software project named Nord.",
+        "includes": [
+          "CSV as a hoped-for draft output",
+          "Unapproved and undeployed project status"
+        ],
+        "excludes": [
+          "North subsidiary’s French short name",
+          "North active asset exporter",
+          "Current PDF contract identity or approved CSV support"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Nord",
+          "context": "cedar-south proposed logistics software project"
+        }
+      ],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+              "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+              "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/holding-company.md#south-nord-project",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "bbb8ba9f-bfdb-488b-9b20-5c7f993095c5"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "bbb8ba9f-bfdb-488b-9b20-5c7f993095c5",
+      "action": "activate",
+      "decision": {
+        "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+        "kind": "decision",
+        "id": "D-000001"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "South operations",
+            "definition": {
+              "text": "Local South operational topics represented by document transport and the proposed Nord logistics project.",
+              "includes": [
+                "South document-transport exporter",
+                "Proposed South logistics software project"
+              ],
+              "excludes": [
+                "North operations",
+                "Approval of proposed CSV output",
+                "A holding-wide operational hierarchy"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#south-contract",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#south-nord-project",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "South document transport",
+            "definition": {
+              "text": "South’s local document-transport operation.",
+              "includes": [
+                "The PDF transport exporter",
+                "South’s independently worded software / export branch"
+              ],
+              "excludes": [
+                "North asset export",
+                "A claim that the proposed Nord project is the same transport operation"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#south-contract",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "South document export",
+            "definition": {
+              "text": "South’s own exporter for document transport.",
+              "includes": [
+                "Active local PDF transport contract",
+                "Local branch label software / export"
+              ],
+              "excludes": [
+                "North PNG/SVG or retired TIFF",
+                "Unlocated EPS",
+                "CSV promised by the unapproved Nord project"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "software / export",
+                "context": "South independently owned document-transport branch"
+              }
+            ],
+            "parent": "S-000002",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#south-contract",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "South Nord project",
+            "definition": {
+              "text": "The proposed cedar-south logistics software project named Nord.",
+              "includes": [
+                "CSV as a hoped-for draft output",
+                "Unapproved and undeployed project status"
+              ],
+              "excludes": [
+                "North subsidiary’s French short name",
+                "North active asset exporter",
+                "Current PDF contract identity or approved CSV support"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Nord",
+                "context": "cedar-south proposed logistics software project"
+              }
+            ],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+              "kind": "decision",
+              "id": "D-000001"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "cfa399d6-910a-4b36-a0fa-baf269f436ff",
+                    "kind": "decision",
+                    "id": "D-000001"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+                    "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+                    "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/holding-company.md#south-nord-project",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000001.yaml",
+          "blob": "4cb25d2f79ef23d25ec007458425f57c0ab9b464",
+          "sha256": "95570c2aff3d31f1a2ad7e992d23a0821bb2a7d6022fbc81e2ef5e9e1dbee9e4"
+        },
+        "decision-digest": "4adc01ff251d28bed8cb059aa84883c579cc95d81c7c2636bb94c9bc42a88561",
+        "change-digest": "c7ca9cb3280fc31b879787d323164dbaaced558952952a907b9cbbf9f53e19bb"
+      }
+    }
+  ]
+}

@@ -1,0 +1,455 @@
+{
+  "note": "Record-to-passage map for the development-v2 gold judgments. Generated once from acceptance/retrieval/materialize-development.js; the stores beside it are plain committed files.",
+  "installations": [
+    {
+      "installation": "engineering",
+      "records": [
+        {
+          "kind": "ontology",
+          "id": "O-000001",
+          "passage": "css-export"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000001",
+          "passage": "opaque-export"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000002",
+          "passage": "focus-ring"
+        },
+        {
+          "kind": "ontology",
+          "id": "O-000002",
+          "passage": "prior-export"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000003",
+          "passage": "unclassified-note"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000004",
+          "passage": "css-audit"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000005",
+          "passage": "eclat-color"
+        },
+        {
+          "kind": "ontology",
+          "id": "proposal:ontology:642a292e-91b9-4ff3-a062-5858b068761a",
+          "passage": "eclat-project"
+        },
+        {
+          "kind": "ontology",
+          "id": "O-000003",
+          "passage": "production-theme"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000006",
+          "passage": "preview-theme"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000007",
+          "passage": "cross-platform-notebook"
+        },
+        {
+          "kind": "ontology",
+          "id": "O-000004",
+          "passage": "keyboard-capture"
+        },
+        {
+          "kind": "ontology",
+          "id": "proposal:ontology:fb79dbac-8631-4766-8964-0e286dacf963",
+          "passage": "web5-proposal"
+        },
+        {
+          "kind": "ontology",
+          "id": "proposal:ontology:e669e8f4-edc5-4545-ab0a-885d825de0db",
+          "passage": "palette-mail"
+        },
+        {
+          "kind": "ontology",
+          "id": "O-000005",
+          "passage": "screenshot-limit"
+        }
+      ]
+    },
+    {
+      "installation": "cultural-research",
+      "records": [
+        {
+          "kind": "knowledge",
+          "id": "K-000001",
+          "passage": "red-attention"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000002",
+          "passage": "blue-symbolism"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000003",
+          "passage": "rouge-terms"
+        },
+        {
+          "kind": "knowledge",
+          "id": "proposal:knowledge:a57d27fe-599e-4c7f-a428-ae3babb2416a",
+          "passage": "earlier-pilot"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000004",
+          "passage": "do-glossary"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000005",
+          "passage": "rouge-project"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000006",
+          "passage": "thailand-null"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000007",
+          "passage": "split-study-notebook"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000008",
+          "passage": "preliminary-poster"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000009",
+          "passage": "poster-retraction"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000010",
+          "passage": "unlocated-observation"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000011",
+          "passage": "vietnam-symbolism"
+        },
+        {
+          "kind": "knowledge",
+          "id": "proposal:knowledge:00561387-fadb-4f99-900b-5a82be429993",
+          "passage": "future-region-study"
+        }
+      ]
+    },
+    {
+      "installation": "policy",
+      "records": [
+        {
+          "kind": "decision",
+          "id": "D-000001",
+          "passage": "predecessor"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000002",
+          "passage": "successor-a"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000003",
+          "passage": "successor-b"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000004",
+          "passage": "east-policy"
+        },
+        {
+          "kind": "decision",
+          "id": "proposal:decision:b61f2450-bc2d-4a2d-91b7-1d18afe90f01",
+          "passage": "council-note"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000005",
+          "passage": "vip-successor"
+        },
+        {
+          "kind": "decision",
+          "id": "proposal:decision:bde81353-68a8-4584-a337-0030d712351c",
+          "passage": "privacy-proposal"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000006",
+          "passage": "unlocated-deletion"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000007",
+          "passage": "home-office"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000008",
+          "passage": "staff-retention"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000009",
+          "passage": "archive-correction"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000010",
+          "passage": "visitor-minimum"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000011",
+          "passage": "visitor-maximum"
+        },
+        {
+          "kind": "decision",
+          "id": "proposal:decision:38a1b914-21b0-4d5f-9521-2ab8903f8ef0",
+          "passage": "east-vip-note"
+        }
+      ]
+    },
+    {
+      "installation": "manufacturing",
+      "records": [
+        {
+          "kind": "knowledge",
+          "id": "K-000001",
+          "passage": "north-seal"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000002",
+          "passage": "south-seal"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000003",
+          "passage": "controller-limit"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000004",
+          "passage": "obsolete-north"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000005",
+          "passage": "seal-note"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000006",
+          "passage": "east-model-r"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000007",
+          "passage": "gasket-standard"
+        },
+        {
+          "kind": "ontology",
+          "id": "O-000001",
+          "passage": "gasket-decoy"
+        },
+        {
+          "kind": "knowledge",
+          "id": "proposal:knowledge:f38da415-108f-4fb6-9b43-b71d62092ae6",
+          "passage": "pressure-draft"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000008",
+          "passage": "unlocated-tolerance"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000009",
+          "passage": "west-controller"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000010",
+          "passage": "cross-line-book"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000001",
+          "passage": "q-retirement"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000011",
+          "passage": "unclassified-gauge"
+        }
+      ]
+    },
+    {
+      "installation": "professional-services",
+      "records": [
+        {
+          "kind": "decision",
+          "id": "D-000001",
+          "passage": "atlas-engagement"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000001",
+          "passage": "payment-handbook"
+        },
+        {
+          "kind": "decision",
+          "id": "proposal:decision:56df3ee4-12da-4a8e-b959-3579c0371aaa",
+          "passage": "atlas-practice"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000002",
+          "passage": "clarification-note"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000002",
+          "passage": "atlas-project-response"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000003",
+          "passage": "atlas-practice-response"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000003",
+          "passage": "billing-and-cancellation"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000004",
+          "passage": "iris-scheduling"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000005",
+          "passage": "nova-refund"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000004",
+          "passage": "old-orion-contact"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000006",
+          "passage": "contact-withdrawal"
+        },
+        {
+          "kind": "decision",
+          "id": "proposal:decision:77918dc4-7946-47ab-9534-234db6783603",
+          "passage": "beta-template"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000007",
+          "passage": "private-access"
+        }
+      ]
+    },
+    {
+      "installation": "cedar-north",
+      "records": [
+        {
+          "kind": "ontology",
+          "id": "O-000001",
+          "passage": "north-contract"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000001",
+          "passage": "north-knowledge"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000002",
+          "passage": "nord-glossary"
+        },
+        {
+          "kind": "ontology",
+          "id": "O-000002",
+          "passage": "retired-north-tiff"
+        }
+      ]
+    },
+    {
+      "installation": "cedar-south",
+      "records": [
+        {
+          "kind": "ontology",
+          "id": "O-000001",
+          "passage": "south-contract"
+        },
+        {
+          "kind": "knowledge",
+          "id": "proposal:knowledge:8e0b7e29-1c35-49f3-9750-8b00cfc9e40c",
+          "passage": "south-nord-project"
+        }
+      ]
+    },
+    {
+      "installation": "cedar-holding",
+      "records": [
+        {
+          "kind": "decision",
+          "id": "proposal:decision:e110eab4-9cce-4867-b19a-6b71db8407ed",
+          "passage": "historical-import"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000001",
+          "passage": "group-note"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000002",
+          "passage": "repeated-branches"
+        },
+        {
+          "kind": "decision",
+          "id": "proposal:decision:3d9e9a34-3b2d-4ea5-bc2f-583dda3e4e6a",
+          "passage": "proposed-correspondence"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000003",
+          "passage": "unlocated-package"
+        },
+        {
+          "kind": "decision",
+          "id": "D-000001",
+          "passage": "rejected-union"
+        },
+        {
+          "kind": "knowledge",
+          "id": "K-000004",
+          "passage": "trade-port"
+        }
+      ]
+    }
+  ]
+}

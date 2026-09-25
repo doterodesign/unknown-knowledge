@@ -1,0 +1,3 @@
+D-000013 is accepted and requires the same Region West visitor-access logs to
+be deleted no later than day 14. It was accepted after D-000012 but does not
+supersede it. No accepted rule resolves these incompatible obligations.

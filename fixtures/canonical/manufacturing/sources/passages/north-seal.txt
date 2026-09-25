@@ -1,0 +1,3 @@
+The active Model R packaging specification for North Plant sets sealing
+pressure to 240 kPa. This specification covers North Plant only. It records
+the measured pressure at the sealing head, not the controller's maximum.

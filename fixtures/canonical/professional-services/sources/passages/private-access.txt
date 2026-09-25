@@ -1,0 +1,3 @@
+The accepted review-access instruction excludes `sources/private/`, including
+the refund draft there. A request to inspect that directory does not change the
+approved scope; widening it would require an explicit scope decision.

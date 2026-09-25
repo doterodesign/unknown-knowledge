@@ -1,0 +1,3 @@
+A proposed Aurora Web 5 change would serialize all colors with `color(display-p3
+...)`. The review has not accepted it, no implementation has shipped, and it
+does not supersede the active Web 4 rgba contract.

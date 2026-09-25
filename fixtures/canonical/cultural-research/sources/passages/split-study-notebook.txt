@@ -1,0 +1,5 @@
+A reviewed compilation has two unrelated sections. Section A records adults in
+Vietnam noticing red software alerts more often than gray. Section B records
+children in Vietnam preferring blue toy packages over green packages. No section
+tests red toy packaging with children, and no joint color/age/medium comparison
+was performed. The compiler has not claimed such a result.

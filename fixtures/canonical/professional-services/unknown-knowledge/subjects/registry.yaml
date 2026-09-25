@@ -1,0 +1,2267 @@
+{
+  "schema-version": 1,
+  "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "Client projects",
+      "definition": {
+        "text": "Named client engagements described in the professional-services collection.",
+        "includes": [
+          "Project Atlas for Orion",
+          "Cedar engagement with Nova"
+        ],
+        "excludes": [
+          "Internal research practices",
+          "Transfer of contract terms between engagements"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-engagement",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#nova-refund",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "Clients",
+      "definition": {
+        "text": "Client parties explicitly named in the professional-services engagement and administrative passages.",
+        "includes": [
+          "Orion as a client",
+          "Nova as a client"
+        ],
+        "excludes": [
+          "Project identity treated as client identity",
+          "A named party for the unnamed service template"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#clarification-note",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#nova-refund",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "Internal practices",
+      "definition": {
+        "text": "Internal professional-services practice topics distinguished from client engagements.",
+        "includes": [
+          "The research practice and its internal request handbook"
+        ],
+        "excludes": [
+          "Project Atlas or other client engagement terms"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-practice",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "Financial terms",
+      "definition": {
+        "text": "Local topics concerning invoice payment and the return of money in the cited services records.",
+        "includes": [
+          "Invoice-payment requirements",
+          "Refund terms, proposals and explicit gaps"
+        ],
+        "excludes": [
+          "Response targets",
+          "Workshop cancellation notice inferred to be a refund duration"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#payment-handbook",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-engagement",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#nova-refund",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "Service delivery",
+      "definition": {
+        "text": "Operational service topics covered by the local acknowledgement, workshop-cancellation and template records.",
+        "includes": [
+          "Acknowledgement targets",
+          "Ending a workshop booking",
+          "Proposed service templates"
+        ],
+        "excludes": [
+          "Automatically approved refund terms"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-project-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#beta-template",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000006",
+      "label": "Review governance",
+      "definition": {
+        "text": "Topics concerning the stated boundaries of the agreed source review.",
+        "includes": [
+          "Review source-access policy and its scope-change condition"
+        ],
+        "excludes": [
+          "Permission to inspect excluded sources",
+          "Authority over client commercial terms"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#clarification-note",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#private-access",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000007",
+      "label": "Privacy administration",
+      "definition": {
+        "text": "Local privacy-request contact administration documented for Orion.",
+        "includes": [
+          "Retired privacy mailbox",
+          "Withdrawal and unconfirmed replacement status"
+        ],
+        "excludes": [
+          "General privacy doctrine",
+          "An approved replacement contact address"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#old-orion-contact",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#contact-withdrawal",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000008",
+      "label": "Project Atlas for Orion",
+      "definition": {
+        "text": "The client engagement named Project Atlas for Orion.",
+        "includes": [
+          "Approved discovery and design-delivery milestones",
+          "Acknowledgement commitment and explicitly unresolved refund terms"
+        ],
+        "excludes": [
+          "Atlas research practice",
+          "Nova Cedar engagement",
+          "Refund durations imported from other records"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Atlas",
+          "context": "Project Atlas agreement with Orion"
+        }
+      ],
+      "parent": "S-000001",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000010"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-engagement",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-project-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000009",
+      "label": "Cedar engagement with Nova",
+      "definition": {
+        "text": "The Cedar client engagement with Nova described in the refund agreement.",
+        "includes": [
+          "Its seven-calendar-day refund-request term as a source claim"
+        ],
+        "excludes": [
+          "Project Atlas for Orion",
+          "Cedar holding-company installations",
+          "Authority to transfer this term to another engagement"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Cedar",
+          "context": "Accepted Cedar engagement with Nova"
+        }
+      ],
+      "parent": "S-000001",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000011"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#nova-refund",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000010",
+      "label": "Orion client",
+      "definition": {
+        "text": "Orion as the named client in the local engagement, refund-agenda, cancellation and privacy-contact records.",
+        "includes": [
+          "Project Atlas client party",
+          "Orion refund question",
+          "Workshop cancellation and privacy-request administration"
+        ],
+        "excludes": [
+          "Nova",
+          "Atlas research practice",
+          "Joined commercial claims inferred from topic co-membership"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000002",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-engagement",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/pilot/professional-services.md#clarification-note",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#old-orion-contact",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#contact-withdrawal",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000011",
+      "label": "Nova client",
+      "definition": {
+        "text": "Nova as the named client party in the source-described Cedar and Iris engagements.",
+        "includes": [
+          "Client party in the Cedar refund agreement",
+          "Client party in the Iris discovery agreement"
+        ],
+        "excludes": [
+          "Orion",
+          "Unnamed future template client"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000002",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#nova-refund",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#iris-scheduling",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000012",
+      "label": "Internal research",
+      "definition": {
+        "text": "Internal research work and request handling within the services practice.",
+        "includes": [
+          "Atlas research practice",
+          "Acknowledgement of internal research requests"
+        ],
+        "excludes": [
+          "Client Project Atlas",
+          "A claim that all client discovery work belongs to this practice"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000003",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-practice",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000013",
+      "label": "Atlas research practice",
+      "definition": {
+        "text": "The research practice named Atlas, separate from Project Atlas and Orion.",
+        "includes": [
+          "Rejected fourteen-day refund proposal",
+          "Accepted internal research-request acknowledgement handbook"
+        ],
+        "excludes": [
+          "Project Atlas client contract",
+          "Applying the practice refund proposal to Orion"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "Atlas",
+          "context": "Atlas research practice's internal research-request policy"
+        }
+      ],
+      "parent": "S-000012",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-practice",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000014",
+      "label": "Invoice payment",
+      "definition": {
+        "text": "Payment of invoices to the professional-services firm.",
+        "includes": [
+          "Thirty-day invoice-payment requirement in the handbook",
+          "General firm billing section of the briefing"
+        ],
+        "excludes": [
+          "Return of money",
+          "A thirty-day Orion refund policy"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#payment-handbook",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000015",
+      "label": "Refunds",
+      "definition": {
+        "text": "Return-of-money questions, terms, proposals and explicit absence of approved terms in the public services records.",
+        "includes": [
+          "Unresolved Orion question",
+          "Rejected practice proposal",
+          "Cedar/Nova refund-request term",
+          "Unapproved future-client template suggestion",
+          "Explicit refund nonwarrants"
+        ],
+        "excludes": [
+          "Invoice due dates as refund deadlines",
+          "Cancellation notice as refund duration",
+          "Approval inferred from topic assignment"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000004",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-engagement",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/pilot/professional-services.md#atlas-practice",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/pilot/professional-services.md#clarification-note",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#nova-refund",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#beta-template",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000016",
+      "label": "Request acknowledgement",
+      "definition": {
+        "text": "Acknowledging receipt of a question or internal request under the separately scoped services agreements.",
+        "includes": [
+          "Two-business-day Project Atlas client-question target",
+          "Four-business-day Atlas practice internal-request target"
+        ],
+        "excludes": [
+          "Resolution deadline",
+          "Refund deadline",
+          "Combining the two targets"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000005",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-project-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000017",
+      "label": "Workshop cancellation",
+      "definition": {
+        "text": "Notice before ending an Orion workshop booking.",
+        "includes": [
+          "Five-business-day notice in the Orion section of the briefing"
+        ],
+        "excludes": [
+          "Invoice payment",
+          "Refund eligibility or duration",
+          "Terms for other client engagements"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000005",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000018",
+      "label": "Proposed service template",
+      "definition": {
+        "text": "The proposed template for an unnamed future services client.",
+        "includes": [
+          "Suggested ten-day refund window as an unapproved template proposal"
+        ],
+        "excludes": [
+          "Signed engagement",
+          "Known client identity or approved scope",
+          "A refund promise to Orion or Nova"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000005",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#beta-template",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000019",
+      "label": "Review source access",
+      "definition": {
+        "text": "The agreed review’s public/private source-access boundary and stated condition for widening it.",
+        "includes": [
+          "Exclusion of sources/private/",
+          "Need for an explicit scope decision to widen access"
+        ],
+        "excludes": [
+          "Actual access-scope expansion",
+          "Reading the excluded refund draft",
+          "Commercial refund policy"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000006",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/professional-services.md#clarification-note",
+            "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#private-access",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    },
+    {
+      "id": "S-000020",
+      "label": "Orion privacy requests",
+      "definition": {
+        "text": "Privacy-request contact handling for Orion in the retirement and withdrawal records.",
+        "includes": [
+          "Historical old mailbox",
+          "Withdrawal and pending replacement confirmation"
+        ],
+        "excludes": [
+          "Using the retired mailbox",
+          "Guessing an address",
+          "An approved current address"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000007",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+              "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+              "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/professional-services.md#old-orion-contact",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          },
+          {
+            "locator": "sources/development-v2/professional-services.md#contact-withdrawal",
+            "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+          }
+        ]
+      },
+      "changes": [
+        "6411e165-437b-4023-b4c6-2b3b034defbb"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "6411e165-437b-4023-b4c6-2b3b034defbb",
+      "action": "activate",
+      "decision": {
+        "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+        "kind": "decision",
+        "id": "D-000008"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "Client projects",
+            "definition": {
+              "text": "Named client engagements described in the professional-services collection.",
+              "includes": [
+                "Project Atlas for Orion",
+                "Cedar engagement with Nova"
+              ],
+              "excludes": [
+                "Internal research practices",
+                "Transfer of contract terms between engagements"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-engagement",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#nova-refund",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "Clients",
+            "definition": {
+              "text": "Client parties explicitly named in the professional-services engagement and administrative passages.",
+              "includes": [
+                "Orion as a client",
+                "Nova as a client"
+              ],
+              "excludes": [
+                "Project identity treated as client identity",
+                "A named party for the unnamed service template"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#clarification-note",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#nova-refund",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "Internal practices",
+            "definition": {
+              "text": "Internal professional-services practice topics distinguished from client engagements.",
+              "includes": [
+                "The research practice and its internal request handbook"
+              ],
+              "excludes": [
+                "Project Atlas or other client engagement terms"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-practice",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "Financial terms",
+            "definition": {
+              "text": "Local topics concerning invoice payment and the return of money in the cited services records.",
+              "includes": [
+                "Invoice-payment requirements",
+                "Refund terms, proposals and explicit gaps"
+              ],
+              "excludes": [
+                "Response targets",
+                "Workshop cancellation notice inferred to be a refund duration"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#payment-handbook",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-engagement",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#nova-refund",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "Service delivery",
+            "definition": {
+              "text": "Operational service topics covered by the local acknowledgement, workshop-cancellation and template records.",
+              "includes": [
+                "Acknowledgement targets",
+                "Ending a workshop booking",
+                "Proposed service templates"
+              ],
+              "excludes": [
+                "Automatically approved refund terms"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-project-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#beta-template",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000006",
+          "before": null,
+          "after": {
+            "label": "Review governance",
+            "definition": {
+              "text": "Topics concerning the stated boundaries of the agreed source review.",
+              "includes": [
+                "Review source-access policy and its scope-change condition"
+              ],
+              "excludes": [
+                "Permission to inspect excluded sources",
+                "Authority over client commercial terms"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#clarification-note",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#private-access",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000007",
+          "before": null,
+          "after": {
+            "label": "Privacy administration",
+            "definition": {
+              "text": "Local privacy-request contact administration documented for Orion.",
+              "includes": [
+                "Retired privacy mailbox",
+                "Withdrawal and unconfirmed replacement status"
+              ],
+              "excludes": [
+                "General privacy doctrine",
+                "An approved replacement contact address"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#old-orion-contact",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#contact-withdrawal",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000008",
+          "before": null,
+          "after": {
+            "label": "Project Atlas for Orion",
+            "definition": {
+              "text": "The client engagement named Project Atlas for Orion.",
+              "includes": [
+                "Approved discovery and design-delivery milestones",
+                "Acknowledgement commitment and explicitly unresolved refund terms"
+              ],
+              "excludes": [
+                "Atlas research practice",
+                "Nova Cedar engagement",
+                "Refund durations imported from other records"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Atlas",
+                "context": "Project Atlas agreement with Orion"
+              }
+            ],
+            "parent": "S-000001",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000010"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-engagement",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-project-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000009",
+          "before": null,
+          "after": {
+            "label": "Cedar engagement with Nova",
+            "definition": {
+              "text": "The Cedar client engagement with Nova described in the refund agreement.",
+              "includes": [
+                "Its seven-calendar-day refund-request term as a source claim"
+              ],
+              "excludes": [
+                "Project Atlas for Orion",
+                "Cedar holding-company installations",
+                "Authority to transfer this term to another engagement"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Cedar",
+                "context": "Accepted Cedar engagement with Nova"
+              }
+            ],
+            "parent": "S-000001",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000011"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#nova-refund",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000010",
+          "before": null,
+          "after": {
+            "label": "Orion client",
+            "definition": {
+              "text": "Orion as the named client in the local engagement, refund-agenda, cancellation and privacy-contact records.",
+              "includes": [
+                "Project Atlas client party",
+                "Orion refund question",
+                "Workshop cancellation and privacy-request administration"
+              ],
+              "excludes": [
+                "Nova",
+                "Atlas research practice",
+                "Joined commercial claims inferred from topic co-membership"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000002",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-engagement",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/pilot/professional-services.md#clarification-note",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#old-orion-contact",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#contact-withdrawal",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000011",
+          "before": null,
+          "after": {
+            "label": "Nova client",
+            "definition": {
+              "text": "Nova as the named client party in the source-described Cedar and Iris engagements.",
+              "includes": [
+                "Client party in the Cedar refund agreement",
+                "Client party in the Iris discovery agreement"
+              ],
+              "excludes": [
+                "Orion",
+                "Unnamed future template client"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000002",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#nova-refund",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#iris-scheduling",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000012",
+          "before": null,
+          "after": {
+            "label": "Internal research",
+            "definition": {
+              "text": "Internal research work and request handling within the services practice.",
+              "includes": [
+                "Atlas research practice",
+                "Acknowledgement of internal research requests"
+              ],
+              "excludes": [
+                "Client Project Atlas",
+                "A claim that all client discovery work belongs to this practice"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000003",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-practice",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000013",
+          "before": null,
+          "after": {
+            "label": "Atlas research practice",
+            "definition": {
+              "text": "The research practice named Atlas, separate from Project Atlas and Orion.",
+              "includes": [
+                "Rejected fourteen-day refund proposal",
+                "Accepted internal research-request acknowledgement handbook"
+              ],
+              "excludes": [
+                "Project Atlas client contract",
+                "Applying the practice refund proposal to Orion"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "Atlas",
+                "context": "Atlas research practice's internal research-request policy"
+              }
+            ],
+            "parent": "S-000012",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-practice",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000014",
+          "before": null,
+          "after": {
+            "label": "Invoice payment",
+            "definition": {
+              "text": "Payment of invoices to the professional-services firm.",
+              "includes": [
+                "Thirty-day invoice-payment requirement in the handbook",
+                "General firm billing section of the briefing"
+              ],
+              "excludes": [
+                "Return of money",
+                "A thirty-day Orion refund policy"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#payment-handbook",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000015",
+          "before": null,
+          "after": {
+            "label": "Refunds",
+            "definition": {
+              "text": "Return-of-money questions, terms, proposals and explicit absence of approved terms in the public services records.",
+              "includes": [
+                "Unresolved Orion question",
+                "Rejected practice proposal",
+                "Cedar/Nova refund-request term",
+                "Unapproved future-client template suggestion",
+                "Explicit refund nonwarrants"
+              ],
+              "excludes": [
+                "Invoice due dates as refund deadlines",
+                "Cancellation notice as refund duration",
+                "Approval inferred from topic assignment"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000004",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-engagement",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/pilot/professional-services.md#atlas-practice",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/pilot/professional-services.md#clarification-note",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#nova-refund",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#beta-template",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000016",
+          "before": null,
+          "after": {
+            "label": "Request acknowledgement",
+            "definition": {
+              "text": "Acknowledging receipt of a question or internal request under the separately scoped services agreements.",
+              "includes": [
+                "Two-business-day Project Atlas client-question target",
+                "Four-business-day Atlas practice internal-request target"
+              ],
+              "excludes": [
+                "Resolution deadline",
+                "Refund deadline",
+                "Combining the two targets"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000005",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-project-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#atlas-practice-response",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000017",
+          "before": null,
+          "after": {
+            "label": "Workshop cancellation",
+            "definition": {
+              "text": "Notice before ending an Orion workshop booking.",
+              "includes": [
+                "Five-business-day notice in the Orion section of the briefing"
+              ],
+              "excludes": [
+                "Invoice payment",
+                "Refund eligibility or duration",
+                "Terms for other client engagements"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000005",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#billing-and-cancellation",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000018",
+          "before": null,
+          "after": {
+            "label": "Proposed service template",
+            "definition": {
+              "text": "The proposed template for an unnamed future services client.",
+              "includes": [
+                "Suggested ten-day refund window as an unapproved template proposal"
+              ],
+              "excludes": [
+                "Signed engagement",
+                "Known client identity or approved scope",
+                "A refund promise to Orion or Nova"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000005",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#beta-template",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000019",
+          "before": null,
+          "after": {
+            "label": "Review source access",
+            "definition": {
+              "text": "The agreed review’s public/private source-access boundary and stated condition for widening it.",
+              "includes": [
+                "Exclusion of sources/private/",
+                "Need for an explicit scope decision to widen access"
+              ],
+              "excludes": [
+                "Actual access-scope expansion",
+                "Reading the excluded refund draft",
+                "Commercial refund policy"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000006",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/professional-services.md#clarification-note",
+                  "revision": "9c5f8126d4bc84f6531edbb0b7d2713cd4dacf918dc59f65869d3c6ffdcf88d3"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#private-access",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000020",
+          "before": null,
+          "after": {
+            "label": "Orion privacy requests",
+            "definition": {
+              "text": "Privacy-request contact handling for Orion in the retirement and withdrawal records.",
+              "includes": [
+                "Historical old mailbox",
+                "Withdrawal and pending replacement confirmation"
+              ],
+              "excludes": [
+                "Using the retired mailbox",
+                "Guessing an address",
+                "An approved current address"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000007",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+              "kind": "decision",
+              "id": "D-000008"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "e6aef228-7347-4a72-a836-c5dcba2e0b8d",
+                    "kind": "decision",
+                    "id": "D-000008"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+                    "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+                    "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/professional-services.md#old-orion-contact",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                },
+                {
+                  "locator": "sources/development-v2/professional-services.md#contact-withdrawal",
+                  "revision": "19a675676ef39d66d2dda02737f7b10ef7c15cfb9f56e7d51c7b61653f346dac"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000008.yaml",
+          "blob": "7760190ea2e0b3e8dd7303d9180347b1b3194ccf",
+          "sha256": "aaf57ebd5ee5ecb97e286acfe67a28f6e40c70a5971332e47b2cd975d6d16e34"
+        },
+        "decision-digest": "60180906b2c25b3551d6740a295ed2dc6d665ea8a1e3b0c35f76bdc2a9b15463",
+        "change-digest": "94ce291d50d30355a4a02d0813c73362b850055b4d288090589e6e950ecaf7ed"
+      }
+    }
+  ]
+}

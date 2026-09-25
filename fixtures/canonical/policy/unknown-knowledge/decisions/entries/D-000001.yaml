@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "D-000001",
+      "title": "Source report: predecessor",
+      "category": "governance",
+      "status": "superseded",
+      "subjects": [
+        "S-000001",
+        "S-000003"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/pilot/policy.md#predecessor.",
+      "decision": "D-000001 approved a 30-day retention period for support tickets in Region\nWest. It is superseded by both D-000002 and D-000003.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

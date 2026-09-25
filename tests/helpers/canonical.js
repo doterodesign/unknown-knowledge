@@ -1,0 +1,59 @@
+// The one shared test fixture: eight development-v2 installations committed as
+// plain files under fixtures/canonical, with the gold judgments that
+// tests/ask-gold.test.js scores against.
+//
+// Read-only tests use it in place. Tests that edit get a private copy. Tests
+// that need Git copy one repository committed once per process instead of
+// running `git init` and a first commit themselves.
+import { cpSync, mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+export const CANONICAL = fileURLToPath(new URL('../../fixtures/canonical', import.meta.url));
+export const INSTALLATIONS = Object.freeze(['cedar-holding', 'cedar-north', 'cedar-south', 'cultural-research',
+  'engineering', 'manufacturing', 'policy', 'professional-services']);
+
+/** Absolute root of one canonical installation, for read-only use. */
+export const installation = (name) => join(CANONICAL, name);
+
+/** A private, disposable copy of one installation, removed after the test. */
+export function copy(t, name) {
+  const dir = mkdtempSync(join(tmpdir(), `uk-${name}-`));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  cpSync(installation(name), dir, { recursive: true });
+  return { root: dir, kit: join(dir, 'unknown-knowledge') };
+}
+
+const GIT_IDENTITY = ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.invalid', '-c', 'commit.gpgsign=false'];
+export const git = (dir, ...args) => {
+  const r = spawnSync('git', ['-C', dir, ...GIT_IDENTITY, ...args], { encoding: 'utf8' });
+  if (r.status !== 0) throw new Error(`git ${args.join(' ')}: ${r.stderr}`);
+  return r.stdout;
+};
+
+const committed = new Map();
+process.on('exit', () => { for (const dir of committed.values()) rmSync(dir, { recursive: true, force: true }); });
+
+/**
+ * A private copy of one installation as a Git repository with the fixture as
+ * its single commit. The commit is made once per process; each call copies it.
+ */
+export function repository(t, name) {
+  if (!committed.has(name)) {
+    const base = mkdtempSync(join(tmpdir(), `uk-${name}-git-`));
+    cpSync(installation(name), base, { recursive: true });
+    git(base, 'init', '-q');
+    git(base, 'add', '-A');
+    git(base, 'commit', '-q', '-m', 'canonical fixture');
+    committed.set(name, base);
+  }
+  const dir = mkdtempSync(join(tmpdir(), `uk-${name}-repo-`));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  cpSync(committed.get(name), dir, { recursive: true });
+  return { root: dir, kit: join(dir, 'unknown-knowledge') };
+}
+
+export const readJson = (file) => JSON.parse(readFileSync(file, 'utf8'));
+export const writeJson = (file, value) => writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);

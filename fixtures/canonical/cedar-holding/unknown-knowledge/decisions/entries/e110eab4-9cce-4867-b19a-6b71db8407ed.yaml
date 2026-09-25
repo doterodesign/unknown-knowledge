@@ -1,0 +1,22 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "proposal:decision:e110eab4-9cce-4867-b19a-6b71db8407ed",
+      "title": "Source report: historical import",
+      "category": "governance",
+      "status": "rejected",
+      "subjects": [
+        "S-000004",
+        "S-000005"
+      ],
+      "date": "2026-09-19",
+      "deciders": [
+        "simulated-source-transcription"
+      ],
+      "context": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Original source: sources/pilot/holding-company.md#historical-import.",
+      "decision": "A historical import proposal suggested merging both O-000001 records by\ntheir local string. Review rejected it because the meanings and owners differ.\nNo mapping or combined governed record was approved.\n",
+      "consequences": "Source standing and stated scope remain exactly as quoted. No precedence is inferred from this fixture capture date."
+    }
+  ]
+}

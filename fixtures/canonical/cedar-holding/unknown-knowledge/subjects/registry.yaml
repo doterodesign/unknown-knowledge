@@ -1,0 +1,741 @@
+{
+  "schema-version": 1,
+  "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+  "revision": 1,
+  "hierarchy-revision": 1,
+  "subjects": [
+    {
+      "id": "S-000001",
+      "label": "Holding governance review topics",
+      "definition": {
+        "text": "Local cedar-holding topics for reviews and proposals about import, record separation and branch separation.",
+        "includes": [
+          "Historical rejected import merge",
+          "Future correspondence planning",
+          "Review rejection of blanket format union",
+          "Comparison of independently owned branch labels"
+        ],
+        "excludes": [
+          "Governance authority over North or South",
+          "A universal identity taxonomy",
+          "Imported subsidiary descendants or an operational federation"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#historical-import",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#proposed-correspondence",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#rejected-union",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "0d44a189-e6eb-4bad-878e-157122032655"
+      ]
+    },
+    {
+      "id": "S-000002",
+      "label": "International trade",
+      "definition": {
+        "text": "Shipping physical goods abroad as described in holding-company notes.",
+        "includes": [
+          "Export meaning shipping goods abroad",
+          "Crate freight to Port Elm"
+        ],
+        "excludes": [
+          "Software format export",
+          "Local concept identity",
+          "Import or federation of knowledge stores"
+        ]
+      },
+      "aliases": [
+        {
+          "label": "export",
+          "context": "Holding-company shipping goods abroad / freight to Port Elm"
+        }
+      ],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#group-note",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#trade-port",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "0d44a189-e6eb-4bad-878e-157122032655"
+      ]
+    },
+    {
+      "id": "S-000003",
+      "label": "Archival component formats",
+      "definition": {
+        "text": "Software-format capability mentioned in a holding archival manifest whose component owner, installation and release are unknown.",
+        "includes": [
+          "Transcribed EPS capability of the unlocated component"
+        ],
+        "excludes": [
+          "EPS support attributed to North or South",
+          "Ownership inferred from holding record placement",
+          "Current release applicability inferred from reviewed transcription"
+        ]
+      },
+      "aliases": [],
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/holding-company.md#unlocated-package",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "0d44a189-e6eb-4bad-878e-157122032655"
+      ]
+    },
+    {
+      "id": "S-000004",
+      "label": "Holding import-review topics",
+      "definition": {
+        "text": "Holding-local review and planning of proposed imports between separately owned source artifacts and possible distinct destinations.",
+        "includes": [
+          "Rejected merge by O-000001 string",
+          "Proposed future importer with distinct destination identities"
+        ],
+        "excludes": [
+          "Approved import",
+          "Allocated destination IDs",
+          "Executable correspondence or combined governed record"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000005"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#historical-import",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#proposed-correspondence",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "0d44a189-e6eb-4bad-878e-157122032655"
+      ]
+    },
+    {
+      "id": "S-000005",
+      "label": "Holding record-separation reviews",
+      "definition": {
+        "text": "Holding-local governance topic for maintaining distinct record or concept identities when comparing owners, local identifiers and labels.",
+        "includes": [
+          "Rejected same-string record merge",
+          "Planning for distinct destination identities",
+          "Review of unsupported combined records from matching IDs or labels",
+          "Branch-comparison claims denying imported or equivalent concepts"
+        ],
+        "excludes": [
+          "A universal taxonomy of identity",
+          "A cross-owner identity edge",
+          "Identity allocation or operational mapping",
+          "Holding authority over either subsidiary"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [
+        {
+          "type": "association",
+          "target": "S-000006"
+        }
+      ],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/pilot/holding-company.md#historical-import",
+            "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#proposed-correspondence",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#rejected-union",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "0d44a189-e6eb-4bad-878e-157122032655"
+      ]
+    },
+    {
+      "id": "S-000006",
+      "label": "Holding branch-separation reviews",
+      "definition": {
+        "text": "Holding-local governance topic for reviews comparing independently owned branches whose displayed labels match.",
+        "includes": [
+          "North/South software / export label comparison",
+          "Explicit absence of cross-owner parent, equivalence and import edges",
+          "Rejection of union based on matching subject labels"
+        ],
+        "excludes": [
+          "A universal identity taxonomy",
+          "A common parent or shared descendant set for subsidiary branches",
+          "Equating branch names with records",
+          "Holding ownership of the compared branches"
+        ]
+      },
+      "aliases": [],
+      "parent": "S-000001",
+      "related": [],
+      "status": "active",
+      "origin-decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "warrant": {
+        "records": [
+          {
+            "ref": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "capture": {
+              "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+              "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+              "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+            }
+          }
+        ],
+        "sources": [
+          {
+            "locator": "sources/development-v2/holding-company.md#repeated-branches",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          },
+          {
+            "locator": "sources/development-v2/holding-company.md#rejected-union",
+            "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+          }
+        ]
+      },
+      "changes": [
+        "0d44a189-e6eb-4bad-878e-157122032655"
+      ]
+    }
+  ],
+  "history": [
+    {
+      "id": "0d44a189-e6eb-4bad-878e-157122032655",
+      "action": "activate",
+      "decision": {
+        "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+        "kind": "decision",
+        "id": "D-000002"
+      },
+      "rows": [
+        {
+          "id": "S-000001",
+          "before": null,
+          "after": {
+            "label": "Holding governance review topics",
+            "definition": {
+              "text": "Local cedar-holding topics for reviews and proposals about import, record separation and branch separation.",
+              "includes": [
+                "Historical rejected import merge",
+                "Future correspondence planning",
+                "Review rejection of blanket format union",
+                "Comparison of independently owned branch labels"
+              ],
+              "excludes": [
+                "Governance authority over North or South",
+                "A universal identity taxonomy",
+                "Imported subsidiary descendants or an operational federation"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#historical-import",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#proposed-correspondence",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#rejected-union",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000002",
+          "before": null,
+          "after": {
+            "label": "International trade",
+            "definition": {
+              "text": "Shipping physical goods abroad as described in holding-company notes.",
+              "includes": [
+                "Export meaning shipping goods abroad",
+                "Crate freight to Port Elm"
+              ],
+              "excludes": [
+                "Software format export",
+                "Local concept identity",
+                "Import or federation of knowledge stores"
+              ]
+            },
+            "aliases": [
+              {
+                "label": "export",
+                "context": "Holding-company shipping goods abroad / freight to Port Elm"
+              }
+            ],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#group-note",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#trade-port",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000003",
+          "before": null,
+          "after": {
+            "label": "Archival component formats",
+            "definition": {
+              "text": "Software-format capability mentioned in a holding archival manifest whose component owner, installation and release are unknown.",
+              "includes": [
+                "Transcribed EPS capability of the unlocated component"
+              ],
+              "excludes": [
+                "EPS support attributed to North or South",
+                "Ownership inferred from holding record placement",
+                "Current release applicability inferred from reviewed transcription"
+              ]
+            },
+            "aliases": [],
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/holding-company.md#unlocated-package",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000004",
+          "before": null,
+          "after": {
+            "label": "Holding import-review topics",
+            "definition": {
+              "text": "Holding-local review and planning of proposed imports between separately owned source artifacts and possible distinct destinations.",
+              "includes": [
+                "Rejected merge by O-000001 string",
+                "Proposed future importer with distinct destination identities"
+              ],
+              "excludes": [
+                "Approved import",
+                "Allocated destination IDs",
+                "Executable correspondence or combined governed record"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000005"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#historical-import",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#proposed-correspondence",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000005",
+          "before": null,
+          "after": {
+            "label": "Holding record-separation reviews",
+            "definition": {
+              "text": "Holding-local governance topic for maintaining distinct record or concept identities when comparing owners, local identifiers and labels.",
+              "includes": [
+                "Rejected same-string record merge",
+                "Planning for distinct destination identities",
+                "Review of unsupported combined records from matching IDs or labels",
+                "Branch-comparison claims denying imported or equivalent concepts"
+              ],
+              "excludes": [
+                "A universal taxonomy of identity",
+                "A cross-owner identity edge",
+                "Identity allocation or operational mapping",
+                "Holding authority over either subsidiary"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [
+              {
+                "type": "association",
+                "target": "S-000006"
+              }
+            ],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/pilot/holding-company.md#historical-import",
+                  "revision": "4efca6e136a9156ee3b6923d90d1a48833aef0c7838b50902d44dad47ff401dc"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#proposed-correspondence",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#rejected-union",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "id": "S-000006",
+          "before": null,
+          "after": {
+            "label": "Holding branch-separation reviews",
+            "definition": {
+              "text": "Holding-local governance topic for reviews comparing independently owned branches whose displayed labels match.",
+              "includes": [
+                "North/South software / export label comparison",
+                "Explicit absence of cross-owner parent, equivalence and import edges",
+                "Rejection of union based on matching subject labels"
+              ],
+              "excludes": [
+                "A universal identity taxonomy",
+                "A common parent or shared descendant set for subsidiary branches",
+                "Equating branch names with records",
+                "Holding ownership of the compared branches"
+              ]
+            },
+            "aliases": [],
+            "parent": "S-000001",
+            "related": [],
+            "status": "active",
+            "origin-decision": {
+              "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+              "kind": "decision",
+              "id": "D-000002"
+            },
+            "warrant": {
+              "records": [
+                {
+                  "ref": {
+                    "namespace": "6b5e68f5-a4b6-40e3-b404-47da789b3690",
+                    "kind": "decision",
+                    "id": "D-000002"
+                  },
+                  "capture": {
+                    "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+                    "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+                    "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+                  }
+                }
+              ],
+              "sources": [
+                {
+                  "locator": "sources/development-v2/holding-company.md#repeated-branches",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                },
+                {
+                  "locator": "sources/development-v2/holding-company.md#rejected-union",
+                  "revision": "943bfe76abc3ee2a26f80f635de08a2c2dd3ad9f33b439e73c78769e09590924"
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "reason": "Initial captured fixture vocabulary from reviewed source warrants; no historical governance or human authentication is inferred.",
+      "review": {
+        "reference": "simulated-fixture-curation:P2-reviewed-editorial-1",
+        "accepted-status": "accepted",
+        "decision-capture": {
+          "file": "unknown-knowledge/decisions/entries/D-000002.yaml",
+          "blob": "2d8679eff12a9158ffbc56a0d0493de81377bb97",
+          "sha256": "3b30403bec3727ac212ac7bcf641ac2e643ebc6071c48686dd11adafc5082aba"
+        },
+        "decision-digest": "6a3697b30570e6a8faff6e85992c7d956743d0e2a9740c211805e03ffebf411b",
+        "change-digest": "0d74e24c58c871f49cc3d862bebab1f4e7fbf8d9e6427a871215a83021ff1bb7"
+      }
+    }
+  ]
+}

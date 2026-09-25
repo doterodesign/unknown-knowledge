@@ -1,0 +1,71 @@
+{
+  "schema-version": 2,
+  "store": "knowledge",
+  "entries": [
+    {
+      "id": "K-000001",
+      "title": "Source report: red attention",
+      "file": "K-000001.md"
+    },
+    {
+      "id": "K-000002",
+      "title": "Source report: blue symbolism",
+      "file": "K-000002.md"
+    },
+    {
+      "id": "K-000003",
+      "title": "Source report: rouge terms",
+      "file": "K-000003.md"
+    },
+    {
+      "id": "proposal:knowledge:a57d27fe-599e-4c7f-a428-ae3babb2416a",
+      "title": "Source report: earlier pilot",
+      "file": "proposals/a57d27fe-599e-4c7f-a428-ae3babb2416a.md"
+    },
+    {
+      "id": "K-000004",
+      "title": "Source report: do glossary",
+      "file": "K-000004.md"
+    },
+    {
+      "id": "K-000005",
+      "title": "Source report: rouge project",
+      "file": "K-000005.md"
+    },
+    {
+      "id": "K-000006",
+      "title": "Source report: thailand null",
+      "file": "K-000006.md"
+    },
+    {
+      "id": "K-000007",
+      "title": "Source report: split study notebook",
+      "file": "K-000007.md"
+    },
+    {
+      "id": "K-000008",
+      "title": "Historical source report — retired or withdrawn: preliminary poster",
+      "file": "K-000008.md"
+    },
+    {
+      "id": "K-000009",
+      "title": "Source report: poster retraction",
+      "file": "K-000009.md"
+    },
+    {
+      "id": "K-000010",
+      "title": "Source report: unlocated observation",
+      "file": "K-000010.md"
+    },
+    {
+      "id": "K-000011",
+      "title": "Source report: vietnam symbolism",
+      "file": "K-000011.md"
+    },
+    {
+      "id": "proposal:knowledge:00561387-fadb-4f99-900b-5a82be429993",
+      "title": "Source report: future region study",
+      "file": "proposals/00561387-fadb-4f99-900b-5a82be429993.md"
+    }
+  ]
+}

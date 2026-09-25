@@ -1,0 +1,34 @@
+{
+  "schema-version": 2,
+  "entries": [
+    {
+      "id": "O-000001",
+      "term": "Source-text assertion: css export",
+      "class": "source-text",
+      "summary": "Inspect sources/pilot/engineering.md#css-export and its exact retained excerpt.",
+      "definition": "Synthetic source fixture. Source-local identifiers quoted below are historical text, not runtime references. Curation verifies faithful source reporting only; it does not approve the described operation or fill missing scope. Assertion: the pointed excerpt contains the following line set. The extractor does not prove order, blank/comment preservation, software behavior or operational implementation; byte fidelity is separately captured.",
+      "status": "active",
+      "subjects": [
+        "S-000008",
+        "S-000006"
+      ],
+      "source-of-truth": [
+        "sources/passages/css-export.txt",
+        "sources/pilot/engineering.md"
+      ],
+      "last-verified": "2026-09-19",
+      "enumerates": [
+        {
+          "kind": "test-lines",
+          "source": "sources/passages/css-export.txt",
+          "values": [
+            "The Aurora CSS exporter represents every color token with a non-opaque alpha",
+            "as `rgba(r, g, b, a)`. The semitransparent accent token is named",
+            "`--accent-soft`. It retains its alpha value; the exporter must not flatten it",
+            "against the page background. This active contract applies to Aurora Web 4."
+          ]
+        }
+      ]
+    }
+  ]
+}
