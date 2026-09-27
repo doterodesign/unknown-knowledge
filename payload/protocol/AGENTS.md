@@ -167,8 +167,11 @@ engine failure, not an empty result. Act on `confidence.tier`:
 | `unavailable` | A store did not load cleanly | Run store-health preflight and report the failure; do not answer |
 
 The tier says whether the right records were found. It never says they answer
-the question. Titles, scores and `matched` terms locate evidence; they are not
-evidence.
+the question. Titles, scores, `relevance` and `matched` terms locate evidence;
+they are not evidence. `relevance` is a fitted probability that the record is
+one the question needs, from word-match signals only: it orders the list and
+cannot see meaning. `via-alias` lists question words that reached the record
+only through its `aliases`.
 
 **Answer check.** After reading the returned records (bodies, and sources in
 GATHER), decide exactly one of `answered`, `partially answered` or `not in the

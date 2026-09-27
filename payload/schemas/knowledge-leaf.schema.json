@@ -163,6 +163,7 @@
       }
     },
     "terms": { "type": "array", "items": { "type": "string" } },
+    "aliases": { "type": "array", "items": { "type": "string" }, "description": "Other names a question may use for this record; searched at title weight by ask." },
     "edition": { "type": "integer", "minimum": 1 },
     "contributors": { "type": "array", "items": { "type": "string" } }
   },

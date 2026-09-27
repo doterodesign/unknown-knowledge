@@ -351,7 +351,8 @@ report a struggle; only those reads establish what repair the material supports.
 |---|---|
 | The wording misses an existing concept | One observed alias on that concept (`alias-addition`), proposal-first ontology review, with the minting Decisions entry and its warrant. Do not enumerate speculative synonyms. |
 | The concept resolves but its intended leaf is absent | The leaf's `concepts` edge (`knowledge-promotion` handoff to kb-build), after checking the leaf is actually about that concept. Do not substitute aliases for a missing relationship. |
-| The leaf itself needs the observed search wording | A minimal `terms` revision (`knowledge-promotion` handoff to kb-build), with the minting Decisions provenance. Even a frontmatter-only leaf change uses kb-build. |
+| The leaf itself needs the observed search wording | A minimal `terms` or `aliases` revision (`knowledge-promotion` handoff to kb-build), with the minting Decisions provenance. Even a frontmatter-only leaf change uses kb-build. |
+| A Decision is missed because the question uses another word for it | One observed alias in the Decision's `aliases`, through the Decisions-authoring path. It adds a name; it never changes the recorded decision, context or consequences. |
 | The concept reaches an inaccurate source | `ssot-repoint`, with a freshly read replacement pointer and any matching `enumerates.source` change; do not hide the wrong pointer behind a vocabulary change. |
 | Existing material needs an unminted operation or domain | `mint-proposal`, only with literary warrant and the existing registry/Decisions gate. A query miss alone does not warrant a new domain. |
 | Missing metadata | Repair only the evidenced missing field through its store gate; a Knowledge `subjects`-only edit is still a kb-build handoff. |

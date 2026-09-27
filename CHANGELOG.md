@@ -13,6 +13,12 @@ the actual release date; unpublished versions never receive invented dates.
 
 ## [Unreleased]
 
+## [3.0.0-rc.21] - Unreleased
+
+- `ask` orders results by a fitted relevance probability: a small logistic model over signals it already computes (relative score, rank, coverage, title coverage, a distinctive title word, inactive lifecycle). Each searched record reports `relevance`. Coefficients are generated into `payload/engine/lib/rerank-model.js` by `acceptance/retrieval/fit-rerank.js` from the labelled sets in `acceptance/retrieval/rerank/training.json`; the fit is deterministic and never uses held-out cases. On the development gold set, judged on questions left out of the fit, within three rises from 37 to 40 of 48; within eight stays 48 and rank one 28. The gold gate's within-three floor is now 40.
+- Knowledge and Decision records accept optional `aliases` (Ontology already did), searched at title weight; `ask` reports `via-alias` when a question word matched only an alias. The reflect skill routes an observed wording miss on a Decision to one alias.
+- Decision: [fitted re-rank and aliases](decisions/entries/fitted-rerank-and-aliases.yaml). Tracking: UCS-1612.
+
 ## [3.0.0-rc.20] - Unreleased
 
 - Grading correction: a blind diagnosis found the one held-out failure (policy-01, current runtime, repeat 3) was a grader error. The grader saw only file paths, and a converted record keeps its 2.x file name while carrying a new ID. The grader now sees each tool's output (`reader.js` keeps it; `replay.js` rebuilds it for earlier sessions), and all 24 held-out sessions that ran were regraded: both runtimes 12 of 12, no regression, first verdicts kept as `verdictV1`. Diagnosis: `docs/agents/2026-09-25-policy-01-miss-diagnosis.md`.

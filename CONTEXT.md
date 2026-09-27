@@ -110,6 +110,12 @@ cleanly, so no tier is given). It measures whether the right records were
 found, never whether they answer the question. Strict on purpose: agents treat
 a tier as a verdict.
 
+**Relevance** — The fitted probability `ask` reports for each record that the
+question needs it, from word-match signals (score, rank, coverage, a distinctive
+title word, lifecycle) combined by a small logistic model whose coefficients
+ship with the engine. It orders the results; it cannot see meaning. The model is
+refitted from labelled retrieval sets, never from held-out cases.
+
 **Answer check** — The host agent's one bounded judgment after reading the
 records `ask` returned: `answered`, `partially answered` or `not in the
 knowledge base`, citing only returned IDs. Retrieval signals cannot make this

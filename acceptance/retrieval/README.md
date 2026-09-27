@@ -10,6 +10,7 @@ payload.
 | `materialize.js` | builds the pilot tasks as 2.x installations with the original 08066b5 runtime | `tests/migrate.e2e.test.js`, `tests/retrieval-acceptance.e2e.test.js` |
 | `materialize-development.js` | builds the development-v2 installations; its output is committed as `fixtures/canonical` | regenerating the canonical fixture |
 | `materialize-growth.js`, `materialize-scale.js` | grow those installations with reviewed or synthetic records (see [growth construction](GROWTH-CONSTRUCTION.md)) | `tests/retrieval-growth-preparation.test.js`, scale timing |
+| `fit-rerank.js`, `rerank/training.json` | fits the re-rank model in `payload/engine/lib/rerank-model.js` from the labelled sets in the manifest and reports accuracy ([fit report](rerank/fit-report.json)); `--check` verifies the shipped model | `tests/rerank.test.js` |
 | `benchmark.js` | ranks each gold task with `ask` or `resolve` and reports bundle depth, output size and latency | `node acceptance/retrieval/benchmark.js ask` |
 | `evaluate.js` | per-store recall/nDCG and bundle scorer for reviewed agent traces | `tests/retrieval-acceptance.e2e.test.js` |
 | `materialize-corpus.js` | builds the eight development-v2 installations as 2.x stores with the original runtime | `heldout-run.js`, `tests/corpus-arms.e2e.test.js` |
@@ -30,6 +31,29 @@ why an agent session costs about $0.20 while retrieval costs nothing.
 The earlier study
 (15/18 original, 10/18 rc.8) and its reports remain at
 [2777b9b](https://github.com/doterodesign/unknown-knowledge/tree/2777b9b/acceptance/retrieval).
+
+## Re-rank model
+
+`ask` orders its BM25 candidates by a fitted relevance probability: a logistic
+model over six signals it already computes (relative score, reciprocal rank,
+idf-weighted coverage, title coverage, a distinctive title word, inactive
+lifecycle). The coefficients are generated into
+`payload/engine/lib/rerank-model.js`; applying them is arithmetic, so the engine
+stays offline and deterministic.
+
+To evolve it, add a labelled set (questions, installations and graded record
+judgments) to `rerank/training.json` with a loader in `fit-rerank.js`, run
+`node acceptance/retrieval/fit-rerank.js`, and commit the regenerated model and
+[fit report](rerank/fit-report.json). The report gives BM25 alone,
+leave-one-question-out and in-sample accuracy; judge a change by the
+leave-one-question-out numbers. Held-out cases are refused by the script and
+never train the model. `tests/rerank.test.js` fails if the shipped model differs
+from a fresh fit, and `tests/ask-gold.test.js` holds the accuracy floors.
+
+First fit (development-v2, 644 candidates, 106 relevant): within three rose
+from 37 to 40 of 48 on questions the model never saw; within eight stayed 48
+and rank one stayed 28. Two further signals (the rarest question word, the
+unweighted share of question words) changed nothing and were left out.
 
 ## Agent evaluation
 

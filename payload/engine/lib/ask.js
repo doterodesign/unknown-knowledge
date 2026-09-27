@@ -19,6 +19,8 @@
  * say whether a record contains the specific fact asked for; that stays the
  * reader's check against the record body and its sources.
  */
+import { RERANK_MODEL } from './rerank-model.js';
+import { candidateFeatures, relevance } from './rerank.js';
 import { authoringRecords, leafConcepts } from './load-stores.js';
 
 // ------------------------------------------------------------------ text
@@ -146,7 +148,7 @@ function recordFields(model, kind, entry) {
   if (kind === 'knowledge') {
     return {
       label: r.heading ?? null,
-      title: texts(r.heading, r.terms, r.notation),
+      title: texts(r.heading, r.terms, r.aliases, r.notation),
       subject: subjects.name,
       about: texts(r.summary, r.operations, subjects.about,
         leafConcepts(r).map((id) => model.concepts.get(id)?.record?.term)),
@@ -164,7 +166,7 @@ function recordFields(model, kind, entry) {
   }
   return {
     label: r.title ?? null,
-    title: texts(r.title),
+    title: texts(r.title, r.aliases),
     subject: subjects.name,
     about: texts(r.decision, r.context, subjects.about),
     body: texts(r.consequences, r.alternatives, r.rationale, subjects.body),
@@ -198,10 +200,16 @@ export function buildIndex(installations, { weights = FIELD_WEIGHTS } = {}) {
           for (const t of tokens) bag.set(t, (bag.get(t) ?? 0) + 1);
           bags[field] = { bag, length: tokens.length };
         }
+        // Words that reach the record only through an alias (or a leaf's
+        // `terms`), so the match evidence can say an alias did the work.
+        const labelWords = new Set(texts(fields.label).flatMap(words));
+        const aliasWords = new Set(texts(r.aliases, kind === 'knowledge' ? r.terms : null).flatMap(words)
+          .filter((w) => !labelWords.has(w)));
         docs.push({
           installation,
           kind,
           id,
+          aliasWords,
           file: entry.file,
           title: fields.label,
           status: r.status ?? r.facets?.stage ?? null,
@@ -281,21 +289,36 @@ const EXACT_ID = /\b([KOD])-(\d{6})\b/g;
  * @param {string} question
  * @param {{limit?: number}} [options]
  */
-export function ask(index, question, { limit = 8, namedMax = NAMED_MAX } = {}) {
+export function ask(index, question, { limit = 8, namedMax = NAMED_MAX, model = RERANK_MODEL } = {}) {
   // An accession ID in the question is a lookup: those records lead, exactly.
   // The rest of the question is still searched, because "O-000001's export
   // formats" also needs whatever records talk about export formats.
   const exact = [...new Set([...String(question).matchAll(EXACT_ID)].map((m) => m[0]))];
   const exactHits = index.docs.filter((d) => exact.includes(d.id));
   const terms = queryTerms(String(question).replace(EXACT_ID, ' '));
-  const candidates = index.docs
+  // Coverage is weighted by idf so that matching "aurora" (on every record)
+  // counts for little and matching "accent" (on one) counts for a lot.
+  const weight = new Map(terms.map((t) => [t, idf(index, t)]));
+  const total = [...weight.values()].reduce((a, b) => a + b, 0);
+  const covered = (set) => [...set].reduce((sum, t) => sum + (weight.get(t) ?? 0), 0) / (total || 1);
+  const isNamed = (r) => r.titled.some((t) => (index.titleDf.get(t) ?? 0) <= namedMax);
+  const scored = index.docs
     .filter((doc) => !exactHits.includes(doc))
     .map((doc) => ({ doc, ...scoreDoc(index, doc, terms) }))
     .filter((r) => r.score > 0)
     .sort((a, b) => b.score - a.score || compareIds(a.doc, b.doc));
+  // The fitted re-rank score (lib/rerank.js) orders the BM25 candidates; with
+  // `model: null` the BM25 order stands and the features are still reported.
+  const features = candidateFeatures(scored, covered, isNamed);
+  scored.forEach((r, i) => {
+    r.features = features[i];
+    r.relevance = model ? relevance(features[i], model) : null;
+  });
+  const order = (a, b) => (b.relevance ?? 0) - (a.relevance ?? 0) || b.score - a.score || compareIds(a.doc, b.doc);
+  const candidates = model ? [...scored].sort(order) : scored;
   const searched = candidates.slice(0, Math.max(0, limit - exactHits.length));
   // Named records displace the weakest picks, never each other.
-  const named = candidates.filter((r) => r.titled.some((t) => (index.titleDf.get(t) ?? 0) <= namedMax));
+  const named = candidates.filter(isNamed);
   for (const r of named) {
     if (searched.includes(r)) continue;
     const drop = searched.findLastIndex((p) => !named.includes(p));
@@ -303,7 +326,7 @@ export function ask(index, question, { limit = 8, namedMax = NAMED_MAX } = {}) {
     searched.splice(drop, 1);
     searched.push(r);
   }
-  searched.sort((a, b) => b.score - a.score || compareIds(a.doc, b.doc));
+  searched.sort(model ? order : (a, b) => b.score - a.score || compareIds(a.doc, b.doc));
   for (const r of searched) r.named = named.includes(r);
   const ranked = [
     ...exactHits.map((doc) => ({ doc, score: null, matched: [doc.id] })),
@@ -314,11 +337,6 @@ export function ask(index, question, { limit = 8, namedMax = NAMED_MAX } = {}) {
     return { terms: exact, ranked, signals: { mode: 'exact-id', ...exactSignals } };
   }
 
-  // Coverage is weighted by idf so that matching "aurora" (on every record)
-  // counts for little and matching "accent" (on one) counts for a lot.
-  const weight = new Map(terms.map((t) => [t, idf(index, t)]));
-  const total = [...weight.values()].reduce((a, b) => a + b, 0);
-  const covered = (set) => [...set].reduce((sum, t) => sum + (weight.get(t) ?? 0), 0) / (total || 1);
   const topSet = new Set(searched[0]?.matched ?? []);
   // Ambiguity: many records each matching nearly the whole question means the
   // question does not single anything out ("which seal specification?").

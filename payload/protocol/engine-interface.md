@@ -28,7 +28,9 @@ establish that a Subject is approved for any particular use.
 CLI prints with `--json`. Search mode ranks Knowledge, Ontology and Decision
 records for `question` and returns at most `limit` (default 8, maximum 50),
 with `confidence.tier` (`covered`, `partial`, `none` or `unavailable`) and the
-signals behind it. `fields` mode lists the metadata fields present in a
+signals behind it. Each searched record carries `relevance`, a fitted
+probability that the question needs it (records are ordered by it), and
+`via-alias` when a question word matched only one of the record's `aliases`. `fields` mode lists the metadata fields present in a
 selection with their most common values. `count` mode selects exactly by
 `where` (`[{field, value}]`; Subjects match by descendant), groups by
 `countBy` (`under` rolls Subjects up to that parent's children) and returns up

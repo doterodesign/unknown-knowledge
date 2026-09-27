@@ -274,3 +274,6 @@ entries:
   - id: proposal:decision:ecab54e7-c723-4e59-b796-7937b86bd792
     title: The blind grader sees what each tool returned; recorded sessions are regraded by replay
     file: entries/grader-sees-evidence.yaml
+  - id: proposal:decision:6e0e54fa-c17b-4086-b5fd-ecfd03907aa7
+    title: ask orders results by a fitted logistic re-rank score, and every record kind can carry aliases
+    file: entries/fitted-rerank-and-aliases.yaml
