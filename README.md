@@ -12,17 +12,19 @@ Nothing here is a service. There is no runtime, no daemon, no network call, and
 no update channel. Everything is YAML and JavaScript files in your repo,
 branched and merged by your normal PRs.
 
-## Planned 3.0.0-rc.20 — unreleased
+## Planned 3.0.0-rc.21 — unreleased
 
-`unknown-knowledge@3.0.0-rc.20` is the planned prerelease on `main`. Merging
+`unknown-knowledge@3.0.0-rc.21` is the planned prerelease on `main`. Merging
 into `main` does not publish an npm package or update existing 2.1.0 or
 3.0.0-rc.1 installations; the install commands below are unchanged.
 
 What 3.0 changes:
 
 - **`ask` finds the records a question needs.** One question in, at most eight
-  ranked records from all three stores out, with IDs, titles, files and the
-  words that matched, never record bodies. It also counts records exactly by a
+  ranked records from all three stores out, with IDs, titles, files, the words
+  that matched and a relevance probability per record, never record bodies.
+  Records can carry `aliases`, other names a question may use for them. It
+  also counts records exactly by a
   metadata field (`--count-by`, `--where`, `--under`) for questions about many
   records, and `--fields` lists what can be counted.
 - **Every answer carries a retrieval tier.** Question words are weighted by
@@ -51,8 +53,11 @@ not keep working as aliases.
 
 On the 48 development gold questions, the previous resolver returned no records
 for any question; `ask` places every independently judged answer bundle within
-its first eight results (37 within three, 28 at rank one) in about 85 ms. Those
-questions also guided `ask`'s tuning. The six pilot tasks, built as 2.x stores
+its first eight results (40 within three, 28 at rank one) in about 85 ms from
+the command line, under a millisecond once loaded. A small fitted re-rank model
+orders the results; judged on questions it never saw during its fit, it lifts
+within three from 37 to 40 and changes nothing else. Those questions also
+guided `ask`'s tuning. The six pilot tasks, built as 2.x stores
 and converted with `migrate.js`, are a second gold set `ask` was not tuned on:
 every bundle lands within three results, four at rank one. Both are engine
 retrieval results, not agent task completion.

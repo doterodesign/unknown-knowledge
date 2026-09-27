@@ -1,0 +1,50 @@
+{
+  "fit": {
+    "learningRate": 0.5,
+    "iterations": 4000,
+    "l2": 0.01,
+    "digits": 4
+  },
+  "features": [
+    "relativeScore",
+    "reciprocalRank",
+    "coverage",
+    "titleCoverage",
+    "named",
+    "inactive"
+  ],
+  "trainedOn": [
+    "development-v2"
+  ],
+  "samples": 644,
+  "relevant": 106,
+  "bm25": {
+    "questions": 48,
+    "within8": 48,
+    "within3": 37,
+    "rank1": 28
+  },
+  "leaveOneQuestionOut": {
+    "questions": 48,
+    "within8": 48,
+    "within3": 40,
+    "rank1": 28
+  },
+  "inSample": {
+    "questions": 48,
+    "within8": 48,
+    "within3": 40,
+    "rank1": 28
+  },
+  "model": {
+    "bias": -3.1781,
+    "weights": {
+      "relativeScore": 1.5725,
+      "reciprocalRank": 1.1843,
+      "coverage": 0.5692,
+      "titleCoverage": 0.1924,
+      "named": 1.1891,
+      "inactive": -0.3776
+    }
+  }
+}

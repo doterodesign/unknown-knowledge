@@ -142,14 +142,16 @@ export function askPayload({ index, health, multi }, opts) {
       'store-health': storeHealthOut,
       question: opts.text,
       confidence: { tier, ...result.signals },
-      records: result.ranked.map(({ doc, score, matched }) => ({
+      records: result.ranked.map(({ doc, score, matched, relevance }) => ({
         ...(multi ? { installation: doc.installation } : {}),
         kind: doc.kind,
         id: doc.id,
         title: doc.title,
         file: doc.file,
         score: score === null ? null : Math.round(score * 100) / 100,
+        ...(relevance == null ? {} : { relevance: Math.round(relevance * 100) / 100 }),
         matched,
+        ...(matched.some((t) => doc.aliasWords?.has(t)) ? { 'via-alias': matched.filter((t) => doc.aliasWords.has(t)) } : {}),
         status: doc.status,
         ...(doc.proposal ? { proposal: true } : {}),
         ...(doc.supersededBy.length ? { 'superseded-by': doc.supersededBy } : {}),

@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "note": "Labelled sets the re-rank model is fitted on. Add a set here and rerun fit-rerank.js to evolve the model. Held-out cases are never listed.",
+  "sets": [
+    { "name": "development-v2", "loader": "development-v2" }
+  ]
+}

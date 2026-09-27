@@ -5,7 +5,8 @@
 // score the engine alone: for each of the 48 tasks, does a complete answer
 // bundle (or, for unanswerable tasks, the evidence behind the abstention)
 // appear in the returned records? The stores are the committed canonical
-// fixture. The floors below are the measured values when `ask` shipped;
+// fixture. The floors below are the measured values (within three raised from
+// 37 to 40 by the fitted re-rank score, UCS-1612);
 // lowering one needs a Decision, not an edit here.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -30,7 +31,7 @@ test('ask retrieves every gold bundle within its default eight records', () => {
 
   assert.equal(rows.length, 48);
   assert.deepEqual(rows.filter((r) => r.depth === null).map((r) => r.id), [], 'every bundle within eight');
-  assert.ok(within(3) >= 37, `bundle within three: ${within(3)}/48`);
+  assert.ok(within(3) >= 40, `bundle within three: ${within(3)}/48`);
   assert.ok(within(1) >= 28, `bundle at rank one: ${within(1)}/48`);
   // The tiers' safety properties: no unanswerable task is ever called covered,
   // and no task with relevant records is ever called none.

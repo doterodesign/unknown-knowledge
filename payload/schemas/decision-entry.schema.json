@@ -7,6 +7,7 @@
   "additionalProperties": false,
   "required": ["id", "title", "category", "status", "date", "deciders", "context", "decision"],
   "properties": {
+    "aliases": { "type": "array", "items": { "type": "string" }, "description": "Other names a question may use for this decision; searched at title weight by ask." },
     "subjects": {
       "type": "array",
       "items": { "$ref": "#/$defs/subjectRef" },

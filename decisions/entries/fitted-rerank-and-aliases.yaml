@@ -1,0 +1,48 @@
+schema-version: 2
+entries:
+  - id: "proposal:decision:6e0e54fa-c17b-4086-b5fd-ecfd03907aa7"
+    title: "ask orders results by a fitted logistic re-rank score, and every record kind can carry aliases"
+    category: "architecture"
+    status: "proposed"
+    date: "2026-09-26"
+    deciders: ["Implementation agent (proposal author) under user-authorized UCS-1612; acceptance pending"]
+    context: >
+      ask found every development gold bundle within eight results but only 37
+      of 48 within three and 28 at rank one. The user asked for a small
+      logistic model that can evolve as labelled tests accumulate, and for
+      aliases to close synonym gaps. D-000014 keeps the engine offline and
+      deterministic. Ontology concepts already had aliases and Knowledge
+      leaves had terms; Decisions had no alternative names.
+    decision: >
+      Score each BM25 candidate with a logistic model over six signals ask
+      already computes (relative score, reciprocal rank, idf-weighted
+      coverage, title coverage, a distinctive title word, inactive lifecycle)
+      and order results by that probability, reported per record as
+      relevance. The named-record guarantee still applies. Coefficients are
+      generated into payload/engine/lib/rerank-model.js by
+      acceptance/retrieval/fit-rerank.js from the sets in
+      acceptance/retrieval/rerank/training.json, by fixed-setting gradient
+      descent so a refit is byte-identical; held-out cases are refused. Add
+      optional aliases to Knowledge and Decision records, index them at title
+      weight like Ontology aliases, and report via-alias in the match
+      evidence. The reflect skill routes an observed wording miss to one
+      alias through the existing write paths; gold fixtures are not edited to
+      pass gold questions.
+    consequences: >
+      On development-v2, judged by leave-one-question-out, within three rises
+      from 37 to 40, within eight stays 48 and rank one stays 28 (its ceiling
+      here is 37, since 11 questions need two records). The pilot gold set,
+      not used in the fit, is unchanged. Two further signals added nothing
+      and were dropped. The gold gate's within-three floor rises to 40. The
+      remaining rank-one gap needs meaning rather than word statistics:
+      aliases authored as misses are observed, and the answer check. The
+      model is fitted on 48 questions, so its coefficients will move as sets
+      are added; the determinism test and the leave-one-out report keep each
+      change visible. Alternatives rejected: an embedding or LLM re-ranker in
+      the engine (breaks D-000014), and hand-tuned weights (no way to
+      evolve from new labels). The user authorized this work in the session
+      that produced it; that authorization is not acceptance or publication
+      of this Decision. Supporting implementation: payload/engine/lib/rerank.js,
+      payload/engine/lib/rerank-model.js, payload/engine/lib/ask.js,
+      acceptance/retrieval/fit-rerank.js, tests/rerank.test.js.
+    relates-to: {"concepts": [], "leaves": [], "decisions": ["D-000014", "proposal:decision:fb2c4724-c3c4-4a1a-b367-231b2dfc685e"]}
